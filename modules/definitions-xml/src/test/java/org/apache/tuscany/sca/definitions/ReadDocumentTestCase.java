@@ -88,8 +88,7 @@ public class ReadDocumentTestCase extends TestCase {
         scaDefnDocProcessor = new SCADefinitionsDocumentProcessor(staxProcessors, 
                                                                   staxProcessor, 
                                                                   inputFactory, 
-                                                                  policyFactory,
-                                                                  null);
+                                                                  policyFactory);
         
         URL url = getClass().getResource("test_definitions.xml");
         URI uri = URI.create("test_definitions.xml");

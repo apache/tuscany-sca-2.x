@@ -43,7 +43,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @version $Rev$ $Date$
  */
-public class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStreamReader {
+class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStreamReader {
     private static final Logger logger = Logger.getLogger(ValidatingXMLStreamReader.class.getName());
     
     private int level;

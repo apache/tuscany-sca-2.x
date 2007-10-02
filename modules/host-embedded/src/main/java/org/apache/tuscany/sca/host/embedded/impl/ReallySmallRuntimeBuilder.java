@@ -22,11 +22,8 @@ package org.apache.tuscany.sca.host.embedded.impl;
 import java.io.IOException;
 import java.util.List;
 
-import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
@@ -43,6 +40,7 @@ import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.DefaultValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.processor.ExtensiblePackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
@@ -50,6 +48,7 @@ import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionListenerExtensionPoint;
@@ -166,15 +165,23 @@ public class ReallySmallRuntimeBuilder {
                                                                 InterfaceContractMapper mapper)
         throws ActivationException {
 
-        XMLInputFactory xmlFactory = registry.getExtensionPoint(XMLInputFactory.class);
+        // Create a new XML input factory
+        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
+        // Create a validation XML schema extension point
+        ValidationSchemaExtensionPoint schemas = registry.getExtensionPoint(ValidationSchemaExtensionPoint.class);
+        schemas.addSchema(ReallySmallRuntimeBuilder.class.getClassLoader().getResource("tuscany-sca.xsd").toString());
+        
+        // Create a validating XML input factory
+        XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas);
+        
         // Create STAX artifact processor extension point
         StAXArtifactProcessorExtensionPoint staxProcessors =
             registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
 
         // Create and register STAX processors for SCA assembly XML
         ExtensibleStAXArtifactProcessor staxProcessor =
-            new ExtensibleStAXArtifactProcessor(staxProcessors, xmlFactory, XMLOutputFactory.newInstance());
+            new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, XMLOutputFactory.newInstance());
         staxProcessors.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory,
                                                                    mapper, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
@@ -189,30 +196,16 @@ public class ReallySmallRuntimeBuilder {
         URLArtifactProcessorExtensionPoint documentProcessors =
             registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
 
-        // Load the Assembly XSD, used for validation
-        Schema schema = null;
-        try {
-            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            schema = schemaFactory.newSchema(ReallySmallRuntimeBuilder.class.getClassLoader().getResource("tuscany-sca.xsd"));
-        } catch (Error e) {
-            //FIXME Log this, some old JDKs don't support XMLSchema validation
-            //e.printStackTrace();
-        } catch (Exception e) {
-            //FIXME Log this, some old JDKs don't support XMLSchema validation
-            //e.printStackTrace();
-        }
-        
         // Create and register document processors for SCA assembly XML
-        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory, schema));
-        documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory, schema));
-        documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory, schema));
+        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, validatingInputFactory));
+        documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, validatingInputFactory));
+        documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, validatingInputFactory));
 
         // Create and register document processor for definitions.xml
         //TODO No XMLSchema validation for definitions.xml for now
         // as the XSD for it is not quite right yet
         SCADefinitionsDocumentProcessor definitionsDocumentProcessor =
-            new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, xmlFactory, policyFactory, null);
+            new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, inputFactory, policyFactory);
         documentProcessors.addArtifactProcessor(definitionsDocumentProcessor);
         ModelResolver domainModelResolver = definitionsDocumentProcessor.getDomainModelResolver();
 
@@ -234,7 +227,7 @@ public class ReallySmallRuntimeBuilder {
         // Create a contribution repository
         ContributionRepository repository;
         try {
-            repository = new ContributionRepositoryImpl("target", xmlFactory);
+            repository = new ContributionRepositoryImpl("target", inputFactory);
         } catch (IOException e) {
             throw new ActivationException(e);
         }
@@ -245,7 +238,7 @@ public class ReallySmallRuntimeBuilder {
         ContributionService contributionService =
             new ContributionServiceImpl(repository, packageProcessor, documentProcessor, staxProcessor,
                                         contributionListener, domainModelResolver, modelResolvers, modelFactories,
-                                        assemblyFactory, contributionFactory, xmlFactory);
+                                        assemblyFactory, contributionFactory, inputFactory);
         return contributionService;
     }
 
