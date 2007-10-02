@@ -27,12 +27,10 @@ import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.validation.Schema;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.ValidatingXMLStreamReader;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
@@ -44,7 +42,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
  */
 public class ComponentTypeDocumentProcessor extends BaseAssemblyProcessor implements URLArtifactProcessor<ComponentType> {
     private XMLInputFactory inputFactory;
-    private Schema schema;
     
     /**
      * Constructs a new componentType processor.
@@ -52,10 +49,9 @@ public class ComponentTypeDocumentProcessor extends BaseAssemblyProcessor implem
      * @param policyFactory
      * @param registry
      */
-    public ComponentTypeDocumentProcessor(StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory, Schema schema) {
+    public ComponentTypeDocumentProcessor(StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory) {
         super(null, null, staxProcessor);
         this.inputFactory = inputFactory;
-        this.schema = schema;
     }
     
     public ComponentType read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
@@ -65,7 +61,6 @@ public class ComponentTypeDocumentProcessor extends BaseAssemblyProcessor implem
             // Create a stream reader
             urlStream = url.openStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
-            reader = new ValidatingXMLStreamReader(reader, schema);
             reader.nextTag();
             
             // Reader the componentType model 
