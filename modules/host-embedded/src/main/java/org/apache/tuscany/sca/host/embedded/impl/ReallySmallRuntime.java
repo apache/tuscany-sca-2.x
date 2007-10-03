@@ -155,6 +155,7 @@ public class ReallySmallRuntime {
         //Create a composite builder
         compositeBuilder = ReallySmallRuntimeBuilder.createCompositeBuilder(assemblyFactory,
                                                                             scaBindingFactory,
+                                                                            intentAttachPointTypeFactory,
                                                                             mapper,
                                                                             domainPolicySets);
         if (logger.isLoggable(Level.FINE)) {

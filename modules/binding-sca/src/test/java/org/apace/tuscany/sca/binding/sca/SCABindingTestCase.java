@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcesso
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
+import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.junit.After;
@@ -101,7 +102,7 @@ public class SCABindingTestCase {
 	       
 	        compositeReader.resolve(composite, resolver);
 	        
-	        CompositeBuilderImpl compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, mapper, null, null);
+	        CompositeBuilderImpl compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null, null);
 	        compositeBuilder.build(composite);
 	        
 	        SCABinding referenceSCABinding = (SCABinding) composite.getComponents().get(0).getReferences().get(0).getBindings().get(0);

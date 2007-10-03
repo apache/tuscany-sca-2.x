@@ -37,7 +37,10 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * A processor to read the XML that describes the SCA binding.
@@ -48,6 +51,7 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, C
     private PolicyFactory policyFactory;       
     private SCABindingFactory scaBindingFactory;
     private PolicyAttachPointProcessor policyProcessor;
+    private IntentAttachPointTypeFactory  intentAttachPointTypeFactory;
 
     protected static final String BINDING_SCA = "binding.sca";
     protected static final QName BINDING_SCA_QNAME = new QName(Constants.SCA10_NS, BINDING_SCA);
@@ -56,6 +60,7 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, C
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         policyProcessor = new PolicyAttachPointProcessor(policyFactory);
+        this.intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
     }
     
     //FIXME Remove this constructor
@@ -77,6 +82,10 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, C
 
     public SCABinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         SCABinding scaBinding = scaBindingFactory.createSCABinding();
+        IntentAttachPointType bindingType = intentAttachPointTypeFactory.createBindingType();
+        bindingType.setName(getArtifactType());
+        bindingType.setUnresolved(true);
+        ((PolicySetAttachPoint)scaBinding).setType(bindingType);
         
         // Read policies
         policyProcessor.readPolicies(scaBinding, reader);

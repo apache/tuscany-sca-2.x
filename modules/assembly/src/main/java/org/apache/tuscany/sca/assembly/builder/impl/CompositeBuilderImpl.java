@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
@@ -53,6 +54,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
      */
     public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
                                 SCABindingFactory scaBindingFactory,
+                                IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
                                 InterfaceContractMapper interfaceContractMapper,
                                 List<PolicySet> domainPolicySets,
                                 CompositeBuilderMonitor monitor) {
@@ -75,7 +77,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         includeBuilder = new CompositeIncludeBuilderImpl(monitor);
         wireBuilder = new CompositeWireBuilderImpl(assemblyFactory, interfaceContractMapper, domainPolicySets, monitor);
         cloneBuilder = new CompositeCloneBuilderImpl(monitor);
-        configurationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, monitor);
+        configurationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, interfaceContractMapper, monitor);
     }
 
     public void build(Composite composite) throws CompositeBuilderException {

@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
@@ -43,21 +45,30 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 public class CompositeConfigurationBuilderImpl {
+    String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    String BINDING_SCA = "binding.sca";
+    QName BINDING_SCA_QNAME = new QName(SCA10_NS, BINDING_SCA);
 
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;
     private CompositeBuilderMonitor monitor;
     private InterfaceContractMapper interfaceContractMapper;
+    private IntentAttachPointTypeFactory  intentAttachPointTypeFactory;
     
 
     public CompositeConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
                                              SCABindingFactory scaBindingFactory,
+                                             IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
                                              InterfaceContractMapper interfaceContractMapper,
                                              CompositeBuilderMonitor monitor) {
         this.assemblyFactory = assemblyFactory;
         this.scaBindingFactory = scaBindingFactory;
+        this.intentAttachPointTypeFactory = intentAttachPointTypeFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.monitor = monitor;
     }
@@ -110,7 +121,9 @@ public class CompositeConfigurationBuilderImpl {
             
             // Create default SCA binding
             if (service.getBindings().isEmpty()) {
-                SCABinding scaBinding = scaBindingFactory.createSCABinding();
+                SCABinding scaBinding = createSCABinding();
+                
+                
                 service.getBindings().add(scaBinding);
             }
 
@@ -163,7 +176,7 @@ public class CompositeConfigurationBuilderImpl {
         for (Reference reference : composite.getReferences()) {
             // Create default SCA binding
             if (reference.getBindings().isEmpty()) {
-                SCABinding scaBinding = scaBindingFactory.createSCABinding();
+                SCABinding scaBinding = createSCABinding();
                 reference.getBindings().add(scaBinding);
             }
 
@@ -253,7 +266,7 @@ public class CompositeConfigurationBuilderImpl {
 
                 // Create default SCA binding
                 if (componentService.getBindings().isEmpty()) {
-                    SCABinding scaBinding = scaBindingFactory.createSCABinding();
+                    SCABinding scaBinding = createSCABinding();
                     componentService.getBindings().add(scaBinding);
                 }
 
@@ -298,7 +311,7 @@ public class CompositeConfigurationBuilderImpl {
 
                 // Create default SCA binding
                 if (componentReference.getBindings().isEmpty()) {
-                    SCABinding scaBinding = scaBindingFactory.createSCABinding();
+                    SCABinding scaBinding = createSCABinding();
                     componentReference.getBindings().add(scaBinding);
                 }
 
@@ -1061,5 +1074,16 @@ public class CompositeConfigurationBuilderImpl {
         }
         return null;
     }
+    
+    private SCABinding createSCABinding() {
+        SCABinding scaBinding = scaBindingFactory.createSCABinding();
+        IntentAttachPointType bindingType = intentAttachPointTypeFactory.createBindingType();
+        bindingType.setName(BINDING_SCA_QNAME);
+        bindingType.setUnresolved(true);
+        ((PolicySetAttachPoint)scaBinding).setType(bindingType);
+        
+        return scaBinding;
+    }
+    
 
 }
