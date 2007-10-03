@@ -47,7 +47,7 @@ public interface Constants {
     QName COMPOSITE_QNAME = new QName(SCA10_NS, COMPOSITE);
     
     String INCLUDE = "include";
-    QName INCLUDE_QNAME = new QName(SCA10_NS, INCLUDE);
+    QName INCLUDE_QNAME = new QName(SCA10_NS, INCLUDE); 
     
     String COMPONENT = "component";
     QName COMPONENT_QNAME = new QName(SCA10_NS, COMPONENT);
@@ -66,6 +66,9 @@ public interface Constants {
     
     String IMPLEMENTATION = "implementation";
     QName IMPLEMENTATION_QNAME = new QName(SCA10_NS, IMPLEMENTATION);
+    
+    String BINDING_SCA = "binding.sca";
+    QName BINDING_SCA_QNAME = new QName(Constants.SCA10_NS, BINDING_SCA);
     
     String NAME = "name";
     String TARGET_NAMESPACE = "targetNamespace";

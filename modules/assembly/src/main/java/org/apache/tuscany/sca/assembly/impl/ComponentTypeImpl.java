@@ -44,6 +44,7 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
     private List<Service> services = new ArrayList<Service>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private IntentAttachPointType type = null;
     
     /**
      * Constructs a new component type.
@@ -107,10 +108,11 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
     }
     
     public IntentAttachPointType getType() {
-        return null;
+        return type;
     }
 
     public void setType(IntentAttachPointType type) {
+        this.type = type;
     }
 
     @Override

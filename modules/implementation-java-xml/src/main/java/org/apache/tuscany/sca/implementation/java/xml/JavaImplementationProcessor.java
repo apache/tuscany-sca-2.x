@@ -53,7 +53,10 @@ import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaImplementation>,
     JavaImplementationConstants {
@@ -62,18 +65,28 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
     private AssemblyFactory assemblyFactory;
     private PolicyFactory policyFactory;
     private PolicyAttachPointProcessor policyProcessor;
+    private IntentAttachPointTypeFactory  intentAttachPointTypeFactory;
 
     public JavaImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.javaFactory = modelFactories.getFactory(JavaImplementationFactory.class);
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
+        this.intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
     }
 
     public JavaImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
 
         // Read an <implementation.java>
         JavaImplementation javaImplementation = javaFactory.createJavaImplementation();
+        
+        if ( javaImplementation instanceof PolicySetAttachPoint ) {
+            IntentAttachPointType implType = intentAttachPointTypeFactory.createImplementationType();
+            implType.setName(getArtifactType());
+            implType.setUnresolved(true);
+            ((PolicySetAttachPoint)javaImplementation).setType(implType);
+        }
+        
         javaImplementation.setUnresolved(true);
         javaImplementation.setName(reader.getAttributeValue(null, CLASS));
 

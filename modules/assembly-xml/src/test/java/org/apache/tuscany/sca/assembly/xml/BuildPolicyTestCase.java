@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.definitions.xml.SCADefinitionsDocumentProcessor;
 import org.apache.tuscany.sca.definitions.xml.SCADefinitionsProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
+import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -73,7 +74,7 @@ public class BuildPolicyTestCase extends TestCase {
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
         resolver = new TestModelResolver();
-        compositeBuilder = new CompositeBuilderImpl(factory, new TestSCABindingFactoryImpl(), new InterfaceContractMapperImpl(), null, null);
+        compositeBuilder = new CompositeBuilderImpl(factory, new TestSCABindingFactoryImpl(), new DefaultIntentAttachPointTypeFactory(), new InterfaceContractMapperImpl(), null, null);
         URLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors); 
         
