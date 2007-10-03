@@ -187,6 +187,11 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
             return getTransformer().transform(source, context);
         }
 
+        public String toString() {
+            StringBuffer sb = new StringBuffer(super.toString());
+            sb.append(";className=").append(className);
+            return sb.toString();
+        }
     }
 
     /**
@@ -246,6 +251,11 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
             getTransformer().transform(source, sink, context);
         }
 
+        public String toString() {
+            StringBuffer sb = new StringBuffer(super.toString());
+            sb.append(";className=").append(className);
+            return sb.toString();
+        }
     }
 
     
