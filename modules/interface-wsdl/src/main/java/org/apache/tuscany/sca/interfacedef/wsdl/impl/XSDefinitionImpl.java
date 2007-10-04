@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @version $Rev$ $Date$
  */
 public class XSDefinitionImpl implements XSDefinition {
-    private XmlSchemaCollection schemaCollection;
+    private XmlSchemaCollection schemaCollection = new XmlSchemaCollection();
     private XmlSchema schema;
     private String namespace;
     private URI location;
