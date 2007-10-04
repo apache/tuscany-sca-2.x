@@ -19,8 +19,7 @@
 package node;
 
 import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.node.impl.SCANodeImpl;
-import org.apache.tuscany.sca.node.impl.SCANodeUtil;
+import org.apache.tuscany.sca.domain.SCADomainFactory;
 
 
 /**
@@ -30,20 +29,24 @@ import org.apache.tuscany.sca.node.impl.SCANodeUtil;
  */
 public class DomainNode {
 
+    private static String DEFAULT_DOMAIN_URI = "http://localhost:8877";
+    
     public static void main(String[] args) {
 
         try {
-            SCADomain domainNode = SCADomain.newInstance("domain.composite");            
+            SCADomainFactory domainFactory = SCADomainFactory.newInstance();
+            SCADomain domain = domainFactory.createSCADomain(DEFAULT_DOMAIN_URI); 
+            domain.start();
         
-            System.out.println("Domain node started (press enter to shutdown)");
+            System.out.println("Domain started (press enter to shutdown)");
             System.in.read();
             
-            domainNode.close();
+            domain.stop();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        System.out.println("Domain node stopped");
+        System.out.println("Domain stopped");
     }
 
 }

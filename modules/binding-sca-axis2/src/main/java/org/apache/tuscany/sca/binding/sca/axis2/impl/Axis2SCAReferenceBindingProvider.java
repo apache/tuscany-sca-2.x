@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ReferenceBindingProvider;
 import org.apache.tuscany.sca.binding.ws.axis2.Java2WSDLHelper;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
-import org.apache.tuscany.sca.domain.SCADomainService;
+import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -113,14 +113,14 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
         
         if ( serviceEPR == null && node != null ){
             // try to resolve the service endpoint with the registry 
-            SCADomainService serviceDiscovery = node.getDomainService();
+            SCADomainSPI domainProxy = (SCADomainSPI)node.getDomain();
             
-            if (serviceDiscovery != null){
+            if (domainProxy != null){
             
 	            // The binding URI might be null in the case where this reference is completely
 	            // dynamic, for example, in the case of callbacks
 	            if (binding.getURI() != null) {
-	                String serviceUrl = serviceDiscovery.findServiceEndpoint(node.getDomainURI(), 
+	                String serviceUrl = domainProxy.findServiceEndpoint(node.getDomain().getURI(), 
 	                                                                         binding.getURI(), 
 	                                                                         SCABinding.class.getName());
 	                

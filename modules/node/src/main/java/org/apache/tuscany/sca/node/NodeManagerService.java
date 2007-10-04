@@ -19,6 +19,11 @@
 
 package org.apache.tuscany.sca.node;
 
+import java.net.URL;
+
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.domain.SCADomain;
 import org.osoa.sca.annotations.Remotable;
 
 
@@ -30,20 +35,37 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 public interface NodeManagerService {
      
-    /** 
-     * Return the Uri that identifies the node
+    /**
+     * Returns the URI of the SCA node. That URI is the endpoint of the
+     * SCA node administration service.
      * 
-     * @return
+     * @return the URI of the SCA node
      */
-    public String getNodeUri();
+    public String getURI();
     
     /**
-     * The configuration of a domain running on this node has changed.
-     * It is the responsibility of the node to respond to this and retrieve
-     * any relevent configuration changes 
+     * Add an SCA contribution into the node.
      *  
-     * @param domainUri the string uri for the distributed domain
+     * @param uri the URI of the contribution
+     * @param url the URL of the contribution
      */
-   // public void addContribution(String domainUri);   
+    public void addContribution(String contributionURI, String contributionURL);
+   
+    /**
+     * Start the specified deployable composite on the node.
+     * 
+     * @param composite
+     */
+    public void startComposite(String compositeName);
+    
+    /**
+     * Start the SCA node service.
+     */
+    public void start();    
+    
+    /**
+     * Stop the SCA node service.
+     */
+    public void stop();    
  
 }

@@ -24,8 +24,8 @@ import org.junit.Test;
 
 public class PromotionTestCase extends BaseTest {
     
-    public static TestDomain domainA;
-    public static TestDomain domainB;
+    public static TestNode nodeA;
+    public static TestNode nodeB;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -33,8 +33,8 @@ public class PromotionTestCase extends BaseTest {
 
         try {
             // create and start domains
-            domainA = createDomain("nodeC");
-            domainB = createDomain("nodeD");
+            nodeA = createNode("nodeC");
+            nodeB = createNode("nodeD");
 
 
         } catch (Exception ex) {
@@ -46,15 +46,15 @@ public class PromotionTestCase extends BaseTest {
 
     @AfterClass
     public static void destroy() throws Exception {
-        domainA.stop(); 
-        domainB.stop();
+        nodeA.stop(); 
+        nodeB.stop();
     }    
     
     @Test
     public void testHelloWorldPromotion() throws Exception {  
 /*        
         HelloWorldClient helloWorldClientA;
-        helloWorldClientA = domainA.getService(HelloWorldClient.class, "AHelloWorldClientRemotePromotion");
+        helloWorldClientA = nodeA.getService(HelloWorldClient.class, "AHelloWorldClientRemotePromotion");
         Assert.assertEquals(helloWorldClientA.getGreetings("fred"), "Hello fred");
 */
     }      

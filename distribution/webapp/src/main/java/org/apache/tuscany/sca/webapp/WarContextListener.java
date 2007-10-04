@@ -40,7 +40,9 @@ import javax.servlet.ServletContextListener;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
-import org.apache.tuscany.sca.node.impl.ContributionManagerImpl;
+import org.apache.tuscany.sca.node.NodeException;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.apache.tuscany.sca.node.impl.SCANodeImpl;
 
 /**
@@ -53,7 +55,7 @@ import org.apache.tuscany.sca.node.impl.SCANodeImpl;
 public class WarContextListener implements ServletContextListener {
     private final static Logger logger = Logger.getLogger(WarContextListener.class.getName());
 
-    protected SCANodeImpl node;
+    protected SCANode node;
     protected AddableURLClassLoader classLoader;
     protected File repository;
 
@@ -104,31 +106,34 @@ public class WarContextListener implements ServletContextListener {
 
     protected void initNode() throws ContributionException, ActivationException, IOException,
         CompositeBuilderException, URISyntaxException {
-        logger.log(Level.INFO, "SCA node starting");
-
-        classLoader = new AddableURLClassLoader(new URL[] {}, Thread.currentThread().getContextClassLoader());
-        Thread.currentThread().setContextClassLoader(classLoader);
-        node = new SCANodeImpl(domainName, nodeName, classLoader);
-        node.start();
-
-        existingContributions = new HashMap<URL, Long>();
-        URL[] contributions = getContributionJarURLs(repository);
-        for (URL contribution : contributions) {
-            try {
-                addContribution(contribution);
-            } catch (Throwable e) {
-                e.printStackTrace();
-                logger.log(Level.WARNING, "Exception adding contribution: " + e);
+        try {
+            logger.log(Level.INFO, "SCA node starting");
+    
+            classLoader = new AddableURLClassLoader(new URL[] {}, Thread.currentThread().getContextClassLoader());
+            Thread.currentThread().setContextClassLoader(classLoader);
+            
+            SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
+            node = nodeFactory.createSCANode(nodeName, domainName);
+            node.start();
+    
+            existingContributions = new HashMap<URL, Long>();
+            URL[] contributions = getContributionJarURLs(repository);
+            for (URL contribution : contributions) {
+    
+                    addContribution(contribution);
+    
             }
+    
+            initHotDeploy(repository);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            logger.log(Level.WARNING, "Exception adding contribution: " + e);
         }
-
-        initHotDeploy(repository);
-
     }
 
-    protected void addContribution(URL contribution) throws CompositeBuilderException, ContributionException, IOException, ActivationException, URISyntaxException {
+    protected void addContribution(URL contribution) throws URISyntaxException, NodeException {
         classLoader.addURL(contribution);
-        ((ContributionManagerImpl)node.getContributionManager()).addContribution(contribution);
+        node.addContribution(contribution.toString(), contribution);
         existingContributions.put(contribution, new Long(new File(contribution.toURI()).lastModified()));
         logger.log(Level.INFO, "Added contribution: " + contribution);
     }
@@ -260,13 +265,13 @@ public class WarContextListener implements ServletContextListener {
         if (servletContext.getInitParameter("domainName") != null) {
             domainName = servletContext.getInitParameter("domainName");
         } else {
-            domainName = SCANodeImpl.LOCAL_DOMAIN_URI;
+            domainName = null;
         }
 
         if (servletContext.getInitParameter("nodeName") != null) {
             nodeName = servletContext.getInitParameter("nodeName");
         } else {
-            nodeName = SCANodeImpl.LOCAL_NODE_URI;
+            nodeName = "DefaultNode";
         }
 
         if (servletContext.getInitParameter("hotDeployInterval") != null) {

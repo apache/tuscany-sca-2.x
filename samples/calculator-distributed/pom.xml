@@ -41,17 +41,16 @@
             <artifactId>tuscany-host-embedded</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
         </dependency>
-
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-impl</artifactId>
+            <artifactId>tuscany-node-api</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
-        </dependency>    
+        </dependency>  
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-domain-impl</artifactId>
+            <artifactId>tuscany-domain-api</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
         </dependency>                                
         
@@ -86,7 +85,21 @@
             <artifactId>tuscany-host-tomcat</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
             <scope>test</scope>
-        </dependency>          
+        </dependency>   
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-domain-impl</artifactId>
+            <version>1.1-incubating-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency> 
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node-impl</artifactId>
+            <version>1.1-incubating-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency> 
         
         <dependency>
             <groupId>junit</groupId>

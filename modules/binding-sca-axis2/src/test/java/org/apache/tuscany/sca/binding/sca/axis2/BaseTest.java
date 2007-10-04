@@ -22,10 +22,10 @@ package org.apache.tuscany.sca.binding.sca.axis2;
 public class BaseTest {
 
     public static String DEFULT_DOMAIN_NAME = "mydomain";
-    public static TestServiceDiscoveryImpl serviceDiscovery = new TestServiceDiscoveryImpl();
+    public static TestDomain testDomain = new TestDomain(DEFULT_DOMAIN_NAME);
 
-    public static TestDomain createDomain(String nodeName) throws Exception {
+    public static TestNode createNode(String nodeName) throws Exception {
        
-        return new TestDomain(DEFULT_DOMAIN_NAME, nodeName,serviceDiscovery);
+        return new TestNode(DEFULT_DOMAIN_NAME, nodeName, testDomain);
     }
 }

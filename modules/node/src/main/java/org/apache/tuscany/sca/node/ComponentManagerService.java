@@ -47,20 +47,6 @@ public interface ComponentManagerService {
      */
     ComponentInfo getComponentInfo(String componentName);
 
-    /**
-     * Start a component, making it ready to receive messages
-     * 
-     * @param componentName
-     * @throws ActivationException
-     */
-    void startComponent(String componentName) throws ActivationException;
 
-    /** 
-     * Stop a component
-     * 
-     * @param componentName
-     * @throws ActivationException
-     */
-    void stopComponent(String componentName) throws ActivationException;
 
 }

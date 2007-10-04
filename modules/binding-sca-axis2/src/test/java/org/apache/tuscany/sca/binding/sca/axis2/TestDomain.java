@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.binding.sca.axis2;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -34,14 +36,16 @@ import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
-import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
-import org.apache.tuscany.sca.domain.SCADomainService;
+import org.apache.tuscany.sca.domain.DomainException;
+import org.apache.tuscany.sca.domain.NodeInfo;
+import org.apache.tuscany.sca.domain.SCADomain;
+import org.apache.tuscany.sca.domain.SCADomainSPI;
+import org.apache.tuscany.sca.domain.ServiceInfo;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.node.ComponentManager;
-import org.apache.tuscany.sca.node.ContributionManager;
+import org.apache.tuscany.sca.node.NodeException;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
@@ -56,212 +60,186 @@ import org.osoa.sca.ServiceRuntimeException;
  * 
  * @version $Rev: 552343 $ $Date$
  */
-public class TestDomain implements SCANode {
+public class TestDomain implements SCADomainSPI {
     
-    private String nodeName;
     private String domainURI;
-    private static SCADomainService serviceDiscovery;   
-    private ReallySmallRuntime nodeRuntime;
-    
-    private ClassLoader cl = BaseTest.class.getClassLoader();
-    private Composite nodeComposite = null;
         
     
-    public TestDomain(String domainURI, String nodeName, TestServiceDiscoveryImpl serviceDiscovery)
-      throws Exception {
+    public TestDomain(String domainURI) {
         this.domainURI = domainURI; 
-        this.nodeName = nodeName;
-        this.serviceDiscovery = serviceDiscovery;
-        
-        try {
-
-            // create and start domainA
-            nodeRuntime = new ReallySmallRuntime(cl);
-            nodeRuntime.start();
-            
-            // Create an in-memory domain level composite
-            AssemblyFactory assemblyFactory = nodeRuntime.getAssemblyFactory();
-            nodeComposite = assemblyFactory.createComposite();
-            nodeComposite.setName(new QName(Constants.SCA10_NS, "domain"));
-            nodeComposite.setURI(domainURI);
-            
-            // add the top level composite into the composite activator
-            nodeRuntime.getCompositeActivator().setDomainComposite(nodeComposite);  
-            
-            // make the domain available to the model. 
-            ModelFactoryExtensionPoint factories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
-            NodeFactoryImpl domainFactory = new NodeFactoryImpl(this);
-            factories.addFactory(domainFactory);                       
-
-            // add a contribution to the domain
-            ContributionService contributionService = nodeRuntime.getContributionService();
-
-            // find the current directory as a URL. This is where our contribution 
-            // will come from
-            URL contributionURL = Thread.currentThread().getContextClassLoader().getResource(nodeName + "/");
-
-            // Contribute the SCA application
-            Contribution contribution = contributionService.contribute("http://calculator", contributionURL, null, //resolver, 
-                                                                       false);
-            Composite composite = contribution.getDeployables().get(0);
-
-            // Add the deployable composite to the domain
-            nodeComposite.getIncludes().add(composite);
-            nodeRuntime.getCompositeBuilder().build(composite);
-            nodeRuntime.getCompositeActivator().activate(composite);
-            nodeRuntime.getCompositeActivator().start(composite);
-            
-        } catch (Exception ex) {
-            System.err.println("Exception when creating domain " + ex.getMessage());
-            ex.printStackTrace(System.err);
-            throw ex;
-        }         
     }
     
-    public void start()
-        throws ActivationException {
+    public void start() throws DomainException {
         
     }
     
-    public void stop() 
-      throws ActivationException {
-        nodeRuntime.stop();
+    public void stop() throws DomainException {
     }
     
         
-    public String getNodeURI(){
-        return nodeName;
-    }  
-    
-    public String getDomainURI(){
+    public String getURI(){
         return domainURI;
-    } 
+    }
+     
     
+    List<ServiceEndpoint> serviceEndpoints = new ArrayList<ServiceEndpoint>();
     
-    public URL getNodeURL(){
+    public class ServiceEndpoint {
+        private String domainUri;
+        private String nodeUri;
+        private String serviceName;
+        private String bindingName;
+        private String url;
+        
+        public ServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
+            this.domainUri = domainUri;
+            this.nodeUri = nodeUri;
+            this.serviceName = serviceName;
+            this.bindingName = bindingName;
+            this.url = URL;
+        }
+        
+        public boolean match(String domainUri, String serviceName, String bindingName) {
+            // trap the case where the we are trying to map
+            //   ComponentName/Service name with a registered ComponentName             - this is OK
+            //   ComponentName              with a registered ComponentName/ServiceName - this should fail
+            
+            boolean serviceNameMatch = false;
+            
+            if (this.serviceName.equals(serviceName)) {
+                serviceNameMatch = true;
+            } else {
+                int s = serviceName.indexOf('/');
+                if ((s != -1) &&
+                    (this.serviceName.equals(serviceName.substring(0, s)))){
+                    serviceNameMatch = true;
+                }
+            }
+            
+            return ((this.domainUri.equals(domainUri)) &&
+                    (serviceNameMatch) &&
+                    (this.bindingName.equals(bindingName)));
+        }
+        
+        public String getUrl() {
+            return url;
+        }     
+        
+        @Override
+        public String toString (){
+            return "[" +
+                   domainUri + " " +
+                   nodeUri + " " +
+                   serviceName + " " +
+                   bindingName + " " + 
+                   url +
+                   "]";
+        }
+    }
+    
+    public List<NodeInfo> getNodeInfo() {
         return null;
-    }  
+    }
+     
+    /**
+     * Accepts information about a service endpoint and holds onto it
+     * 
+     * @param domainUri the string uri for the distributed domain
+     * @param nodeUri the string uri for the current node
+     * @param serviceName the name of the service that is exposed and the provided endpoint
+     * @param bindingName the remote binding that is providing the endpoint
+     * @param url the enpoint url
+     */
+    public String registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
+        // if the service name ends in a "/" remove it
+        String modifiedServiceName = null;
+        if ( serviceName.endsWith("/") ) {
+            modifiedServiceName = serviceName.substring(0, serviceName.length() - 1);
+        } else {
+            modifiedServiceName = serviceName;
+        }        
+        ServiceEndpoint serviceEndpoint = new ServiceEndpoint (domainUri, nodeUri, modifiedServiceName, bindingName, URL);
+        serviceEndpoints.add(serviceEndpoint);
+        System.err.println("Registering service: " + serviceEndpoint.toString());
+        return "";
+    }
     
-    public URL getDomainURL(){
-        return null;
-    }     
+    public String removeServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName){
+        return "";  
+    }
+    /**
+     * Locates information about a service endpoint 
+     * 
+     * @param domainUri the string uri for the distributed domain
+     * @param serviceName the name of the service that is exposed and the provided endpoint
+     * @param bindingName the remote binding that we want to find an endpoint for
+     * @return url the endpoint url
+     */
+    public String findServiceEndpoint(String domainUri, String serviceName, String bindingName){
+        System.err.println("Finding service: [" + 
+                           domainUri + " " +
+                           serviceName + " " +
+                           bindingName +
+                           "]");
+        
+        String url = null;
+        
+        for(ServiceEndpoint serviceEndpoint : serviceEndpoints){
+            if ( serviceEndpoint.match(domainUri, serviceName, bindingName)){
+                url = serviceEndpoint.getUrl();
+                System.err.println("Matching service url: " + url); 
+            }
+        }
+        return url;
+    }
     
-    public SCADomainService getDomainService(){
-        return serviceDiscovery;
-    } 
-    
-    public ContributionManager getContributionManager(){
+    public ServiceInfo getServiceInfo() {
+        // TODO Auto-generated method stub
         return null;
     }
     
-    public ComponentManager getComponentManager(){
+    public SCADomain getDomain(){
         return null;
-    }    
+    }
+    
+    public String addNode(String nodeURI, String nodeURL){
+        return null;
+    }
+    
+
+    public String removeNode(String nodeURI){
+        return null;
+    }
+    
+    public void addContribution(String contributionURI, URL contributionURL) throws DomainException {
+    }
+        
+
+    public void removeContribution(String contributionURI) throws DomainException {
+    }
+    
+    public void addComposite(QName qname) throws DomainException {  
+    }
+  
+    public void removeComposite(QName qname) throws DomainException {          
+    }
+    
+    public void startComposite(QName compositeName) throws DomainException {
+    }
+
+    public void stopComposite(QName compositeName) throws DomainException {             
+    }
     
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
-        return null; 
+        return null;
     }
-
+    
     public <B> B getService(Class<B> businessInterface, String serviceName) {
-        ServiceReference<B> serviceReference = getServiceReference(businessInterface, serviceName);
-        if (serviceReference == null) {
-            throw new ServiceRuntimeException("Service not found: " + serviceName);
-        }
-        return serviceReference.getService();
-    }
-
-    private <B> ServiceReference<B> createServiceReference(Class<B> businessInterface, String targetURI) {
-        try {
-            AssemblyFactory assemblyFactory = nodeRuntime.getAssemblyFactory();
-            Composite composite = assemblyFactory.createComposite();
-            composite.setName(new QName(Constants.SCA10_TUSCANY_NS, "default"));
-            RuntimeComponent component = (RuntimeComponent)assemblyFactory.createComponent();
-            component.setName("default");
-            component.setURI("default");
-            nodeRuntime.getCompositeActivator().configureComponentContext(component);
-            composite.getComponents().add(component);
-            RuntimeComponentReference reference = (RuntimeComponentReference)assemblyFactory.createComponentReference();
-            reference.setName("default");
-            ModelFactoryExtensionPoint factories =
-                nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
-            JavaInterfaceFactory javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
-            InterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
-            interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(businessInterface));
-            reference.setInterfaceContract(interfaceContract);
-            component.getReferences().add(reference);
-            reference.setComponent(component);
-            SCABindingFactory scaBindingFactory = factories.getFactory(SCABindingFactory.class);
-            SCABinding binding = scaBindingFactory.createSCABinding();
-            binding.setURI(targetURI);
-            reference.getBindings().add(binding);       
-            return new ServiceReferenceImpl<B>(businessInterface, component, reference, binding, nodeRuntime
-                .getProxyFactory(), nodeRuntime.getCompositeActivator());
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
-        }
+        return null;
     }
 
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String name) {
-
-        // Extract the component name
-        String componentName;
-        String serviceName;
-        int i = name.indexOf('/');
-        if (i != -1) {
-            componentName = name.substring(0, i);
-            serviceName = name.substring(i + 1);
-
-        } else {
-            componentName = name;
-            serviceName = null;
-        }
-
-        // Lookup the component in the domain
-        
-        Component component = null;
-        
-        for (Composite composite: nodeComposite.getIncludes()) {
-            for (Component componentLoop: composite.getComponents()) {
-                if (componentLoop.getName().equals(componentName)) {
-                    component = componentLoop;
-                    break;
-                }
-            }
-        }        
-        if (component == null) {
-            // The component is not local in the partition, try to create a remote service ref
-            return createServiceReference(businessInterface, name);
-        }
-        RuntimeComponentContext componentContext = null;
-
-        // If the component is a composite, then we need to find the
-        // non-composite component that provides the requested service
-        if (component.getImplementation() instanceof Composite) {
-            for (ComponentService componentService : component.getServices()) {
-                if (serviceName == null || serviceName.equals(componentService.getName())) {
-                    CompositeService compositeService = (CompositeService)componentService.getService();
-                    if (compositeService != null) {
-                        if (serviceName != null) {
-                            serviceName = "$promoted$." + serviceName;
-                        }
-                        componentContext =
-                            ((RuntimeComponent)compositeService.getPromotedComponent()).getComponentContext();
-                        return componentContext.createSelfReference(businessInterface, compositeService
-                            .getPromotedService());
-                    }
-                    break;
-                }
-            }
-            // No matching service is found
-            throw new ServiceRuntimeException("Composite service not found: " + name);
-        } else {
-            componentContext = ((RuntimeComponent)component).getComponentContext();
-            if (serviceName != null) {
-                return componentContext.createSelfReference(businessInterface, serviceName);
-            } else {
-                return componentContext.createSelfReference(businessInterface);
-            }
-        }
+        return null;
     } 
     
     

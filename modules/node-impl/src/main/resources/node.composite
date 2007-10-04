@@ -30,6 +30,15 @@
            xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
            name="Management">
            
+    
+    <component name="DomainManagerComponent">
+        <implementation.java class="org.apache.tuscany.sca.node.impl.DomainManagerServiceImpl"/>
+        <reference name="domainManager">
+            <interface.java interface="org.apache.tuscany.sca.domain.DomainManagerService"/>
+            <binding.ws uri="http://localhost:8878/DomainManagerComponent/DomainManager"/>
+        </reference>
+    </component>           
+           
     <component name="NodeManagerComponent">
         <implementation.java class="org.apache.tuscany.sca.node.impl.NodeManagerServiceImpl"/>
         <service name="NodeManagerInitService">
@@ -38,28 +47,13 @@
         </service>
         <service name="NodeManagerService">
             <interface.java interface="org.apache.tuscany.sca.node.NodeManagerService"/>
-            <tuscany:binding.jsonrpc uri="http://localhost:8878/NodeManagerComponent/NodeManagerJson"/>
+            <binding.ws uri="http://localhost:8878/NodeManagerComponent/NodeManagerService"/>
         </service>
         <service name="ComponentManagerService">
             <interface.java interface="org.apache.tuscany.sca.node.ComponentManagerService"/>
             <tuscany:binding.jsonrpc uri="http://localhost:8878/NodeManagerComponent/ComponentManagerJson"/>
         </service>
     </component>           
-    
-    <component name="DomainManagerComponent">
-        <implementation.java class="org.apache.tuscany.sca.node.impl.DomainManagerServiceImpl"/>
-        <reference name="domainManager">
-            <interface.java interface="org.apache.tuscany.sca.domain.DomainManagerService"/>
-            <binding.ws uri="http://localhost:8878/DomainManagerComponent/DomainManager"/>
-        </reference>
-    </component>
-    
-    <component name="SCADomainComponent">
-        <implementation.java class="org.apache.tuscany.sca.node.impl.SCADomainServiceImpl" />
-        <reference name="scaDomainService">
-            <binding.ws uri="http://localhost:8878/SCADomainComponent/SCADomainService"/>
-        </reference>
-    </component>
 
     <component name="node">
        <tuscany:implementation.resource location="webroot"/>
@@ -67,6 +61,5 @@
             <tuscany:binding.http uri="http://localhost:8878/node"/>
         </service>
     </component>    
-    
 
 </composite>

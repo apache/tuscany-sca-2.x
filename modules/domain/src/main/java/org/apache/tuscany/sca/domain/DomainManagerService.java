@@ -43,7 +43,7 @@ public interface DomainManagerService {
      * @param nodeUri the string uri for the current node
      * @param nodeManagementUrl the endpoint for the nodes management service
      */
-    public String registerNode(String domainUri, String nodeUri);
+    public String registerNode(String nodeURI, String nodeURL);
     
     /**
      * A node registers with the distributed domain manager. The mechanism whereby this
@@ -54,27 +54,52 @@ public interface DomainManagerService {
      * @param nodeUri the string uri for the current node
      * @param nodeManagementUrl the endpoint for the nodes management service
      */
-    public String removeNode(String domainUri, String nodeUri);    
-    
-    /**
-     * Retrieve the configuration for the specified node. The return type is interesting
-     * here. There are many ways in which all of the information that comprises a 
-     * configuration can be provisioned onto a node, for example, shared file system,
-     * ftp, http. The return value is the url of where to look for the configuration 
-     * information. From a management point of view it is convenient to maintain all 
-     * current and previous node configurations. This can easily be achieved by providing
-     * a different URL each time the configuration is changed. 
-     *  
-     * @param domainUri the string uri for the distributed domain
-     * @param nodeUri the string uri for the current node
-     * @return the URL from where the configuration can be retrieved
-     */
-   //public String getDomainNodeConfiguration(String domainUri, String nodeUri);  
+    public String removeNode(String nodeURI);     
     
     /**
      * Retrieve a list of all of the registered nodes 
      * 
      * @return the list of node information 
      */
-    public List<NodeInfo> getNodeInfo();    
+    public List<NodeInfo> getNodeInfo();  
+    
+    /**
+     * Accepts information about a service endpoint and holds onto it
+     * 
+     * @param domainUri the string uri for the distributed domain
+     * @param nodeUri the string uri for the current node
+     * @param serviceName the name of the service that is exposed and the provided endpoint
+     * @param bindingName the remote binding that is providing the endpoint
+     * @param url the enpoint url
+     * @return TBD - information about the registration
+     */
+    public String registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL);
+    
+    
+    /**
+     * Removes information about a service endpoint
+     * 
+     * @param domainUri the string uri for the distributed domain
+     * @param nodeUri the string uri for the current node
+     * @param serviceName the name of the service that is exposed and the provided endpoint
+     * @param bindingName the remote binding that is providing the endpoint
+     */    
+    public String  removeServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName);
+     
+        
+    /**
+     * Locates information about a service endpoint 
+     * 
+     * @param domainUri the string uri for the distributed domain
+     * @param serviceName the name of the service that is exposed and the provided endpoint
+     * @param bindingName the remote binding that we want to find an endpoint for
+     * @return url the endpoint url
+     */
+    public String findServiceEndpoint(String domainUri, String serviceName, String bindingName); 
+    
+    /** 
+     * Returns information for all registered services
+     * @return
+     */
+    public ServiceInfo getServiceInfo();    
 }

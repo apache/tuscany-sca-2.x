@@ -22,10 +22,10 @@
            xmlns:sample="http://sample"
            name="Calculator">
 
-    <component name="SubtractServiceComponent">
+    <component name="SubtractServiceComponentC">
         <implementation.java class="calculator.SubtractServiceImpl" />
         <service name="SubtractService">
-            <binding.sca uri="http://localhost:8086/SubtractServiceComponent"/>
+            <binding.sca uri="http://localhost:8086/SubtractServiceComponentC"/>
         </service>
     </component>
 
