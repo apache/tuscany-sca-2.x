@@ -19,18 +19,43 @@
 
 package org.apache.tuscany.sca.domain;
 
-import org.osoa.sca.annotations.Remotable;
+import java.util.List;
 
+import org.apache.tuscany.sca.domain.DomainException;
+import org.apache.tuscany.sca.domain.SCADomain;
 
 /**
- * Provides a mechanism whereby service endoints can be shared amongst the 
- * nodes of a domain.
+ * Represents an SCA domain.
  * 
- * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
+ * @version $Rev: 580520 $ $Date: 2007-09-29 00:50:25 +0100 (Sat, 29 Sep 2007) $
  */
-@Remotable
-public interface SCADomainService {
-   
+public interface SCADomainSPI extends SCADomain {
+
+    /**
+     * Add information about a node in the domain
+     * 
+     * @param nodeURI
+     * @param nodeURL
+     * @return
+     */
+    public String addNode(String nodeURI, String nodeURL);
+        
+    /**
+     * Remove information about a node in a domain
+     * 
+     * @param nodeURI
+     * @param nodeURL
+     * @return
+     */
+    public String removeNode(String nodeURI);
+    
+    /**
+     * Return information about all the nodes in the domain
+     * 
+     * @return
+     */
+    public List<NodeInfo> getNodeInfo();
+    
     /**
      * Accepts information about a service endpoint and holds onto it
      * 
@@ -71,7 +96,6 @@ public interface SCADomainService {
      * Returns information for all registered services
      * @return
      */
-    public ServiceInfo getServiceInfo();
+    public ServiceInfo getServiceInfo();    
     
-
 }

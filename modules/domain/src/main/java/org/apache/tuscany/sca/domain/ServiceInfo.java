@@ -29,6 +29,24 @@ import org.osoa.sca.annotations.Remotable;
  */
 @Remotable
 public interface ServiceInfo {
+    
+    /**
+     * Compare this service info against the data provided and return true if it matches
+     * return false otherwise
+     * 
+     * @param domainUri
+     * @param serviceName
+     * @param bindingName
+     * @return
+     */
+    public boolean match(String domainUri, String serviceName, String bindingName);
+    
+    /**
+     * Get the URL of this service. 
+     * 
+     * @return
+     */
+    public String getUrl();   
       
     /** 
      * Returns a string representation of the information for a service

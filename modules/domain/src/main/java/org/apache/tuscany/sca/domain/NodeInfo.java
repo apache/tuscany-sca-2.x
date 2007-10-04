@@ -19,6 +19,11 @@
 
 package org.apache.tuscany.sca.domain;
 
+import java.net.URL;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 
 /**
  * A collection of info for a registered node
@@ -32,33 +37,38 @@ public interface NodeInfo {
      * 
      * @return domain uri
      */
-    public String getDomainUri();
+    public String getNodeURI();
     
     /**
      * Retrieve the node uri
      * 
      * @return node uri
      */    
-    public String getNodeUri();
-    
+    public String getNodeURL();
+   
     /**
-     * Ser the node manager url
+     * Ser the node url
      * 
-     * @param nodeManagerUrl
+     * @param nodeURL
      */    
-    public void setNodeManagerUrl(String nodeManagerUrl);
+    public void setNodeURL(String nodeURL);
+   
+    public String getContributionURI();
     
-    /**
-     * Retrieve the node manager url
-     * 
-     * @return node manager url
-     */     
-    public String getNodeManagerUrl();
+    public void setContributionURI(String contributionURI);
+    
+    public URL getContributionURL();
+    
+    public void setContributionURL(URL contributionURL);
+    
+    public List<QName> getCompositeNames();
+    
+    public void addCompositeName(QName compositeName);
     
     /**
      * Returns true if this node info object matches the provided data
      */
-    public boolean match(String domainUri, String nodeUri);
+    public boolean match(String nodeURI);
       
     /** 
      * Returns a string representation of the information for a service

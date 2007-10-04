@@ -22,23 +22,23 @@
            xmlns:sample="http://sample"
            name="Calculator">
            
-    <component name="CalculatorServiceComponent">
+    <component name="CalculatorServiceComponentB">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
-        <reference name="addService" target="AddServiceComponent" />     
-        <reference name="subtractService" target="SubtractServiceComponent" />
-        <reference name="multiplyService" target="MultiplyServiceComponent"/>     
-        <reference name="divideService" target="DivideServiceComponent" />
+        <reference name="addService" target="AddServiceComponentB" />     
+        <reference name="subtractService" target="SubtractServiceComponentC" />
+        <reference name="multiplyService" target="MultiplyServiceComponentB"/>     
+        <reference name="divideService" target="DivideServiceComponentB" />
     </component>
 
-    <component name="MultiplyServiceComponent">
+    <component name="MultiplyServiceComponentB">
         <implementation.java class="calculator.MultiplyServiceImpl" />
     </component>   
     
-    <component name="DivideServiceComponent">
+    <component name="DivideServiceComponentB">
         <implementation.java class="calculator.DivideServiceImpl" />
     </component>
     
-    <component name="AddServiceComponent">
+    <component name="AddServiceComponentB">
         <implementation.java class="calculator.AddServiceImpl" />
     </component>
     

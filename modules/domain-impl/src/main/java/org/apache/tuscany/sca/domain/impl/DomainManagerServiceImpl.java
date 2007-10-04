@@ -19,16 +19,16 @@
 
 package org.apache.tuscany.sca.domain.impl;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.domain.DomainManagerInitService;
 import org.apache.tuscany.sca.domain.DomainManagerService;
 import org.apache.tuscany.sca.domain.NodeInfo;
-import org.apache.tuscany.sca.domain.SCADomainService;
-import org.osoa.sca.annotations.Reference;
+import org.apache.tuscany.sca.domain.SCADomainSPI;
+import org.apache.tuscany.sca.domain.ServiceInfo;
 import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Service;
 
 
 /**
@@ -37,58 +37,49 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
 @Scope("COMPOSITE")
-public class DomainManagerServiceImpl implements DomainManagerService{
+@Service(interfaces = {DomainManagerService.class, DomainManagerInitService.class})
+public class DomainManagerServiceImpl implements DomainManagerService, DomainManagerInitService {
     
     private final static Logger logger = Logger.getLogger(DomainManagerServiceImpl.class.getName());
     
-    @Reference 
-    public SCADomainService scaDomainService;
-
-    List<NodeInfo> nodes = new ArrayList<NodeInfo>();
+    private SCADomainSPI scaDomain;
     
-    public String registerNode(String domainUri, String nodeUri){ 
-        // try and remove it first just in case it's already registered
-        removeNode(domainUri, nodeUri);
-        
-        NodeInfo nodeInfo = new NodeInfoImpl(domainUri, nodeUri);
-        nodes.add(nodeInfo);
-        logger.log(Level.INFO, "Registered node: " + nodeUri);
-        return nodeUri;
+    // DomainManagerInitService methods
+    public void setDomain(SCADomainSPI scaDomain) {
+        this.scaDomain = scaDomain;
     }
     
-    public String removeNode(String domainUri, String nodeUri){ 
-        
-        List<NodeInfo> nodesToRemove = new ArrayList<NodeInfo>();
-        
-        for(NodeInfo node : nodes){
-            if ( node.match(domainUri, nodeUri)){
-                nodesToRemove.add(node);
-            }
-        }
-
-        for(NodeInfo nodeToRemove : nodesToRemove){
-            nodes.remove(nodeToRemove);
-            logger.log(Level.INFO, "Removed node: " + nodeUri);
-        }
-
-        
-        return nodeUri;
+    // DomainManagerService methods
+    
+    public String registerNode(String nodeURI, String nodeURL){ 
+        return scaDomain.addNode(nodeURI, nodeURL);
+    }
+    
+    public String removeNode(String nodeURI){ 
+        return scaDomain.removeNode(nodeURI);
     }    
     
     public List<NodeInfo> getNodeInfo(){
-        
-        // get the nodeManagerUrl for each node
-        for(NodeInfo node : nodes){
-            String url = scaDomainService.findServiceEndpoint(node.getDomainUri(), 
-                                                              node.getNodeUri() + "NodeManagerService",
-                                                              "");
-                                                 
-            if (url != null) {
-                node.setNodeManagerUrl(url);
-            }
-        }
-        
-        return nodes;
+        return scaDomain.getNodeInfo();
     }
+    
+    
+    public String  registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
+        return scaDomain.registerServiceEndpoint(domainUri, nodeUri, serviceName, bindingName, URL);
+    }
+   
+    public String  removeServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName){
+        return scaDomain.removeServiceEndpoint(domainUri, nodeUri, serviceName, bindingName);
+    }
+   
+
+    public String findServiceEndpoint(String domainUri, String serviceName, String bindingName){
+        return scaDomain.findServiceEndpoint(domainUri, serviceName, bindingName);
+    }
+    
+    
+    public ServiceInfo getServiceInfo(){
+        return scaDomain.getServiceInfo();
+    }    
     
 }

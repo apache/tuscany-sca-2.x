@@ -30,6 +30,8 @@ import org.apache.tuscany.sca.domain.ServiceInfo;
  */
 public class ServiceInfoImpl implements ServiceInfo, Serializable {
     
+    static final long serialVersionUID = 3638558958675695163L;
+
     private String domainUri;
     private String nodeUri;
     private String serviceName;

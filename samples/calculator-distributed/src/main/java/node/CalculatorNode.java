@@ -21,8 +21,11 @@ package node;
 
 import java.io.IOException;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.node.impl.SCANodeImpl;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 
 import calculator.CalculatorService;
 
@@ -47,15 +50,21 @@ public class CalculatorNode {
         try {
             String domainName = args[0];
             String nodeName   = args[1];
+            
+            ClassLoader cl = CalculatorNode.class.getClassLoader();
              
-            SCADomain domainNode = SCADomain.newInstance(domainName, nodeName, null, nodeName + "/Calculator.composite");
-                               
+            SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
+            SCANode node = nodeFactory.createSCANode(nodeName, domainName);
+            node.addContribution(nodeName, cl.getResource(nodeName + "/"));
+            node.startComposite(new QName("http://sample", "Calculator"));
+            node.start();             
+                                         
             // nodeA is the head node and runs some tests while all other nodes
             // simply listen for incoming messages
             if ( nodeName.equals("nodeA") ) {            
                 // do some application stuff
                 CalculatorService calculatorService = 
-                    domainNode.getService(CalculatorService.class, "CalculatorServiceComponent");
+                    node.getDomain().getService(CalculatorService.class, "CalculatorServiceComponent");
                 
                 // Calculate
                 System.out.println("3 + 2=" + calculatorService.add(3, 2));
@@ -84,7 +93,7 @@ public class CalculatorNode {
             }
             
             // stop the node and all the domains in it 
-            domainNode.close(); 
+            node.stop(); 
         
         } catch(Exception ex) {
             System.err.println("Exception in node - " + ex.getMessage());

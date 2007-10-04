@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-domain-api</artifactId>
-    <name>Apache Tuscany SCA Node API</name>
+    <name>Apache Tuscany SCA Domain API</name>
 
     <dependencies>   
         <dependency>

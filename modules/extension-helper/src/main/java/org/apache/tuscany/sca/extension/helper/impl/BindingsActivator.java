@@ -184,7 +184,7 @@ public class BindingsActivator implements ModuleActivator {
                     } else {
                         factory = bindingActivator.createInvokerFactory(rc, rcr, b, b);
                     }
-                    if (factory instanceof ComponentLifecycle) {
+                    if ( (factory != null) &&  (factory instanceof ComponentLifecycle)) {
                         ((ComponentLifecycle)factory).start();
                     }
 //                    for (InvokerProxy invoker : invokers) {

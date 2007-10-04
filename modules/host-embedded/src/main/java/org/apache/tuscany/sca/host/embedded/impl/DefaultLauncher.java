@@ -21,7 +21,11 @@ package org.apache.tuscany.sca.host.embedded.impl;
 
 import java.io.IOException;
 
-import org.apache.tuscany.sca.domain.SCADomain;
+import javax.xml.namespace.QName;
+
+//import org.apache.tuscany.sca.domain.SCADomain;
+//import org.apache.tuscany.sca.node.SCANode;
+//import org.apache.tuscany.sca.node.SCANodeFactory;
 
 public class DefaultLauncher {
 
@@ -31,7 +35,20 @@ public class DefaultLauncher {
     public static void main(String[] args) {
         System.out.println("Tuscany starting...");
         System.out.println("Composite: " + args[0]);
-        SCADomain.newInstance(args[0]);
+
+/*        
+        try {
+            ClassLoader cl = DefaultLauncher.class.getClassLoader();
+            SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
+            SCANode node = nodeFactory.createSCANode("node", null);
+            node.addContribution("node", cl.getResource(args[0]));
+            node.startComposite(new QName("??", "??"));
+            node.start();  
+        } catch (Exception ex) {
+            System.err.println("Exception starting node " + ex.toString());
+        }
+*/
+        
         System.out.println("Ready...");
         System.out.println("Press enter to shutdown");
         try {

@@ -20,7 +20,6 @@ package node;
 
 import java.io.IOException;
 
-import org.apache.tuscany.sca.node.impl.NodeImpl;
 
 /**
  * This server program that loads a composite to provide simple registry function.
@@ -31,6 +30,7 @@ public class DomainServer {
 
     public static void main(String[] args) {
         try {
+/*            
             NodeImpl node = new NodeImpl();
             node.start();
             node.getContributionManager().startContribution(DomainServer.class.getClassLoader().getResource("."));
@@ -44,6 +44,7 @@ public class DomainServer {
     
             node.stop();
             System.out.println("Domain server stopped");
+*/            
         } catch (Exception ex) {
             System.out.println("Exception in domain server " + 
                                ex.toString());

@@ -20,54 +20,72 @@
 package org.apache.tuscany.sca.node.impl;
 
 
+import javax.xml.namespace.QName;
+
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.domain.SCADomain;
+import org.apache.tuscany.sca.domain.SCADomainFactory;
+import org.apache.tuscany.sca.node.SCADomainFinder;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import calculator.AddService;
 import calculator.CalculatorService;
 
 /**
  * Runs a distributed domain in a single VM by using and in memory 
  * implementation of the distributed domain
  */
-public class InMemoryTestCase {
+public class DomainDrivenTestCase {
     
     private static String DEFAULT_DOMAIN_URI = "http://localhost:8877";
 
-    private static SCADomain registry;
-    private static SCADomain domainNodeA;
-    private static SCADomain domainNodeB;
-    private static SCADomain domainNodeC;
+    private static SCADomain domain;
+    private static SCANode   nodeA;
+    private static SCANode   nodeB;
+    private static SCANode   nodeC;
     private static CalculatorService calculatorServiceA;
     private static CalculatorService calculatorServiceB;
+    private static AddService addServiceB;
 
     @BeforeClass
     public static void init() throws Exception {
              
         try {
-            System.out.println("Setting up domain registry");
+            System.out.println("Setting up domain");
             
-            registry = SCADomain.newInstance("domain.composite");
+            SCADomainFactory domainFactory = SCADomainFactory.newInstance();
+            domain = domainFactory.createSCADomain(DEFAULT_DOMAIN_URI);
+            domain.start();
             
-            System.out.println("Setting up calculator ");
-                  
-            // Create the domain representation
-            domainNodeA = SCADomain.newInstance(DEFAULT_DOMAIN_URI, "nodeA", null, "nodeA/Calculator.composite");
+            System.out.println("Setting up calculator nodes");
             
-            // Create the domain representation
-            domainNodeB = SCADomain.newInstance(DEFAULT_DOMAIN_URI, "nodeB", null, "nodeB/Calculator.composite");
+            ClassLoader cl = DomainDrivenTestCase.class.getClassLoader();
+            
+            SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
+            
+            nodeA = nodeFactory.createSCANode("nodeA", DEFAULT_DOMAIN_URI);           
+            nodeB = nodeFactory.createSCANode("nodeB", DEFAULT_DOMAIN_URI);
+            nodeC = nodeFactory.createSCANode("nodeC", DEFAULT_DOMAIN_URI);
 
-            // create the node that runs the 
-            // subtract component 
-            domainNodeC = SCADomain.newInstance(DEFAULT_DOMAIN_URI, "nodeC", null, "nodeC/Calculator.composite");
-    
-            // get a reference to the calculator service from domainA
-            // which will be running this component
-            calculatorServiceA = domainNodeA.getService(CalculatorService.class, "CalculatorServiceComponent");
-            calculatorServiceB = domainNodeB.getService(CalculatorService.class, "CalculatorServiceComponent");
+            domain.addContribution("nodeA", cl.getResource("nodeA/"));
+            domain.addContribution("nodeB", cl.getResource("nodeB/"));
+            domain.addContribution("nodeC", cl.getResource("nodeC/"));
+            
+            domain.addComposite(new QName("http://sample", "Calculator"));
+            
+            domain.startComposite(new QName("http://sample", "Calculator"));
+            
+            // get a reference to various services in the domain
+            calculatorServiceA = nodeA.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentA");
+            calculatorServiceB = nodeB.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentB");
+            
+            //addServiceB = domain.getService(AddService.class, "AddServiceComponentB");
+            addServiceB = nodeA.getDomain().getService(AddService.class, "AddServiceComponentB");
             
         } catch(Exception ex){
             System.err.println(ex.toString());
@@ -78,9 +96,10 @@ public class InMemoryTestCase {
     @AfterClass
     public static void destroy() throws Exception {
         // stop the nodes and hence the domains they contain        
-        domainNodeA.close();
-        domainNodeB.close();    
-        domainNodeC.close();
+        nodeA.stop();
+        nodeB.stop();    
+        nodeC.stop();
+        domain.stop();
     }
 
     @Test
@@ -95,6 +114,7 @@ public class InMemoryTestCase {
         Assert.assertEquals(calculatorServiceB.subtract(3, 2), 1.0);
         Assert.assertEquals(calculatorServiceB.multiply(3, 2), 6.0);
         Assert.assertEquals(calculatorServiceB.divide(3, 2), 1.5);
+        Assert.assertEquals(addServiceB.add(3, 2), 5.0);
         
     }
 }

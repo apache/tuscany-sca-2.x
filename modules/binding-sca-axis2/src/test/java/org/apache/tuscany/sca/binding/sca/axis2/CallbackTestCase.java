@@ -27,8 +27,8 @@ import org.junit.Test;
 
 public class CallbackTestCase extends BaseTest {
     
-    public static TestDomain domainA;
-    public static TestDomain domainB;
+    public static TestNode nodeA;
+    public static TestNode nodeB;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -36,8 +36,8 @@ public class CallbackTestCase extends BaseTest {
 
         try {
             // create and start domains
-            domainA = createDomain("nodeE");
-            domainB = createDomain("nodeF");
+            nodeA = createNode("nodeE");
+            nodeB = createNode("nodeF");
 
         } catch (Exception ex) {
             System.err.println("Exception when creating domain " + ex.getMessage());
@@ -48,21 +48,21 @@ public class CallbackTestCase extends BaseTest {
 
     @AfterClass
     public static void destroy() throws Exception {
-        domainA.stop();
-        domainB.stop();
+        nodeA.stop();
+        nodeB.stop();
     }   
     
     //@Test
     public void testHelloWorldCallbackLocal() throws Exception {  
         HelloWorldClient helloWorldClientB;
-        helloWorldClientB = domainB.getService(HelloWorldClient.class, "BHelloWorldClientCallbackLocal");
+        helloWorldClientB = nodeB.getService(HelloWorldClient.class, "BHelloWorldClientCallbackLocal");
         Assert.assertEquals("Hello callback fred", helloWorldClientB.getGreetings("fred"));  
     }      
     
     @Test
     public void testHelloWorldCallbackRemote() throws Exception {  
         HelloWorldClient helloWorldClientA;
-        helloWorldClientA = domainA.getService(HelloWorldClient.class, "AHelloWorldClientCallbackRemote");
+        helloWorldClientA = nodeA.getService(HelloWorldClient.class, "AHelloWorldClientCallbackRemote");
         Assert.assertEquals("Hello callback fred", helloWorldClientA.getGreetings("fred"));
         
     }    

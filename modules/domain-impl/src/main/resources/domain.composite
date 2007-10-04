@@ -32,22 +32,16 @@
                  
     <component name="DomainManagerComponent">
         <implementation.java class="org.apache.tuscany.sca.domain.impl.DomainManagerServiceImpl"/>
+        <service name="DomainManagerInitService">
+            <interface.java interface="org.apache.tuscany.sca.domain.DomainManagerInitService"/>
+            <binding.sca/>
+        </service>
         <service name="DomainManagerService">
             <interface.java interface="org.apache.tuscany.sca.domain.DomainManagerService"/>
+            <binding.sca uri="http://localhost:8877/SCADomainComponent/DomainManagerSCA"/>
             <binding.ws uri="http://localhost:8877/DomainManagerComponent/DomainManager"/>
             <tuscany:binding.jsonrpc uri="http://localhost:8877/DomainManagerComponent/DomainManagerJson"/>
         </service>
-        <reference name="scaDomainService" target="SCADomainComponent"/>
-    </component>
-    
-    <component name="SCADomainComponent">
-        <implementation.java class="org.apache.tuscany.sca.domain.impl.SCADomainServiceImpl" />
-        <service name="SCADomainService">
-            <interface.java interface="org.apache.tuscany.sca.domain.SCADomainService"/>
-            <binding.sca uri="http://localhost:8877/SCADomainComponent/SCADomainServiceSCA"/>
-            <binding.ws uri="http://localhost:8877/SCADomainComponent/SCADomainService"/>     
-            <tuscany:binding.jsonrpc uri="http://localhost:8877/SCADomainComponent/SCADomainServiceJson"/> 
-        </service>
-    </component>    
+    </component>  
     
 </composite>

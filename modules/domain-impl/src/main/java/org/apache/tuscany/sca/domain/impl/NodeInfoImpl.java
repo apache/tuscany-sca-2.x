@@ -20,6 +20,11 @@
 package org.apache.tuscany.sca.domain.impl;
 
 import java.io.Serializable;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.domain.NodeInfo;
 
@@ -30,41 +35,65 @@ import org.apache.tuscany.sca.domain.NodeInfo;
  */
 public class NodeInfoImpl implements NodeInfo, Serializable {
     
-    private String domainUri;
-    private String nodeUri;
-    private String nodeManagerUrl;
+    static final long serialVersionUID = 7669181086005969428L;    
     
-    public NodeInfoImpl(String domainUri, String nodeUri){
-        this.domainUri = domainUri;
-        this.nodeUri = nodeUri;
+    private String nodeURI;
+    private String nodeURL;
+    private String contributionURI;
+    private URL contributionURL;
+    private List<QName> compositeNames = new ArrayList<QName>();
+    
+    public NodeInfoImpl(String nodeURI){
+        this.nodeURI = nodeURI;
     }  
     
-    public boolean match (String domainUri, String nodeUri){
-        return ((this.domainUri.equals(domainUri)) &&
-                (this.nodeUri.equals(nodeUri)));
+    public boolean match (String nodeURI){
+        return (this.nodeURI.equals(nodeURI));
     }
     
-    public String getDomainUri(){
-        return domainUri;
+    public String getNodeURI(){
+        return nodeURI;
     } 
     
-    public String getNodeUri(){
-        return nodeUri;
+    public String getNodeURL(){
+        return nodeURL;
     }     
     
-    public void setNodeManagerUrl(String nodeManagerUrl){
-        this.nodeManagerUrl = nodeManagerUrl;
+    public void setNodeURL(String nodeURL){
+        this.nodeURL = nodeURL;
     }
     
-    public String getNodeManagerUrl(){
-        return nodeManagerUrl;
+    public String getContributionURI(){
+        return contributionURI;
+    }
+    
+    public void setContributionURI(String contributionURI){
+        this.contributionURI = contributionURI;
+    }
+    
+    public URL getContributionURL(){
+        return contributionURL;
+    }
+    
+    public void setContributionURL(URL contributionURL){
+        this.contributionURL = contributionURL;
+    }    
+    
+    public List<QName> getCompositeNames(){
+        return compositeNames;
+    }
+    
+    public void addCompositeName(QName compositeName){
+        this.compositeNames.add(compositeName);
     }
     
     @Override
     public String toString (){
         return "[" +
-               domainUri + " " +
-               nodeUri + 
+               nodeURI + " " +
+               nodeURL + " " +
+               contributionURI + " " +
+               compositeNames.toString() + " " +
                "]";
     }
     

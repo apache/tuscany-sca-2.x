@@ -29,8 +29,8 @@ import org.junit.Test;
 
 public class AsynchTestCase extends BaseTest {
     
-    public static TestDomain domainA;
-    public static TestDomain domainB;
+    public static TestNode nodeA;
+    public static TestNode nodeB;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -38,8 +38,8 @@ public class AsynchTestCase extends BaseTest {
 
         try {
             // create and start domains
-            domainA = createDomain("nodeG");
-            domainB = createDomain("nodeH");
+            nodeA = createNode("nodeG");
+            nodeB = createNode("nodeH");
 
         } catch (Exception ex) {
             System.err.println("Exception when creating domain " + ex.getMessage());
@@ -50,14 +50,14 @@ public class AsynchTestCase extends BaseTest {
 
     @AfterClass
     public static void destroy() throws Exception {
-        domainA.stop();
-        domainB.stop();
+        nodeA.stop();
+        nodeB.stop();
     }   
     
     @Test
     public void testHelloWorldAsynch() throws Exception {        
         HelloWorldClient helloWorldClientB;
-        helloWorldClientB = domainA.getService(HelloWorldClient.class, "AHelloWorldClientCallbackRemote");
+        helloWorldClientB = nodeA.getService(HelloWorldClient.class, "AHelloWorldClientCallbackRemote");
         helloWorldClientB.getGreetings("fred");
         System.out.println("Sleeping ...");
         Thread.sleep(2000);

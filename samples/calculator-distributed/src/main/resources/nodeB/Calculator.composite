@@ -22,7 +22,7 @@
            xmlns:sample="http://sample"
            name="Calculator">
 
-    <component name="AddServiceComponent">
+    <component name="AddServiceComponentB">
         <implementation.java class="calculator.AddServiceImpl" />
     </component>
     
