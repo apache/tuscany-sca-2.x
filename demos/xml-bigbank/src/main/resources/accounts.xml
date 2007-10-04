@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customer id="123" xmlns="http://example.com/customer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <firstName>John</firstName>
+    <lastName>Smith</lastName>
+    <accounts>
+        <checking id="C01" balance="1000.0"></checking>
+        <saving id="S01" balance="20000.0"></saving>
+        <stock symbol="IBM" quantity="500" />
+        <stock symbol="MSFT" quantity="200" />
+    </accounts>
+</customer>

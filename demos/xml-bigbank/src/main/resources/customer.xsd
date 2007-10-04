@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://exmaple.com/customer"
+    targetNamespace="http://exmaple.com/customer" elementFormDefault="qualified">
+    <element name="customer" type="tns:Customer" />
+    <complexType name="Customer">
+        <sequence>
+            <element name="id" type="string"></element>
+            <element name="firstName" type="string"></element>
+            <element name="lastName" type="string"></element>
+            <element name="accounts" type="string"></element>
+        </sequence>
+    </complexType>
+    <complexType name="Accounts">
+        <choice>
+            <element name="checking" type="tns:Account"></element>
+            <element name="saving" type="tns:Account"></element>
+            <element name="stock" type="tns:Stock"></element>
+        </choice>
+    </complexType>
+    <complexType name="Account">
+        <attribute name="id" type="string"></attribute>
+        <attribute name="balance" type="float"></attribute>
+    </complexType>
+    <complexType name="Stock">
+        <attribute name="symbol" type="string"></attribute>
+        <attribute name="quantity" type="int"></attribute>
+    </complexType>
+</schema>
