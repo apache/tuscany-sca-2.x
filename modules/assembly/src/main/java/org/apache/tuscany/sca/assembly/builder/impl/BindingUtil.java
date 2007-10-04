@@ -35,17 +35,24 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  */
 class BindingUtil {
     private static boolean hasCompatiblePolicySets(Binding refBinding, Binding svcBinding) {
+        boolean isCompatible = true;;
         if ( refBinding instanceof PolicySetAttachPoint && svcBinding instanceof PolicySetAttachPoint ) {
             //TODO : need to add more compatibility checks at the policy attachment levels
             for ( PolicySet svcPolicySet : ((PolicySetAttachPoint)svcBinding).getPolicySets() ) {
+                isCompatible = false;
                 for ( PolicySet refPolicySet : ((PolicySetAttachPoint)refBinding).getPolicySets() ) {
-                    if ( !svcPolicySet.equals(refPolicySet) ) {
-                        return false;
+                    if ( svcPolicySet.equals(refPolicySet) ) {
+                        isCompatible = true;
+                        break;
                     }
+                }
+                //if there exists no matching policy set in the reference binding
+                if ( !isCompatible ) {
+                    return isCompatible;
                 }
             }
         }
-        return true;
+        return isCompatible;
     }
     
     
