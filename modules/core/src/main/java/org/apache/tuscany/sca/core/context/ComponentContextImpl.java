@@ -317,8 +317,13 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         }
         if (!compatible) {
             // The interface is not assignable from the interface contract
-            interfaceContract = (InterfaceContract)interfaceContract.clone();
-            interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(businessInterface));
+            interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
+            JavaInterface callInterface = javaInterfaceFactory.createJavaInterface(businessInterface);
+            interfaceContract.setInterface(callInterface);
+            if (callInterface.getCallbackClass() != null) {
+                interfaceContract.setCallbackInterface(javaInterfaceFactory.createJavaInterface(callInterface
+                    .getCallbackClass()));
+            }
         }
 
         return interfaceContract;
