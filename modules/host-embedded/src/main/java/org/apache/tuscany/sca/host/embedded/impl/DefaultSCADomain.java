@@ -96,8 +96,8 @@ public class DefaultSCADomain extends SCADomain {
         this.composites = composites;
 
         // Create and start the runtime
-        System.out.println("Test " + ReallySmallRuntime.class.getCanonicalName());
-        //IntentAttachPointTypeFactory iaptf;
+        // System.out.println("Test " + ReallySmallRuntime.class.getCanonicalName());
+        // IntentAttachPointTypeFactory iaptf;
         Policy policy;
         runtime = new ReallySmallRuntime(runtimeClassLoader);
         try {
