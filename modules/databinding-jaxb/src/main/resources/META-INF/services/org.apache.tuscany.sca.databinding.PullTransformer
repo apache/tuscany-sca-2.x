@@ -16,7 +16,7 @@
 # under the License.
 
 # Implementation classes for the transformers
-org.apache.tuscany.sca.databinding.jaxb.JAXB2Node;source=javax.xml.bind.JAXBElement,target=org.w3c.dom.Node,weight=30
-org.apache.tuscany.sca.databinding.jaxb.Node2JAXB;source=org.w3c.dom.Node,target=javax.xml.bind.JAXBElement,weight=30
-org.apache.tuscany.sca.databinding.jaxb.Reader2JAXB;source=java.io.Reader,target=javax.xml.bind.JAXBElement,weight=30
-org.apache.tuscany.sca.databinding.jaxb.XMLStreamReader2JAXB;source=javax.xml.stream.XMLStreamReader,target=javax.xml.bind.JAXBElement,weight=10
+org.apache.tuscany.sca.databinding.jaxb.JAXB2Node;source=javax.xml.bind.JAXBElement,target=org.w3c.dom.Node,weight=500
+org.apache.tuscany.sca.databinding.jaxb.Node2JAXB;source=org.w3c.dom.Node,target=javax.xml.bind.JAXBElement,weight=500
+org.apache.tuscany.sca.databinding.jaxb.Reader2JAXB;source=java.io.Reader,target=javax.xml.bind.JAXBElement,weight=510
+org.apache.tuscany.sca.databinding.jaxb.XMLStreamReader2JAXB;source=javax.xml.stream.XMLStreamReader,target=javax.xml.bind.JAXBElement,weight=490

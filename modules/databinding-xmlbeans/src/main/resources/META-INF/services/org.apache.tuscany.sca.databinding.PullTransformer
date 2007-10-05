@@ -16,7 +16,7 @@
 # under the License.
 
 # Implementation classes for the transformers
-org.apache.tuscany.sca.databinding.xmlbeans.Node2XmlObject;source=org.w3c.dom.Node,target=org.apache.xmlbeans.XmlObject,weight=30
-org.apache.tuscany.sca.databinding.xmlbeans.XmlObject2Node;source=org.apache.xmlbeans.XmlObject,target=org.w3c.dom.Node,weight=30
-org.apache.tuscany.sca.databinding.xmlbeans.XmlObject2XMLStreamReader;source=org.apache.xmlbeans.XmlObject,target=javax.xml.stream.XMLStreamReader,weight=10
-org.apache.tuscany.sca.databinding.xmlbeans.XMLStreamReader2XmlObject;source=javax.xml.stream.XMLStreamReader,target=org.apache.xmlbeans.XmlObject,weight=10
+org.apache.tuscany.sca.databinding.xmlbeans.Node2XmlObject;source=org.w3c.dom.Node,target=org.apache.xmlbeans.XmlObject,weight=500
+org.apache.tuscany.sca.databinding.xmlbeans.XmlObject2Node;source=org.apache.xmlbeans.XmlObject,target=org.w3c.dom.Node,weight=500
+org.apache.tuscany.sca.databinding.xmlbeans.XmlObject2XMLStreamReader;source=org.apache.xmlbeans.XmlObject,target=javax.xml.stream.XMLStreamReader,weight=490
+org.apache.tuscany.sca.databinding.xmlbeans.XMLStreamReader2XmlObject;source=javax.xml.stream.XMLStreamReader,target=org.apache.xmlbeans.XmlObject,weight=490
