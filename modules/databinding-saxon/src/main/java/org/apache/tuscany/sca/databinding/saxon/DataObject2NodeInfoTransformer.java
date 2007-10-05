@@ -55,6 +55,7 @@ public class DataObject2NodeInfoTransformer extends BaseTransformer<DataObject, 
 
     public NodeInfo transform(DataObject source, TransformationContext context) {
         // FIXME: Need to create the HelperContext from the transformation context
+        // FIXME: This is a big hack to create a document using the class name
         XMLHelper helper = XMLHelper.INSTANCE;
         String name = null;
         if (source.getClass().getInterfaces().length > 0) {

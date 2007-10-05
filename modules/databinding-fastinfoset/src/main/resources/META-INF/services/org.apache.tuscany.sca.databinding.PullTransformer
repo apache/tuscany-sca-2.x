@@ -16,7 +16,7 @@
 # under the License.
 
 # Implementation classes for the transformers
-org.apache.tuscany.sca.databinding.fastinfoset.FastInfoset2Node;source=xml:fastinfoset:java.io.InputStream,target=org.w3c.dom.Node,weight=20
-org.apache.tuscany.sca.databinding.fastinfoset.FastInfoset2XMLStreamReader;source=xml:fastinfoset:java.io.InputStream,target=javax.xml.stream.XMLStreamReader,weight=20
+org.apache.tuscany.sca.databinding.fastinfoset.FastInfoset2Node;source=xml:fastinfoset:java.io.InputStream,target=org.w3c.dom.Node,weight=100
+org.apache.tuscany.sca.databinding.fastinfoset.FastInfoset2XMLStreamReader;source=xml:fastinfoset:java.io.InputStream,target=javax.xml.stream.XMLStreamReader,weight=80
 
 

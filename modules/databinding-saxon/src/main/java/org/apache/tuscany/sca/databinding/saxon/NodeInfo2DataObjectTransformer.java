@@ -78,6 +78,7 @@ public class NodeInfo2DataObjectTransformer extends BaseTransformer<NodeInfo, Da
 
     private DataObject produceResult(Document doc) {
         try {
+            // FIXME: [rfeng] We should use the HelperContext from the context
             DataObject resultingObject =
                 XMLHelper.INSTANCE.load(new DOMSource(doc), doc.getDocumentURI(), null).getRootObject();
             return resultingObject;
