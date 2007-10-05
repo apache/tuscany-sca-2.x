@@ -173,7 +173,7 @@ public class XMLStreamSerializer implements XMLStreamConstants {
                 if (prefix != null) {
                     writer.writeStartElement(prefix, reader.getLocalName(), nameSpaceName);
                     writer.writeNamespace(prefix, nameSpaceName);
-                    writer.setPrefix(prefix, nameSpaceName);
+                    // writer.setPrefix(prefix, nameSpaceName);
                 } else {
                     // [rfeng] We need to set default NS 1st before calling writeStateElement
                     writer.setDefaultNamespace(nameSpaceName);
@@ -225,7 +225,7 @@ public class XMLStreamSerializer implements XMLStreamConstants {
         String prefix1 = writer.getPrefix(uri);
         if (prefix1 == null) {
             writer.writeNamespace(prefix, uri);
-            writer.setPrefix(prefix, uri);
+            // writer.setPrefix(prefix, uri);
         }
     }
 
