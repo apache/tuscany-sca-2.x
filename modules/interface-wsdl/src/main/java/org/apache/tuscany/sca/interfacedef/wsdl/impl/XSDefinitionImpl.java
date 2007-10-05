@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
 import java.net.URI;
+import java.util.Iterator;
 
 import javax.xml.namespace.QName;
 
@@ -27,6 +28,9 @@ import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.XmlSchemaImport;
+import org.apache.ws.commons.schema.XmlSchemaInclude;
+import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaType;
 import org.w3c.dom.Document;
 
@@ -159,9 +163,38 @@ public class XSDefinitionImpl implements XSDefinition {
         return true;
     }
 
+    public static <T extends XmlSchemaObject> T getXmlSchemaObject(XmlSchema schema, QName name, Class<T> type) {
+        if (schema != null) {
+            XmlSchemaObject object = null;
+            if (type == XmlSchemaElement.class) {
+                object = schema.getElementByName(name);
+            } else if (type == XmlSchemaType.class) {
+                object = schema.getTypeByName(name);
+            }
+            if (object != null) {
+                return type.cast(object);
+            }
+            for (Iterator i = schema.getIncludes().getIterator(); i.hasNext();) {
+                XmlSchemaObject obj = (XmlSchemaObject)i.next();
+                XmlSchema ext = null;
+                if (obj instanceof XmlSchemaInclude) {
+                    ext = ((XmlSchemaInclude)obj).getSchema();
+                }
+                if (obj instanceof XmlSchemaImport) {
+                    ext = ((XmlSchemaImport)obj).getSchema();
+                }
+                object = getXmlSchemaObject(ext, name, type);
+                if (object != null) {
+                    return type.cast(object);
+                }
+            }
+        }
+        return null;
+    }
+
     public XmlSchemaElement getXmlSchemaElement(QName name) {
         if (schema != null) {
-            XmlSchemaElement element = schema.getElementByName(name);
+            XmlSchemaElement element = getXmlSchemaObject(schema, name, XmlSchemaElement.class);
             if (element != null) {
                 return element;
             }
@@ -175,7 +208,7 @@ public class XSDefinitionImpl implements XSDefinition {
 
     public XmlSchemaType getXmlSchemaType(QName name) {
         if (schema != null) {
-            XmlSchemaType type = schema.getTypeByName(name);
+            XmlSchemaType type = getXmlSchemaObject(schema, name, XmlSchemaType.class);
             if (type != null) {
                 return type;
             }

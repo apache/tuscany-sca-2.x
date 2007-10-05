@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
+import static org.apache.tuscany.sca.interfacedef.wsdl.impl.XSDefinitionImpl.getXmlSchemaObject;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -170,15 +172,13 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     public XmlSchemaElement getXmlSchemaElement(QName name) {
         XmlSchemaCollection schemaCollection = null;
         for (XSDefinition xsd : schemas) {
-            if (xsd.getSchemaCollection() != null) {
+            if (schemaCollection == null && xsd.getSchemaCollection() != null) {
                 schemaCollection = xsd.getSchemaCollection();
             }
             XmlSchema schema = xsd.getSchema();
-            if (schema != null) {
-                XmlSchemaElement element = schema.getElementByName(name);
-                if (element != null) {
-                    return element;
-                }
+            XmlSchemaElement element = getXmlSchemaObject(schema, name, XmlSchemaElement.class);
+            if (element != null) {
+                return element;
             }
         }
         if (schemaCollection != null) {
@@ -197,11 +197,9 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
                 schemaCollection = xsd.getSchemaCollection();
             }
             XmlSchema schema = xsd.getSchema();
-            if (schema != null) {
-                XmlSchemaType type = schema.getTypeByName(name);
-                if (type != null) {
-                    return type;
-                }
+            XmlSchemaType type = getXmlSchemaObject(schema, name, XmlSchemaType.class);
+            if (type != null) {
+                return type;
             }
         }
         if (schemaCollection != null) {
