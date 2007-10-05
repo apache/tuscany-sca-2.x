@@ -28,14 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
-import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
@@ -46,12 +42,9 @@ import org.apache.tuscany.sca.core.invocation.CallableReferenceObjectFactory;
 import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
-import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
-import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.core.scope.TargetResolutionException;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
-import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.sca.implementation.java.injection.ConversationIDObjectFactory;
@@ -60,7 +53,6 @@ import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObj
 import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
-import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -290,6 +282,8 @@ public class JavaComponentContextProvider {
     }
 
     private <B> ObjectFactory<B> createObjectFactory(Class<B> interfaze, RuntimeWire wire) {
+        // FIXME: [rfeng] Disable the optimization for new as it needs more discussions
+        /*
         boolean conversational = wire.getSource().getInterfaceContract().getInterface().isConversational();
         Binding binding = wire.getSource().getBinding();
         // Check if it's wireable binding for optimization
@@ -321,6 +315,7 @@ public class JavaComponentContextProvider {
                 }
             }
         }
+        */
         return new WireObjectFactory<B>(interfaze, wire, proxyFactory);
     }
 
