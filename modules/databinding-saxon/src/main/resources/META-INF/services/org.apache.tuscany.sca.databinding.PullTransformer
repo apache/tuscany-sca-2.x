@@ -17,8 +17,8 @@
 
 # Implementation classes for the transformers
 # Temporarily disable the NodeInfo <--> Node transformers
-# org.apache.tuscany.sca.databinding.saxon.Node2NodeInfoTransformer;source=org.w3c.dom.Node,target=net.sf.saxon.om.NodeInfo,weight=450
-# org.apache.tuscany.sca.databinding.saxon.NodeInfo2NodeTransformer;source=net.sf.saxon.om.NodeInfo,target=org.w3c.dom.Node,weight=450
+org.apache.tuscany.sca.databinding.saxon.Node2NodeInfoTransformer;source=org.w3c.dom.Node,target=net.sf.saxon.om.NodeInfo,weight=2000
+org.apache.tuscany.sca.databinding.saxon.NodeInfo2NodeTransformer;source=net.sf.saxon.om.NodeInfo,target=org.w3c.dom.Node,weight=2000
 org.apache.tuscany.sca.databinding.saxon.Object2ValueTransformer;source=java.lang.Object,target=net.sf.saxon.value.Value,weight=10000
 org.apache.tuscany.sca.databinding.saxon.Value2ObjectTransformer;source=net.sf.saxon.value.Value,target=java.lang.Object,weight=10000
 org.apache.tuscany.sca.databinding.saxon.SimpleType2ValueTransformer;source=java:simpleType,target=net.sf.saxon.value.Value,weight=10000
