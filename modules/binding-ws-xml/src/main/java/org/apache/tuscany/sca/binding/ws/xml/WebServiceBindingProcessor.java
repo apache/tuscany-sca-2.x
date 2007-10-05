@@ -269,9 +269,7 @@ public class WebServiceBindingProcessor implements
                 WSDLInterfaceContract interfaceContract = wsdlFactory.createWSDLInterfaceContract();
                 WSDLInterface wsdlInterface;
                 try {
-                    wsdlInterface = wsdlFactory.createWSDLInterface(portType,
-                                                                          wsdlDefinition.getInlinedSchemas(),
-                                                                          resolver);
+                    wsdlInterface = wsdlFactory.createWSDLInterface(portType, wsdlDefinition, resolver);
                 } catch (InvalidInterfaceException e) {
                     throw new ContributionResolveException(e);
                 }

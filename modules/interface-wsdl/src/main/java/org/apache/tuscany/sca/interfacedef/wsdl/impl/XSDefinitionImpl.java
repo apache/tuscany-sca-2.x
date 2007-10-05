@@ -21,9 +21,13 @@ package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
 import java.net.URI;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.XmlSchemaType;
 import org.w3c.dom.Document;
 
 /**
@@ -38,7 +42,7 @@ public class XSDefinitionImpl implements XSDefinition {
     private URI location;
     private Document document;
     private boolean unresolved;
-    
+
     protected XSDefinitionImpl() {
     }
 
@@ -57,7 +61,7 @@ public class XSDefinitionImpl implements XSDefinition {
     public void setUnresolved(boolean undefined) {
         this.unresolved = undefined;
     }
-    
+
     public String getNamespace() {
         if (isUnresolved()) {
             return namespace;
@@ -67,7 +71,7 @@ public class XSDefinitionImpl implements XSDefinition {
             return namespace;
         }
     }
-    
+
     public void setNamespace(String namespace) {
         if (!isUnresolved()) {
             throw new IllegalStateException();
@@ -75,7 +79,7 @@ public class XSDefinitionImpl implements XSDefinition {
             this.namespace = namespace;
         }
     }
-    
+
     /**
      * @return the location
      */
@@ -154,4 +158,32 @@ public class XSDefinitionImpl implements XSDefinition {
             return false;
         return true;
     }
+
+    public XmlSchemaElement getXmlSchemaElement(QName name) {
+        if (schema != null) {
+            XmlSchemaElement element = schema.getElementByName(name);
+            if (element != null) {
+                return element;
+            }
+        }
+
+        if (schemaCollection != null) {
+            return schemaCollection.getElementByQName(name);
+        }
+        return null;
+    }
+
+    public XmlSchemaType getXmlSchemaType(QName name) {
+        if (schema != null) {
+            XmlSchemaType type = schema.getTypeByName(name);
+            if (type != null) {
+                return type;
+            }
+        }
+        if (schemaCollection != null) {
+            return schemaCollection.getTypeByQName(name);
+        }
+        return null;
+    }
+
 }

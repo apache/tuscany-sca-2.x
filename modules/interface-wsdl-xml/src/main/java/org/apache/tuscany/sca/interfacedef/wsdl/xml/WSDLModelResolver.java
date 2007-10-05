@@ -239,6 +239,7 @@ public class WSDLModelResolver implements ModelResolver {
                 imp.setDefinition(d.getDefinition());
                 imp.setLocationURI(d.getDefinition().getDocumentBaseURI());
                 facade.addImport(imp);
+                aggregated.getXmlSchemas().addAll(d.getXmlSchemas());
             }
         }
         aggregated.setDefinition(facade);
@@ -383,7 +384,7 @@ public class WSDLModelResolver implements ModelResolver {
                     xsDefinition.setLocation(URI.create(doc.getDocumentURI() + "#" + index));
                     XSDefinition resolved =
                         contribution.getModelResolver().resolveModel(XSDefinition.class, xsDefinition);
-                    wsdlDefinition.setInlinedSchemas(resolved.getSchemaCollection());
+                    wsdlDefinition.getXmlSchemas().add(resolved);
                     index++;
                 }
             }

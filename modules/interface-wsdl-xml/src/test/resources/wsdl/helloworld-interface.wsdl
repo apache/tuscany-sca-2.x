@@ -25,7 +25,10 @@
         <schema elementFormDefault="qualified" targetNamespace="http://helloworld"
             xmlns="http://www.w3.org/2001/XMLSchema" xmlns:g="http://greeting">
 
-            <import namespace="http://greeting" schemaLocation="../xsd/greeting.xsd" />
+            <!-- 
+                <import namespace="http://greeting" schemaLocation="../xsd/greeting.xsd" />
+            -->
+            <include schemaLocation="../xsd/helloworld.xsd" />
 
             <element name="getGreetings">
                 <complexType>

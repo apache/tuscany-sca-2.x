@@ -61,7 +61,7 @@ public class WSDLInterfaceIntrospectorTestCase extends AbstractWSDLTestCase {
 
     @SuppressWarnings("unchecked")
     public final void testIntrospectPortType() throws InvalidInterfaceException {
-        WSDLInterface contract = wsdlFactory.createWSDLInterface(portType, definition.getInlinedSchemas(), resolver);
+        WSDLInterface contract = wsdlFactory.createWSDLInterface(portType, definition, resolver);
         Assert.assertEquals(contract.getName().getLocalPart(), "StockQuotePortType");
         List<Operation> operations = contract.getOperations();
         Assert.assertEquals(1, operations.size());

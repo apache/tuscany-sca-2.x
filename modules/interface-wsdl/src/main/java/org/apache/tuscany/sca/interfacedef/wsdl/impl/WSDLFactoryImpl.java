@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
-import org.apache.ws.commons.schema.XmlSchemaCollection;
 
 /**
  * A factory for the WSDL model.
@@ -46,14 +45,14 @@ public abstract class WSDLFactoryImpl implements WSDLFactory {
         return new WSDLInterfaceImpl();
     }
     
-    public WSDLInterface createWSDLInterface(PortType portType, XmlSchemaCollection inlineSchemas, ModelResolver resolver) throws InvalidInterfaceException {
+    public WSDLInterface createWSDLInterface(PortType portType, WSDLDefinition wsdlDefinition, ModelResolver resolver) throws InvalidInterfaceException {
         WSDLInterface wsdlInterface = createWSDLInterface();
-        introspector.introspectPortType(wsdlInterface, portType, inlineSchemas, resolver);
+        introspector.introspectPortType(wsdlInterface, portType, wsdlDefinition, resolver);
         return wsdlInterface;
     }
     
-    public void createWSDLInterface(WSDLInterface wsdlInterface, PortType portType, XmlSchemaCollection inlineSchemas, ModelResolver resolver) throws InvalidInterfaceException {
-        introspector.introspectPortType(wsdlInterface, portType, inlineSchemas, resolver);
+    public void createWSDLInterface(WSDLInterface wsdlInterface, PortType portType, WSDLDefinition wsdlDefinition, ModelResolver resolver) throws InvalidInterfaceException {
+        introspector.introspectPortType(wsdlInterface, portType, wsdlDefinition, resolver);
     }
     
     public WSDLDefinition createWSDLDefinition() {
