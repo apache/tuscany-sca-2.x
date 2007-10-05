@@ -23,9 +23,11 @@ import java.net.URI;
 import java.util.List;
 
 import javax.wsdl.Definition;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Base;
-import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.XmlSchemaType;
 
 /**
  * Represents a WSDL definition.
@@ -48,14 +50,6 @@ public interface WSDLDefinition extends Base {
     void setDefinition(Definition definition);
     
     /**
-     * Returns a list of XML schemas inlined in this WSDL definition.
-     * @return
-     */
-    XmlSchemaCollection getInlinedSchemas();
-    
-    void setInlinedSchemas(XmlSchemaCollection schemaCollection);
-    
-    /**
      * Returns the namespace of this WSDL definition.
      * @return the namespace of this WSDL definition
      */
@@ -74,4 +68,8 @@ public interface WSDLDefinition extends Base {
     
     URI getLocation();
     void setLocation(URI url);
+    
+    XmlSchemaElement getXmlSchemaElement(QName name);
+    XmlSchemaType getXmlSchemaType(QName name);
+    
 }

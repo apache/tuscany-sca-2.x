@@ -77,6 +77,8 @@ public class WSDLDocumentProcessorTestCase extends AbstractWSDLTestCase {
         Assert.assertNotNull(((Import)imports.get(0)).getDefinition());
         Assert.assertNotNull(resolved.getDefinition().getPortType(new QName("http://helloworld", "HelloWorld")));
         Assert.assertNotNull(resolved.getDefinition().getService(new QName("http://helloworld", "HelloWorldService")));
+        
+        assertNotNull(resolved.getXmlSchemaType(new QName("http://greeting", "Name")));
     }
 
 }

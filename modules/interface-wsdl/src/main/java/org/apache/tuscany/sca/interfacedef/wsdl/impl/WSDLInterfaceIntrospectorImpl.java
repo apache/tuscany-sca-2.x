@@ -26,9 +26,9 @@ import javax.wsdl.PortType;
 
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
-import org.apache.ws.commons.schema.XmlSchemaCollection;
 
 /**
  * Introspector for creating WSDLInterface definitions from WSDL PortTypes.
@@ -42,19 +42,19 @@ public class WSDLInterfaceIntrospectorImpl {
     }
 
     // FIXME: Do we want to deal with document-literal wrapped style based on the JAX-WS spec?
-    private List<Operation> introspectOperations(PortType portType, XmlSchemaCollection inlineSchemas, ModelResolver resolver) throws InvalidWSDLException {
+    private List<Operation> introspectOperations(PortType portType, WSDLDefinition wsdlDefinition, ModelResolver resolver) throws InvalidWSDLException {
         List<Operation> operations = new ArrayList<Operation>();
         for (Object o : portType.getOperations()) {
             javax.wsdl.Operation wsdlOp = (javax.wsdl.Operation)o;
-            WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(wsdlFactory, wsdlOp, inlineSchemas, null, resolver);
+            WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(wsdlFactory, wsdlOp, wsdlDefinition, null, resolver);
             operations.add(op.getOperation());
         }
         return operations;
     }
 
-    public void introspectPortType(WSDLInterface wsdlInterface, PortType portType, XmlSchemaCollection inlineSchemas, ModelResolver resolver) throws InvalidWSDLException {
+    public void introspectPortType(WSDLInterface wsdlInterface, PortType portType, WSDLDefinition wsdlDefinition, ModelResolver resolver) throws InvalidWSDLException {
         wsdlInterface.setPortType(portType);
-        wsdlInterface.getOperations().addAll(introspectOperations(portType, inlineSchemas, resolver));
+        wsdlInterface.getOperations().addAll(introspectOperations(portType, wsdlDefinition, resolver));
         // FIXME: set to Non-conversational for now
         wsdlInterface.setConversational(false);
     }

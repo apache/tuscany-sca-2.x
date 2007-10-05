@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ import javax.wsdl.Service;
 import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensibilityElement;
+import javax.wsdl.extensions.UnknownExtensibilityElement;
 import javax.wsdl.extensions.schema.Schema;
 import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
@@ -54,18 +56,25 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.impl.InvalidWSDLException;
 import org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLOperationIntrospectorImpl;
+import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLModelResolver;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.XMLDocumentHelper;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
+import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.java2wsdl.Java2WSDLBuilder;
 import org.osoa.sca.annotations.OneWay;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 /**
@@ -76,7 +85,8 @@ public class Java2WSDLHelper {
     /**
      * Create a WSDLInterfaceContract from a JavaInterfaceContract
      */
-    public static WSDLInterfaceContract createWSDLInterfaceContract(JavaInterfaceContract contract, WebServiceBinding wsBinding) {
+    public static WSDLInterfaceContract createWSDLInterfaceContract(JavaInterfaceContract contract,
+                                                                    WebServiceBinding wsBinding) {
         JavaInterface iface = (JavaInterface)contract.getInterface();
         Definition def = Java2WSDLHelper.createDefinition(iface.getJavaClass(), wsBinding);
 
@@ -96,14 +106,13 @@ public class Java2WSDLHelper {
         PortType portType = (PortType)def.getAllPortTypes().values().iterator().next();
         wsdlInterface.setPortType(portType);
 
-        readInlineSchemas(def, wsdlDefinition.getInlinedSchemas());
+        readInlineSchemas(wsdlFactory, wsdlDefinition, def, new XmlSchemaCollection());
 
         try {
             for (Operation op : iface.getOperations()) {
                 javax.wsdl.Operation wsdlOp = portType.getOperation(op.getName(), null, null);
                 WSDLOperationIntrospectorImpl opx =
-                    new WSDLOperationIntrospectorImpl(wsdlFactory, wsdlOp, wsdlDefinition.getInlinedSchemas(), null,
-                                                      null);
+                    new WSDLOperationIntrospectorImpl(wsdlFactory, wsdlOp, wsdlDefinition, null, null);
 
                 Operation clonedOp = (Operation)op.clone();
                 clonedOp.setDataBinding(null);
@@ -115,8 +124,8 @@ public class Java2WSDLHelper {
                 for (DataType<?> dt : clonedOp.getInputType().getLogical()) {
                     dt.setDataBinding(null);
                 }
-                
-                if (clonedOp.getOutputType() != null ){
+
+                if (clonedOp.getOutputType() != null) {
                     clonedOp.getOutputType().setDataBinding(null);
                 }
                 for (DataType<?> dt : clonedOp.getFaultTypes()) {
@@ -136,26 +145,89 @@ public class Java2WSDLHelper {
         return wsdlContract;
     }
 
-    protected static void readInlineSchemas(Definition definition, XmlSchemaCollection schemaCollection) {
+    private static Document promote(Element element) {
+        Document doc = (Document)element.getOwnerDocument().cloneNode(false);
+        Element schema = (Element)doc.importNode(element, true);
+        doc.appendChild(schema);
+        Node parent = element.getParentNode();
+        while (parent instanceof Element) {
+            Element root = (Element)parent;
+            NamedNodeMap nodeMap = root.getAttributes();
+            for (int i = 0; i < nodeMap.getLength(); i++) {
+                Attr attr = (Attr)nodeMap.item(i);
+                String name = attr.getName();
+                if ("xmlns".equals(name) || name.startsWith("xmlns:")) {
+                    if (schema.getAttributeNode(name) == null) {
+                        schema.setAttributeNodeNS((Attr)doc.importNode(attr, true));
+                    }
+                }
+            }
+            parent = parent.getParentNode();
+        }
+        doc.setDocumentURI(element.getOwnerDocument().getDocumentURI());
+        return doc;
+    }
+
+    /**
+     * Populate the inline schemas including those from the imported definitions
+     * 
+     * @param definition
+     * @param schemaCollection
+     */
+    private static void readInlineSchemas(WSDLFactory wsdlFactory,
+                                          WSDLDefinition wsdlDefinition,
+                                          Definition definition,
+                                          XmlSchemaCollection schemaCollection) {
         Types types = definition.getTypes();
         if (types != null) {
+            int index = 0;
             for (Object ext : types.getExtensibilityElements()) {
-                if (ext instanceof Schema) {
-                    Element element = ((Schema)ext).getElement();
-                    schemaCollection.setBaseUri(((Schema)ext).getDocumentBaseURI());
-                    schemaCollection.read(element, definition.getDocumentBaseURI());
+                ExtensibilityElement extElement = (ExtensibilityElement)ext;
+                Element element = null;
+                if (WSDLModelResolver.XSD_QNAME_LIST.contains(extElement.getElementType())) {
+                    if (extElement instanceof Schema) {
+                        element = ((Schema)extElement).getElement();
+                    } else if (extElement instanceof UnknownExtensibilityElement) {
+                        element = ((UnknownExtensibilityElement)extElement).getElement();
+                    }
+                }
+                if (element != null) {
+                    Document doc = promote(element);
+                    XSDefinition xsDefinition = wsdlFactory.createXSDefinition();
+                    xsDefinition.setUnresolved(true);
+                    xsDefinition.setNamespace(element.getAttribute("targetNamespace"));
+                    xsDefinition.setDocument(doc);
+                    xsDefinition.setLocation(URI.create(doc.getDocumentURI() + "#" + index));
+                    loadXSD(schemaCollection, xsDefinition);
+                    wsdlDefinition.getXmlSchemas().add(xsDefinition);
+                    index++;
                 }
             }
         }
         for (Object imports : definition.getImports().values()) {
-            List<?> impList = (List<?>)imports;
+            List impList = (List)imports;
             for (Object i : impList) {
                 javax.wsdl.Import anImport = (javax.wsdl.Import)i;
-                // Read inline schemas
+                // Read inline schemas 
                 if (anImport.getDefinition() != null) {
-                    readInlineSchemas(anImport.getDefinition(), schemaCollection);
+                    readInlineSchemas(wsdlFactory, wsdlDefinition, anImport.getDefinition(), schemaCollection);
                 }
             }
+        }
+    }
+
+    private static void loadXSD(XmlSchemaCollection schemaCollection, XSDefinition definition) {
+        if (definition.getSchema() != null) {
+            return;
+        }
+        if (definition.getDocument() != null) {
+            String uri = null;
+            if (definition.getLocation() != null) {
+                uri = definition.getLocation().toString();
+            }
+            XmlSchema schema = schemaCollection.read(definition.getDocument(), uri, null);
+            definition.setSchemaCollection(schemaCollection);
+            definition.setSchema(schema);
         }
     }
 
@@ -183,7 +255,7 @@ public class Java2WSDLHelper {
 
             WSDLLocatorImpl locator = new WSDLLocatorImpl(new ByteArrayInputStream(os.toByteArray()));
             Definition definition = reader.readWSDL(locator);
-            
+
             processSOAPVersion(definition, wsBinding);
             processNoArgAndVoidReturnMethods(definition, javaInterface);
 
@@ -196,18 +268,18 @@ public class Java2WSDLHelper {
 
     private static void processSOAPVersion(Definition definition, WebServiceBinding wsBinding) {
         if (requiresSOAP12(wsBinding)) {
-             removePort(definition, "SOAP11port_http");
-         } else {
-             removePort(definition, "SOAP12port_http");
-         }
+            removePort(definition, "SOAP11port_http");
+        } else {
+            removePort(definition, "SOAP12port_http");
+        }
     }
 
     private static void removePort(Definition definition, String portNameSuffix) {
         Service service = (Service)definition.getServices().values().iterator().next();
-        Map<?,?> ports = service.getPorts();
+        Map<?, ?> ports = service.getPorts();
         for (Object o : ports.keySet()) {
             if (((String)o).endsWith(portNameSuffix)) {
-                Port p = (Port) ports.remove(o);
+                Port p = (Port)ports.remove(o);
                 definition.removeBinding(p.getBinding().getQName());
                 break;
             }
@@ -215,7 +287,7 @@ public class Java2WSDLHelper {
     }
 
     private static final QName SOAP12_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0", "soap12");
-    
+
     private static boolean requiresSOAP12(WebServiceBinding wsBinding) {
         if (wsBinding instanceof IntentAttachPoint) {
             List<Intent> intents = ((IntentAttachPoint)wsBinding).getRequiredIntents();
@@ -264,12 +336,12 @@ public class Java2WSDLHelper {
                 Message inputMsg = input.getMessage();
                 if (inputMsg.getParts().isEmpty()) {
                     // create wrapper element and add it to the schema DOM
-                    Element wrapper = document.createElementNS("http://www.w3.org/2001/XMLSchema",
-                                                               xsPrefix + ":element");
+                    Element wrapper =
+                        document.createElementNS("http://www.w3.org/2001/XMLSchema", xsPrefix + ":element");
                     wrapper.setAttribute("name", opName);
                     schema.appendChild(wrapper);
-                    Element complexType = document.createElementNS("http://www.w3.org/2001/XMLSchema",
-                                                                   xsPrefix + ":complexType");
+                    Element complexType =
+                        document.createElementNS("http://www.w3.org/2001/XMLSchema", xsPrefix + ":complexType");
                     wrapper.appendChild(complexType);
 
                     // create new part for the wrapper and add it to the message
@@ -292,12 +364,12 @@ public class Java2WSDLHelper {
                 if (!isOneWay) {
                     // create wrapper element and add it to the schema DOM
                     String msgName = opName + "Response";
-                    Element wrapper = document.createElementNS("http://www.w3.org/2001/XMLSchema",
-                                                               xsPrefix + ":element");
+                    Element wrapper =
+                        document.createElementNS("http://www.w3.org/2001/XMLSchema", xsPrefix + ":element");
                     wrapper.setAttribute("name", msgName);
                     schema.appendChild(wrapper);
-                    Element complexType = document.createElementNS("http://www.w3.org/2001/XMLSchema",
-                                                                   xsPrefix + ":complexType");
+                    Element complexType =
+                        document.createElementNS("http://www.w3.org/2001/XMLSchema", xsPrefix + ":complexType");
                     wrapper.appendChild(complexType);
 
                     // create new part for the wrapper

@@ -24,10 +24,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.wsdl.Definition;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
+import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.XmlSchemaType;
 
 /**
  * Represents a WSDL definition.
@@ -39,7 +43,6 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     private Definition definition;
     private String namespace;
     private URI location;
-    private XmlSchemaCollection inlinedSchemas = new XmlSchemaCollection();
     private List<XSDefinition> schemas = new ArrayList<XSDefinition>();
     private boolean unresolved;
 
@@ -52,10 +55,6 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
 
     public void setDefinition(Definition definition) {
         this.definition = definition;
-    }
-
-    public XmlSchemaCollection getInlinedSchemas() {
-        return inlinedSchemas;
     }
 
     public boolean isUnresolved() {
@@ -129,13 +128,6 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     }
 
     /**
-     * @param inlineSchemas the inlineSchemas to set
-     */
-    public void setInlinedSchemas(XmlSchemaCollection inlinedSchemas) {
-        this.inlinedSchemas = inlinedSchemas;
-    }
-
-    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -170,6 +162,52 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
         } else if (!namespace.equals(other.namespace))
             return false;
         return true;
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition#getXmlSchemaElement(javax.xml.namespace.QName)
+     */
+    public XmlSchemaElement getXmlSchemaElement(QName name) {
+        XmlSchemaCollection schemaCollection = null;
+        for (XSDefinition xsd : schemas) {
+            if (xsd.getSchemaCollection() != null) {
+                schemaCollection = xsd.getSchemaCollection();
+            }
+            XmlSchema schema = xsd.getSchema();
+            if (schema != null) {
+                XmlSchemaElement element = schema.getElementByName(name);
+                if (element != null) {
+                    return element;
+                }
+            }
+        }
+        if (schemaCollection != null) {
+            return schemaCollection.getElementByQName(name);
+        }
+        return null;
+    }
+
+    /**
+     * @see org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition#getXmlSchemaType(javax.xml.namespace.QName)
+     */
+    public XmlSchemaType getXmlSchemaType(QName name) {
+        XmlSchemaCollection schemaCollection = null;
+        for (XSDefinition xsd : schemas) {
+            if (xsd.getSchemaCollection() != null) {
+                schemaCollection = xsd.getSchemaCollection();
+            }
+            XmlSchema schema = xsd.getSchema();
+            if (schema != null) {
+                XmlSchemaType type = schema.getTypeByName(name);
+                if (type != null) {
+                    return type;
+                }
+            }
+        }
+        if (schemaCollection != null) {
+            return schemaCollection.getTypeByQName(name);
+        }
+        return null;
     }
 
 }

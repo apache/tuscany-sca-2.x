@@ -149,7 +149,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                         // Introspect the WSDL portType and add the resulting
                         // WSDLInterface to the resolver
                         try {
-                            wsdlInterface = wsdlFactory.createWSDLInterface(portType, wsdlDefinition.getInlinedSchemas(), resolver);
+                            wsdlInterface = wsdlFactory.createWSDLInterface(portType, wsdlDefinition, resolver);
                         } catch (InvalidInterfaceException e) {
                             throw new ContributionResolveException(e);
                         }

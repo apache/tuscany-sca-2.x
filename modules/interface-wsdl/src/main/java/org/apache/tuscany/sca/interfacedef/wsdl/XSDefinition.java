@@ -21,9 +21,13 @@ package org.apache.tuscany.sca.interfacedef.wsdl;
 
 import java.net.URI;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.XmlSchemaType;
 import org.w3c.dom.Document;
 
 /**
@@ -83,4 +87,8 @@ public interface XSDefinition extends Base {
      * @param document
      */
     void setDocument(Document document);
+
+    XmlSchemaElement getXmlSchemaElement(QName name);
+
+    XmlSchemaType getXmlSchemaType(QName name);
 }
