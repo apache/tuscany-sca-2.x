@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 public class JMSBindingListener implements MessageListener {
 
+    private static final String ON_MESSAGE_METHOD_NAME = "onMessage";
     private JMSBinding jmsBinding;
     private JMSResourceFactory jmsResourceFactory;
     private RuntimeComponentService service;
@@ -88,17 +89,32 @@ public class JMSBindingListener implements MessageListener {
 
         Operation operation = null;
 
-        for (Operation op : opList) {
-            if (op.getName().equals(operationName)) {
-                operation = op;
-                break;
+        if (opList.size() == 1) {
+            // SCA JMS Binding Specification - Rule 1.5.1 line 203
+            operation = opList.get(0);
+        } else if (operationName != null){
+            // SCA JMS Binding Specification - Rule 1.5.1 line 205
+            for (Operation op : opList) {
+                if (op.getName().equals(operationName)) {
+                    operation = op;
+                    break;
+                }
+            }
+        } else {
+            // SCA JMS Binding Specification - Rule 1.5.1 line 207
+            for (Operation op : opList) {
+                if (op.getName().equals(ON_MESSAGE_METHOD_NAME)) {
+                    operation = op;
+                    break;
+                }
             }
         }
 
         if (operation != null) {
             return service.getRuntimeWire(jmsBinding).invoke(operation, (Object[])requestPayload);
         } else {
-            throw new JMSBindingException("Can't find operation " + operationName);
+            throw new JMSBindingException("Can't find operation " + 
+                    (operationName != null ? operationName : ON_MESSAGE_METHOD_NAME) );
         }
 
     }
