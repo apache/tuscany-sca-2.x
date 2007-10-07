@@ -40,11 +40,11 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * @version $Rev$ $Date$
  */
 public class JavaImplementationInvoker implements Invoker {
-    private Operation operation;
-    private Method method;
+    protected Operation operation;
+    protected  Method method;
 
     @SuppressWarnings("unchecked")
-    private final ScopeContainer scopeContainer;
+    protected final ScopeContainer scopeContainer;
 
     public JavaImplementationInvoker(Operation operation, Method method, RuntimeComponent component) {
         assert method != null : "Operation method cannot be null";

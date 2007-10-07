@@ -54,6 +54,9 @@ import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospect
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -71,13 +74,15 @@ public class JavaComponentContextProvider {
     private RuntimeComponent component;
     private JavaInstanceFactoryProvider<?> instanceFactoryProvider;
     private ProxyFactory proxyFactory;
+    private Map<PolicySet, PolicyHandler> policyHandlers = null;
 
     public JavaComponentContextProvider(RuntimeComponent component,
                                         JavaInstanceFactoryProvider configuration,
                                         DataBindingExtensionPoint dataBindingExtensionPoint,
                                         JavaPropertyValueObjectFactory propertyValueObjectFactory,
                                         ComponentContextFactory componentContextFactory,
-                                        RequestContextFactory requestContextFactory) {
+                                        RequestContextFactory requestContextFactory,
+                                        Map<PolicySet, PolicyHandler> policyHandlers) {
         super();
         this.instanceFactoryProvider = configuration;
         this.proxyFactory = configuration.getProxyFactory();
@@ -89,6 +94,7 @@ public class JavaComponentContextProvider {
         this.component = component;
         this.dataBindingRegistry = dataBindingExtensionPoint;
         this.propertyValueFactory = propertyValueObjectFactory;
+        this.policyHandlers = policyHandlers;
     }
 
     InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
@@ -215,6 +221,7 @@ public class JavaComponentContextProvider {
                 }
             }
         }
+        setUpPolicyHandlers();
     }
 
     void addResourceFactory(String name, ObjectFactory<?> factory) {
@@ -254,13 +261,20 @@ public class JavaComponentContextProvider {
     }
 
     void stop() {
+        cleanUpPolicyHandlers();
     }
 
     Invoker createInvoker(Operation operation) throws NoSuchMethodException {
         Class<?> implClass = instanceFactoryProvider.getImplementationClass();
 
         Method method = JavaInterfaceUtil.findMethod(implClass, operation);
-        return new JavaImplementationInvoker(operation, method, component);
+        
+        if ( component.getImplementation() instanceof PolicySetAttachPoint  &&
+              !((PolicySetAttachPoint)component.getImplementation()).getPolicySets().isEmpty() ) {
+            return new PoliciedJavaImplementationInvoker(operation, method, component, policyHandlers);
+        } else {
+            return new JavaImplementationInvoker(operation, method, component);
+        }
     }
 
     private static class OptimizedObjectFactory<T> implements ObjectFactory<T> {
@@ -328,6 +342,18 @@ public class JavaComponentContextProvider {
      */
     RuntimeComponent getComponent() {
         return component;
+    }
+    
+    private void setUpPolicyHandlers() {
+        for ( PolicyHandler policyHandler : policyHandlers.values() ) {
+            policyHandler.setUp(component.getImplementation());
+        }
+    }
+    
+    private void cleanUpPolicyHandlers() {
+        for ( PolicyHandler policyHandler : policyHandlers.values() ) {
+            policyHandler.cleanUp(this);
+        }
     }
 
 }
