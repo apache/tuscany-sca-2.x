@@ -1218,12 +1218,12 @@ public class CompositeWireBuilderImpl {
     
     private void determineApplicableDomainPolicySets(Component component, PolicySetAttachPoint policiedImplementation) {
         if ( domainPolicySets != null && policiedImplementation.getRequiredIntents().size() > 0 ) {
-            IntentAttachPointType bindingType = policiedImplementation.getType();
+            IntentAttachPointType implType = policiedImplementation.getType();
             for ( PolicySet policySet : domainPolicySets ) {
-                if ( isPolicySetApplicable(component, policySet.getAppliesTo(), bindingType) ) {
+                if ( isPolicySetApplicable(component, policySet.getAppliesTo(), implType) ) {
                     int prevSize = policiedImplementation.getRequiredIntents().size();
                     trimProvidedIntents(policiedImplementation.getRequiredIntents(), policySet);
-                    //if any intent was trimmed off, then this policyset must be attached to the binding
+                    //if any intent was trimmed off, then this policyset must be attached to the implementation
                     if ( prevSize != policiedImplementation.getRequiredIntents().size() ) {
                         policiedImplementation.getPolicySets().add(policySet);
                     }   
@@ -1231,9 +1231,7 @@ public class CompositeWireBuilderImpl {
             }
             
             if ( policiedImplementation.getRequiredIntents().size() > 0 ) {
-                if ( component instanceof Service ) {
-                    warning("There are unfulfilled intents for component implementation - " + component.getName(), component);
-                } 
+                warning("There are unfulfilled intents for component implementation - " + component.getName(), component);
             }
         }
     }

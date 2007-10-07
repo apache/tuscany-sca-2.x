@@ -34,7 +34,9 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.osoa.sca.annotations.PolicySets;
 import org.osoa.sca.annotations.Requires;
 
 /**
@@ -71,17 +73,33 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
      * @param clazz
      * @param requiredIntents
      */
-    private void readIntents(Class<?> clazz, List<Intent> requiredIntents) {
+    private void readIntentsAndPolicySets(Class<?> clazz, 
+                                          List<Intent> requiredIntents, 
+                                          List<PolicySet> policySets) {
         Requires intentAnnotation = clazz.getAnnotation(Requires.class);
         if (intentAnnotation != null) {
             String[] intentNames = intentAnnotation.value();
             if (intentNames.length != 0) {
                 for (String intentName : intentNames) {
-                    
+
                     // Add each intent to the list
                     Intent intent = policyFactory.createIntent();
                     intent.setName(getQName(intentName));
                     requiredIntents.add(intent);
+                }
+            }
+        }
+        
+        PolicySets policySetAnnotation = clazz.getAnnotation(PolicySets.class);
+        if (policySetAnnotation != null) {
+            String[] policySetNames = policySetAnnotation.value();
+            if (policySetNames.length != 0) {
+                for (String policySetName : policySetNames) {
+
+                    // Add each intent to the list
+                    PolicySet policySet = policyFactory.createPolicySet();
+                    policySet.setName(getQName(policySetName));
+                    policySets.add(policySet);
                 }
             }
         }
@@ -113,7 +131,9 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
         
         // Read intents on the Java implementation class
         if ( type instanceof PolicySetAttachPoint ) {
-            readIntents(clazz, ((PolicySetAttachPoint)type).getRequiredIntents());
+            readIntentsAndPolicySets(clazz, 
+                                     ((PolicySetAttachPoint)type).getRequiredIntents(),
+                                     ((PolicySetAttachPoint)type).getPolicySets());
         }
         
         // Process annotations on the service interfaces
@@ -127,7 +147,9 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
                 if (javaInterfaceContract.getInterface() != null) {
                     JavaInterface javaInterface = (JavaInterface)javaInterfaceContract.getInterface();
                     if (javaInterface.getJavaClass() != null) {
-                        readIntents(javaInterface.getJavaClass(), service.getRequiredIntents());
+                        readIntentsAndPolicySets(javaInterface.getJavaClass(), 
+                                                 service.getRequiredIntents(),
+                                                 service.getPolicySets());
 
                         // Read intents on the service interface methods 
                         Method[] methods = javaInterface.getJavaClass().getMethods();
@@ -147,7 +169,9 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
                             callback = assemblyFactory.createCallback();
                             service.setCallback(callback);
                         }
-                        readIntents(javaCallbackInterface.getJavaClass(), callback.getRequiredIntents());
+                        readIntentsAndPolicySets(javaCallbackInterface.getJavaClass(), 
+                                                 callback.getRequiredIntents(),
+                                                 callback.getPolicySets());
 
                         // Read intents on the callback interface methods 
                         Method[] methods = javaCallbackInterface.getJavaClass().getMethods();

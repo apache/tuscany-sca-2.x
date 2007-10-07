@@ -19,6 +19,11 @@
 
 package org.apache.tuscany.sca.implementation.java.invocation;
 
+import java.util.Hashtable;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
@@ -36,6 +41,10 @@ import org.apache.tuscany.sca.implementation.java.injection.ResourceHost;
 import org.apache.tuscany.sca.implementation.java.injection.ResourceObjectFactory;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.util.PolicyHandler;
+import org.apache.tuscany.sca.policy.util.PolicySetHandlerUtil;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.osoa.sca.ComponentContext;
@@ -48,6 +57,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
     private JavaImplementation implementation;
     private JavaComponentContextProvider componentContextProvider;
     private RequestContextFactory requestContextFactory;
+    private Map<PolicySet, PolicyHandler> policyHandlers = new Hashtable<PolicySet, PolicyHandler>();
     
     public JavaImplementationProvider(RuntimeComponent component,
                                       JavaImplementation implementation,
@@ -64,7 +74,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
             configuration.setProxyFactory(proxyService);
             componentContextProvider =
                 new JavaComponentContextProvider(component, configuration, dataBindingRegistry, propertyValueObjectFactory,
-                                      componentContextFactory, requestContextFactory);
+                                      componentContextFactory, requestContextFactory, policyHandlers);
 
             Scope scope = getScope();
 
@@ -93,10 +103,29 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
 
             componentContextProvider.configureProperties(component.getProperties());
             handleResources(implementation, proxyService);
+            loadPolicyHandlers();
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-
+        
+    }
+    
+    private void loadPolicyHandlers() throws Exception {
+        Map<QName, PolicyHandler> availablePolicyHandlers = 
+            PolicySetHandlerUtil.getPolicyHandlers(Thread.currentThread().getContextClassLoader(), 
+                                                    "org.apache.tuscany.sca.policy.PolicySetHandlers");
+        if ( implementation instanceof PolicySetAttachPoint ) {
+            PolicyHandler aHandler = null;
+            PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
+            for ( PolicySet policySet : policiedImpl.getPolicySets() ) {
+                if ( ( aHandler = availablePolicyHandlers.get(policySet.getName()) ) != null ) {
+                    aHandler.setHandledPolicySet(policySet);
+                    policyHandlers.put(policySet, aHandler);
+                } else {
+                    //FIXME : maybe there must be a warning thrown here
+                }
+            }
+        }
     }
 
     private void handleResources(JavaImplementation componentType, ProxyFactory proxyService) {
@@ -169,5 +198,4 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
     public long getMaxIdleTime() {
         return implementation.getMaxIdleTime();
     }
-
 }
