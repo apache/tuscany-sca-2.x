@@ -905,9 +905,8 @@ public class CompositeWireBuilderImpl {
                 }
                 
                 //compute intents and policyset for each binding
-                //we don't determine the policy sets now, we do it after targets have been 
-                //connected to the references
                 computeBindingIntentsAndPolicySets(componentReference);
+                determineApplicableBindingPolicySets(componentReference, null);
             }
         }
         
