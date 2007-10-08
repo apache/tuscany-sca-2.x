@@ -28,5 +28,9 @@ import com.sun.syndication.feed.atom.Feed;
  */
 @Remotable
 public interface CurrencyExchange {
+    /**
+     * Get the currency exchange rates as a RSS feed
+     * @return
+     */
     Feed getRates();
 }

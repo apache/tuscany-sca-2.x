@@ -28,5 +28,11 @@ import org.osoa.sca.annotations.Remotable;
  */
 @Remotable
 public interface StockValue {
+    /**
+     * Join the quotes and accounts document to calculate the value
+     * @param quotes The quotes XML document
+     * @param accounts The accounts XML document
+     * @return The value
+     */
     double calculate(XMLStreamReader quotes, XMLStreamReader accounts);
 }

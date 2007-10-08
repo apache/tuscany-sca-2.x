@@ -24,5 +24,9 @@ package bigbank;
  * @version $Rev$ $Date$
  */
 public interface AccountService {
+    /**
+     * Get the total value of all accounts owned by the customer
+     * @return The total value
+     */
     double getTotalValue();
 }

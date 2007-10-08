@@ -23,5 +23,10 @@ package bigbank;
  * @version $Rev$ $Date$
  */
 public interface ExchangeRate {
+    /**
+     * Look up the exchange rate of a currency against USD
+     * @param currency The currency
+     * @return The exchange rate
+     */
     double getExchangeRate(String currency);
 }
