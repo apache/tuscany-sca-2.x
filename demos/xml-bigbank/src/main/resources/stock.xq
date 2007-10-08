@@ -21,7 +21,7 @@ declare namespace c="http://example.com/customer";
 declare namespace stock="scaservice:java/bigbank.StockValue";
 (: declare namespace currency="scaproperty:java/java.lang.String"; :)
 
-declare function stock:calculate($quoteDoc, $accountDoc) {
+declare function stock:calculate($quoteDoc, $accountDoc) as xs:double {
     let $checking := 
     trace(
     sum(

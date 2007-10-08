@@ -20,11 +20,16 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
     targetNamespace="http://bigbank" name="BigBank">
 
-    <component name="CustomerAsset">
-        <implementation.java class="bigbank.CustomerAssetImpl" />
+    <component name="AccountService">
+        <implementation.java class="bigbank.AccountServiceImpl" />
         <reference name="accountData" target="AccountData" />
         <reference name="stockValue" target="StockValue" />
+        <reference name="exchangeRate" target="ExchangeRate"/>
+        <property name="currency">EUR</property>
+    </component>
 
+    <component name="ExchangeRate">
+        <implementation.java class="bigbank.ExchangeRateImpl" />
         <reference name="exchangeRate">
             <tuscany:binding.rss
                 uri="http://ansuz.sooke.bc.ca/rippy/exchange/?M=R&amp;B=USD&amp;F=CAD,CNY,EUR&amp;T=F&amp;S=O&amp;I=S" />
@@ -37,12 +42,9 @@
 
     <component name="StockValue">
         <tuscany:implementation.xquery location="stock.xq" />
-        <!-- 
-        <property name="currency">USD</property>
-         -->
     </component>
 
-    <reference name="StockQuoteReference" promote="CustomerAsset/stockQuote">
+    <reference name="StockQuoteReference" promote="AccountService/stockQuote">
         <binding.ws wsdlElement="http://swanandmokashi.com#wsdl.port(StockQuotes/StockQuotesSoap)" />
     </reference>
 

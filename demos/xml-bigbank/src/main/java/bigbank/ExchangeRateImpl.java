@@ -19,19 +19,22 @@
 
 package bigbank;
 
-import java.io.StringReader;
+import java.io.ByteArrayInputStream;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2Node;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import com.sun.syndication.feed.atom.Entry;
@@ -40,57 +43,43 @@ import com.sun.syndication.feed.atom.Feed;
 /**
  * @version $Rev$ $Date$
  */
-@Service(CustomerAsset.class)
-public class CustomerAssetImpl implements CustomerAsset {
-    private XMLInputFactory factory = XMLInputFactory.newInstance();
-
-    @Reference(required = false)
+@Service(ExchangeRate.class)
+public class ExchangeRateImpl {
+    @Reference
     protected CurrencyExchange exchangeRate;
 
-    @Reference
-    protected StockQuote stockQuote;
+    private final DocumentBuilder builder;
 
-    @Reference(required = false)
-    protected AccountData accountData;
+    public ExchangeRateImpl() {
+        try {
+            builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
-    @Reference
-    protected StockValue stockValue;
-
-    public double getTotalValue(String currency) {
+    /**
+     * @return
+     * @throws XMLStreamException
+     * @throws XPathExpressionException
+     */
+    public double getExchangeRate(String currency) {
         try {
             System.out.println("Retrieving exchange rate...");
             Feed feed = exchangeRate.getRates();
             Entry entry = (Entry)feed.getEntries().get(0);
             String rateTable = entry.getSummary().getValue();
-            // System.out.println(rateTable);
-            XMLStreamReader rates = factory.createXMLStreamReader(new StringReader(rateTable));
-            XMLStreamReader2Node t = new XMLStreamReader2Node();
-            Node node = t.transform(rates, null);
+
+            Document doc = builder.parse(new ByteArrayInputStream(rateTable.getBytes()));
+            Node node = doc.getDocumentElement();
             XPath path = XPathFactory.newInstance().newXPath();
             XPathExpression exp = path.compile("/TABLE/TR[TD[1]='" + currency.toUpperCase() + "']/TD[2]");
             Node rateNode = (Node)exp.evaluate(node, XPathConstants.NODE);
             double rate = Double.valueOf(rateNode.getTextContent().trim());
             System.out.println("Exchange rate: USD 1.0=" + currency + " " + rate);
-
-            System.out.println("Loading account data...");
-            XMLStreamReader accounts = accountData.getAccounts();
-
-            System.out.println("Getting stock quote...");
-            String ticker =
-                "<q:GetQuotes xmlns:q=\"http://swanandmokashi.com\"><q:QuoteTicker>IBM,GOOG,MSFT</q:QuoteTicker></q:GetQuotes>";
-            XMLStreamReader request = factory.createXMLStreamReader(new StringReader(ticker));
-
-            XMLStreamReader quotes = stockQuote.GetStockQuotes(request);
-
-            System.out.println("Calculating total value...");
-            double value = stockValue.calculate(quotes, accounts);
-
-            System.out.println("Total Value=USD " + value);
-
-            return value * rate;
+            return rate;
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }
-
 }

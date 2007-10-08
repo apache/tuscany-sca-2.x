@@ -23,6 +23,6 @@ package bigbank;
 /**
  * @version $Rev$ $Date$
  */
-public interface CustomerAsset {
-    double getTotalValue(String currency);
+public interface AccountService {
+    double getTotalValue();
 }
