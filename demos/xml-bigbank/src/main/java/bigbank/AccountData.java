@@ -27,5 +27,10 @@ import javax.xml.stream.XMLStreamReader;
  * @version $Rev$ $Date$
  */
 public interface AccountData {
+    /**
+     * Get the StAX stream that represent the accounts data
+     * @return The StAX stream containign the accounts
+     * @throws IOException
+     */
     XMLStreamReader getAccounts() throws IOException;
 }

@@ -24,11 +24,9 @@ import java.io.ByteArrayInputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.osoa.sca.ServiceRuntimeException;
@@ -59,9 +57,10 @@ public class ExchangeRateImpl {
     }
 
     /**
-     * @return
-     * @throws XMLStreamException
-     * @throws XPathExpressionException
+     * Retrieve the live currency exchange rate from a live feed and extract the data for a given
+     * currecy using XPath
+     * @param currency The currency
+     * @return The exchange rate
      */
     public double getExchangeRate(String currency) {
         try {

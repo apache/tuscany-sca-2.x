@@ -28,5 +28,10 @@ import org.osoa.sca.annotations.Remotable;
  */
 @Remotable
 public interface StockQuote {
+    /**
+     * Invoke the stock quote web service to get the live quotes
+     * @param input The StAX stream of the request
+     * @return The StAX stream of the response
+     */
     public XMLStreamReader GetStockQuotes(XMLStreamReader input);
 }
