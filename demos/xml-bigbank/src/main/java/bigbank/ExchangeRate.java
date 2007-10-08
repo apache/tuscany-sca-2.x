@@ -16,20 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package bigbank;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-
 /**
- * This client program to invoke the Mortgage LoanApproval service
+ * @version $Rev$ $Date$
  */
-public class BigBankClient {
-
-    public static void main(String[] args) throws Exception {
-
-        SCADomain domain = SCADomain.newInstance("BigBank.composite");
-        AccountService accountService = domain.getService(AccountService.class, "AccountService");
-
-        System.out.println("EUR: " + accountService.getTotalValue());
-    }
+public interface ExchangeRate {
+    double getExchangeRate(String currency);
 }
