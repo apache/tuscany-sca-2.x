@@ -25,7 +25,7 @@
         <version>1.1-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>sample-helloworld-ws-reference</artifactId>
+    <artifactId>sample-helloworld-ws-reference-jms</artifactId>
     <name>Apache Tuscany SCA HelloWorld Web Service Reference Sample</name>
 
     <repositories>
@@ -70,6 +70,13 @@
             <scope>test</scope>
         </dependency>
         
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>apache-activemq</artifactId>
+            <version>4.1.1</version>
+            <scope>test</scope>
+        </dependency>          
+
     </dependencies>
     
     <build>
