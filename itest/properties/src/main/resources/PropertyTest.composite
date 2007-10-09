@@ -209,6 +209,9 @@
         		<cust:lastName>Sdo Lasting Name</cust:lastName>
        		</cust:customer>
         </property>
+        <property name="location" type="xsd:string">RTP</property>	
+        <property name="year" type="xsd:string">2006</property>	
     </component>
 </composite>
+
 

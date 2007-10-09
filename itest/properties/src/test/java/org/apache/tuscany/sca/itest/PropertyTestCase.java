@@ -189,8 +189,7 @@ public class PropertyTestCase {
         assertEquals("Sdo Lasting Name", dataObject.getString("lastName"));
     }
     
-    // FIXME: Uncomment the @Test to enable this test case (TUSCANY-1832)
-    // @Test
+    @Test
     public void testGetLocationFromComponentContext() {
         String location = propertyService.getLocation();
         assertNotNull(location);

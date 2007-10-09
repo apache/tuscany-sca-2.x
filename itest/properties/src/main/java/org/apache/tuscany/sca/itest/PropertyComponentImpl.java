@@ -52,10 +52,10 @@ public class PropertyComponentImpl implements PropertyComponent {
     protected Collection<ComplexPropertyBean> complexPropertyFour;
     
     @Property(name = "location")
-    protected String location = "RTP";
+    protected String location;
 
     @Property(name = "year")
-    protected String year = "2006";
+    protected String year;
     
     public String getLocation(){
         return location;
