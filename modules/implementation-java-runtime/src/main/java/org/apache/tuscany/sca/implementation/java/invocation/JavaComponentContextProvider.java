@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
+import org.apache.tuscany.sca.core.context.ComponentContextImpl;
 import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
@@ -221,6 +222,13 @@ public class JavaComponentContextProvider {
                 }
             }
         }
+        
+        // We need to set the PropertyValueFactory on the ComponentContextImpl
+        // so the ComponentContext can "de-marshal" the property type to a value 
+        // when the getProperty() method is called
+        ComponentContextImpl ccImpl = (ComponentContextImpl) component.getComponentContext();
+        ccImpl.setPropertyValueFactory(propertyValueFactory);
+        
         setUpPolicyHandlers();
     }
 

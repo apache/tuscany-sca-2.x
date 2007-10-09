@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.databinding.Mediator;
@@ -37,7 +39,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class JavaPropertyValueObjectFactory {
+public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
     private Mediator mediator = null;
     private boolean isSimpleType;
 
@@ -198,5 +200,20 @@ public class JavaPropertyValueObjectFactory {
                 return instances;
             }
         }
+    }
+
+    /**
+     * This method will create an instance of the value for the specified Property.
+     * 
+     * @param property The Property from which to retrieve the property value
+     * @param type The type of the property value being retrieved from the Property
+     * @param <B> Type type of the property value being looked up
+     * 
+     * @return the value for the Property
+     */
+    public <B> B createPropertyValue(ComponentProperty property, Class<B> type)
+    {
+        ObjectFactory<B> factory = this.createValueFactory(property, property.getValue(), type);
+        return factory.getInstance();
     }
 }

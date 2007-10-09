@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.context.PropertyValueFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
@@ -64,6 +65,15 @@ public class ComponentContextImpl implements RuntimeComponentContext {
     private final AssemblyFactory assemblyFactory;
     private final JavaInterfaceFactory javaInterfaceFactory;
 
+    /**
+     * This is a reference to the PropertyValueFactory that is provided by the Implementation
+     * that can be used to get the value from a Property Object.
+     * 
+     * @see #setPropertyValueFactory(PropertyValueFactory)
+     * @see #getProperty(Class, String)
+     */
+    private PropertyValueFactory propertyFactory;
+    
     public ComponentContextImpl(CompositeActivator compositeActivator,
                                 AssemblyFactory assemblyFactory,
                                 ProxyFactory proxyFactory,
@@ -108,10 +118,36 @@ public class ComponentContextImpl implements RuntimeComponentContext {
         }
     }
 
+    /**
+     * The Implementation is responsible for calling this method to set the 
+     * PropertyValueFactory that is used to get the Property Value from 
+     * a Tuscany Property object.
+     *   
+     * @param factory The PropertyValueFactory to use
+     * 
+     * @see #getProperty(Class, String)
+     */
+    public void setPropertyValueFactory(PropertyValueFactory factory)
+    {
+        propertyFactory = factory;
+    }
+    
+    /**
+     * Gets the value for the specified property with the specified type.
+     * 
+     * @param type The type of the property value we are getting
+     * @param propertyName The name of the property we are getting
+     * @param B The class of the property value we are getting
+     * 
+     * @throws ServiceRuntimeException If a Property for the specified propertyName
+     *         is not found 
+     *         
+     * @see #setPropertyValueFactory(PropertyValueFactory)         
+     */
     public <B> B getProperty(Class<B> type, String propertyName) {
         for (ComponentProperty p : component.getProperties()) {
             if (propertyName.equals(p.getName())) {
-                return type.cast(p.getValue());
+                return propertyFactory.createPropertyValue(p, type);
             }
         }
         throw new ServiceRuntimeException("Property not found: " + propertyName);

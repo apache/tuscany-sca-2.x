@@ -47,14 +47,14 @@ public interface AbstractProperty extends Base, Extensible, IntentAttachPoint {
     /**
      * Returns the default value of the property.
      * 
-     * @return the default value of ths property
+     * @return the default value of this property
      */
     Object getValue();
 
     /**
      * Sets the default value of the property.
      * 
-     * @param defaultValue the default value of ths property
+     * @param defaultValue the default value of this property
      */
     void setValue(Object defaultValue);
 
@@ -115,7 +115,7 @@ public interface AbstractProperty extends Base, Extensible, IntentAttachPoint {
      * Sets the element defining the data type of this property. This is the
      * qualified name of an XML schema element.
      * 
-     * @param type the element defining the type of this property
+     * @param element the element defining the type of this property
      */
     void setXSDElement(QName element);
 
