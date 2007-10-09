@@ -55,7 +55,7 @@ public class NotificationImplementationProvider implements ImplementationProvide
             if (service.getService() != null) {
                 InterfaceContract interfaceContract = service.getService().getInterfaceContract();
                 if (interfaceContract instanceof WSDLInterfaceContract) {
-                    interfaceContract.getInterface().setDefaultDataBinding("org.apache.axiom.om.OMElement");
+                    interfaceContract.getInterface().resetDataBinding("org.apache.axiom.om.OMElement");
                 }
             }
         }

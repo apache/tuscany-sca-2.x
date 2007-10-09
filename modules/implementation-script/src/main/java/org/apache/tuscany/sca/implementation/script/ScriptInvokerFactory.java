@@ -113,7 +113,7 @@ public class ScriptInvokerFactory implements InvokerFactory {
             InterfaceContract ic = service.getInterfaceContract();
             if (ic instanceof WSDLInterfaceContract) {
                 // Set to use the Axiom data binding
-                ic.getInterface().setDefaultDataBinding(OMElement.class.getName());
+                ic.getInterface().resetDataBinding(OMElement.class.getName());
                 xmlHelper = XMLHelper.getArgHelper(scriptEngine);
             }
         }
