@@ -67,7 +67,7 @@ public class JMSBinding implements Binding {
     //     </destination>?
     private String destinationName           = JMSBindingConstants.DEFAULT_DESTINATION_NAME; 
     private String destinationType           = JMSBindingConstants.DESTINATION_TYPE_QUEUE;    
-    private String destinationCreate         = JMSBindingConstants.CREATE_NEVER; 
+    private String destinationCreate         = JMSBindingConstants.CREATE_IF_NOT_EXIST; 
     // 
     //     <connectionFactory name="xs:anyURI"             Not yet implemented in binding
     //                        create="string"?>            Not yet implemented in binding
@@ -75,7 +75,7 @@ public class JMSBinding implements Binding {
     //                   type="NMTOKEN">*                  Not yet implemented in binding
     //     </connectionFactory>?
     private String connectionFactoryName     = JMSBindingConstants.DEFAULT_CONNECTION_FACTORY_NAME;
-    private String connectionFactoryCreate   = JMSBindingConstants.CREATE_NEVER;    
+    private String connectionFactoryCreate   = JMSBindingConstants.CREATE_IF_NOT_EXIST;    
     // 
     //     <activationSpec name="xs:anyURI"                Not yet implemented in binding
     //                     create="string"?>               Not yet implemented in binding
@@ -94,7 +94,7 @@ public class JMSBinding implements Binding {
     //         </destination>?
     private String responseDestinationName   = JMSBindingConstants.DEFAULT_RESPONSE_DESTINATION_NAME; 
     private String responseDestinationType   = JMSBindingConstants.DESTINATION_TYPE_QUEUE;    
-    private String responseDestinationCreate = JMSBindingConstants.CREATE_NEVER;    
+    private String responseDestinationCreate = JMSBindingConstants.CREATE_IF_NOT_EXIST;    
     // 
     //         <connectionFactory name="xs:anyURI"         Not yet implemented in binding
     //                            create="string"?>        Not yet implemented in binding
@@ -102,7 +102,7 @@ public class JMSBinding implements Binding {
     //                       type="NMTOKEN">*              Not yet implemented in binding
     //         </connectionFactory>?
     private String responseConnectionFactoryName     = JMSBindingConstants.DEFAULT_CONNECTION_FACTORY_NAME;
-    private String responseConnectionFactoryCreate   = JMSBindingConstants.CREATE_NEVER;    
+    private String responseConnectionFactoryCreate   = JMSBindingConstants.CREATE_IF_NOT_EXIST;    
     // 
     //         <activationSpec name="xs:anyURI"            Not yet implemented in binding
     //                         create="string"?>           Not yet implemented in binding
@@ -483,7 +483,7 @@ public class JMSBinding implements Binding {
              * No desitnation name has been set so make sure that
              * the runtime is able to create one automatically
              */
-            setDestinationCreate(JMSBindingConstants.CREATE_ALLWAYS);
+            setDestinationCreate(JMSBindingConstants.CREATE_IF_NOT_EXIST);
         }
         
         if (getResponseDestinationName().equals(JMSBindingConstants.DEFAULT_RESPONSE_DESTINATION_NAME)){
@@ -491,7 +491,7 @@ public class JMSBinding implements Binding {
              * No repsonse desitination name has been set so make sure that
              * the runtime is able to create one automatically
              */
-            setResponseDestinationCreate(JMSBindingConstants.CREATE_ALLWAYS);
+            setResponseDestinationCreate(JMSBindingConstants.CREATE_IF_NOT_EXIST);
         }   
         
         
