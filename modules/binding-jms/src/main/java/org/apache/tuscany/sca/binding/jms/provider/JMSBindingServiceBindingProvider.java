@@ -94,20 +94,8 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
     private void registerListerner() throws NamingException, JMSException {
 
         Session session         = jmsResourceFactory.createSession();
-        Destination destination = jmsResourceFactory.lookupDestination(jmsBinding.getDestinationName());
-        
-        if (destination == null){ 
-            if (jmsBinding.getDestinationCreate().equals(JMSBindingConstants.CREATE_ALLWAYS)) {
-                destination = jmsResourceFactory.createDestination(jmsBinding.getDestinationName());
-            } else {
-                throw new JMSBindingException("JMS Destination " + 
-                                              jmsBinding.getDestinationName() +
-                                              "not found while registering service " + 
-                                              service.getName() +
-                                              " listener");
-            }
-        }
-        
+        Destination destination = lookupDestinationQueue(); 
+            
         consumer = session.createConsumer(destination);
         
         // TODO - We assume the target is a Java class here!!!
@@ -118,5 +106,67 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
 
         jmsResourceFactory.startConnection();
 
+    }
+    
+    /**
+     * Looks up the Destination Queue for the JMS Binding.
+     * <p>
+     * What happens in the look up will depend on the create mode specified for the JMS Binding:
+     * <ul>
+     * <li>always - the JMS queue is always created. It is an error if the queue already exists
+     * <li>ifnotexist - the JMS queue is created if it does not exist. It is not an error if the queue already exists
+     * <li>never - the JMS queue is never created. It is an error if the queue does not exist
+     * </ul> 
+     * See the SCA JMS Binding specification for more information.
+     * <p>
+     * @return The Destination queue.
+     * @throws NamingException Failed to lookup JMS queue
+     * @throws JMSBindingException Failed to lookup JMS Queue. Probable cause is that the JMS queue's current 
+     *         existance/non-existance is not compatible with the create mode specified on the binding 
+     */
+    private Destination lookupDestinationQueue() throws NamingException, JMSBindingException {
+        Destination destination = jmsResourceFactory.lookupDestination(jmsBinding.getDestinationName());
+      
+        String qCreateMode = jmsBinding.getDestinationCreate();
+        if (qCreateMode.equals(JMSBindingConstants.CREATE_ALWAYS)) {
+            // In this mode, the queue must not already exist as we are creating it
+            if (destination != null) {
+                throw new JMSBindingException("JMS Destination " + 
+                        jmsBinding.getDestinationName() +
+                        " already exists but has create mode of \"" + qCreateMode + "\" while registering service " + 
+                        service.getName() +
+                        " listener");
+            }
+            
+            // Create the queue
+            destination = jmsResourceFactory.createDestination(jmsBinding.getDestinationName());
+            
+        } else if (qCreateMode.equals(JMSBindingConstants.CREATE_IF_NOT_EXIST)) {
+            // In this mode, the queue may nor may not exist. It will be created if it does not exist
+            if (destination == null) {
+                destination = jmsResourceFactory.createDestination(jmsBinding.getDestinationName());
+            }
+
+        } else if (qCreateMode.equals(JMSBindingConstants.CREATE_NEVER)) {
+            // In this mode, the queue must have already been created.
+            if (destination == null) {
+                throw new JMSBindingException("JMS Destination " +
+                        jmsBinding.getDestinationName() +
+                        " not found but create mode of \"" + qCreateMode + "\" while registering service " + 
+                        service.getName() +
+                        " listener");
+            }
+        }
+
+        // Make sure we ended up with a queue
+        if (destination == null) {
+            throw new JMSBindingException("JMS Destination " + 
+                    jmsBinding.getDestinationName() +
+                    " not found with create mode of \"" + qCreateMode + "\" while registering service " + 
+                    service.getName() +
+                    " listener");
+        }
+
+        return destination;
     }
 }

@@ -43,8 +43,9 @@ public interface JMSBindingConstants {
     public final static String DESTINATION_TYPE_TOPIC            = "topic"; //1
     public final static List<String> VALID_DESTINATION_TYPES     = Arrays.asList(new String[] {DESTINATION_TYPE_QUEUE, 
                                                                                                DESTINATION_TYPE_TOPIC});    
-    public final static String CREATE_ALLWAYS                    = "always";
+    public final static String CREATE_ALWAYS                     = "always";
     public final static String CREATE_NEVER                      = "never";    
+    public final static String CREATE_IF_NOT_EXIST               = "ifnotexist";    
     public final static String DEFAULT_DESTINATION_NAME          = "NODESTINATION";
     public final static String DEFAULT_RESPONSE_DESTINATION_NAME = "NORESPONSEDESTINATION";    
     public final static String DEFAULT_CONNECTION_FACTORY_NAME   = "ConnectionFactory";    
