@@ -64,7 +64,7 @@ public class CalculatorNode {
             if ( nodeName.equals("nodeA") ) {            
                 // do some application stuff
                 CalculatorService calculatorService = 
-                    node.getDomain().getService(CalculatorService.class, "CalculatorServiceComponent");
+                    node.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentA");
                 
                 // Calculate
                 System.out.println("3 + 2=" + calculatorService.add(3, 2));
