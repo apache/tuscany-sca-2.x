@@ -112,6 +112,7 @@ public class InterfaceImpl implements Interface {
 
     }
 
+    @Deprecated
     public void setDefaultDataBinding(String dataBinding) {
         for (Operation op : getOperations()) {
             if (op.getDataBinding() == null) {
@@ -157,16 +158,53 @@ public class InterfaceImpl implements Interface {
         }
     }
 
+    public void resetDataBinding(String dataBinding) {
+        for (Operation op : getOperations()) {
+            op.setDataBinding(dataBinding);
+            DataType<List<DataType>> inputType = op.getInputType();
+            if (inputType != null) {
+                for (DataType d : inputType.getLogical()) {
+                    d.setDataBinding(dataBinding);
+                }
+            }
+            DataType outputType = op.getOutputType();
+            if (outputType != null) {
+                outputType.setDataBinding(dataBinding);
+            }
+            List<DataType> faultTypes = op.getFaultTypes();
+            if (faultTypes != null) {
+                for (DataType d : faultTypes) {
+                    d.setDataBinding(dataBinding);
+                }
+            }
+            if (op.isWrapperStyle()) {
+                WrapperInfo wrapper = op.getWrapper();
+                if (wrapper != null) {
+                    DataType<List<DataType>> unwrappedInputType = wrapper.getUnwrappedInputType();
+                    if (unwrappedInputType != null) {
+                        for (DataType d : unwrappedInputType.getLogical()) {
+                            d.setDataBinding(dataBinding);
+                        }
+                    }
+                    DataType unwrappedOutputType = wrapper.getUnwrappedOutputType();
+                    if (unwrappedOutputType != null) {
+                        unwrappedOutputType.setDataBinding(dataBinding);
+                    }
+                }
+            }
+        }
+    }
+
     public boolean isDynamic() {
         return false;
     }
 
     @Override
     public InterfaceImpl clone() throws CloneNotSupportedException {
-        InterfaceImpl copy = (InterfaceImpl) super.clone();
+        InterfaceImpl copy = (InterfaceImpl)super.clone();
         copy.operations = new OperationList();
         for (Operation operation : this.operations) {
-            Operation clonedOperation = (Operation) operation.clone();
+            Operation clonedOperation = (Operation)operation.clone();
             copy.operations.add(clonedOperation);
         }
         return copy;

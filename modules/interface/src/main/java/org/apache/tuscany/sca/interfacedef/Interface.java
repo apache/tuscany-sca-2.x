@@ -62,12 +62,19 @@ public interface Interface extends Cloneable {
      */
     List<Operation> getOperations();
 
-    // TODO: [rfeng] We might need to have a better way
     /**
      * Set the databinding for the interface
      * @param dataBinding
+     * @deprecated Please use resetDataBinding
      */
+    @Deprecated
     void setDefaultDataBinding(String dataBinding);
+    
+    /**
+     * Reset the databinding for the interface
+     * @param dataBinding
+     */
+    void resetDataBinding(String dataBinding);
 
     /**
      * Returns true if the Interface is dynamic.

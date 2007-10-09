@@ -180,7 +180,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             }
             for (Service service : componentType.getServices()) {
                 //set default dataBinding to DOM
-                service.getInterfaceContract().getInterface().setDefaultDataBinding(DOMDataBinding.NAME);
+                service.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
                 
                 serviceMap.put(service.getName(), service);
             }

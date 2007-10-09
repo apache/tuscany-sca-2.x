@@ -79,7 +79,7 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
         }
         
         // Set to use the Axiom data binding
-        contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
+        contract.getInterface().resetDataBinding(OMElement.class.getName());
         
         wsBinding.setBindingInterfaceContract(contract);
         wsBinding.setName(this.binding.getName()); 

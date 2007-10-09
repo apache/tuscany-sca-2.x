@@ -53,7 +53,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
         }
 
         // Set to use the Axiom data binding
-        contract.getInterface().setDefaultDataBinding(OMElement.class.getName());
+        contract.getInterface().resetDataBinding(OMElement.class.getName());
 
         axisClient = new Axis2ServiceClient(component, reference, wsBinding, servletHost, messageFactory);
     }

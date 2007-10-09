@@ -128,7 +128,7 @@ public class XQueryImplementationProvider implements ImplementationProvider {
     }
 
     private void setDataBinding(Interface interfaze, boolean isReference) {
-        interfaze.setDefaultDataBinding(SaxonNodeDataBinding.NAME);
+        // interfaze.resetDataBinding(SaxonNodeDataBinding.NAME);
         List<Operation> operations = interfaze.getOperations();
         for (Operation operation : operations) {
             operation.setDataBinding(SaxonNodeDataBinding.NAME);

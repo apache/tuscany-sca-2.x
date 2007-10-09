@@ -107,7 +107,7 @@ public class NotificationReferenceBindingProvider
         URI uri = URI.create(component.getURI() + "/" + notificationBinding.getName());
         notificationBinding.setURI(uri.toString());
         Interface interfaze = reference.getInterfaceContract().getInterface();
-        interfaze.setDefaultDataBinding(OMElement.class.getName());
+        interfaze.resetDataBinding(OMElement.class.getName());
         for (Operation operation : interfaze.getOperations()) {
             operation.setNonBlocking(false);
         }

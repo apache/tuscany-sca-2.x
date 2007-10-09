@@ -113,7 +113,7 @@ public class BeanJavaInterfaceImpl implements JavaInterface {
         this.unresolved = undefined;
     }
 
-    public void setDefaultDataBinding(String dataBinding) {
+    public void resetDataBinding(String dataBinding) {
     }
 
     public boolean isDynamic() {
