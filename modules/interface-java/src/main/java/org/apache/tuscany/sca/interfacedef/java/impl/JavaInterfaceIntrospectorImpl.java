@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InvalidCallbackException;
@@ -36,6 +38,7 @@ import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
 import org.osoa.sca.annotations.OneWay;
@@ -62,10 +65,10 @@ public class JavaInterfaceIntrospectorImpl {
 
         boolean remotable = type.isAnnotationPresent(Remotable.class);
         javaInterface.setRemotable(remotable);
-        
+
         boolean conversational = type.isAnnotationPresent(Conversational.class);
         javaInterface.setConversational(conversational);
-        
+
         Class<?> callbackClass = null;
         org.osoa.sca.annotations.Callback callback = type.getAnnotation(org.osoa.sca.annotations.Callback.class);
         if (callback != null && !Void.class.equals(callback.value())) {
@@ -74,19 +77,20 @@ public class JavaInterfaceIntrospectorImpl {
             throw new InvalidCallbackException("No callback interface specified on annotation");
         }
         javaInterface.setCallbackClass(callbackClass);
-        
-        javaInterface.getOperations().addAll(getOperations(type, remotable, conversational));
+
+        String ns = JavaInterfaceUtil.getNamespace(type);
+        javaInterface.getOperations().addAll(getOperations(type, remotable, conversational, ns));
 
         for (JavaInterfaceVisitor extension : visitors) {
             extension.visitInterface(javaInterface);
         }
     }
 
-    private <T> List<Operation> getOperations(Class<T> type, boolean remotable, boolean conversational)
+    private <T> List<Operation> getOperations(Class<T> type, boolean remotable, boolean conversational, String ns)
         throws InvalidInterfaceException {
         Method[] methods = type.getMethods();
         List<Operation> operations = new ArrayList<Operation>(methods.length);
-        Set<String> names = remotable? new HashSet<String>() : null;
+        Set<String> names = remotable ? new HashSet<String>() : null;
         for (Method method : methods) {
             if (method.getDeclaringClass() == Object.class) {
                 // Skip the methods on the Object.class
@@ -96,7 +100,7 @@ public class JavaInterfaceIntrospectorImpl {
             if (remotable && names.contains(name)) {
                 throw new OverloadedOperationException(method);
             }
-            if(remotable) {
+            if (remotable) {
                 names.add(name);
             }
 
@@ -117,23 +121,27 @@ public class JavaInterfaceIntrospectorImpl {
             }
 
             // Set outputType to null for void
-            DataType<Class> returnDataType = returnType == void.class ? null
-                                                                     : new DataTypeImpl<Class>(UNKNOWN_DATABINDING,
-                                                                                               returnType, returnType);
+            XMLType xmlReturnType = new XMLType(new QName(ns, "return"), null);
+            DataType<XMLType> returnDataType =
+                returnType == void.class ? null : new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, returnType,
+                                                                            xmlReturnType);
             List<DataType> paramDataTypes = new ArrayList<DataType>(paramTypes.length);
-            for (Class paramType : paramTypes) {
-                paramDataTypes.add(new DataTypeImpl<Class>(UNKNOWN_DATABINDING, paramType, paramType));
+            for (int i = 0; i < paramTypes.length; i++) {
+                Class paramType = paramTypes[i];
+                XMLType xmlParamType = new XMLType(new QName(ns, "arg" + i), null);
+                paramDataTypes.add(new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, paramType, xmlParamType));
             }
             List<DataType> faultDataTypes = new ArrayList<DataType>(faultTypes.length);
             for (Class faultType : faultTypes) {
                 // Only add checked exceptions
                 if (Exception.class.isAssignableFrom(faultType) && (!RuntimeException.class.isAssignableFrom(faultType))) {
-                    faultDataTypes.add(new DataTypeImpl<Class>(UNKNOWN_DATABINDING, faultType, faultType));
+                    XMLType xmlFaultType = new XMLType(new QName(ns, faultType.getSimpleName()), null);
+                    faultDataTypes.add(new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, faultType, xmlFaultType));
                 }
             }
 
-            DataType<List<DataType>> inputType = new DataTypeImpl<List<DataType>>(IDL_INPUT, Object[].class,
-                                                                                  paramDataTypes);
+            DataType<List<DataType>> inputType =
+                new DataTypeImpl<List<DataType>>(IDL_INPUT, Object[].class, paramDataTypes);
             Operation operation = new OperationImpl(name);
             operation.setInputType(inputType);
             operation.setOutputType(returnDataType);

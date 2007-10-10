@@ -126,5 +126,22 @@ public final class JavaInterfaceUtil {
         return found;
 
     }
+    
+    public static String getNamespace(Class<?> cls) {
+        Package pkg = cls.getPackage();
+        if (pkg == null) {
+            return "";
+        }
+        StringBuffer ns = new StringBuffer("http://");
+        String[] names = pkg.getName().split("\\.");
+        for (int i = names.length - 1; i >= 0; i--) {
+            ns.append(names[i]);
+            if (i != 0) {
+                ns.append('.');
+            }
+        }
+        ns.append('/');
+        return ns.toString();
+    }
 
 }

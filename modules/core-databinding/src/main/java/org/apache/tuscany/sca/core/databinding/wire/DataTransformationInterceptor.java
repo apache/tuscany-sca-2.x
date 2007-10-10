@@ -20,10 +20,10 @@
 package org.apache.tuscany.sca.core.databinding.wire;
 
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.ExceptionHandler;
@@ -54,9 +54,9 @@ public class DataTransformationInterceptor implements Interceptor {
     private Mediator mediator;
 
     public DataTransformationInterceptor(RuntimeWire wire,
-                                 Operation sourceOperation,
-                                 Operation targetOperation,
-                                 Mediator mediator) {
+                                         Operation sourceOperation,
+                                         Operation targetOperation,
+                                         Mediator mediator) {
         super();
         this.sourceOperation = sourceOperation;
         this.targetOperation = targetOperation;
@@ -123,7 +123,7 @@ public class DataTransformationInterceptor implements Interceptor {
 
                 DataType targetFaultType = getFaultType(targetDataType);
                 if (targetFaultType == null) {
-                    throw new TransformationException("Target fault type cannot be resolved");
+                    throw new TransformationException("Target fault type cannot be resolved: " + targetDataType);
                 }
 
                 // FIXME: How to match a source fault type to a target fault
@@ -133,7 +133,7 @@ public class DataTransformationInterceptor implements Interceptor {
                 for (DataType exType : sourceOperation.getFaultTypes()) {
                     DataType faultType = getFaultType(exType);
                     // Match by the QName (XSD element) of the fault type
-                    if (faultType != null && typesMatch(targetFaultType.getLogical(),faultType.getLogical())) {
+                    if (faultType != null && typesMatch(targetFaultType.getLogical(), faultType.getLogical())) {
                         sourceDataType = exType;
                         sourceFaultType = faultType;
                         break;
@@ -141,7 +141,7 @@ public class DataTransformationInterceptor implements Interceptor {
                 }
 
                 if (sourceFaultType == null) {
-                    throw new TransformationException("No matching source fault type is found");
+                    throw new TransformationException("No matching source fault type is found: " + targetFaultType);
                 }
 
                 Object newResult =
@@ -168,15 +168,14 @@ public class DataTransformationInterceptor implements Interceptor {
             return source;
         }
         Map<String, Object> metadata = new HashMap<String, Object>();
-        metadata.put("source.operation", isResponse? targetOperation: sourceOperation);
-        metadata.put("target.operation", isResponse? sourceOperation: targetOperation);
+        metadata.put("source.operation", isResponse ? targetOperation : sourceOperation);
+        metadata.put("target.operation", isResponse ? sourceOperation : targetOperation);
         return mediator.mediate(source, sourceType, targetType, metadata);
     }
 
     private DataType getFaultType(DataType exceptionType) {
         // FIXME: We cannot assume the exception will have a databinding set
-        DataBinding targetDataBinding =
-            mediator.getDataBindings().getDataBinding(exceptionType.getDataBinding());
+        DataBinding targetDataBinding = mediator.getDataBindings().getDataBinding(exceptionType.getDataBinding());
         if (targetDataBinding == null) {
             return null;
         }
@@ -191,39 +190,34 @@ public class DataTransformationInterceptor implements Interceptor {
         if (first.equals(second)) {
             return true;
         }
-        if (first instanceof XMLType && second instanceof Class) {
-            if (toJavaClassName((XMLType)first).equals(((Class)second).getName())) {
-                return true;
-            }
-        }
-        if (first instanceof Class && second instanceof XMLType) {
-            if (((Class)first).getName().equals(toJavaClassName((XMLType)second))) {
-                return true;
-            }
+        if (first instanceof XMLType && second instanceof XMLType) {
+            XMLType t1 = (XMLType)first;
+            XMLType t2 = (XMLType)second;
+            return matches(t1.getElementName(), t2.getElementName()) && matches(t1.getTypeName(), t2.getTypeName());
         }
         return false;
     }
 
-    private String toJavaClassName(XMLType type) {
-        String result = type.getElementName().getLocalPart();
-        String authority = "";
-        try {
-            URI uri = new URI(type.getElementName().getNamespaceURI());
-            authority = uri.getAuthority();
-        } catch (URISyntaxException e) {
+    /**
+     * @param qn1
+     * @param qn2
+     */
+    private boolean matches(QName qn1, QName qn2) {
+        if (qn1 == qn2) {
+            return true;
         }
-        for (int i = 0; i < authority.length(); ) { 
-            int j = authority.indexOf(".", i);
-            if (j == -1) {
-                j = authority.length();
-            }
-            result = authority.substring(i, j) + "." + result;
-            if (j < authority.length()) {
-                j += 1;
-            }
-            i = j;
+        if (qn1 == null || qn2 == null) {
+            return false;
         }
-        return result;
+        String ns1 = qn1.getNamespaceURI();
+        String ns2 = qn2.getNamespaceURI();
+        String e1 = qn1.getLocalPart();
+        String e2 = qn2.getLocalPart();
+        if (e1.equals(e2) && (ns1.equals(ns2) || ns1.equals(ns2 + "/") || ns2.equals(ns1 + "/"))) {
+            // Tolerating the trailing / which is required by JAX-WS java package --> xml ns mapping
+            return true;
+        }
+        return false;
     }
 
     /**

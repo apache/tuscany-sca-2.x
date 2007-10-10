@@ -24,8 +24,9 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.List;
+
+import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
@@ -36,6 +37,7 @@ import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.easymock.EasyMock;
 
 /**
@@ -54,21 +56,26 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
         Operation baseInt = operations.get(0);
         assertEquals("baseInt", baseInt.getName());
 
-        DataType<Type> returnType = baseInt.getOutputType();
+        QName element = new QName("http://impl.introspection.java.interfacedef.sca.tuscany.apache.org/", "return");
+
+        DataType<XMLType> returnType = baseInt.getOutputType();
         assertEquals(Integer.TYPE, returnType.getPhysical());
-        assertEquals(Integer.TYPE, returnType.getLogical());
+        assertEquals(element, returnType.getLogical().getElementName());
 
         List<DataType> parameterTypes = baseInt.getInputType().getLogical();
         assertEquals(1, parameterTypes.size());
-        DataType<Type> arg0 = parameterTypes.get(0);
+        DataType<XMLType> arg0 = parameterTypes.get(0);
         assertEquals(Integer.TYPE, arg0.getPhysical());
-        assertEquals(Integer.TYPE, arg0.getLogical());
+        
+        element = new QName("http://impl.introspection.java.interfacedef.sca.tuscany.apache.org/", "arg0");
+        assertEquals(element, arg0.getLogical().getElementName());
 
         List<DataType> faultTypes = baseInt.getFaultTypes();
         assertEquals(1, faultTypes.size());
-        DataType<Type> fault0 = faultTypes.get(0);
+        DataType<XMLType> fault0 = faultTypes.get(0);
         assertEquals(IOException.class, fault0.getPhysical());
-        assertEquals(IOException.class, fault0.getLogical());
+        element = new QName("http://impl.introspection.java.interfacedef.sca.tuscany.apache.org/", "IOException");
+        assertEquals(element, fault0.getLogical().getElementName());
     }
 
     public void testUnregister() throws Exception {
@@ -82,7 +89,7 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
         factory.createJavaInterface(Base.class);
         verify(extension);
     }
-
+    
     @Override
     protected void setUp() throws Exception {
         super.setUp();
