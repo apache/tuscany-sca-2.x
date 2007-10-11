@@ -115,6 +115,7 @@
                 <module>node-impl</module>
                 <module>policy</module>
                 <module>policy-xml</module>
+		<module>policy-logging</module>
                 <module>policy-security</module>
                 <module>sca-api</module>
                 <module>definitions</module>
