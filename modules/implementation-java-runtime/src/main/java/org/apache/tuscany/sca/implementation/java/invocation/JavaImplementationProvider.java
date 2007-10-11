@@ -119,7 +119,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
             PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
             for ( PolicySet policySet : policiedImpl.getPolicySets() ) {
                 if ( ( aHandler = availablePolicyHandlers.get(policySet.getName()) ) != null ) {
-                    aHandler.setHandledPolicySet(policySet);
+                    aHandler.setApplicablePolicySet(policySet);
                     policyHandlers.put(policySet, aHandler);
                 } else {
                     //FIXME : maybe there must be a warning thrown here
