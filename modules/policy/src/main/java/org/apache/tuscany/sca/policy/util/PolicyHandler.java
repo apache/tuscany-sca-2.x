@@ -25,8 +25,8 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * Handler interface for handling policies defined in policysets
  */
 public interface PolicyHandler {
-    PolicySet getHandledPolicySet();
-    void setHandledPolicySet(PolicySet policySet);
+    PolicySet getApplicablePolicySet();
+    void setApplicablePolicySet(PolicySet policySet);
     void setUp(Object... context);
     void cleanUp(Object... context);
     void beforeInvoke(Object... context);
