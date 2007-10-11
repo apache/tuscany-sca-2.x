@@ -113,7 +113,10 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Djava.endorsed.dirs=${settings.localRepository}/javax/xml/bind/jaxb-api/2.1</argLine>
+                </configuration>
             </plugin>
             <!-- JAX-WS Generation -->
             <plugin>
