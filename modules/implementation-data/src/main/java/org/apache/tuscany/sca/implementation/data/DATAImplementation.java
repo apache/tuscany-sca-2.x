@@ -18,6 +18,11 @@
  */
 package org.apache.tuscany.sca.implementation.data;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,6 +33,7 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.data.engine.config.ConnectionInfo;
+import org.apache.tuscany.sca.implementation.data.jdbc.JDBCHelper;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
@@ -40,30 +46,51 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  * @version $Rev$ $Date$
  */
 public class DATAImplementation implements Implementation {
-
-    private Service dataService;
+    private AssemblyFactory assemblyFactory;
+    private JavaInterfaceFactory javaFactory;
+    
     private ConnectionInfo connectionInfo;
-    private String table;
-
+    private List<Service> services = new ArrayList<Service>();
+    
     /**
      * Constructs a new DAS implementation.
      */
     public DATAImplementation(AssemblyFactory assemblyFactory,
                               JavaInterfaceFactory javaFactory) {
 
-        // DATA implementation always provide a single service exposing
-        // the DATA interface, and have no references and properties
-        dataService = assemblyFactory.createService();
-        dataService.setName("DATA");
-        JavaInterface javaInterface;
+        // DATA implementation provides one service per database table
+        // exposing the DATA interface, and have no references and properties
+        this.assemblyFactory = assemblyFactory;
+        this.javaFactory = javaFactory;
+    }
+    
+    private void introspectServices( AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory) {
+        Connection connection = null;
         try {
-            javaInterface = javaFactory.createJavaInterface(DATA.class);
-        } catch (InvalidInterfaceException e) {
-            throw new IllegalArgumentException(e);
+            connection = JDBCHelper.getConnection(connectionInfo);
+            DatabaseMetaData databaseMetaData = connection.getMetaData();
+            ResultSet tables = databaseMetaData.getTables(null, null, "%", null);
+            while(tables.next()) {
+                //create the SCA service for the table
+                Service dataService = assemblyFactory.createService();
+                dataService.setName( tables.getString(3));
+                JavaInterface javaInterface;
+                try {
+                    javaInterface = javaFactory.createJavaInterface(DATA.class);
+                } catch (InvalidInterfaceException e) {
+                    throw new IllegalArgumentException(e);
+                }
+                JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
+                interfaceContract.setInterface(javaInterface);
+                dataService.setInterfaceContract(interfaceContract);
+                
+                services.add(dataService);
+            }
+        } catch(SQLException e) {
+            
+        } finally {
+            JDBCHelper.cleanupResources(connection, null, null);
         }
-        JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
-        interfaceContract.setInterface(javaInterface);
-        dataService.setInterfaceContract(interfaceContract);
     }
 
     public ConnectionInfo getConnectionInfo() {
@@ -73,15 +100,7 @@ public class DATAImplementation implements Implementation {
     public void setConnectionInfo(ConnectionInfo connectionInfo) {
         this.connectionInfo = connectionInfo;
     }
-    
-    public String getTable() {
-        return this.table;
-    }
-
-    public void setTable(String config) {
-        this.table = config;
-    }
-    
+        
     public ConstrainingType getConstrainingType() {
         // The sample DATA implementation does not support constrainingTypes
         return null;
@@ -93,8 +112,10 @@ public class DATAImplementation implements Implementation {
     }
 
     public List<Service> getServices() {
-        // The sample DATA implementation provides a single fixed CRUD service
-        return Collections.singletonList(dataService);
+        if(services == null || services.size() == 0) {
+            introspectServices(assemblyFactory, javaFactory);
+        }
+        return services;
     }
     
     public List<Reference> getReferences() {
@@ -114,7 +135,6 @@ public class DATAImplementation implements Implementation {
     public void setURI(String uri) {
         // The sample DATA implementation does not have a URI
     }
-
 
     public boolean isUnresolved() {
         // The sample DATA implementation is always resolved

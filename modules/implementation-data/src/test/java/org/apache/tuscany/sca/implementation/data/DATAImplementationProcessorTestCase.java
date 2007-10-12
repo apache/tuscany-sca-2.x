@@ -49,7 +49,7 @@ public class DATAImplementationProcessorTestCase extends TestCase {
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
             + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.0\" targetNamespace=\"http://data\" name=\"data\">"
             + " <component name=\"DataComponent\">"
-            + "   <tuscany:implementation.data table=\"tableName\">"
+            + "   <tuscany:implementation.data>"
             + "      <tuscany:connectionInfo datasource=\"dataSource\"/>"
             + "   </tuscany:implementation.data>"
             + "</component>";
@@ -58,7 +58,7 @@ public class DATAImplementationProcessorTestCase extends TestCase {
             "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
             + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.0\" targetNamespace=\"http://data\" name=\"data\">"
             + " <component name=\"DataComponent\">"
-            + "   <tuscany:implementation.data table=\"tableName\">"
+            + "   <tuscany:implementation.data>"
             + "      <tuscany:connectionInfo>"
             + "         <tuscany:connectionProperties"
             + "            driverClass=\"driverClass\""
@@ -98,7 +98,6 @@ public class DATAImplementationProcessorTestCase extends TestCase {
         DATAImplementation implementation = dataProcessor.read(reader);
         
         assertNotNull(implementation);
-        assertEquals("tableName", implementation.getTable());
 
         ConnectionInfo connInfo = implementation.getConnectionInfo();
         assertNotNull(connInfo);
@@ -123,7 +122,6 @@ public class DATAImplementationProcessorTestCase extends TestCase {
         DATAImplementation implementation = dataProcessor.read(reader);
         
         assertNotNull(implementation);
-        assertEquals("tableName", implementation.getTable());
 
         ConnectionInfo connInfo = implementation.getConnectionInfo();
         assertNotNull(connInfo);

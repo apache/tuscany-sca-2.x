@@ -19,12 +19,15 @@
 
 package org.apache.tuscany.sca.implementation.data;
 
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
+
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.implementation.data.DATA;
-
-import commonj.sdo.DataObject;
 
 /**
  * Tests the DAS service
@@ -41,7 +44,7 @@ public class DATATestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("data.composite");
-        dataService = scaDomain.getService(DATA.class, "DataComponent");
+        dataService = scaDomain.getService(DATA.class, "DataComponent/COMPANY");
     }
 
     /**
@@ -52,15 +55,53 @@ public class DATATestCase extends TestCase {
         scaDomain.close();
     }
 
-    
-    public void testExecuteCommand() throws Exception {
-        Integer companyID = new Integer(51);
-         
-        DataObject resultRoot= dataService.get(companyID.toString());
-        assertNotNull(resultRoot);  
+    public void testGet() throws Exception {
+        System.out.println("testGet");
         
-        //verify we got back the right row
-        assertEquals(companyID, resultRoot.get("COMPANY[1]/ID"));
+        XMLStreamReader reader = dataService.get(null);
+
+        QName element = null;
+        reader.next();
+        int increment = 0;
+        while (reader.hasNext()) {
+            int event = reader.getEventType();
+            switch (event) {
+                case START_ELEMENT:
+                    increment= increment + 3;
+                    element = reader.getName();
+                    System.out.println(fillSpace(increment) + element.toString());
+                    break;
+                case XMLStreamConstants.CHARACTERS:
+                    System.out.println(fillSpace(increment) + " :: " + reader.getText() + " :: ");
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    element = reader.getName();
+                    System.out.println(fillSpace(increment) + element.toString());
+                    increment = increment - 3;
+                    break;        
+            }
+            
+            //Read the next element
+            if (reader.hasNext()) {
+                reader.next();
+            }
+        }
+    }
+    
+    public void testGetByID() throws Exception {
+        Integer companyID = new Integer(51);
+
+        XMLStreamReader reader = dataService.get(companyID.toString());
+        assertNotNull(reader);
+    }
+    
+    private String fillSpace(int number){
+        StringBuffer sb = new StringBuffer(number);
+        for(int i=0; i<number; i++) {
+            sb.append(" ");
+        }
+        
+        return sb.toString();
     }
 
 }

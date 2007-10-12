@@ -23,7 +23,7 @@
 	name="data">
 
     <component name="DataComponent">
-        <tuscany:implementation.data table="company">
+        <tuscany:implementation.data>
            <tuscany:connectionInfo>
 		      <tuscany:connectionProperties 
 			   driverClass="org.apache.derby.jdbc.EmbeddedDriver" 

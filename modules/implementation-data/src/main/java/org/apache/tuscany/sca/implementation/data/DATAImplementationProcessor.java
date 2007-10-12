@@ -77,7 +77,7 @@ public class DATAImplementationProcessor implements StAXArtifactProcessor<DATAIm
 
     /*
      * <component name="CompanyDataComponent">
-     *   <implementation.data table="company">
+     *   <implementation.data>
      *      <connectionInfo>
      *         <connectionProperties 
      *          driverClass="org.apache.derby.jdbc.EmbeddedDriver" 
@@ -94,10 +94,6 @@ public class DATAImplementationProcessor implements StAXArtifactProcessor<DATAIm
 
         // Create an initialize the DAS implementation model
         DATAImplementation implementation = dataFactory.createDASImplementation();
-
-        //FIXME: validation sending info to monitor....
-        String table = reader.getAttributeValue(null, "table");
-        implementation.setTable(table); //required                        
 
         while (true) {
             int event = reader.next();
@@ -126,11 +122,7 @@ public class DATAImplementationProcessor implements StAXArtifactProcessor<DATAIm
 
     public void write(DATAImplementation implementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         writer.writeStartElement(IMPLEMENTATION_DATA.getNamespaceURI(), IMPLEMENTATION_DATA.getLocalPart());
-        
-        if (implementation.getTable() != null) {
-            writer.writeAttribute("table", implementation.getTable());
-        }
-        
+                
         if (implementation.getConnectionInfo() != null) { 
             connectionInfoProcessor.write(implementation.getConnectionInfo(), writer);
         }

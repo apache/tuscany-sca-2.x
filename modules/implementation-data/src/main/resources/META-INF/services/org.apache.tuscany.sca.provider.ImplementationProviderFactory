@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the implementation extension
-org.apache.tuscany.sca.implementation.data.DATAImplementationProviderFactory;model=org.apache.tuscany.sca.implementation.data.DATAImplementation
+org.apache.tuscany.sca.implementation.data.provider.DATAImplementationProviderFactory;model=org.apache.tuscany.sca.implementation.data.DATAImplementation
