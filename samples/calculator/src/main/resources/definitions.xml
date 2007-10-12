@@ -33,7 +33,7 @@
  	provides="logging"
  	appliesTo="sca:implementation.java"
  	xmlns="http://www.osoa.org/xmlns/sca/1.0">
- 	<tuscany:jdkLogger xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0" name="test.logger">
+ 	<tuscany:jdkLogger xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0" name="calculator">
 		<logLevel>INFO</logLevel>
 		<resourceBundle>CalculatorLogMessages</resourceBundle>
 	</tuscany:jdkLogger>
