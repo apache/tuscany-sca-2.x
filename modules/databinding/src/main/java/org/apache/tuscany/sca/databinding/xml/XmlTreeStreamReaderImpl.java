@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.databinding.xml;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
@@ -29,19 +32,16 @@ import javax.xml.stream.XMLStreamException;
  */
 public class XmlTreeStreamReaderImpl implements XMLFragmentStreamReader {
 
-    // we always create a new namespace context
-    protected DelegatingNamespaceContext namespaceContext = new DelegatingNamespaceContext();
-
     protected int state;
-    protected XmlElementIterator iterator;
-    protected XmlElement current;
+    protected XmlNodeIterator iterator;
+    protected XmlNode current;
 
     /*
      * we need to pass in a namespace context since when delegated, we've no
      * idea of the current namespace context. So it needs to be passed on here!
      */
-    public XmlTreeStreamReaderImpl(XmlElement root) {
-        this.iterator = new XmlElementIterator(root);
+    public XmlTreeStreamReaderImpl(XmlNode root) {
+        this.iterator = new XmlNodeIterator(root);
         this.current = null;
         this.state = START_DOCUMENT;
     }
@@ -171,10 +171,11 @@ public class XmlTreeStreamReaderImpl implements XMLFragmentStreamReader {
     }
 
     public NamespaceContext getNamespaceContext() {
-        return namespaceContext;
+        return iterator.getNamespaceContext();
     }
 
     public int getNamespaceCount() {
+        checkElementState();
         return current.namespaces().size();
     }
 
@@ -182,7 +183,8 @@ public class XmlTreeStreamReaderImpl implements XMLFragmentStreamReader {
      * @param i
      */
     public String getNamespacePrefix(int i) {
-        return current.namespaces().get(i).getPrefix();
+        checkElementState();
+        return new ArrayList<Map.Entry<String, String>>(current.namespaces().entrySet()).get(i).getKey();
     }
 
     public String getNamespaceURI() {
@@ -190,11 +192,12 @@ public class XmlTreeStreamReaderImpl implements XMLFragmentStreamReader {
     }
 
     public String getNamespaceURI(int i) {
-        return current.namespaces().get(i).getNamespaceURI();
+        checkElementState();
+        return new ArrayList<Map.Entry<String, String>>(current.namespaces().entrySet()).get(i).getValue();
     }
 
     public String getNamespaceURI(String prefix) {
-        return namespaceContext.getNamespaceURI(prefix);
+        return getNamespaceContext().getNamespaceURI(prefix);
     }
 
     public String getPIData() {
@@ -337,14 +340,14 @@ public class XmlTreeStreamReaderImpl implements XMLFragmentStreamReader {
         }
         current = iterator.next();
         int itState = iterator.getState();
-        if (itState == XmlElementIterator.END) {
+        if (itState == XmlNodeIterator.END) {
             if (current.getName() != null) {
                 state = END_ELEMENT;
             } else {
                 state = next();
             }
         }
-        if (itState == XmlElementIterator.START) {
+        if (itState == XmlNodeIterator.START) {
             if (current.getName() != null) {
                 state = START_ELEMENT;
             } else {
