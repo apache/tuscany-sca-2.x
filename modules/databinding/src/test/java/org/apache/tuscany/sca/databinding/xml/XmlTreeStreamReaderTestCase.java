@@ -21,8 +21,10 @@ package org.apache.tuscany.sca.databinding.xml;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
@@ -42,10 +44,10 @@ public class XmlTreeStreamReaderTestCase {
     @Before
     public void setUp() {
         root = new XmlElementImpl();
-        root.name = new QName("http://ns", "e1");
+        root.name = new QName("http://ns", "e1", "p1");
 
         XmlElementImpl e11 = new XmlElementImpl();
-        e11.name = new QName("http://ns", "e11");
+        e11.name = new QName("http://ns1", "e11", "p2");
 
         XmlElementImpl e12 = new XmlElementImpl();
         e12.name = new QName("http://ns", "e12");
@@ -66,14 +68,14 @@ public class XmlTreeStreamReaderTestCase {
     @Test
     public void testIterator() {
         List<QName> elements = new ArrayList<QName>();
-        XmlElementIterator i = new XmlElementIterator(root);
+        XmlNodeIterator i = new XmlNodeIterator(root);
         for (; i.hasNext();) {
-            XmlElement e = i.next();
+            XmlNode e = i.next();
             elements.add(e.getName());
-            // System.out.println(e + " " + i.getState());
+            // System.out.println(i.getNamespaceContext());
         }
         QName[] names =
-            {new QName("http://ns", "e1"), new QName("http://ns", "e11"), null, null, new QName("http://ns", "e11"),
+            {new QName("http://ns", "e1"), new QName("http://ns1", "e11"), null, null, new QName("http://ns1", "e11"),
              new QName("http://ns", "e12"), new QName("http://ns", "e121"), new QName("http://ns", "e121"),
              new QName("http://ns", "e12"), new QName("http://ns", "e1")};
         Assert.assertEquals(Arrays.asList(names), elements);
@@ -102,7 +104,7 @@ public class XmlTreeStreamReaderTestCase {
         }
 
         String[] events =
-            {"START_DOCUMENT", "1: {http://ns}e1", "1: {http://ns}e11", "MyText", "2: {http://ns}e11",
+            {"START_DOCUMENT", "1: {http://ns}e1", "1: {http://ns1}e11", "MyText", "2: {http://ns1}e11",
              "1: {http://ns}e12", "1: {http://ns}e121", "2: {http://ns}e121", "2: {http://ns}e12", "2: {http://ns}e1",
              "END_DOCUMENT"
             };
@@ -110,53 +112,53 @@ public class XmlTreeStreamReaderTestCase {
         Assert.assertEquals(Arrays.asList(events), seq);
     }
 
-    private static class XmlElementImpl implements XmlElement {
-        private List<XmlElement> children = new ArrayList<XmlElement>();
+    private static class XmlElementImpl implements XmlNode {
+        private List<XmlNode> children = new ArrayList<XmlNode>();
         private List<XmlAttribute> attrs = new ArrayList<XmlAttribute>();
-        private List<QName> namespaces = new ArrayList<QName>();
+        private Map<String, String> namespaces = new HashMap<String, String>();
         private QName name;
         private boolean isLeaf;
         private String value = "123";
 
         /**
-         * @see org.apache.tuscany.sca.databinding.xml.XmlElement#attributes()
+         * @see org.apache.tuscany.sca.databinding.xml.XmlNode#attributes()
          */
         public List<XmlAttribute> attributes() {
             return attrs;
         }
 
         /**
-         * @see org.apache.tuscany.sca.databinding.xml.XmlElement#children()
+         * @see org.apache.tuscany.sca.databinding.xml.XmlNode#children()
          */
-        public Iterator<XmlElement> children() {
+        public Iterator<XmlNode> children() {
             return children.iterator();
         }
 
         /**
-         * @see org.apache.tuscany.sca.databinding.xml.XmlElement#getName()
+         * @see org.apache.tuscany.sca.databinding.xml.XmlNode#getName()
          */
         public QName getName() {
             return name;
         }
 
         /**
-         * @see org.apache.tuscany.sca.databinding.xml.XmlElement#getValue()
+         * @see org.apache.tuscany.sca.databinding.xml.XmlNode#getValue()
          */
         public String getValue() {
             return value;
         }
 
         /**
-         * @see org.apache.tuscany.sca.databinding.xml.XmlElement#isLeaf()
+         * @see org.apache.tuscany.sca.databinding.xml.XmlNode#isLeaf()
          */
         public boolean isLeaf() {
             return isLeaf;
         }
 
         /**
-         * @see org.apache.tuscany.sca.databinding.xml.XmlElement#namespaces()
+         * @see org.apache.tuscany.sca.databinding.xml.XmlNode#namespaces()
          */
-        public List<QName> namespaces() {
+        public Map<String, String> namespaces() {
             return namespaces;
         }
 

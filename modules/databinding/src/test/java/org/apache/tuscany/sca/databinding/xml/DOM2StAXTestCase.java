@@ -56,8 +56,7 @@ public class DOM2StAXTestCase extends TestCase {
             + "</ipo:purchaseOrder>";
 
     private static final String CRAZY_XML =
-        "<p:e1 xmlns=\"http://ns0\" xmlns:p=\"http://p1\">" 
-        + "<p:e2 xmlns:p=\"http://p2\"/><e3/><e4 xmlns=\"\">E4</e4></p:e1>";
+        "<p:e1 xmlns=\"http://ns0\" xmlns:p=\"http://p1\">" + "<p:e2 xmlns:p=\"http://p2\"/><e3/><e4 xmlns=\"\">E4</e4></p:e1>";
 
     /**
      * @see junit.framework.TestCase#setUp()
@@ -87,4 +86,15 @@ public class DOM2StAXTestCase extends TestCase {
         System.out.println(xml);
         assertTrue(xml.contains("<p:e2 xmlns:p=\"http://p2\""));
     }
+
+    public void testTransformation3() {
+        String2Node t1 = new String2Node();
+        Node node = t1.transform(IPO_XML, null);
+        DOMXmlNodeImpl element = new DOMXmlNodeImpl(node);
+        XmlTreeStreamReaderImpl reader = new XmlTreeStreamReaderImpl(element);
+        XMLStreamReader2String t3 = new XMLStreamReader2String();
+        String xml = t3.transform(reader, null);
+        assertTrue(xml != null && xml.indexOf("<shipDate>1999-12-05</shipDate>") != -1);
+    }
+
 }

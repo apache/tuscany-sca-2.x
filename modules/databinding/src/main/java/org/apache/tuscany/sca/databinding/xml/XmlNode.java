@@ -21,37 +21,14 @@ package org.apache.tuscany.sca.databinding.xml;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
 /**
  * @version $Rev$ $Date$
  */
-public interface XmlElement {
-    /**
-     * Returns the child <code>XmlTreeElement</code> at index 
-     * <code>childIndex</code>.
-     */
-    // XmlElement getChildAt(int childIndex);
-
-    /**
-     * Returns the number of children <code>XmlTreeElement</code>s the receiver
-     * contains.
-     */
-    // int getChildCount();
-
-    /**
-     * Returns the parent <code>XmlTreeElement</code> of the receiver.
-     */
-    // XmlElement getParent();
-
-    /**
-     * Returns the index of <code>node</code> in the receivers children.
-     * If the receiver does not contain <code>node</code>, -1 will be
-     * returned.
-     */
-    // int getIndex(XmlElement node);
-
+public interface XmlNode {
     /**
      * Returns true if the receiver is a leaf.
      */
@@ -60,18 +37,24 @@ public interface XmlElement {
     /**
      * Returns the children of the receiver as an <code>Iterator</code>.
      */
-    Iterator<XmlElement> children();
+    Iterator<XmlNode> children();
 
     /**
-     * Returns the attributes of the element as an <code>Iterator</code>
+     * Returns the attributes of the element as an <code>List</code>. Namespace declarations 
+     * should be excluded.
+     * 
      * @return
      */
     List<XmlAttribute> attributes();
     
-    List<QName> namespaces();
+    /**
+     * Retunrs a map of prefix to namespace URI
+     * @return
+     */
+    Map<String, String> namespaces();
 
     /**
-     * Return the QName of the element
+     * Return the QName of the element. If it's for a text node, the name is null.
      * @return
      */
     QName getName();
