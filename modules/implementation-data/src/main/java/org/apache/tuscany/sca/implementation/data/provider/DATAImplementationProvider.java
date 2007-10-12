@@ -16,11 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.data;
+package org.apache.tuscany.sca.implementation.data.provider;
 
-import org.apache.tuscany.das.rdb.DAS;
-import org.apache.tuscany.sca.data.engine.DataAccessEngine;
-import org.apache.tuscany.sca.data.engine.DataAccessEngineManager;
+import org.apache.tuscany.sca.implementation.data.DATAImplementation;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
@@ -35,7 +33,6 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public class DATAImplementationProvider implements ImplementationProvider {
     private RuntimeComponent component;
     private DATAImplementation implementation;
-    private final DataAccessEngineManager dataAccessEngineManager;
 
     /**
      * Constructs a new DATA implementation.
@@ -43,19 +40,17 @@ public class DATAImplementationProvider implements ImplementationProvider {
     public DATAImplementationProvider(RuntimeComponent component, DATAImplementation implementation) {
         this.component = component;
         this.implementation = implementation;
-        this.dataAccessEngineManager = new DataAccessEngineManager();
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
-        DAS das = null;
-        try {
-            das = dataAccessEngineManager.getDAS(null, implementation.getConnectionInfo());
-        } catch(Exception e) {
-            e.printStackTrace();
-            //what now ?
+        String operationName = operation.getName();
+        String tableName = service.getName();
+
+        if (operationName.equals("get")) {
+            return new DATAInvoker.GetInvoker(operation, implementation.getConnectionInfo(), tableName);
         }
-        DATAInvoker invoker = new DATAInvoker(operation, implementation.getTable(), new DataAccessEngine(das) );
-        return invoker;
+
+        return new DATAInvoker(operation, implementation.getConnectionInfo(), tableName);
     }
 
     public boolean supportsOneWayInvocation() {

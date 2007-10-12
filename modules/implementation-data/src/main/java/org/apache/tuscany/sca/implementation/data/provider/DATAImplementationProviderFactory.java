@@ -16,9 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.implementation.data;
+package org.apache.tuscany.sca.implementation.data.provider;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.implementation.data.DATAImplementation;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;

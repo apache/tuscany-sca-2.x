@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.data;
 
-import commonj.sdo.DataObject;
+import javax.xml.stream.XMLStreamReader;
 
 /**
  * The service interface of a DAS service provided by DAS components.
@@ -26,13 +26,14 @@ import commonj.sdo.DataObject;
  * @version $Rev$ $Date$
  */
 public interface DATA {
-
+    
     /**
-     * Execute a DAS query to retrieve the specified table row
-     * @param id The PK that identifies the row
-     * @return The row represented by an SDO object
+     * Retrieve the Database table contents
+     * If a id is given, the results will be filtered to a matching row
+     * @param id The PK that identifies the row on the table
+     * @return The row content in XML format
      */
-    DataObject get(String id);
+    XMLStreamReader get(String id);
     
 
 }

@@ -61,7 +61,7 @@ public class CompanyFeed implements Collection {
 
     public Entry get(String id) throws NotFoundException{
         
-        DataObject data = dataService.get(id);        
+        DataObject data = null;//dataService.get(id);        
         if(data == null) {
             throw new NotFoundException();
         }
