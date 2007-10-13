@@ -117,13 +117,13 @@
     </wsdl:binding>
     <wsdl:service name="ExampleService">
         <wsdl:port name="ExampleServiceSOAP11port_http" binding="ns0:ExampleServiceSOAP11Binding">
-            <soap:address location="http://localhost:8080/axis2/services/ExampleService"/>
+            <soap:address location="http://localhost:8085/axis2/services/ExampleService"/>
         </wsdl:port>
         <wsdl:port name="ExampleServiceSOAP12port_http" binding="ns0:ExampleServiceSOAP12Binding">
-            <soap12:address location="http://localhost:8080/axis2/services/ExampleService"/>
+            <soap12:address location="http://localhost:8085/axis2/services/ExampleService"/>
         </wsdl:port>
         <wsdl:port name="ExampleServiceHttpport" binding="ns0:ExampleServiceHttpBinding">
-            <http:address location="http://localhost:8080/axis2/services/ExampleService"/>
+            <http:address location="http://localhost:8085/axis2/services/ExampleService"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>
