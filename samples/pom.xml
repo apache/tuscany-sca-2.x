@@ -55,9 +55,7 @@
                 <!--module>domain-webapp</module-->
                 <module>feed-aggregator</module>
                 <module>feed-aggregator-webapp</module>
-                <!--
                 <module>helloworld-bpel</module>
-                -->
                 <module>helloworld-dojo-webapp</module>
                 <module>helloworld-jsonrpc-webapp</module>
                 <module>helloworld-ws-service</module>
