@@ -177,6 +177,11 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-domain-api</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-domain-impl</artifactId>
             <version>${pom.version}</version>
         </dependency>
@@ -308,12 +313,22 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-node-api</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-node-impl</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-policy</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-policy-logging</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
@@ -329,16 +344,6 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-definitions</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-topology</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-topology-xml</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
