@@ -67,7 +67,9 @@
                 <module>recursive</module>
                 <module>references</module>
                 <module>services</module>
+                <!--
                 <module>component-type</module>
+                -->
                 <module>interfaces</module>
                 <module>scopes</module>
                 <module>wsdl</module>
