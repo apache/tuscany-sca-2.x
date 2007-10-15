@@ -28,6 +28,31 @@ public interface PropertyComponent {
     public String getLocation();
     public String getLocationFromComponentContext();
     public String getYear();
+    
+    /**
+     * This method is used to test injecting a primitive String Array
+     * @return The injected array
+     */
+    public String[] getDaysOfTheWeek();
+
+    /**
+     * This method is used to test injecting an Object Integer Array
+     * @return The injected array
+     */
+    public Integer[] getIntegerNumbers();
+    
+    /**
+     * This method is used to test injecting an int Array
+     * @return The injected array
+     */
+    public int[] getIntNumbers();
+
+    /**
+     * This method is used to test injecting an Object Array
+     * @return The injected array
+     */
+    public DataObject[] getSdoArrayProperty();
+    
     public ComplexPropertyBean getComplexPropertyOne();
     public ComplexPropertyBean getComplexPropertyTwo();
     public ComplexPropertyBean getComplexPropertyThree();

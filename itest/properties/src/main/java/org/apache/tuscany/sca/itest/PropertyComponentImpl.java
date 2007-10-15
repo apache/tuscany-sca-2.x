@@ -57,6 +57,18 @@ public class PropertyComponentImpl implements PropertyComponent {
     @Property(name = "year")
     protected String year;
     
+    @Property(name = "daysOfTheWeek")
+    protected String[] daysOfTheWeek;
+    
+    @Property(name = "integerNumbers")
+    protected Integer[] integerNumbers;
+
+    @Property(name = "intNumbers")
+    protected int[] intNumbers;
+
+    @Property(name = "sdoArray")
+    protected DataObject[] sdoArray;
+    
     public String getLocation(){
         return location;
     }
@@ -104,5 +116,37 @@ public class PropertyComponentImpl implements PropertyComponent {
 
     public void setCustomerSdo(CustomerImpl customerSdo) {
         this.customerSdo = customerSdo;
+    }
+    
+    /**
+     * This method is used to test injecting an Array
+     * @return The injected array
+     */
+    public String[] getDaysOfTheWeek() {
+        return daysOfTheWeek;
+    }
+    
+    /**
+     * This method is used to test injecting an Object Integer Array
+     * @return The injected array
+     */
+    public Integer[] getIntegerNumbers() {
+        return integerNumbers;
+    }
+    
+    /**
+     * This method is used to test injecting an int Array
+     * @return The injected array
+     */
+    public int[] getIntNumbers() {
+        return intNumbers;
+    }
+
+    /**
+     * This method is used to test injecting an Object Array
+     * @return The injected array
+     */
+    public DataObject[] getSdoArrayProperty() {
+        return sdoArray;
     }
 }

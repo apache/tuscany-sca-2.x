@@ -211,6 +211,26 @@
         </property>
         <property name="location" type="xsd:string">RTP</property>	
         <property name="year" type="xsd:string">2006</property>	
+        <property name="daysOfTheWeek" many="true" type="xsd:string">"Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday" "Sunday"</property>
+        <property name="integerNumbers" many="true" type="xsd:int">1 2 3 4 5 6 7 8 9 10</property>
+        <property name="intNumbers" many="true" type="xsd:int">10 9 8 7 6 5 4 3 2 1 0</property>
+        <property name="sdoArray" many="true" type="cust:Customer">
+            <cust:customer>
+                <cust:firstName>Firstly Name 1</cust:firstName>
+                <cust:middleName>Middler Name 1</cust:middleName>
+                <cust:lastName>Lasting Name 1</cust:lastName>
+            </cust:customer>
+            <cust:customer>
+                <cust:firstName>Firstly Name 2</cust:firstName>
+                <cust:middleName>Middler Name 2</cust:middleName>
+                <cust:lastName>Lasting Name 2</cust:lastName>
+            </cust:customer>
+            <cust:customer>
+                <cust:firstName>Firstly Name 3</cust:firstName>
+                <cust:middleName>Middler Name 3</cust:middleName>
+                <cust:lastName>Lasting Name 3</cust:lastName>
+            </cust:customer>
+        </property>
     </component>
 </composite>
 
