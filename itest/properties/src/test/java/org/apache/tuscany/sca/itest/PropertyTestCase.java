@@ -22,7 +22,10 @@ package org.apache.tuscany.sca.itest;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
+import java.util.Arrays;
 import java.util.Iterator;
+
+import junit.framework.Assert;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
@@ -197,7 +200,53 @@ public class PropertyTestCase {
         assertNotNull(locationFromCC);
         assertEquals(location, locationFromCC);
     }
+    
+    @Test
+    public void testGetInjectedStringArrayProperty()
+    {
+        String[] daysOfWeek = propertyService.getDaysOfTheWeek();
+        assertNotNull(daysOfWeek);
 
+        String[] expected = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+        Assert.assertTrue(Arrays.equals(expected, daysOfWeek));
+    }
+
+    @Test
+    public void testGetInjectedIntegerArrayProperty()
+    {
+        Integer[] numbers = propertyService.getIntegerNumbers();
+        assertNotNull(numbers);
+
+        Integer[] expected = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        Assert.assertTrue(Arrays.equals(expected, numbers));
+    }
+
+    @Test
+    public void testGetInjectedIntArrayProperty()
+    {
+        int[] numbers = propertyService.getIntNumbers();
+        assertNotNull(numbers);
+
+        int[] expected = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+        Assert.assertTrue(Arrays.equals(expected, numbers));
+    }
+    
+    
+    @Test
+    public void testGetInjectedSdoArrayProperty()
+    {
+        DataObject[] sdos = propertyService.getSdoArrayProperty();
+        assertNotNull(sdos);
+
+        for (int i = 1; i <= 3; i++) {
+            DataObject dataObject = sdos[i - 1];
+            assertEquals("Firstly Name " + i, dataObject.get("firstName"));
+            assertEquals("Middler Name " + i, dataObject.getString("middleName"));
+            assertEquals("Lasting Name " + i, dataObject.getString("lastName"));
+        }
+    }
+    
+    
     @BeforeClass
     public static void init() throws Exception {
         try {
