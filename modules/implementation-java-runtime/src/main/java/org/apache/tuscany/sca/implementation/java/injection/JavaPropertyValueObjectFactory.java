@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.injection;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -31,6 +32,8 @@ import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
+import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
@@ -45,6 +48,49 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
 
     public JavaPropertyValueObjectFactory(Mediator mediator) {
         this.mediator = mediator;
+    }
+    
+    public ObjectFactory createValueFactory(Property property, Object propertyValue, JavaElementImpl javaElement) {
+        isSimpleType = isSimpleType(property);
+        Document doc = (Document)propertyValue;
+        Class javaType = JavaIntrospectionHelper.getBaseType(javaElement.getType(), javaElement.getGenericType());
+        Element rootElement = doc.getDocumentElement();
+        if (property.isMany()) {
+            if (isSimpleType) {
+                String value = "";
+                if (rootElement.getChildNodes().getLength() > 0) {
+                    value = rootElement.getChildNodes().item(0).getTextContent();
+                }
+                List<String> values = getSimplePropertyValues(value, javaType);
+                if ( javaElement.getType().isArray() ) {
+                    return new ArrayObjectFactoryImpl(property, values, isSimpleType, javaType);
+                } else {
+                    return new ListObjectFactoryImpl(property, values, isSimpleType, javaType);
+                }
+            } else {
+                if ( javaElement.getType().isArray() ) {
+                    return new ArrayObjectFactoryImpl(property, getComplexPropertyValues(doc), isSimpleType, javaType);
+                } else {
+                    return new ListObjectFactoryImpl(property, getComplexPropertyValues(doc), isSimpleType, javaType);
+                }
+            }
+        } else {
+            if (isSimpleType) {
+                String value = "";
+                if (rootElement.getChildNodes().getLength() > 0) {
+                    value = rootElement.getChildNodes().item(0).getTextContent();
+                }
+                return new ObjectFactoryImpl(property, value, isSimpleType, javaType);
+            } else {
+                List<Node> nodes = getComplexPropertyValues(doc);
+                Object value = null;
+                if (!nodes.isEmpty()) {
+                    value = nodes.get(0);
+                }
+                return new ObjectFactoryImpl(property, value, isSimpleType, javaType);
+            }
+
+        }
     }
 
     public ObjectFactory createValueFactory(Property property, Object propertyValue, Class javaType) {
@@ -79,7 +125,7 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
             }
 
         }
-    }
+    } 
 
     private boolean isSimpleType(Property property) {
         if (property.getXSDType() != null) {
@@ -196,6 +242,31 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
                 List instances = new ArrayList();
                 for (Node aValue : (List<Node>)propertyValue) {
                     instances.add(mediator.mediate(aValue, sourceDataType, targetDataType, null));
+                }
+                return instances;
+            }
+        }
+    }
+    
+    public class ArrayObjectFactoryImpl extends ObjectFactoryImplBase {
+        public ArrayObjectFactoryImpl(Property property, List<?> propertyValues, boolean isSimpleType, Class javaType) {
+            super(property, propertyValues, isSimpleType, javaType);
+        }
+
+        @SuppressWarnings("unchecked")
+        public Object getInstance() throws ObjectCreationException {
+            if (isSimpleType) {
+                int count = 0;
+                Object values = Array.newInstance(javaType, ((List<Object>)propertyValue).size());
+                for (String aValue : (List<String>)propertyValue) {
+                    Array.set(values, count++, simpleTypeMapper.toJavaObject(property.getXSDType(), aValue, null));
+                }
+                return values;
+            } else {
+                Object instances = Array.newInstance(javaType, ((List<Object>)propertyValue).size());
+                int count = 0;
+                for (Node aValue : (List<Node>)propertyValue) {
+                    Array.set(instances, count++, mediator.mediate(aValue, sourceDataType, targetDataType, null));
                 }
                 return instances;
             }

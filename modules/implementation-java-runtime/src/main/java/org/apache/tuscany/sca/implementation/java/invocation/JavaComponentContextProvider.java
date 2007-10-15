@@ -115,9 +115,9 @@ public class JavaComponentContextProvider {
         if (element != null && !(element.getAnchor() instanceof Constructor) && configuredProperty.getValue() != null) {
             instanceFactoryProvider.getInjectionSites().add(element);
 
-            Class propertyJavaType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
+            //Class propertyJavaType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
             ObjectFactory<?> propertyObjectFactory =
-                createPropertyValueFactory(configuredProperty, configuredProperty.getValue(), propertyJavaType);
+                createPropertyValueFactory(configuredProperty, configuredProperty.getValue(), element);
             instanceFactoryProvider.setObjectFactory(element, propertyObjectFactory);
         }
     }
@@ -341,9 +341,9 @@ public class JavaComponentContextProvider {
         return new WireObjectFactory<B>(interfaze, wire, proxyFactory);
     }
 
-    private ObjectFactory<?> createPropertyValueFactory(ComponentProperty property, Object propertyValue, Class javaType) {
-        return propertyValueFactory.createValueFactory(property, propertyValue, javaType);
-    }
+    private ObjectFactory<?> createPropertyValueFactory(ComponentProperty property, Object propertyValue, JavaElementImpl javaElement) {
+        return propertyValueFactory.createValueFactory(property, propertyValue, javaElement);
+    } 
 
     /**
      * @return the component
