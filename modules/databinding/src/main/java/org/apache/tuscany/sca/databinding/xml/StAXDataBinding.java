@@ -44,6 +44,7 @@ public class StAXDataBinding extends BaseDataBinding {
     public boolean introspect(DataType type, Annotation[] annotations) {
         if (super.introspect(type, annotations)) {
             type.setLogical(XMLType.UNKNOWN);
+            type.setDataBinding(NAME);
             return true;
         } else {
             return false;

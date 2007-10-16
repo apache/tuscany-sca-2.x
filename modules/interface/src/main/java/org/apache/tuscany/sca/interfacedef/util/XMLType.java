@@ -67,6 +67,14 @@ public class XMLType {
     public QName getElementName() {
         return element;
     }
+    
+    public void setElementName(QName element) {
+        this.element = element;
+    }
+    
+    public void setTypeName(QName type) {
+        this.type = type;
+    }
 
     public static XMLType getType(QName type) {
         return new XMLType(null, type);

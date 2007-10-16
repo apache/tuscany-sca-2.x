@@ -26,19 +26,31 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Used to demarcate expected data types for an operation
+ * Used to demarcate the mapping style for an interface or operation
  *
  * @version $Rev$ $Date$
  */
+// FIXME: [rfeng] We should consider to use javax.jws.soap.SOAPBinding
 @Target({TYPE, METHOD})
 @Retention(RUNTIME)
 public @interface DataBinding {
 
     /**
-     * Returns the unique name of the data binding
+     * Indicate the effective databinding that controls the WSDL/Java mapping of the 
+     * interface/operation
+     * 
      * @return the unique name of the data binding
      */
     String value();
-    boolean wrapperStyle() default false;
+    
+    /**
+     * Indicate if the operation is mapped using WRAPPED or BARE style. Originated from
+     * javax.jws.soap.SOAPBinding.ParameterStyle: Determines whether method parameters 
+     * represent the entire message body, or whether the parameters are elements wrapped 
+     * inside a top-level element named after the operation
+     * 
+     * @return true if the parameter style is WRAPPED, false if BARE
+     */
+    boolean wrapped() default false;
 
 }
