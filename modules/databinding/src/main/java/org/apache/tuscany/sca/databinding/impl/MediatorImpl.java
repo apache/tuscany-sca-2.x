@@ -146,7 +146,8 @@ public class MediatorImpl implements Mediator {
         String targetId = targetDataType.getDataBinding();
         List<Transformer> path = transformers.getTransformerChain(sourceId, targetId);
         if (path == null) {
-            TransformationException ex = new TransformationException("No path found for the transformation");
+            TransformationException ex =
+                new TransformationException("No path found for the transformation: " + sourceId + "->" + targetId);
             ex.setSourceDataBinding(sourceId);
             ex.setTargetDataBinding(targetId);
             throw ex;

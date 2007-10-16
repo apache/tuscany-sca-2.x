@@ -63,6 +63,7 @@ public class DOMDataBinding extends BaseDataBinding {
     public boolean introspect(DataType type, Annotation[] annotations) {
         if(Node.class.isAssignableFrom(type.getPhysical())) {
             type.setLogical(new XMLType(ROOT_ELEMENT, null));
+            type.setDataBinding(NAME);
             return true;
         }
         return false;

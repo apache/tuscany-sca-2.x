@@ -66,7 +66,7 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
         boolean wrapperStyle = false;
         if (dataBinding != null) {
             dataBindingId = dataBinding.value();
-            wrapperStyle = dataBinding.wrapperStyle();
+            wrapperStyle = dataBinding.wrapped();
         }
 
         Map<String, Operation> opMap = new HashMap<String, Operation>();
@@ -87,7 +87,7 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
             wrapperStyle = false;
             if (dataBinding != null) {
                 dataBindingId = dataBinding.value();
-                wrapperStyle = dataBinding.wrapperStyle();
+                wrapperStyle = dataBinding.wrapped();
                 operation.setDataBinding(dataBindingId);
                 operation.setWrapperStyle(wrapperStyle);
             }

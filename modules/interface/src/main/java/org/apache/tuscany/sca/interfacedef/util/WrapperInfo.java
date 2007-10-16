@@ -128,7 +128,7 @@ public class WrapperInfo {
             if (elements != null && elements.size() > 0) {
                 if (elements.size() > 1) {
                     // We don't support output with multiple parts
-                    throw new IllegalArgumentException("Multi-part output is not supported");
+                    // throw new IllegalArgumentException("Multi-part output is not supported");
                 }
                 ElementInfo element = elements.get(0);
 
