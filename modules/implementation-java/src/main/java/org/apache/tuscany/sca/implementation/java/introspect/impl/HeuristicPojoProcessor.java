@@ -73,8 +73,7 @@ import org.osoa.sca.annotations.Service;
 public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     private JavaInterfaceFactory javaFactory;
 
-    public HeuristicPojoProcessor(AssemblyFactory assemblyFactory,
-                                  JavaInterfaceFactory javaFactory) {
+    public HeuristicPojoProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory) {
         super(assemblyFactory);
         this.javaFactory = javaFactory;
     }
@@ -97,12 +96,12 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
              * is the implementation class.
              */
             Set<Class> interfaces = getAllInterfaces(clazz);
-            for(Class<?> i: interfaces) {
-                if(i.isAnnotationPresent(Remotable.class)) {
+            for (Class<?> i : interfaces) {
+                if (i.isAnnotationPresent(Remotable.class)) {
                     addService(type, i);
                 }
             }
-            if(services.isEmpty()) {
+            if (services.isEmpty()) {
                 // class is the interface
                 addService(type, clazz);
             }
@@ -110,12 +109,12 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         Set<Method> methods = getAllUniquePublicProtectedMethods(clazz, false);
         if (!type.getReferenceMembers().isEmpty() || !type.getPropertyMembers().isEmpty()) {
             // references and properties have been explicitly defined
-//            if (type.getServices().isEmpty()) {
-//                calculateServiceInterface(clazz, type, methods);
-//                if (type.getServices().isEmpty()) {
-//                    throw new ServiceTypeNotFoundException(clazz.getName());
-//                }
-//            }
+            //            if (type.getServices().isEmpty()) {
+            //                calculateServiceInterface(clazz, type, methods);
+            //                if (type.getServices().isEmpty()) {
+            //                    throw new ServiceTypeNotFoundException(clazz.getName());
+            //                }
+            //            }
             evaluateConstructor(type, clazz);
             return;
         }
@@ -134,14 +133,14 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
 
     private boolean isPublicSetter(Method method) {
         return method.getParameterTypes().length == 1 && Modifier.isPublic(method.getModifiers())
-               && method.getName().startsWith("set")
-               && method.getReturnType() == void.class;
+            && method.getName().startsWith("set")
+            && method.getReturnType() == void.class;
     }
 
     private boolean isProtectedSetter(Method method) {
         return method.getParameterTypes().length == 1 && Modifier.isProtected(method.getModifiers())
-               && method.getName().startsWith("set")
-               && method.getReturnType() == void.class;
+            && method.getName().startsWith("set")
+            && method.getReturnType() == void.class;
     }
 
     private <T> void calcPropRefs(Set<Method> methods,
@@ -188,11 +187,13 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             String name = toPropertyName(method.getName());
             setters.add(name);
             // avoid duplicate property or ref names
-            if (!type.getPropertyMembers().containsKey(name) && !type.getReferenceMembers().containsKey(name)) {
-                if (isReferenceType(param, method.getGenericParameterTypes()[0])) {
+            if (isReferenceType(param, method.getGenericParameterTypes()[0])) {
+                if (!type.getReferenceMembers().containsKey(name)) {
                     type.getReferences().add(createReference(name, param));
                     type.getReferenceMembers().put(name, new JavaElementImpl(method, 0));
-                } else {
+                }
+            } else {
+                if (!type.getPropertyMembers().containsKey(name)) {
                     type.getProperties().add(createProperty(name, param));
                     type.getPropertyMembers().put(name, new JavaElementImpl(method, 0));
                 }
@@ -213,11 +214,15 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
             String name = field.getName();
             Class<?> paramType = field.getType();
             if (isReferenceType(paramType, field.getGenericType())) {
-                type.getReferences().add(createReference(name, paramType));
-                type.getReferenceMembers().put(name, new JavaElementImpl(field));
+                if (!type.getReferenceMembers().containsKey(name)) {
+                    type.getReferences().add(createReference(name, paramType));
+                    type.getReferenceMembers().put(name, new JavaElementImpl(field));
+                }
             } else {
-                type.getProperties().add(createProperty(name, paramType));
-                type.getPropertyMembers().put(name, new JavaElementImpl(field));
+                if (!type.getPropertyMembers().containsKey(name)) {
+                    type.getProperties().add(createProperty(name, paramType));
+                    type.getPropertyMembers().put(name, new JavaElementImpl(field));
+                }
             }
         }
     }
@@ -239,7 +244,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         Constructor constructor;
         boolean explict = false;
         if (definition != null && definition.getConstructor()
-                .isAnnotationPresent(org.osoa.sca.annotations.Constructor.class)) {
+            .isAnnotationPresent(org.osoa.sca.annotations.Constructor.class)) {
             // the constructor was already defined explicitly
             return;
         } else if (definition != null) {
@@ -452,7 +457,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     private boolean isReferenceType(Class<?> cls, Type genericType) {
         Class<?> baseType = JavaIntrospectionHelper.getBaseType(cls, genericType);
         return baseType.isInterface() && (baseType.isAnnotationPresent(Remotable.class) || baseType
-                   .isAnnotationPresent(Service.class));
+            .isAnnotationPresent(Service.class));
     }
 
     /**

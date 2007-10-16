@@ -491,5 +491,14 @@ public final class JavaIntrospectionHelper {
             getAllInterfaces(superClass, implemented);
         }
     }
+    
+    public static boolean isSetter(Method method) {
+        return (void.class == method.getReturnType() && method.getParameterTypes().length == 1 && method.getName()
+            .startsWith("set"));
+    }
 
+    public static boolean isGetter(Method method) {
+        return (void.class != method.getReturnType() && method.getParameterTypes().length == 0 && method.getName()
+            .startsWith("get"));
+    }    
 }

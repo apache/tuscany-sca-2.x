@@ -28,7 +28,7 @@ import org.osoa.sca.annotations.Property;
  * @version $Rev$ $Date$
  */
 public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
-    
+
     public PropertyProcessor(AssemblyFactory assemblyFactory) {
         super(assemblyFactory, Property.class);
     }

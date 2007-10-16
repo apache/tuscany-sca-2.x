@@ -91,9 +91,9 @@ public class ReferenceProcessorTestCase extends TestCase {
     }
 
     public void testDuplicateMethods() throws Exception {
-        processor.visitMethod(ReferenceProcessorTestCase.Bar.class.getMethod("dupMethod", Ref.class), type);
+        processor.visitMethod(ReferenceProcessorTestCase.Bar.class.getMethod("setDupMethod", Ref.class), type);
         try {
-            processor.visitMethod(ReferenceProcessorTestCase.Bar.class.getMethod("dupSomeMethod", Ref.class), type);
+            processor.visitMethod(ReferenceProcessorTestCase.Bar.class.getMethod("setDupSomeMethod", Ref.class), type);
             fail();
         } catch (DuplicateReferenceException e) {
             // expected
@@ -152,11 +152,11 @@ public class ReferenceProcessorTestCase extends TestCase {
         protected Ref baz;
 
         @Reference
-        public void dupMethod(Ref s) {
+        public void setDupMethod(Ref s) {
         }
 
         @Reference(name = "dupMethod")
-        public void dupSomeMethod(Ref s) {
+        public void setDupSomeMethod(Ref s) {
         }
 
         @Reference

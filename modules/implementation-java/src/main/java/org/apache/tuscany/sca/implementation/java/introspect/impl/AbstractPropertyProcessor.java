@@ -19,9 +19,11 @@
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -40,10 +42,24 @@ import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
  */
 public abstract class AbstractPropertyProcessor<A extends Annotation> extends BaseJavaClassVisitor {
     private final Class<A> annotationClass;
-    
+
     protected AbstractPropertyProcessor(AssemblyFactory assemblyFactory, Class<A> annotationClass) {
         super(assemblyFactory);
         this.annotationClass = annotationClass;
+    }
+    
+    private boolean removeProperty(JavaElementImpl prop, JavaImplementation type) {
+        if(prop==null) {
+            return false;
+        }
+        List<Property> props = type.getProperties();
+        for(int i=0;i<props.size();i++) {
+            if(props.get(i).getName().equals(prop.getName())) {
+                props.remove(i);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -53,12 +69,8 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
             return;
         }
 
-        if (!Void.TYPE.equals(method.getReturnType())) {
-            throw new IllegalPropertyException("Method does not have void return type", method);
-        }
-        Class[] paramTypes = method.getParameterTypes();
-        if (paramTypes.length != 1) {
-            throw new IllegalPropertyException("Method must have a single parameter", method);
+        if (!JavaIntrospectionHelper.isSetter(method)) {
+            throw new IllegalPropertyException("Annotated method is not a setter: " + method, method);
         }
 
         String name = getName(annotation);
@@ -70,10 +82,14 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
         }
 
         Map<String, JavaElementImpl> properties = type.getPropertyMembers();
-        if (properties.containsKey(name)) {
+        JavaElementImpl prop = properties.get(name);
+        // Setter override field
+        if (prop != null && prop.getElementType() != ElementType.FIELD) {
             throw new DuplicatePropertyException(name);
         }
 
+        removeProperty(prop, type);
+        
         JavaElementImpl element = new JavaElementImpl(method, 0);
         Property property = createProperty(name, element);
 
@@ -101,15 +117,19 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
         }
 
         Map<String, JavaElementImpl> properties = type.getPropertyMembers();
-        if (properties.containsKey(name)) {
+        JavaElementImpl prop = properties.get(name);
+        // Setter override field
+        if (prop != null && prop.getElementType() == ElementType.FIELD) {
             throw new DuplicatePropertyException(name);
         }
 
-        JavaElementImpl element = new JavaElementImpl(field);
-        Property property = createProperty(name, element);
-        initProperty(property, annotation);
-        type.getProperties().add(property);
-        properties.put(name, element);    
+        if (prop == null) {
+            JavaElementImpl element = new JavaElementImpl(field);
+            Property property = createProperty(name, element);
+            initProperty(property, annotation);
+            type.getProperties().add(property);
+            properties.put(name, element);
+        }
     }
 
     @Override
@@ -133,9 +153,13 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
                 name = parameter.getName();
             }
 
-            if (properties.containsKey(name)) {
-                throw new DuplicatePropertyException("Duplication property: " + name);
+            JavaElementImpl prop = properties.get(name);
+            // Setter override field
+            if (prop != null && prop.getElementType() != ElementType.FIELD) {
+                throw new DuplicatePropertyException(name);
             }
+            removeProperty(prop, type);
+            
             parameter.setName(name);
             parameter.setClassifer(annotationClass);
             Property property = createProperty(name, parameter);
@@ -150,7 +174,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Ba
     protected abstract void initProperty(Property property, A annotation) throws IntrospectionException;
 
     @SuppressWarnings("unchecked")
-    protected  Property createProperty(String name, JavaElementImpl element) throws IntrospectionException {
+    protected Property createProperty(String name, JavaElementImpl element) throws IntrospectionException {
 
         Property property = assemblyFactory.createProperty();
         property.setName(name);
