@@ -85,9 +85,9 @@ public class PropertyProcessorTestCase extends TestCase {
     }
 
     public void testDuplicateMethods() throws Exception {
-        processor.visitMethod(Bar.class.getMethod("dupMethod", String.class), type);
+        processor.visitMethod(Bar.class.getMethod("setDupMethod", String.class), type);
         try {
-            processor.visitMethod(Bar.class.getMethod("dupSomeMethod", String.class), type);
+            processor.visitMethod(Bar.class.getMethod("setDupSomeMethod", String.class), type);
             fail();
         } catch (DuplicatePropertyException e) {
             // expected
@@ -143,11 +143,11 @@ public class PropertyProcessorTestCase extends TestCase {
         protected String baz;
 
         @Property
-        public void dupMethod(String s) {
+        public void setDupMethod(String s) {
         }
 
         @Property(name = "dupMethod")
-        public void dupSomeMethod(String s) {
+        public void setDupSomeMethod(String s) {
         }
 
         @Property

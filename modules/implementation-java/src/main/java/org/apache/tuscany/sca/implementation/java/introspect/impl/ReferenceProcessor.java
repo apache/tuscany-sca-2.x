@@ -20,10 +20,12 @@ package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
 import static org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper.getBaseType;
 
+import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Multiplicity;
@@ -47,7 +49,7 @@ import org.osoa.sca.annotations.Reference;
  */
 public class ReferenceProcessor extends BaseJavaClassVisitor {
     private JavaInterfaceFactory javaFactory;
-    
+
     public ReferenceProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory) {
         super(assemblyFactory);
         this.javaFactory = javaFactory;
@@ -59,21 +61,38 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         if (annotation == null) {
             return; // Not a reference annotation.
         }
-        if (method.getParameterTypes().length != 1) {
-            throw new IllegalReferenceException("Setter must have one parameter", method);
+        if (!JavaIntrospectionHelper.isSetter(method)) {
+            throw new IllegalReferenceException("Annotated method is not a setter: " + method, method);
         }
         String name = annotation.name();
         if ("".equals(name)) {
             name = JavaIntrospectionHelper.toPropertyName(method.getName());
         }
-        if (type.getReferenceMembers().get(name) != null) {
+        JavaElementImpl ref = type.getReferenceMembers().get(name);
+        // Setter override field
+        if (ref != null && ref.getElementType() != ElementType.FIELD) {
             throw new DuplicateReferenceException(name);
         }
+        removeReference(ref, type);
 
         JavaElementImpl element = new JavaElementImpl(method, 0);
         org.apache.tuscany.sca.assembly.Reference reference = createReference(element, name);
         type.getReferences().add(reference);
         type.getReferenceMembers().put(name, element);
+    }
+
+    private boolean removeReference(JavaElementImpl ref, JavaImplementation type) {
+        if (ref == null) {
+            return false;
+        }
+        List<org.apache.tuscany.sca.assembly.Reference> refs = type.getReferences();
+        for (int i = 0; i < refs.size(); i++) {
+            if (refs.get(i).getName().equals(ref.getName())) {
+                refs.remove(i);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -86,13 +105,18 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         if ("".equals(name)) {
             name = field.getName();
         }
-        if (type.getReferenceMembers().get(name) != null) {
+        JavaElementImpl ref = type.getReferenceMembers().get(name);
+        if (ref != null && ref.getElementType() == ElementType.FIELD) {
             throw new DuplicateReferenceException(name);
         }
-        JavaElementImpl element = new JavaElementImpl(field);
-        org.apache.tuscany.sca.assembly.Reference reference = createReference(element, name);
-        type.getReferences().add(reference);
-        type.getReferenceMembers().put(name, element);
+
+        // Setter method override field
+        if (ref == null) {
+            JavaElementImpl element = new JavaElementImpl(field);
+            org.apache.tuscany.sca.assembly.Reference reference = createReference(element, name);
+            type.getReferences().add(reference);
+            type.getReferenceMembers().put(name, element);
+        }
     }
 
     @Override
@@ -104,9 +128,14 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         }
         String paramName = parameter.getName();
         String name = getReferenceName(paramName, parameter.getIndex(), refAnnotation.name());
-        if (type.getReferenceMembers().get(name) != null) {
+        JavaElementImpl ref = type.getReferenceMembers().get(name);
+
+        // Setter override field
+        if (ref != null && ref.getElementType() != ElementType.FIELD) {
             throw new DuplicateReferenceException(name);
         }
+
+        removeReference(ref, type);
         org.apache.tuscany.sca.assembly.Reference reference = createReference(parameter, name);
         type.getReferences().add(reference);
         type.getReferenceMembers().put(name, parameter);
@@ -128,11 +157,12 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         }
     }
 
-    private org.apache.tuscany.sca.assembly.Reference createReference(JavaElementImpl element, String name) throws IntrospectionException {
+    private org.apache.tuscany.sca.assembly.Reference createReference(JavaElementImpl element, String name)
+        throws IntrospectionException {
         org.apache.tuscany.sca.assembly.Reference reference = assemblyFactory.createReference();
         JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         reference.setInterfaceContract(interfaceContract);
-        
+
         // reference.setMember((Member)element.getAnchor());
         boolean required = true;
         Reference ref = element.getAnnotation(Reference.class);
@@ -157,8 +187,8 @@ public class ReferenceProcessor extends BaseJavaClassVisitor {
         }
         Type genericType = element.getGenericType();
         Class<?> baseType = getBaseType(rawType, genericType);
-        if(CallableReference.class.isAssignableFrom(baseType)) {
-            if(Collection.class.isAssignableFrom(rawType)) {
+        if (CallableReference.class.isAssignableFrom(baseType)) {
+            if (Collection.class.isAssignableFrom(rawType)) {
                 genericType = JavaIntrospectionHelper.getParameterType(genericType);
             }
             baseType = JavaIntrospectionHelper.getBusinessInterface(baseType, genericType);
