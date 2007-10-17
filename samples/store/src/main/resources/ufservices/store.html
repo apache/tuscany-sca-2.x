@@ -77,15 +77,16 @@
 					'<br>'+
 					'<input type="submit" value="Continue Shopping">'+ 
 				'</form>';
-		shoppingCart.delete("", null);
+		shoppingCart.del("", null);
 	}
 	function deleteCart() {
-		shoppingCart.delete("", null);
+		shoppingCart.del("", null);
 		document.getElementById('shoppingCart').innerHTML = "";
 		document.getElementById('total').innerHTML = "";	
 	}	
 
 	catalog.get(catalog_getResponse);
+	shoppingCart.get("", shoppingCart_getResponse);
 </script>
 
 </head>
