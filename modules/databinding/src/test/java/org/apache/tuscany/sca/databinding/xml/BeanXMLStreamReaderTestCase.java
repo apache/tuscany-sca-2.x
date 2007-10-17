@@ -25,15 +25,18 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLAssert;
 
 public class BeanXMLStreamReaderTestCase extends TestCase {
     private final static String XML_RESULT =
-        "<?xml version='1.0' encoding='UTF-8'?>"
-        +"<MyBean xmlns=\"http://xml.databinding.sca.tuscany.apache.org/\">"
-        +"<nil xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\" />"
-        +"<i>1</i><list>Item1</list><list>Item2</list><arr>1</arr><arr>2</arr><arr>3</arr>"
-        +"<bean><name>Name</name></bean><str>ABC</str></MyBean>";
+        "<?xml version='1.0' encoding='UTF-8'?>" 
+            + "<MyBean xmlns=\"http://xml.databinding.sca.tuscany.apache.org/\">"
+            + "<arr>1</arr><arr>2</arr><arr>3</arr><bean><name>Name</name></bean><i>1</i>"
+            + "<list>Item1</list><list>Item2</list>"
+            + "<nil xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\" />"
+            + "<str>ABC</str></MyBean>";
+
     /**
      * @see junit.framework.TestCase#setUp()
      */
@@ -54,6 +57,8 @@ public class BeanXMLStreamReaderTestCase extends TestCase {
         XMLStreamReader reader = new BeanXMLStreamReaderImpl(null, bean);
         XMLStreamReader2String t3 = new XMLStreamReader2String();
         String xml = t3.transform(reader, null);
+        Diff diff = new Diff(XML_RESULT, xml);
+        assertTrue(diff.similar());
         XMLAssert.assertXMLEqual(XML_RESULT, xml);
         /* assertTrue(xml.contains("<JavaBean2XMLStreamReaderTestCase$MyBean>" 
                      + "<arr>1</arr><arr>2</arr><arr>3</arr><bean><name>Name</name></bean>"
@@ -62,26 +67,12 @@ public class BeanXMLStreamReaderTestCase extends TestCase {
     }
 
     private static class MyBean {
+        private long arr[];
         private String str;
         private int i;
         private String nil;
-        private long arr[];
         private List<String> list = new ArrayList();
         private AnotherBean bean;
-
-        /**
-         * @return the arr
-         */
-        public long[] getArr() {
-            return arr;
-        }
-
-        /**
-         * @param arr the arr to set
-         */
-        public void setArr(long[] arr) {
-            this.arr = arr;
-        }
 
         /**
          * @return the i
@@ -95,6 +86,20 @@ public class BeanXMLStreamReaderTestCase extends TestCase {
          */
         public void setI(int i) {
             this.i = i;
+        }
+
+        /**
+         * @return the arr
+         */
+        public long[] getArr() {
+            return arr;
+        }
+
+        /**
+         * @param arr the arr to set
+         */
+        public void setArr(long[] arr) {
+            this.arr = arr;
         }
 
         /**
