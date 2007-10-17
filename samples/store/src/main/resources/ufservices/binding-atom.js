@@ -65,7 +65,7 @@ function AtomClient(uri) {
 		xhr.setRequestHeader("Content-Type", "application/atom+xml");
 		xhr.send(entry);
 	}	
-	this.delete = function (id, responseFunction) {       
+	this.del = function (id, responseFunction) {       
 		var xhr = this.createXMLHttpRequest();
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4) {
