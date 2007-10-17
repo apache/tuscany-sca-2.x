@@ -112,7 +112,7 @@ public class DATAInvoker implements Invoker {
                 //default we leave the connection open to pass to the JDBCStreamReader
             }
 
-            msg.setBody(new JDBCResultSetStreamReader(connection, resultSet));
+            msg.setBody(new JDBCResultSetStreamReader(resultSet));
             return msg;
         }
     }

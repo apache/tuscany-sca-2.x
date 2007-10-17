@@ -19,14 +19,11 @@
 
 package org.apache.tuscany.sca.implementation.data;
 
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
@@ -59,33 +56,9 @@ public class DATATestCase extends TestCase {
         System.out.println("testGet");
         
         XMLStreamReader reader = dataService.get(null);
-
-        QName element = null;
-        reader.next();
-        int increment = 0;
-        while (reader.hasNext()) {
-            int event = reader.getEventType();
-            switch (event) {
-                case START_ELEMENT:
-                    increment= increment + 3;
-                    element = reader.getName();
-                    System.out.println(fillSpace(increment) + element.toString());
-                    break;
-                case XMLStreamConstants.CHARACTERS:
-                    System.out.println(fillSpace(increment) + " :: " + reader.getText() + " :: ");
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    element = reader.getName();
-                    System.out.println(fillSpace(increment) + element.toString());
-                    increment = increment - 3;
-                    break;        
-            }
-            
-            //Read the next element
-            if (reader.hasNext()) {
-                reader.next();
-            }
-        }
+        String xml = new XMLStreamReader2String().transform(reader, null);
+        System.out.println(xml);
+        reader.close();
     }
     
     public void testGetByID() throws Exception {
@@ -93,15 +66,9 @@ public class DATATestCase extends TestCase {
 
         XMLStreamReader reader = dataService.get(companyID.toString());
         assertNotNull(reader);
-    }
-    
-    private String fillSpace(int number){
-        StringBuffer sb = new StringBuffer(number);
-        for(int i=0; i<number; i++) {
-            sb.append(" ");
-        }
-        
-        return sb.toString();
+        String xml = new XMLStreamReader2String().transform(reader, null);
+        System.out.println(xml);
+        reader.close();        
     }
 
 }
