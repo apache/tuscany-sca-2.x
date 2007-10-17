@@ -92,7 +92,14 @@ public class ShoppingCartImpl implements Collection {
         }
         for (Entry entry : cart.values()) {
             String item = ((Content)entry.getContents().get(0)).getValue();
-            total += Float.valueOf(item.substring(item.indexOf("-") + 3));
+            
+            int index = item.length()-1;
+            char digit;
+            while ((digit = item.charAt(index)) == '.' || Character.isDigit(digit)) {
+                index--;
+            }
+            
+            total += Float.valueOf(item.substring(index));
         }
         return currencySymbol + String.valueOf(total);
     }
