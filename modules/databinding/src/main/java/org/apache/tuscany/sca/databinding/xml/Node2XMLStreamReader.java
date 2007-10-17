@@ -35,7 +35,7 @@ public class Node2XMLStreamReader extends BaseTransformer<Node, XMLStreamReader>
     public XMLStreamReader transform(Node source, TransformationContext context) {
         try {
             DOMXMLStreamReader reader = new DOMXMLStreamReader(source);
-            return new XMLDocumentStreamReader(reader);
+            return reader;
         } catch (Exception e) {
             throw new TransformationException(e);
         }

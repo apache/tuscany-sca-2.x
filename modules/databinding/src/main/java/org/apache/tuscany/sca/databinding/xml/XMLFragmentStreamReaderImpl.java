@@ -834,7 +834,7 @@ public class XMLFragmentStreamReaderImpl implements XMLFragmentStreamReader {
         } else {
             // all special possiblilities has been tried! Let's treat
             // the thing as a bean and try generating events from it
-            childReader = new WrappingXMLStreamReader(BeanUtil.getXMLStreamReader(propertyValue, propertyQName));
+            childReader = new WrappingXMLStreamReader(new BeanXMLStreamReaderImpl(propertyQName, propertyValue));
             // we cannot register the namespace context here
         }
 

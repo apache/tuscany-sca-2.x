@@ -39,6 +39,7 @@ import org.w3c.dom.NodeList;
 public class DOMXmlNodeImpl implements XmlNode {
     private Node node;
     private Map<String, String> namespaces;
+    private Type type;
 
     /**
      * @param element
@@ -50,18 +51,32 @@ public class DOMXmlNodeImpl implements XmlNode {
         } else {
             this.node = element;
         }
+        switch (node.getNodeType()) {
+            case Node.CDATA_SECTION_NODE:
+                this.type = Type.CHARACTERS;
+                break;
+            case Node.ELEMENT_NODE:
+                this.type = Type.ELEMENT;
+                break;
+            case Node.TEXT_NODE:
+                this.type = Type.CHARACTERS;
+                break;
+        }
     }
 
     /**
      * @see org.apache.tuscany.sca.databinding.xml.XmlNode#attributes()
      */
-    public List<XmlAttribute> attributes() {
+    public List<XmlNode> attributes() {
+        if (type != Type.ELEMENT) {
+            return null;
+        }
         NamedNodeMap attrs = node.getAttributes();
-        List<XmlAttribute> xmlAttrs = new ArrayList<XmlAttribute>();
+        List<XmlNode> xmlAttrs = new ArrayList<XmlNode>();
         for (int i = 0; i < attrs.getLength(); i++) {
             Attr attr = (Attr)attrs.item(i);
             if (!attr.getName().equals("xmlns") && !attr.getName().startsWith("xmlns:")) {
-                xmlAttrs.add(new DOMAttribute(attr));
+                xmlAttrs.add(new SimpleXmlNodeImpl(getQName(attr), attr.getValue(), XmlNode.Type.ATTRIBUTE));
             }
         }
         return xmlAttrs;
@@ -71,11 +86,15 @@ public class DOMXmlNodeImpl implements XmlNode {
      * @see org.apache.tuscany.sca.databinding.xml.XmlNode#children()
      */
     public Iterator<XmlNode> children() {
+        if (type != Type.ELEMENT) {
+            return null;
+        }
         NodeList nodes = node.getChildNodes();
         List<XmlNode> xmlNodes = new ArrayList<XmlNode>();
         for (int i = 0; i < nodes.getLength(); i++) {
             Node child = (Node)nodes.item(i);
-            if (child.getNodeType() == Node.ELEMENT_NODE || child.getNodeType() == Node.TEXT_NODE) {
+            int nodeType = child.getNodeType();
+            if (nodeType == Node.ELEMENT_NODE || nodeType == Node.TEXT_NODE || nodeType == Node.CDATA_SECTION_NODE) {
                 xmlNodes.add(new DOMXmlNodeImpl(child));
             }
         }
@@ -108,16 +127,12 @@ public class DOMXmlNodeImpl implements XmlNode {
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.xml.XmlNode#isLeaf()
-     */
-    public boolean isLeaf() {
-        return node.getNodeType() != Node.ELEMENT_NODE;
-    }
-
-    /**
      * @see org.apache.tuscany.sca.databinding.xml.XmlNode#namespaces()
      */
     public Map<String, String> namespaces() {
+        if (type != Type.ELEMENT) {
+            return null;
+        }
         if (namespaces == null) {
             namespaces = new HashMap<String, String>();
             NamedNodeMap attrs = node.getAttributes();
@@ -134,33 +149,8 @@ public class DOMXmlNodeImpl implements XmlNode {
         return namespaces;
     }
 
-    public static class DOMAttribute implements XmlAttribute {
-        private Attr attr;
-
-        /**
-         * @param attr
-         */
-        public DOMAttribute(Attr attr) {
-            super();
-            this.attr = attr;
-        }
-
-        /**
-         * @see org.apache.tuscany.sca.databinding.xml.XmlAttribute#getName()
-         */
-        public QName getName() {
-            // TODO Auto-generated method stub
-            return getQName(attr);
-        }
-
-        /**
-         * @see org.apache.tuscany.sca.databinding.xml.XmlAttribute#getValue()
-         */
-        public String getValue() {
-            // TODO Auto-generated method stub
-            return attr.getValue();
-        }
-
+    public Type getType() {
+        return type;
     }
 
 }

@@ -22,6 +22,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Node;
 
 public class DOM2StAXTestCase extends TestCase {
@@ -66,35 +67,38 @@ public class DOM2StAXTestCase extends TestCase {
         super.setUp();
     }
 
-    public void testTransformation() {
+    public void testTransformation() throws Exception {
         String2Node t1 = new String2Node();
         Node node = t1.transform(IPO_XML, null);
         Node2XMLStreamReader t2 = new Node2XMLStreamReader();
         XMLStreamReader reader = t2.transform(node, null);
         XMLStreamReader2String t3 = new XMLStreamReader2String();
         String xml = t3.transform(reader, null);
-        assertTrue(xml != null && xml.indexOf("<shipDate>1999-12-05</shipDate>") != -1);
+        XMLAssert.assertXMLEqual(IPO_XML, xml);
+        // assertTrue(xml != null && xml.indexOf("<shipDate>1999-12-05</shipDate>") != -1);
     }
 
-    public void testTransformation2() {
+    public void testTransformation2() throws Exception {
         String2Node t1 = new String2Node();
         Node node = t1.transform(CRAZY_XML, null);
         Node2XMLStreamReader t2 = new Node2XMLStreamReader();
         XMLStreamReader reader = t2.transform(node, null);
         XMLStreamReader2String t3 = new XMLStreamReader2String();
         String xml = t3.transform(reader, null);
-        System.out.println(xml);
+        // System.out.println(xml);
+        XMLAssert.assertXMLEqual(CRAZY_XML, xml);
         assertTrue(xml.contains("<p:e2 xmlns:p=\"http://p2\""));
     }
 
-    public void testTransformation3() {
+    public void testTransformation3() throws Exception {
         String2Node t1 = new String2Node();
         Node node = t1.transform(IPO_XML, null);
         DOMXmlNodeImpl element = new DOMXmlNodeImpl(node);
         XmlTreeStreamReaderImpl reader = new XmlTreeStreamReaderImpl(element);
         XMLStreamReader2String t3 = new XMLStreamReader2String();
         String xml = t3.transform(reader, null);
-        assertTrue(xml != null && xml.indexOf("<shipDate>1999-12-05</shipDate>") != -1);
+        XMLAssert.assertXMLEqual(IPO_XML, xml);
+        // assertTrue(xml != null && xml.indexOf("<shipDate>1999-12-05</shipDate>") != -1);
     }
 
 }
