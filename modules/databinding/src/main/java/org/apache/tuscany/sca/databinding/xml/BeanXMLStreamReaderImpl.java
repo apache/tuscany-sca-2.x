@@ -26,6 +26,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,23 +40,28 @@ import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
  * @version $Rev$ $Date$
  */
 public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
+    private final static Comparator<PropertyDescriptor> COMPARATOR = new Comparator<PropertyDescriptor>() {
+        public int compare(PropertyDescriptor o1, PropertyDescriptor o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    };
 
     public static class BeanXmlNodeImpl extends SimpleXmlNodeImpl implements XmlNode {
         private static final Object[] NULL = null;
         private static final SimpleTypeMapperImpl MAPPER = new SimpleTypeMapperImpl();
-    
+
         public BeanXmlNodeImpl(Object bean) {
             super(getName(bean == null ? null : bean.getClass()), bean);
         }
-    
+
         public BeanXmlNodeImpl(QName name, Object bean) {
             super(name, bean);
         }
-    
+
         private static boolean isSimpleType(Class<?> javaType) {
             return SimpleTypeMapperImpl.getXMLType(javaType) != null;
         }
-    
+
         private static String getStringValue(Object o) {
             if (o == null) {
                 return null;
@@ -66,7 +73,7 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
                 return String.valueOf(o);
             }
         }
-    
+
         public Iterator<XmlNode> children() {
             if (name == null) {
                 return null;
@@ -81,6 +88,7 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
             try {
                 BeanInfo beanInfo = Introspector.getBeanInfo(value.getClass());
                 PropertyDescriptor[] propDescs = beanInfo.getPropertyDescriptors();
+                Collections.sort(Arrays.asList(propDescs), COMPARATOR);
     
                 List<XmlNode> props = new ArrayList<XmlNode>();
                 for (int i = 0; i < propDescs.length; i++) {
@@ -125,15 +133,15 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
                 throw new IllegalArgumentException(e);
             }
         }
-    
+
         public QName getName() {
             return name;
         }
-    
+
         public String getValue() {
             return getStringValue(value);
         }
-    
+
         public static QName getName(Class<?> cls) {
             if (cls == null) {
                 return null;
@@ -153,7 +161,7 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
             ns.append('/');
             return new QName(ns.toString(), cls.getSimpleName());
         }
-    
+
     }
 
     public BeanXMLStreamReaderImpl(QName name, Object bean) {
