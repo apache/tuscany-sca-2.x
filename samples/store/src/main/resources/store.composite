@@ -47,6 +47,7 @@
     
 	<component name="CurrencyConverter">
 		<implementation.java class="services.CurrencyConverterImpl"/>
+		<property name="rate">0.7256</property>
 	</component>     
 
 </composite>
