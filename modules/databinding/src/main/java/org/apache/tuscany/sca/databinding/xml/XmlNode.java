@@ -29,11 +29,7 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public interface XmlNode {
-    /**
-     * Returns true if the receiver is a leaf.
-     */
-    boolean isLeaf();
-
+    enum Type {ELEMENT, ATTRIBUTE, CHARACTERS, READER};
     /**
      * Returns the children of the receiver as an <code>Iterator</code>.
      */
@@ -45,7 +41,7 @@ public interface XmlNode {
      * 
      * @return
      */
-    List<XmlAttribute> attributes();
+    List<XmlNode> attributes();
     
     /**
      * Retunrs a map of prefix to namespace URI
@@ -63,5 +59,11 @@ public interface XmlNode {
      * Return the text value of the leaf element
      * @return
      */
-    String getValue();
+    <T> T getValue();
+    
+    /**
+     * Return the type of the XML node
+     * @return
+     */
+    Type getType();
 }

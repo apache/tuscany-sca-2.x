@@ -19,207 +19,69 @@
 package org.apache.tuscany.sca.databinding.xml;
 
 import javax.xml.namespace.NamespaceContext;
-import javax.xml.namespace.QName;
-import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.util.StreamReaderDelegate;
 
-public class WrappingXMLStreamReader implements XMLFragmentStreamReader {
+public class WrappingXMLStreamReader extends StreamReaderDelegate implements XMLFragmentStreamReader {
 
-    private XMLStreamReader reader;
+    private boolean done;
+    private int level;
 
-    public WrappingXMLStreamReader(XMLStreamReader reader) {
-        this.reader = reader;
-    }
-
-    public boolean isDone() {
-        try {
-            return !hasNext();
-        } catch (XMLStreamException e) {
-            throw new RuntimeException(e);
+    public WrappingXMLStreamReader(XMLStreamReader realReader) throws XMLStreamException {
+        super(realReader);
+        if (realReader == null) {
+            throw new UnsupportedOperationException("Reader cannot be null");
         }
-    }
 
-    public Object getProperty(String string) throws IllegalArgumentException {
-        return reader.getProperty(string);
-    }
+        if (realReader instanceof XMLFragmentStreamReader) {
+            ((XMLFragmentStreamReader)realReader).init();
+        }
 
-    public int next() throws XMLStreamException {
-        return reader.next();
-    }
-
-    public void require(int i, String string, String string1) throws XMLStreamException {
-        // nothing to do
-    }
-
-    public String getElementText() throws XMLStreamException {
-        return reader.getElementText();
-    }
-
-    public int nextTag() throws XMLStreamException {
-        return reader.nextTag();
+        if (realReader.getEventType() == START_DOCUMENT) {
+            // Position to the 1st element
+            realReader.nextTag();
+        }
+        if (realReader.getEventType() != START_ELEMENT) {
+            throw new IllegalStateException("The reader is not positioned at START_DOCUMENT or START_ELEMENT");
+        }
+        this.done = false;
+        this.level = 1;
     }
 
     public boolean hasNext() throws XMLStreamException {
-        return reader.hasNext();
+        return !done && super.hasNext();
     }
 
-    public void close() throws XMLStreamException {
-        reader.close();
+    public int next() throws XMLStreamException {
+        if (!hasNext()) {
+            throw new IllegalStateException("No more events");
+        }
+        int event = super.next();
+        if (!super.hasNext()) {
+            done = true;
+        }
+        if (event == START_ELEMENT) {
+            level++;
+        } else if (event == END_ELEMENT) {
+            level--;
+            if (level == 0) {
+                done = true;
+            }
+        }
+        return event;
     }
 
-    public String getNamespaceURI(String string) {
-        return reader.getNamespaceURI(string);
+    public int nextTag() throws XMLStreamException {
+        int event = 0;
+        while (true) {
+            event = next();
+            if (event == START_ELEMENT || event == END_ELEMENT) {
+                return event;
+            }
+        }
     }
-
-    public boolean isStartElement() {
-        return reader.isStartElement();
-    }
-
-    public boolean isEndElement() {
-        return reader.isEndElement();
-    }
-
-    public boolean isCharacters() {
-        return reader.isCharacters();
-    }
-
-    public boolean isWhiteSpace() {
-        return reader.isWhiteSpace();
-    }
-
-    public String getAttributeValue(String string, String string1) {
-        return reader.getAttributeValue(string, string1);
-    }
-
-    public int getAttributeCount() {
-        return reader.getAttributeCount();
-    }
-
-    public QName getAttributeName(int i) {
-        return reader.getAttributeName(i);
-    }
-
-    public String getAttributeNamespace(int i) {
-        return reader.getAttributeNamespace(i);
-    }
-
-    public String getAttributeLocalName(int i) {
-        return reader.getAttributeLocalName(i);
-    }
-
-    public String getAttributePrefix(int i) {
-        return reader.getAttributeLocalName(i);
-    }
-
-    public String getAttributeType(int i) {
-        return reader.getAttributeType(i);
-    }
-
-    public String getAttributeValue(int i) {
-        return reader.getAttributeValue(i);
-    }
-
-    public boolean isAttributeSpecified(int i) {
-        return reader.isAttributeSpecified(i);
-    }
-
-    public int getNamespaceCount() {
-        return reader.getNamespaceCount();
-    }
-
-    public String getNamespacePrefix(int i) {
-        return reader.getNamespacePrefix(i);
-    }
-
-    public String getNamespaceURI(int i) {
-        return reader.getNamespaceURI(i);
-    }
-
-    public NamespaceContext getNamespaceContext() {
-        return reader.getNamespaceContext();
-    }
-
-    public int getEventType() {
-        return reader.getEventType();
-    }
-
-    public String getText() {
-        return reader.getText();
-    }
-
-    public char[] getTextCharacters() {
-        return reader.getTextCharacters();
-    }
-
-    public int getTextCharacters(int i, char[] chars, int i1, int i2) throws XMLStreamException {
-        return reader.getTextCharacters(i, chars, i1, i2);
-    }
-
-    public int getTextStart() {
-        return reader.getTextStart();
-    }
-
-    public int getTextLength() {
-        return reader.getTextLength();
-    }
-
-    public String getEncoding() {
-        return reader.getEncoding();
-    }
-
-    public boolean hasText() {
-        return reader.hasText();
-    }
-
-    public Location getLocation() {
-        return reader.getLocation();
-    }
-
-    public QName getName() {
-        return reader.getName();
-    }
-
-    public String getLocalName() {
-        return reader.getLocalName();
-    }
-
-    public boolean hasName() {
-        return reader.hasName();
-    }
-
-    public String getNamespaceURI() {
-        return reader.getNamespaceURI();
-    }
-
-    public String getPrefix() {
-        return reader.getPrefix();
-    }
-
-    public String getVersion() {
-        return reader.getVersion();
-    }
-
-    public boolean isStandalone() {
-        return reader.isStandalone();
-    }
-
-    public boolean standaloneSet() {
-        return reader.standaloneSet();
-    }
-
-    public String getCharacterEncodingScheme() {
-        return reader.getCharacterEncodingScheme();
-    }
-
-    public String getPITarget() {
-        return reader.getPITarget();
-    }
-
-    public String getPIData() {
-        return reader.getPIData();
-    }
-
+    
     public void setParentNamespaceContext(NamespaceContext nsContext) {
         // nothing to do here
     }
@@ -227,4 +89,9 @@ public class WrappingXMLStreamReader implements XMLFragmentStreamReader {
     public void init() {
         // Nothing to do here
     }
+    
+    public boolean isDone() {
+        return done;
+    }
+
 }

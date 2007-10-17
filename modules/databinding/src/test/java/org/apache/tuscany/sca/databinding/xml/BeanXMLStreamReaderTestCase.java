@@ -18,20 +18,22 @@
  */
 package org.apache.tuscany.sca.databinding.xml;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.databinding.javabeans.JavaBean2XMLStreamReader;
 import org.custommonkey.xmlunit.XMLAssert;
 
-public class JavaBean2XMLStreamReaderTestCase extends TestCase {
+public class BeanXMLStreamReaderTestCase extends TestCase {
     private final static String XML_RESULT =
-        "<?xml version='1.0' encoding='UTF-8'?>" 
-            + "<MyBean xmlns=\"http://xml.databinding.sca.tuscany.apache.org/\">"
-            + "<i>1</i><arr>1</arr><arr>2</arr><arr>3</arr><str>ABC</str><bean><name>Name</name></bean>"
-            + "</MyBean>";
-
+        "<?xml version='1.0' encoding='UTF-8'?>"
+        +"<MyBean xmlns=\"http://xml.databinding.sca.tuscany.apache.org/\">"
+        +"<nil xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\" />"
+        +"<i>1</i><list>Item1</list><list>Item2</list><arr>1</arr><arr>2</arr><arr>3</arr>"
+        +"<bean><name>Name</name></bean><str>ABC</str></MyBean>";
     /**
      * @see junit.framework.TestCase#setUp()
      */
@@ -41,24 +43,30 @@ public class JavaBean2XMLStreamReaderTestCase extends TestCase {
     }
 
     public void testTransformation() throws Exception {
-        JavaBean2XMLStreamReader t2 = new JavaBean2XMLStreamReader();
         MyBean bean = new MyBean();
         bean.str = "ABC";
         bean.i = 1;
         bean.arr = new long[] {1, 2, 3};
         bean.bean = new AnotherBean();
         bean.bean.setName("Name");
-        XMLStreamReader reader = t2.transform(bean, null);
+        bean.list.add("Item1");
+        bean.list.add("Item2");
+        XMLStreamReader reader = new BeanXMLStreamReaderImpl(null, bean);
         XMLStreamReader2String t3 = new XMLStreamReader2String();
         String xml = t3.transform(reader, null);
         XMLAssert.assertXMLEqual(XML_RESULT, xml);
-
+        /* assertTrue(xml.contains("<JavaBean2XMLStreamReaderTestCase$MyBean>" 
+                     + "<arr>1</arr><arr>2</arr><arr>3</arr><bean><name>Name</name></bean>"
+                     + "<i>1</i><str>ABC</str></JavaBean2XMLStreamReaderTestCase$MyBean>"));
+                     */
     }
 
     private static class MyBean {
         private String str;
         private int i;
+        private String nil;
         private long arr[];
+        private List<String> list = new ArrayList();
         private AnotherBean bean;
 
         /**
@@ -115,6 +123,22 @@ public class JavaBean2XMLStreamReaderTestCase extends TestCase {
          */
         public void setBean(AnotherBean bean) {
             this.bean = bean;
+        }
+
+        public List<String> getList() {
+            return list;
+        }
+
+        public void setList(List<String> list) {
+            this.list = list;
+        }
+
+        public String getNil() {
+            return nil;
+        }
+
+        public void setNil(String nil) {
+            this.nil = nil;
         }
 
     }

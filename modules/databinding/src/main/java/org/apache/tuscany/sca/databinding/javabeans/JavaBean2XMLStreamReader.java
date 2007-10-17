@@ -24,15 +24,22 @@ import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
-import org.apache.tuscany.sca.databinding.xml.BeanUtil;
-import org.apache.tuscany.sca.databinding.xml.XMLDocumentStreamReader;
+import org.apache.tuscany.sca.databinding.xml.BeanXMLStreamReaderImpl;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 public class JavaBean2XMLStreamReader extends BaseTransformer<Object, XMLStreamReader> implements
     PullTransformer<Object, XMLStreamReader> {
 
     public XMLStreamReader transform(Object source, TransformationContext context) {
         try {
-            return new XMLDocumentStreamReader(BeanUtil.getXMLStreamReader(source));
+            javax.xml.namespace.QName name = null;
+            if (context != null) {
+                Object logical = context.getSourceDataType().getLogical();
+                if (logical instanceof XMLType) {
+                    name = ((XMLType)logical).getElementName();
+                }
+            }
+            return new BeanXMLStreamReaderImpl(name, source);
         } catch (Exception e) {
             throw new TransformationException(e);
         }
