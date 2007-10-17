@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.http.tomcat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Hashtable;
 
@@ -47,33 +48,39 @@ public class TomcatDefaultServlet extends DefaultServlet {
     public TomcatDefaultServlet(String servletPath, String documentRoot) {
         this.documentRoot = documentRoot;
         
-        DirContext dirContext = new FileDirContext() {
+        DirContext dirContext;
+        URI uri = URI.create(documentRoot);
+        if (!"file".equals(uri.getScheme())) {
             
-            @Override
-            public Attributes getAttributes(String name) throws NamingException {
-                return new BasicAttributes();
-            }
-            
-            @Override
-            public Object lookup(String name) throws NamingException {
-                
-                try {
-                    final URL url = new URL(TomcatDefaultServlet.this.documentRoot + name);
-                    return new Resource() {
-                        
-                        @Override
-                        public InputStream streamContent() throws IOException {
-                            return url.openStream();
-                        }
-                    };
-                } catch (MalformedURLException e) {
-                    throw new NamingException(e.toString());
+            dirContext = new FileDirContext() {
+                @Override
+                public Attributes getAttributes(String name) throws NamingException {
+                    return new BasicAttributes();
                 }
-            }
-        };
-        
+                
+                @Override
+                public Object lookup(String name) throws NamingException {
+                    
+                    try {
+                        final URL url = new URL(TomcatDefaultServlet.this.documentRoot + name);
+                        return new Resource() {
+                            @Override
+                            public InputStream streamContent() throws IOException {
+                                return url.openStream();
+                            }
+                        };
+                    } catch (MalformedURLException e) {
+                        throw new NamingException(e.toString());
+                    }
+                }
+            };
+            
+        } else {
+            dirContext = new FileDirContext();
+            ((FileDirContext)dirContext).setDocBase(uri.getPath());
+        }
         proxyDirContext = new ProxyDirContext(new Hashtable(), dirContext);
-        resources = proxyDirContext;
+        resources = proxyDirContext;            
     }
     
     @Override
