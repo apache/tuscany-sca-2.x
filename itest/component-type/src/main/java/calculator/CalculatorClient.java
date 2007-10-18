@@ -31,7 +31,7 @@ public class CalculatorClient {
         SCADomain scaDomain = SCADomain.newInstance("Calculator.composite");
         
         CalculatorService calculatorService = 
-            scaDomain.getService(CalculatorService.class, "CalculatorServiceComponent");
+            scaDomain.getService(CalculatorService.class, "CalculatorServiceComponent/CalculatorService");
 
         // Calculate
         System.out.println("3 + 2=" + calculatorService.add(3, 2));

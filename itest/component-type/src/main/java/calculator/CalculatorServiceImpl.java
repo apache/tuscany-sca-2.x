@@ -18,6 +18,8 @@
  */
 package calculator;
 
+import org.osoa.sca.annotations.Reference;
+
 
 
 /**
@@ -30,18 +32,22 @@ public class CalculatorServiceImpl implements CalculatorService {
     private MultiplyService multiplyService;
     private DivideService divideService;
 
+    @Reference
     public void setAddService(AddService addService) {
         this.addService = addService;
     }
 
+    @Reference
     public void setSubtractService(SubtractService subtractService) {
         this.subtractService = subtractService;
     }
 
+    @Reference
     public void setDivideService(DivideService divideService) {
         this.divideService = divideService;
     }
 
+    @Reference
     public void setMultiplyService(MultiplyService multiplyService) {
         this.multiplyService = multiplyService;
     }
