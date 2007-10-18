@@ -328,7 +328,11 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     private void conversationPostInvoke(Message msg, RuntimeWire wire) throws TargetDestructionException {
         Operation operation = msg.getOperation();
         ConversationSequence sequence = operation.getConversationSequence();
-        if (sequence == ConversationSequence.CONVERSATION_END) {
+        // We check that conversation has not already ended as there is only one
+        // comversation manager in the runtime and so, in the case of remote bindings, 
+        // the conversation will already have been stopped when we get back to the client
+        if ((sequence == ConversationSequence.CONVERSATION_END) && 
+            (conversation.getState()!= ConversationState.ENDED)) {
             conversation.end();
 
             // remove conversation id from scope container
