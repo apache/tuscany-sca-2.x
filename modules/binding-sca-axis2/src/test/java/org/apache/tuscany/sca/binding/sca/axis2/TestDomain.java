@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.domain.NodeInfo;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.domain.ServiceInfo;
+import org.apache.tuscany.sca.domain.model.Domain;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -137,7 +138,7 @@ public class TestDomain implements SCADomainSPI {
         }
     }
     
-    public List<NodeInfo> getNodeInfo() {
+    public Domain getDomainModel() {
         return null;
     }
      
@@ -193,11 +194,6 @@ public class TestDomain implements SCADomainSPI {
         return url;
     }
     
-    public ServiceInfo getServiceInfo() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
     public SCADomain getDomain(){
         return null;
     }
@@ -218,10 +214,13 @@ public class TestDomain implements SCADomainSPI {
     public void removeContribution(String contributionURI) throws DomainException {
     }
     
-    public void addComposite(QName qname) throws DomainException {  
+    public void addDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
+    }
+
+    public void addToDomainLevelComposite(QName compositeQName) throws DomainException {
     }
   
-    public void removeComposite(QName qname) throws DomainException {          
+    public void removeFromDomainLevelComposite(QName compositeQName) throws DomainException {
     }
     
     public void startComposite(QName compositeName) throws DomainException {

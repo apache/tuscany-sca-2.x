@@ -53,25 +53,25 @@ public interface SCANode {
     /**
      * Add an SCA contribution into the node.
      *  
-     * @param uri the URI of the contribution
-     * @param url the URL of the contribution
+     * @param contributionURI the URI of the contribution
+     * @param contributionURL the URL of the contribution
      */
-    public void addContribution(String uri, URL url) throws NodeException;
+    public void addContribution(String contributionURI, URL contributionURL) throws NodeException;
    
     /**
-     * Start the specified deployable composite on the node.
+     * Deploy the named composite if it hasn't already been deployed
      * 
-     * @param composite
+     * @param compositeQName the name of the composite to be deployed
      */
-    public void startComposite(QName composite) throws NodeException;
+    public void deployComposite(QName compositeQName) throws NodeException;
     
     /**
-     * Start the SCA node service.
+     * Start the SCA node service and all the deployed composites
      */
     public void start() throws NodeException;    
     
     /**
-     * Stop the SCA node service.
+     * Stop the SCA node service and all of the deployed composites
      */
     public void stop() throws NodeException;    
 

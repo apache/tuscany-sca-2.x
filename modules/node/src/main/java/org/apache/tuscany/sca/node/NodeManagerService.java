@@ -56,7 +56,7 @@ public interface NodeManagerService {
      * 
      * @param composite
      */
-    public void startComposite(String compositeName);
+    public void deployComposite(String compositeName);
     
     /**
      * Start the SCA node service.

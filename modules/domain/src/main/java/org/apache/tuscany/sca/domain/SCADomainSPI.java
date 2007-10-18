@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomain;
+import org.apache.tuscany.sca.domain.model.Domain;
 
 /**
  * Represents an SCA domain.
@@ -48,13 +49,7 @@ public interface SCADomainSPI extends SCADomain {
      * @return
      */
     public String removeNode(String nodeURI);
-    
-    /**
-     * Return information about all the nodes in the domain
-     * 
-     * @return
-     */
-    public List<NodeInfo> getNodeInfo();
+
     
     /**
      * Accepts information about a service endpoint and holds onto it
@@ -68,7 +63,6 @@ public interface SCADomainSPI extends SCADomain {
      */
     public String registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL);
     
-    
     /**
      * Removes information about a service endpoint
      * 
@@ -77,9 +71,8 @@ public interface SCADomainSPI extends SCADomain {
      * @param serviceName the name of the service that is exposed and the provided endpoint
      * @param bindingName the remote binding that is providing the endpoint
      */    
-    public String  removeServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName);
+    public String removeServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName);
      
-        
     /**
      * Locates information about a service endpoint 
      * 
@@ -90,12 +83,25 @@ public interface SCADomainSPI extends SCADomain {
      */
     public String findServiceEndpoint(String domainUri, String serviceName, String bindingName); 
     
-       
+    
+    /** 
+     * Returns the model of the domain
+     * @return
+     */
+    public Domain getDomainModel();
     
     /** 
      * Returns information for all registered services
      * @return
      */
-    public ServiceInfo getServiceInfo();    
+   // public ServiceInfo getServiceInfo(); 
+    
+    
+    /**
+     * Return information about all the nodes in the domain
+     * 
+     * @return
+     */
+  //  public List<NodeInfo> getNodeInfo();    
     
 }

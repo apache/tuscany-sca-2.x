@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.tuscany.sca.domain.DomainManagerService;
+import org.apache.tuscany.sca.domain.DomainManagerNodeEventService;
 import org.apache.tuscany.sca.domain.NodeInfo;
 import org.apache.tuscany.sca.domain.ServiceInfo;
 import org.osoa.sca.annotations.Property;
@@ -38,7 +38,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
 @Scope("COMPOSITE")
-public class DomainManagerServiceImpl implements DomainManagerService{
+public class DomainManagerServiceImpl implements DomainManagerNodeEventService{
     
     private final static Logger logger = Logger.getLogger(DomainManagerServiceImpl.class.getName());    
     
@@ -49,7 +49,7 @@ public class DomainManagerServiceImpl implements DomainManagerService{
     protected int retryInterval = 5000; //ms    
     
     @Reference
-    protected DomainManagerService domainManager;
+    protected DomainManagerNodeEventService domainManager;
 
     public String registerNode(String nodeURI, String nodeURL) {
         
@@ -79,10 +79,7 @@ public class DomainManagerServiceImpl implements DomainManagerService{
     public String removeNode(String nodeURI) {
         return domainManager.removeNode(nodeURI);
     }
-    
-    public List<NodeInfo> getNodeInfo(){
-        return domainManager.getNodeInfo();
-    }
+
 
     public String registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
      
@@ -159,8 +156,5 @@ public class DomainManagerServiceImpl implements DomainManagerService{
         
         return url;
     }
-    
-    public ServiceInfo getServiceInfo(){
-        return domainManager.getServiceInfo();
-    }    
+ 
 }

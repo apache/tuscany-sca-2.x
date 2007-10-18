@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
@@ -65,6 +66,7 @@ public class SCANodeImpl implements SCANode {
     private URL nodeURL;
     private String domainURI; 
     private URL domainURL;
+    private String nodeGroupURI;
 
     // The tuscany runtime that does the hard work
     private ReallySmallRuntime nodeRuntime;
@@ -88,11 +90,14 @@ public class SCANodeImpl implements SCANode {
      * 
      * @param domainUri - identifies what host and port the domain service is running on, e.g. http://localhost:8081
      * @param nodeUri - if this is a url it is assumed that this will be used as root url for management components, e.g. http://localhost:8082
+     * @param nodeGroupURI the uri of the node group. This is the enpoint URI of the head of the
+     * group of nodes. For example, in load balancing scenarios this will be the loaded balancer itself 
      * @throws ActivationException
      */
-    public SCANodeImpl(String nodeURI, String domainURI) throws NodeException {
+    public SCANodeImpl(String nodeURI, String domainURI, String nodeGroupURI) throws NodeException {
         this.domainURI = domainURI;
         this.nodeURI = nodeURI;
+        this.nodeGroupURI = nodeGroupURI;
         this.nodeClassLoader = Thread.currentThread().getContextClassLoader();        
         init();
     }    
@@ -103,12 +108,15 @@ public class SCANodeImpl implements SCANode {
      * 
      * @param domainUri - identifies what host and port the domain service is running on, e.g. http://localhost:8081
      * @param nodeUri - if this is a url it is assumed that this will be used as root url for management components, e.g. http://localhost:8082
+     * @param nodeGroupURI the uri of the node group. This is the enpoint URI of the head of the
+     * group of nodes. For example, in load balancing scenarios this will be the loaded balancer itself 
      * @param cl - the ClassLoader to use for loading system resources for the node
      * @throws ActivationException
      */
-    public SCANodeImpl(String nodeURI, String domainURI, ClassLoader cl) throws NodeException {
+    public SCANodeImpl(String nodeURI, String domainURI, String nodeGroupURI, ClassLoader cl) throws NodeException {
         this.domainURI = domainURI;
         this.nodeURI = nodeURI;
+        this.nodeGroupURI = nodeGroupURI;
         this.nodeClassLoader = cl;
         init();
     }    
@@ -152,14 +160,14 @@ public class SCANodeImpl implements SCANode {
             // add the node to the domain
             ((SCADomainImpl)scaDomain).addNode(this);  
             
- 
-            // make the node available to the model. 
-            // TODO - No sure how this should be done properly. As a nod to this though
-            //        I have a domain factory which always returns the same domain
-            //        object. I.e. this node
-            ModelFactoryExtensionPoint factories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
-            NodeFactoryImpl domainFactory = new NodeFactoryImpl(this);
-            factories.addFactory(domainFactory);            
+            // If a non-null domain name is provided make the node available to the model
+            // this causes the runtime to start registering binding-sca service endpoints
+            // with the domain so only makes sense if we know we have a domain to talk to
+            if (domainURI != null) {
+                ModelFactoryExtensionPoint factories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
+                NodeFactoryImpl nodeFactory = new NodeFactoryImpl(this);
+                factories.addFactory(nodeFactory);    
+            }
  
         } catch(Exception ex) {
             throw new NodeException(ex);
@@ -191,6 +199,23 @@ public class SCANodeImpl implements SCANode {
         return components;
     }    
     
+    /**
+     * Stating to think about how a node advertises what it can do. 
+     * Maybe need to turn this round and ask the node to decide whether it
+     * can process a list of artifacts
+     * @return
+     */
+    public List<String> getFeatures() {
+        List<String> featureList = new ArrayList<String>();
+        
+        ExtensionPointRegistry registry = nodeRuntime.getExtensionPointRegistry();
+        
+        // TODO - how to get registered features?
+        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        
+        return null;
+    }
+    
     
     // API methods 
     
@@ -200,13 +225,8 @@ public class SCANodeImpl implements SCANode {
     
     public void stop() throws NodeException {
         try {
-            // stop the composite
-            stopComposites();
-            
             // remove contributions
-            removeContributions();
-
-                
+            removeAllContributions();           
         } catch (Exception ex) {
             throw new NodeException(ex);
         }
@@ -225,12 +245,7 @@ public class SCANodeImpl implements SCANode {
     }
     
     public void addContribution(String contributionURI, URL contributionURL, ClassLoader contributionClassLoader ) throws NodeException {
-       try {
-            // check to see if the node has been started and start it if it hasn't
-            if ( nodeComposite == null ) {
-                start();
-            }
-            
+       try {            
             if (contributionURL != null) {
                 ModelResolver modelResolver = null;
                 
@@ -247,15 +262,22 @@ public class SCANodeImpl implements SCANode {
                                                                            modelResolver, 
                                                                            false);
                 
+                // remember the contribution
                 contributions.put(contributionURI, contribution);
                     
+                // remember all the composites that have been found
                 for (DeployedArtifact artifact : contribution.getArtifacts()) {
                     if (artifact.getModel() instanceof Composite) {
                         Composite composite = (Composite)artifact.getModel();
                         composites.put(composite.getName(), composite);
                     }
                 }
-    
+                
+                // remember all the deployable composites ready to be started
+                for (Composite composite : contribution.getDeployables()) {
+                    compositesToStart.add(composite.getName());
+                }                
+                
             } else {
                     throw new ActivationException("Contribution " + contributionURL + " not found");
             }  
@@ -264,8 +286,11 @@ public class SCANodeImpl implements SCANode {
         }        
     }
 
-    private void removeContributions() throws NodeException {
-        try {           
+    private void removeAllContributions() throws NodeException {
+        try {     
+            // stop any running composites
+            stopComposites();
+            
             // Remove all contributions
             for (String contributionURI : contributions.keySet()){
                 nodeRuntime.getContributionService().remove(contributionURI);
@@ -276,38 +301,41 @@ public class SCANodeImpl implements SCANode {
         }   
     }
     
-    public void startComposite(QName compositeName) throws NodeException {
-        compositesToStart.add(compositeName);
+    public void deployComposite(QName compositeName) throws NodeException {
+        // if the named composite is not already in the list then 
+        // add it
+        if (compositesToStart.indexOf(compositeName) == -1 ){
+            compositesToStart.add(compositeName);  
+        }
     }
     
     private void startComposites() throws NodeException {
         try {
             if (compositesToStart.size() == 0 ){
-                throw new NodeException("Starting node " + 
-                                        nodeURI + 
-                                        " with no composite started");
-            }
-            
-            for (QName compositeName : compositesToStart) {
-                Composite composite = composites.get(compositeName);
-                
-                if (composite == null) {
-                    logger.log(Level.INFO, "Composite not found: " + compositeName);
-                } else {
-                    // Add the composite to the top level domain
-                    nodeComposite.getIncludes().add(composite);
-                    nodeRuntime.getCompositeBuilder().build(composite); 
+                logger.log(Level.INFO, nodeURI + 
+                                       " has no composites to start" );
+            } else {  
+                for (QName compositeName : compositesToStart) {
+                    Composite composite = composites.get(compositeName);
                     
-                    // activate the composite
-                    nodeRuntime.getCompositeActivator().activate(composite);              
-                    
-                    //start the composite
-                    nodeRuntime.getCompositeActivator().start(composite);
+                    if (composite == null) {
+                        logger.log(Level.INFO, "Composite not found during start: " + compositeName);
+                    } else {
+                        logger.log(Level.INFO, "Starting composite: " + compositeName);
+                        
+                        // Add the composite to the top level domain
+                        nodeComposite.getIncludes().add(composite);
+                        nodeRuntime.getCompositeBuilder().build(composite); 
+                        
+                        // activate the composite
+                        nodeRuntime.getCompositeActivator().activate(composite);              
+                        
+                        //start the composite
+                        nodeRuntime.getCompositeActivator().start(composite);
+                    }
                 }
             }
 
-        } catch (NodeException ex) {
-            throw ex;
         } catch (Exception ex) {
             throw new NodeException(ex);
         }  
@@ -322,6 +350,8 @@ public class SCANodeImpl implements SCANode {
                                         " with no composite started");
             }
             for (QName compositeName : compositesToStart) {
+                logger.log(Level.INFO, "Stopping composite: " + compositeName);
+                
                 Composite composite = composites.get(compositeName);   
 
                 nodeRuntime.getCompositeActivator().stop(composite);

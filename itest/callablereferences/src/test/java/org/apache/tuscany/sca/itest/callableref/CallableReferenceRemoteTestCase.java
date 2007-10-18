@@ -66,12 +66,10 @@ public class CallableReferenceRemoteTestCase {
             
             nodeA = nodeFactory.createSCANode("nodeA", DEFAULT_DOMAIN_URI);
             nodeA.addContribution("nodeA", cl.getResource("nodeA/"));
-            nodeA.startComposite(new QName("http://foo", "CompositeA"));
             nodeA.start();
             
             nodeB = nodeFactory.createSCANode("nodeB", DEFAULT_DOMAIN_URI);
             nodeB.addContribution("nodeB", cl.getResource("nodeB/"));
-            nodeB.startComposite(new QName("http://foo", "CompositeB"));
             nodeB.start();                  
             
             // get a reference to the calculator service from domainA

@@ -68,19 +68,19 @@ public class DomainInMemoryTestCase {
             
             nodeA = nodeFactory.createSCANode("nodeA", DEFAULT_DOMAIN_URI);
             nodeA.addContribution("nodeA", cl.getResource("nodeA/"));
-            nodeA.startComposite(new QName("http://sample", "Calculator"));
+            nodeA.deployComposite(new QName("http://sample", "Calculator"));
             nodeA.start();
 
             
             nodeB = nodeFactory.createSCANode("nodeB", DEFAULT_DOMAIN_URI);
             nodeB.addContribution("nodeB", cl.getResource("nodeB/"));
-            nodeB.startComposite(new QName("http://sample", "Calculator"));
+            nodeB.deployComposite(new QName("http://sample", "Calculator"));
             nodeB.start();
 
             
             nodeC = nodeFactory.createSCANode("nodeC", DEFAULT_DOMAIN_URI);
             nodeC.addContribution("nodeC", cl.getResource("nodeC/"));
-            nodeC.startComposite(new QName("http://sample", "Calculator")); 
+            nodeC.deployComposite(new QName("http://sample", "Calculator")); 
             nodeC.start();
 
             SCADomainFinder domainFinder = SCADomainFinder.newInstance();

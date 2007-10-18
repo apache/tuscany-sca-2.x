@@ -51,6 +51,7 @@ import org.apache.tuscany.sca.domain.NodeInfo;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.domain.ServiceInfo;
+import org.apache.tuscany.sca.domain.model.Domain;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -65,7 +66,10 @@ import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
- * A local representation of the sca domain running on a single node
+ * A dummy representation of and SCA Node used simply to control the 
+ * endpoint of a callable reference
+ * We can remove this if we change the runtime over to referencing the 
+ * domain directly rather than going via the node. 
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-09 23:54:46 +0100 (Sun, 09 Sep 2007) $
  */
@@ -75,6 +79,7 @@ public class DomainManagerNodeImpl implements SCANode {
     
     private String nodeEndpoint;
     private SCADomain scaDomain = new DomainManagerDomainImpl();
+    private SCADomainSPI realSCADomain = null;
 	
     class DomainManagerDomainImpl implements SCADomainSPI {
         public String addNode(String nodeURI, String nodeURL){ 
@@ -82,10 +87,6 @@ public class DomainManagerNodeImpl implements SCANode {
         }
         
         public String removeNode(String nodeURI){ 
-            return null;
-        }
-        
-        public List<NodeInfo> getNodeInfo(){
             return null;
         }
         
@@ -98,13 +99,17 @@ public class DomainManagerNodeImpl implements SCANode {
         }
        
         public String findServiceEndpoint(String domainUri, String serviceName, String bindingName){
-            return nodeEndpoint;
+            if (nodeEndpoint != null){
+                return nodeEndpoint;
+            } else {
+                return realSCADomain.findServiceEndpoint(domainUri, serviceName, bindingName);
+            }
+            
         }
-              
-        public ServiceInfo getServiceInfo(){     
+
+        public Domain getDomainModel(){
             return null;
         }
-            
             
         // SCADomain API methods 
         
@@ -124,10 +129,13 @@ public class DomainManagerNodeImpl implements SCANode {
         public void removeContribution(String uri) throws DomainException {
         }
         
-        public void addComposite(QName compositeName) throws DomainException {
+        public void addDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
         }
-          
-        public void removeComposite(QName qname) throws DomainException {
+
+        public void addToDomainLevelComposite(QName compositeQName) throws DomainException {
+        }
+     
+        public void removeFromDomainLevelComposite(QName compositeQName) throws DomainException {
         }
           
         public void startComposite(QName compositeName) throws DomainException {            
@@ -151,7 +159,8 @@ public class DomainManagerNodeImpl implements SCANode {
         
     }
 
-    public DomainManagerNodeImpl() {
+    public DomainManagerNodeImpl(SCADomainSPI scaDomain) {
+        this.realSCADomain = scaDomain;
     }    
     
     public void setNodeEndpoint(String nodeEndpoint) {
@@ -179,7 +188,7 @@ public class DomainManagerNodeImpl implements SCANode {
     }
     
     
-    public void startComposite(QName compositeName) throws NodeException {
+    public void deployComposite(QName compositeName) throws NodeException {
 
     }  
 

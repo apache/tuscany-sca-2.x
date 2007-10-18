@@ -29,13 +29,12 @@
            xmlns:sample="http://management"
            xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
            name="Management">
-           
-    
+          
     <component name="DomainManagerComponent">
         <implementation.java class="org.apache.tuscany.sca.node.impl.DomainManagerServiceImpl"/>
         <reference name="domainManager">
-            <interface.java interface="org.apache.tuscany.sca.domain.DomainManagerService"/>
-            <binding.ws uri="http://localhost:8878/DomainManagerComponent/DomainManager"/>
+            <interface.java interface="org.apache.tuscany.sca.domain.DomainManagerNodeEventService"/>
+            <binding.ws uri="http://localhost:8878/DomainManagerComponent/DomainManagerNodeEventService"/>
         </reference>
     </component>           
            

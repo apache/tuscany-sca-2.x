@@ -32,7 +32,7 @@ import org.osoa.sca.annotations.Remotable;
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
 @Remotable
-public interface DomainManagerService {
+public interface DomainManagerNodeEventService {
 
     /**
      * A node registers with the distributed domain manager. The mechanism whereby this
@@ -55,14 +55,7 @@ public interface DomainManagerService {
      * @param nodeManagementUrl the endpoint for the nodes management service
      */
     public String removeNode(String nodeURI);     
-    
-    /**
-     * Retrieve a list of all of the registered nodes 
-     * 
-     * @return the list of node information 
-     */
-    public List<NodeInfo> getNodeInfo();  
-    
+     
     /**
      * Accepts information about a service endpoint and holds onto it
      * 
@@ -75,7 +68,6 @@ public interface DomainManagerService {
      */
     public String registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL);
     
-    
     /**
      * Removes information about a service endpoint
      * 
@@ -84,8 +76,7 @@ public interface DomainManagerService {
      * @param serviceName the name of the service that is exposed and the provided endpoint
      * @param bindingName the remote binding that is providing the endpoint
      */    
-    public String  removeServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName);
-     
+    public String removeServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName);
         
     /**
      * Locates information about a service endpoint 
@@ -96,10 +87,5 @@ public interface DomainManagerService {
      * @return url the endpoint url
      */
     public String findServiceEndpoint(String domainUri, String serviceName, String bindingName); 
-    
-    /** 
-     * Returns information for all registered services
-     * @return
-     */
-    public ServiceInfo getServiceInfo();    
+     
 }

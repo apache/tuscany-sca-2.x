@@ -29,11 +29,11 @@ import org.apache.tuscany.sca.node.SCANode;
  */
 public class NodeFactoryImpl implements NodeFactory {
 	
-	SCANode node = null;
+    SCANode node = null;
 	
-	public NodeFactoryImpl(SCANode node){
-		this.node = node;
-	}
+    public NodeFactoryImpl(SCANode node){
+        this.node = node;
+    }
     
     /**
      * Returns the domain object

@@ -56,7 +56,7 @@ public class CalculatorNode {
             SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             SCANode node = nodeFactory.createSCANode(nodeName, domainName);
             node.addContribution(nodeName, cl.getResource(nodeName + "/"));
-            node.startComposite(new QName("http://sample", "Calculator"));
+            node.deployComposite(new QName("http://sample", "Calculator"));
             node.start();             
                                          
             // nodeA is the head node and runs some tests while all other nodes

@@ -41,9 +41,10 @@ import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.domain.DomainException;
-import org.apache.tuscany.sca.domain.DomainManagerService;
+import org.apache.tuscany.sca.domain.DomainManagerNodeEventService;
 import org.apache.tuscany.sca.domain.NodeInfo;
 import org.apache.tuscany.sca.domain.ServiceInfo;
+import org.apache.tuscany.sca.domain.model.Domain;
 import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -77,7 +78,7 @@ public class SCADomainImpl implements SCADomainProxySPI {
     private URL domainURL; 
     
     // proxy to the domain
-    private DomainManagerService domainManager;
+    private DomainManagerNodeEventService domainManager;
     
     // proxy to the node manager
     private NodeManagerInitService nodeManagerInit;
@@ -120,7 +121,7 @@ public class SCADomainImpl implements SCADomainProxySPI {
           
             // Check if node has been given a valid domain name to connect to
             if (domainURL == null) {
-            	logger.log(Level.INFO, "Domain will be started stand-alone as node and domain URIs are not provided");
+            	logger.log(Level.INFO, "Domain will be started stand-alone as domain URL is not provided");
             } else {
                 // load the composite that allows this domain representation to 
                 // connect to the rest of the domain
@@ -160,7 +161,7 @@ public class SCADomainImpl implements SCADomainProxySPI {
                     
                         // get the management components out of the domain so that they 
                         // can be configured/used. 
-                        domainManager = domainManagementRuntime.getService(DomainManagerService.class, "DomainManagerComponent");
+                        domainManager = domainManagementRuntime.getService(DomainManagerNodeEventService.class, "DomainManagerComponent");
                         nodeManagerInit = domainManagementRuntime.getService(NodeManagerInitService.class, "NodeManagerComponent/NodeManagerInitService");
                         
                         // Now get the uri back out of the component now it has been built and started
@@ -193,17 +194,7 @@ public class SCADomainImpl implements SCADomainProxySPI {
     public String removeNode(String nodeURI){
         // Does nothing in the proxy
         return null;
-    }
-    
-    public List<NodeInfo> getNodeInfo() {
-        // Does nothing in the proxy
-        return null;
-    }
-    
-    public ServiceInfo getServiceInfo() {
-        // Does nothing in the proxy
-        return null;
-    }    
+    }  
     
     public void addNode(SCANode nodeImpl) throws DomainException {
         this.nodeImpl = (SCANodeImpl)nodeImpl;
@@ -250,32 +241,18 @@ public class SCADomainImpl implements SCADomainProxySPI {
     public String registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
         return domainManager.registerServiceEndpoint(domainUri, nodeUri, serviceName, bindingName, URL);
     }
-    
-    
-    /**
-     * Removes information about a service endpoint
-     * 
-     * @param domainUri the string uri for the distributed domain
-     * @param nodeUri the string uri for the current node
-     * @param serviceName the name of the service that is exposed and the provided endpoint
-     * @param bindingName the remote binding that is providing the endpoint
-     */    
+   
     public String  removeServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName){
         return domainManager.removeServiceEndpoint(domainUri, nodeUri, serviceName, bindingName);
     }
      
-        
-    /**
-     * Locates information about a service endpoint 
-     * 
-     * @param domainUri the string uri for the distributed domain
-     * @param serviceName the name of the service that is exposed and the provided endpoint
-     * @param bindingName the remote binding that we want to find an endpoint for
-     * @return url the endpoint url
-     */
     public String findServiceEndpoint(String domainUri, String serviceName, String bindingName){
         return domainManager.findServiceEndpoint(domainUri, serviceName, bindingName);
     }
+    
+    public Domain getDomainModel(){        
+        return null;
+    }     
        
       
     // API methods 
@@ -314,25 +291,29 @@ public class SCADomainImpl implements SCADomainProxySPI {
         }
     }
     
-    public void addComposite(QName qname) throws DomainException {
+    public void addDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
+        // TODO 
+    }
+    
+    public void addToDomainLevelComposite(QName qname) throws DomainException {
         try {
-            nodeImpl.startComposite(qname);
+            nodeImpl.deployComposite(qname);
         } catch(Exception ex) {
             new DomainException(ex);
         }
     }
       
-    public void removeComposite(QName qname) throws DomainException {
+    public void removeFromDomainLevelComposite(QName qname) throws DomainException {
         try {
             //nodeImpl.stopComposite();
         } catch(Exception ex) {
             new DomainException(ex);
         }        
-    }
+    }     
       
     public void startComposite(QName qname) throws DomainException {
         try {
-            nodeImpl.startComposite(qname);
+            nodeImpl.deployComposite(qname);
         } catch(Exception ex) {
             new DomainException(ex);
         }        

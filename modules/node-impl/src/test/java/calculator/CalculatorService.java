@@ -18,10 +18,13 @@
  */
 package calculator;
 
+import org.osoa.sca.annotations.Remotable;
+
 
 /**
  * The Calculator service interface.
  */
+@Remotable
 public interface CalculatorService {
 
     double add(double n1, double n2);
