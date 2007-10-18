@@ -40,15 +40,12 @@
               text = text + "<table>";
               text = text + "<TR CLASS='source_1' >";
               text = text + "  <TD>";
-              text = text + "    <IMG SRC='node.png'/>&nbsp;&nbsp;" + node.domainUri;
+              text = text + "    <IMG SRC='node.png'/>&nbsp;&nbsp;" + node.nodeURI;
               text = text + "  </TD>";
               
-              var noProtocol = node.nodeManagerUrl.substring(7);
-              var colonPos = noProtocol.indexOf(':')
-              var nodeManagerWebUrl = noProtocol.substring(0, colonPos + 6);
-              nodeManagerWebUrl = "http://" + nodeManagerWebUrl + "node/index.html";
+              nodeManagerWebUrl = node.nodeURL + "/node/index.html";
               
-              text = text + "  <TD CLASS='clickable link' ONCLICK=\"showNode('" + nodeManagerWebUrl + "')\">" + node.nodeUri + "</TD>";
+              text = text + "  <TD CLASS='clickable link' ONCLICK=\"showNode('" + node.nodeURI + "')\">" + nodeManagerWebUrl + "</TD>";
               text = text + "</TR>";       
               text = text + "</table>";        
           }

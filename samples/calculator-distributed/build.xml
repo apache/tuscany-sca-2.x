@@ -215,6 +215,7 @@
     	<pathelement location="${m2.repo}\stax\stax-api\1.0.1\stax-api-1.0.1.jar"/>
     	<pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-interface-java-xml\1.1-incubating-SNAPSHOT\tuscany-interface-java-xml-1.1-incubating-SNAPSHOT.jar"/>
     	<pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-host-tomcat\1.1-incubating-SNAPSHOT\tuscany-host-tomcat-1.1-incubating-SNAPSHOT.jar"/>  	
+    	<pathelement location="${m2.repo}\org\apache\tuscany\sca\tuscany-policy-logging\1.1-incubating-SNAPSHOT\tuscany-policy-logging-1.1-incubating-SNAPSHOT.jar"/>    	
    </path>	
     	
     <target name="runDomainRepo">

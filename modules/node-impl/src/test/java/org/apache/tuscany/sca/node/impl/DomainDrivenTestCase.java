@@ -76,16 +76,21 @@ public class DomainDrivenTestCase {
             domain.addContribution("nodeB", cl.getResource("nodeB/"));
             domain.addContribution("nodeC", cl.getResource("nodeC/"));
             
-            domain.addComposite(new QName("http://sample", "Calculator"));
+            domain.addToDomainLevelComposite(new QName("http://sample", "Calculator"));
             
             domain.startComposite(new QName("http://sample", "Calculator"));
             
-            // get a reference to various services in the domain
+            calculatorServiceA = domain.getService(CalculatorService.class, "CalculatorServiceComponentA");
+            calculatorServiceB = domain.getService(CalculatorService.class, "CalculatorServiceComponentB");
+            
+/*
+            // get a reference to various services in the domain            
             calculatorServiceA = nodeA.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentA");
             calculatorServiceB = nodeB.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentB");
             
             //addServiceB = domain.getService(AddService.class, "AddServiceComponentB");
             addServiceB = nodeA.getDomain().getService(AddService.class, "AddServiceComponentB");
+*/            
             
         } catch(Exception ex){
             System.err.println(ex.toString());
@@ -114,7 +119,6 @@ public class DomainDrivenTestCase {
         Assert.assertEquals(calculatorServiceB.subtract(3, 2), 1.0);
         Assert.assertEquals(calculatorServiceB.multiply(3, 2), 6.0);
         Assert.assertEquals(calculatorServiceB.divide(3, 2), 1.5);
-        Assert.assertEquals(addServiceB.add(3, 2), 5.0);
-        
+       
     }
 }

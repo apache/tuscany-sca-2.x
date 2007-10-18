@@ -87,13 +87,13 @@ public class NodeManagerServiceImpl implements NodeManagerService, NodeManagerIn
     }
    
     /**
-     * Start the specified deployable composite on the node.
+     * deploy deployable composite on the node.
      * 
      * @param composite
      */
-    public void startComposite(String compositeName) {
+    public void deployComposite(String compositeName) {
         try {
-            node.startComposite(QName.valueOf(compositeName));
+            node.deployComposite(QName.valueOf(compositeName));
         } catch (Exception ex){
             // TODO - sort out exceptions passing across binding.sca
             logger.log(Level.SEVERE, ex.toString());

@@ -57,35 +57,49 @@ public interface SCADomain {
     /**
      * Add an SCA contribution to the domain.
      *  
-     * @param uri the URI of the contribution
-     * @param url the URL of the contribution
-     */
-    public void addContribution(String uri, URL url)
+     * @param contributionURI the URI of the contribution
+     * @param contributionURL the URL of the contribution
+     * @throws DomainException
+     */  
+    public void addContribution(String contributionURI, URL contributionURL)
       throws DomainException;
     
     /**
      * Remove a contribution from the domain.
      * 
-     * @param url the URL of the contribution
+     * @param contributionURI the URI of the contribution
+     * @throws DomainException
      */
-    public void removeContribution(String uri)
+    public void removeContribution(String contributionURI)
       throws DomainException; 
+    
+    /**
+     * Add the supplied composite XML to the identified contribution
+     * 
+     * @param contributionURI the URI of the contribution
+     * @param compositeXML the XML string of the composite 
+     * @throws DomainException
+     */
+    public void addDeploymentComposite(String contributionURI, String compositeXML)
+      throws DomainException;
 
     /**
      * Add a deployable composite to the domain.
      * 
-     * @param qname the QName of the composite
+     * @param compositeQName the QName of the composite
+     * @throws DomainException     
      */
-    public void addComposite(QName qname)
+    public void addToDomainLevelComposite(QName compositeQName)
       throws DomainException;
     
     /**
      * Remove a deployable composite from the domain.
      * 
-     * @param qname the QName of the composite.
+     * @param compositeQName the QName of the composite
+     * @throws DomainException     
      */
-    public void removeComposite(QName qname)
-      throws DomainException;
+    public void removeFromDomainLevelComposite(QName compositeQName)
+      throws DomainException;   
     
     /**
      * Start a composite. The domain is responsible for starting all the
@@ -93,18 +107,20 @@ public interface SCADomain {
      * one ore more smaller composites and load these composites into
      * different SCA nodes.
      * 
-     * @param qname The QName of the composite.
+     * @param compositeQName The QName of the composite
+     * @throws DomainException
      */
-    public void startComposite(QName qname)
+    public void startComposite(QName compositeQName)
       throws DomainException;
     
     /**
      * Stop a composite. The domain will stop all the components from the
      * specified composite.
      * 
-     * @param qname The QName of the composite.
+     * @param compositeQName The QName of the composite
+     * @throws DomainException
      */
-    public void stopComposite(QName qname)
+    public void stopComposite(QName compositeQName)
       throws DomainException;
     
     /**

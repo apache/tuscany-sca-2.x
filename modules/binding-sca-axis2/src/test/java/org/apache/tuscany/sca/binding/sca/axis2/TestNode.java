@@ -151,11 +151,7 @@ public class TestNode implements SCANode {
  
     }
     
-    public void startComposite(QName compositeName) throws NodeException {
-
-    }
-
-    public void stopComposite() throws NodeException {             
+    public void deployComposite(QName compositeName) throws NodeException {
 
     }
     

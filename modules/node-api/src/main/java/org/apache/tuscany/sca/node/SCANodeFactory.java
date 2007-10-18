@@ -75,4 +75,19 @@ public abstract class SCANodeFactory {
      */
     public abstract SCANode createSCANode(String nodeURI, String domainURI) throws NodeException;
     
+    /**
+     * Creates a new SCA node as part of a node group. Groups of nodes are used in load balancing
+     *  and failover scenarios where each node in the group runs the same contribution and 
+     *  active composites 
+     * 
+     * @param nodeURI the URI of the node, this is the endpoint URI of the
+     * node administration service
+     * @param domainURI the URI of the domain that the node belongs to
+     * @param nodeGroupURI the uri of the node group. This is the enpoint URI of the head of the
+     * group of nodes. For example, in load balancing scnearios this will be the loaded balancer itself
+     * @return a new SCA node.
+     */
+    public abstract SCANode createSCANode(String nodeURI, String domainURI, String nodeGroupURI) throws NodeException;
+    
+    
 }

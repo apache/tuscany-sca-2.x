@@ -146,7 +146,7 @@ public class SCANodeUtil {
      * A rather ugly method to find and fix the url of the service, assuming that there
      * is one. 
      *  
-     * we can't get is out of a service reference
+     * we can't get this out of a service reference
      * the component itself doesn't know how to get it  
      * the binding can't to do it automatically as it's not the sca binding
      * 

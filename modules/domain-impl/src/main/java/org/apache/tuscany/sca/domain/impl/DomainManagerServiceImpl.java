@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.domain.DomainManagerInitService;
-import org.apache.tuscany.sca.domain.DomainManagerService;
+import org.apache.tuscany.sca.domain.DomainManagerNodeEventService;
 import org.apache.tuscany.sca.domain.NodeInfo;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.domain.ServiceInfo;
@@ -37,8 +37,8 @@ import org.osoa.sca.annotations.Service;
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
 @Scope("COMPOSITE")
-@Service(interfaces = {DomainManagerService.class, DomainManagerInitService.class})
-public class DomainManagerServiceImpl implements DomainManagerService, DomainManagerInitService {
+@Service(interfaces = {DomainManagerNodeEventService.class, DomainManagerInitService.class})
+public class DomainManagerServiceImpl implements DomainManagerNodeEventService, DomainManagerInitService {
     
     private final static Logger logger = Logger.getLogger(DomainManagerServiceImpl.class.getName());
     
@@ -57,12 +57,7 @@ public class DomainManagerServiceImpl implements DomainManagerService, DomainMan
     
     public String removeNode(String nodeURI){ 
         return scaDomain.removeNode(nodeURI);
-    }    
-    
-    public List<NodeInfo> getNodeInfo(){
-        return scaDomain.getNodeInfo();
-    }
-    
+    }      
     
     public String  registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
         return scaDomain.registerServiceEndpoint(domainUri, nodeUri, serviceName, bindingName, URL);
@@ -75,11 +70,6 @@ public class DomainManagerServiceImpl implements DomainManagerService, DomainMan
 
     public String findServiceEndpoint(String domainUri, String serviceName, String bindingName){
         return scaDomain.findServiceEndpoint(domainUri, serviceName, bindingName);
-    }
-    
-    
-    public ServiceInfo getServiceInfo(){
-        return scaDomain.getServiceInfo();
     }    
     
 }
