@@ -208,7 +208,16 @@ public class RuntimeWireInvoker {
             return;
         }
         if (conversation == null || conversation.getState() == ConversationState.ENDED) {
-            conversation = conversationManager.startConversation(conversationID);
+            // in some cases the ConversationID that should be used comes in with the 
+            // message, e.g. when ws binding is in use. 
+            if (msg.getTo().getReferenceParameters().getConversationID() != null) {
+                conversationID =  msg.getTo().getReferenceParameters().getConversationID();
+            }
+            conversation = conversationManager.getConversation(conversationID);
+            
+            if (conversation == null) {
+                conversation = conversationManager.startConversation(conversationID);
+            }
         }
         // TODO - assuming that the conversation ID is a string here when
         //       it can be any object that is serializable to XML
