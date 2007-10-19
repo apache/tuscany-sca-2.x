@@ -389,15 +389,31 @@ public class ContributionServiceImpl implements ContributionService {
      * @throws ContributionException
      */
     @SuppressWarnings("unchecked")
-    private void processResolvePhase(Contribution contribution) throws ContributionException {       
+    private void processResolvePhase(Contribution contribution) throws ContributionException {
+    	List<DeployedArtifact> composites = new ArrayList<DeployedArtifact>();
+    	
         // for each artifact that was processed on the contribution
         for (DeployedArtifact artifact : contribution.getArtifacts()) {
+        	//leave the composites to be resolved at the end
+        	if(artifact.getURI().endsWith(".composite")) {
+        		composites.add(artifact);
+        	} else {
+                // resolve the model object
+                if (artifact.getModel() != null) {
+                    this.artifactProcessor.resolve(artifact.getModel(), contribution.getModelResolver());
+                }        		
+        	}	
+        }
+        
+        //process each composite file
+        for(DeployedArtifact artifact : composites) {
             // resolve the model object
             if (artifact.getModel() != null) {
+            	System.out.println("Processing Resolve Phase : " + artifact.getURI() );
                 this.artifactProcessor.resolve(artifact.getModel(), contribution.getModelResolver());
             }
         }
-        
+    
         //resolve deployables from contribution metadata
         List<Composite> resolvedDeployables = new ArrayList<Composite>();
         for (Composite deployableComposite : contribution.getDeployables()) {
