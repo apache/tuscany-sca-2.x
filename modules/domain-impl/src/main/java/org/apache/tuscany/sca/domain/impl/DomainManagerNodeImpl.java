@@ -58,6 +58,12 @@ public class DomainManagerNodeImpl implements SCANode {
             return null;
         }
         
+        public void registerContribution(String nodeURI, String contributionURI, String contributionURL) {
+        }
+        
+        public void unregisterContribution(String contributionURI){
+        }        
+        
         public String  registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
             return null;
         }

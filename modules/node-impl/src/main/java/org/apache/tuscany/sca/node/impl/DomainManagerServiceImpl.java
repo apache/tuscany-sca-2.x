@@ -77,6 +77,14 @@ public class DomainManagerServiceImpl implements DomainManagerNodeEventService{
     public String removeNode(String nodeURI) {
         return domainManager.removeNode(nodeURI);
     }
+    
+    public void registerContribution(String nodeURI, String contributionURI, String contributionURL){
+        domainManager.registerContribution(nodeURI, contributionURI, contributionURL);
+    }
+    
+    public void unregisterContribution(String contributionURI){
+        domainManager.unregisterContribution(contributionURI);
+    }
 
 
     public String registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){

@@ -62,7 +62,15 @@ public class DomainManagerServiceImpl implements DomainManagerNodeEventService, 
     
     public String removeNode(String nodeURI){ 
         return scaDomain.removeNode(nodeURI);
-    }      
+    }  
+    
+    public void registerContribution(String nodeURI, String contributionURI, String contributionURL) {
+        scaDomain.registerContribution(nodeURI, contributionURI, contributionURL);
+    }
+    
+    public void unregisterContribution(String contributionURI){
+        scaDomain.unregisterContribution(contributionURI);
+    }
     
     public String  registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
         return scaDomain.registerServiceEndpoint(domainUri, nodeUri, serviceName, bindingName, URL);

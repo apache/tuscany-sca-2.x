@@ -205,6 +205,7 @@ public class SCADomainImpl implements SCADomainSPI  {
     }       
     
     // SCADomain SPI methods 
+    
     public Domain getDomainModel(){        
         return domainModel;
     }    
@@ -233,6 +234,31 @@ public class SCADomainImpl implements SCADomainSPI  {
         logger.log(Level.INFO, "Removed node: " + nodeURI);
         
         return "DummyReturn";
+    }
+    
+
+    public void registerContribution(String nodeURI, String contributionURI, String contributionURL){
+        try {
+            if ( domainModel.getContributions().containsKey(contributionURI) == false ){
+                // add the contribution information to the domain model
+                org.apache.tuscany.sca.domain.model.Contribution contributionModel = 
+                    parseContribution(contributionURI, contributionURL);
+            }
+
+        
+            // assign the contribution to the referenced node
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Exception when registering contribution " + 
+                                     contributionURI + 
+                                     ex.toString() );
+        }
+        
+    }
+    
+
+    public void unregisterContribution(String contributionURI){
+        // TODO
+        
     }
     
     public String  registerServiceEndpoint(String domainURI, String nodeURI, String serviceName, String bindingName, String URL){
@@ -335,7 +361,7 @@ public class SCADomainImpl implements SCADomainSPI  {
         return domainModel.getDomainURI();
     }
     
-    public void addContribution(String contributionURI, URL contributionURL) throws DomainException {
+    private org.apache.tuscany.sca.domain.model.Contribution parseContribution(String contributionURI, String contributionURL) throws DomainException {
         // add the contribution information to the domain model
         org.apache.tuscany.sca.domain.model.Contribution contributionModel = domainModelFactory.createContribution();
         contributionModel.setContributionURI(contributionURI);
@@ -347,7 +373,7 @@ public class SCADomainImpl implements SCADomainSPI  {
             // Create a local model from the contribution. Using the contribution
             // processor from the domain management runtime just because we already have it
             Contribution contribution =  domainManagementContributionService.contribute(contributionURI, 
-                                                                                        contributionURL, 
+                                                                                        new URL(contributionURL), 
                                                                                         false);
             
             // store the contribution
@@ -383,8 +409,12 @@ public class SCADomainImpl implements SCADomainSPI  {
             
         } catch(Exception ex) {
             throw new DomainException(ex);
-        }       
+        } 
         
+        return contributionModel;
+    }
+    
+    private void assignContributionToNode(org.apache.tuscany.sca.domain.model.Contribution contributionModel) throws DomainException {
         // Find a node to run the contribution. 
         // TODO - add some more sophisticated algorithm here
         // find a node without a contribution and add it to it. There is no deployment
@@ -395,15 +425,23 @@ public class SCADomainImpl implements SCADomainSPI  {
         for(Node node : domainModel.getNodes().values()) {
             if ( node.getContributions().isEmpty()){
                 foundFreeNode = true;
-                node.getContributions().put(contributionURI, contributionModel);
+                node.getContributions().put(contributionModel.getContributionURI(), contributionModel);
                 break;
             }
         }      
         
         if (foundFreeNode == false){
             throw new DomainException("No free node available for contribution " + 
-                                      contributionURI);
+                                      contributionModel.getContributionURI());
         }
+    }
+    
+    public void addContribution(String contributionURI, URL contributionURL) throws DomainException {
+        // add the contribution information to the domain model
+        org.apache.tuscany.sca.domain.model.Contribution contributionModel = 
+            parseContribution(contributionURI, contributionURL.toExternalForm());
+
+        assignContributionToNode(contributionModel);
     }
 
     public void removeContribution(String uri) throws DomainException {

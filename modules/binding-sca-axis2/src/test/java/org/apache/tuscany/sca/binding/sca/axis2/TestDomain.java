@@ -184,6 +184,12 @@ public class TestDomain implements SCADomainSPI {
         return null;
     }
     
+    public void registerContribution(String nodeURI, String contributionURI, String contributionURL){
+    }
+    
+    public void unregisterContribution(String contributionURI){
+    }    
+    
     public void addContribution(String contributionURI, URL contributionURL) throws DomainException {
     }
         
