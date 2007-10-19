@@ -19,14 +19,18 @@
 
 package org.apache.tuscany.sca.domain.impl;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.domain.DomainManagerInitService;
 import org.apache.tuscany.sca.domain.DomainManagerNodeEventService;
-import org.apache.tuscany.sca.domain.NodeInfo;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
-import org.apache.tuscany.sca.domain.ServiceInfo;
+import org.apache.tuscany.sca.domain.management.DomainInfo;
+import org.apache.tuscany.sca.domain.management.DomainManagementService;
+import org.apache.tuscany.sca.domain.management.NodeInfo;
+import org.apache.tuscany.sca.domain.management.impl.DomainInfoImpl;
+import org.apache.tuscany.sca.domain.management.impl.NodeInfoImpl;
+import org.apache.tuscany.sca.domain.model.Domain;
+import org.apache.tuscany.sca.domain.model.Node;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
@@ -37,19 +41,20 @@ import org.osoa.sca.annotations.Service;
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
 @Scope("COMPOSITE")
-@Service(interfaces = {DomainManagerNodeEventService.class, DomainManagerInitService.class})
-public class DomainManagerServiceImpl implements DomainManagerNodeEventService, DomainManagerInitService {
+@Service(interfaces = {DomainManagerNodeEventService.class, DomainManagerInitService.class, DomainManagementService.class})
+public class DomainManagerServiceImpl implements DomainManagerNodeEventService, DomainManagerInitService, DomainManagementService {
     
     private final static Logger logger = Logger.getLogger(DomainManagerServiceImpl.class.getName());
     
     private SCADomainSPI scaDomain;
     
     // DomainManagerInitService methods
+    
     public void setDomain(SCADomainSPI scaDomain) {
         this.scaDomain = scaDomain;
     }
     
-    // DomainManagerService methods
+    // DomainManagerNodeEventService methods
     
     public String registerNode(String nodeURI, String nodeURL){ 
         return scaDomain.addNode(nodeURI, nodeURL);
@@ -72,4 +77,34 @@ public class DomainManagerServiceImpl implements DomainManagerNodeEventService, 
         return scaDomain.findServiceEndpoint(domainUri, serviceName, bindingName);
     }    
     
+    // DomainManagementService methods
+    
+    public DomainInfo getDomainDescription(){
+        
+        DomainInfo domainInfo = new DomainInfoImpl();
+        Domain domain =  scaDomain.getDomainModel();
+        
+        domainInfo.setDomainURI(domain.getDomainURI());
+        domainInfo.setDomainURL(domain.getDomainURL());
+        domainInfo.getNodes().addAll(domain.getNodes().keySet());
+        domainInfo.getContributions().addAll(domain.getContributions().keySet());
+        domainInfo.getDeployedComposites().addAll(domain.getDeployedComposites().keySet());
+        
+        return domainInfo;
+    }
+    
+    public NodeInfo getNodeDescription(String nodeURI){
+        
+        NodeInfo nodeInfo = new NodeInfoImpl();
+        Domain domain =  scaDomain.getDomainModel();
+        Node node = domain.getNodes().get(nodeURI);
+        
+        nodeInfo.setNodeURI(nodeURI);
+        nodeInfo.setNodeURL(node.getNodeURL());
+        nodeInfo.getContributions().addAll(node.getContributions().keySet());
+        nodeInfo.getDeployedComposites().addAll(node.getDeployedComposites().keySet());
+        nodeInfo.getServices().addAll(node.getServices().keySet());
+                
+        return nodeInfo;
+    }    
 }

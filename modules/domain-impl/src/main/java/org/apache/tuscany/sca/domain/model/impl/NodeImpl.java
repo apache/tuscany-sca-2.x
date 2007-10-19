@@ -19,11 +19,7 @@
 
 package org.apache.tuscany.sca.domain.model.impl;
 
-import java.io.Serializable;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -39,7 +35,7 @@ import org.apache.tuscany.sca.domain.model.Service;
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public class NodeImpl implements Node, Serializable {
+public class NodeImpl implements Node {
     
     private String nodeURI;
     private String nodeURL;

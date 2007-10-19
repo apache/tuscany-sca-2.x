@@ -17,16 +17,21 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.domain.impl;
+package org.apache.tuscany.sca.domain.management.impl;
 
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.domain.NodeInfo;
+import org.apache.tuscany.sca.domain.management.NodeInfo;
+import org.apache.tuscany.sca.domain.model.Composite;
+import org.apache.tuscany.sca.domain.model.Contribution;
+import org.apache.tuscany.sca.domain.model.Service;
 
 /**
  * Information relating to an exposed service
@@ -39,62 +44,56 @@ public class NodeInfoImpl implements NodeInfo, Serializable {
     
     private String nodeURI;
     private String nodeURL;
-    private String contributionURI;
-    private URL contributionURL;
-    private List<QName> compositeNames = new ArrayList<QName>();
+    private List<String> contributions = new ArrayList<String>();
+    private List<QName> composites = new ArrayList<QName>();
+    private List<String> services = new ArrayList<String>();
     
-    public NodeInfoImpl(String nodeURI){
-        this.nodeURI = nodeURI;
-    }  
-    
-    public boolean match (String nodeURI){
-        return (this.nodeURI.equals(nodeURI));
-    }
-    
+    /**
+     * Retrieve the node uri
+     * 
+     * @return node uri
+     */
     public String getNodeURI(){
         return nodeURI;
-    } 
+    }
     
-    public String getNodeURL(){
+    /**
+     * Set the node uri
+     * 
+     * @param nodeURI
+     */    
+    public void setNodeURI(String nodeURI){
+        this.nodeURI = nodeURI;
+    }
+    
+    /**
+     * Retrieve the node url
+     *
+     * @return node url
+     */    
+    public String getNodeURL() {
         return nodeURL;
-    }     
-    
+    }
+   
+    /**
+     * Set the node url
+     * 
+     * @param nodeURL
+     */    
     public void setNodeURL(String nodeURL){
         this.nodeURL = nodeURL;
     }
-    
-    public String getContributionURI(){
-        return contributionURI;
+   
+    public List<String> getContributions(){
+        return contributions;
     }
     
-    public void setContributionURI(String contributionURI){
-        this.contributionURI = contributionURI;
+    public List<QName> getDeployedComposites(){
+        return composites;
     }
     
-    public URL getContributionURL(){
-        return contributionURL;
-    }
-    
-    public void setContributionURL(URL contributionURL){
-        this.contributionURL = contributionURL;
-    }    
-    
-    public List<QName> getCompositeNames(){
-        return compositeNames;
-    }
-    
-    public void addCompositeName(QName compositeName){
-        this.compositeNames.add(compositeName);
-    }
-    
-    @Override
-    public String toString (){
-        return "[" +
-               nodeURI + " " +
-               nodeURL + " " +
-               contributionURI + " " +
-               compositeNames.toString() + " " +
-               "]";
+    public List<String> getServices(){
+        return services;
     }
     
 }

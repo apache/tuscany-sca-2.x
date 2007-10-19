@@ -42,8 +42,6 @@ import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.DomainManagerNodeEventService;
-import org.apache.tuscany.sca.domain.NodeInfo;
-import org.apache.tuscany.sca.domain.ServiceInfo;
 import org.apache.tuscany.sca.domain.model.Domain;
 import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;

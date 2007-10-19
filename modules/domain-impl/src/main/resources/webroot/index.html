@@ -24,33 +24,86 @@
 
     <script language="JavaScript">
     
-       domainManager = new JSONRpcClient("../DomainManagerComponent/DomainManagerJson");
+       domainManager = new JSONRpcClient("../DomainManagerComponent/DomainManagementService");
+       var domainInfo;
 
-       function getNodeInfo() {
-          domainManager.DomainManagerService.getNodeInfo(handleGetNodeInfo);
+       function getDomainInfo() {
+          domainManager.DomainManagementService.getDomainDescription(handleGetDomainInfo);
+       }
+       
+       function handleGetDomainInfo(result) {
+       
+          domainInfo = result;
+          var text = "";
+          document.getElementById('domainName').innerHTML="Domain:&nbsp;&nbsp;" + domainInfo.domainURI;
+          
+          text = text + "<H2>Nodes</H2>";
+          
+          for (var i in domainInfo.nodes.list){
+              var nodeURI = domainInfo.nodes.list[i];
+             
+              text = text + "<table>";
+              text = text + "<TR CLASS='source_1' >";           
+              text = text + "  <TD CLASS='clickable link' ONCLICK=\"getNodeInfo('" + nodeURI + "')\">" ;
+              text = text + "    <IMG SRC='node.png'/>&nbsp;&nbsp;" + nodeURI;
+              text = text + "  </TD>"; 
+              //text = text + "  <TD CLASS='clickable link' ONCLICK=\"showNode('" + node.nodeURI + "')\">" + nodeManagerWebUrl + "</TD>";              
+              text = text + "</TR>";   
+              text = text + "<div id=\"" + nodeURI + "\">";    
+              text = text + "</table>";  
+          }     
+          
+         text = text + "<H2>Domain Contributions</H2>";
+            
+         for (var i in domainInfo.contributions.list){
+              var contributionURI = domainInfo.contributions.list[i];
+              text = text + "<table>";
+              text = text + "<TR CLASS='source_1' >";
+              text = text + "  <TD>";
+              text = text + "    <IMG SRC='node.png'/>&nbsp;&nbsp;" + contributionURI;
+              text = text + "  </TD>";            
+              text = text + "</TR>";       
+              text = text + "</table>";                    
+          }
+
+         text = text + "<H2>Deployable Composites</H2>";
+ 
+         for (var i in domainInfo.deployedComposites.list){
+              var compositeQName = domainInfo.deployedComposites.list[i];
+              text = text + "<table>";
+              text = text + "<TR CLASS='source_1' >";
+              text = text + "  <TD>";
+              text = text + "    <IMG SRC='node.png'/>&nbsp;&nbsp;" + compositeQName.namespaceURI + "#" + compositeQName.localPart;
+              text = text + "  </TD>";            
+              text = text + "</TR>";       
+              text = text + "</table>";                    
+          }
+          
+          document.getElementById('domainInfo').innerHTML=text;
+       }
+
+       function getNodeInfo(nodeURI) {
+          domainManager.DomainManagementService.getNodeDescription(nodeURI, handleGetNodeInfo);
        }
        
        function handleGetNodeInfo(result) {
        
-          var text = ""
+          var nodeInfo = result;
+          var text = "";
           
-          for (var i in result.list){
-              var node = result.list[i];
+          
+          for (var i in nodeInfo.contributions.list){
+              var contributionURI = nodeInfo.contributions.list[i];
               
-              text = text + "<table>";
-              text = text + "<TR CLASS='source_1' >";
+              text = text + "<TR CLASS='source_2' >";
+              text = text + "  <TD/>";
               text = text + "  <TD>";
-              text = text + "    <IMG SRC='node.png'/>&nbsp;&nbsp;" + node.nodeURI;
-              text = text + "  </TD>";
-              
-              nodeManagerWebUrl = node.nodeURL + "/node/index.html";
-              
-              text = text + "  <TD CLASS='clickable link' ONCLICK=\"showNode('" + node.nodeURI + "')\">" + nodeManagerWebUrl + "</TD>";
-              text = text + "</TR>";       
-              text = text + "</table>";        
+              text = text + "&nbsp;&nbsp;" + contributionURI;
+              text = text + "  </TD>";            
+              text = text + "</TR>";               
           }
 
-          document.getElementById('domainInfo').innerHTML=text;
+          document.getElementById(nodeInfo.nodeURI).innerHTML=text;
        }
        
         function showNode(url)
@@ -65,7 +118,7 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 
-<body onload="getNodeInfo()">
+<body onload="getDomainInfo()">
 
 <h1 id="top">Apache Tuscany Domain</h1>
 <div id="errors"></div>
@@ -73,19 +126,14 @@
 <table>
 <TR>
 <TD>
-DomainURI
-</TD>
-<TD>
-NodeURI
+<div id="domainName"></div>
 </TD>
 </TR>
 </table>
 
 <div id="domainInfo"></div>
 
-<p /><input type="button" value="Refresh" onclick="getNodeInfo()" />
-
-<div id="nodePage"></div>
+<p /><input type="button" value="Refresh" onclick="getDomainInfo()" />
 
 </body>
 </html>

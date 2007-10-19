@@ -17,64 +17,56 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.domain;
+package org.apache.tuscany.sca.domain.management;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.domain.model.Composite;
+import org.apache.tuscany.sca.domain.model.Contribution;
+import org.apache.tuscany.sca.domain.model.Node;
+
 
 /**
- * A collection of info for a registered node
+ * A data transport object for the management interface
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public interface NodeInfo {
+public interface DomainInfo {
     
     /**
      * Retrieve the domain uri
      * 
      * @return domain uri
      */
-    public String getNodeURI();
+    public String getDomainURI();
     
     /**
-     * Retrieve the node uri
+     * Set the domain uri
      * 
-     * @return node uri
+     * @param domainURI
      */    
-    public String getNodeURL();
+    public void setDomainURI(String domainURI);    
+    
+    /**
+     * Retrieve the domain url
+     * 
+     * @return domain url
+     */    
+    public String  getDomainURL();
    
     /**
-     * Ser the node url
+     * Set the domain url
      * 
-     * @param nodeURL
+     * @param domainURL
      */    
-    public void setNodeURL(String nodeURL);
-   
-    public String getContributionURI();
+    public void setDomainURL(String domainURL);    
     
-    public void setContributionURI(String contributionURI);
-    
-    public URL getContributionURL();
-    
-    public void setContributionURL(URL contributionURL);
-    
-    public List<QName> getCompositeNames();
-    
-    public void addCompositeName(QName compositeName);
-    
-    /**
-     * Returns true if this node info object matches the provided data
-     */
-    public boolean match(String nodeURI);
-      
-    /** 
-     * Returns a string representation of the information for a service
-     * 
-     * @return
-     */
-    public String toString();
+    public List<String> getNodes();
+    public List<String> getContributions();
+    public List<QName> getDeployedComposites();
  
 }

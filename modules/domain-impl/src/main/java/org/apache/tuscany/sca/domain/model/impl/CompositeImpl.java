@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.domain.model.impl;
 
 
-import java.io.Serializable;
-
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.domain.model.Composite;
@@ -32,7 +30,7 @@ import org.apache.tuscany.sca.domain.model.Composite;
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public class CompositeImpl implements Composite, Serializable {
+public class CompositeImpl implements Composite {
     
     private QName compositeQName;
     

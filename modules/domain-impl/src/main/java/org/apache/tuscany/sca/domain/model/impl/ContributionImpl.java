@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.domain.model.impl;
 
-import java.io.Serializable;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,11 +33,10 @@ import org.apache.tuscany.sca.domain.model.Contribution;
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public class ContributionImpl implements Contribution, Serializable {
+public class ContributionImpl implements Contribution {
     
     private String contributionURI;
     private URL contributionURL;
-    private org.apache.tuscany.sca.contribution.Contribution contribution;
     private Map<QName, Composite> composites = new HashMap<QName, Composite>();   
     private Map<QName, Composite> deployableComposites = new HashMap<QName, Composite>();  
     
