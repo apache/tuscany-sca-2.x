@@ -45,9 +45,7 @@ import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.DomainManagerInitService;
-import org.apache.tuscany.sca.domain.NodeInfo;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
-import org.apache.tuscany.sca.domain.ServiceInfo;
 import org.apache.tuscany.sca.domain.model.Domain;
 import org.apache.tuscany.sca.domain.model.DomainModelFactory;
 import org.apache.tuscany.sca.domain.model.Node;
@@ -118,7 +116,7 @@ public class SCADomainImpl implements SCADomainSPI  {
             try {
                 tmpURI = new URI(domainModel.getDomainURI()); 
                 if (tmpURI.isAbsolute()){
-                    domainModel.setDomainURL(tmpURI.toURL());
+                    domainModel.setDomainURL(tmpURI.toURL().toExternalForm());
                 }
             } catch(Exception ex) {
                 throw new ActivationException("domain uri " + 
@@ -367,7 +365,7 @@ public class SCADomainImpl implements SCADomainSPI  {
                 }
             }            
             
-            // add all deployable composites into the domain model
+            // add all composites into the domain model
             for (Composite composite : contribution.getDeployables()) {
                 org.apache.tuscany.sca.domain.model.Composite compositeModel = 
                     domainModelFactory.createComposite();
@@ -380,6 +378,7 @@ public class SCADomainImpl implements SCADomainSPI  {
                 org.apache.tuscany.sca.domain.model.Composite compositeModel = 
                     contributionModel.getComposites().get(composite.getName());
                 contributionModel.getDeployableComposites().put(compositeModel.getCompositeQName(), compositeModel);
+                domainModel.getDeployedComposites().put(compositeModel.getCompositeQName(), compositeModel);
             }
             
         } catch(Exception ex) {
@@ -424,6 +423,7 @@ public class SCADomainImpl implements SCADomainSPI  {
                     contribution.getComposites().get(compositeName);
                 if (composite != null) {
                     contribution.getDeployableComposites().put(compositeName, composite);
+                    domainModel.getDeployedComposites().put(compositeName, composite);
                 }
             }
         }

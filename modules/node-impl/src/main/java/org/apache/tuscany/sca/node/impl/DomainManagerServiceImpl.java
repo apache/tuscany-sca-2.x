@@ -25,8 +25,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.domain.DomainManagerNodeEventService;
-import org.apache.tuscany.sca.domain.NodeInfo;
-import org.apache.tuscany.sca.domain.ServiceInfo;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;

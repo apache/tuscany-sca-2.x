@@ -17,42 +17,30 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.domain;
+package org.apache.tuscany.sca.domain.management;
 
-import org.osoa.sca.annotations.Remotable;
+import org.apache.tuscany.sca.domain.model.Domain;
+
 
 
 /**
- * A collection of info for a registered service
+ * Connects the domain management operations
  * 
- * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
+ * @version $Rev: 552343 $ $Date: 2007-09-11 18:45:36 +0100 (Tue, 11 Sep 2007) $
  */
-@Remotable
-public interface ServiceInfo {
+public interface DomainManagementService {
+     
+    /**
+     * Return description of the domain
+     * 
+     */
+    public DomainInfo getDomainDescription();
     
     /**
-     * Compare this service info against the data provided and return true if it matches
-     * return false otherwise
+     * Return description of the node
      * 
-     * @param domainUri
-     * @param serviceName
-     * @param bindingName
-     * @return
+     * @param nodeURI
      */
-    public boolean match(String domainUri, String serviceName, String bindingName);
+    public NodeInfo getNodeDescription(String nodeURI); 
     
-    /**
-     * Get the URL of this service. 
-     * 
-     * @return
-     */
-    public String getUrl();   
-      
-    /** 
-     * Returns a string representation of the information for a service
-     * 
-     * @return
-     */
-    public String toString();
- 
 }

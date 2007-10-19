@@ -17,53 +17,56 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.domain.model;
+package org.apache.tuscany.sca.domain.management;
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.domain.model.Composite;
+import org.apache.tuscany.sca.domain.model.Contribution;
+import org.apache.tuscany.sca.domain.model.Service;
+
 
 /**
- * A domain. Manages nodes
+ * A collection of info for a registered node
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public interface Domain {
-
+public interface NodeInfo {
     
     /**
-     * Retrieve the domain uri
+     * Retrieve the node uri
      * 
-     * @return domain uri
+     * @return node uri
      */
-    public String getDomainURI();
+    public String getNodeURI();
     
     /**
-     * Set the domain uri
+     * Set the node uri
      * 
-     * @param domainURI
+     * @param nodeURI
      */    
-    public void setDomainURI(String domainURI);    
+    public void setNodeURI(String nodeURI);    
     
     /**
-     * Retrieve the domain url
-     * 
-     * @return domain url
+     * Retrieve the node url
+     *
+     * @return node url
      */    
-    public String  getDomainURL();
+    public String getNodeURL();
    
     /**
-     * Set the domain url
+     * Set the node url
      * 
-     * @param domainURL
+     * @param nodeURL
      */    
-    public void setDomainURL(String domainURL);
+    public void setNodeURL(String nodeURL);
    
-    public Map<String, Node> getNodes();
-    public Map<String, Contribution> getContributions();
-    public Map<QName, Composite> getDeployedComposites();
+    public List<String> getContributions();
+    public List<QName> getDeployedComposites();
+    public List<String> getServices();
+ 
 }

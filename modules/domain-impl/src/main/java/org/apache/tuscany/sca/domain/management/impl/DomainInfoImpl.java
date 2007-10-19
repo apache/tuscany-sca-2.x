@@ -17,32 +17,36 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.domain.model.impl;
+package org.apache.tuscany.sca.domain.management.impl;
 
+import java.io.Serializable;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.domain.management.DomainInfo;
 import org.apache.tuscany.sca.domain.model.Composite;
 import org.apache.tuscany.sca.domain.model.Contribution;
 import org.apache.tuscany.sca.domain.model.Node;
-import org.apache.tuscany.sca.domain.model.Domain;
-
 
 /**
- * A domain. Manages nodes
+ *  A data transport object for the management interface
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public class DomainImpl implements Domain {
+public class DomainInfoImpl implements DomainInfo, Serializable {
+    
+    static final long serialVersionUID = 7669181086005969428L;    
     
     private String domainURI;
     private String domainURL;
-    private Map<String, Node> nodes = new HashMap<String, Node>();
-    private Map<String, Contribution> contributions = new HashMap<String, Contribution>();    
-    private Map<QName, Composite> composites = new HashMap<QName, Composite>();
-       
+    private List<String> nodes = new ArrayList<String>();
+    private List<String> contributions = new ArrayList<String>();
+    private List<QName> composites = new ArrayList<QName>();
     
     /**
      * Retrieve the domain uri
@@ -80,15 +84,16 @@ public class DomainImpl implements Domain {
         this.domainURL = domainURL;
     }
    
-    public Map<String, Node> getNodes(){
+    public List<String> getNodes(){
         return nodes;
     }
     
-    public Map<String, Contribution> getContributions(){
+    public List<String> getContributions(){
         return contributions;
     }
     
-    public Map<QName, Composite> getDeployedComposites(){
+    public List<QName> getDeployedComposites(){
         return composites;
-    }    
+    }   
+    
 }

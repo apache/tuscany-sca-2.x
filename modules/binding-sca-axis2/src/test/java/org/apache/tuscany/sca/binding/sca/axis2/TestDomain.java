@@ -25,35 +25,12 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
-import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.service.ContributionService;
-import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.domain.DomainException;
-import org.apache.tuscany.sca.domain.NodeInfo;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
-import org.apache.tuscany.sca.domain.ServiceInfo;
 import org.apache.tuscany.sca.domain.model.Domain;
-import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.node.NodeException;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
-import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * The very minimum domain implementation to get these tests going without creating a dependency on 
