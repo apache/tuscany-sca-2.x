@@ -96,10 +96,6 @@ calculator/
                                     discovery mechanism to the distributed
                                     domain
       resources/
-        domain                    - the SCA assembly for the service discovery
-                                    function
-        management/               - the SCA assembly for each nodes management
-                                    function
         nodeA                     - the SCA assembly for nodeA's part of the 
                                     calculator application
         nodeB                     - the SCA assembly for nodeB's part of the 
