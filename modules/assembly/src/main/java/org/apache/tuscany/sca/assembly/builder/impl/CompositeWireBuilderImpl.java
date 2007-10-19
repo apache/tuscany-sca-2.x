@@ -119,11 +119,11 @@ public class CompositeWireBuilderImpl {
         // Compute the policies before connecting component references
         computePolicies(composite);
 
-        // Connect component references to their targets
-        connectComponentReferences(composite, components, componentServices, componentReferences);
-
         // Connect component references as described in wires
         connectWires(composite, componentServices, componentReferences);
+
+        // Connect component references to their targets
+        connectComponentReferences(composite, components, componentServices, componentReferences);
 
         // Validate that references are wired or promoted, according
         // to their multiplicity

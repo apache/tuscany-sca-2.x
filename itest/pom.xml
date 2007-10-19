@@ -69,6 +69,10 @@
                 <module>services</module>
                 <module>component-type</module>
                 <module>interfaces</module>
+                <module>wires</module>
+                <!--
+                <module>callback-separatethread</module>
+                -->
                 <module>scopes</module>
                 <module>wsdl</module>
                 <module>wsdlless</module>
