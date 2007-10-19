@@ -73,30 +73,30 @@ public class ContributionServiceImpl implements ContributionService {
      */
 
     private URLArtifactProcessor artifactProcessor;
-    
+
     /**
      * Registry of available stax processors,
      * used for loading contribution metadata in a extensible way
      */
     private StAXArtifactProcessor staxProcessor;
-    
+
     /**
      * Event listener for contribution operations
      */
     private ExtensibleContributionListener contributionListener;
-    
+
     /**
      * Registry of available model resolvers
      */
-    
+
     private ModelResolverExtensionPoint modelResolvers;
-    
+
     /**
      * Model factory extension point
      */
-    
+
     private ModelFactoryExtensionPoint modelFactories;
-    
+
     /**
      * xml factory used to create reader instance to load contribution metadata
      */
@@ -111,9 +111,8 @@ public class ContributionServiceImpl implements ContributionService {
      * Contribution model facotry
      */
     private ContributionFactory contributionFactory;
-    
+
     private ModelResolver domainResolver;
-    
 
     public ContributionServiceImpl(ContributionRepository repository,
                                    PackageProcessor packageProcessor,
@@ -141,38 +140,40 @@ public class ContributionServiceImpl implements ContributionService {
     }
 
     public Contribution contribute(String contributionURI, URL sourceURL, boolean storeInRepository)
-            throws ContributionException, IOException {
+        throws ContributionException, IOException {
         if (contributionURI == null) {
             throw new IllegalArgumentException("URI for the contribution is null");
         }
         if (sourceURL == null) {
             throw new IllegalArgumentException("Source URL for the contribution is null");
         }
-        
+
         return addContribution(contributionURI, sourceURL, null, null, storeInRepository);
     }
-    
-    public Contribution contribute(String contributionURI, URL sourceURL, ModelResolver modelResolver, boolean storeInRepository) throws ContributionException,
-        IOException {
+
+    public Contribution contribute(String contributionURI,
+                                   URL sourceURL,
+                                   ModelResolver modelResolver,
+                                   boolean storeInRepository) throws ContributionException, IOException {
         if (contributionURI == null) {
             throw new IllegalArgumentException("URI for the contribution is null");
         }
         if (sourceURL == null) {
             throw new IllegalArgumentException("Source URL for the contribution is null");
         }
-        
+
         return addContribution(contributionURI, sourceURL, null, modelResolver, storeInRepository);
     }
 
     public Contribution contribute(String contributionURI, URL sourceURL, InputStream input)
-            throws ContributionException, IOException {
+        throws ContributionException, IOException {
 
         return addContribution(contributionURI, sourceURL, input, null, true);
     }
-    
-    public Contribution contribute(String contributionURI, URL sourceURL, InputStream input, ModelResolver modelResolver) 
+
+    public Contribution contribute(String contributionURI, URL sourceURL, InputStream input, ModelResolver modelResolver)
         throws ContributionException, IOException {
-        
+
         return addContribution(contributionURI, sourceURL, input, modelResolver, true);
     }
 
@@ -219,37 +220,38 @@ public class ContributionServiceImpl implements ContributionService {
 
         URL[] clUrls = {sourceURL};
         URLClassLoader cl = new URLClassLoader(clUrls, null);
-        
-        ContributionMetadataDocumentProcessor metadataDocumentProcessor = 
-            new ContributionMetadataDocumentProcessor(cl, staxProcessor, assemblyFactory, contributionFactory, xmlFactory);
+
+        ContributionMetadataDocumentProcessor metadataDocumentProcessor =
+            new ContributionMetadataDocumentProcessor(cl, staxProcessor, assemblyFactory, contributionFactory,
+                                                      xmlFactory);
         contributionMetadata = contributionFactory.createContribution();
         try {
             metadataDocumentProcessor.read(contributionMetadata);
         } catch (XMLStreamException e) {
             throw new InvalidContributionMetadataException("Invalid contribution metadata for contribution.");
         }
-        
+
         // For debugging purposes, write it back to XML
-//        if (contributionMetadata != null) {
-//            try {
-//                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//                XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
-//                outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
-//                staxProcessor.write(contributionMetadata, outputFactory.createXMLStreamWriter(bos));
-//                Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(bos.toByteArray()));
-//                OutputFormat format = new OutputFormat();
-//                format.setIndenting(true);
-//                format.setIndent(2);
-//                XMLSerializer serializer = new XMLSerializer(System.out, format);
-//                serializer.serialize(document);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-        
+        //        if (contributionMetadata != null) {
+        //            try {
+        //                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        //                XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+        //                outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+        //                staxProcessor.write(contributionMetadata, outputFactory.createXMLStreamWriter(bos));
+        //                Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(bos.toByteArray()));
+        //                OutputFormat format = new OutputFormat();
+        //                format.setIndenting(true);
+        //                format.setIndent(2);
+        //                XMLSerializer serializer = new XMLSerializer(System.out, format);
+        //                serializer.serialize(document);
+        //            } catch (Exception e) {
+        //                e.printStackTrace();
+        //            }
+        //        }
+
         return contributionMetadata;
     }
-    
+
     /**
      * Note:
      * 
@@ -263,15 +265,15 @@ public class ContributionServiceImpl implements ContributionService {
      * @throws DeploymentException
      */
     private Contribution addContribution(String contributionURI,
-                                 URL sourceURL,
-                                 InputStream contributionStream,
-                                 ModelResolver modelResolver,
-                                 boolean storeInRepository) throws IOException, ContributionException {
-        
+                                         URL sourceURL,
+                                         InputStream contributionStream,
+                                         ModelResolver modelResolver,
+                                         boolean storeInRepository) throws IOException, ContributionException {
+
         if (contributionStream == null && sourceURL == null) {
             throw new IllegalArgumentException("The content of the contribution is null.");
         }
-                
+
         // store the contribution in the contribution repository
         URL locationURL = sourceURL;
         if (contributionRepository != null && storeInRepository) {
@@ -284,21 +286,21 @@ public class ContributionServiceImpl implements ContributionService {
 
         //initialize contribution based on it's metadata if available
         Contribution contribution = readContributionMetadata(locationURL);
-        
+
         // Create contribution model resolver
         if (modelResolver == null) {
             modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
         }
-        
-        if ( modelResolver instanceof ExtensibleModelResolver ) {
+
+        if (modelResolver instanceof ExtensibleModelResolver) {
             ((ExtensibleModelResolver)modelResolver).setDomainResolver(domainResolver);
         }
-        
+
         //set contribution initial information
         contribution.setURI(contributionURI.toString());
         contribution.setLocation(locationURL.toString());
         contribution.setModelResolver(modelResolver);
-        
+
         List<URI> contributionArtifacts = null;
 
         //NOTE: if a contribution is stored on the repository
@@ -319,13 +321,13 @@ public class ContributionServiceImpl implements ContributionService {
 
         // Read all artifacts in the contribution
         processReadPhase(contribution, contributionArtifacts);
-        
+
         //
         this.contributionListener.contributionAdded(this.contributionRepository, contribution);
-        
+
         // Resolve them
         processResolvePhase(contribution);
-        
+
         // Add all composites under META-INF/sca-deployables to the
         // list of deployables
         String prefix = Contribution.SCA_CONTRIBUTION_DEPLOYABLES;
@@ -339,10 +341,10 @@ public class ContributionServiceImpl implements ContributionService {
                 }
             }
         }
-                
+
         // store the contribution on the registry
         this.contributionRepository.addContribution(contribution);
-        
+
         return contribution;
     }
 
@@ -357,12 +359,12 @@ public class ContributionServiceImpl implements ContributionService {
      */
     private void processReadPhase(Contribution contribution, List<URI> artifacts) throws ContributionException,
         MalformedURLException {
-        
+
         ModelResolver modelResolver = contribution.getModelResolver();
-        URL contributionURL = new URL(contribution.getLocation()); 
+        URL contributionURL = new URL(contribution.getLocation());
         for (URI a : artifacts) {
             URL artifactURL = packageProcessor.getArtifactURL(new URL(contribution.getLocation()), a);
-            
+
             // Add the deployed artifact model to the resolver
             DeployedArtifact artifact = this.contributionFactory.createDeployedArtifact();
             artifact.setURI(a.toString());
@@ -374,7 +376,7 @@ public class ContributionServiceImpl implements ContributionService {
             Object model = this.artifactProcessor.read(contributionURL, a, artifactURL);
             if (model != null) {
                 artifact.setModel(model);
-                
+
                 // Add the loaded model to the model resolver
                 modelResolver.addModel(model);
             }
@@ -390,38 +392,39 @@ public class ContributionServiceImpl implements ContributionService {
      */
     @SuppressWarnings("unchecked")
     private void processResolvePhase(Contribution contribution) throws ContributionException {
-    	List<DeployedArtifact> composites = new ArrayList<DeployedArtifact>();
-    	
+        List<DeployedArtifact> composites = new ArrayList<DeployedArtifact>();
+
         // for each artifact that was processed on the contribution
         for (DeployedArtifact artifact : contribution.getArtifacts()) {
-        	//leave the composites to be resolved at the end
-        	if(artifact.getURI().endsWith(".composite")) {
-        		composites.add(artifact);
-        	} else {
+            //leave the composites to be resolved at the end
+            if (artifact.getURI().endsWith(".composite")) {
+                composites.add(artifact);
+            } else {
                 // resolve the model object
                 if (artifact.getModel() != null) {
                     this.artifactProcessor.resolve(artifact.getModel(), contribution.getModelResolver());
-                }        		
-        	}	
+                }
+            }
         }
-        
+
         //process each composite file
-        for(DeployedArtifact artifact : composites) {
+        for (DeployedArtifact artifact : composites) {
             // resolve the model object
             if (artifact.getModel() != null) {
-            	System.out.println("Processing Resolve Phase : " + artifact.getURI() );
+                // System.out.println("Processing Resolve Phase : " + artifact.getURI());
                 this.artifactProcessor.resolve(artifact.getModel(), contribution.getModelResolver());
             }
         }
-    
+
         //resolve deployables from contribution metadata
         List<Composite> resolvedDeployables = new ArrayList<Composite>();
         for (Composite deployableComposite : contribution.getDeployables()) {
-            Composite resolvedDeployable = contribution.getModelResolver().resolveModel(Composite.class, deployableComposite);
-                        
+            Composite resolvedDeployable =
+                contribution.getModelResolver().resolveModel(Composite.class, deployableComposite);
+
             resolvedDeployables.add(resolvedDeployable);
         }
         contribution.getDeployables().clear();
         contribution.getDeployables().addAll(resolvedDeployables);
-    }  
+    }
 }
