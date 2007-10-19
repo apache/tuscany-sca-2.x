@@ -40,6 +40,7 @@ import javax.servlet.ServletContextListener;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
+import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.node.NodeException;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
@@ -56,6 +57,7 @@ public class WarContextListener implements ServletContextListener {
     private final static Logger logger = Logger.getLogger(WarContextListener.class.getName());
 
     protected SCANode node;
+    protected SCADomain domain;
     protected AddableURLClassLoader classLoader;
     protected File repository;
 
@@ -67,7 +69,6 @@ public class WarContextListener implements ServletContextListener {
     protected HashMap<URL, Long> existingContributions; // value is last modified time
 
     private String domainName;
-
     private String nodeName;
 
     protected static final String NODE_ATTRIBUTE = WarContextListener.class.getName() + ".TuscanyNode";
@@ -114,15 +115,16 @@ public class WarContextListener implements ServletContextListener {
             
             SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             node = nodeFactory.createSCANode(nodeName, domainName);
-            node.start();
+            domain = node.getDomain();
+            
     
             existingContributions = new HashMap<URL, Long>();
             URL[] contributions = getContributionJarURLs(repository);
             for (URL contribution : contributions) {
-    
                     addContribution(contribution);
-    
             }
+            
+            node.start();
     
             initHotDeploy(repository);
         } catch (Throwable e) {

@@ -17,19 +17,26 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.domain.model;
+package org.apache.tuscany.sca.domain.management;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.domain.model.Composite;
+import org.apache.tuscany.sca.domain.model.Contribution;
+import org.apache.tuscany.sca.domain.model.Service;
+
+
 /**
- * A contribution.
+ * A collection of info for a contribution
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public interface Contribution {
+public interface ContributionInfo {
+    
     
     /**
      * Retrieve the contribution uri
@@ -50,15 +57,16 @@ public interface Contribution {
      * 
      * @return contribution url
      */    
-    public String getContributionURL();
+    public URL getContributionURL();
    
     /**
      * Set the contribution url
      * 
      * @param contributionURL
      */    
-    public void setContributionURL(String contributionURL);
+    public void setContributionURL(URL contributionURL);
     
-    public Map<QName, Composite> getComposites();       
-    public Map<QName, Composite> getDeployableComposites();   
+    public List<QName> getComposites();       
+    public List<QName> getDeployableComposites();
+ 
 }

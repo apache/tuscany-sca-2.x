@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.domain.model.Contribution;
 public class ContributionImpl implements Contribution {
     
     private String contributionURI;
-    private URL contributionURL;
+    private String contributionURL;
     private Map<QName, Composite> composites = new HashMap<QName, Composite>();   
     private Map<QName, Composite> deployableComposites = new HashMap<QName, Composite>();  
     
@@ -64,7 +64,7 @@ public class ContributionImpl implements Contribution {
      * 
      * @return contribution url
      */    
-    public URL getContributionURL(){
+    public String getContributionURL(){
         return contributionURL;
     }
    
@@ -73,7 +73,7 @@ public class ContributionImpl implements Contribution {
      * 
      * @param contributionURL
      */    
-    public void setContributionURL(URL contributionURL){
+    public void setContributionURL(String contributionURL){
         this.contributionURL = contributionURL;
     }
     

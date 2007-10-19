@@ -17,48 +17,73 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.domain.model;
+package org.apache.tuscany.sca.domain.management.impl;
 
+import java.io.Serializable;
 import java.net.URL;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.domain.management.ContributionInfo;
 /**
- * A contribution.
+ * Information relating to an exposed service
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public interface Contribution {
+public class ContributionInfoImpl implements ContributionInfo, Serializable {
+    
+    static final long serialVersionUID = 7669181086005969428L;    
+    
+    private String contributionURI;
+    private URL contributionURL;
+    private List<QName> composites = new ArrayList<QName>();   
+    private List<QName> deployableComposites = new ArrayList<QName>();  
+    
     
     /**
      * Retrieve the contribution uri
      * 
      * @return contribution uri
      */
-    public String getContributionURI();
+    public String getContributionURI() {
+        return contributionURI;
+    }
     
     /**
      * Set the contribution uri
      * 
      * @param contributionURI
      */    
-    public void setContributionURI(String contributionURI);    
+    public void setContributionURI(String contributionURI){
+        this.contributionURI = contributionURI;
+    }
     
     /**
      * Retrieve the contribution url
      * 
      * @return contribution url
      */    
-    public String getContributionURL();
+    public URL getContributionURL(){
+        return contributionURL;
+    }
    
     /**
      * Set the contribution url
      * 
      * @param contributionURL
      */    
-    public void setContributionURL(String contributionURL);
+    public void setContributionURL(URL contributionURL){
+        this.contributionURL = contributionURL;
+    }
     
-    public Map<QName, Composite> getComposites();       
-    public Map<QName, Composite> getDeployableComposites();   
+    public List<QName> getComposites(){
+        return composites;
+    }   
+    
+    public List<QName> getDeployableComposites(){
+        return deployableComposites;
+    }
+    
 }

@@ -54,7 +54,30 @@ public interface DomainManagerNodeEventService {
      * @param nodeUri the string uri for the current node
      * @param nodeManagementUrl the endpoint for the nodes management service
      */
-    public String removeNode(String nodeURI);     
+    public String removeNode(String nodeURI);  
+    
+
+    /**
+     * In the case where a contribution is added at a node this method is used to 
+     * record the relationship directly. This is different from adding a contribution
+     * to a domain as the contribution has alread been allocated to a node
+     * 
+     * @param nodeURI the string uri for the node
+     * @param contributionURI the string uri for the contribution
+     * @param nodeURL the location of the contribution
+     * @return
+     */
+    public void registerContribution(String nodeURI, String contributionURI, String contributionURL);
+    
+
+    /** 
+     * In the case where a contribution is removed from a node locally this method is
+     * used to remove the contribution from the domain
+     * 
+     * @param contributionURI the string uri for the contribution
+     * @return
+     */
+    public void unregisterContribution(String contributionURI);     
      
     /**
      * Accepts information about a service endpoint and holds onto it

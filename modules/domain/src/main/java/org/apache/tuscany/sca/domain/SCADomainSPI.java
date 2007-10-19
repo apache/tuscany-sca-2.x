@@ -49,6 +49,28 @@ public interface SCADomainSPI extends SCADomain {
      * @return
      */
     public String removeNode(String nodeURI);
+    
+    /**
+     * In the case where a contribution is added at a node this method is used to 
+     * record the relationship directly. This is different from adding a contribution
+     * to a domain as the contribution has alread been allocated to a node
+     * 
+     * @param nodeURI the string uri for the node
+     * @param contributionURI the string uri for the contribution
+     * @param nodeURL the location of the contribution
+     * @return
+     */
+    public void registerContribution(String nodeURI, String contributionURI, String contributionURL);
+    
+
+    /** 
+     * In the case where a contribution is removed from a node locally this method is
+     * used to remove the contribution from the domain
+     * 
+     * @param contributionURI the string uri for the contribution
+     * @return
+     */
+    public void unregisterContribution(String contributionURI);     
 
     
     /**
@@ -58,7 +80,7 @@ public interface SCADomainSPI extends SCADomain {
      * @param nodeUri the string uri for the current node
      * @param serviceName the name of the service that is exposed and the provided endpoint
      * @param bindingName the remote binding that is providing the endpoint
-     * @param url the enpoint url
+     * @param url the endpoint url
      * @return TBD - information about the registration
      */
     public String registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL);
@@ -89,19 +111,6 @@ public interface SCADomainSPI extends SCADomain {
      * @return
      */
     public Domain getDomainModel();
-    
-    /** 
-     * Returns information for all registered services
-     * @return
-     */
-   // public ServiceInfo getServiceInfo(); 
-    
-    
-    /**
-     * Return information about all the nodes in the domain
-     * 
-     * @return
-     */
-  //  public List<NodeInfo> getNodeInfo();    
+  
     
 }

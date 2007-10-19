@@ -276,7 +276,12 @@ public class SCANodeImpl implements SCANode {
                 // remember all the deployable composites ready to be started
                 for (Composite composite : contribution.getDeployables()) {
                     compositesToStart.add(composite.getName());
-                }                
+                }  
+                
+                
+                // add the contribution to the domain. It will generally already be there
+                // unless the contribution has been added to the node itself. 
+                ((SCADomainImpl)scaDomain).registerContribution(nodeURI, contributionURI, contributionURL.toExternalForm());                  
                 
             } else {
                     throw new ActivationException("Contribution " + contributionURL + " not found");
