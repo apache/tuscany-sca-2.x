@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.policy.transaction;
 
+import java.lang.reflect.InvocationTargetException;
+import java.security.PrivilegedExceptionAction;
+
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.InvalidTransactionException;
@@ -35,6 +38,7 @@ public class TransactionManagerHelper {
     // private static final Logger logger = Logger.getLogger(TransactionManagerHelper.class.getName());
 
     private TransactionManager tm;
+
     public TransactionManagerHelper(TransactionManager tm) {
         super();
         this.tm = tm;
@@ -56,27 +60,6 @@ public class TransactionManagerHelper {
         }
     }
 
-    public void managedLocalTransactionPreInvoke() {
-        // 
-    }
-
-    public Transaction noManagedTransactionPreInvoke() throws SystemException {
-        if (tm.getTransaction() != null) {
-            return tm.suspend();
-        }
-        return null;
-    }
-
-    public void noManagedTransactionPostInvoke(Transaction suspended) throws InvalidTransactionException,
-        IllegalStateException, SystemException {
-        if (suspended != null) {
-            tm.resume(suspended);
-        }
-    }
-
-    public void propgatesTransactionPreInvoke() {
-    }
-
     public Transaction suspendsTransactionPreInvoke() throws SystemException {
         if (tm.getTransaction() != null) {
             return tm.suspend();
@@ -92,14 +75,6 @@ public class TransactionManagerHelper {
         }
     }
 
-    public void transactedOnewayPreInvoke() {
-        //
-    }
-
-    public void immediateOnewayPreInvoke() {
-        // 
-    }
-
     public TransactionManager getTransactionManager() {
         return tm;
     }
@@ -108,5 +83,155 @@ public class TransactionManagerHelper {
         this.tm = tm;
     }
 
+    public void validateOneway(TransactionIntent onewayIntent, TransactionIntent implIntent)
+        throws IncompatibleIntentException {
+        if (onewayIntent == TransactionIntent.transactedOneWay) {
+            if (implIntent != TransactionIntent.managedTransactionGlobal) {
+                throw new IncompatibleIntentException(onewayIntent + "<-X->" + implIntent);
+            }
+        }
+    }
+
+    public void validateInbound(TransactionIntent serviceIntent, TransactionIntent implIntent)
+        throws IncompatibleIntentException {
+        if (serviceIntent == TransactionIntent.propagatesTransacton) {
+            if (implIntent != TransactionIntent.managedTransactionGlobal) {
+                throw new IncompatibleIntentException(serviceIntent + "<-X->" + implIntent);
+            }
+        }
+    }
+
+    public void validateOutbound(TransactionIntent referenceIntent, TransactionIntent implIntent)
+        throws IncompatibleIntentException {
+        if (referenceIntent == TransactionIntent.propagatesTransacton) {
+            if (implIntent != TransactionIntent.managedTransactionGlobal) {
+                throw new IncompatibleIntentException(referenceIntent + "<-X->" + implIntent);
+            }
+        }
+    }
+
+    public <T> T handlesOutbound(TransactionIntent referenceIntent,
+                                 TransactionIntent implIntent,
+                                 PrivilegedExceptionAction<T> action) throws Exception {
+
+        if (implIntent == null) {
+            implIntent = TransactionIntent.noManagedTransaction;
+        }
+
+        if (referenceIntent == TransactionIntent.propagatesTransacton) {
+            if (implIntent != TransactionIntent.managedTransactionGlobal) {
+                throw new IncompatibleIntentException(referenceIntent + "<-X->" + implIntent);
+            } else {
+                // propagates the current TX
+                return run(action);
+            }
+        } else if (referenceIntent == TransactionIntent.suspendsTransaction) {
+            Transaction tx = suspendsTransactionPreInvoke();
+            try {
+                return run(action);
+            } finally {
+                suspendsTransactionPostInvoke(tx);
+            }
+        } else {
+            return run(action);
+        }
+    }
+
+    private <T> T run(PrivilegedExceptionAction<T> action) throws Exception {
+        try {
+            return action.run();
+        } catch (Exception e) {
+            throw new InvocationTargetException(e);
+        }
+    }
+
+    public <T> T handlesInbound(TransactionIntent serviceIntent,
+                                TransactionIntent implIntent,
+                                PrivilegedExceptionAction<T> action) throws Exception {
+        if (serviceIntent == null && implIntent == null) {
+            return run(action);
+        }
+
+        if (implIntent == null) {
+            implIntent = TransactionIntent.noManagedTransaction;
+        }
+
+        if (serviceIntent == TransactionIntent.propagatesTransacton) {
+            if (implIntent != TransactionIntent.managedTransactionGlobal) {
+                throw new IncompatibleIntentException(serviceIntent + "<-X->" + implIntent);
+            } else {
+                // Make sure a global TX is in place
+                Transaction tx = managedGlobalTransactionPreInvoke();
+                try {
+                    return run(action);
+                } finally {
+                    managedGlobalTransactionPostInvoke(tx);
+                }
+            }
+        } else if (serviceIntent == TransactionIntent.suspendsTransaction) {
+            Transaction tx1 = suspendsTransactionPreInvoke();
+            try {
+                if (implIntent == TransactionIntent.managedTransactionGlobal) {
+                    // Start a new TX
+                    Transaction tx2 = managedGlobalTransactionPreInvoke();
+                    try {
+                        return run(action);
+                    } finally {
+                        // Commit tx2
+                        managedGlobalTransactionPostInvoke(tx2);
+                    }
+                } else {
+                    return run(action);
+                }
+            } finally {
+                suspendsTransactionPostInvoke(tx1);
+            }
+        } else {
+            if (implIntent == TransactionIntent.managedTransactionGlobal) {
+                // Start a new TX
+                Transaction tx2 = managedGlobalTransactionPreInvoke();
+                try {
+                    return run(action);
+                } finally {
+                    // Commit tx2
+                    managedGlobalTransactionPostInvoke(tx2);
+                }
+            } else {
+                return run(action);
+            }
+        }
+    }
+
+    public <T> void handlesOneWay(TransactionIntent onewayIntent,
+                                  TransactionIntent implIntent,
+                                  PrivilegedExceptionAction<T> action) throws Exception {
+        if (implIntent == null) {
+            implIntent = TransactionIntent.noManagedTransaction;
+        }
+
+        if (onewayIntent == null) {
+            // Assume transactedOneWay
+            run(action);
+            return;
+        }
+
+        if (onewayIntent == TransactionIntent.transactedOneWay) {
+            if (implIntent != TransactionIntent.managedTransactionGlobal) {
+                throw new IncompatibleIntentException(onewayIntent + "<-X->" + implIntent);
+            } else {
+                run(action);
+                return;
+            }
+        } else {
+            // TransactionIntent.immediateOneWay
+            Transaction tx = suspendsTransactionPreInvoke();
+            try {
+                run(action);
+                return;
+            } finally {
+                suspendsTransactionPostInvoke(tx);
+            }
+        }
+    }
 
 }
