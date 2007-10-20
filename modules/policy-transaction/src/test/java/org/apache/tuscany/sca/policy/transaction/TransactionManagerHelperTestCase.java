@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.policy.transaction;
 import java.util.logging.Logger;
 
 import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
@@ -29,7 +30,7 @@ import javax.transaction.xa.Xid;
 import junit.framework.TestCase;
 
 import org.apache.geronimo.transaction.GeronimoUserTransaction;
-import org.apache.geronimo.transaction.manager.GeronimoTransactionManager;
+import org.apache.geronimo.transaction.manager.NamedXAResource;
 
 /**
  * @version $Rev$ $Date$
@@ -37,13 +38,20 @@ import org.apache.geronimo.transaction.manager.GeronimoTransactionManager;
 public class TransactionManagerHelperTestCase extends TestCase {
     private static final Logger logger = Logger.getLogger(TransactionManagerHelper.class.getName());
 
-    public static class MockXAResource implements XAResource {
+    public static class MockXAResource implements NamedXAResource {
+
+        private String rm;
         private String id;
         private int timeout = 1000;
 
-        public MockXAResource(String id) {
+        public MockXAResource(String rm, String id) {
             super();
+            this.rm = rm;
             this.id = id;
+        }
+
+        public String getName() {
+            return rm + ":" + id;
         }
 
         public void commit(Xid xid, boolean onePhase) throws XAException {
@@ -63,7 +71,12 @@ public class TransactionManagerHelperTestCase extends TestCase {
         }
 
         public boolean isSameRM(XAResource xares) throws XAException {
-            return xares instanceof MockXAResource;
+            if (xares instanceof MockXAResource) {
+                MockXAResource res = (MockXAResource)xares;
+                return res.rm.endsWith(rm);
+            } else {
+                return false;
+            }
         }
 
         public int prepare(Xid xid) throws XAException {
@@ -125,7 +138,9 @@ public class TransactionManagerHelperTestCase extends TestCase {
     }
 
     public void testHelper() throws Exception {
-        GeronimoTransactionManager tm = new GeronimoTransactionManager();
+        TransactionModuleActivator activator = new TransactionModuleActivator();
+        activator.start(null);
+        TransactionManager tm = activator.getTransactionManager();
         GeronimoUserTransaction tx = new GeronimoUserTransaction(tm);
         TransactionManagerHelper helper = new TransactionManagerHelper(tm);
 
@@ -136,8 +151,8 @@ public class TransactionManagerHelperTestCase extends TestCase {
         assertNotNull(t1);
         // The current TX should be T1
         assertSame(t1, tm.getTransaction());
-        tm.getTransaction().enlistResource(new MockXAResource("001"));
-        tm.getTransaction().enlistResource(new MockXAResource("002"));
+        tm.getTransaction().enlistResource(new MockXAResource("Derby", "001"));
+        tm.getTransaction().enlistResource(new MockXAResource("DB2", "002"));
 
         Transaction suspended = helper.suspendsTransactionPreInvoke();
         // T1 is suspended
@@ -149,7 +164,7 @@ public class TransactionManagerHelperTestCase extends TestCase {
         assertNotNull(t2);
         // The current TX should be T2
         assertSame(t2, tm.getTransaction());
-        tm.getTransaction().enlistResource(new MockXAResource("003"));
+        tm.getTransaction().enlistResource(new MockXAResource("Oracle", "003"));
 
         tx.rollback();
 
@@ -163,5 +178,7 @@ public class TransactionManagerHelperTestCase extends TestCase {
         helper.managedGlobalTransactionPostInvoke(t1);
         assertNotNull(tm.getTransaction());
         assertEquals(6, t1.getStatus());
+
+        activator.stop(null);
     }
 }

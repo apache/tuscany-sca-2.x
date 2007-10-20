@@ -19,10 +19,14 @@
 
 package org.apache.tuscany.sca.policy.transaction;
 
-import javax.transaction.TransactionManager;
-import javax.transaction.xa.XAException;
+import java.io.File;
 
+import javax.transaction.TransactionManager;
+
+import org.apache.geronimo.transaction.log.HOWLLog;
 import org.apache.geronimo.transaction.manager.GeronimoTransactionManager;
+import org.apache.geronimo.transaction.manager.XidFactory;
+import org.apache.geronimo.transaction.manager.XidFactoryImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 
@@ -31,23 +35,65 @@ import org.apache.tuscany.sca.core.ModuleActivator;
  */
 public class TransactionModuleActivator implements ModuleActivator {
     private TransactionManager transactionManager;
-    
+    private HOWLLog howlLog;
+    private XidFactory xidFactory;
+
+    private String logFileDir = "target/logs";
+    private String bufferClassName = "org.objectweb.howl.log.BlockLogBuffer";
+    private int bufferSizeKBytes = 32;
+    private boolean checksumEnabled = true;
+    private boolean adler32Checksum = true;
+    private int flushSleepTimeMilliseconds = 50;
+    private String logFileExt = "log";
+    private String logFileName = "transaction";
+    private int maxBlocksPerFile = -1;
+    private int maxLogFiles = 2;
+    private int maxBuffers = 0;
+    private int minBuffers = 4;
+    private int threadsWaitingForceThreshold = -1;
+    private File serverBaseDir = new File(System.getProperty("basedir", System.getProperty("user.dir")));
+
     /**
      * @see org.apache.tuscany.sca.core.ModuleActivator#start(org.apache.tuscany.sca.core.ExtensionPointRegistry)
      */
     public void start(ExtensionPointRegistry registry) {
         try {
-            this.transactionManager = new GeronimoTransactionManager();
-        } catch (XAException e) {
+            xidFactory = new XidFactoryImpl();
+            howlLog =
+                new HOWLLog(bufferClassName, bufferSizeKBytes, checksumEnabled, adler32Checksum,
+                            flushSleepTimeMilliseconds, logFileDir, logFileExt, logFileName, maxBlocksPerFile,
+                            maxBuffers, maxLogFiles, minBuffers, threadsWaitingForceThreshold, xidFactory,
+                            serverBaseDir);
+
+            howlLog.doStart();
+            this.transactionManager = new GeronimoTransactionManager(1200, xidFactory, howlLog);
+        } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-        registry.addExtensionPoint(this.transactionManager);
+        if (registry != null) {
+            registry.addExtensionPoint(this.transactionManager);
+        }
     }
 
     /**
      * @see org.apache.tuscany.sca.core.ModuleActivator#stop(org.apache.tuscany.sca.core.ExtensionPointRegistry)
      */
     public void stop(ExtensionPointRegistry registry) {
+        try {
+            howlLog.doStop();
+            if (registry != null) {
+                registry.removeExtensionPoint(transactionManager);
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public TransactionManager getTransactionManager() {
+        if (transactionManager == null) {
+            start(null);
+        }
+        return transactionManager;
     }
 
 }
