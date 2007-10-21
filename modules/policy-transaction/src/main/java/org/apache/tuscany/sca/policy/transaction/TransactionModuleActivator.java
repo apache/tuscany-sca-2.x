@@ -36,7 +36,6 @@ import org.apache.tuscany.sca.core.ModuleActivator;
 public class TransactionModuleActivator implements ModuleActivator {
     private TransactionManager transactionManager;
     private HOWLLog howlLog;
-    private XidFactory xidFactory;
 
     private String logFileDir = "target/logs";
     private String bufferClassName = "org.objectweb.howl.log.BlockLogBuffer";
@@ -57,8 +56,15 @@ public class TransactionModuleActivator implements ModuleActivator {
      * @see org.apache.tuscany.sca.core.ModuleActivator#start(org.apache.tuscany.sca.core.ExtensionPointRegistry)
      */
     public void start(ExtensionPointRegistry registry) {
+        if (registry != null) {
+            transactionManager = registry.getExtensionPoint(TransactionManager.class);
+            if (transactionManager != null) {
+                // The transaction manage is provided by the hosting environment
+                return;
+            }
+        }
         try {
-            xidFactory = new XidFactoryImpl();
+            XidFactory xidFactory = new XidFactoryImpl();
             howlLog =
                 new HOWLLog(bufferClassName, bufferSizeKBytes, checksumEnabled, adler32Checksum,
                             flushSleepTimeMilliseconds, logFileDir, logFileExt, logFileName, maxBlocksPerFile,
@@ -66,12 +72,12 @@ public class TransactionModuleActivator implements ModuleActivator {
                             serverBaseDir);
 
             howlLog.doStart();
-            this.transactionManager = new GeronimoTransactionManager(1200, xidFactory, howlLog);
+            transactionManager = new GeronimoTransactionManager(1200, xidFactory, howlLog);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
         if (registry != null) {
-            registry.addExtensionPoint(this.transactionManager);
+            registry.addExtensionPoint(transactionManager);
         }
     }
 
@@ -80,8 +86,10 @@ public class TransactionModuleActivator implements ModuleActivator {
      */
     public void stop(ExtensionPointRegistry registry) {
         try {
-            howlLog.doStop();
-            if (registry != null) {
+            if (howlLog != null) {
+                howlLog.doStop();
+            }
+            if (registry != null && transactionManager != null) {
                 registry.removeExtensionPoint(transactionManager);
             }
         } catch (Exception e) {
@@ -89,10 +97,7 @@ public class TransactionModuleActivator implements ModuleActivator {
         }
     }
 
-    public TransactionManager getTransactionManager() {
-        if (transactionManager == null) {
-            start(null);
-        }
+    TransactionManager getTransactionManager() {
         return transactionManager;
     }
 
