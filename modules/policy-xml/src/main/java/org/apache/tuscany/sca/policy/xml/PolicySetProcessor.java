@@ -37,6 +37,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNamespace;
 import org.apache.neethi.PolicyEngine;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
@@ -288,6 +289,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         OMFactory fac = OMAbstractFactory.getOMFactory();
         OMElement head = fac.createOMElement(reader.getName());
         OMElement current = head;
+        
         while (true) {
             switch (reader.next()) {
                 case XMLStreamConstants.START_ELEMENT:
@@ -308,12 +310,17 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                     // add the attributes for this element
                     count = reader.getAttributeCount();
                     for (int i = 0; i < count; i++) {
+                        OMNamespace omNs = null;
                         String ns = reader.getAttributeNamespace(i);
                         String prefix = reader.getAttributePrefix(i);
                         String qname = reader.getAttributeLocalName(i);
                         String value = reader.getAttributeValue(i);
                         
-                        child.addAttribute(qname, value, fac.createOMNamespace(ns, prefix));
+                        if ( ns != null ) {
+                            omNs = fac.createOMNamespace(ns, prefix);
+                        }
+                            
+                        child.addAttribute(qname, value, omNs);
                         if (ns != null) {
                             child.declareNamespace(ns, prefix);
                         }
