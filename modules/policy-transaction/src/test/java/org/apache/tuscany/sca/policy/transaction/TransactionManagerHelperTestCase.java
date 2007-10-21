@@ -29,7 +29,6 @@ import javax.transaction.xa.Xid;
 
 import junit.framework.TestCase;
 
-import org.apache.geronimo.transaction.GeronimoUserTransaction;
 import org.apache.geronimo.transaction.manager.NamedXAResource;
 
 /**
@@ -141,7 +140,7 @@ public class TransactionManagerHelperTestCase extends TestCase {
         TransactionModuleActivator activator = new TransactionModuleActivator();
         activator.start(null);
         TransactionManager tm = activator.getTransactionManager();
-        GeronimoUserTransaction tx = new GeronimoUserTransaction(tm);
+        // GeronimoUserTransaction tx = new GeronimoUserTransaction(tm);
         TransactionManagerHelper helper = new TransactionManagerHelper(tm);
 
         // No TX yet
@@ -166,7 +165,7 @@ public class TransactionManagerHelperTestCase extends TestCase {
         assertSame(t2, tm.getTransaction());
         tm.getTransaction().enlistResource(new MockXAResource("Oracle", "003"));
 
-        tx.rollback();
+        tm.rollback();
 
         // Skip post
         // helper.managedGlobalTransactionPostInvoke(t2);
