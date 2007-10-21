@@ -16,9 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.binding.ws.axis2.itests.policy.configparams;
 
-package org.apache.tuscany.sca.binding.ws.axis2.itests.policy;
+import java.io.IOException;
 
-public class WSSecurityAuthenticationTestCase extends AbstractHelloWorldOMTestCase {
-    // super class does it all getting composite based on this class name
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.UnsupportedCallbackException;
+
+import org.apache.ws.security.WSPasswordCallback;
+
+/**
+ * Sample userid passwd generation class
+ */
+public class IntegrityPWCBHandler implements CallbackHandler {
+
+    public void handle(Callback[] callbacks) throws IOException,
+            UnsupportedCallbackException {
+        for (int i = 0; i < callbacks.length; i++) {
+        	System.out.println("*** Calling Integrity Password Handler .... ");
+            WSPasswordCallback pwcb = (WSPasswordCallback)callbacks[i];
+            pwcb.setPassword("TuscanyWsUserPasswd");
+        }
+    }
+
 }

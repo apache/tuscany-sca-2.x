@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ws.axis2.itests.policy;
+package org.apache.tuscany.sca.binding.ws.axis2.itests.policy.wspolicy;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;

@@ -17,8 +17,26 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.ws.axis2.itests.policy;
+package org.apache.tuscany.sca.binding.ws.axis2.itests.policy.configparams;
 
-public class WSSecurityIntegrityTestCase extends AbstractHelloWorldOMTestCase {
+import java.security.Provider;
+import java.security.Security;
+
+public class WSSecurityConfidentialityTestCaseFIXBouncyCastleIssue extends AbstractHelloWorldOMTestCase {
+
+    /**
+     * @see org.apache.tuscany.sca.binding.ws.axis2.itests.policy.configparams.AbstractHelloWorldOMTestCase#setUp()
+     */
+    @Override
+    protected void setUp() throws Exception {
+        // Workaround an issue with IBM JDK
+        Provider jce = Security.getProvider("IBMJCE");
+        if (jce != null) {
+            // Make sure IBMJCE is used first
+            Security.removeProvider("IBMJCE");
+            Security.insertProviderAt(jce, 1);
+        }
+        super.setUp();
+    }
     // super class does it all getting composite based on this class name
 }

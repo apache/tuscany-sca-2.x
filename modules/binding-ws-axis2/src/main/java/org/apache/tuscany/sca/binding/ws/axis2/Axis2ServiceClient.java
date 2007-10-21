@@ -54,6 +54,7 @@ import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.neethi.Policy;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
@@ -337,6 +338,9 @@ public class Axis2ServiceClient {
                             configParam.setParameterElement(axis2ConfigParamPolicy.getParamElements().get(paramName));
                             configContext.getAxisConfiguration().addParameter(configParam);
                         }
+                    } else if ( policy instanceof Policy ) {
+                        Policy wsPolicy = (Policy)policy;
+                        configContext.getAxisConfiguration().applyPolicy(wsPolicy);
                     }
                 }
             }

@@ -77,6 +77,7 @@ import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.engine.ListenerManager;
 import org.apache.axis2.i18n.Messages;
 import org.apache.axis2.wsdl.WSDLConstants;
+import org.apache.neethi.Policy;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
@@ -633,6 +634,9 @@ public class Axis2ServiceProvider {
                             configParam.setParameterElement(axis2ConfigParamPolicy.getParamElements().get(paramName));
                             configContext.getAxisConfiguration().addParameter(configParam);
                         }
+                    } else if ( policy instanceof Policy ) {
+                        Policy wsPolicy = (Policy)policy;
+                        configContext.getAxisConfiguration().applyPolicy(wsPolicy);
                     }
                 }
             }
