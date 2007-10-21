@@ -22,12 +22,19 @@
 	xmlns:hw="http://helloworld"
     name="helloworldws">
 
+	<service name="HelloWorldService" requires="authentication" promote="HelloWorldServiceComponent/HelloWorldService">
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws uri="http://localhost:8085/HelloWorldService"/>
+    </service>
+    
+    <service name="HelloWorldWsPolicyService" promote="HelloWorldServiceComponent/HelloWorldService"
+    			policySets="wsSecurityPolicyForIntegrity">
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
+        <binding.ws uri="http://localhost:8085/HelloWorldWsPolicyService"/>
+    </service>
+
     <component name="HelloWorldServiceComponent">
         <implementation.java class="helloworld.HelloWorldImpl" />
-	    <service name="HelloWorldService" requires="authentication">
-	        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
-	        <binding.ws uri="http://localhost:8085/HelloWorldService"/>
-	    </service>
     </component>
 
 </composite>
