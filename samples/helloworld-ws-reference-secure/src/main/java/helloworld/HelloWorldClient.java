@@ -32,6 +32,10 @@ public class HelloWorldClient {
 
         String value = helloWorldService.getGreetings("World");
         System.out.println(value);
+        
+        helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldWsPolicyServiceComponent");
+        value = helloWorldService.getGreetings("WsPolicyWorld");
+        System.out.println(value);
 
         scaDomain.close();
     }

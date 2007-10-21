@@ -37,9 +37,21 @@
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
     </component>
     
-    <reference name="HelloWorldService" promote="HelloWorldServiceComponent/helloWorldService" requires="wsAuthentication">
+    <!-- A component with a reference promoted as a composite reference with a ws policy -->
+    <component name="HelloWorldWsPolicyServiceComponent">
+      <implementation.java class="helloworld.HelloWorldServiceComponent"/>
+    </component>
+    
+    <reference name="HelloWorldService" promote="HelloWorldServiceComponent/helloWorldService" 
+    			requires="wsAuthentication">
         <interface.java interface="helloworld.HelloWorldService" />
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
+    </reference>
+    
+    <reference name="HelloWorldWsPolicyService" promote="HelloWorldWsPolicyServiceComponent/helloWorldService"
+    			policySets="wsSecurityPolicyForIntegrity">
+        <interface.java interface="helloworld.HelloWorldService" />
+        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldWsPolicyService/HelloWorldSoapPort)"/>
     </reference>
 
 </composite>
