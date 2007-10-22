@@ -21,12 +21,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-sca</artifactId>
+        <artifactId>demo-tutorial</artifactId>
         <version>1.1-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>sample-store</artifactId>
-    <name>Apache Tuscany SCA Getting Started Online Store Sample</name>
+    <artifactId>demo-store</artifactId>
+    <name>Apache Tuscany SCA Getting Started Online Store Tutorial</name>
 
     <repositories>
        <repository>
@@ -94,6 +94,20 @@
     
     <build>
        <finalName>${artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tuscany.sca</groupId>
+                <artifactId>tuscany-maven-ant-generator</artifactId>
+                <version>1.1-incubating-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
 </project>
