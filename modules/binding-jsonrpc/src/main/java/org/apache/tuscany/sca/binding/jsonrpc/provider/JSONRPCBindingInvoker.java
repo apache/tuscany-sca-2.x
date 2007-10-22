@@ -17,42 +17,29 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.jsonrpc;
+package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
-import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 
 /**
- * A model for the JSONRPC binding.
+ * Invoker for the JSONRPC Binding
  * 
  * @version $Rev$ $Date$
  */
-public class JSONRPCBinding implements Binding {
-    private String name;
-    private String uri;
+public class JSONRPCBindingInvoker implements Invoker {
+    Operation operation;
+    String uri;
 
-    public String getName() {
-        return name;
+    public JSONRPCBindingInvoker(Operation operation, String uri) {
+        this.operation = operation;
+        this.uri = uri;        
     }
-
-    public String getURI() {
-        return uri;
-    }
-
-    public void setURI(String uri) {
-        this.uri = uri;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isUnresolved() {
-        // The binding is always resolved
-        return false;
-    }
-
-    public void setUnresolved(boolean unresolved) {
-        // The binding is always resolved
+    
+    public Message invoke(Message msg) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

@@ -56,6 +56,25 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
         return null;
     }
 
+    public RuntimeWire getRuntimeWire(Binding binding, InterfaceContract interfaceContract) {
+        RuntimeWire wire = getRuntimeWire(binding);
+        if (wire == null) {
+            return null;
+        }
+        if (interfaceContract != null && interfaceContract != wire.getSource().getInterfaceContract()) {
+            try {
+                // FIXME: [rfeng] We could avoid clone() using a better comparison of the two interface contracts
+                wire = (RuntimeWire)wire.clone();
+                wire.getSource().setInterfaceContract(interfaceContract);
+                wire.rebuild();
+            } catch (CloneNotSupportedException e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
+        
+        return wire;
+    }
+    
     public List<RuntimeWire> getCallbackWires() {
         return callbackWires;
     }

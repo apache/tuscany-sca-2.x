@@ -31,7 +31,7 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 /**
- * @version $Rev: 536083 $ $Date: 2007-05-08 02:18:29 -0400 (Tue, 08 May 2007) $
+ * @version $Rev$ $Date$
  */
 public class JSONRPCServiceTestCase extends TestCase {
 
