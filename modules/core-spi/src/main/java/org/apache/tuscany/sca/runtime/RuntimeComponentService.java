@@ -68,6 +68,16 @@ public interface RuntimeComponentService extends ComponentService {
     ServiceBindingProvider getBindingProvider(Binding binding);
     
     /**
+     * Returns the service binding provider associated with this
+     * component service and the given binding.
+     * 
+     * @param binding
+     * @param interfaceContract
+     * @return
+     */
+    RuntimeWire getRuntimeWire(Binding binding, InterfaceContract interfaceContract);
+    
+    /**
      * Sets the service binding provider associated with this
      * component service and the given binding.
      *

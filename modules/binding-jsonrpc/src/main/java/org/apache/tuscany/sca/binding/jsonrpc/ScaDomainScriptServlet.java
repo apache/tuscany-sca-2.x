@@ -35,6 +35,8 @@ import javax.servlet.http.HttpServletResponse;
  * This script wrappers the JSON-RPC-Java jsonrpc.js script
  * adding in at the bottom the JavaScript to create and initialize
  * the variables representing the SCA services.
+ * 
+ * @version $Rev$ $Date$
  */
 public class ScaDomainScriptServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;

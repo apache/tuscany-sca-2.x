@@ -25,6 +25,8 @@ import java.lang.reflect.Method;
  * from a Java class. See http://dojo.jot.com/SMD.
  * 
  * TODO: Change to work from the Tuscany Interface instead of a Java class
+ * 
+ * @version $Rev$ $Date$
  */
 public class JavaToSmd {
     

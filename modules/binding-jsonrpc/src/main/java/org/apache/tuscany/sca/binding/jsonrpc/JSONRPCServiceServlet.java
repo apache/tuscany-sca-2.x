@@ -24,17 +24,24 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.json.JSONObject;
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.osoa.sca.ServiceRuntimeException;
 
 import com.metaparadigm.jsonrpc.JSONRPCBridge;
-import com.metaparadigm.jsonrpc.JSONRPCResult;
 import com.metaparadigm.jsonrpc.JSONRPCServlet;
 
 /**
@@ -45,12 +52,22 @@ import com.metaparadigm.jsonrpc.JSONRPCServlet;
 public class JSONRPCServiceServlet extends JSONRPCServlet {
     private static final long serialVersionUID = 1L;
 
+    transient Binding binding;
     transient String serviceName;
     transient Object serviceInstance;
+    transient RuntimeComponentService componentService;
+    transient InterfaceContract serviceContract;
     transient Class<?> serviceInterface;
 
-    public JSONRPCServiceServlet(String serviceName, Class<?> serviceInterface, Object serviceInstance) {
-        this.serviceName = serviceName;
+    public JSONRPCServiceServlet(Binding binding,
+                                 RuntimeComponentService componentService,
+                                 InterfaceContract serviceContract,
+                                 Class<?> serviceInterface,
+                                 Object serviceInstance) {
+        this.binding = binding;
+        this.serviceName = binding.getName();
+        this.componentService = componentService;
+        this.serviceContract = serviceContract;
         this.serviceInterface = serviceInterface;
         this.serviceInstance = serviceInstance;
     }
@@ -65,7 +82,6 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
 
     @Override
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         if (request.getParameter("smd") != null) {
             handleSMDRequest(request, response);
         } else {
@@ -80,17 +96,8 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         }
     }
 
-    private void handleServiceRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        /*
-         * Create a new bridge for every request to aviod all the problems with 
-         * JSON-RPC-Java storing the bridge in the session
-         */
-        HttpSession session = request.getSession();
-
-        JSONRPCBridge jsonrpcBridge = new JSONRPCBridge();
-        jsonrpcBridge.registerObject(serviceName, serviceInstance, serviceInterface);
-        session.setAttribute("JSONRPCBridge", jsonrpcBridge);
-
+    private void handleServiceRequest(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
         // Encode using UTF-8, although We are actually ASCII clean as
         // all unicode data is JSON escaped using backslash u. This is
         // less data efficient for foreign character sets but it is
@@ -118,24 +125,26 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
             data.write(buf, 0, ret);
         }
 
-        JSONObject jsonReq = null;
-        JSONRPCResult jsonResp = null;
+        org.codehaus.jettison.json.JSONObject jsonReq = null;
+        String method = null;
         try {
-            jsonReq = new JSONObject(data.toString());
-        } catch (ParseException e) {
+            jsonReq = new org.codehaus.jettison.json.JSONObject(data.toString());
+            method = jsonReq.getString("method");
+        } catch (JSONException e) {
             throw new RuntimeException("Unable to parse request", e);
         }
 
-        String method = jsonReq.getString("method");
-        if ((method != null) && (method.indexOf('.') < 0)) {
-            jsonReq.putOpt("method", serviceName + "." + method);
+        
+        // check if it's a system request 
+        // or a method invocation
+        byte[] bout;
+        if (method.startsWith("system.")) {
+            bout = handleJSONRPCSystemInvocation(request, response, data.toString());
+        } else {
+            bout = handleJSONRPCMethodInvocation(request, response, jsonReq);
         }
 
-        // invoke the request
-        jsonResp = jsonrpcBridge.call(new Object[] {request}, jsonReq);
-
-        byte[] bout = jsonResp.toString().getBytes("UTF-8");
-
+        // Send response to client
         out.write(bout);
         out.flush();
         out.close();
@@ -144,7 +153,8 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
     /**
      * handles requests for the SMD descriptor for a service
      */
-    protected void handleSMDRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, UnsupportedEncodingException {
+    protected void handleSMDRequest(HttpServletRequest request, HttpServletResponse response) throws IOException,
+        UnsupportedEncodingException {
         String serviceUrl = request.getRequestURL().toString();
         String smd = JavaToSmd.interfaceToSmd(serviceInterface, serviceUrl);
 
@@ -156,5 +166,112 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         out.flush();
         out.close();
     }
+    
+    protected byte[] handleJSONRPCSystemInvocation(HttpServletRequest request, HttpServletResponse response, String requestData) throws IOException,
+    UnsupportedEncodingException {
+        /*
+         * Create a new bridge for every request to avoid all the problems with 
+         * JSON-RPC-Java storing the bridge in the session
+         */
+        HttpSession session = request.getSession();
 
+        JSONRPCBridge jsonrpcBridge = new JSONRPCBridge();
+        jsonrpcBridge.registerObject(serviceName, serviceInstance, serviceInterface);
+        session.setAttribute("JSONRPCBridge", jsonrpcBridge);
+        
+        org.json.JSONObject jsonReq = null;
+        com.metaparadigm.jsonrpc.JSONRPCResult jsonResp = null;
+        try {
+            jsonReq = new org.json.JSONObject(requestData);
+        } catch (java.text.ParseException e) {
+            throw new RuntimeException("Unable to parse request", e);
+        }
+
+        String method = jsonReq.getString("method");
+        if ((method != null) && (method.indexOf('.') < 0)) {
+            jsonReq.putOpt("method", serviceName + "." + method);
+        }
+
+        // invoke the request
+        jsonResp = jsonrpcBridge.call(new Object[] {request}, jsonReq);
+
+        return jsonResp.toString().getBytes("UTF-8");
+    }
+    
+    protected byte[] handleJSONRPCMethodInvocation(HttpServletRequest request, HttpServletResponse response, org.codehaus.jettison.json.JSONObject jsonReq) throws IOException,
+    UnsupportedEncodingException {
+
+        String method = null;
+        Object[] args = null;
+        Object id = null;
+        try {
+            // Extract the method
+            method = jsonReq.getString("method");
+            if ((method != null) && (method.indexOf('.') < 0)) {
+                jsonReq.putOpt("method", serviceName + "." + method);
+            }
+            
+            // Extract the arguments
+            JSONArray array = jsonReq.getJSONArray("params");
+            args = new Object[array.length()];
+            for (int i = 0; i < args.length; i++) {
+                args[i] = array.get(i);
+            }
+            id = jsonReq.get("id");
+
+        } catch (JSONException e) {
+            throw new RuntimeException("Unable to find json method name", e);
+        }
+
+        // invoke the request
+        RuntimeWire wire = componentService.getRuntimeWire(binding, serviceContract);
+        Operation jsonOperation = findOperation(method);
+        Object result = null;
+        org.codehaus.jettison.json.JSONObject jsonResponse = new org.codehaus.jettison.json.JSONObject();
+        try {
+            result = wire.invoke(jsonOperation, args);
+            try {
+                jsonResponse.put("result", result);
+                jsonResponse.putOpt("id", id);
+            } catch (JSONException e) {
+                throw new ServiceRuntimeException(e);
+            }
+        } catch (InvocationTargetException e) {
+            try {
+                jsonResponse.put("error", e.getCause());
+                jsonResponse.putOpt("id", id);
+            } catch (JSONException e1) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
+        
+        //get response to send to client
+        return jsonResponse.toString().getBytes("UTF-8");
+    }
+
+    /**
+     * Find the operation from the component service contract
+     * @param componentService
+     * @param method
+     * @return
+     */
+    private Operation findOperation(String method) {
+        if (method.contains(".")) {
+            method = method.substring(method.lastIndexOf(".") + 1);
+        }
+    
+        List<Operation> operations = serviceContract.getInterface().getOperations();
+            //componentService.getBindingProvider(binding).getBindingInterfaceContract().getInterface().getOperations();
+
+        
+        Operation result = null;
+        for (Operation o : operations) {
+            if (o.getName().equalsIgnoreCase(method)) {
+                result = o;
+                break;
+            }
+        }
+
+        return result;
+    }
 }
