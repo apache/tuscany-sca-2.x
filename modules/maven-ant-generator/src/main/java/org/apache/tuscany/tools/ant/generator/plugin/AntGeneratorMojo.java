@@ -102,6 +102,8 @@ public class AntGeneratorMojo extends AbstractMojo {
     
     public void execute() throws MojoExecutionException {
         
+        System.out.println("Generating " + buildFile);
+        
         // Open the target build.xml file
         File targetFile = new File(buildFile);
         PrintWriter pw;
@@ -131,7 +133,10 @@ public class AntGeneratorMojo extends AbstractMojo {
         // Generate the compile target
         pw.println("    <target name=\"compile\">");
         pw.println("        <javac srcdir=\"src/main/java\" destdir=\"target/classes\" debug=\"on\" source=\"1.5\" target=\"1.5\">");
-        pw.println("            <classpath refid=\"project.class.path\"/>");
+        pw.println("            <classpath>");
+        pw.println("                <fileset refid=\"tuscany.jars\"/>");
+        pw.println("                <fileset refid=\"3rdparty.jars\"/>");
+        pw.println("            </classpath>");
         pw.println("        </javac>");
         pw.println("        <copy todir=\"target/classes\">");
         pw.println("            <fileset dir=\"src/main/resources\"/>");
@@ -152,16 +157,8 @@ public class AntGeneratorMojo extends AbstractMojo {
             // Build a WAR
             pw.println("        <war destfile=\"target/" + project.getArtifactId() + ".war\" webxml=\"src/main/webapp/WEB-INF/web.xml\">");
             pw.println("            <fileset dir=\"src/main/webapp\"/>");
-            pw.println("            <lib dir=\"../../modules\">");
-            for (Artifact artifact: tuscanyModules) {
-                pw.println("                <include name=\"" + artifact.getFile().getName() + "\"/>");
-            }
-            pw.println("            </lib>");
-            pw.println("            <lib dir=\"../../lib\">");
-            for (Artifact artifact: otherModules) {
-                pw.println("                <include name=\"" + artifact.getFile().getName() + "\"/>");
-            }
-            pw.println("            </lib>");
+            pw.println("            <lib refid=\"tuscany.jars\"/>");
+            pw.println("            <lib refid=\"3rdparty.jars\"/>");
             pw.println("            <classes dir=\"target/classes\"/>");
             pw.println("        </war>");
         }
@@ -173,8 +170,9 @@ public class AntGeneratorMojo extends AbstractMojo {
             pw.println("    <target name=\"run\">");
             pw.println("        <java classname=\"" + mainClass + "\" fork=\"true\">");
             pw.println("            <classpath>");
-            pw.println("                <pathelement location=\"target/" + project.getArtifactId() + ".jar\">");
-            pw.println("                <path refid=\"project.class.path\">");
+            pw.println("                <pathelement location=\"target/" + project.getArtifactId() + ".jar\"/>");
+            pw.println("                <fileset refid=\"tuscany.jars\"/>");
+            pw.println("                <fileset refid=\"3rdparty.jars\"/>");
             pw.println("            </classpath>");
             pw.println("        </java>");
             pw.println("    </target>");
@@ -190,14 +188,16 @@ public class AntGeneratorMojo extends AbstractMojo {
         pw.println();
     
         // Generate the classpath
-        pw.println("    <path id=\"project.class.path\">");
+        pw.println("    <fileset id=\"tuscany.jars\" dir=\"../../modules\">");
         for (Artifact artifact: tuscanyModules) {
-            pw.println("        <pathelement location=\"../../modules/" + artifact.getFile().getName() +"\"/>");
+            pw.println("        <include name=\"" + artifact.getFile().getName() +"\"/>");
         }
+        pw.println("    </fileset>");
+        pw.println("    <fileset id=\"3rdparty.jars\" dir=\"../../lib\">");
         for (Artifact artifact: otherModules) {
-            pw.println("        <pathelement location=\"../../lib/" + artifact.getFile().getName() +"\"/>");
+            pw.println("        <include name=\"" + artifact.getFile().getName() +"\"/>");
         }
-        pw.println("    </path>");
+        pw.println("    </fileset>");
         pw.println();
         
         pw.println("</project>");
