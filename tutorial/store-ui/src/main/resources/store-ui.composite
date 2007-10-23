@@ -22,27 +22,17 @@
 		xmlns:s="http://store"			
 		name="store-ui">
 		
-	<component name="ufs">
-		<t:implementation.resource location="ufservices"/>
+	<component name="ui">
+		<t:implementation.resource location="uiservices"/>
 		<service name="Resource">
 			<t:binding.http/>
 		</service> 	
+		<reference name="catalog" target="Catalog">
+			<t:binding.jsonrpc/>
+		</service>
+		<reference name="shoppingCart" target="ShoppingCart">
+			<t:binding.atom/>
+		</service> 	
 	</component>		
   
-	<component name="Catalog">
-		<implementation.java class="services.CatalogImpl"/> 
-		<service name="Catalog">
-			<t:binding.jsonrpc/>
-   		</service>
-		<reference name="catalog" target="Catalog"/>	
-	</component> 
- 	
-	<component name="ShoppingCart">
-		<implementation.java class="services.ShoppingCartImpl"/>
-		<service name="Collection">
-			<t:binding.atom/>
-		</service>    	
-		<reference name="shoppingCart" target="ShoppingCart"/>	
-	</component>
-    
 </composite>
