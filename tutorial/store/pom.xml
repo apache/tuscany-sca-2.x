@@ -21,11 +21,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>demo-tutorial</artifactId>
+        <artifactId>tuscany-tutorial</artifactId>
         <version>1.1-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>demo-store</artifactId>
+    <artifactId>tutorial-store</artifactId>
     <name>Apache Tuscany SCA Getting Started Online Store Tutorial</name>
 
     <repositories>
