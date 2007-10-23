@@ -63,7 +63,12 @@ helloworld-ws-reference-secure/
                                             deploys the helloworldwsclient
                                             .composite. It then calls the 
                                             HelloWorldServiceComponent
-          ClientPWCBHandler.java		  - Callback handler class to provide client password
+          ClientPWCBHandler.java		  - Callback handler class to provide client password.  The 
+          									handle(Callback[] callbacks) method of this class is where
+          									code for accessing user registries and retrieving passwords 
+          									for given user identifiers can be encapsulated.  For example
+          									here is where one could access LDAP registries to obtain or
+          									compare user identities and passwords.
          
       resources/
         wsdl
