@@ -36,7 +36,9 @@ public class ClientPWCBHandler implements CallbackHandler {
         for (int i = 0; i < callbacks.length; i++) {
         	System.out.println("*** Calling Client UserId/Password Handler .... ");
             WSPasswordCallback pwcb = (WSPasswordCallback)callbacks[i];
+            System.out.println("User Id = " + pwcb.getIdentifer());
             pwcb.setPassword("TuscanyWsUserPasswd");
+            System.out.println("Set Password = " + pwcb.getPassword());
         }
     }
 
