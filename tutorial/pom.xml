@@ -37,6 +37,10 @@
             </activation>
             <modules>
                 <module>store</module>
+                <module>store-cart</module>
+                <module>store-catalog</module>
+                <module>store-currency</module>
+                <module>store-ui</module>
             </modules>
         </profile>
 
