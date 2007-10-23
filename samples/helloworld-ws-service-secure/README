@@ -48,7 +48,13 @@ helloworld-ws-service-secure/
                                             deploys the helloworldws
                                             .composite and then waits for the
                                             service to be called via web services
-		  ServerPWCBHandler.java		  - callback handler to authenticate client userid and password                                            
+		  ServerPWCBHandler.java		  - callback handler to authenticate client userid and password.  
+		  									The handle(Callback[] callbacks) method of this class typically contains
+          									code for accessing user registries and retrieving passwords 
+          									for user identifiers sent by the client and verifying them 
+          									against the password sent by the client.  For example
+          									here is where one could access LDAP registries to obtain or
+          									compare user identities and passwords.                                          
       resources/
         wsdl/
           helloworld.wsdl                 - the service description that describes

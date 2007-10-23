@@ -34,9 +34,21 @@ public class ServerPWCBHandler implements CallbackHandler {
     public void handle(Callback[] callbacks) throws IOException,
             UnsupportedCallbackException {
     	for (int i = 0; i < callbacks.length; i++) {
-    		System.out.println("*** Calling Server User/Passwd Handler....");
-    		WSPasswordCallback pwcb = (WSPasswordCallback)callbacks[i];
-            pwcb.setPassword("TuscanyWsUserPasswd");
+            System.out.println("*** Calling Server User/Passwd Handler....");
+            WSPasswordCallback pwcb = (WSPasswordCallback)callbacks[i];
+            System.out.println("User Id = " + pwcb.getIdentifer());
+            System.out.println("Password = " + pwcb.getPassword());
+            
+            if ( pwcb.getUsage() == WSPasswordCallback.USERNAME_TOKEN ) {
+                if ( pwcb.getIdentifer().equals("TuscanyWsUser") &&
+                        pwcb.getPassword().equals("TuscanyWsUserPasswd") ){
+                            return;
+                } else {
+                    throw new UnsupportedCallbackException(pwcb, "Authentication Failed : UserId - Password mismatch");
+                }
+            } else if ( pwcb.getUsage() == WSPasswordCallback.SIGNATURE ) {
+                pwcb.setPassword("TuscanyWsUserPasswd");
+            }
         }
     }
 
