@@ -39,8 +39,8 @@
                 <module>store</module>
                 <module>store-cart</module>
                 <module>store-catalog</module>
+                <module>store-catalog-database</module>
                 <module>store-currency</module>
-                <module>store-database</module>
                 <module>store-ui</module>
             </modules>
         </profile>
