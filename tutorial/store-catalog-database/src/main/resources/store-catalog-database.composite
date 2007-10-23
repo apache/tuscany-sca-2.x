@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,20 +16,16 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
- */
-
-package launch;
-
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-
-public class Launch {
-    public static void main(String[] args) throws Exception {
-        System.out.println("Starting ...");
-        SCADomain scaDomain = SCADomain.newInstance("store.composite");
-        System.out.println("store.composite ready for big business !!!");
-        System.in.read();
-        System.out.println("Stopping ...");
-        scaDomain.close();
-        System.out.println();
-    }
-}
+-->
+<composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
+		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
+		xmlns:s="http://store"			
+		name="store-catalog-database">
+		
+	<component name="Catalog">
+		<implementation.java class="services.CatalogImpl"/> 
+		<property name="currencyCode">USD</property>
+		<reference name="currencyConverter" target="CurrencyConverter"/>
+	</component> 
+ 	
+</composite>
