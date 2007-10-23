@@ -22,8 +22,8 @@
 		xmlns:s="http://store"			
 		name="store">
 		
-	<component name="ufs">
-		<t:implementation.resource location="ufservices"/>
+	<component name="ui">
+		<t:implementation.resource location="uiservices"/>
 		<service name="Resource">
 			<t:binding.http/>
 		</service> 	
