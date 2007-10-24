@@ -56,11 +56,11 @@ public class CatalogImpl implements Catalog {
             Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
             
             conn = DriverManager.getConnection(
-                    "jdbc:derby:target/classes/derbydb",
+                    "jdbc:derby:target/store_db",
                     "",
                     "");
             
-            pstmt = conn.prepareStatement("select * from \"Catalog\"",
+            pstmt = conn.prepareStatement("select * from \"CATALOG\"",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
             
