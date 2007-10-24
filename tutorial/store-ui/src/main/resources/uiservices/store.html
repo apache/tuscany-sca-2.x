@@ -32,9 +32,11 @@
 
 	function catalog_getResponse(items) {
 		var catalog = "";
-		for (var i=0; i<items.length; i++)
+		for (var i=0; i<items.String_collection.String.length; i++) {
+			var item = items.String_collection.String[i]["$"];
 			catalog += '<input name="items" type="checkbox" value="' + 
-						items[i] + '">' + items[i]+ ' <br>';
+						item + '">' + item + ' <br>';
+		}
 		document.getElementById('catalog').innerHTML=catalog;
 	}
 	
