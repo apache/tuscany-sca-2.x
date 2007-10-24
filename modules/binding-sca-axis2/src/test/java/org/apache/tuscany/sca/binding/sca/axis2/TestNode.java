@@ -123,6 +123,9 @@ public class TestNode implements SCANode {
     
     public void stop() 
       throws NodeException {
+    }
+    
+    public void destroy() throws NodeException {
         try {
             nodeRuntime.stop();
         } catch(Exception ex) {
@@ -146,12 +149,15 @@ public class TestNode implements SCANode {
     public void addContribution(String contributionURI, URL contributionURL, ClassLoader contributionClassLoader ) throws NodeException {
        
     }
+    
+    public void removeContribution(String contributionURI) throws NodeException {
+    }
 
     public void removeContributions() throws NodeException {
  
     }
     
-    public void deployComposite(QName compositeName) throws NodeException {
+    public void addToDomainLevelComposite(QName compositeName) throws NodeException {
 
     }
     

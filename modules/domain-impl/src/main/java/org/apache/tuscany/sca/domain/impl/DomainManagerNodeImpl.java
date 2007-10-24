@@ -87,11 +87,8 @@ public class DomainManagerNodeImpl implements SCANode {
             
         // SCADomain API methods 
         
-        public void start() throws DomainException {
+        public void destroy() throws DomainException {
         }
-
-        public void stop() throws DomainException {
-        }    
      
         public String getURI(){
             return null;
@@ -149,6 +146,9 @@ public class DomainManagerNodeImpl implements SCANode {
     public void stop() throws NodeException {
 
     }    
+    
+    public void destroy() throws NodeException {
+    }
  
     public String getURI(){
         return null;
@@ -161,8 +161,10 @@ public class DomainManagerNodeImpl implements SCANode {
     public void addContribution(String contributionURI, URL contributionURL) throws NodeException {
     }
     
+    public void removeContribution(String contributionURI) throws NodeException {
+    }
     
-    public void deployComposite(QName compositeName) throws NodeException {
+    public void addToDomainLevelComposite(QName compositeName) throws NodeException {
 
     }  
 

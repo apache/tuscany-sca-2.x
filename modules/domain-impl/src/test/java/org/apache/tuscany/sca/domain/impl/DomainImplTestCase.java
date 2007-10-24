@@ -64,7 +64,7 @@ public class DomainImplTestCase {
     @AfterClass
     public static void destroy() throws Exception {
         // stop the domain    
-        domain.stop();
+        domain.destroy();
         System.out.println("Domain stopped");
     }  
     

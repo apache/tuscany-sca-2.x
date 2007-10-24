@@ -56,7 +56,7 @@ public class CalculatorNode {
             SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             SCANode node = nodeFactory.createSCANode(nodeName, domainName);
             node.addContribution(nodeName, cl.getResource(nodeName + "/"));
-            node.deployComposite(new QName("http://sample", "Calculator"));
+            node.addToDomainLevelComposite(new QName("http://sample", "Calculator"));
             node.start();             
                                          
             // nodeA is the head node and runs some tests while all other nodes
@@ -94,6 +94,7 @@ public class CalculatorNode {
             
             // stop the node and all the domains in it 
             node.stop(); 
+            node.destroy();
         
         } catch(Exception ex) {
             System.err.println("Exception in node - " + ex.getMessage());

@@ -224,13 +224,20 @@ public class SCANodeImpl implements SCANode {
     }
     
     public void stop() throws NodeException {
+        stopComposites();
+    }
+    
+    public void destroy() throws NodeException {
         try {
-            // remove contributions
+            if (compositesToStart.size() != 0) {
+                stopComposites();
+            }
             removeAllContributions();           
+            nodeRuntime.stop();
         } catch (Exception ex) {
             throw new NodeException(ex);
         }
-    }    
+    }
  
     public String getURI(){
         return nodeURI;
@@ -290,12 +297,18 @@ public class SCANodeImpl implements SCANode {
             throw new NodeException(ex);
         }        
     }
+    
+    public void removeContribution(String contributionURI) throws NodeException {
+        try {     
+            nodeRuntime.getContributionService().remove(contributionURI);
+        } catch (Exception ex) {
+            throw new NodeException(ex);
+        }   
+        contributions.remove(contributionURI);
+    }
 
     private void removeAllContributions() throws NodeException {
         try {     
-            // stop any running composites
-            stopComposites();
-            
             // Remove all contributions
             for (String contributionURI : contributions.keySet()){
                 nodeRuntime.getContributionService().remove(contributionURI);
@@ -306,7 +319,7 @@ public class SCANodeImpl implements SCANode {
         }   
     }
     
-    public void deployComposite(QName compositeName) throws NodeException {
+    public void addToDomainLevelComposite(QName compositeName) throws NodeException {
         // if the named composite is not already in the list then 
         // add it
         if (compositesToStart.indexOf(compositeName) == -1 ){

@@ -36,12 +36,11 @@ public class DomainNode {
         try {
             SCADomainFactory domainFactory = SCADomainFactory.newInstance();
             SCADomain domain = domainFactory.createSCADomain(DEFAULT_DOMAIN_URI); 
-            domain.start();
         
             System.out.println("Domain started (press enter to shutdown)");
             System.in.read();
             
-            domain.stop();
+            domain.destroy();
         } catch (Exception e) {
             e.printStackTrace();
         }

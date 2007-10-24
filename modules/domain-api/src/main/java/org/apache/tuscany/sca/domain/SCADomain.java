@@ -35,15 +35,9 @@ import org.osoa.sca.ServiceReference;
 public interface SCADomain {
 
     /**
-     * Start the SCA domain service.
+     * Destroy the SCA domain service.
      */
-    public void start()
-      throws DomainException;
-
-    /**
-     * Stop the SCA domain service.
-     */
-    public void stop()
+    public void destroy()
       throws DomainException;
 
     /**

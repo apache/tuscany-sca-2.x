@@ -263,19 +263,14 @@ public class SCADomainImpl implements SCADomainProxySPI {
       
     // API methods 
     
-    public void start() throws DomainException {
-        // TODO - what happens here?
-    }
-    
-    public void stop() throws DomainException {
+    public void destroy() throws DomainException {
         try {
           // Stop the domain
           domainManagementRuntime.stop();
         } catch (Exception ex) {
             throw new DomainException(ex);
         }
-
-    }    
+    }
  
     public String getURI(){
         return domainURI;
@@ -303,7 +298,7 @@ public class SCADomainImpl implements SCADomainProxySPI {
     
     public void addToDomainLevelComposite(QName qname) throws DomainException {
         try {
-            nodeImpl.deployComposite(qname);
+            nodeImpl.addToDomainLevelComposite(qname);
         } catch(Exception ex) {
             new DomainException(ex);
         }
@@ -319,7 +314,7 @@ public class SCADomainImpl implements SCADomainProxySPI {
       
     public void startComposite(QName qname) throws DomainException {
         try {
-            nodeImpl.deployComposite(qname);
+            nodeImpl.addToDomainLevelComposite(qname);
         } catch(Exception ex) {
             new DomainException(ex);
         }        

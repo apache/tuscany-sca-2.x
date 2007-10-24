@@ -47,13 +47,8 @@ public class TestDomain implements SCADomainSPI {
         this.domainURI = domainURI; 
     }
     
-    public void start() throws DomainException {
-        
+    public void destroy() throws DomainException {
     }
-    
-    public void stop() throws DomainException {
-    }
-    
         
     public String getURI(){
         return domainURI;

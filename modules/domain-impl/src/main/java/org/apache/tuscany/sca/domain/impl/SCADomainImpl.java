@@ -21,9 +21,7 @@ package org.apache.tuscany.sca.domain.impl;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,8 +52,9 @@ import org.apache.tuscany.sca.domain.model.impl.DomainModelFactoryImpl;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.node.NodeManagerService;
 import org.apache.tuscany.sca.node.NodeFactoryImpl;
+import org.apache.tuscany.sca.node.NodeManagerService;
+import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -143,7 +142,7 @@ public class SCADomainImpl implements SCADomainSPI  {
             
             // Find the composite that will configure the domain
             String domainCompositeName = "domain.composite";
-            URL contributionURL = SCADomainUtil.findContributionFromComposite(domainClassLoader, domainCompositeName);
+            URL contributionURL = SCAContributionUtil.findContributionFromResource(domainClassLoader, domainCompositeName);
             
             if ( contributionURL != null ){ 
                 logger.log(Level.INFO, "Domain management configured from " + contributionURL);
@@ -341,12 +340,7 @@ public class SCADomainImpl implements SCADomainSPI  {
         
     // SCADomain API methods 
     
-    public void start() throws DomainException {
-        // TODO     
-    }
-
-
-    public void stop() throws DomainException {
+    public void destroy() throws DomainException {
         try {
             // Stop the node
             domainManagementRuntime.stop();
@@ -354,8 +348,7 @@ public class SCADomainImpl implements SCADomainSPI  {
         } catch(ActivationException ex) {
             throw new DomainException(ex); 
         }         
-        
-    }    
+    }
  
     public String getURI(){
         return domainModel.getDomainURI();

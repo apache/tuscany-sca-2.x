@@ -93,7 +93,7 @@ public class NodeManagerServiceImpl implements NodeManagerService, NodeManagerIn
      */
     public void deployComposite(String compositeName) {
         try {
-            node.deployComposite(QName.valueOf(compositeName));
+            node.addToDomainLevelComposite(QName.valueOf(compositeName));
         } catch (Exception ex){
             // TODO - sort out exceptions passing across binding.sca
             logger.log(Level.SEVERE, ex.toString());
