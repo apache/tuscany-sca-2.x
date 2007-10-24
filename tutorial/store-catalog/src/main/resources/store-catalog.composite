@@ -19,13 +19,14 @@
 -->
 <composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
 		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
-		xmlns:s="http://store"			
+		targetNamespace="http://store"			
 		name="store-catalog">
 		
 	<component name="Catalog">
 		<implementation.java class="services.CatalogImpl"/> 
-		<property name="currencyCode">USD</property>
-		<reference name="currencyConverter" target="CurrencyConverter"/>	
+		<service name="Catalog">
+		  <binding.ws/>
+		</service>
 	</component> 
  	
 </composite>
