@@ -56,7 +56,7 @@ public class CatalogImpl implements Catalog {
             Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
             
             conn = DriverManager.getConnection(
-                    "jdbc:derby:target/classes/derbydb",
+                    "jdbc:derby:target/store_db",
                     "",
                     "");
             
