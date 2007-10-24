@@ -57,8 +57,8 @@ public class CatalogImpl implements Catalog {
             
             conn = DriverManager.getConnection(
                     "jdbc:derby:target/classes/derbydb",
-                    "tuscany",
-                    "tuscany");
+                    "",
+                    "");
             
             pstmt = conn.prepareStatement("select * from \"Catalog\"",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
