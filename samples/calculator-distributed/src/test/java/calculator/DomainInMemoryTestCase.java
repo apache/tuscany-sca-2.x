@@ -68,19 +68,19 @@ public class DomainInMemoryTestCase {
             
             nodeA = nodeFactory.createSCANode("nodeA", DEFAULT_DOMAIN_URI);
             nodeA.addContribution("nodeA", cl.getResource("nodeA/"));
-            nodeA.deployComposite(new QName("http://sample", "Calculator"));
+            nodeA.addToDomainLevelComposite(new QName("http://sample", "Calculator"));
             nodeA.start();
 
             
             nodeB = nodeFactory.createSCANode("nodeB", DEFAULT_DOMAIN_URI);
             nodeB.addContribution("nodeB", cl.getResource("nodeB/"));
-            nodeB.deployComposite(new QName("http://sample", "Calculator"));
+            nodeB.addToDomainLevelComposite(new QName("http://sample", "Calculator"));
             nodeB.start();
 
             
             nodeC = nodeFactory.createSCANode("nodeC", DEFAULT_DOMAIN_URI);
             nodeC.addContribution("nodeC", cl.getResource("nodeC/"));
-            nodeC.deployComposite(new QName("http://sample", "Calculator")); 
+            nodeC.addToDomainLevelComposite(new QName("http://sample", "Calculator")); 
             nodeC.start();
 
             SCADomainFinder domainFinder = SCADomainFinder.newInstance();
@@ -103,8 +103,11 @@ public class DomainInMemoryTestCase {
     public static void destroy() throws Exception {
         // stop the nodes and hence the domains they contain        
         nodeA.stop();
+        nodeA.destroy();
         nodeB.stop();    
+        nodeB.destroy();
         nodeC.stop();
+        nodeC.destroy();
     }    
 
     @Test

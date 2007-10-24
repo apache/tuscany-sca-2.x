@@ -19,7 +19,7 @@
 -->
 <composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
 		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
-		xmlns:s="http://store"			
+		targetNamespace="http://store"
 		name="store">
 		
 	<component name="ui">

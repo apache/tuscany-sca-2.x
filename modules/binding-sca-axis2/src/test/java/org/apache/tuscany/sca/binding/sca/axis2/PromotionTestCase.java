@@ -46,8 +46,8 @@ public class PromotionTestCase extends BaseTest {
 
     @AfterClass
     public static void destroy() throws Exception {
-        nodeA.stop(); 
-        nodeB.stop();
+        nodeA.destroy();
+        nodeB.destroy();
     }    
     
     @Test

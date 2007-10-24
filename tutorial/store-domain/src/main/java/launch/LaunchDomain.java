@@ -19,15 +19,21 @@
 
 package launch;
 
+import org.apache.tuscany.sca.domain.SCADomain;
+import org.apache.tuscany.sca.domain.SCADomainFactory;
+
 
 public class LaunchDomain {
     public static void main(String[] args) throws Exception {
+
         System.out.println("Starting ...");
-        //SCADomain scaDomain = SCADomain.newInstance("store-currency.composite");
+        SCADomainFactory domainFactory = SCADomainFactory.newInstance();
+        SCADomain domain = domainFactory.createSCADomain("http://localhost:8877");
         System.out.println("store domain controller ready for big business !!!");
         System.in.read();
+        
         System.out.println("Stopping ...");
-        scaDomain.close();
+        domain.destroy();
         System.out.println();
     }
 }

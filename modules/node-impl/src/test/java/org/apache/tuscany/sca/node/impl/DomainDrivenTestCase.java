@@ -60,7 +60,6 @@ public class DomainDrivenTestCase {
             
             SCADomainFactory domainFactory = SCADomainFactory.newInstance();
             domain = domainFactory.createSCADomain(DEFAULT_DOMAIN_URI);
-            domain.start();
             
             System.out.println("Setting up calculator nodes");
             
@@ -101,10 +100,10 @@ public class DomainDrivenTestCase {
     @AfterClass
     public static void destroy() throws Exception {
         // stop the nodes and hence the domains they contain        
-        nodeA.stop();
-        nodeB.stop();    
-        nodeC.stop();
-        domain.stop();
+        nodeA.destroy();
+        nodeB.destroy();
+        nodeC.destroy();
+        domain.destroy();
     }
 
     @Test

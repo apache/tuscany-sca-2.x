@@ -81,7 +81,7 @@ public class NodeDrivenTestCase {
             // explicitly ask for composite to be started
             nodeC = nodeFactory.createSCANode("nodeC", DEFAULT_DOMAIN_URI);
             nodeC.addContribution("nodeC", cl.getResource("nodeC/"));
-            nodeC.deployComposite(new QName("http://sample", "Calculator")); 
+            nodeC.addToDomainLevelComposite(new QName("http://sample", "Calculator")); 
             nodeC.start();
 
             SCADomainFinder domainFinder = SCADomainFinder.newInstance();
@@ -103,9 +103,9 @@ public class NodeDrivenTestCase {
     @AfterClass
     public static void destroy() throws Exception {
         // stop the nodes and hence the domains they contain        
-        nodeA.stop();
-        nodeB.stop();    
-        nodeC.stop();
+        nodeA.destroy();
+        nodeB.destroy();    
+        nodeC.destroy();
     }
 
     @Test

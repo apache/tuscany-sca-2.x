@@ -83,8 +83,8 @@ public class CallableReferenceRemoteTestCase {
     @AfterClass
     public static void destroy() throws Exception {
         // stop the nodes and hence the domains they contain        
-        nodeA.stop();
-        nodeB.stop(); 
+        nodeA.destroy();
+        nodeB.destroy();
     }
 
     @Test

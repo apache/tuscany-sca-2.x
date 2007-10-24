@@ -19,16 +19,33 @@
 
 package launch;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import java.net.URL;
+
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 
 public class Launch {
     public static void main(String[] args) throws Exception {
         System.out.println("Starting ...");
-        SCADomain scaDomain = SCADomain.newInstance("store.composite");
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
+        SCANode node = nodeFactory.createSCANode("http://localhost:8086/store", "http://localhost:8877");
+        
+        URL contribution = SCAContributionUtil.findContributionFromClass(Launch.class);
+        node.addContribution("http://store", contribution);
+        
+        node.addToDomainLevelComposite(new QName("http://store", "store"));
+        node.start();
+
         System.out.println("store.composite ready for big business !!!");
         System.in.read();
+        
         System.out.println("Stopping ...");
-        scaDomain.close();
+        node.stop();
+        node.destroy();
         System.out.println();
+        
     }
 }
