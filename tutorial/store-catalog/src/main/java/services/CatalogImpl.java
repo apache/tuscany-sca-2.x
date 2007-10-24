@@ -23,27 +23,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
 
 public class CatalogImpl implements Catalog {
-    @Property
-    public String currencyCode = "USD";
-    @Reference
-    public CurrencyConverter currencyConverter;
     private List<String> catalog = new ArrayList<String>();
 
     @Init
     public void init() {
-        String currencySymbol = currencyConverter.getCurrencySymbol(currencyCode);
-        catalog.add("Apple - " + currencySymbol + currencyConverter.getConversion("USD", currencyCode, 2.99f));
-        catalog.add("Orange - " + currencySymbol + currencyConverter.getConversion("USD", currencyCode, 3.55f));
-        catalog.add("Pear - " + currencySymbol + currencyConverter.getConversion("USD", currencyCode, 1.55f));
+        catalog.add("Broccoli - " + 2.99f);
+        catalog.add("Asparagus - " + 3.55f);
+        catalog.add("Cauliflower - " + 1.55f);
     }
 
-    public String[] get() {
-        String[] catalogArray = new String[catalog.size()];
-        catalog.toArray(catalogArray);
-        return catalogArray;
+    public List<String> get() {
+        return catalog;
     }
 }

@@ -19,9 +19,11 @@
 
 package services;
 
+import java.util.List;
+
 import org.osoa.sca.annotations.Remotable;
 
 @Remotable
 public interface Catalog {
-    String[] get();
+    List<String> get();
 }
