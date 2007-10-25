@@ -22,7 +22,7 @@
 
     <service name="helloWorld" promote="HelloWorldService">
         <!-- interface.java interface="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorld" / -->
-        <binding.ws/>
+        <binding.ws uri="http://localhost:8085/helloWorld"/>
     </service>
 
     <component name="HelloWorldService">
@@ -41,7 +41,7 @@
     </reference>
 
     <service name="Echo" promote="EchoService">
-        <binding.ws/>
+        <binding.ws uri="http://localhost:8085/Echo"/>
     </service>
 
     <component name="EchoService">

@@ -36,8 +36,8 @@ public class SimpleTestCase extends BaseTest {
 
         try {
             // create and start domains
-            nodeA = createNode("nodeA");
-            nodeB = createNode("nodeB");;
+            nodeA = createNode("http://localhost:8100/nodeA");
+            nodeB = createNode("http://localhost:8100/nodeB");
 
         } catch (Exception ex) {
             System.err.println("Exception when creating domain " + ex.getMessage());

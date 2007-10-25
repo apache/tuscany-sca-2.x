@@ -26,7 +26,7 @@
     <component name="domain">
        <tuscany:implementation.resource location="webroot"/>
         <service name="Resource">
-            <tuscany:binding.http uri="http://localhost:8877/domain"/>
+            <tuscany:binding.http uri="http://localhost:9999/domain"/>
         </service>
     </component>            
                  
@@ -38,11 +38,11 @@
         </service>
         <service name="DomainManagerNodeEventService">
             <interface.java interface="org.apache.tuscany.sca.domain.DomainManagerNodeEventService"/>
-            <binding.ws uri="http://localhost:8877/DomainManagerComponent/DomainManagerNodeEventService"/>
+            <binding.ws uri="http://localhost:9999/DomainManagerComponent/DomainManagerNodeEventService"/>
         </service>
         <service name="DomainManagementService">
             <interface.java interface="org.apache.tuscany.sca.domain.management.DomainManagementService"/>
-            <tuscany:binding.jsonrpc uri="http://localhost:8877/DomainManagerComponent/DomainManagementService"/>
+            <tuscany:binding.jsonrpc uri="http://localhost:9999/DomainManagerComponent/DomainManagementService"/>
         </service>        
     </component>  
     

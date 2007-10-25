@@ -29,7 +29,6 @@ import java.security.PrivilegedAction;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,17 +42,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.dom.DOMSource;
 
+import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
-import org.apache.axis2.transport.jms.JMSSender;
-import org.apache.axis2.transport.jms.JMSListener;
-import org.apache.axis2.transport.jms.JMSConstants;
-import org.apache.axis2.transport.jms.JMSUtils;
 import org.apache.axis2.addressing.AddressingConstants;
 import org.apache.axis2.addressing.EndpointReferenceHelper;
 import org.apache.axis2.context.ConfigurationContext;
@@ -73,9 +68,13 @@ import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
 import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.description.WSDLToAxisServiceBuilder;
 import org.apache.axis2.engine.AxisConfiguration;
-import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.engine.ListenerManager;
+import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.i18n.Messages;
+import org.apache.axis2.transport.jms.JMSConstants;
+import org.apache.axis2.transport.jms.JMSListener;
+import org.apache.axis2.transport.jms.JMSSender;
+import org.apache.axis2.transport.jms.JMSUtils;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.neethi.Policy;
 import org.apache.tuscany.sca.assembly.AbstractContract;
@@ -120,12 +119,6 @@ public class Axis2ServiceProvider {
     public static final QName QNAME_WSA_REFERENCE_PARAMETERS =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_REFERENCE_PARAMETERS);
 
-    // TODO: what to do about the base URI?
-    // This port number may be used to construct callback URIs.  The value 8085 is used
-    // beacuse it matches the service port number used by the simple-callback-ws sample.
-    private static final String BASE_HTTP_URI = "http://localhost:8085/";
-    private static final String BASE_JMS_URI = "jms:";
-    
     private static final String DEFAULT_QUEUE_CONNECTION_FACTORY = "TuscanyQueueConnectionFactory";
     
     private static final QName TRANSPORT_JMS_QUALIFIED_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0","transport.jms");
@@ -164,7 +157,11 @@ public class Axis2ServiceProvider {
         String uri;
         
         if (transportJmsPolicySet != null){
-            uri = computeActualURI(BASE_JMS_URI, component, contract).normalize().toString();
+            uri = computeActualURI(component, contract);
+            
+            if (!uri.startsWith("jms:/")) {
+                uri = "jms:/" + uri;
+            }
             
             // construct the rest of the uri based on the policy. All the details are put
             // into the uri here rather than being place directly into the Axis configuration 
@@ -194,12 +191,12 @@ public class Axis2ServiceProvider {
                 }
             }                     
         } else {
-            uri = computeActualURI(BASE_HTTP_URI, component, contract).normalize().toString();
+            uri = computeActualURI(component, contract);
+            if (!uri.startsWith("jms:")) {
+                uri = servletHost.getURLMapping(uri).toString();
+            }
         }
         
-        if (uri.endsWith("/")) {
-            uri = uri.substring(0, uri.length() - 1);
-        }
         wsBinding.setURI(uri);
     }
     
@@ -225,7 +222,8 @@ public class Axis2ServiceProvider {
             AxisService axisService = createAxisService();
             configContext.getAxisConfiguration().addService( axisService );
           
-            if ( axisService.getEndpointURL().startsWith( "http" ) ) {
+            String endpointURL = axisService.getEndpointURL();
+            if ( endpointURL.startsWith( "http://")  || endpointURL.startsWith("/")) {
                 Axis2ServiceServlet servlet = new Axis2ServiceServlet();
                 servlet.init(configContext);
                 String servletURI = wsBinding.getURI();
@@ -307,16 +305,15 @@ public class Axis2ServiceProvider {
      * If the <binding.ws> has no wsdlElement but does have a uri attribute then
      * the uri takes precidence over any implicitly used WSDL.
      * 
-     * @param baseURI
      */
-    protected URI computeActualURI(String baseURI, RuntimeComponent component, AbstractContract contract) {
+    protected String computeActualURI(RuntimeComponent component, AbstractContract contract) {
 
         org.apache.axis2.addressing.EndpointReference epr = null;
         URI eprURI = null;
         if (wsBinding.getEndPointReference() != null) {
             epr = getEPR(); 
             if (epr.getAddress() != null) {
-                eprURI = URI.create(epr.getAddress());
+                return epr.getAddress();
             }
         }
 
@@ -328,46 +325,29 @@ public class Axis2ServiceProvider {
 
         // if the wsdl port/endpoint has an absolute URI use that
         if (wsdlURI != null && wsdlURI.isAbsolute()) {
-            if (wsBinding.getURI() != null) {
-// TODO:                throw new IllegalArgumentException("Cannot specify binding URI when wsdl has aboslute URI");
-            }
-            return URI.create(wsdlURI.toString());
+            return wsdlURI.toString();
         }
 
         // if the wsa:EndpointReference has an address element with an absolute URI use that
         if (eprURI != null && eprURI.isAbsolute()) {
-            //FIXME Throwing an exception breaks as wsBinding.getURI() will return the default URI
-            // derived from the service name or the URI actually configured in the .composite
-//            if (wsBinding.getURI() != null) {
-//                throw new IllegalArgumentException("Cannot specify binding URI when wsa:EndpointReference has aboslute address URI");
-//            }
-            return URI.create(eprURI.toString());
+            return eprURI.toString();
         }
         
         // either there is no wsdl port endpoint URI or that URI is relative
-
-        URI completeURI;
-        if (wsBinding.getURI() != null) {
-            completeURI = URI.create(wsBinding.getURI());
-            if (!completeURI.isAbsolute()) {
-                completeURI = URI.create(baseURI + "/" + wsBinding.getURI());
-            }
-        } else {
-            completeURI = URI.create(baseURI + "/" + wsBinding.getName());
-        }
-        
-        if (eprURI != null) {
+        String actualURI = wsBinding.getURI();
+        if (eprURI != null && eprURI.toString().length() != 0) {
             // there is a relative URI in the binding EPR
-            completeURI = URI.create(completeURI + "/" + eprURI);
+            actualURI = actualURI + "/" + eprURI;
         }
 
-        if (wsdlURI != null) {
+        if (wsdlURI != null && wsdlURI.toString().length() != 0) {
             // there is a relative URI in the wsdl port
-            completeURI = URI.create(completeURI + "/" + wsdlURI);
+            actualURI = actualURI + "/" + wsdlURI;
         }
         
-        return completeURI;
-
+        actualURI = URI.create(actualURI).normalize().toString();
+        
+        return actualURI;
     }
 
     private org.apache.axis2.addressing.EndpointReference getEPR() {

@@ -55,7 +55,7 @@ public class SCADomainFinderImpl extends SCADomainFinder {
         SCADomain scaDomain = domains.get(domainURI);
         
         if (scaDomain == null) {
-            scaDomain = new SCADomainImpl(domainURI);
+            scaDomain = new SCADomainProxyImpl(domainURI);
             //domains.put(domainURI, scaDomain);
             // TODO - not caching local domains as currently the local domain can
             //        - only handle one node

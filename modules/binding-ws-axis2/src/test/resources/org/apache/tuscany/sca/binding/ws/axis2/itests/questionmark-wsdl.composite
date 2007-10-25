@@ -26,7 +26,7 @@
     </service>
 
     <service name="ep2" promote="HelloWorldService">
-        <binding.ws uri="foo/bar"  />
+        <binding.ws uri="http://localhost:8085/foo/bar"  />
     </service>
 
     <component name="HelloWorldService">

@@ -39,8 +39,6 @@ import calculator.CalculatorService;
  */
 public class DomainImplTestCase {
 
-    private static String DEFAULT_DOMAIN_URI = "http://localhost:8877";
-    
     private static SCADomain domain;
     private static SCADomainSPI domainSPI;
     private static ClassLoader cl;
@@ -51,7 +49,7 @@ public class DomainImplTestCase {
         try {
             cl = DomainImplTestCase.class.getClassLoader();
             SCADomainFactory domainFactory = SCADomainFactory.newInstance();
-            domain = domainFactory.createSCADomain(DEFAULT_DOMAIN_URI); 
+            domain = domainFactory.createSCADomain("http://localhost:9999"); 
             domainSPI = (SCADomainSPI)domain;
 
         } catch (Exception e) {
@@ -70,8 +68,8 @@ public class DomainImplTestCase {
     
     @Test
     public void testAddNode() throws Exception {    
-        domainSPI.addNode("http://mynode1", "http://localhost:81");
-        domainSPI.addNode("http://mynode2", "http://localhost:82");
+        domainSPI.addNode("http://localhost:8100/mynode1", "http://localhost:9999");
+        domainSPI.addNode("http://localhost:8200/mynode2", "http://localhost:9999");
     }
     
     @Test

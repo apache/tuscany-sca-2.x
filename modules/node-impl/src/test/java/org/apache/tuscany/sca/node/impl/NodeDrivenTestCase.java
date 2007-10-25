@@ -42,8 +42,6 @@ import calculator.CalculatorService;
  */
 public class NodeDrivenTestCase {
     
-    private static String DEFAULT_DOMAIN_URI = "http://localhost:8877";
-
     private static SCADomain domain;
     private static SCANode   nodeA;
     private static SCANode   nodeB;
@@ -60,7 +58,7 @@ public class NodeDrivenTestCase {
             System.out.println("Setting up domain");
             
             SCADomainFactory domainFactory = SCADomainFactory.newInstance();
-            domain= domainFactory.createSCADomain(DEFAULT_DOMAIN_URI);
+            domain= domainFactory.createSCADomain("http://localhost:9999");
             
             System.out.println("Setting up calculator nodes");
             
@@ -69,23 +67,23 @@ public class NodeDrivenTestCase {
             SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             
             // rely on meta data to start composite
-            nodeA = nodeFactory.createSCANode("nodeA", DEFAULT_DOMAIN_URI);
+            nodeA = nodeFactory.createSCANode("http://localhost:8100/nodeA", "http://localhost:9999");
             nodeA.addContribution("nodeA", cl.getResource("nodeA/"));
             nodeA.start();
 
             // rely on meta data to start composite
-            nodeB = nodeFactory.createSCANode("nodeB", DEFAULT_DOMAIN_URI);
+            nodeB = nodeFactory.createSCANode("http://localhost:8200/nodeB", "http://localhost:9999");
             nodeB.addContribution("nodeB", cl.getResource("nodeB/"));
             nodeB.start();
 
             // explicitly ask for composite to be started
-            nodeC = nodeFactory.createSCANode("nodeC", DEFAULT_DOMAIN_URI);
+            nodeC = nodeFactory.createSCANode("http://localhost:8300/nodeC", "http://localhost:9999");
             nodeC.addContribution("nodeC", cl.getResource("nodeC/"));
             nodeC.addToDomainLevelComposite(new QName("http://sample", "Calculator")); 
             nodeC.start();
 
             SCADomainFinder domainFinder = SCADomainFinder.newInstance();
-            domainProxy = domainFinder.getSCADomain(DEFAULT_DOMAIN_URI);
+            domainProxy = domainFinder.getSCADomain("http://localhost:9999");
             
             // get a reference to various services in the domain
             calculatorServiceA = nodeA.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentA");

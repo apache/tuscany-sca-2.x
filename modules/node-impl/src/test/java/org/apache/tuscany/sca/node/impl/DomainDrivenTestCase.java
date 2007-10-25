@@ -42,8 +42,6 @@ import calculator.CalculatorService;
  */
 public class DomainDrivenTestCase {
     
-    private static String DEFAULT_DOMAIN_URI = "http://localhost:8877";
-
     private static SCADomain domain;
     private static SCANode   nodeA;
     private static SCANode   nodeB;
@@ -59,7 +57,7 @@ public class DomainDrivenTestCase {
             System.out.println("Setting up domain");
             
             SCADomainFactory domainFactory = SCADomainFactory.newInstance();
-            domain = domainFactory.createSCADomain(DEFAULT_DOMAIN_URI);
+            domain = domainFactory.createSCADomain("http://localhost:9999");
             
             System.out.println("Setting up calculator nodes");
             
@@ -67,9 +65,9 @@ public class DomainDrivenTestCase {
             
             SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             
-            nodeA = nodeFactory.createSCANode("nodeA", DEFAULT_DOMAIN_URI);           
-            nodeB = nodeFactory.createSCANode("nodeB", DEFAULT_DOMAIN_URI);
-            nodeC = nodeFactory.createSCANode("nodeC", DEFAULT_DOMAIN_URI);
+            nodeA = nodeFactory.createSCANode("http://localhost:8100/nodeA", "http://localhost:9999");           
+            nodeB = nodeFactory.createSCANode("http://localhost:8200/nodeB", "http://localhost:9999");
+            nodeC = nodeFactory.createSCANode("http://localhost:8300/nodeC", "http://localhost:9999");
 
             domain.addContribution("nodeA", cl.getResource("nodeA/"));
             domain.addContribution("nodeB", cl.getResource("nodeB/"));

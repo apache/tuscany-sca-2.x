@@ -44,6 +44,8 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
+import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.node.NodeException;
 import org.apache.tuscany.sca.node.NodeFactoryImpl;
 import org.apache.tuscany.sca.node.SCADomainFinder;
@@ -135,6 +137,24 @@ public class SCANodeImpl implements SCANode {
             // Start the runtime
             nodeRuntime.start();
             
+            // If a non-null domain name is provided make the node available to the model
+            // this causes the runtime to start registering binding-sca service endpoints
+            // with the domain so only makes sense if we know we have a domain to talk to
+            if (domainURI != null) {
+                ModelFactoryExtensionPoint factories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
+                NodeFactoryImpl nodeFactory = new NodeFactoryImpl(this);
+                factories.addFactory(nodeFactory);    
+            }
+ 
+            // Configure the default server port
+            int port = URI.create(nodeURI).getPort();
+            if (port != -1) {
+                ServletHostExtensionPoint servletHosts = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ServletHostExtensionPoint.class);
+                for (ServletHost servletHost: servletHosts.getServletHosts()) {
+                    servletHost.setDefaultPort(port);
+                }
+            }
+            
             // Create an in-memory domain level composite
             AssemblyFactory assemblyFactory = nodeRuntime.getAssemblyFactory();
             nodeComposite = assemblyFactory.createComposite();
@@ -158,17 +178,8 @@ public class SCANodeImpl implements SCANode {
             scaDomain = SCADomainFinder.newInstance().getSCADomain(domainURI);
             
             // add the node to the domain
-            ((SCADomainImpl)scaDomain).addNode(this);  
+            ((SCADomainProxyImpl)scaDomain).addNode(this);  
             
-            // If a non-null domain name is provided make the node available to the model
-            // this causes the runtime to start registering binding-sca service endpoints
-            // with the domain so only makes sense if we know we have a domain to talk to
-            if (domainURI != null) {
-                ModelFactoryExtensionPoint factories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
-                NodeFactoryImpl nodeFactory = new NodeFactoryImpl(this);
-                factories.addFactory(nodeFactory);    
-            }
- 
         } catch(Exception ex) {
             throw new NodeException(ex);
         }
@@ -288,7 +299,7 @@ public class SCANodeImpl implements SCANode {
                 
                 // add the contribution to the domain. It will generally already be there
                 // unless the contribution has been added to the node itself. 
-                ((SCADomainImpl)scaDomain).registerContribution(nodeURI, contributionURI, contributionURL.toExternalForm());                  
+                ((SCADomainProxyImpl)scaDomain).registerContribution(nodeURI, contributionURI, contributionURL.toExternalForm());                  
                 
             } else {
                     throw new ActivationException("Contribution " + contributionURL + " not found");

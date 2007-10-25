@@ -22,15 +22,15 @@
            name="QuestionMarkWSDLTests">
 
     <service name="ep1" promote="HelloWorldService">
-        <binding.ws />
+        <binding.ws uri="http://localhost:8085/ep1"/>
     </service>
 
     <service name="ep2" promote="HelloWorldService">
-        <binding.ws requires="soap11"/>
+        <binding.ws requires="soap11"  uri="http://localhost:8085/ep2"/>
     </service>
 
     <service name="ep3" promote="HelloWorldService">
-        <binding.ws requires="soap12"/>
+        <binding.ws requires="soap12"  uri="http://localhost:8085/ep3"/>
     </service>
 
     <component name="HelloWorldService">

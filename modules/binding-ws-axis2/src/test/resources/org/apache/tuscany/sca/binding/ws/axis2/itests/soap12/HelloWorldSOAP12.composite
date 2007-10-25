@@ -22,16 +22,16 @@
            name="HelloWorld">
 
     <service name="helloWorld" promote="HelloWorldService">
-        <binding.ws/>
+        <binding.ws uri="http://localhost:8085/helloWorld"/>
     </service>
     <service name="helloWorldSOAP" promote="HelloWorldService">
-        <binding.ws requires="soap"/>
+        <binding.ws requires="soap" uri="http://localhost:8085/helloWorldSOAP"/>
     </service>
     <service name="helloWorldSOAP11" promote="HelloWorldService">
-        <binding.ws requires="soap11"/>
+        <binding.ws requires="soap11" uri="http://localhost:8085/helloWorldSOAP11"/>
     </service>
     <service name="helloWorldSOAP12" promote="HelloWorldService">
-        <binding.ws requires="soap12"/>
+        <binding.ws requires="soap12" uri="http://localhost:8085/helloWorldSOAP12"/>
     </service>
 
     <component name="HelloWorldService">
