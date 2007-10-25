@@ -19,25 +19,13 @@
 
 package services;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.osoa.sca.annotations.Init;
-
-public class VegetablesCatalogImpl implements VegetablesCatalog {
-    private List<String> catalog = new ArrayList<String>();
-
-    @Init
-    public void init() {
-        catalog.add("Broccoli - $2.99");
-        catalog.add("Asparagus - $3.55");
-        catalog.add("Cauliflower - $1.55");
-    }
-
-    public Vegetables get() {
-        Vegetables vegetables = new Vegetables();
-        vegetables.items = new String[catalog.size()];
-        catalog.toArray(vegetables.items);
-        return vegetables;
-    }
+/**
+ * Vegetables
+ *
+ * @version $Rev$ $Date$
+ */
+public class Vegetables {
+    
+    public String[] items;
+    
 }

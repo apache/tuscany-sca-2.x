@@ -33,14 +33,14 @@ public class NewCatalogImpl implements Catalog {
     
     public String[] get() {
         String[] fruits = fruitsCatalog.get();
-        String[] vegetables = vegetablesCatalog.get();
+        Vegetables vegetables = vegetablesCatalog.get();
         
-        String[] catalog = new String[fruits.length + vegetables.length];
+        String[] catalog = new String[fruits.length + vegetables.items.length];
         int i =0;
         for (String fruit: fruits) {
             catalog[i++] = fruit;
         }
-        for (String vegetable: vegetables) {
+        for (String vegetable: vegetables.items) {
             catalog[i++] = vegetable;
         }
         
