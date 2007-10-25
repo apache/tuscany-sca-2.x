@@ -24,6 +24,6 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 public interface VegetablesCatalog {
     
-    String[] get();
+    Vegetables get();
     
 }
