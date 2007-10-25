@@ -33,8 +33,8 @@ public class PromotionTestCase extends BaseTest {
 
         try {
             // create and start domains
-            nodeA = createNode("nodeC");
-            nodeB = createNode("nodeD");
+            nodeA = createNode("http://localhost:8100/nodeC");
+            nodeB = createNode("http://localhost:8200/nodeD");
 
 
         } catch (Exception ex) {

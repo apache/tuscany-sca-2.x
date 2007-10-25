@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2;
 
+import java.net.URI;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
@@ -37,9 +38,12 @@ import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
+import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.node.NodeException;
+import org.apache.tuscany.sca.node.NodeFactoryImpl;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
@@ -77,6 +81,24 @@ public class TestNode implements SCANode {
             nodeRuntime = new ReallySmallRuntime(cl);
             nodeRuntime.start();
             
+            // If a non-null domain name is provided make the node available to the model
+            // this causes the runtime to start registering binding-sca service endpoints
+            // with the domain so only makes sense if we know we have a domain to talk to
+            if (domainURI != null) {
+                ModelFactoryExtensionPoint factories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
+                NodeFactoryImpl nodeFactory = new NodeFactoryImpl(this);
+                factories.addFactory(nodeFactory);    
+            }
+ 
+            // Configure the default server port
+            int port = URI.create(nodeName).getPort();
+            if (port != -1) {
+                ServletHostExtensionPoint servletHosts = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ServletHostExtensionPoint.class);
+                for (ServletHost servletHost: servletHosts.getServletHosts()) {
+                    servletHost.setDefaultPort(port);
+                }
+            }
+            
             // Create an in-memory domain level composite
             AssemblyFactory assemblyFactory = nodeRuntime.getAssemblyFactory();
             nodeComposite = assemblyFactory.createComposite();
@@ -96,7 +118,8 @@ public class TestNode implements SCANode {
 
             // find the current directory as a URL. This is where our contribution 
             // will come from
-            URL contributionURL = Thread.currentThread().getContextClassLoader().getResource(nodeName + "/");
+            String contributionDirectory = nodeName.substring(nodeName.lastIndexOf('/') + 1);
+            URL contributionURL = Thread.currentThread().getContextClassLoader().getResource(contributionDirectory + "/");
 
             // Contribute the SCA application
             Contribution contribution = contributionService.contribute("http://calculator", contributionURL, null, //resolver, 

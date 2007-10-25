@@ -18,7 +18,11 @@
  */
 package org.apache.tuscany.sca.http.tomcat;
 
+import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -56,7 +60,7 @@ import org.apache.tuscany.sca.work.WorkScheduler;
 public class TomcatServer implements ServletHost {
     private final static Logger logger = Logger.getLogger(TomcatServer.class.getName());
     
-    private static final int DEFAULT_PORT = 8080;
+    private int defaultPortNumber = 8080;
     
     /**
      * Represents a port and the server that serves it.
@@ -98,6 +102,14 @@ public class TomcatServer implements ServletHost {
         this.workScheduler = workScheduler;
     }
 
+    public void setDefaultPort(int port) {
+        defaultPortNumber = port;
+    }
+    
+    public int getDefaultPort() {
+        return defaultPortNumber;
+    }
+
     /**
      * Stop all the started servers.
      */
@@ -126,7 +138,7 @@ public class TomcatServer implements ServletHost {
         }
         int portNumber = uri.getPort();
         if (portNumber == -1) {
-            portNumber = DEFAULT_PORT;
+            portNumber = defaultPortNumber;
         }
 
         // Get the port object associated with the given port number
@@ -211,17 +223,64 @@ public class TomcatServer implements ServletHost {
             throw new ServletMappingException(e);
         }
 
-        URI addedURI = URI.create(scheme + "://localhost:" + portNumber + path);
-        logger.info("Added Servlet mapping: " + addedURI);
+        // Compute the complete URL
+        String host;
+        try {
+            host = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            host = "localhost";
+        }
+        URL addedURL;
+        try {
+            addedURL = new URL(scheme, host, portNumber, path);
+        } catch (MalformedURLException e) {
+            throw new ServletMappingException(e);
+        }
+        logger.info("Added Servlet mapping: " + addedURL);
     }
     
+    public URL getURLMapping(String suri) throws ServletMappingException {
+        URI uri = URI.create(suri);
+
+        // Get the URI scheme and port
+        String scheme = uri.getScheme();
+        if (scheme == null) {
+            scheme = "http";
+        }
+        int portNumber = uri.getPort();
+        if (portNumber == -1) {
+            portNumber = defaultPortNumber;
+        }
+        
+        // Get the host
+        String host;
+        try {
+            host = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            host = "localhost";
+        }
+        
+        // Construct the URL
+        String path = uri.getPath();
+        if (!path.startsWith("/")) {
+            path = '/' + path;
+        }
+        URL url;
+        try {
+            url = new URL(scheme, host, portNumber, path);
+        } catch (MalformedURLException e) {
+            throw new ServletMappingException(e);
+        }
+        return url;
+    }
+        
     public Servlet getServletMapping(String suri) throws ServletMappingException {
         URI uri = URI.create(suri);
         
         // Get the URI port
         int portNumber = uri.getPort();
         if (portNumber == -1) {
-            portNumber = DEFAULT_PORT;
+            portNumber = defaultPortNumber;
         }
 
         // Get the port object associated with the given port number
@@ -254,7 +313,7 @@ public class TomcatServer implements ServletHost {
         // Get the URI port
         int portNumber = uri.getPort();
         if (portNumber == -1) {
-            portNumber = DEFAULT_PORT;
+            portNumber = defaultPortNumber;
         }
 
         // Get the port object associated with the given port number

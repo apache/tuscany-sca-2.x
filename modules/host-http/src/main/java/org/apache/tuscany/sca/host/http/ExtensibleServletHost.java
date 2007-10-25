@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.host.http;
 
+import java.net.URL;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 
@@ -33,6 +35,24 @@ public class ExtensibleServletHost implements ServletHost {
     
     public ExtensibleServletHost(ServletHostExtensionPoint servletHosts) {
         this.servletHosts = servletHosts;
+    }
+    
+    public void setDefaultPort(int port) {
+        if (servletHosts.getServletHosts().isEmpty()) {
+            throw new ServletMappingException("No servlet host available");
+        }
+
+        for (ServletHost servletHost: servletHosts.getServletHosts()) {
+            servletHost.setDefaultPort(port);
+        }
+    }
+    
+    public int getDefaultPort() {
+        if (servletHosts.getServletHosts().isEmpty()) {
+            throw new ServletMappingException("No servlet host available");
+        }
+
+        return servletHosts.getServletHosts().get(0).getDefaultPort();
     }
 
     public void addServletMapping(String uri, Servlet servlet) throws ServletMappingException {
@@ -76,7 +96,20 @@ public class ExtensibleServletHost implements ServletHost {
     }
 
     public String getContextPath() {
+        if (servletHosts.getServletHosts().isEmpty()) {
+            throw new ServletMappingException("No servlet host available");
+        }
+
+        // TODO implement selection of the correct servlet host based on the mapping
+        // For now just select the first one
         return servletHosts.getServletHosts().get(0).getContextPath();
     }
     
+    public URL getURLMapping(String uri) {
+        if (servletHosts.getServletHosts().isEmpty()) {
+            throw new ServletMappingException("No servlet host available");
+        }
+
+        return servletHosts.getServletHosts().get(0).getURLMapping(uri);
+    }
 }

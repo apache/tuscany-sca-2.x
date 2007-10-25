@@ -259,7 +259,7 @@ public class SCANodeUtil {
                 // the port is busy
                 freePort = freePort + 1;
             }
-        } while (portIsBusy || freePort > 9999); 
+        } while (portIsBusy && freePort < 9999); 
         
         return freePort;
     }  

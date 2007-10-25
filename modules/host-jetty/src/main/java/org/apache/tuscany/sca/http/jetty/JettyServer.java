@@ -18,7 +18,11 @@
  */
 package org.apache.tuscany.sca.http.jetty;
 
+import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,8 +61,6 @@ import org.mortbay.thread.ThreadPool;
  */
 public class JettyServer implements ServletHost {
     private final static Logger logger = Logger.getLogger(JettyServer.class.getName());
-    private static final String ROOT = "/";
-    private static final int DEFAULT_PORT = 8080;
 
     private final Object joinLock = new Object();
     private String keystore;
@@ -66,6 +68,7 @@ public class JettyServer implements ServletHost {
     private String keyPassword;
     private boolean sendServerVersion;
     private WorkScheduler workScheduler;
+    private int defaultPort = 8080;
 
     /**
      * Represents a port and the server that serves it.
@@ -97,6 +100,14 @@ public class JettyServer implements ServletHost {
 
     public JettyServer(WorkScheduler workScheduler) {
         this.workScheduler = workScheduler;
+    }
+    
+    public void setDefaultPort(int port) {
+        defaultPort = port;
+    }
+    
+    public int getDefaultPort() {
+        return defaultPort;
     }
 
     public void setSendServerVersion(boolean sendServerVersion) {
@@ -145,7 +156,7 @@ public class JettyServer implements ServletHost {
         }
         int portNumber = uri.getPort();
         if (portNumber == -1) {
-            portNumber = DEFAULT_PORT;
+            portNumber = defaultPort;
         }
 
         // Get the port object associated with the given port number
@@ -172,7 +183,7 @@ public class JettyServer implements ServletHost {
                 }
     
                 ContextHandler contextHandler = new ContextHandler();
-                contextHandler.setContextPath(ROOT);
+                contextHandler.setContextPath("/");
                 server.setHandler(contextHandler);
     
                 SessionHandler sessionHandler = new SessionHandler();
@@ -228,17 +239,64 @@ public class JettyServer implements ServletHost {
         mapping.setPathSpec(path);
         servletHandler.addServletMapping(mapping);
         
-        URI addedURI = URI.create(scheme + "://localhost:" + portNumber + path);
-        logger.info("Added Servlet mapping: " + addedURI);
+        // Compute the complete URL
+        String host;
+        try {
+            host = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            host = "localhost";
+        }
+        URL addedURL;
+        try {
+            addedURL = new URL(scheme, host, portNumber, path);
+        } catch (MalformedURLException e) {
+            throw new ServletMappingException(e);
+        }
+        logger.info("Added Servlet mapping: " + addedURL);
     }
     
+    public URL getURLMapping(String suri) throws ServletMappingException {
+        URI uri = URI.create(suri);
+
+        // Get the URI scheme and port
+        String scheme = uri.getScheme();
+        if (scheme == null) {
+            scheme = "http";
+        }
+        int portNumber = uri.getPort();
+        if (portNumber == -1) {
+            portNumber = defaultPort;
+        }
+        
+        // Get the host
+        String host;
+        try {
+            host = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            host = "localhost";
+        }
+        
+        // Construct the URL
+        String path = uri.getPath();
+        if (!path.startsWith("/")) {
+            path = '/' + path;
+        }
+        URL url;
+        try {
+            url = new URL(scheme, host, portNumber, path);
+        } catch (MalformedURLException e) {
+            throw new ServletMappingException(e);
+        }
+        return url;
+    }
+        
     public Servlet getServletMapping(String suri) throws ServletMappingException {
         URI uri = URI.create(suri);
         
         // Get the URI port
         int portNumber = uri.getPort();
         if (portNumber == -1) {
-            portNumber = DEFAULT_PORT;
+            portNumber = defaultPort;
         }
 
         // Get the port object associated with the given port number
@@ -272,7 +330,7 @@ public class JettyServer implements ServletHost {
         // Get the URI port
         int portNumber = uri.getPort();
         if (portNumber == -1) {
-            portNumber = DEFAULT_PORT;
+            portNumber = defaultPort;
         }
 
         // Get the port object associated with the given port number
@@ -310,7 +368,7 @@ public class JettyServer implements ServletHost {
     }
     
     public String getContextPath() {
-        return ROOT;
+        return "/";
     }
 
     /**

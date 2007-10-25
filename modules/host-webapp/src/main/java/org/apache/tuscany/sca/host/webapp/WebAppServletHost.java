@@ -21,9 +21,11 @@ package org.apache.tuscany.sca.host.webapp;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,11 +56,19 @@ public class WebAppServletHost implements ServletHost {
 
     private Map<String, Servlet> servlets;
     private SCADomain scaDomain;
-
     private String contextPath;
+    private int defaultPortNumber = 8080;
 
     private WebAppServletHost() {
         servlets = new HashMap<String, Servlet>();
+    }
+    
+    public void setDefaultPort(int port) {
+        defaultPortNumber = port;
+    }
+    
+    public int getDefaultPort() {
+        return defaultPortNumber;
     }
 
     public void addServletMapping(String suri, Servlet servlet) throws ServletMappingException {
@@ -74,7 +84,7 @@ public class WebAppServletHost implements ServletHost {
         // as they are fixed by the Web container
         servlets.put(suri, servlet);
         
-        logger.info("addServletMapping: " + suri);
+        logger.info("Added Servlet mapping: " + suri);
     }
 
     public Servlet removeServletMapping(String suri) throws ServletMappingException {
@@ -101,6 +111,41 @@ public class WebAppServletHost implements ServletHost {
         return servlet;
     }
 
+    public URL getURLMapping(String suri) throws ServletMappingException {
+        URI uri = URI.create(suri);
+
+        // Get the URI scheme and port
+        String scheme = uri.getScheme();
+        if (scheme == null) {
+            scheme = "http";
+        }
+        int portNumber = uri.getPort();
+        if (portNumber == -1) {
+            portNumber = defaultPortNumber;
+        }
+        
+        // Get the host
+        String host;
+        try {
+            host = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            host = "localhost";
+        }
+        
+        // Construct the URL
+        String path = uri.getPath();
+        if (!path.startsWith("/")) {
+            path = '/' + path;
+        }
+        URL url;
+        try {
+            url = new URL(scheme, host, portNumber, path);
+        } catch (MalformedURLException e) {
+            throw new ServletMappingException(e);
+        }
+        return url;
+    }
+        
     public RequestDispatcher getRequestDispatcher(String suri) throws ServletMappingException {
 
         // Make sure that the path starts with a /

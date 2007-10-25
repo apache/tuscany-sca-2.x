@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.host.http;
 
+import java.net.URL;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 
@@ -31,6 +33,21 @@ import javax.servlet.Servlet;
  * @version $Rev$ $Date$
  */
 public interface ServletHost {
+    
+    /**
+     * Sets the default port for the server.
+     * 
+     * @param port the default port
+     */
+    void setDefaultPort(int port);
+
+    /**
+     * Returns the default port for the server.
+     * 
+     * @return the default port
+     */
+    int getDefaultPort();
+    
     /**
      * Add a mapping for an instance of a Servlet. This requests that the
      * servlet container direct all requests to the designated mapping to the
@@ -79,4 +96,9 @@ public interface ServletHost {
      */
     String getContextPath();
 
+    /**
+     * Returns the complete URL mapped to the specified URI. 
+     * @return the URL mapped to the specified URI
+     */
+    URL getURLMapping(String uri);
 }

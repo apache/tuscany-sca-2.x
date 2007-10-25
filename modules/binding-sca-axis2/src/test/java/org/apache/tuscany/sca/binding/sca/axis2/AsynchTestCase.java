@@ -38,8 +38,8 @@ public class AsynchTestCase extends BaseTest {
 
         try {
             // create and start domains
-            nodeA = createNode("nodeG");
-            nodeB = createNode("nodeH");
+            nodeA = createNode("http://localhost:8100/nodeG");
+            nodeB = createNode("http://localhost:8100/nodeH");
 
         } catch (Exception ex) {
             System.err.println("Exception when creating domain " + ex.getMessage());
