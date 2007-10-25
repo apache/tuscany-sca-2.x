@@ -28,7 +28,7 @@ public class LaunchDomain {
 
         System.out.println("Starting ...");
         SCADomainFactory domainFactory = SCADomainFactory.newInstance();
-        SCADomain domain = domainFactory.createSCADomain("http://localhost:8877");
+        SCADomain domain = domainFactory.createSCADomain("http://localhost:9999");
         System.out.println("store domain controller ready for big business !!!");
         System.in.read();
         

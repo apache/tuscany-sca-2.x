@@ -17,13 +17,13 @@
  * under the License.    
  */
 
-package services;
-
-import java.util.List;
+package services.merger;
 
 import org.osoa.sca.annotations.Remotable;
 
 @Remotable
-public interface Catalog {
-    List<String> get();
+public interface VegetablesCatalog {
+    
+    String[] get();
+    
 }

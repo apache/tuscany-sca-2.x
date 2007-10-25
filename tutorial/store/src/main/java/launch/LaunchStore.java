@@ -27,13 +27,13 @@ import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 
-public class Launch {
+public class LaunchStore {
     public static void main(String[] args) throws Exception {
         System.out.println("Starting ...");
         SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-        SCANode node = nodeFactory.createSCANode("http://localhost:8086/store", "http://localhost:8877");
+        SCANode node = nodeFactory.createSCANode("http://localhost:8100/store", "http://localhost:9999");
         
-        URL contribution = SCAContributionUtil.findContributionFromClass(Launch.class);
+        URL contribution = SCAContributionUtil.findContributionFromClass(LaunchStore.class);
         node.addContribution("http://store", contribution);
         
         node.addToDomainLevelComposite(new QName("http://store", "store"));
@@ -46,6 +46,5 @@ public class Launch {
         node.stop();
         node.destroy();
         System.out.println();
-        
     }
 }
