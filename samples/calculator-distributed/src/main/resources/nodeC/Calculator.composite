@@ -24,9 +24,6 @@
 
     <component name="SubtractServiceComponentC">
         <implementation.java class="calculator.SubtractServiceImpl" />
-        <service name="SubtractService">
-            <binding.sca uri="http://localhost:8086/SubtractServiceComponentC"/>
-        </service>
     </component>
 
 </composite>

@@ -29,7 +29,7 @@
                 callbackInterface="simplecallback.MyServiceCallback" />
             <binding.ws wsdlElement="http://simplecallback#wsdl.port(MyServiceSoapService/MyServiceSoapPort)" />
             <callback>
-                <binding.ws wsdlElement="http://simplecallback#wsdl.binding(MyServiceCallbackSoapBinding)" />
+                <binding.ws wsdlElement="http://simplecallback#wsdl.port(MyServiceCallbackSoapService/MyServiceCallbackSoapPort)" />
             </callback>
         </reference>
     </component>
@@ -41,7 +41,7 @@
                 callbackInterface="http://simplecallback#wsdl.interface(MyServiceCallback)" />
             <binding.ws wsdlElement="http://simplecallback#wsdl.port(MyServiceSoapService/MyServiceSoapPort)" />
             <callback>
-                <binding.ws wsdlElement="http://simplecallback#wsdl.binding(MyServiceCallbackSoapBinding)" />
+                <binding.ws wsdlElement="http://simplecallback#wsdl.port(MyServiceCallbackSoapService/MyServiceCallbackSoapPort)" />
             </callback>
         </service>
     </component>
