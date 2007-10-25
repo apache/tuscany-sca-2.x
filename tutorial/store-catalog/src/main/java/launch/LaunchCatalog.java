@@ -39,7 +39,7 @@ public class LaunchCatalog {
         node.addToDomainLevelComposite(new QName("http://store", "store-catalog"));
         node.start();
 
-        System.out.println("store.composite ready for big business !!!");
+        System.out.println("store-catalog.composite ready for big business !!!");
         System.in.read();
         
         System.out.println("Stopping ...");
