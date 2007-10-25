@@ -24,17 +24,19 @@ import java.util.List;
 
 import org.osoa.sca.annotations.Init;
 
-public class CatalogImpl implements Catalog {
+public class VegetablesCatalogImpl implements VegetablesCatalog {
     private List<String> catalog = new ArrayList<String>();
 
     @Init
     public void init() {
-        catalog.add("Broccoli - " + 2.99f);
-        catalog.add("Asparagus - " + 3.55f);
-        catalog.add("Cauliflower - " + 1.55f);
+        catalog.add("Broccoli" + " - " + 2.99);
+        catalog.add("Asparagus" + " - " + 3.55);
+        catalog.add("Cauliflower" + " - " + 1.55);
     }
 
-    public List<String> get() {
-        return catalog;
+    public String[] get() {
+        String[] catalogArray = new String[catalog.size()];
+        catalog.toArray(catalogArray);
+        return catalogArray;
     }
 }

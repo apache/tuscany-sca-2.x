@@ -20,11 +20,11 @@
 package services;
 
 public class CurrencyConverterImpl implements CurrencyConverter {
-    public float getConversion(String fromCurrencyCode, String toCurrencyCode, float amount) {
+    public double getConversion(String fromCurrencyCode, String toCurrencyCode, double amount) {
         if (toCurrencyCode.equals("USD"))
             return amount;
         else if (toCurrencyCode.equals("EUR"))
-            return amount * 0.7256f;
+            return amount * 0.7256;
         return 0;
     }
 

@@ -19,11 +19,17 @@
 -->
 <composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
 		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
-		targetNamespace="http://store"			
-		name="store-catalog">
+		targetNamespace="http://store"
+		name="new-catalog">
 		
-	<component name="VegetablesCatalog">
-		<implementation.java class="services.VegetablesCatalogImpl"/> 
+	<component name="NewCatalog">
+		<implementation.java class="services.merger.NewCatalogImpl"/> 
+		<service name="Catalog">
+			<t:binding.jsonrpc/>
+			<binding.ws uri="healthyFood"/>
+   		</service>
+		<reference name="fruitsCatalog" target="Catalog"/>	
+		<reference name="vegetablesCatalog" target="VegetablesCatalog"/>	
 	</component> 
  	
 </composite>

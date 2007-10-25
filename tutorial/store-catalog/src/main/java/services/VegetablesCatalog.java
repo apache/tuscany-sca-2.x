@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,14 +15,15 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
-		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
-		targetNamespace="http://store"			
-		name="store-catalog">
-		
-	<component name="VegetablesCatalog">
-		<implementation.java class="services.VegetablesCatalogImpl"/> 
-	</component> 
- 	
-</composite>
+ */
+
+package services;
+
+import org.osoa.sca.annotations.Remotable;
+
+@Remotable
+public interface VegetablesCatalog {
+    
+    String[] get();
+    
+}

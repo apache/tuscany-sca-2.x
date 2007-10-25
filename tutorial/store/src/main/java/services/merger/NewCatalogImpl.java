@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,14 +15,36 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
-		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
-		targetNamespace="http://store"			
-		name="store-catalog">
-		
-	<component name="VegetablesCatalog">
-		<implementation.java class="services.VegetablesCatalogImpl"/> 
-	</component> 
- 	
-</composite>
+ */
+
+package services.merger;
+
+import org.osoa.sca.annotations.Reference;
+
+import services.Catalog;
+
+public class NewCatalogImpl implements Catalog {
+
+    @Reference
+    public Catalog fruitsCatalog;
+    
+    @Reference
+    public VegetablesCatalog vegetablesCatalog;
+    
+    public String[] get() {
+        String[] fruits = fruitsCatalog.get();
+        String[] vegetables = vegetablesCatalog.get();
+        
+        String[] catalog = new String[fruits.length + vegetables.length];
+        int i =0;
+        for (String fruit: fruits) {
+            catalog[i++] = fruit;
+        }
+        for (String vegetable: vegetables) {
+            catalog[i++] = vegetable;
+        }
+        
+        return catalog;
+    }
+
+}
