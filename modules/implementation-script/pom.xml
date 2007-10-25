@@ -143,6 +143,12 @@
             <artifactId>groovy-all</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>openejb</groupId>
+                    <artifactId>openejb-loader</artifactId>
+                </exclusion>
+            </exclusions>
          </dependency>
 
     </dependencies>
