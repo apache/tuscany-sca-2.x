@@ -57,12 +57,12 @@ Sample Usage
 This sample is run using the tuscany binary distribution. To run it, first set the
 following environment variables:
 
-set TUSCANY_BIN_DISTRO=<Directory where the distro was extracted, e.g. \Devt\tuscany-sca-distr\tuscany-sca-1.0-incubating-SNAPSHOT>
+set TUSCANY_BIN_DISTRO=<Directory where the distro was extracted, e.g. \Devt\tuscany-sca-distr\tuscany-sca>
 set TUSCANY_SCA_MANIFEST_JAR=%TUSCANY_BIN_DISTRO%\lib\tuscany-sca-manifest.jar
 
 Then navigate to this sample directory and do:
 
-java -Dnotification.httpPort=8082 -cp "target\sample-binding-notification-consumer-1.0-incubating-SNAPSHOT.jar;%TUSCANY_SCA_MANIFEST_JAR%" notification.consumer.TrafficAdvisoryServer
+java -Dnotification.httpPort=8082 -cp "target\sample-binding-notification-consumer.jar;%TUSCANY_SCA_MANIFEST_JAR%" notification.consumer.TrafficAdvisoryServer
 
 this should bring up the following prompt:
 
