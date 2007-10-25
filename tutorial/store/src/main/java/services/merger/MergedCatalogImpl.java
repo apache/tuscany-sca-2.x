@@ -23,7 +23,7 @@ import org.osoa.sca.annotations.Reference;
 
 import services.Catalog;
 
-public class NewCatalogImpl implements Catalog {
+public class MergedCatalogImpl implements Catalog {
 
     @Reference
     public Catalog fruitsCatalog;

@@ -29,17 +29,7 @@
 			<t:binding.http/>
 		</service> 	
 	</component>		
-  
-	<component name="NewCatalog">
-		<implementation.java class="services.merger.NewCatalogImpl"/> 
-		<service name="Catalog">
-			<t:binding.jsonrpc/>
-			<binding.ws uri="FruitsAndVegetables"/>
-   		</service>
-		<reference name="fruitsCatalog" target="Catalog"/>	
-		<reference name="vegetablesCatalog" target="VegetablesCatalog"/>	
-	</component> 
- 	
+
 	<component name="Catalog">
 		<implementation.java class="services.CatalogImpl"/> 
 		<property name="currencyCode">USD</property>
@@ -61,4 +51,16 @@
 		<implementation.java class="services.CurrencyConverterImpl"/>
 	</component>     
 
+	<!--
+	<component name="Catalog">
+		<implementation.java class="services.merger.MergedCatalogImpl"/> 
+		<service name="Catalog">
+			<t:binding.jsonrpc/>
+			<binding.ws uri="FruitsAndVegetables"/>
+   		</service>
+		<reference name="fruitsCatalog" target="FruitsCatalog"/>	
+		<reference name="vegetablesCatalog" target="VegetablesCatalog"/>	
+	</component>
+	-->
+ 	
 </composite>
