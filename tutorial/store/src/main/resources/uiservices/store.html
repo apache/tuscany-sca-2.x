@@ -25,16 +25,21 @@
 <script language="JavaScript">
 
 	//Reference
-	catalog = (new JSONRpcClient("../NewCatalog")).Catalog;
+	catalog = (new JSONRpcClient("../Catalog")).Catalog;
 	//Reference
 	shoppingCart = new AtomClient("../ShoppingCart");
 
 
 	function catalog_getResponse(items) {
 		var catalog = "";
-		for (var i=0; i<items.length; i++)
+		//fixme
+		items = items.String_collection.String;
+		for (var i=0; i<items.length; i++) {
+		    //fixme
+		    var item = items[i]["$"];
 			catalog += '<input name="items" type="checkbox" value="' + 
-						items[i] + '">' + items[i]+ ' <br>';
+						item + '">' + item + ' <br>';
+		}
 		document.getElementById('catalog').innerHTML=catalog;
 	}
 	
@@ -69,7 +74,7 @@
 		document.getElementById('store').innerHTML='<h2>' +
 				'Thanks for Shopping With Us!</h2>'+
 				'<h2>Your Order</h2>'+
-				'<form name="orderForm" action="/ufs/store.html">'+
+				'<form name="orderForm" action="/ui/store.html">'+
 					document.getElementById('shoppingCart').innerHTML+
 					'<br>'+
 					document.getElementById('total').innerHTML+
