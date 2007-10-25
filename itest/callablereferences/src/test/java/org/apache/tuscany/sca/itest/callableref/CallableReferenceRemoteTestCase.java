@@ -42,8 +42,6 @@ import org.junit.Test;
  */
 public class CallableReferenceRemoteTestCase {
     
-    private static String DEFAULT_DOMAIN_URI = "http://localhost:8877";
-
     private static SCADomain domain;
     private static SCANode nodeA;
     private static SCANode nodeB;
@@ -56,7 +54,7 @@ public class CallableReferenceRemoteTestCase {
         try {
             System.out.println("Setting up domain");
             SCADomainFactory domainFactory = SCADomainFactory.newInstance();
-            domain= domainFactory.createSCADomain(DEFAULT_DOMAIN_URI);
+            domain= domainFactory.createSCADomain("http://localhost:9999");
             
             System.out.println("Setting up nodes");
                   
@@ -64,11 +62,11 @@ public class CallableReferenceRemoteTestCase {
             
             SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             
-            nodeA = nodeFactory.createSCANode("nodeA", DEFAULT_DOMAIN_URI);
+            nodeA = nodeFactory.createSCANode("http://localhost:8100/nodeA", "http://localhost:9999");
             nodeA.addContribution("nodeA", cl.getResource("nodeA/"));
             nodeA.start();
             
-            nodeB = nodeFactory.createSCANode("nodeB", DEFAULT_DOMAIN_URI);
+            nodeB = nodeFactory.createSCANode("http://localhost:8100/nodeB", "http://localhost:9999");
             nodeB.addContribution("nodeB", cl.getResource("nodeB/"));
             nodeB.start();                  
             
