@@ -27,6 +27,8 @@ import java.sql.SQLException;
 public class CreateDB {
 
     public static void main(String[] args) {
+        System.out.println("Creating database ...");
+        
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         
@@ -67,7 +69,7 @@ public class CreateDB {
             preparedStatement = connection.prepareStatement("INSERT INTO CATALOG VALUES(2,'Pear', 'USD', 1.55)");
             preparedStatement.execute();
 
-            
+            System.out.println("Done !");
             
         } catch (SQLException ex) {         
             ex.printStackTrace();
