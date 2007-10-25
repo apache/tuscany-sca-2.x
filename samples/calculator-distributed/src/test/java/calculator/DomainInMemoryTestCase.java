@@ -40,8 +40,6 @@ import calculator.CalculatorService;
  */
 public class DomainInMemoryTestCase {
     
-    private static String DEFAULT_DOMAIN_URI = "http://localhost:8877";
-
     private static SCADomain domainManager;
     private static SCANode   nodeA;
     private static SCANode   nodeB;
@@ -58,7 +56,7 @@ public class DomainInMemoryTestCase {
             System.out.println("Setting up domain manager");
             
             SCADomainFactory domainFactory = SCADomainFactory.newInstance();
-            domainManager = domainFactory.createSCADomain(DEFAULT_DOMAIN_URI);
+            domainManager = domainFactory.createSCADomain("http://localhost:9999");
             
             System.out.println("Setting up calculator nodes");
             
@@ -66,25 +64,25 @@ public class DomainInMemoryTestCase {
             
             SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             
-            nodeA = nodeFactory.createSCANode("nodeA", DEFAULT_DOMAIN_URI);
+            nodeA = nodeFactory.createSCANode("http://localhost:8085/nodeA", "http://localhost:9999");
             nodeA.addContribution("nodeA", cl.getResource("nodeA/"));
             nodeA.addToDomainLevelComposite(new QName("http://sample", "Calculator"));
             nodeA.start();
 
             
-            nodeB = nodeFactory.createSCANode("nodeB", DEFAULT_DOMAIN_URI);
+            nodeB = nodeFactory.createSCANode("http://localhost:8086/nodeB", "http://localhost:9999");
             nodeB.addContribution("nodeB", cl.getResource("nodeB/"));
             nodeB.addToDomainLevelComposite(new QName("http://sample", "Calculator"));
             nodeB.start();
 
             
-            nodeC = nodeFactory.createSCANode("nodeC", DEFAULT_DOMAIN_URI);
+            nodeC = nodeFactory.createSCANode("http://localhost:8087/nodeC", "http://localhost:9999");
             nodeC.addContribution("nodeC", cl.getResource("nodeC/"));
             nodeC.addToDomainLevelComposite(new QName("http://sample", "Calculator")); 
             nodeC.start();
 
             SCADomainFinder domainFinder = SCADomainFinder.newInstance();
-            domain = domainFinder.getSCADomain(DEFAULT_DOMAIN_URI);
+            domain = domainFinder.getSCADomain("http://localhost:9999");
             
             // get a reference to various services in the domain
             calculatorServiceA = nodeA.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentA");
@@ -102,11 +100,8 @@ public class DomainInMemoryTestCase {
     @AfterClass
     public static void destroy() throws Exception {
         // stop the nodes and hence the domains they contain        
-        nodeA.stop();
         nodeA.destroy();
-        nodeB.stop();    
         nodeB.destroy();
-        nodeC.stop();
         nodeC.destroy();
     }    
 

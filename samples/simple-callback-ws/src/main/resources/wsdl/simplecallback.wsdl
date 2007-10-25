@@ -100,4 +100,10 @@
         </wsdl:port>
     </wsdl:service>
 
+    <wsdl:service name="MyServiceCallbackSoapService">
+        <wsdl:port binding="tns:MyServiceCallbackSoapBinding" name="MyServiceCallbackSoapPort">
+            <wsdlsoap:address location="http://localhost:8085/MyServiceCallbackComponent"/>
+        </wsdl:port>
+    </wsdl:service>
+
 </wsdl:definitions>
