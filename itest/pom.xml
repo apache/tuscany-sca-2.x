@@ -47,6 +47,7 @@
                 <module>contribution</module>
                 <module>contribution-multiple</module>
                 <module>contribution-import-export</module>
+                <module>contribution-classloader</module>
                 <module>conversations</module>
                 <module>databindings</module>
                 <module>exceptions</module>
