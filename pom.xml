@@ -163,61 +163,6 @@
                     </configuration>
                 </plugin>
 
-                <!-- source code style check plugin configuration -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>2.1</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.tuscany</groupId>
-                            <artifactId>buildtools</artifactId>
-                            <version>2-incubating</version>
-                        </dependency>
-                    </dependencies>
-                    <executions>
-                        <execution>
-                            <id>process-sources</id>
-                            <phase>process-sources</phase>
-                            <configuration>
-                                <configLocation>tuscany-checkstyle.xml</configLocation>
-                                <suppressionsLocation>tuscany-suppressions.xml</suppressionsLocation>
-                                <consoleOutput>true</consoleOutput>
-                                <failsOnError>true</failsOnError>
-                                <linkXRef>false</linkXRef>
-                                <sourceDirectory>${basedir}/src</sourceDirectory>
-                                <propertyExpansion>${checkstyle.properties}</propertyExpansion>
-                            </configuration>
-                            <goals>
-                                <goal>checkstyle</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-
-                <!-- code semantic check plugin configuration -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-pmd-plugin</artifactId>
-                    <version>2.1</version>
-                    <configuration>
-                        <rulesets>
-                            <ruleset>${basedir}/.ruleset</ruleset>
-                        </rulesets>
-                        <linkXRef>false</linkXRef>
-                        <targetJdk>1.5</targetJdk>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>process-sources</id>
-                            <phase>process-sources</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-
                 <!-- code coverage check plugin configuration -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
