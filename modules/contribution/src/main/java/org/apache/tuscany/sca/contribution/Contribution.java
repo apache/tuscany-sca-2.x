@@ -88,4 +88,13 @@ public interface Contribution extends Artifact {
      */
     void setModelResolver(ModelResolver modelResolver);
     
+    /**
+     * Returns the classloader used to load classes and resources from
+     * this contribution
+     * 
+     * @return The contribution classloader
+     */
+    ClassLoader getClassLoader();
+    
+    
 }

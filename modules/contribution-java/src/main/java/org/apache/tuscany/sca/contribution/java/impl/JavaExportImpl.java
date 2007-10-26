@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.contribution.java.impl;
 
+import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
@@ -29,6 +30,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
  */
 public class JavaExportImpl implements JavaExport {
     private ModelResolver modelResolver;
+    private Contribution contribution;
     /**
      * Java package being exported
      */
@@ -54,4 +56,11 @@ public class JavaExportImpl implements JavaExport {
         this.modelResolver = modelResolver;
     }
 
+    public Contribution getContribution() {
+        return contribution;
+    }
+
+    public void setContribution(Contribution contribution) {
+        this.contribution = contribution;
+    }
 }

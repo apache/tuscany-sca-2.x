@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.contribution.java.impl;
 
+import java.util.List;
+
+import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
@@ -31,6 +34,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
  */
 public class JavaImportImpl implements JavaImport {
     private ModelResolver modelResolver;
+    private List<Contribution> contributions;
     /**
      * Java package name being imported
      */
@@ -66,6 +70,13 @@ public class JavaImportImpl implements JavaImport {
 
     public void setModelResolver(ModelResolver modelResolver) {
         this.modelResolver = modelResolver;
+    }
+    public List<Contribution> getExportContributions() {
+        return contributions;
+    }
+
+    public void setExportContributions(List<Contribution> contributions) {
+        this.contributions = contributions;
     }
 
     /**

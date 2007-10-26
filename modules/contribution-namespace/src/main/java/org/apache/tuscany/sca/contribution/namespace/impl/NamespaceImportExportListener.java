@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.contribution.namespace.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
@@ -42,16 +45,20 @@ public class NamespaceImportExportListener implements ContributionListener {
      * Export model resolvers are same as Contribution model resolver
      * Import model resolvers are matched to a specific contribution if a location uri is specified, 
      *    otherwise it try to resolve agains all the other contributions
+     * Also set the exporting contributions used by contribution classloaders to 
+     * match import/export for class loading.
      */    
     public void contributionAdded(ContributionRepository repository, Contribution contribution) {
         // Initialize the contribution exports
         for (Export export: contribution.getExports()) {
             export.setModelResolver(contribution.getModelResolver());
+            export.setContribution(contribution);
         }
         
         // Initialize the contribution imports
         for (Import import_: contribution.getImports()) {
             boolean initialized = false;
+
             
             if (import_ instanceof NamespaceImport) {
                 NamespaceImport namespaceImport = (NamespaceImport)import_;
@@ -67,6 +74,11 @@ public class NamespaceImportExportListener implements ContributionListener {
                                 NamespaceExport namespaceExport = (NamespaceExport)export;
                                 if (namespaceImport.getNamespace().equals(namespaceExport.getNamespace())) {
                                     namespaceImport.setModelResolver(namespaceExport.getModelResolver());
+                                    
+                                    List<Contribution> exportingContributions = new ArrayList<Contribution>();
+                                    exportingContributions.add(namespaceExport.getContribution());
+                                    import_.setExportContributions(exportingContributions);
+                                    
                                     initialized = true;
                                     break;
                                 }
@@ -80,8 +92,8 @@ public class NamespaceImportExportListener implements ContributionListener {
             if( !initialized ) {
                 // Use a resolver that will consider all contributions
                 import_.setModelResolver(new DefaultImportAllModelResolver(import_, repository.getContributions()));
+                import_.setExportContributions(repository.getContributions());
             }
-            
         }
 
     }
