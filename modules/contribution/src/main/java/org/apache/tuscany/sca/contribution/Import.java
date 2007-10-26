@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.contribution;
 
+import java.util.List;
+
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 
@@ -44,6 +46,22 @@ public interface Import {
      * @param modelResolver The model resolver
      */
     void setModelResolver(ModelResolver modelResolver);
+    
+    /**
+     * Returns the list of exporting contributions that can be used to match 
+     * this import.
+     * 
+     * @return List of exporting contributions
+     */
+    List<Contribution> getExportContributions();
+    
+    /**
+     * Sets the list of exporting contributions that can be used to match 
+     * this import.
+     * 
+     * @param contributions List of exporting contributions
+     */
+    void setExportContributions(List<Contribution> contributions);
     
     /**
      * Verify is a specific export is provider of what is being imported

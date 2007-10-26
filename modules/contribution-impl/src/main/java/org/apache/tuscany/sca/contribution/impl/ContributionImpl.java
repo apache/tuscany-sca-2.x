@@ -39,6 +39,7 @@ public class ContributionImpl extends ArtifactImpl implements Contribution {
     private List<Import> imports = new ArrayList<Import>();
     private List<Composite> deployables = new ArrayList<Composite>();
     private ModelResolver modelResolver;
+    private ContributionClassLoader classLoader;
     
     /**
      * A list of artifacts in the contribution
@@ -46,6 +47,7 @@ public class ContributionImpl extends ArtifactImpl implements Contribution {
     private List<DeployedArtifact> artifacts = new ArrayList<DeployedArtifact>();
 
     protected ContributionImpl() {
+        classLoader = new ContributionClassLoader(this);
     }
     
     public List<Export> getExports() {
@@ -71,4 +73,21 @@ public class ContributionImpl extends ArtifactImpl implements Contribution {
     public void setModelResolver(ModelResolver modelResolver) {
         this.modelResolver = modelResolver;
     }
+    
+    
+
+    @Override
+    public void setLocation(String location) {
+        String origLocation = this.getLocation();
+        super.setLocation(location);
+        
+        if (origLocation != null)
+            classLoader = new ContributionClassLoader(this);
+        classLoader.setContributionLocation(location);
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
 }

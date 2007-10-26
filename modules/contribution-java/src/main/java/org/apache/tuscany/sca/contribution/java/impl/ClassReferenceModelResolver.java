@@ -25,9 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
@@ -45,8 +43,12 @@ public class ClassReferenceModelResolver implements ModelResolver {
 
     public ClassReferenceModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
-        //FIXME The classloader should be passed in
-        this.classLoader = new WeakReference<ClassLoader>(Thread.currentThread().getContextClassLoader());
+        if (this.contribution != null) {
+            this.classLoader = new WeakReference<ClassLoader>(this.contribution.getClassLoader());
+        } else {
+            // This path should be used only for unit testing.
+            this.classLoader = new WeakReference<ClassLoader>(this.getClass().getClassLoader());
+        }
 
         try {
             Class osgiResolverClass =
@@ -69,29 +71,7 @@ public class ClassReferenceModelResolver implements ModelResolver {
         return map.remove(((ClassReference)resolved).getClassName());
     }
 
-    /**
-     * Handle artifact resolution when the specific class reference is imported from another contribution
-     * @param unresolved
-     * @return
-     */
-    private ClassReference resolveImportedModel(ClassReference unresolved) {
-        ClassReference resolved = unresolved;
-
-        if (this.contribution != null) {
-            for (Import import_ : this.contribution.getImports()) {
-                if (import_ instanceof JavaImport) {
-                    JavaImport javaImport = (JavaImport)import_;
-                    String packageName = javaImport.getPackage();
-                    if (javaImport.getPackage().equals(packageName)) {
-                        // Delegate the resolution to the import resolver
-                        resolved = import_.getModelResolver().resolveModel(ClassReference.class, unresolved);
-                    }
-                }
-            }
-
-        }
-        return resolved;
-    }
+  
 
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
         Object resolved = map.get(unresolved);
@@ -122,9 +102,7 @@ public class ClassReferenceModelResolver implements ModelResolver {
             // Return the resolved ClassReference
             return modelClass.cast(classReference);
         } else {
-            //delegate resolution of the class
-            resolved = this.resolveImportedModel((ClassReference)unresolved);
-            return modelClass.cast(resolved);
+            return unresolved;
         }
 
     }
