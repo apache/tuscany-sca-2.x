@@ -23,9 +23,9 @@
 		name="catalogs">
 		
 	<component name="CloudFruitsCatalog">
-		<implementation.java class="services.FruitsCatalogImpl"/> 
+		<implementation.java class="services.FruitsCatalogImpl"/>
 		<property name="currencyCode">USD</property>
-		<reference name="currencyConverter" target="CurrencyConverter"/>	
+		<reference name="currencyConverter" target="CloudCurrencyConverter"/>	
 	</component> 
  	
 	<component name="CloudVegetablesCatalog">

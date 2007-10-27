@@ -35,7 +35,7 @@
 		<property name="currencyCode">USD</property>
 		<service name="Catalog">
 			<binding.sca/>
-			<t:binding.jsonrpc/>
+			<t:binding.jsonrpc uri="CatalogJS"/>
    		</service>
 		<reference name="currencyConverter" target="CurrencyConverter"/>	
 	</component> 
@@ -55,11 +55,11 @@
 	<component name="Catalog">
 		<implementation.java class="services.merger.MergedCatalogImpl"/> 
 		<service name="Catalog">
-			<t:binding.jsonrpc/>
-			<binding.ws uri="FruitsAndVegetables"/>
+			<t:binding.jsonrpc uri="CatalogJS"/>
+			<binding.ws uri="CatalogWS"/>
    		</service>
 		<reference name="fruitsCatalog" target="FruitsCatalog"/>	
-		<reference name="vegetablesCatalog" target="VegetablesCatalog"/>	
+		<reference name="vegetablesCatalog" target="CloudVegetablesCatalog"/>	
 	</component>
 	-->
  	

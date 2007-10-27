@@ -22,7 +22,7 @@
 		targetNamespace="http://cloud"	
 		name="currency">
 		
-	<component name="CurrencyConverter">
+	<component name="CloudCurrencyConverter">
 		<implementation.java class="services.CurrencyConverterImpl"/>
 	</component>     
 
