@@ -25,7 +25,7 @@
         <version>1.1-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>www-cloud</artifactId>
+    <artifactId>tutorial-www-cloud</artifactId>
     <packaging>jar</packaging>
     <name>Apache Tuscany SCA Tutorial WWW Service Cloud</name>
 
