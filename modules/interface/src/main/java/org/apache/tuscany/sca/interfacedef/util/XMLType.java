@@ -28,6 +28,8 @@ public class XMLType {
     public static final XMLType UNKNOWN = new XMLType(null, null);
     protected QName element;
     protected QName type;
+    protected boolean nillable = true;
+    protected boolean many = false;
 
     /**
      * @param element
@@ -67,11 +69,11 @@ public class XMLType {
     public QName getElementName() {
         return element;
     }
-    
+
     public void setElementName(QName element) {
         this.element = element;
     }
-    
+
     public void setTypeName(QName type) {
         this.type = type;
     }
@@ -127,6 +129,22 @@ public class XMLType {
     @Override
     public String toString() {
         return "Element: " + element + " Type: " + type;
+    }
+
+    public boolean isNillable() {
+        return nillable;
+    }
+
+    public void setNillable(boolean niable) {
+        this.nillable = niable;
+    }
+
+    public boolean isMany() {
+        return many;
+    }
+
+    public void setMany(boolean many) {
+        this.many = many;
     }
 
 }

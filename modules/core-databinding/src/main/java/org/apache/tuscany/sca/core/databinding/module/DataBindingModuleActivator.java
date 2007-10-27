@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfaceProcessor;
+import org.apache.tuscany.sca.core.databinding.transformers.Array2ArrayTransformer;
 import org.apache.tuscany.sca.core.databinding.transformers.Exception2ExceptionTransformer;
 import org.apache.tuscany.sca.core.databinding.transformers.Input2InputTransformer;
 import org.apache.tuscany.sca.core.databinding.transformers.Output2OutputTransformer;
@@ -55,6 +56,10 @@ public class DataBindingModuleActivator implements ModuleActivator {
         Exception2ExceptionTransformer exception2ExceptionTransformer = new Exception2ExceptionTransformer();
         exception2ExceptionTransformer.setMediator(mediator);
         transformers.addTransformer(exception2ExceptionTransformer);
+        
+        Array2ArrayTransformer array2ArrayTransformer = new Array2ArrayTransformer();
+        array2ArrayTransformer.setMediator(mediator);
+        transformers.addTransformer(array2ArrayTransformer);
 
         Group2GroupTransformer group2GroupTransformer = new Group2GroupTransformer();
         group2GroupTransformer.setMediator(mediator);

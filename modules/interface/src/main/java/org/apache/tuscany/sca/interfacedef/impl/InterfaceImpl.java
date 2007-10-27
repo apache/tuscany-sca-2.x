@@ -158,23 +158,31 @@ public class InterfaceImpl implements Interface {
         }
     }
 
+    private void setDataBinding(DataType dataType, String dataBinding) {
+        if ("java:array".equals(dataType.getDataBinding())) {
+            setDataBinding((DataType)dataType.getLogical(), dataBinding);
+        } else {
+            dataType.setDataBinding(dataBinding);
+        }
+    }
+
     public void resetDataBinding(String dataBinding) {
         for (Operation op : getOperations()) {
             op.setDataBinding(dataBinding);
             DataType<List<DataType>> inputType = op.getInputType();
             if (inputType != null) {
                 for (DataType d : inputType.getLogical()) {
-                    d.setDataBinding(dataBinding);
+                    setDataBinding(d, dataBinding);
                 }
             }
             DataType outputType = op.getOutputType();
             if (outputType != null) {
-                outputType.setDataBinding(dataBinding);
+                setDataBinding(outputType, dataBinding);
             }
             List<DataType> faultTypes = op.getFaultTypes();
             if (faultTypes != null) {
                 for (DataType d : faultTypes) {
-                    d.setDataBinding(dataBinding);
+                    setDataBinding(d, dataBinding);
                 }
             }
             if (op.isWrapperStyle()) {
@@ -183,12 +191,12 @@ public class InterfaceImpl implements Interface {
                     DataType<List<DataType>> unwrappedInputType = wrapper.getUnwrappedInputType();
                     if (unwrappedInputType != null) {
                         for (DataType d : unwrappedInputType.getLogical()) {
-                            d.setDataBinding(dataBinding);
+                            setDataBinding(d, dataBinding);
                         }
                     }
                     DataType unwrappedOutputType = wrapper.getUnwrappedOutputType();
                     if (unwrappedOutputType != null) {
-                        unwrappedOutputType.setDataBinding(dataBinding);
+                        setDataBinding(unwrappedOutputType, dataBinding);
                     }
                 }
             }

@@ -47,4 +47,8 @@ public class RemoteServiceComponentImpl implements RemoteServiceComponent {
         return po;
     }
 
+    public String[] bar(int[][] intArray) {
+        return new String[] {"int"};
+    }
+
 }

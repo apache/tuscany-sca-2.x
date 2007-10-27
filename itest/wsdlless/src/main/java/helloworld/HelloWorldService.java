@@ -27,4 +27,5 @@ import org.osoa.sca.annotations.Remotable;
 public interface HelloWorldService {
 
     public String getGreetings(String name);
+    public String[] getMultipleGreetings(String[] names);
 }

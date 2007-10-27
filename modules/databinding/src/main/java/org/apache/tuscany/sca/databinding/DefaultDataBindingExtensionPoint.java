@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,8 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
  */
 public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoint {
     private final Map<String, DataBinding> bindings = new HashMap<String, DataBinding>();
-	private static final Logger logger = Logger.getLogger(DefaultTransformerExtensionPoint.class.getName());
+    private final List<DataBinding> databindings = new ArrayList<DataBinding>();
+    private static final Logger logger = Logger.getLogger(DefaultTransformerExtensionPoint.class.getName());
     private boolean loadedDataBindings;
 
     public DefaultDataBindingExtensionPoint() {
@@ -59,17 +61,17 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
     }
 
     public void addDataBinding(DataBinding dataBinding) {
-    	if (logger.isLoggable(Level.FINE)) {
-			String className = dataBinding.getClass().getName();
-			boolean lazy = false;
-			if (dataBinding instanceof LazyDataBinding) {
-				className = ((LazyDataBinding) dataBinding).className;
-				lazy = true;
-			}
-			logger.fine("Adding databinding: " + className + ";type="
-					+ dataBinding.getName() + ",lazy=" + lazy);
-		}
-		bindings.put(dataBinding.getName().toLowerCase(), dataBinding);
+        if (logger.isLoggable(Level.FINE)) {
+            String className = dataBinding.getClass().getName();
+            boolean lazy = false;
+            if (dataBinding instanceof LazyDataBinding) {
+                className = ((LazyDataBinding)dataBinding).className;
+                lazy = true;
+            }
+            logger.fine("Adding databinding: " + className + ";type=" + dataBinding.getName() + ",lazy=" + lazy);
+        }
+        databindings.add(dataBinding);
+        bindings.put(dataBinding.getName().toLowerCase(), dataBinding);
         String[] aliases = dataBinding.getAliases();
         if (aliases != null) {
             for (String alias : aliases) {
@@ -84,6 +86,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         }
         DataBinding dataBinding = bindings.remove(id.toLowerCase());
         if (dataBinding != null) {
+            databindings.remove(dataBinding);
             String[] aliases = dataBinding.getAliases();
             if (aliases != null) {
                 for (String alias : aliases) {
@@ -206,12 +209,25 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         return introspectType(dataType, annotations, false);
     }
 
+    private boolean introspectArray(DataType dataType, Annotation[] annotations) {
+        Class physical = dataType.getPhysical();
+        if (!physical.isArray()) {
+            return false;
+        }
+        Class componentType = physical.getComponentType();
+        DataType logical = new DataTypeImpl(componentType, dataType.getLogical());
+        introspectType(logical, annotations);
+        dataType.setDataBinding("java:array");
+        dataType.setLogical(logical);
+        return true;
+    }
+
     //
     // Leverage the DataBinding ExceptionHandler to calculate the DataType of an exception DataType
     //
     public boolean introspectType(DataType dataType, Annotation[] annotations, boolean isException) {
         loadDataBindings();
-        for (DataBinding binding : bindings.values()) {
+        for (DataBinding binding : databindings) {
             // don't introspect for JavaBeansDatabinding as all javatypes will
             // anyways match to its basetype
             // which is java.lang.Object. Default to this only if no databinding
@@ -243,8 +259,13 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         if (physical == Object.class) {
             return false;
         }
-        dataType.setDataBinding(JavaBeansDataBinding.NAME);
-        return false;
+        if (dataType.getPhysical().isArray()) {
+            introspectArray(dataType, annotations);
+            return true;
+        } else {
+            dataType.setDataBinding(JavaBeansDataBinding.NAME);
+            return false;
+        }
     }
 
     public DataType introspectType(Object value) {

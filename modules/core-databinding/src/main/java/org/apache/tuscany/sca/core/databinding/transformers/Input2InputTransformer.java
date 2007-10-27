@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.Transformer;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -36,13 +35,11 @@ import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
 
 /**
  * This is a special transformer to transform the input from one IDL to the
  * other one
  */
-@Service(Transformer.class)
 public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> implements
     PullTransformer<Object[], Object[]> {
     private static final Logger logger = Logger.getLogger(Input2InputTransformer.class.getName());

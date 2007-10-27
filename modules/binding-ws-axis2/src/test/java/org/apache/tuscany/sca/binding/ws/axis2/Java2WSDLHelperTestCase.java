@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 public class Java2WSDLHelperTestCase extends TestCase {
 
     public void testCreateDefinition() {
-        Definition definition = Java2WSDLHelper.createDefinition(HelloWorld.class, null);
+        Definition definition = Java2WSDLHelper.createDefinition(null, HelloWorld.class, null);
         assertNotNull(definition);
 
         Map portTypes = definition.getPortTypes();

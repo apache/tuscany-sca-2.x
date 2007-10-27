@@ -35,5 +35,8 @@ public class Component2bImpl implements HelloWorldService {
     public String getGreetings(String s) {
         return comp.getGreetings(s);
     }
+    public String[] getMultipleGreetings(String[] names) {
+        return comp.getMultipleGreetings(names);
+    }
 
 }

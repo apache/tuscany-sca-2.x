@@ -24,6 +24,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * The base class for a special databinding which represents a group of other databindings
@@ -60,13 +61,18 @@ public abstract class GroupDataBinding extends BaseDataBinding {
         for (Class<?> c : markerTypes) {
             if (isTypeOf(c, cls)) {
                 type.setDataBinding(getDataBinding(c));
-                type.setLogical(getLogical(cls, annotations));
+                Object logical = getLogical(cls, annotations);
+                if (logical != null) {
+                    type.setLogical(getLogical(cls, annotations));
+                } else {
+                    type.setLogical(XMLType.UNKNOWN);
+                }
                 return true;
             }
         }
         return false;
     }
-    
+
     /**
      * Test if the given type is a subtype of the base type
      * @param markerType
@@ -76,7 +82,7 @@ public abstract class GroupDataBinding extends BaseDataBinding {
     protected boolean isTypeOf(Class<?> markerType, Class<?> type) {
         return markerType.isAssignableFrom(type);
     }
-    
+
     /**
      * Derive the databinding name from a base class
      * @param baseType
@@ -85,7 +91,7 @@ public abstract class GroupDataBinding extends BaseDataBinding {
     protected String getDataBinding(Class<?> baseType) {
         return baseType.getName();
     }
-    
+
     /**
      * Get the logical type
      * @param type The java type

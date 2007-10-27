@@ -36,7 +36,7 @@ public class DataObject2String extends BaseTransformer<DataObject, String> imple
         try {
             HelperContext helperContext = SDOContextHelper.getHelperContext(context);
             XMLHelper xmlHelper = helperContext.getXMLHelper();
-            QName elementName = SDOContextHelper.getElement(context.getSourceDataType());
+            QName elementName = SDOContextHelper.getElement(context);
             return xmlHelper.save(source, elementName.getNamespaceURI(), elementName.getLocalPart());
         } catch (Exception e) {
             throw new TransformationException(e);

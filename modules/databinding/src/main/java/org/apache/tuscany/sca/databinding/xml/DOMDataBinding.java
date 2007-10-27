@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.databinding.xml;
 
-
 import java.lang.annotation.Annotation;
 
 import javax.xml.namespace.QName;
@@ -53,7 +52,7 @@ public class DOMDataBinding extends BaseDataBinding {
     @Override
     public Object copy(Object source) {
         if (Node.class.isAssignableFrom(source.getClass())) {
-            Node nodeSource = (Node) source;
+            Node nodeSource = (Node)source;
             return nodeSource.cloneNode(true);
         }
         return super.copy(source);
@@ -61,8 +60,10 @@ public class DOMDataBinding extends BaseDataBinding {
 
     @Override
     public boolean introspect(DataType type, Annotation[] annotations) {
-        if(Node.class.isAssignableFrom(type.getPhysical())) {
-            type.setLogical(new XMLType(ROOT_ELEMENT, null));
+        if (Node.class.isAssignableFrom(type.getPhysical())) {
+            if (type.getLogical() == null) {
+                type.setLogical(new XMLType(ROOT_ELEMENT, null));
+            }
             type.setDataBinding(NAME);
             return true;
         }

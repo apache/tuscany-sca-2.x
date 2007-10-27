@@ -41,7 +41,7 @@ public class JavaBeansDataBinding extends BaseDataBinding {
      * up by other paths unless it's the only available path
      */
     public static final int HEAVY_WEIGHT = 10000;
-    public static final String NAME = Object.class.getName();
+    public static final String NAME = "java:complexType";
 
     public JavaBeansDataBinding() {
         super(NAME, Object.class);

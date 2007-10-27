@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
+import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 
 /**
  * Transforms Value objects to generic java objects
@@ -50,6 +51,11 @@ public class Value2ObjectTransformer extends BaseTransformer<Value, Object> impl
     @Override
     protected Class getTargetType() {
         return Object.class;
+    }
+    
+    @Override
+    public String getTargetDataBinding() {
+        return JavaBeansDataBinding.NAME;
     }
 
     @Override

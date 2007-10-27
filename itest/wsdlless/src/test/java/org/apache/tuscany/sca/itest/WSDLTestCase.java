@@ -42,6 +42,10 @@ public class WSDLTestCase {
     public void testClient1a2a3a4a() {
         HelloWorldService client = domain.getService(HelloWorldService.class, "Client1a2a3a4a");
         assertEquals("Hi petra", client.getGreetings("petra"));
+        String[] greetings = client.getMultipleGreetings(new String[] {"John", "Smith"});
+        assertEquals(2, greetings.length);
+        assertEquals("Hi John", greetings[0]);
+        assertEquals("Hi Smith", greetings[1]);
     }
 
     @Test

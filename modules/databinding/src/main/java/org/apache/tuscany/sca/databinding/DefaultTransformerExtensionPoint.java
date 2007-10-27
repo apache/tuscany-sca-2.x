@@ -34,41 +34,48 @@ import org.apache.tuscany.sca.databinding.impl.ServiceConfigurationUtil;
  * @version $Rev$ $Date$
  */
 public class DefaultTransformerExtensionPoint implements TransformerExtensionPoint {
-	private static final Logger logger = Logger.getLogger(DefaultTransformerExtensionPoint.class.getName());
+    private static final Logger logger = Logger.getLogger(DefaultTransformerExtensionPoint.class.getName());
     private boolean loadedTransformers;
-    
+
     private final DirectedGraph<Object, Transformer> graph = new DirectedGraph<Object, Transformer>();
-    
+
     public DefaultTransformerExtensionPoint() {
     }
-    
-    public void addTransformer(String sourceType, String resultType, int weight, Transformer transformer) {
-    	if (logger.isLoggable(Level.FINE)) {
-			String className = transformer.getClass().getName();
-			boolean lazy = false;
-			boolean pull = (transformer instanceof PullTransformer);
-			if (transformer instanceof LazyPullTransformer) {
-				className = ((LazyPullTransformer) transformer).className;
-				lazy = true;
-			}
-			if (transformer instanceof LazyPushTransformer) {
-				className = ((LazyPushTransformer) transformer).className;
-				lazy = true;
-			}
 
-			logger.fine("Adding transformer: " + className + ";source="
-					+ sourceType + ",target=" + resultType + ",weight="
-					+ weight + ",type=" + (pull ? "pull" : "push") + ",lazy="
-					+ lazy);
-		}
+    public void addTransformer(String sourceType, String resultType, int weight, Transformer transformer) {
+        if (logger.isLoggable(Level.FINE)) {
+            String className = transformer.getClass().getName();
+            boolean lazy = false;
+            boolean pull = (transformer instanceof PullTransformer);
+            if (transformer instanceof LazyPullTransformer) {
+                className = ((LazyPullTransformer)transformer).className;
+                lazy = true;
+            }
+            if (transformer instanceof LazyPushTransformer) {
+                className = ((LazyPushTransformer)transformer).className;
+                lazy = true;
+            }
+
+            logger.fine("Adding transformer: " + className
+                + ";source="
+                + sourceType
+                + ",target="
+                + resultType
+                + ",weight="
+                + weight
+                + ",type="
+                + (pull ? "pull" : "push")
+                + ",lazy="
+                + lazy);
+        }
         graph.addEdge(sourceType, resultType, transformer, weight);
     }
 
     public void addTransformer(Transformer transformer) {
         addTransformer(transformer.getSourceDataBinding(),
-            transformer.getTargetDataBinding(),
-            transformer.getWeight(),
-            transformer);
+                       transformer.getTargetDataBinding(),
+                       transformer.getWeight(),
+                       transformer);
     }
 
     public boolean removeTransformer(String sourceType, String resultType) {
@@ -77,7 +84,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
 
     public Transformer getTransformer(String sourceType, String resultType) {
         loadTransformers();
-        
+
         DirectedGraph<Object, Transformer>.Edge edge = graph.getEdge(sourceType, resultType);
         return (edge == null) ? null : edge.getValue();
     }
@@ -104,21 +111,22 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
 
         // Get the transformer service declarations
         ClassLoader classLoader = transformerClass.getClassLoader();
-        List<String> transformerDeclarations; 
+        List<String> transformerDeclarations;
         try {
-            transformerDeclarations = ServiceConfigurationUtil.getServiceClassNames(classLoader, transformerClass.getName());
+            transformerDeclarations =
+                ServiceConfigurationUtil.getServiceClassNames(classLoader, transformerClass.getName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-        
+
         // Load transformers
-        for (String transformerDeclaration: transformerDeclarations) {
+        for (String transformerDeclaration : transformerDeclarations) {
             Map<String, String> attributes = ServiceConfigurationUtil.parseServiceDeclaration(transformerDeclaration);
             String className = attributes.get("class");
             String source = attributes.get("source");
             String target = attributes.get("target");
             int weight = Integer.valueOf(attributes.get("weight"));
-                
+
             // Create a transformer wrapper and register it
             Transformer transformer;
             if (transformerClass == PullTransformer.class) {
@@ -129,7 +137,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
             addTransformer(transformer);
         }
     }
-    
+
     /**
      * A transformer facade allowing transformers to be lazily loaded
      * and initialized.
@@ -182,7 +190,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
         public int getWeight() {
             return weight;
         }
-        
+
         public Object transform(Object source, TransformationContext context) {
             return getTransformer().transform(source, context);
         }
@@ -258,22 +266,27 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
         }
     }
 
-    
     //FIXME The following methods should be on a different class from
     // extension point
-    
+
     public List<Transformer> getTransformerChain(String sourceType, String resultType) {
         loadTransformers();
-        
+
         String source = sourceType;
         String result = resultType;
         List<Transformer> transformers = new ArrayList<Transformer>();
-        DirectedGraph<Object, Transformer>.Path path = graph.getShortestPath(source, result);
-        if (path == null) {
-            return null;
-        }
-        for (DirectedGraph<Object, Transformer>.Edge edge : path.getEdges()) {
-            transformers.add(edge.getValue());
+        // First check if there is a direct path, if yes, use it regardless of the weight
+        DirectedGraph<Object, Transformer>.Edge link = graph.getEdge(sourceType, resultType);
+        if (link != null) {
+            transformers.add(link.getValue());
+        } else {
+            DirectedGraph<Object, Transformer>.Path path = graph.getShortestPath(source, result);
+            if (path == null) {
+                return null;
+            }
+            for (DirectedGraph<Object, Transformer>.Edge edge : path.getEdges()) {
+                transformers.add(edge.getValue());
+            }
         }
         return transformers;
     }
@@ -281,7 +294,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
     @Override
     public String toString() {
         loadTransformers();
-        
+
         return graph.toString();
     }
 

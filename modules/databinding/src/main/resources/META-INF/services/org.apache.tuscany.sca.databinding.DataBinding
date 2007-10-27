@@ -19,5 +19,5 @@
 org.apache.tuscany.sca.databinding.xml.DOMDataBinding;type=org.w3c.dom.Node,name=dom
 org.apache.tuscany.sca.databinding.xml.XMLStringDataBinding;type=java.lang.String,name=xml.string
 org.apache.tuscany.sca.databinding.xml.XMLGroupDataBinding;type=databinding:group
-org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;type=java.lang.Object
+org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;type=java:complexType
 org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;type=java:simpleType

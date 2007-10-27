@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * Base Implementation of DataBinding
@@ -81,7 +82,9 @@ public abstract class BaseDataBinding implements DataBinding {
         Class cls = type.getPhysical();
         if (baseType != null && baseType.isAssignableFrom(cls)) {
             type.setDataBinding(getName());
-            type.setLogical(baseType);
+            if (type.getLogical() == null) {
+                type.setLogical(XMLType.UNKNOWN);
+            }
             return true;
         }
         return false;

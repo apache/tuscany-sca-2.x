@@ -19,7 +19,9 @@
 package org.apache.tuscany.sca.databinding.xml;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.stream.XMLStreamReader;
 
@@ -30,10 +32,11 @@ import org.custommonkey.xmlunit.XMLAssert;
 
 public class BeanXMLStreamReaderTestCase extends TestCase {
     private final static String XML_RESULT =
-        "<?xml version='1.0' encoding='UTF-8'?>" 
-            + "<MyBean xmlns=\"http://xml.databinding.sca.tuscany.apache.org/\">"
+        "<?xml version='1.0' encoding='UTF-8'?>" + "<MyBean xmlns=\"http://xml.databinding.sca.tuscany.apache.org/\">"
             + "<arr>1</arr><arr>2</arr><arr>3</arr><bean><name>Name</name></bean><i>1</i>"
             + "<list>Item1</list><list>Item2</list>"
+            + "<map><entry><key>key1</key><value>value1</value></entry>"
+            + "<entry><key>key2</key><value>value2</value></entry></map>"
             + "<nil xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\" />"
             + "<str>ABC</str></MyBean>";
 
@@ -54,16 +57,14 @@ public class BeanXMLStreamReaderTestCase extends TestCase {
         bean.bean.setName("Name");
         bean.list.add("Item1");
         bean.list.add("Item2");
+        bean.map.put("key1", "value1");
+        bean.map.put("key2", "value2");
         XMLStreamReader reader = new BeanXMLStreamReaderImpl(null, bean);
         XMLStreamReader2String t3 = new XMLStreamReader2String();
         String xml = t3.transform(reader, null);
         Diff diff = new Diff(XML_RESULT, xml);
         assertTrue(diff.similar());
         XMLAssert.assertXMLEqual(XML_RESULT, xml);
-        /* assertTrue(xml.contains("<JavaBean2XMLStreamReaderTestCase$MyBean>" 
-                     + "<arr>1</arr><arr>2</arr><arr>3</arr><bean><name>Name</name></bean>"
-                     + "<i>1</i><str>ABC</str></JavaBean2XMLStreamReaderTestCase$MyBean>"));
-                     */
     }
 
     private static class MyBean {
@@ -73,6 +74,7 @@ public class BeanXMLStreamReaderTestCase extends TestCase {
         private String nil;
         private List<String> list = new ArrayList();
         private AnotherBean bean;
+        private Map<String, String> map = new HashMap<String, String>();
 
         /**
          * @return the i
@@ -144,6 +146,14 @@ public class BeanXMLStreamReaderTestCase extends TestCase {
 
         public void setNil(String nil) {
             this.nil = nil;
+        }
+
+        public Map<String, String> getMap() {
+            return map;
+        }
+
+        public void setMap(Map<String, String> map) {
+            this.map = map;
         }
 
     }

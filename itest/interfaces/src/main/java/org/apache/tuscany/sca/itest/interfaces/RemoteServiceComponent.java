@@ -33,4 +33,6 @@ public interface RemoteServiceComponent {
     void modifyParameter();
 
     ParameterObject getPO();
+    
+    String[] bar(int[][] intArray);
 }

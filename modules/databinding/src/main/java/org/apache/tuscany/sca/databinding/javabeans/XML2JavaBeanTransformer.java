@@ -293,4 +293,9 @@ public abstract class XML2JavaBeanTransformer<T> extends BaseTransformer<T, Obje
     public Class getTargetType() {
         return Object.class;
     }
+
+    @Override
+    public String getTargetDataBinding() {
+        return JavaBeansDataBinding.NAME;
+    }
 }

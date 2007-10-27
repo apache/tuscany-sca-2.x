@@ -99,7 +99,7 @@ public class TransformerRegistryImplTestCase extends TestCase {
         List<Transformer> l1 = registry.getTransformerChain("a", "b");
         Assert.assertTrue(l1.size() == 1 && l1.get(0) == t1);
         List<Transformer> l2 = registry.getTransformerChain("a", "c");
-        Assert.assertTrue(l2.size() == 2 && l2.get(0) == t1 && l2.get(1) == t2);
+        Assert.assertTrue(l2.size() == 1 && l2.get(0) == t3);
         List<Transformer> l3 = registry.getTransformerChain("a", "d");
         Assert.assertNull(l3);
 

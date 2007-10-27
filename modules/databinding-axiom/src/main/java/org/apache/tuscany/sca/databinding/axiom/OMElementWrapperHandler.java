@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMAbstractFactory;
@@ -58,12 +59,28 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
     }
 
     public void setChild(OMElement wrapper, int i, ElementInfo childElement, Object value) {
-        OMElement element = (OMElement)value;
+        if (childElement.isMany()) {
+            Object[] elements = (Object[])value;
+            if (value != null) {
+                for (Object e : elements) {
+                    addChild(wrapper, childElement, (OMElement)e);
+                }
+            }
+        } else {
+            OMElement element = (OMElement)value;
+            addChild(wrapper, childElement, element);
+        }
+    }
+
+    private void addChild(OMElement wrapper, ElementInfo childElement, OMElement element) {
         QName elementName = childElement.getQName();
-        OMNamespace namespace = factory.createOMNamespace(elementName.getNamespaceURI(), elementName.getPrefix());
-        element.setNamespace(namespace);
-        element.setLocalName(childElement.getQName().getLocalPart());
-        wrapper.addChild((OMElement)value);
+        // Make it a bit tolerating of element QName 
+        if (!elementName.equals(element.getQName())) {
+            OMNamespace namespace = factory.createOMNamespace(elementName.getNamespaceURI(), elementName.getPrefix());
+            element.setNamespace(namespace);
+            element.setLocalName(childElement.getQName().getLocalPart());
+        }
+        wrapper.addChild(element);
     }
 
     public List getChildren(OMElement wrapper, List<ElementInfo> childElements, TransformationContext context) {
@@ -108,39 +125,92 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
 
     private static final QName XSI_TYPE_QNAME = new QName("http://www.w3.org/2001/XMLSchema-instance", "type", "xsi");
 
-    public Object getChild(OMElement wrapper, ElementInfo childElement, int index, TransformationContext context) {
-        int pos = 0;
-        String wrapperNS = wrapper.getQName().getNamespaceURI();
+    private List<List<OMElement>> getElements(OMElement wrapper) {
+        List<List<OMElement>> elements = new ArrayList<List<OMElement>>();
+        List<OMElement> current = new ArrayList<OMElement>();
+        elements.add(current);
+        boolean first = true;
+        QName last = null;
+
         for (Iterator i = wrapper.getChildElements(); i.hasNext();) {
-            OMElement e = (OMElement)i.next();
-            if (pos == index) {
-                TypeInfo type = childElement.getType();
-                if (!childElement.getQName().equals(e.getQName()) && type != null) {
-                    OMAttribute attr = e.getAttribute(XSI_TYPE_QNAME);
-                    if (attr == null) {
-                        String typeNS = type.getQName().getNamespaceURI();
-                        if (wrapperNS != null) {
-                            // FIXME: [rfeng] Workaround for TUSCANY-1713, assuming the type
-                            // namespace is the same as the wrapper
-                            typeNS = wrapperNS;
-                        }
-                        OMNamespace ns = e.getOMFactory().createOMNamespace(typeNS, "_typens_");
-                        e.declareNamespace(ns);
-                        OMNamespace xsiNS =
-                            e.getOMFactory().createOMNamespace(XSI_TYPE_QNAME.getNamespaceURI(),
-                                                               XSI_TYPE_QNAME.getPrefix());
-                        e.declareNamespace(xsiNS);
-                        attr =
-                            e.getOMFactory().createOMAttribute("type",
-                                                               xsiNS,
-                                                               "_typens_:" + type.getQName().getLocalPart());
-                        e.addAttribute(attr);
-                    }
-                }
-                return e;
+            OMElement element = (OMElement)i.next();
+            if (first || element.getQName().equals(last)) {
+                current.add(element);
+                last = element.getQName();
+            } else {
+                current = new ArrayList<OMElement>();
+                elements.add(current);
+                current.add(element);
+                last = element.getQName();
             }
-            pos++;
+            first = false;
         }
-        return null;
+        return elements;
+    }
+
+    public Object getChild(OMElement wrapper, ElementInfo childElement, int index, TransformationContext context) {
+        Iterator children = wrapper.getChildrenWithName(childElement.getQName());
+        if (!children.hasNext()) {
+            // No name match, try by index
+            List<List<OMElement>> list = getElements(wrapper);
+            List<OMElement> elements = list.get(index);
+            if (!childElement.isMany()) {
+                return elements.isEmpty() ? null : attachXSIType(childElement, elements.get(0));
+            } else {
+                Object[] array = elements.toArray();
+                for (Object item : array) {
+                    attachXSIType(childElement, (OMElement)item);
+                }
+                return array;
+            }
+        }
+        if (!childElement.isMany()) {
+            if (children.hasNext()) {
+                OMElement child = (OMElement)children.next();
+                attachXSIType(childElement, child);
+                return child;
+            } else {
+                return null;
+            }
+        } else {
+            List<OMElement> elements = new ArrayList<OMElement>();
+            for (; children.hasNext();) {
+                OMElement child = (OMElement)children.next();
+                attachXSIType(childElement, child);
+                elements.add(child);
+            }
+            return elements.toArray();
+        }
+    }
+
+    /**
+     * Create xis:type if required 
+     * @param childElement
+     * @param element
+     * @return
+     */
+    private OMElement attachXSIType(ElementInfo childElement, OMElement element) {
+        TypeInfo type = childElement.getType();
+        if (type != null) {
+            OMAttribute attr = element.getAttribute(XSI_TYPE_QNAME);
+            if (attr == null) {
+                String typeNS = type.getQName().getNamespaceURI();
+                if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(typeNS)) {
+                    return element;
+                }
+                OMNamespace ns = element.getOMFactory().createOMNamespace(typeNS, "_typens_");
+                element.declareNamespace(ns);
+                OMNamespace xsiNS =
+                    element.getOMFactory().createOMNamespace(XSI_TYPE_QNAME.getNamespaceURI(),
+                                                             XSI_TYPE_QNAME.getPrefix());
+                element.declareNamespace(xsiNS);
+                attr =
+                    element.getOMFactory().createOMAttribute("type",
+                                                             xsiNS,
+                                                             "_typens_:" + type.getQName().getLocalPart());
+                element.addAttribute(attr);
+            }
+        }
+        return element;
     }
 }
