@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.http.provider;
 
+import java.io.File;
 import java.net.URL;
 
 import org.apache.tuscany.sca.binding.http.HTTPResourceBinding;
@@ -96,10 +97,22 @@ public class HTTPResourceServiceBindingProvider implements ServiceBindingProvide
         message = getLocationInvoker.invoke(message);
         URL locationURL = message.getBody();
         
+        // If resource is a file, register the parent dir
+        try {
+            if( locationURL.getProtocol().equals("file")) {
+                File fileLocation = new File(locationURL.toURI());
+                if (fileLocation.isFile()) {
+                    File parent = new File(fileLocation.getParent());
+                    locationURL = parent.toURL();
+                }                
+            }
+        }catch(Exception e) {
+            throw new IllegalStateException("Invalid getLocationURL, could not retrieve parent folder");
+        }
+        
         // Register the default resource servlet with the servlet host
         DefaultResourceServlet resourceServlet = new DefaultResourceServlet(locationURL.toString());
-        servletHost.addServletMapping(uri, resourceServlet);
-        
+        servletHost.addServletMapping(uri, resourceServlet);        
     }
 
     public void stop() {
