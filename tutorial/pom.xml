@@ -36,6 +36,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>cloud</module>
                 <module>store</module>
                 <module>store-cart</module>
                 <module>store-catalog</module>
