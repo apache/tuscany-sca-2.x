@@ -101,23 +101,32 @@
     
     <build>
        <finalName>${artifactId}</finalName>
-        <plugins>
+       <sourceDirectory>${basedir}</sourceDirectory>
+       <resources>
+          <resource>
+              <directory>${basedir}</directory>
+              <excludes>
+                  <exclude>**/*.java</exclude>
+                  <exclude>**/.*/**</exclude>
+                  <exclude>pom.xml</exclude>
+                  <exclude>build.xml</exclude>
+              </excludes>
+          </resource>
+       </resources>
+       <plugins>
             <plugin>
                 <groupId>org.apache.tuscany.sca</groupId>
                 <artifactId>tuscany-maven-ant-generator</artifactId>
                 <version>1.1-incubating-SNAPSHOT</version>
                 <executions>
                     <execution>
-                        <configuration>
-                            <mainClass>launch.Launch</mainClass>
-                        </configuration>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
-        </plugins>
+       </plugins>
     </build>
 
 </project>

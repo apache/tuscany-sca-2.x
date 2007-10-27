@@ -23,30 +23,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
 
-public class CatalogImpl implements Catalog {
-    
-    @Property
-    public String currencyCode = "USD";
-    
-    @Reference
-    public CurrencyConverter currencyConverter;
-    
+public class VegetablesCatalogImpl implements VegetablesCatalog {
     private List<String> catalog = new ArrayList<String>();
 
     @Init
     public void init() {
-        String currencySymbol = currencyConverter.getCurrencySymbol(currencyCode);
-        catalog.add("Apple - " + currencySymbol + currencyConverter.getConversion("USD", currencyCode, 2.99));
-        catalog.add("Orange - " + currencySymbol + currencyConverter.getConversion("USD", currencyCode, 3.55));
-        catalog.add("Pear - " + currencySymbol + currencyConverter.getConversion("USD", currencyCode, 1.55));
+        catalog.add("Broccoli - $2.99");
+        catalog.add("Asparagus - $3.55");
+        catalog.add("Cauliflower - $1.55");
     }
 
-    public String[] get() {
-        String[] catalogArray = new String[catalog.size()];
-        catalog.toArray(catalogArray);
-        return catalogArray;
+    public Vegetables get() {
+        Vegetables vegetables = new Vegetables();
+        vegetables.items = new String[catalog.size()];
+        catalog.toArray(vegetables.items);
+        return vegetables;
     }
 }
