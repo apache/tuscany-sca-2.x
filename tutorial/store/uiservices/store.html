@@ -32,10 +32,9 @@
 
 	function catalog_getResponse(items) {
 		var catalog = "";
-		alert(items);
 		for (var i=0; i<items.length; i++) {
 			catalog += '<input name="items" type="checkbox" value="' + 
-						item[i] + '">' + item[i] + ' <br>';
+						items[i] + '">' + items[i] + ' <br>';
 		}
 		document.getElementById('catalog').innerHTML=catalog;
 	}
