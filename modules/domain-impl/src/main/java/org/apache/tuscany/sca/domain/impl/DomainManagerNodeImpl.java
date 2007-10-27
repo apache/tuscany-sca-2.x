@@ -165,8 +165,9 @@ public class DomainManagerNodeImpl implements SCANode {
     }
     
     public void addToDomainLevelComposite(QName compositeName) throws NodeException {
-
     }  
 
+    public void addToDomainLevelComposite(String compositePath) throws NodeException {
+    }
       
 }

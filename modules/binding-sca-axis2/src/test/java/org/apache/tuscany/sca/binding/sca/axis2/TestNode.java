@@ -181,7 +181,9 @@ public class TestNode implements SCANode {
     }
     
     public void addToDomainLevelComposite(QName compositeName) throws NodeException {
-
+    }
+    
+    public void addToDomainLevelComposite(String compositePath) throws NodeException {
     }
     
     public <B> B getService(Class<B> businessInterface, String serviceName) {

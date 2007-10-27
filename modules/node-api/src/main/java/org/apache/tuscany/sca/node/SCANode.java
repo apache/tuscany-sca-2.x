@@ -68,9 +68,16 @@ public interface SCANode {
     /**
      * Add the named deployable composite to the domain level composite
      * 
-     * @param compositeQName the name of the composite to be deployed
+     * @param compositeQName the name of the composite
      */
     public void addToDomainLevelComposite(QName compositeQName) throws NodeException;
+    
+    /**
+     * Add the specified deployable composite to the domain level composite
+     * 
+     * @param compositePath the path of the composite file
+     */
+    public void addToDomainLevelComposite(String compositePath) throws NodeException;
     
     /**
      * Start all the deployed composites
