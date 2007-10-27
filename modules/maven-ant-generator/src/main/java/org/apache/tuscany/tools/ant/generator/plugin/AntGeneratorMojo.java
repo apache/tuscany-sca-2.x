@@ -29,6 +29,8 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.model.FileSet;
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
@@ -115,6 +117,10 @@ public class AntGeneratorMojo extends AbstractMojo {
 
         // Determine the project packaging
         String packaging = project.getPackaging().toLowerCase();
+
+        for (Object resource: project.getResources()) {
+            System.out.println("Resource: " + resource);
+        }
         
         // Determine the module dependencies
         List<Artifact> tuscanyModules = new ArrayList<Artifact>();
@@ -131,15 +137,37 @@ public class AntGeneratorMojo extends AbstractMojo {
         pw.println();
         
         // Generate the compile target
+        int base = project.getBasedir().toString().length() + 1;
         pw.println("    <target name=\"compile\">");
-        pw.println("        <javac srcdir=\"src/main/java\" destdir=\"target/classes\" debug=\"on\" source=\"1.5\" target=\"1.5\">");
+        pw.println("        <mkdir dir=\"target/classes\"/>");
+        pw.println("        <javac destdir=\"target/classes\" debug=\"on\" source=\"1.5\" target=\"1.5\">");
+        for (String source: (List<String>)project.getCompileSourceRoots()) {
+            if (source.length() > base) {
+                source = source.substring(base);
+            } else {
+                source = ".";
+            }
+            pw.println("            <src path=\"" + source + "\"/>");
+        }
         pw.println("            <classpath>");
         pw.println("                <fileset refid=\"tuscany.jars\"/>");
         pw.println("                <fileset refid=\"3rdparty.jars\"/>");
         pw.println("            </classpath>");
         pw.println("        </javac>");
         pw.println("        <copy todir=\"target/classes\">");
-        pw.println("            <fileset dir=\"src/main/resources\"/>");
+        for (FileSet resource: (List<FileSet>)project.getResources()) {
+            String source = resource.getDirectory();
+            if (source.length() > base) {
+                source = source.substring(base);
+                pw.println("            <fileset dir=\"" + source + "\"/>");
+            } else {
+                if (project.getResources().size() > 1) {
+                    break;
+                }
+                pw.println("            <fileset dir=\".\" excludes=\"**/*.java, pom.xml, build.xml, target\"/>");
+                source = ".";
+            }
+        }
         pw.println("        </copy>");
         
         // Build a JAR
@@ -181,7 +209,7 @@ public class AntGeneratorMojo extends AbstractMojo {
         
         // Generate the clean target
         pw.println("    <target name=\"clean\">");
-        pw.println("        <delete quiet=\"true\" includeemptydirs=\"true\">");
+        pw.println("        <delete includeemptydirs=\"true\">");
         pw.println("            <fileset dir=\"target\"/>");
         pw.println("        </delete>");
         pw.println("    </target>");
