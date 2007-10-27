@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tutorial-cloud</artifactId>
-    <name>Apache Tuscany Cloud Tutorial</name>
+    <name>Apache Tuscany SCA Tutorial Service Cloud</name>
 
     <repositories>
        <repository>
@@ -44,7 +44,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tutorial-store-assets</artifactId>
+            <artifactId>tutorial-assets</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
         </dependency>
 

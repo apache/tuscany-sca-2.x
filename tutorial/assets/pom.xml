@@ -25,8 +25,8 @@
         <version>1.1-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tutorial-store-assets</artifactId>
-    <name>Apache Tuscany Online Store Assets Tutorial</name>
+    <artifactId>tutorial-assets</artifactId>
+    <name>Apache Tuscany SCA Tutorial Assets</name>
 
     <repositories>
        <repository>
