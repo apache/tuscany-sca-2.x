@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.osoa.sca.annotations.Init;
 
-public class VegetablesCatalogImpl implements VegetablesCatalog {
+public class VegetablesCatalogImpl implements Catalog {
     private List<String> catalog = new ArrayList<String>();
 
     @Init
@@ -34,10 +34,9 @@ public class VegetablesCatalogImpl implements VegetablesCatalog {
         catalog.add("Cauliflower - $1.55");
     }
 
-    public Vegetables get() {
-        Vegetables vegetables = new Vegetables();
-        vegetables.items = new String[catalog.size()];
-        catalog.toArray(vegetables.items);
-        return vegetables;
+    public String[] get() {
+        String[] catalogArray = new String[catalog.size()];
+        catalog.toArray(catalogArray);
+        return catalogArray;
     }
 }

@@ -17,31 +17,48 @@
  * under the License.    
  */
 
-package services.merger;
+package services.merged;
 
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import services.Catalog;
+import services.CurrencyConverter;
 
 public class MergedCatalogImpl implements Catalog {
 
+    @Property
+    public String currencyCode = "USD";
+    
+    @Reference
+    public CurrencyConverter currencyConverter;
+    
     @Reference
     public Catalog fruitsCatalog;
     
     @Reference
-    public VegetablesCatalog vegetablesCatalog;
+    public Catalog vegetablesCatalog;
     
     public String[] get() {
-        String[] fruits = fruitsCatalog.get();
-        Vegetables vegetables = vegetablesCatalog.get();
+        String currencySymbol = currencyConverter.getCurrencySymbol(currencyCode);
         
-        String[] catalog = new String[fruits.length + vegetables.items.length];
+        String[] fruits = fruitsCatalog.get();
+        String[] vegetables = vegetablesCatalog.get();
+        
+        String[] catalog = new String[fruits.length + vegetables.length];
         int i =0;
         for (String fruit: fruits) {
-            catalog[i++] = fruit;
+            String name = fruit.substring(0, fruit.indexOf('-') - 1);
+            double price = Double.parseDouble(fruit.substring(fruit.indexOf('-') + 3));
+            price = currencyConverter.getConversion("USD", currencyCode, price);
+            catalog[i++] = name + " - " + currencySymbol + price;
         }
-        for (String vegetable: vegetables.items) {
-            catalog[i++] = vegetable;
+        
+        for (String vegetable: vegetables) {
+            String name = vegetable.substring(0, vegetable.indexOf('-') - 1);
+            double price = Double.parseDouble(vegetable.substring(vegetable.indexOf('-') + 3));
+            price = currencyConverter.getConversion("USD", currencyCode, price);
+            catalog[i++] = name + " - " + currencySymbol + price;
         }
         
         return catalog;
