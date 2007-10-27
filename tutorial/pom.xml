@@ -38,10 +38,8 @@
             <modules>
                 <module>cloud</module>
                 <module>store</module>
-                <module>store-cart</module>
-                <module>store-catalog</module>
+                <module>store-assets</module>
                 <module>store-catalog-database</module>
-                <module>store-ui</module>
             </modules>
         </profile>
 
