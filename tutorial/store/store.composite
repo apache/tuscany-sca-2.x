@@ -31,7 +31,7 @@
 	</component>		
 
 	<component name="Catalog">
-		<implementation.java class="services.CatalogImpl"/> 
+		<implementation.java class="services.FruitsCatalogImpl"/> 
 		<property name="currencyCode">USD</property>
 		<service name="Catalog">
 			<binding.sca/>
