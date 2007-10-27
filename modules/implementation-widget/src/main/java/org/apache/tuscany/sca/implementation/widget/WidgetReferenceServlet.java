@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.implementation.widget;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -37,10 +39,12 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * @version $Rev$ $Date$
  */
 public class WidgetReferenceServlet extends HttpServlet {
-    
+    protected transient Map<String, String> proxyRegistry = new HashMap<String, String>();
     protected transient RuntimeComponent component;
 
     public WidgetReferenceServlet(RuntimeComponent component) {
+        proxyRegistry.put("org.apache.tuscany.sca.binding.feed.impl.AtomBindingImpl", "binding-atom.js");
+        //proxyRegistry.put("org.apache.tuscany.sca.binding.feed.impl.AtomBindingImpl", "binding-jsonrpc.js");
         this.component = component;
     }
 
@@ -50,7 +54,7 @@ public class WidgetReferenceServlet extends HttpServlet {
         ServletOutputStream os = response.getOutputStream();
 
         os.println();
-        os.println("/* Apache Tuscany SCA Widget header */");
+        os.println("/* Apache Tuscany - SCA Web Widget */");
         os.println();
 
         writeSCAWidgetCode(os, request.getServletPath());
@@ -72,8 +76,15 @@ public class WidgetReferenceServlet extends HttpServlet {
             for(Binding binding : reference.getBindings()) {
                 out.println("::Bind::" + binding.getName());
                 out.println("::Bind class::" + binding.getClass());
+                
+                String bindingProxyName = proxyRegistry.get(binding.getClass().getName());
+                if(bindingProxyName != null) {
+                    writeJavaScriptBindingProxy(out,bindingProxyName);
+                }
             }
         }
+        
+        writeJavaScriptReferenceFunction(out);
         
        
         out.println();
@@ -82,14 +93,26 @@ public class WidgetReferenceServlet extends HttpServlet {
     }
 
     /**
+     * Retrieve the binding proxy based on the bind name
+     * and embedded the javascript into this js
      */
-    protected void writeJavaScriptBindingProxy(ServletOutputStream os) throws IOException {
-        URL url = getClass().getResource("xxx.js");
+    protected void writeJavaScriptBindingProxy(ServletOutputStream os, String bindingProxyName) throws IOException {
+        
+        URL url = getClass().getClassLoader().getResource(bindingProxyName); //Thread.currentThread().getContextClassLoader().getResource(bindingProxyName);
         InputStream is = url.openStream();
         int i;
         while ((i = is.read()) != -1) {
             os.write(i);
         }
+        os.println();
+        os.println();
+    }
+    
+    protected void writeJavaScriptReferenceFunction (ServletOutputStream os) throws IOException {
+        
+        os.println("function Reference(name) {");
+        os.println("    return proxy[name];");
+        os.println("}");
     }
 
     /*
