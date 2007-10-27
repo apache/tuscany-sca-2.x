@@ -36,10 +36,10 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>assets</module>
                 <module>cloud</module>
                 <module>store</module>
-                <module>store-assets</module>
-                <module>store-catalog-database</module>
+                <module>store-eu</module>
             </modules>
         </profile>
 
