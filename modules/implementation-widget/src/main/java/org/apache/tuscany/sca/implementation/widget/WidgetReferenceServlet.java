@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.implementation.widget;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -39,12 +37,10 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * @version $Rev$ $Date$
  */
 public class WidgetReferenceServlet extends HttpServlet {
-    protected transient Map<String, String> proxyRegistry = new HashMap<String, String>();
+    
     protected transient RuntimeComponent component;
 
     public WidgetReferenceServlet(RuntimeComponent component) {
-        proxyRegistry.put("org.apache.tuscany.sca.binding.feed.impl.AtomBindingImpl", "binding-atom.js");
-        //proxyRegistry.put("org.apache.tuscany.sca.binding.feed.impl.AtomBindingImpl", "binding-jsonrpc.js");
         this.component = component;
     }
 
@@ -72,12 +68,8 @@ public class WidgetReferenceServlet extends HttpServlet {
 
         for(ComponentReference reference : component.getReferences()) {
             String referenceName = reference.getName();
-            out.println("Reference::" + referenceName);
             for(Binding binding : reference.getBindings()) {
-                out.println("::Bind::" + binding.getName());
-                out.println("::Bind class::" + binding.getClass());
-                
-                String bindingProxyName = proxyRegistry.get(binding.getClass().getName());
+                String bindingProxyName = WidgetProxyHelper.getJavaScriptProxyFile(binding.getClass().getName());
                 if(bindingProxyName != null) {
                     writeJavaScriptBindingProxy(out,bindingProxyName);
                 }
@@ -109,6 +101,17 @@ public class WidgetReferenceServlet extends HttpServlet {
     }
     
     protected void writeJavaScriptReferenceFunction (ServletOutputStream os) throws IOException {
+        
+        for(ComponentReference reference : component.getReferences()) {
+            String referenceName = reference.getName();
+            Binding binding = reference.getBindings().get(0);
+            if( binding != null) {
+                String proxyClient = WidgetProxyHelper.getJavaScriptProxyClient(binding.getClass().getName());
+                if(proxyClient != null) {
+                    os.println("proxy[" + referenceName + "]= new " + proxyClient + "(\"" + binding.getURI() + "\");");
+                }                
+            }
+        }
         
         os.println("function Reference(name) {");
         os.println("    return proxy[name];");
