@@ -47,16 +47,16 @@ public class MergedCatalogImpl implements Catalog {
         
         String[] catalog = new String[fruits.length + vegetables.length];
         int i =0;
-        for (String fruit: fruits) {
-            String name = fruit.substring(0, fruit.indexOf('-') - 1);
-            double price = Double.parseDouble(fruit.substring(fruit.indexOf('-') + 3));
+        for (String item: fruits) {
+            String name = item.substring(0, item.indexOf('-') - 1);
+            double price = Double.valueOf(item.substring(item.indexOf("-") + 3));
             price = currencyConverter.getConversion("USD", currencyCode, price);
             catalog[i++] = name + " - " + currencySymbol + price;
         }
         
-        for (String vegetable: vegetables) {
-            String name = vegetable.substring(0, vegetable.indexOf('-') - 1);
-            double price = Double.parseDouble(vegetable.substring(vegetable.indexOf('-') + 3));
+        for (String item: vegetables) {
+            String name = item.substring(0, item.indexOf('-') - 1);
+            double price = Double.valueOf(item.substring(item.indexOf("-") + 3));
             price = currencyConverter.getConversion("USD", currencyCode, price);
             catalog[i++] = name + " - " + currencySymbol + price;
         }

@@ -84,7 +84,7 @@ public class ShoppingCartImpl implements Collection {
     }
 
     private String getTotal() {
-        float total = 0;
+        double total = 0;
         String currencySymbol = "";
         if (!cart.isEmpty()) {
             String item = ((Content)cart.values().iterator().next().getContents().get(0)).getValue();
@@ -92,7 +92,7 @@ public class ShoppingCartImpl implements Collection {
         }
         for (Entry entry : cart.values()) {
             String item = ((Content)entry.getContents().get(0)).getValue();
-            total += Float.valueOf(item.substring(item.indexOf("-") + 3));
+            total += Double.valueOf(item.substring(item.indexOf("-") + 3));
         }
         return currencySymbol + String.valueOf(total);
     }

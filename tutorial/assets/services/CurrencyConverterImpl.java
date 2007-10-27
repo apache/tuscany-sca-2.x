@@ -24,7 +24,7 @@ public class CurrencyConverterImpl implements CurrencyConverter {
         if (toCurrencyCode.equals("USD"))
             return amount;
         else if (toCurrencyCode.equals("EUR"))
-            return amount * 0.7256;
+            return ((double)Math.round(amount * 0.7256 * 100)) /100;
         return 0;
     }
 
@@ -32,7 +32,7 @@ public class CurrencyConverterImpl implements CurrencyConverter {
         if (currencyCode.equals("USD"))
             return "$";
         else if (currencyCode.equals("EUR"))
-            return "€";
+            return "E"; //"€";
         return "?";
     }
 }
