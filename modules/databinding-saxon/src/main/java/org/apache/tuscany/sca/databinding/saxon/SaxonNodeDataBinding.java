@@ -24,7 +24,6 @@ import net.sf.saxon.om.NodeInfo;
 
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
-import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * Represents data binding for parameters of type NodeInfo
@@ -44,7 +43,7 @@ public class SaxonNodeDataBinding extends BaseDataBinding {
     @Override
     public boolean introspect(DataType type, Annotation[] annotations) {
         if (super.introspect(type, annotations)) {
-            type.setLogical(XMLType.UNKNOWN);
+            // type.setLogical(XMLType.UNKNOWN);
             return true;
         } else {
             return false;

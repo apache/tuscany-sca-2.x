@@ -110,13 +110,23 @@ public class WrapperInfo {
         if (unwrappedInputType == null) {
             List<DataType> childTypes = new ArrayList<DataType>();
             for (ElementInfo element : getInputChildElements()) {
-                DataType<XMLType> type = new DataTypeImpl<XMLType>(dataBinding, Object.class, new XMLType(element));
+                DataType type = getDataType(element);
                 childTypes.add(type);
             }
-            unwrappedInputType = new DataTypeImpl<List<DataType>>("idl:unwrapped.input", Object[].class,
-                                                                           childTypes);
+            unwrappedInputType = new DataTypeImpl<List<DataType>>("idl:unwrapped.input", Object[].class, childTypes);
         }
         return unwrappedInputType;
+    }
+
+    private DataType getDataType(ElementInfo element) {
+        DataType type = null;
+        if (element.isMany()) {
+            DataType logical = new DataTypeImpl<XMLType>(dataBinding, Object.class, new XMLType(element));
+            type = new DataTypeImpl<DataType>("java:array", Object[].class, logical);
+        } else {
+            type = new DataTypeImpl<XMLType>(dataBinding, Object.class, new XMLType(element));
+        }
+        return type;
     }
 
     /**
@@ -132,7 +142,7 @@ public class WrapperInfo {
                 }
                 ElementInfo element = elements.get(0);
 
-                unwrappedOutputType = new DataTypeImpl<XMLType>(dataBinding, Object.class, new XMLType(element));
+                unwrappedOutputType = getDataType(element);
             }
         }
         return unwrappedOutputType;

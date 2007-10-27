@@ -94,7 +94,7 @@ public class XQueryImplementationProvider implements ImplementationProvider {
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
         return new XQueryInvoker(service, operation, implementation, referenceProxies, properties);
     }
-    
+
     public boolean supportsOneWayInvocation() {
         return false;
     }
@@ -128,7 +128,6 @@ public class XQueryImplementationProvider implements ImplementationProvider {
     }
 
     private void setDataBinding(Interface interfaze, boolean isReference) {
-        // interfaze.resetDataBinding(SaxonNodeDataBinding.NAME);
         List<Operation> operations = interfaze.getOperations();
         for (Operation operation : operations) {
             operation.setDataBinding(SaxonNodeDataBinding.NAME);

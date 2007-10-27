@@ -30,4 +30,15 @@ public class HelloWorldImpl implements HelloWorldService {
         return "Hi " + name;
     }
 
+    public String[] getMultipleGreetings(String[] names) {
+        if(names==null) {
+            return null;
+        } 
+        String[] greetings = new String[names.length];
+        for(int i=0; i<names.length;i++) {
+            greetings[i] = "Hi "+names[i];
+        }
+        return greetings;
+    }
+
 }

@@ -18,6 +18,6 @@
 # Implementation classes for the transformers
 org.apache.tuscany.sca.databinding.json.JSON2XMLStreamReader;source=org.codehaus.jettison.json.JSONObject,target=javax.xml.stream.XMLStreamReader,weight=500
 org.apache.tuscany.sca.databinding.json.XMLStreamReader2JSON;source=javax.xml.stream.XMLStreamReader,target=org.codehaus.jettison.json.JSONObject,weight=500
-org.apache.tuscany.sca.databinding.json.JavaBean2JSON;source=java.lang.Object,target=org.codehaus.jettison.json.JSONObject,weight=80000
+org.apache.tuscany.sca.databinding.json.JavaBean2JSON;source=java:complexType,target=org.codehaus.jettison.json.JSONObject,weight=80000
 org.apache.tuscany.sca.databinding.json.JavaBean2JSON;source=java:simpleType,target=org.codehaus.jettison.json.JSONObject,weight=80000
 org.apache.tuscany.sca.databinding.json.axiom.JSON2OMElement;source=org.codehaus.jettison.json.JSONObject,target=org.apache.axiom.om.OMElement,weight=500

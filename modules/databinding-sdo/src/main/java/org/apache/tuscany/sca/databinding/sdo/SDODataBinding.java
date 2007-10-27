@@ -45,7 +45,7 @@ import commonj.sdo.impl.HelperProvider;
 public class SDODataBinding extends BaseDataBinding {
     public static final String NAME = DataObject.class.getName();
     public static final String[] ALIASES = new String[] {"sdo"};
-    
+
     public static final String ROOT_NAMESPACE = "commonj.sdo";
     public static final QName ROOT_ELEMENT = new QName(ROOT_NAMESPACE, "dataObject");
 
@@ -64,7 +64,9 @@ public class SDODataBinding extends BaseDataBinding {
         if (DataObject.class.isAssignableFrom(javaType)) {
             // Dynamic SDO
             dataType.setDataBinding(getName());
-            dataType.setLogical(XMLType.UNKNOWN);
+            if (dataType.getLogical() == null) {
+                dataType.setLogical(XMLType.UNKNOWN);
+            }
             return true;
         }
         // FIXME: We need to access HelperContext
@@ -80,7 +82,12 @@ public class SDODataBinding extends BaseDataBinding {
         String name = context.getXSDHelper().getLocalName(type);
         QName xmlType = new QName(namespace, name);
         dataType.setDataBinding(getName());
-        dataType.setLogical(new XMLType(null, xmlType));
+        QName elementName = null;
+        Object logical = dataType.getLogical();
+        if (logical instanceof XMLType) {
+            elementName = ((XMLType)logical).getElementName();
+        }
+        dataType.setLogical(new XMLType(elementName, xmlType));
         return true;
     }
 

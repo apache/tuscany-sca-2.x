@@ -70,7 +70,9 @@ public class JAXBDataBinding extends BaseDataBinding {
                     }
                 }
             }
-            dataType.setLogical(XMLType.UNKNOWN);
+            if (dataType.getLogical() == null) {
+                dataType.setLogical(XMLType.UNKNOWN);
+            }
             dataType.setDataBinding(getName());
             return true;
         }

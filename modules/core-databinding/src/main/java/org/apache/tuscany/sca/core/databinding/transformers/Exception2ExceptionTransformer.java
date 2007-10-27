@@ -24,17 +24,14 @@ import org.apache.tuscany.sca.databinding.ExceptionHandler;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
-import org.apache.tuscany.sca.databinding.Transformer;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
 
 /**
  * This is a special transformer to transform the exception from one IDL to the
  * other one
  */
-@Service(Transformer.class)
 public class Exception2ExceptionTransformer extends BaseTransformer<Object[], Object[]> implements
     PullTransformer<Exception, Exception> {
 

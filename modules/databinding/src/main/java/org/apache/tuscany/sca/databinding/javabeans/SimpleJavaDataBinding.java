@@ -21,10 +21,13 @@ package org.apache.tuscany.sca.databinding.javabeans;
 
 import java.lang.annotation.Annotation;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.databinding.xml.XMLStringDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
@@ -54,8 +57,14 @@ public class SimpleJavaDataBinding extends BaseDataBinding {
             return false;
         }
         if (SimpleTypeMapperImpl.JAVA2XML.keySet().contains(cls)) {
-            type.setDataBinding(getName());
-            type.setLogical(new XMLType(SimpleTypeMapperImpl.getXMLType(cls)));
+            type.setDataBinding(NAME);
+            QName elementName = null;
+            Object logical = type.getLogical();
+            if (logical instanceof XMLType) {
+                elementName = ((XMLType)logical).getElementName();
+            }
+            TypeInfo typeInfo = SimpleTypeMapperImpl.getXMLType(cls);
+            type.setLogical(new XMLType(elementName, typeInfo == null ? null : typeInfo.getQName()));
             return true;
         } else {
             return false;

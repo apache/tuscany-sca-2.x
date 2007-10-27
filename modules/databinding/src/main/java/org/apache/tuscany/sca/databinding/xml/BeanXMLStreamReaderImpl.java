@@ -23,6 +23,7 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +31,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -85,11 +87,23 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
                 XmlNode textNode = new BeanXmlNodeImpl(null, value);
                 return Arrays.asList(textNode).iterator();
             }
+            if (Map.class.isAssignableFrom(value.getClass())) {
+                List<XmlNode> entries = new ArrayList<XmlNode>();
+                QName entryName = new QName(name.getNamespaceURI(), "entry");
+                Map map = (Map)value;
+                if (map != null) {
+                    for (Object e : map.entrySet()) {
+                        Map.Entry entry = (Map.Entry)e;
+                        entries.add(new BeanXmlNodeImpl(entryName, entry));
+                    }
+                }
+                return entries.iterator();
+            }
             try {
                 BeanInfo beanInfo = Introspector.getBeanInfo(value.getClass());
                 PropertyDescriptor[] propDescs = beanInfo.getPropertyDescriptors();
                 Collections.sort(Arrays.asList(propDescs), COMPARATOR);
-    
+
                 List<XmlNode> props = new ArrayList<XmlNode>();
                 for (int i = 0; i < propDescs.length; i++) {
                     PropertyDescriptor propDesc = propDescs[i];
@@ -97,8 +111,13 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
                     if ("class".equals(propDesc.getName())) {
                         continue;
                     }
+                    Method getter = propDesc.getReadMethod();
+                    if (getter == null) {
+                        continue;
+                    }
                     QName pName = new QName(name.getNamespaceURI(), propDesc.getName());
-                    Object pValue = propDesc.getReadMethod().invoke(value, NULL);
+                    getter.setAccessible(true);
+                    Object pValue = getter.invoke(value, NULL);
                     if (pType.isArray()) {
                         if (pValue != null) {
                             int i1 = Array.getLength(pValue);
@@ -120,7 +139,7 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
                                     props.add(new BeanXmlNodeImpl(pName, o));
                                 }
                             }
-    
+
                         } else {
                             // How to handle null
                         }

@@ -27,6 +27,8 @@ import javax.xml.namespace.QName;
 public class ElementInfo {
     private final QName name;
     private final TypeInfo type;
+    private boolean many = false;
+    private boolean nillable = false;
 
     /**
      * @param name
@@ -57,5 +59,21 @@ public class ElementInfo {
         StringBuffer sb = new StringBuffer();
         sb.append("Element: ").append(name).append(" ").append(type);
         return sb.toString();
+    }
+
+    public boolean isMany() {
+        return many;
+    }
+
+    public void setMany(boolean many) {
+        this.many = many;
+    }
+
+    public boolean isNillable() {
+        return nillable;
+    }
+
+    public void setNillable(boolean nillable) {
+        this.nillable = nillable;
     }
 }

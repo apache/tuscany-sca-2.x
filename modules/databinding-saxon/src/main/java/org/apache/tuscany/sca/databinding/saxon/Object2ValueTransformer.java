@@ -24,6 +24,7 @@ import net.sf.saxon.value.Value;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
+import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 
 /**
  * Transforms generic java objects to Value objects needed by Saxon parser
@@ -39,6 +40,11 @@ public class Object2ValueTransformer extends BaseTransformer<Object, Value> impl
     @Override
     protected Class getTargetType() {
         return Value.class;
+    }
+    
+    @Override
+    public String getSourceDataBinding() {
+        return JavaBeansDataBinding.NAME;
     }
 
     @Override

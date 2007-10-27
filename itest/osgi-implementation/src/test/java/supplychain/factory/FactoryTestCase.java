@@ -44,7 +44,7 @@ public class FactoryTestCase extends SupplyChainTestCase {
         customer.purchaseGames();       
         assertFalse(customer.hasOutstandingOrders());
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
         System.out.println("Test complete");
         
     }

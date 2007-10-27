@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ import javax.wsdl.extensions.UnknownExtensibilityElement;
 import javax.wsdl.extensions.schema.Schema;
 import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
@@ -54,6 +56,7 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
@@ -82,13 +85,42 @@ import org.xml.sax.InputSource;
  */
 public class Java2WSDLHelper {
 
+    private static void register(Map<String, String> map, DataType type) {
+        if (type == null) {
+            return;
+        }
+        Package pkg = type.getPhysical().getPackage();
+        if (pkg != null) {
+            String pkgName = pkg.getName();
+            Object logical = type.getLogical();
+            if (logical instanceof XMLType) {
+                QName typeName = ((XMLType)logical).getTypeName();
+                if (typeName != null && !XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(typeName.getNamespaceURI())) {
+                    map.put(pkgName, typeName.getNamespaceURI());
+                }
+            }
+        }
+    }
+
     /**
      * Create a WSDLInterfaceContract from a JavaInterfaceContract
      */
     public static WSDLInterfaceContract createWSDLInterfaceContract(JavaInterfaceContract contract,
                                                                     WebServiceBinding wsBinding) {
         JavaInterface iface = (JavaInterface)contract.getInterface();
-        Definition def = Java2WSDLHelper.createDefinition(iface.getJavaClass(), wsBinding);
+        
+        // Create a package2ns map
+        Map<String, String> pkg2nsMap = new HashMap<String, String>();
+        for (Operation op : iface.getOperations()) {
+            DataType<List<DataType>> inputType = op.getInputType();
+            for (DataType t : inputType.getLogical()) {
+                register(pkg2nsMap, t);
+            }
+            DataType outputType = op.getOutputType();
+            register(pkg2nsMap, outputType);
+        }
+
+        Definition def = createDefinition(pkg2nsMap, iface.getJavaClass(), wsBinding);
 
         DefaultWSDLFactory wsdlFactory = new DefaultWSDLFactory();
 
@@ -113,7 +145,10 @@ public class Java2WSDLHelper {
                 javax.wsdl.Operation wsdlOp = portType.getOperation(op.getName(), null, null);
                 WSDLOperationIntrospectorImpl opx =
                     new WSDLOperationIntrospectorImpl(wsdlFactory, wsdlOp, wsdlDefinition, null, null);
+                
+                wsdlInterface.getOperations().add(opx.getOperation());
 
+                /*
                 Operation clonedOp = (Operation)op.clone();
                 clonedOp.setDataBinding(null);
 
@@ -135,9 +170,8 @@ public class Java2WSDLHelper {
                 clonedOp.setWrapper(opx.getWrapper().getWrapperInfo());
 
                 wsdlInterface.getOperations().add(clonedOp);
+                */
             }
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
         } catch (InvalidWSDLException e) {
             throw new RuntimeException(e);
         }
@@ -234,12 +268,15 @@ public class Java2WSDLHelper {
     /**
      * Create a WSDL4J Definition object from a Java interface
      */
-    protected static Definition createDefinition(Class<?> javaInterface, WebServiceBinding wsBinding) {
+    protected static Definition createDefinition(Map map, Class<?> javaInterface, WebServiceBinding wsBinding) {
 
         String className = javaInterface.getName();
         ClassLoader cl = javaInterface.getClassLoader();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         Java2WSDLBuilder builder = new Java2WSDLBuilder(os, className, cl);
+        if (map != null) {
+            builder.setPkg2nsMap(map);
+        }
 
         try {
             builder.generateWSDL();

@@ -139,9 +139,13 @@ public final class SDOContextHelper {
         return HelperProvider.getDefaultContext();
     }
 
-    public static QName getElement(DataType<?> dataType) {
+    public static QName getElement(TransformationContext context) {
+        if (context == null) {
+            return SDODataBinding.ROOT_ELEMENT;
+        }
+        DataType<?> dataType = context.getTargetDataType();
         Object logical = dataType.getLogical();
-        QName elementName = SDODataBinding.ROOT_ELEMENT;
+        QName elementName = null;
         if (logical instanceof XMLType) {
             XMLType xmlType = (XMLType)logical;
             QName element = xmlType.getElementName();
@@ -149,6 +153,22 @@ public final class SDOContextHelper {
                 elementName = element;
             }
         }
-        return elementName;
+        if (elementName == null) {
+            // Try source type
+            dataType = context.getSourceDataType();
+            logical = dataType.getLogical();
+            if (logical instanceof XMLType) {
+                XMLType xmlType = (XMLType)logical;
+                QName element = xmlType.getElementName();
+                if (element != null) {
+                    elementName = element;
+                }
+            }
+        }
+        if (elementName != null) {
+            return elementName;
+        } else {
+            return SDODataBinding.ROOT_ELEMENT;
+        }
     }
 }

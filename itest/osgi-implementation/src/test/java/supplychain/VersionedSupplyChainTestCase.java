@@ -43,7 +43,7 @@ public abstract class VersionedSupplyChainTestCase extends OSGiTestCase {
     
     protected void tearDown() throws Exception {
         super.tearDown();
-        Thread.sleep(1000);
+        Thread.sleep(2000);
     }
    
     public void test() throws Exception {

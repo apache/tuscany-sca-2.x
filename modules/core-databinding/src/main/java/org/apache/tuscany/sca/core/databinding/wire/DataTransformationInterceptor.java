@@ -50,7 +50,7 @@ public class DataTransformationInterceptor implements Interceptor {
     private Operation sourceOperation;
 
     private Operation targetOperation;
-
+    private RuntimeWire wire;
     private Mediator mediator;
 
     public DataTransformationInterceptor(RuntimeWire wire,
@@ -61,6 +61,7 @@ public class DataTransformationInterceptor implements Interceptor {
         this.sourceOperation = sourceOperation;
         this.targetOperation = targetOperation;
         this.mediator = mediator;
+        this.wire = wire;
     }
 
     public Invoker getNext() {
@@ -170,6 +171,7 @@ public class DataTransformationInterceptor implements Interceptor {
         Map<String, Object> metadata = new HashMap<String, Object>();
         metadata.put("source.operation", isResponse ? targetOperation : sourceOperation);
         metadata.put("target.operation", isResponse ? sourceOperation : targetOperation);
+        metadata.put("wire", wire);
         return mediator.mediate(source, sourceType, targetType, metadata);
     }
 
@@ -239,7 +241,7 @@ public class DataTransformationInterceptor implements Interceptor {
         Map<String, Object> metadata = new HashMap<String, Object>();
         metadata.put("source.operation", targetOperation);
         metadata.put("target.operation", sourceOperation);
-
+        metadata.put("wire", wire);
         DataType<DataType> eSourceDataType =
             new DataTypeImpl<DataType>("idl:fault", sourceExType.getPhysical(), sourceType);
         DataType<DataType> eTargetDataType =

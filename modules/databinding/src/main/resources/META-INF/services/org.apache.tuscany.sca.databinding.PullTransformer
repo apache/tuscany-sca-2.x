@@ -18,10 +18,10 @@
 # Implementation classes for the transformers
 org.apache.tuscany.sca.databinding.xml.InputSource2Node;source=org.xml.sax.InputSource,target=org.w3c.dom.Node,weight=80
 org.apache.tuscany.sca.databinding.xml.InputStream2Node;source=java.io.InputStream,target=org.w3c.dom.Node,weight=80
-org.apache.tuscany.sca.databinding.javabeans.DOMNode2JavaBeanTransformer;source=org.w3c.dom.Node,target=java.lang.Object,weight=80000
+org.apache.tuscany.sca.databinding.javabeans.DOMNode2JavaBeanTransformer;source=org.w3c.dom.Node,target=java:complexType,weight=80000
 org.apache.tuscany.sca.databinding.xml.Node2String;source=org.w3c.dom.Node,target=java.lang.String,weight=80
 org.apache.tuscany.sca.databinding.xml.Node2XMLStreamReader;source=org.w3c.dom.Node,target=javax.xml.stream.XMLStreamReader,weight=80
-org.apache.tuscany.sca.databinding.javabeans.JavaBean2DOMNodeTransformer;source=java.lang.Object,target=org.w3c.dom.Node,weight=80000
+org.apache.tuscany.sca.databinding.javabeans.JavaBean2DOMNodeTransformer;source=java:complexType,target=org.w3c.dom.Node,weight=80000
 org.apache.tuscany.sca.databinding.xml.Reader2Node;source=java.io.Reader,target=org.w3c.dom.Node,weight=80
 org.apache.tuscany.sca.databinding.xml.SAX2DOMPipe;source=org.xml.sax.ContentHandler,target=org.w3c.dom.Node,weight=70
 org.apache.tuscany.sca.databinding.xml.StreamDataPipe;source=java.io.OutputStream,target=java.io.InputStream,weight=90

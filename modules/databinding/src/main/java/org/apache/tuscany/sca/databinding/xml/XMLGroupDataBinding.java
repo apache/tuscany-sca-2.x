@@ -33,7 +33,6 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 
 import org.apache.tuscany.sca.databinding.impl.GroupDataBinding;
-import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 
@@ -52,7 +51,7 @@ public class XMLGroupDataBinding extends GroupDataBinding {
 
     @Override
     protected Object getLogical(Class<?> markerType, Annotation[] annotations) {
-        return XMLType.UNKNOWN;
+        return null;
     }
 
 }

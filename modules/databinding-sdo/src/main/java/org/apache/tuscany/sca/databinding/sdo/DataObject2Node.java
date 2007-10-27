@@ -41,7 +41,7 @@ public class DataObject2Node extends BaseTransformer<DataObject, Node> implement
         try {
             HelperContext helperContext = SDOContextHelper.getHelperContext(context);
             XMLHelper xmlHelper = helperContext.getXMLHelper();
-            QName elementName = SDOContextHelper.getElement(context.getSourceDataType());
+            QName elementName = SDOContextHelper.getElement(context);
             Document doc = DOMHelper.newDocument();
             DOMResult result = new DOMResult(doc);
             XMLDocument xmlDoc = xmlHelper.createDocument(source, elementName.getNamespaceURI(), elementName.getLocalPart());

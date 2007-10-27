@@ -33,12 +33,14 @@ import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * Transformer to convert data from a JavaBean object to xml
  */
 public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object, T> implements
-        PullTransformer<Object, T> {
+    PullTransformer<Object, T> {
 
     public static final String GET = "get";
     public static final String PREFIX = "n";
@@ -46,7 +48,7 @@ public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object,
     public static final String FWD_SLASH = "/";
     public static final String HTTP = "http://";
     private static int prefixCount = 1;
-    
+
     protected SimpleTypeMapperImpl mapper;
 
     public JavaBean2XMLTransformer() {
@@ -54,22 +56,27 @@ public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object,
     }
 
     public T transform(Object source, TransformationContext context) {
-        
+        QName rootElement = null;
+        if (context != null) {
+            DataType type = context.getTargetDataType();
+            if (type != null) {
+                Object logical = type.getLogical();
+                if (logical instanceof XMLType) {
+                    rootElement = ((XMLType)logical).getElementName();
+                }
+            }
+        }
         //FIXME See how/if we still need to get the metadata here
         //QName rootElementName = (QName)context.getTargetDataType().getMetadata("RootElementName");
         //if (rootElementName == null) {
         QName rootElementName = new QName(resolveRootElementName(source.getClass()));
         //}
-        
+
         T root = createElement(rootElementName);
-        appendChildElements(root,
-                            resolveElementName(source.getClass()),
-                            source.getClass(),
-                            source,
-                            context);
+        appendChildElements(root, resolveElementName(source.getClass()), source.getClass(), source, context);
         return root;
     }
-    
+
     private void appendChildElements(T parent,
                                      QName elementName,
                                      Class javaType,
@@ -80,21 +87,12 @@ public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object,
             if (javaType.isPrimitive() || isSimpleJavaType(javaObject)) {
                 appendChild(parent, createText(mapper.toXMLLiteral(null, javaObject, context)));
             } else if (javaType.isArray()) {
-                boolean arrayDone = false;
-                Object arrayObject = null;
-                for (int count = 0; !arrayDone; ++count) {
-                    try {
-                        arrayObject = Array.get(javaObject, count);
-                        element = createElement(elementName);
-                        appendChild(parent, element);
-                        appendChildElements(element, 
-                                            elementName, 
-                                            javaType.getComponentType(), 
-                                            arrayObject, 
-                                            context);
-                    } catch (ArrayIndexOutOfBoundsException e1) {
-                        arrayDone = true;
-                    }
+                int size = Array.getLength(javaObject);
+                for (int count = 0; count < size; ++count) {
+                    Object item = Array.get(javaObject, count);
+                    element = createElement(elementName);
+                    appendChild(parent, element);
+                    appendChildElements(element, elementName, javaType.getComponentType(), item, context);
                 }
             } else {
                 Field[] javaFields = javaType.getFields();
@@ -163,10 +161,15 @@ public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object,
     }
 
     @Override
+    public String getSourceDataBinding() {
+        return JavaBeansDataBinding.NAME;
+    }
+
+    @Override
     public Class getSourceType() {
         return Object.class;
     }
-    
+
     private boolean isSimpleJavaType(Object javaObject) {
         if (javaObject instanceof String) {
             return true;
@@ -188,7 +191,7 @@ public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object,
         }
         return false;
     }
-    
+
     private String resolveRootElementName(Class javaType) {
         if (javaType.isArray()) {
             return javaType.getComponentType().getSimpleName() + "_collection";
@@ -196,8 +199,7 @@ public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object,
             return javaType.getSimpleName() + "_instance";
         }
     }
-    
-    
+
     private QName resolveElementName(Class javaType) {
         if (javaType.isArray()) {
             return new QName(javaType.getComponentType().getSimpleName());
@@ -205,24 +207,44 @@ public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object,
             return new QName(javaType.getSimpleName());
         }
     }
-    
+
     private String resolveFieldFromMethod(String methodName) {
         StringBuffer fieldName = new StringBuffer();
         fieldName.append(Character.toLowerCase(methodName.charAt(GET.length())));
         fieldName.append(methodName.substring(GET.length() + 1));
         return fieldName.toString();
     }
-    
+
     public String getNexPrefix() {
         return PREFIX + prefixCount++;
     }
-    
+
     @Override
     public int getWeight() {
         return JavaBeansDataBinding.HEAVY_WEIGHT;
-    }    
-    
+    }
+
+    /**
+     * Create an element with the given name
+     * @param qName
+     * @return
+     * @throws Java2XMLMapperException
+     */
     public abstract T createElement(QName qName) throws Java2XMLMapperException;
+
+    /**
+     * Create a text node with the given text data
+     * @param textData
+     * @return
+     * @throws Java2XMLMapperException
+     */
     public abstract T createText(String textData) throws Java2XMLMapperException;
+
+    /**
+     * Add the child element to the parent
+     * @param parentElement
+     * @param childElement
+     * @throws Java2XMLMapperException
+     */
     public abstract void appendChild(T parentElement, T childElement) throws Java2XMLMapperException;
 }

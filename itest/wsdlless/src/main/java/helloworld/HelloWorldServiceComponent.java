@@ -40,4 +40,8 @@ public class HelloWorldServiceComponent implements HelloWorldService {
     public void setHelloWorldService(HelloWorldService helloWorldService) {
         this.helloWorldService = helloWorldService;
     }
+
+    public String[] getMultipleGreetings(String[] names) {
+        return helloWorldService.getMultipleGreetings(names);
+    }
 }

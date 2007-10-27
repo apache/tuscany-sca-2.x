@@ -63,7 +63,7 @@ import org.apache.ws.commons.schema.XmlSchemaType;
  */
 public class WSDLOperationIntrospectorImpl {
     private static final Logger logger = Logger.getLogger(WSDLOperationIntrospectorImpl.class.getName());
-    
+
     private WSDLFactory wsdlFactory;
     private ModelResolver resolver;
     private WSDLDefinition wsdlDefinition;
@@ -79,12 +79,11 @@ public class WSDLOperationIntrospectorImpl {
      * @param dataBinding The default databinding
      * @param schemaRegistry The XML Schema registry
      */
-    public WSDLOperationIntrospectorImpl(
-                         WSDLFactory wsdlFactory,
-                         javax.wsdl.Operation operation,
-                         WSDLDefinition wsdlDefinition,
-                         String dataBinding,
-                         ModelResolver resolver) {
+    public WSDLOperationIntrospectorImpl(WSDLFactory wsdlFactory,
+                                         javax.wsdl.Operation operation,
+                                         WSDLDefinition wsdlDefinition,
+                                         String dataBinding,
+                                         ModelResolver resolver) {
         super();
         this.wsdlFactory = wsdlFactory;
         this.operation = operation;
@@ -107,8 +106,8 @@ public class WSDLOperationIntrospectorImpl {
     public boolean isWrapperStyle() throws InvalidWSDLException {
         if (wrapperStyle == null) {
             wrapperStyle =
-                (operation.getInput().getMessage().getParts().values().size() == 0 ||wrapper.getInputChildElements() != null) && 
-                (operation.getOutput() == null || wrapper.getOutputChildElements() != null);
+                (operation.getInput().getMessage().getParts().values().size() == 0 || wrapper.getInputChildElements() != null) && (operation
+                    .getOutput() == null || wrapper.getOutputChildElements() != null);
         }
         return wrapperStyle;
     }
@@ -149,9 +148,9 @@ public class WSDLOperationIntrospectorImpl {
             if (outputParts != null && outputParts.size() > 0) {
                 if (outputParts.size() > 1) {
                     // We don't support output with multiple parts
-                	if(logger.isLoggable(Level.WARNING)) {
-                		logger.warning("Multi-part output is not supported, please use BARE parameter style.");
-                	}
+                    if (logger.isLoggable(Level.WARNING)) {
+                        logger.warning("Multi-part output is not supported, please use BARE parameter style.");
+                    }
                     // throw new InvalidWSDLException("Multi-part output is not supported");
                 }
                 Part part = (Part)outputParts.get(0);
@@ -221,9 +220,9 @@ public class WSDLOperationIntrospectorImpl {
         }
         return operationModel;
     }
-    
+
     private XmlSchemaElement getElement(QName elementName) {
-        
+
         XmlSchemaElement element = wsdlDefinition.getXmlSchemaElement(elementName);
         if (element == null) {
             XSDefinition definition = wsdlFactory.createXSDefinition();
@@ -236,7 +235,7 @@ public class WSDLOperationIntrospectorImpl {
         }
         return element;
     }
-    
+
     private XmlSchemaType getType(QName typeName) {
         XmlSchemaType type = wsdlDefinition.getXmlSchemaType(typeName);
         if (type == null) {
@@ -250,7 +249,7 @@ public class WSDLOperationIntrospectorImpl {
         }
         return type;
     }
-    
+
     /**
      * Metadata for a WSDL part
      */
@@ -259,7 +258,7 @@ public class WSDLOperationIntrospectorImpl {
 
         private XmlSchemaElement element;
 
-        private DataType<XMLType> dataType;
+        private DataType dataType;
 
         public WSDLPart(Part part, Class javaType) throws InvalidWSDLException {
             this.part = part;
@@ -284,9 +283,10 @@ public class WSDLOperationIntrospectorImpl {
                     element.setSchemaTypeName(type.getQName());
                 }
             }
-            dataType = new DataTypeImpl<XMLType>(dataBinding, javaType, new XMLType(getElementInfo(element)));
-            // dataType.setMetadata(WSDLPart.class.getName(), this);
-            // dataType.setMetadata(ElementInfo.class.getName(), getElementInfo(element));
+            XMLType xmlType = new XMLType(getElementInfo(element));
+            xmlType.setNillable(element.isNillable());
+            xmlType.setMany(element.getMaxOccurs() > 1);
+            dataType = new DataTypeImpl<XMLType>(dataBinding, javaType, xmlType);
         }
 
         /**
@@ -340,9 +340,9 @@ public class WSDLOperationIntrospectorImpl {
 
         private List<XmlSchemaElement> outputElements;
 
-//        private DataType<List<DataType<XMLType>>> unwrappedInputType;
-//
-//        private DataType<XMLType> unwrappedOutputType;
+        //        private DataType<List<DataType<XMLType>>> unwrappedInputType;
+        //
+        //        private DataType<XMLType> unwrappedOutputType;
 
         private transient WrapperInfo wrapperInfo;
 
@@ -392,9 +392,11 @@ public class WSDLOperationIntrospectorImpl {
                 // TODO: Do we support maxOccurs >1 ?
                 if (childElement.getMaxOccurs() > 1) {
                     // TODO: [rfeng] To be implemented
-                	if(logger.isLoggable(Level.WARNING)) {
-                		logger.warning("Support for elements with maxOccurs>1 is not implemented.");
-                	}
+                    /*
+                    if(logger.isLoggable(Level.WARNING)) {
+                    	logger.warning("Support for elements with maxOccurs>1 is not implemented.");
+                    }
+                    */
                     // return null;
                 }
                 childElements.add(childElement);
@@ -528,9 +530,9 @@ public class WSDLOperationIntrospectorImpl {
                 ElementInfo out = getElementInfo(getOutputWrapperElement());
                 List<ElementInfo> inChildren = new ArrayList<ElementInfo>();
                 if (in != null) {
-	                for (XmlSchemaElement e : getInputChildElements()) {
-	                    inChildren.add(getElementInfo(e));
-	                }
+                    for (XmlSchemaElement e : getInputChildElements()) {
+                        inChildren.add(getElementInfo(e));
+                    }
                 }
                 List<ElementInfo> outChildren = new ArrayList<ElementInfo>();
                 if (out != null) {
@@ -538,8 +540,7 @@ public class WSDLOperationIntrospectorImpl {
                         outChildren.add(getElementInfo(e));
                     }
                 }
-                wrapperInfo =
-                    new WrapperInfo(dataBinding, in, out, inChildren, outChildren);
+                wrapperInfo = new WrapperInfo(dataBinding, in, out, inChildren, outChildren);
             }
             return wrapperInfo;
         }
@@ -549,7 +550,10 @@ public class WSDLOperationIntrospectorImpl {
         if (element == null) {
             return null;
         }
-        return new ElementInfo(element.getQName(), getTypeInfo(element.getSchemaType()));
+        ElementInfo elementInfo = new ElementInfo(element.getQName(), getTypeInfo(element.getSchemaType()));
+        elementInfo.setMany(element.getMaxOccurs() > 1);
+        elementInfo.setNillable(element.isNillable());
+        return elementInfo;
     }
 
     private static TypeInfo getTypeInfo(XmlSchemaType type) {
