@@ -21,3 +21,4 @@ org.apache.tuscany.sca.databinding.json.XMLStreamReader2JSON;source=javax.xml.st
 org.apache.tuscany.sca.databinding.json.JavaBean2JSON;source=java:complexType,target=org.codehaus.jettison.json.JSONObject,weight=80000
 org.apache.tuscany.sca.databinding.json.JavaBean2JSON;source=java:simpleType,target=org.codehaus.jettison.json.JSONObject,weight=80000
 org.apache.tuscany.sca.databinding.json.axiom.JSON2OMElement;source=org.codehaus.jettison.json.JSONObject,target=org.apache.axiom.om.OMElement,weight=500
+org.apache.tuscany.sca.databinding.json.JavaBean2JSON;source=java:array,target=org.codehaus.jettison.json.JSONObject,weight=80000
