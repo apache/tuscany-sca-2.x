@@ -41,8 +41,6 @@
                 <module>store-cart</module>
                 <module>store-catalog</module>
                 <module>store-catalog-database</module>
-                <module>store-domain</module>
-                <module>store-currency</module>
                 <module>store-ui</module>
             </modules>
         </profile>
