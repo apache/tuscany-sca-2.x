@@ -115,7 +115,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         URI uri = URI.create(binding.getURI());
         port = uri.getPort();
         if (port == -1) {
-            port = 8080;
+            port = servletHost.getDefaultPort();
         }
         
         // get the ScaDomainScriptServlet, if it doesn't yet exist create one
@@ -143,7 +143,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         URI uri = URI.create(binding.getURI());
         port = uri.getPort();
         if (port == -1) {
-            port = 8080;
+            port = servletHost.getDefaultPort();
         }
 
         // Unregister the service from the scaDomain script servlet
