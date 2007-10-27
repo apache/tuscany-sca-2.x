@@ -28,7 +28,6 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.XMLAssert;
 
 public class BeanXMLStreamReaderTestCase extends TestCase {
     private final static String XML_RESULT =
@@ -37,6 +36,16 @@ public class BeanXMLStreamReaderTestCase extends TestCase {
             + "<list>Item1</list><list>Item2</list>"
             + "<map><entry><key>key1</key><value>value1</value></entry>"
             + "<entry><key>key2</key><value>value2</value></entry></map>"
+            + "<nil xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\" />"
+            + "<str>ABC</str></MyBean>";
+
+    // The map entries can come in a different order
+    private final static String XML_RESULT1 =
+        "<?xml version='1.0' encoding='UTF-8'?>" + "<MyBean xmlns=\"http://xml.databinding.sca.tuscany.apache.org/\">"
+            + "<arr>1</arr><arr>2</arr><arr>3</arr><bean><name>Name</name></bean><i>1</i>"
+            + "<list>Item1</list><list>Item2</list>"
+            + "<map><entry><key>key2</key><value>value2</value></entry>"
+            + "<entry><key>key1</key><value>value1</value></entry></map>"
             + "<nil xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\" />"
             + "<str>ABC</str></MyBean>";
 
@@ -63,8 +72,8 @@ public class BeanXMLStreamReaderTestCase extends TestCase {
         XMLStreamReader2String t3 = new XMLStreamReader2String();
         String xml = t3.transform(reader, null);
         Diff diff = new Diff(XML_RESULT, xml);
-        assertTrue(diff.similar());
-        XMLAssert.assertXMLEqual(XML_RESULT, xml);
+        Diff diff1 = new Diff(XML_RESULT1, xml);
+        assertTrue(diff.similar() || diff1.similar());
     }
 
     private static class MyBean {
