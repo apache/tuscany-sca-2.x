@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.implementation.widget;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
