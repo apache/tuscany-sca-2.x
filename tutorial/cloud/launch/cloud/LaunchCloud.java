@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package launch;
+package launch.cloud;
 
 import java.net.URL;
 
