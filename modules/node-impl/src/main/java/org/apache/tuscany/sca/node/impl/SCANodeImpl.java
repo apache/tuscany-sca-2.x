@@ -82,6 +82,7 @@ public class SCANodeImpl implements SCANode {
     // collection for managing contributions that have been added to the node 
     private Map<String, Contribution> contributions = new HashMap<String, Contribution>();    
     private Map<QName, Composite> composites = new HashMap<QName, Composite>();
+    private Map<String, Composite> compositeFiles = new HashMap<String, Composite>();
     private List<QName> compositesToStart = new ArrayList<QName>();
        
     // methods defined on the implementation only
@@ -288,6 +289,7 @@ public class SCANodeImpl implements SCANode {
                     if (artifact.getModel() instanceof Composite) {
                         Composite composite = (Composite)artifact.getModel();
                         composites.put(composite.getName(), composite);
+                        compositeFiles.put(composite.getURI(), composite);
                     }
                 }
                 
@@ -295,7 +297,6 @@ public class SCANodeImpl implements SCANode {
                 for (Composite composite : contribution.getDeployables()) {
                     compositesToStart.add(composite.getName());
                 }  
-                
                 
                 // add the contribution to the domain. It will generally already be there
                 // unless the contribution has been added to the node itself. 
@@ -331,8 +332,23 @@ public class SCANodeImpl implements SCANode {
     }
     
     public void addToDomainLevelComposite(QName compositeName) throws NodeException {
-        // if the named composite is not already in the list then 
-        // add it
+        // if the named composite is not already in the list then add it
+        Composite composite = composites.get(compositeName);
+        if (composite == null) {
+            throw new NodeException("Composite not found: " + compositeName);
+        }
+        if (compositesToStart.indexOf(compositeName) == -1 ){
+            compositesToStart.add(compositeName);  
+        }
+    }
+    
+    public void addToDomainLevelComposite(String compositePath) throws NodeException {
+        // if the composite is not already in the list then add it
+        Composite composite = compositeFiles.get(compositePath);
+        if (composite == null) {
+            throw new NodeException("Composite file not found: " + compositePath);
+        }
+        QName compositeName = composite.getName();
         if (compositesToStart.indexOf(compositeName) == -1 ){
             compositesToStart.add(compositeName);  
         }
@@ -386,7 +402,8 @@ public class SCANodeImpl implements SCANode {
                 nodeRuntime.getCompositeActivator().stop(composite);
                 nodeRuntime.getCompositeActivator().deactivate(composite);
                 
-                composites.remove(compositeName);               
+                composites.remove(compositeName);
+                compositeFiles.remove(composite.getURI());
             }
             
             compositesToStart.clear(); 
@@ -398,5 +415,4 @@ public class SCANodeImpl implements SCANode {
         }              
 
     }
-      
 }

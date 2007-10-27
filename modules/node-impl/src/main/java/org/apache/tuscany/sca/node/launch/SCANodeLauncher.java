@@ -17,45 +17,59 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.host.embedded.impl;
+package org.apache.tuscany.sca.node.launch;
 
 import java.io.IOException;
+import java.net.URL;
 
-import javax.xml.namespace.QName;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 
-//import org.apache.tuscany.sca.domain.SCADomain;
-//import org.apache.tuscany.sca.node.SCANode;
-//import org.apache.tuscany.sca.node.SCANodeFactory;
-
-public class DefaultLauncher {
+public class SCANodeLauncher {
 
     /**
      * @param args
      */
     public static void main(String[] args) {
         System.out.println("Tuscany starting...");
-        System.out.println("Composite: " + args[0]);
 
-/*        
+        SCANode node = null;
         try {
-            ClassLoader cl = DefaultLauncher.class.getClassLoader();
+            String compositeFile = args[0];
+            System.out.println("Composite: " + compositeFile);
+            
             SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-            SCANode node = nodeFactory.createSCANode("node", null);
-            node.addContribution("node", cl.getResource(args[0]));
-            node.startComposite(new QName("??", "??"));
-            node.start();  
-        } catch (Exception ex) {
-            System.err.println("Exception starting node " + ex.toString());
+            node = nodeFactory.createSCANode("node", "http://localhost:9999");
+
+            ClassLoader classLoader = SCANodeLauncher.class.getClassLoader();
+            URL contribution = SCAContributionUtil.findContributionFromResource(classLoader, compositeFile); 
+            node.addContribution(compositeFile, contribution);
+            
+            node.addToDomainLevelComposite(compositeFile);
+            
+            node.start();
+            
+        } catch (Exception e) {
+            System.err.println("Exception starting node");
+            e.printStackTrace();
+            System.exit(0);
         }
-*/
         
-        System.out.println("Ready...");
+        System.out.println("Node ready...");
         System.out.println("Press enter to shutdown");
         try {
             System.in.read();
         } catch (IOException e) {
         }
+        
+        try {
+            node.destroy();
+        } catch (Exception e) {
+            System.err.println("Exception stopping node");
+            e.printStackTrace();
+        }
+        
         System.exit(0);
     }
-
 }
