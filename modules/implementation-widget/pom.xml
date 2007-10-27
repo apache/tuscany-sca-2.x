@@ -53,6 +53,18 @@
             <artifactId>tuscany-host-http</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-feed</artifactId>
+            <version>1.1-incubating-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-jsonrpc</artifactId>
+            <version>1.1-incubating-SNAPSHOT</version>
+        </dependency>
         
        <dependency>
             <groupId>javax.servlet</groupId>
@@ -75,20 +87,6 @@
             <version>1.1-incubating-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>   
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-feed</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-jsonrpc</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
         
         <dependency>
             <groupId>junit</groupId>
