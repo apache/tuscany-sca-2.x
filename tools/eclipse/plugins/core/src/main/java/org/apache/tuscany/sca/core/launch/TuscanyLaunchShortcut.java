@@ -80,7 +80,7 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
             ILaunchConfigurationWorkingCopy configuration =
                 launchConfigurationType.newInstance(null,
                                                     launchManager.generateUniqueLaunchConfigurationNameFrom(file.getFullPath().removeFileExtension().lastSegment()));
-            configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, "org.apache.tuscany.sca.host.embedded.impl.DefaultLauncher");
+            configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, "org.apache.tuscany.sca.node.launch.SCANodeLauncher");
             configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, file.getProject().getName());
 
             // Pass the path of the .composite relative to the classpath root to the launcher
