@@ -109,6 +109,7 @@
                 <module>implementation-script</module>
                 <module>implementation-spring</module>
                 <module>implementation-xquery</module>
+                <module>implementation-widget</module>
                 <module>java2wsdl</module>
                 <module>maven-java2wsdl</module>
                 <module>maven-wsdl2java</module>
