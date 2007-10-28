@@ -20,19 +20,16 @@
 <head>
 <title>Store</TITLE>
 
-<script type="text/javascript" src="binding-atom.js"></script>
-<script type="text/javascript" src="binding-jsonrpc.js"></script>
-
 <!-- one js include per sca component -->
-<script type="text/javascript" src="storeWidgetComponent.js"/>
+<script type="text/javascript" src="storeWidgetComponent.js"></script>
 
 <script language="JavaScript">
 
 	//@Reference
-	var catalog = new Reference("catalog"); //(new JSONRpcClient("../Catalog")).Catalog;
+	var catalog = new Reference("Catalog");
+	
 	//@Reference
-	var shoppingCart = new Reference("shoppingCart"); //new AtomClient("../ShoppingCart");
-
+	var shoppingCart = new Reference("ShoppingCart"); 
 
 	function catalog_getResponse(items) {
 		var catalog = "";

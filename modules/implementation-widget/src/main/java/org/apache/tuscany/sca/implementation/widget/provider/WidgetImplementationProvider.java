@@ -59,7 +59,7 @@ class WidgetImplementationProvider implements ImplementationProvider {
 
         WidgetReferenceServlet widgetServlet = new WidgetReferenceServlet(component);
         
-        String uri = component.getURI() + ".js";
+        String uri = component.getURI() + "/" + component.getURI() + ".js";
         servletHost.addServletMapping(uri, widgetServlet);        
     }
 

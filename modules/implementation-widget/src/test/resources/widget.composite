@@ -28,10 +28,10 @@
         <service name="Widget">
         	<tuscany:binding.http/> 
         </service>
-		<!-- reference name="catalog" target="Catalog">
+		<reference name="Catalog" target="Catalog">
 		 	<tuscany:binding.jsonrpc/>
-		 </reference-->
-		 <reference name="shoppingCart" target="ShoppingCart">
+		 </reference>
+		 <reference name="ShoppingCart" target="ShoppingCart">
 		 	<tuscany:binding.atom uri="/ShoppingCart"/>
 		 </reference>
     </component>
