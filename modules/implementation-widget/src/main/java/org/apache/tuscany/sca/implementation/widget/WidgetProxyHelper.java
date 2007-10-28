@@ -28,10 +28,10 @@ public class WidgetProxyHelper {
 
     static {
         proxyFileRegistry.put("org.apache.tuscany.sca.binding.feed.impl.AtomBindingImpl", "binding-atom.js");
-        proxyClient.put("org.apache.tuscany.sca.binding.feed.impl.AtomBindingImpl", "AtomBindingClient");
+        proxyClient.put("org.apache.tuscany.sca.binding.feed.impl.AtomBindingImpl", "AtomClient");
         
-        //proxyRegistry.put("org.apache.tuscany.sca.binding.feed.impl.AtomBindingImpl", "binding-jsonrpc.js");
-        //proxyClient.put("org.apache.tuscany.sca.binding.feed.impl.AtomBindingImpl", "JSONRPCBindingClient");
+        proxyFileRegistry.put("org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding", "binding-jsonrpc.js");
+        proxyClient.put("org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding", "JSONRpcClient");
     }
     
     protected WidgetProxyHelper() {

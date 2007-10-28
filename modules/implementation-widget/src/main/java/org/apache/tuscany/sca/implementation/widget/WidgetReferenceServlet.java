@@ -102,19 +102,24 @@ public class WidgetReferenceServlet extends HttpServlet {
     
     protected void writeJavaScriptReferenceFunction (ServletOutputStream os) throws IOException {
         
+        os.println("var referenceMap = new Object();");
         for(ComponentReference reference : component.getReferences()) {
             String referenceName = reference.getName();
             Binding binding = reference.getBindings().get(0);
             if( binding != null) {
                 String proxyClient = WidgetProxyHelper.getJavaScriptProxyClient(binding.getClass().getName());
                 if(proxyClient != null) {
-                    os.println("proxy[" + referenceName + "]= new " + proxyClient + "(\"" + binding.getURI() + "\");");
+                    if(proxyClient.equals("JSONRpcClient")) {
+                        os.println("referenceMap." + referenceName + " = new " + proxyClient + "(\".." + binding.getURI() + "\")." + binding.getURI().substring(1) + ";");
+                    } else {
+                        os.println("referenceMap." + referenceName + " = new " + proxyClient + "(\".." + binding.getURI() + "\");");
+                    }
                 }                
             }
         }
         
         os.println("function Reference(name) {");
-        os.println("    return proxy[name];");
+        os.println("    return referenceMap[name];");
         os.println("}");
     }
 
