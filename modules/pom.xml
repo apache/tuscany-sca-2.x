@@ -91,9 +91,7 @@
                 <module>interface-java-xml</module>
                 <module>interface-wsdl</module>
                 <module>interface-wsdl-xml</module>
-                <!--
                 <module>implementation-bpel</module>
-                -->
                 <module>implementation-das</module>
                 <module>implementation-data</module>
                 <module>implementation-java</module>
@@ -104,6 +102,7 @@
                 <module>implementation-node-runtime</module>
                 <module>implementation-notification</module>
                 <module>implementation-osgi</module>
+                <module>implementation-widget</module>
                 <module>osgi-runtime</module>
                 <module>implementation-resource</module>
                 <module>implementation-script</module>
@@ -119,7 +118,7 @@
                 <module>node-impl</module>
                 <module>policy</module>
                 <module>policy-xml</module>
-		<module>policy-logging</module>
+                <module>policy-logging</module>
                 <module>policy-security</module>
                 <module>policy-transaction</module>
                 <module>sca-api</module>
