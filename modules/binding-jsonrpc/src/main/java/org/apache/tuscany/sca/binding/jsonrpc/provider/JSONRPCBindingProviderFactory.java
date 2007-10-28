@@ -49,7 +49,7 @@ public class JSONRPCBindingProviderFactory implements BindingProviderFactory<JSO
                                                                    RuntimeComponentReference reference,
                                                                    JSONRPCBinding binding) {
         
-        throw new ServiceRuntimeException("SCA reference support not yet implemented");
+        return new JSONRPCReferenceBindingProvider(component, reference, binding);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
