@@ -35,7 +35,9 @@ import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
@@ -141,8 +143,14 @@ public class SCADomainProxyImpl implements SCADomainProxySPI {
                                                                   contributionURL, 
                                                                   false);
                     
-                    if (contribution.getDeployables().size() != 0) {
-                        Composite composite = contribution.getDeployables().get(0);
+                    Composite composite = null;
+                    for (DeployedArtifact artifact: contribution.getArtifacts()) {
+                        if (domainCompositeName.equals(artifact.getURI())) {
+                            composite = (Composite)artifact.getModel();
+                        }
+                    }
+                    
+                    if (composite != null) {
                     
                         domainManagementRuntime.getDomainComposite().getIncludes().add(composite);
                         domainManagementRuntime.getCompositeBuilder().build(composite);
