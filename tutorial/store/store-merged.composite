@@ -22,10 +22,10 @@
 		targetNamespace="http://store"
 		name="store-merger">
 		
-    <component name="store">
+    <component name="Store">
         <t:implementation.widget location="uiservices/store.html"/>
         <service name="Widget">
-        	<t:binding.http/> 
+        	<t:binding.http uri="http://localhost:8101/ui"/> 
         </service>
 		<reference name="catalog" target="Catalog">
 		 	<t:binding.jsonrpc/>

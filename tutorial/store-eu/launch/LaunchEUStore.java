@@ -31,7 +31,7 @@ public class LaunchEUStore {
     public static void main(String[] args) throws Exception {
         System.out.println("Starting ...");
         SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-        SCANode node = nodeFactory.createSCANode("http://localhost:8102/store", "http://localhost:9999");
+        SCANode node = nodeFactory.createSCANode(null, "http://localhost:9999");
         
         URL contribution = SCAContributionUtil.findContributionFromClass(LaunchEUStore.class);
         node.addContribution("http://store", contribution);
