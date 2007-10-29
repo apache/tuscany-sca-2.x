@@ -156,7 +156,7 @@ public class SCANodeUtil {
      * @return node manager url
      */    
     public static void fixUpNodeServiceUrls(List<Component> nodeComponents, URL nodeUrlString)
-      throws MalformedURLException, UnknownHostException {
+      throws MalformedURLException, UnknownHostException, IOException {
       
         for(Component component : nodeComponents){
             for (ComponentService service : component.getServices() ){
@@ -197,7 +197,7 @@ public class SCANodeUtil {
      * @param nodeURL the URL provided as the identifier of the node
      */
     public static void fixUpNodeServiceBindingUrl(Binding binding, URL manualUrl)
-      throws MalformedURLException, UnknownHostException{
+      throws MalformedURLException, UnknownHostException, IOException {
 
         String urlString = binding.getURI(); 
         
@@ -243,25 +243,12 @@ public class SCANodeUtil {
      * @param startPort
      * @return
      */
-    public static int findFreePort(int startPort)
+    public static int findFreePort(int startPort) throws IOException
     {
-        boolean portIsBusy = true;
-        int freePort = startPort;
-        
-        do {
-            try {
-                ServerSocket socket = new ServerSocket(freePort);
-                portIsBusy = false;
-                socket.close();
-                break;
-            }
-            catch (IOException ex) {
-                // the port is busy
-                freePort = freePort + 1;
-            }
-        } while (portIsBusy && freePort < 9999); 
-        
-        return freePort;
+        ServerSocket socket = new ServerSocket(0);
+        int port = socket.getLocalPort();
+        socket.close();
+        return port;
     }  
     
     /**

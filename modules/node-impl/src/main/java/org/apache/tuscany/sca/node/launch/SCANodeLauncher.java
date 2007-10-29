@@ -40,7 +40,7 @@ public class SCANodeLauncher {
             System.out.println("Composite: " + compositeFile);
             
             SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-            node = nodeFactory.createSCANode("node", "http://localhost:9999");
+            node = nodeFactory.createSCANode(null, "http://localhost:9999");
 
             ClassLoader classLoader = SCANodeLauncher.class.getClassLoader();
             URL contribution = SCAContributionUtil.findContributionFromResource(classLoader, compositeFile); 

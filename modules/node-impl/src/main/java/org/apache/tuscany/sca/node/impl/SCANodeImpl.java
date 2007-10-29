@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.node.impl;
 
+import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -131,6 +133,15 @@ public class SCANodeImpl implements SCANode {
      */
     private void init() throws NodeException {
         try {
+            
+            // Generate a unique node URI
+            if (nodeURI == null) {
+                
+               String host = InetAddress.getLocalHost().getHostName();
+               ServerSocket socket = new ServerSocket(0);
+               nodeURI = "http://" + host + ":" + socket.getLocalPort();
+               socket.close();
+            }
             
             // create a node runtime for the domain contributions to run on
             nodeRuntime = new ReallySmallRuntime(nodeClassLoader);
