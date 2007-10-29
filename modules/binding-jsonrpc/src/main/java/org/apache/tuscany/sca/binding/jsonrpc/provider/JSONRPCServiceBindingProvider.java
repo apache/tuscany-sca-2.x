@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.binding.jsonrpc.provider;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
@@ -45,7 +46,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * @version $Rev$ $Date$
  */
 public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
-    // path to the scaDomain.js script 
+    
+    // Path to the scaDomain.js script 
     // Note: this is the same as the Ajax binding to keep the client code
     //       the same for clients using either the ajax or jsonrpc binding
     private static final String SCA_DOMAIN_SCRIPT = "/SCADomain/scaDomain.js";
@@ -54,7 +56,8 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
     private InterfaceContract serviceContract;
     private JSONRPCBinding binding;
     private ServletHost servletHost;
-    private String uri;
+    private List<String> servletMappings = new ArrayList<String>();
+    private String domainScriptMapping;
 
     public JSONRPCServiceBindingProvider(RuntimeComponent component,
                                          RuntimeComponentService service,
@@ -63,7 +66,6 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         this.service = service;
         this.binding = binding;
         this.servletHost = servletHost;
-        uri = binding.getURI();
         
         //clone the service contract to avoid databinding issues
         try {
@@ -99,8 +101,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         // Create and register a servlet for this service
         JSONRPCServiceServlet serviceServlet =
             new JSONRPCServiceServlet(binding, componentService, serviceContract, serviceInterface, proxy);
-
-        String mapping = uri;
+        String mapping = binding.getURI();
         if (!mapping.endsWith("/")) {
             mapping += "/";
         }
@@ -108,10 +109,15 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
             mapping += "*";
         }
         servletHost.addServletMapping(mapping, serviceServlet);
-
-        // register service to scaDomain.js
-        int port;
+        servletMappings.add(mapping);
         servletHost.addServletMapping(binding.getURI(), serviceServlet);
+        servletMappings.add(binding.getURI());
+        
+        // Save the actual binding URI
+        binding.setURI(servletHost.getURLMapping(binding.getURI()).toString());
+
+        // Register service to scaDomain.js
+        int port;
         URI uri = URI.create(binding.getURI());
         port = uri.getPort();
         if (port == -1) {
@@ -120,41 +126,33 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         
         // get the ScaDomainScriptServlet, if it doesn't yet exist create one
         // this uses removeServletMapping / addServletMapping as theres no getServletMapping facility
-        URI domainURI = URI.create("http://localhost:" + port + SCA_DOMAIN_SCRIPT);
+        domainScriptMapping = URI.create("http://localhost:" + port + SCA_DOMAIN_SCRIPT).toString();
         ScaDomainScriptServlet scaDomainServlet =
-            (ScaDomainScriptServlet)servletHost.getServletMapping(domainURI.toString());
+            (ScaDomainScriptServlet)servletHost.getServletMapping(domainScriptMapping);
         if (scaDomainServlet == null) {
             scaDomainServlet = new ScaDomainScriptServlet();
-            servletHost.addServletMapping(domainURI.toString(), scaDomainServlet);
+            servletHost.addServletMapping(domainScriptMapping, scaDomainServlet);
         }
+
         // Add this service to the scadomain script servlet
         scaDomainServlet.addService(binding.getName());
-        
-
     }
 
     public void stop() {
-        // remove the servlet mapping from servletHost
-        servletHost.removeServletMapping(uri);
 
-        // unregister service from scaDomain.js
-        int port;
-        servletHost.removeServletMapping(binding.getURI());
-        URI uri = URI.create(binding.getURI());
-        port = uri.getPort();
-        if (port == -1) {
-            port = servletHost.getDefaultPort();
+        // Remove the servlet mappings we've added
+        for (String mapping: servletMappings) {
+            servletHost.removeServletMapping(mapping);
         }
 
         // Unregister the service from the scaDomain script servlet
-        URI domainURI = URI.create("http://localhost:" + port + SCA_DOMAIN_SCRIPT);
-        ScaDomainScriptServlet scaDomainServlet = (ScaDomainScriptServlet) servletHost.getServletMapping(domainURI.toString());
+        ScaDomainScriptServlet scaDomainServlet = (ScaDomainScriptServlet) servletHost.getServletMapping(domainScriptMapping);
         if (scaDomainServlet != null) {
             scaDomainServlet.removeService(binding.getName());
 
             // Remove the servlet if there's no more registered services
             if (scaDomainServlet.getServiceNames().isEmpty()) {
-                servletHost.removeServletMapping(domainURI.toString());
+                servletHost.removeServletMapping(domainScriptMapping);
             }
         }
 
