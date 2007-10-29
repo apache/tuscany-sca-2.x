@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.TargetResolutionException;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.sca.implementation.java.injection.ConversationIDObjectFactory;
@@ -56,7 +57,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -112,13 +112,22 @@ public class JavaComponentContextProvider {
         JavaElementImpl element =
             instanceFactoryProvider.getImplementation().getPropertyMembers().get(configuredProperty.getName());
 
-        if (element != null && !(element.getAnchor() instanceof Constructor) && configuredProperty.getValue() != null) {
-            instanceFactoryProvider.getInjectionSites().add(element);
+        if (element != null && configuredProperty.getValue() != null) {
+            if (!(element.getAnchor() instanceof Constructor)) {
+                instanceFactoryProvider.getInjectionSites().add(element);
+            }
 
             //Class propertyJavaType = JavaIntrospectionHelper.getBaseType(element.getType(), element.getGenericType());
             ObjectFactory<?> propertyObjectFactory =
                 createPropertyValueFactory(configuredProperty, configuredProperty.getValue(), element);
             instanceFactoryProvider.setObjectFactory(element, propertyObjectFactory);
+            
+            JavaConstructorImpl constructor = instanceFactoryProvider.getImplementation().getConstructor();
+            for(JavaElementImpl p: constructor.getParameters()){
+                if(element.getName().equals(p.getName())) {
+                    instanceFactoryProvider.setObjectFactory(p, propertyObjectFactory);
+                }
+            }
         }
     }
 
@@ -201,6 +210,12 @@ public class JavaComponentContextProvider {
                         factories.add(factory);
                     }
                     instanceFactoryProvider.setObjectFactories(element, factories);
+                    JavaConstructorImpl constructor = instanceFactoryProvider.getImplementation().getConstructor();
+                    for(JavaElementImpl p: constructor.getParameters()){
+                        if(element.getName().equals(p.getName())) {
+                            instanceFactoryProvider.setObjectFactories(p, factories);
+                        }
+                    }
                 } else {
                     if (wireList == null && ref.getMultiplicity() == Multiplicity.ONE_ONE) {
                         throw new IllegalStateException("Required reference is missing: " + ref.getName());
@@ -218,17 +233,23 @@ public class JavaComponentContextProvider {
                             factory = createObjectFactory(element.getType(), wireList.get(0));
                         }
                         instanceFactoryProvider.setObjectFactory(element, factory);
+                        JavaConstructorImpl constructor = instanceFactoryProvider.getImplementation().getConstructor();
+                        for(JavaElementImpl p: constructor.getParameters()){
+                            if(element.getName().equals(p.getName())) {
+                                instanceFactoryProvider.setObjectFactory(p, factory);
+                            }
+                        }
                     }
                 }
             }
         }
-        
+
         // We need to set the PropertyValueFactory on the ComponentContextImpl
         // so the ComponentContext can "de-marshal" the property type to a value 
         // when the getProperty() method is called
-        ComponentContextImpl ccImpl = (ComponentContextImpl) component.getComponentContext();
+        ComponentContextImpl ccImpl = (ComponentContextImpl)component.getComponentContext();
         ccImpl.setPropertyValueFactory(propertyValueFactory);
-        
+
         setUpPolicyHandlers();
     }
 
@@ -276,12 +297,12 @@ public class JavaComponentContextProvider {
         Class<?> implClass = instanceFactoryProvider.getImplementationClass();
 
         Method method = JavaInterfaceUtil.findMethod(implClass, operation);
-        
+
         /*if ( component.getImplementation() instanceof PolicySetAttachPoint  &&
               !((PolicySetAttachPoint)component.getImplementation()).getPolicySets().isEmpty() ) {
             return new PoliciedJavaImplementationInvoker(operation, method, component, policyHandlers);
         } else {*/
-            return new JavaImplementationInvoker(operation, method, component);
+        return new JavaImplementationInvoker(operation, method, component);
         //}
     }
 
@@ -341,9 +362,11 @@ public class JavaComponentContextProvider {
         return new WireObjectFactory<B>(interfaze, wire, proxyFactory);
     }
 
-    private ObjectFactory<?> createPropertyValueFactory(ComponentProperty property, Object propertyValue, JavaElementImpl javaElement) {
+    private ObjectFactory<?> createPropertyValueFactory(ComponentProperty property,
+                                                        Object propertyValue,
+                                                        JavaElementImpl javaElement) {
         return propertyValueFactory.createValueFactory(property, propertyValue, javaElement);
-    } 
+    }
 
     /**
      * @return the component
@@ -351,15 +374,15 @@ public class JavaComponentContextProvider {
     RuntimeComponent getComponent() {
         return component;
     }
-    
+
     private void setUpPolicyHandlers() {
-        for ( PolicyHandler policyHandler : policyHandlers.values() ) {
+        for (PolicyHandler policyHandler : policyHandlers.values()) {
             policyHandler.setUp(component.getImplementation());
         }
     }
-    
+
     private void cleanUpPolicyHandlers() {
-        for ( PolicyHandler policyHandler : policyHandlers.values() ) {
+        for (PolicyHandler policyHandler : policyHandlers.values()) {
             policyHandler.cleanUp(this);
         }
     }
