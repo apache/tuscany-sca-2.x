@@ -24,11 +24,11 @@
 
     <script language="JavaScript">
     
-       nodeManager = new JSONRpcClient("../NodeManagerComponent/NodeManagerJson");
-       componentManager = new JSONRpcClient("../NodeManagerComponent/ComponentManagerJson");
+       nodeManager = new JSONRpcClient("../NodeManagerComponent/NodeManagerJson").Service;
+       componentManager = new JSONRpcClient("../NodeManagerComponent/ComponentManagerJson").Service;
 
        function getNodeUri() {
-          nodeManager.NodeManagerService.getNodeUri(handleGetNodeUri);
+          nodeManager.getNodeUri(handleGetNodeUri);
           getComponentInfos()
        }
        
@@ -37,7 +37,7 @@
        }       
        
        function getComponentInfos() {
-          componentManager.ComponentManagerService.getComponentInfos(handleGetComponentInfos);
+          componentManager.getComponentInfos(handleGetComponentInfos);
        }       
        
        function handleGetComponentInfos(result) {

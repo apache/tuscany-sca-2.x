@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.implementation.widget;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 
 import javax.servlet.ServletOutputStream;
@@ -109,10 +110,15 @@ public class WidgetReferenceServlet extends HttpServlet {
             if( binding != null) {
                 String proxyClient = WidgetProxyHelper.getJavaScriptProxyClient(binding.getClass().getName());
                 if(proxyClient != null) {
+                    URI uri = URI.create(binding.getURI());
+                    String path = uri.getPath();
+                    if (!path.startsWith("/")) {
+                        path = "/" + path;
+                    }
                     if(proxyClient.equals("JSONRpcClient")) {
-                        os.println("referenceMap." + referenceName + " = new " + proxyClient + "(\".." + binding.getURI() + "\")." + binding.getURI().substring(1) + ";");
+                        os.println("referenceMap." + referenceName + " = new " + proxyClient + "(\"" + path + "\").Service;");
                     } else {
-                        os.println("referenceMap." + referenceName + " = new " + proxyClient + "(\".." + binding.getURI() + "\");");
+                        os.println("referenceMap." + referenceName + " = new " + proxyClient + "(\"" + path + "\");");
                     }
                 }                
             }

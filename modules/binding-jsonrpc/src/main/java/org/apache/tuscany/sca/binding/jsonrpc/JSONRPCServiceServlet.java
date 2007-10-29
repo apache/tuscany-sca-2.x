@@ -176,7 +176,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         HttpSession session = request.getSession();
 
         JSONRPCBridge jsonrpcBridge = new JSONRPCBridge();
-        jsonrpcBridge.registerObject(serviceName, serviceInstance, serviceInterface);
+        jsonrpcBridge.registerObject("Service", serviceInstance, serviceInterface);
         session.setAttribute("JSONRPCBridge", jsonrpcBridge);
         
         org.json.JSONObject jsonReq = null;
@@ -189,7 +189,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
 
         String method = jsonReq.getString("method");
         if ((method != null) && (method.indexOf('.') < 0)) {
-            jsonReq.putOpt("method", serviceName + "." + method);
+            jsonReq.putOpt("method", "Service" + "." + method);
         }
 
         // invoke the request
@@ -208,7 +208,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
             // Extract the method
             method = jsonReq.getString("method");
             if ((method != null) && (method.indexOf('.') < 0)) {
-                jsonReq.putOpt("method", serviceName + "." + method);
+                jsonReq.putOpt("method", "Service" + "." + method);
             }
             
             // Extract the arguments
