@@ -176,7 +176,7 @@ public class SCADomainContext {
                 // and troubleshoot SCA assembly XML composite configuration
                 // problems.
 
-                System.out.println("Composite assembly problem: " + problem.getMessage());
+                System.out.println("Composite assembly problem: " + problem);
             }
         };
 
