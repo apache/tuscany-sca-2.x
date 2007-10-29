@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
@@ -37,12 +38,15 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * 
  * @version $Rev$ $Date$
  */
-public class WidgetReferenceServlet extends HttpServlet {
+public class WidgetComponentServlet extends HttpServlet {
+    private static final long serialVersionUID = -2996033426789721509L;
     
-    protected transient RuntimeComponent component;
+    private transient RuntimeComponent component;
+    private transient URI servletURI;
 
-    public WidgetReferenceServlet(RuntimeComponent component) {
+    public WidgetComponentServlet(RuntimeComponent component, String servletURI) {
         this.component = component;
+        this.servletURI = URI.create(servletURI);
     }
 
     @Override
@@ -59,7 +63,7 @@ public class WidgetReferenceServlet extends HttpServlet {
 
     /**
      */
-    protected void writeSCAWidgetCode(ServletOutputStream out, String path) throws IOException {
+    private void writeSCAWidgetCode(ServletOutputStream out, String path) throws IOException {
         out.println();
         out.println("/* Apache Tuscany SCA Widget header */");
         out.println();
@@ -68,7 +72,6 @@ public class WidgetReferenceServlet extends HttpServlet {
         path = path.substring(1);
 
         for(ComponentReference reference : component.getReferences()) {
-            String referenceName = reference.getName();
             for(Binding binding : reference.getBindings()) {
                 String bindingProxyName = WidgetProxyHelper.getJavaScriptProxyFile(binding.getClass().getName());
                 if(bindingProxyName != null) {
@@ -89,7 +92,7 @@ public class WidgetReferenceServlet extends HttpServlet {
      * Retrieve the binding proxy based on the bind name
      * and embedded the javascript into this js
      */
-    protected void writeJavaScriptBindingProxy(ServletOutputStream os, String bindingProxyName) throws IOException {
+    private void writeJavaScriptBindingProxy(ServletOutputStream os, String bindingProxyName) throws IOException {
         
         URL url = getClass().getClassLoader().getResource(bindingProxyName); //Thread.currentThread().getContextClassLoader().getResource(bindingProxyName);
         InputStream is = url.openStream();
@@ -101,24 +104,38 @@ public class WidgetReferenceServlet extends HttpServlet {
         os.println();
     }
     
-    protected void writeJavaScriptReferenceFunction (ServletOutputStream os) throws IOException {
+    private void writeJavaScriptReferenceFunction (ServletOutputStream os) throws IOException {
         
         os.println("var referenceMap = new Object();");
         for(ComponentReference reference : component.getReferences()) {
             String referenceName = reference.getName();
             Binding binding = reference.getBindings().get(0);
-            if( binding != null) {
+            if (binding != null) {
+                
                 String proxyClient = WidgetProxyHelper.getJavaScriptProxyClient(binding.getClass().getName());
                 if(proxyClient != null) {
-                    URI uri = URI.create(binding.getURI());
-                    String path = uri.getPath();
-                    if (!path.startsWith("/")) {
-                        path = "/" + path;
+                    
+                    //FIXME Eventually the binding URI should be initialized from the SCA domain
+                    // for now point to the target binding model directly, assuming that it's available
+                    // in the same node
+                    String targetURI = null;
+                    if (binding instanceof OptimizableBinding) {
+                        Binding targetBinding = ((OptimizableBinding)binding).getTargetBinding();
+                        if (targetBinding != null) {
+                            targetURI = URI.create(targetBinding.getURI()).getPath();
+                        }
                     }
+                    if (targetURI == null) {
+                        targetURI = URI.create(binding.getURI()).getPath();
+                        if (!targetURI.startsWith("/")) {
+                            targetURI = "/" + targetURI;
+                        }
+                    }
+                    
                     if(proxyClient.equals("JSONRpcClient")) {
-                        os.println("referenceMap." + referenceName + " = new " + proxyClient + "(\"" + path + "\").Service;");
+                        os.println("referenceMap." + referenceName + " = new " + proxyClient + "(\"" + targetURI + "\").Service;");
                     } else {
-                        os.println("referenceMap." + referenceName + " = new " + proxyClient + "(\"" + path + "\");");
+                        os.println("referenceMap." + referenceName + " = new " + proxyClient + "(\"" + targetURI + "\");");
                     }
                 }                
             }
@@ -128,19 +145,5 @@ public class WidgetReferenceServlet extends HttpServlet {
         os.println("    return referenceMap[name];");
         os.println("}");
     }
-
-    /*
-    public void addService(String serviceName) {
-        serviceNames.add(serviceName);
-    }
-
-    public void removeService(String serviceName) {
-        serviceNames.remove(serviceName);
-    }
-
-    public List<String> getServiceNames() {
-        return serviceNames;
-    }
-    */
 
 }
