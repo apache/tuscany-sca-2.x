@@ -33,8 +33,11 @@ import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
@@ -158,15 +161,6 @@ public class SCANodeImpl implements SCANode {
                 factories.addFactory(nodeFactory);    
             }
  
-            // Configure the default server port
-            int port = URI.create(nodeURI).getPort();
-            if (port != -1) {
-                ServletHostExtensionPoint servletHosts = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ServletHostExtensionPoint.class);
-                for (ServletHost servletHost: servletHosts.getServletHosts()) {
-                    servletHost.setDefaultPort(port);
-                }
-            }
-            
             // Create an in-memory domain level composite
             AssemblyFactory assemblyFactory = nodeRuntime.getAssemblyFactory();
             nodeComposite = assemblyFactory.createComposite();
@@ -364,16 +358,77 @@ public class SCANodeImpl implements SCANode {
             compositesToStart.add(compositeName);  
         }
     }
+
+    /**
+     * Configure the default HTTP port for this node.
+     */
+    private void configureDefaultPort() {
+        Composite composite = composites.get(compositesToStart.get(0));
+        if (composite == null) {
+            return;
+        }
+        
+        int port = -1;
+        for (Service service: composite.getServices()) {
+            for (Binding binding: service.getBindings()) {
+                String uri = binding.getURI();
+                if (uri != null) {
+                    port = URI.create(uri).getPort();
+                    if (port != -1) {
+                        break;
+                    }
+                }
+            }
+            if (port != -1) {
+                break;
+            }
+        }
+        for (Component component: composite.getComponents()) {
+            for (ComponentService service: component.getServices()) {
+                for (Binding binding: service.getBindings()) {
+                    String uri = binding.getURI();
+                    if (uri != null) {
+                        port = URI.create(uri).getPort();
+                        if (port != -1) {
+                            break;
+                        }
+                    }
+                }
+                if (port != -1) {
+                    break;
+                }
+            }
+            if (port != -1) {
+                break;
+            }
+        }
+
+        // Then get the port from the node URI 
+        if (port == -1) {
+            port = URI.create(nodeURI).getPort();
+        }
+        
+        // Configure the default port
+        if (port != -1) {
+            ServletHostExtensionPoint servletHosts = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ServletHostExtensionPoint.class);
+            for (ServletHost servletHost: servletHosts.getServletHosts()) {
+                servletHost.setDefaultPort(port);
+            }
+        }
+    }
     
     private void startComposites() throws NodeException {
         try {
             if (compositesToStart.size() == 0 ){
                 logger.log(Level.INFO, nodeURI + 
                                        " has no composites to start" );
-            } else {  
+            } else {
+                
+                // Configure the default server port for the node
+                configureDefaultPort();
+                
                 for (QName compositeName : compositesToStart) {
                     Composite composite = composites.get(compositeName);
-                    
                     if (composite == null) {
                         logger.log(Level.INFO, "Composite not found during start: " + compositeName);
                     } else {
