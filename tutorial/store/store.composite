@@ -22,18 +22,24 @@
 		targetNamespace="http://store"
 		name="store">
 		
-	<component name="ui">
-		<t:implementation.resource location="uiservices"/>
-		<service name="Resource">
-			<t:binding.http/>
-		</service> 	
-	</component>		
-
+    <component name="store">
+        <t:implementation.widget location="uiservices/store.html"/>
+        <service name="Widget">
+        	<t:binding.http/> 
+        </service>
+		<reference name="catalog" target="Catalog">
+		 	<t:binding.jsonrpc/>
+		 </reference>
+		 <reference name="shoppingCart" target="ShoppingCart">
+		 	<t:binding.atom/>
+		 </reference>
+    </component>
+    
 	<component name="Catalog">
 		<implementation.java class="services.FruitsCatalogImpl"/> 
 		<property name="currencyCode">USD</property>
 		<service name="Catalog">
-			<t:binding.jsonrpc uri="CatalogJS"/>
+			<t:binding.jsonrpc/>
    		</service>
 		<reference name="currencyConverter" target="CurrencyConverter"/>	
 	</component> 
