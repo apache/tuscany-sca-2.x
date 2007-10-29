@@ -39,6 +39,7 @@
     <include schemaLocation="tuscany-sca-implementation-osgi.xsd"/>
     <include schemaLocation="tuscany-sca-implementation-resource.xsd"/>
     <include schemaLocation="tuscany-sca-implementation-script.xsd"/>
+    <include schemaLocation="tuscany-sca-implementation-widget.xsd"/>
     <include schemaLocation="tuscany-sca-implementation-xquery.xsd"/>
     
 </schema>
