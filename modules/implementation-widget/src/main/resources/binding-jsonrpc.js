@@ -490,5 +490,3 @@ function JSONRpcClient_getHTTPRequest()
     JSONRpcClient.httpObjectName = null;
     throw new JSONRpcClient.Exception(0, "Can't create XMLHttpRequest object");
 };
-
-bindingjsonrpc = "loaded";
