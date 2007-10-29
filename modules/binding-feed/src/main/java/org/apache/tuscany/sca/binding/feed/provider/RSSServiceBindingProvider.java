@@ -37,7 +37,7 @@ class RSSServiceBindingProvider implements ServiceBindingProvider {
     private RSSBinding binding;
     private ServletHost servletHost;
     private MessageFactory messageFactory;
-    private String uri;
+    private String servletMapping;
 
     RSSServiceBindingProvider(RuntimeComponent component,
                                      RuntimeComponentService service,
@@ -48,7 +48,6 @@ class RSSServiceBindingProvider implements ServiceBindingProvider {
         this.binding = binding;
         this.servletHost = servletHost;
         this.messageFactory = messageFactory;
-        uri = binding.getURI();
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -66,11 +65,15 @@ class RSSServiceBindingProvider implements ServiceBindingProvider {
         FeedBindingListenerServlet servlet =
             new FeedBindingListenerServlet(wire, messageFactory, "rss_2.0");
 
-        servletHost.addServletMapping(uri, servlet);
+        servletMapping = binding.getURI();
+        servletHost.addServletMapping(servletMapping, servlet);
+        
+        // Save the actual binding URI in the binding
+        binding.setURI(servletHost.getURLMapping(binding.getURI()).toString());
     }
 
     public void stop() {
-        servletHost.removeServletMapping(uri);
+        servletHost.removeServletMapping(servletMapping);
     }
 
 }

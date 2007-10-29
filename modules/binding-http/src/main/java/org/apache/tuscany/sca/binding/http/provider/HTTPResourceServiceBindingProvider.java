@@ -44,7 +44,7 @@ public class HTTPResourceServiceBindingProvider implements ServiceBindingProvide
     private HTTPResourceBinding binding;
     private MessageFactory messageFactory;
     private ServletHost servletHost;
-    private String uri; 
+    private String servletMapping;
     
     public HTTPResourceServiceBindingProvider(RuntimeComponent component,
                                               RuntimeComponentService service,
@@ -55,14 +55,6 @@ public class HTTPResourceServiceBindingProvider implements ServiceBindingProvide
         this.binding = binding;
         this.messageFactory = messageFactory;
         this.servletHost = servletHost;
-
-        uri = binding.getURI();
-        if (!uri.endsWith("/")) {
-            uri += "/";
-        }
-        if (!uri.endsWith("*")) {
-            uri += "*";
-        }
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -112,13 +104,24 @@ public class HTTPResourceServiceBindingProvider implements ServiceBindingProvide
         
         // Register the default resource servlet with the servlet host
         DefaultResourceServlet resourceServlet = new DefaultResourceServlet(locationURL.toString());
-        servletHost.addServletMapping(uri, resourceServlet);        
+
+        servletMapping = binding.getURI();
+        if (!servletMapping.endsWith("/")) {
+            servletMapping += "/";
+        }
+        if (!servletMapping.endsWith("*")) {
+            servletMapping += "*";
+        }
+        servletHost.addServletMapping(servletMapping, resourceServlet);
+        
+        // Save the actual binding URI in the binding
+        binding.setURI(servletHost.getURLMapping(binding.getURI()).toString());
     }
 
     public void stop() {
         
         // Unregister from the hosting server
-        servletHost.removeServletMapping(uri);
+        servletHost.removeServletMapping(servletMapping);
     }
 
 }

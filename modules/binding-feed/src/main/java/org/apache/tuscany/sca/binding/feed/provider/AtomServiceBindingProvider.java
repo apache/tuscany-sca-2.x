@@ -37,7 +37,7 @@ class AtomServiceBindingProvider implements ServiceBindingProvider {
     private AtomBinding binding;
     private ServletHost servletHost;
     private MessageFactory messageFactory;
-    private String uri;
+    private String servletMapping;
 
     AtomServiceBindingProvider(RuntimeComponent component,
                                       RuntimeComponentService service,
@@ -48,7 +48,6 @@ class AtomServiceBindingProvider implements ServiceBindingProvider {
         this.binding = binding;
         this.servletHost = servletHost;
         this.messageFactory = messageFactory;
-        uri = binding.getURI();
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -66,17 +65,20 @@ class AtomServiceBindingProvider implements ServiceBindingProvider {
         FeedBindingListenerServlet servlet =
             new FeedBindingListenerServlet(wire, messageFactory, "atom_1.0");
 
-        String mapping = uri;
-        if (!mapping.endsWith("/")) {
-            mapping += "/";
+        servletMapping = binding.getURI();
+        if (!servletMapping.endsWith("/")) {
+            servletMapping += "/";
         }
-        if (!mapping.endsWith("*")) {
-            mapping += "*";
+        if (!servletMapping.endsWith("*")) {
+            servletMapping += "*";
         }
-        servletHost.addServletMapping(mapping, servlet);
+        servletHost.addServletMapping(servletMapping, servlet);
+        
+        // Save the actual binding URI in the binding
+        binding.setURI(servletHost.getURLMapping(binding.getURI()).toString());
     }
 
     public void stop() {
-        servletHost.removeServletMapping(uri);
+        servletHost.removeServletMapping(servletMapping);
     }
 }
