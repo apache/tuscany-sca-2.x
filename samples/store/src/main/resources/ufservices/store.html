@@ -20,14 +20,15 @@
 <head>
 <title>Store</TITLE>
 
-<script type="text/javascript" src="binding-atom.js"></script>
-<script type="text/javascript" src="binding-jsonrpc.js"></script>
+<script type="text/javascript" src="store.js"></script>
+
 <script language="JavaScript">
 
-	//Reference
-	catalog = (new JSONRpcClient("../Catalog")).Catalog;
-	//Reference
-	shoppingCart = new AtomClient("../ShoppingCart");
+	//@Reference
+	var catalog = new Reference("catalog");
+	
+	//@Reference
+	var shoppingCart = new Reference("shoppingCart");
 
 
 	function catalog_getResponse(items) {
