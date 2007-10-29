@@ -20,25 +20,22 @@
 <head>
 <title>Store</TITLE>
 
-<script type="text/javascript" src="binding-atom.js"></script>
-<script type="text/javascript" src="binding-jsonrpc.js"></script>
+<script type="text/javascript" src="store.js"></script>
+
 <script language="JavaScript">
 
-	//Reference
-	catalog = (new JSONRpcClient("../Catalog")).Catalog;
-	//Reference
-	shoppingCart = new AtomClient("../ShoppingCart");
+	//@Reference
+	var catalog = new Reference("catalog");
+	
+	//@Reference
+	var shoppingCart = new Reference("shoppingCart");
 
 
 	function catalog_getResponse(items) {
 		var catalog = "";
-		//fixme
-		items = items.String_collection.String;
 		for (var i=0; i<items.length; i++) {
-		    //fixme
-		    var item = items[i]["$"];
 			catalog += '<input name="items" type="checkbox" value="' + 
-						item + '">' + item + ' <br>';
+						items[i] + '">' + items[i] + ' <br>';
 		}
 		document.getElementById('catalog').innerHTML=catalog;
 	}

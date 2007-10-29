@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package launch.merged;
+package launch;
 
 import java.net.URL;
 
@@ -27,19 +27,19 @@ import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 
-public class LaunchMergedStore {
+public class LaunchStoreMerger {
     public static void main(String[] args) throws Exception {
         System.out.println("Starting ...");
         SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         SCANode node = nodeFactory.createSCANode("http://localhost:8101/store", "http://localhost:9999");
         
-        URL contribution = SCAContributionUtil.findContributionFromClass(LaunchMergedStore.class);
+        URL contribution = SCAContributionUtil.findContributionFromClass(LaunchStoreMerger.class);
         node.addContribution("http://store", contribution);
         
-        node.addToDomainLevelComposite(new QName("http://store", "store-merged"));
+        node.addToDomainLevelComposite(new QName("http://store", "store-merger"));
         node.start();
 
-        System.out.println("store-merged.composite ready for big business !!!");
+        System.out.println("store-merger.composite ready for big business !!!");
         System.in.read();
         
         System.out.println("Stopping ...");

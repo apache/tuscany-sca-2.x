@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package services.merged;
+package services.merger;
 
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;

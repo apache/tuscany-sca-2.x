@@ -22,13 +22,19 @@
 		targetNamespace="http://store"
 		name="store-eu">
 		
-	<component name="ui">
-		<t:implementation.resource location="uiservices"/>
-		<service name="Resource">
-			<t:binding.http/>
-		</service> 	
-	</component>		
-
+    <component name="store">
+        <t:implementation.widget location="uiservices/store.html"/>
+        <service name="Widget">
+        	<t:binding.http/> 
+        </service>
+		<reference name="catalog" target="Catalog">
+		 	<t:binding.jsonrpc/>
+		 </reference>
+		 <reference name="shoppingCart" target="ShoppingCart">
+		 	<t:binding.atom/>
+		 </reference>
+    </component>
+    
 	<component name="ShoppingCart">
 		<implementation.java class="services.ShoppingCartImpl"/>
 		<service name="Collection">
@@ -37,11 +43,11 @@
 	</component>
     
 	<component name="Catalog">
-		<implementation.java class="services.merged.MergedCatalogImpl"/> 
+		<implementation.java class="services.merger.MergedCatalogImpl"/> 
 		<property name="currencyCode">EUR</property>
 		<service name="Catalog">
-			<t:binding.jsonrpc uri="CatalogJS"/>
-			<binding.ws uri="CatalogWS"/>
+			<t:binding.jsonrpc/>
+			<binding.ws uri="CatalogWebService"/>
    		</service>
 		<reference name="fruitsCatalog" target="CloudFruitsCatalog"/>	
 		<reference name="vegetablesCatalog" target="CloudVegetablesCatalog"/>	
