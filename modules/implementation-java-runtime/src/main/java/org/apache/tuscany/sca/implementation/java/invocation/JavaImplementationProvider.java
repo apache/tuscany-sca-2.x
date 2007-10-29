@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.implementation.java.invocation;
 
-import java.util.Hashtable;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -57,7 +56,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
     private JavaImplementation implementation;
     private JavaComponentContextProvider componentContextProvider;
     private RequestContextFactory requestContextFactory;
-    private Map<PolicySet, PolicyHandler> policyHandlers = new Hashtable<PolicySet, PolicyHandler>();
+    private Map<QName, String> policyHandlerClassNames = null;
     
     public JavaImplementationProvider(RuntimeComponent component,
                                       JavaImplementation implementation,
@@ -74,7 +73,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
             configuration.setProxyFactory(proxyService);
             componentContextProvider =
                 new JavaComponentContextProvider(component, configuration, dataBindingRegistry, propertyValueObjectFactory,
-                                      componentContextFactory, requestContextFactory, policyHandlers);
+                                      componentContextFactory, requestContextFactory, implementation.getPolicyHandlers());
 
             Scope scope = getScope();
 
@@ -103,24 +102,31 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
 
             componentContextProvider.configureProperties(component.getProperties());
             handleResources(implementation, proxyService);
-            loadPolicyHandlers();
+            loadPolicyHandlers(implementation);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
         
     }
     
-    private void loadPolicyHandlers() throws Exception {
-        Map<QName, PolicyHandler> availablePolicyHandlers = 
-            PolicySetHandlerUtil.getPolicyHandlers(Thread.currentThread().getContextClassLoader(), 
-                                                    "org.apache.tuscany.sca.policy.PolicySetHandlers");
+    private void loadPolicyHandlers(JavaImplementation javaImpl) throws Exception {
+        if ( policyHandlerClassNames == null ) {
+            policyHandlerClassNames = 
+                PolicySetHandlerUtil.getPolicyHandlers(Thread.currentThread().getContextClassLoader(), 
+                                                        "org.apache.tuscany.sca.implementation.java.PolicySetHandlers");
+        }
+        
         if ( implementation instanceof PolicySetAttachPoint ) {
             PolicyHandler aHandler = null;
             PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
             for ( PolicySet policySet : policiedImpl.getPolicySets() ) {
-                if ( ( aHandler = availablePolicyHandlers.get(policySet.getName()) ) != null ) {
+                String handlerClassName = policyHandlerClassNames.get(policySet.getName());
+                
+                if ( handlerClassName != null ) {
+                    aHandler = 
+                        (PolicyHandler)Class.forName(handlerClassName, true, Thread.currentThread().getContextClassLoader()).newInstance();
                     aHandler.setApplicablePolicySet(policySet);
-                    policyHandlers.put(policySet, aHandler);
+                    javaImpl.getPolicyHandlers().put(policySet, aHandler);
                 } else {
                     //FIXME : maybe there must be a warning thrown here
                 }

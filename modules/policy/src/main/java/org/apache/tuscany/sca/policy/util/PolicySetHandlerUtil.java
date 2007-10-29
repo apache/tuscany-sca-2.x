@@ -36,24 +36,21 @@ public class PolicySetHandlerUtil {
     private final static Logger logger = Logger.getLogger(PolicySetHandlerUtil.class.getName());
 
     /**
-     * Read the service name from a configuration file
+     * Read the PolicyHandler class names from a configuration file
      * 
      * @param classLoader
-     * @param name The name of the service class
-     * @return A class name which extends/implements the service class
+     * @param name The name of the configuration file 
+     * @return A map of policyset handlers keyed against the QName of the policyset
      * @throws IOException
      */
-    public static Map<QName, PolicyHandler> getPolicyHandlers(ClassLoader classLoader, 
-                                                             String name) throws IllegalAccessException, 
-                                                                                 InstantiationException,
-                                                                                 ClassNotFoundException,
-                                                                                 IOException {
+    public static Map<QName, String> getPolicyHandlers(ClassLoader classLoader, 
+                                                             String name) throws IOException {
         boolean debug = logger.isLoggable(Level.FINE);
         if (debug) {
             logger.fine("Discovering service providers using class loader " + classLoader);
         }
         
-        Map<QName, PolicyHandler> policyHandlersMap = new Hashtable<QName, PolicyHandler>();
+        Map<QName, String> policyHandlersMap = new Hashtable<QName, String>();
         for (URL url : Collections.list(classLoader.getResources("META-INF/services/" + name))) {
             if (debug) {
                 logger.fine("Reading service provider file: " + url.toExternalForm());
@@ -68,20 +65,20 @@ public class PolicySetHandlerUtil {
                 Enumeration keys = policyHanlderInfo.keys();
                 String policySetName;
                 String policyHandlerClassName;
-                PolicyHandler policyHandler;
+                //PolicyHandler policyHandler;
                 
                 while ( keys.hasMoreElements() ) {
                     policySetName = (String)keys.nextElement();
                     policyHandlerClassName = policyHanlderInfo.getProperty(policySetName);
                     
-                    policyHandler = 
-                        (PolicyHandler)Class.forName(policyHandlerClassName, true, classLoader).newInstance();
+                    //policyHandler = 
+                    //    (PolicyHandler)Class.forName(policyHandlerClassName, true, classLoader).newInstance();
                     
                     if (debug) {
-                        logger.fine("Registering policyset handler : " + policySetName + " = " + policyHandlerClassName);;
+                        logger.fine("Registering policyset handler classname : " + policySetName + " = " + policyHandlerClassName);;
                     }
                 
-                    policyHandlersMap.put(getQName(policySetName), policyHandler);
+                    policyHandlersMap.put(getQName(policySetName), policyHandlerClassName);
                 }
             } finally {
                 if (is != null) {

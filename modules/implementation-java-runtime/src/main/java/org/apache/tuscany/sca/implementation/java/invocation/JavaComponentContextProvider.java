@@ -277,12 +277,12 @@ public class JavaComponentContextProvider {
 
         Method method = JavaInterfaceUtil.findMethod(implClass, operation);
         
-        if ( component.getImplementation() instanceof PolicySetAttachPoint  &&
+        /*if ( component.getImplementation() instanceof PolicySetAttachPoint  &&
               !((PolicySetAttachPoint)component.getImplementation()).getPolicySets().isEmpty() ) {
             return new PoliciedJavaImplementationInvoker(operation, method, component, policyHandlers);
-        } else {
+        } else {*/
             return new JavaImplementationInvoker(operation, method, component);
-        }
+        //}
     }
 
     private static class OptimizedObjectFactory<T> implements ObjectFactory<T> {

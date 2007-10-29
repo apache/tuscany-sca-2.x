@@ -29,6 +29,8 @@ import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
 /**
  * Represents a Java implementation.
@@ -182,5 +184,10 @@ public interface JavaImplementation extends BaseJavaImplementation {
      * @param maxIdleTime the maxIdleTime to set
      */
     public void setMaxIdleTime(long maxIdleTime);
+    
+    /**
+     * @return the map of policy handlers that need to be applied to the implementation instance
+     */
+    public Map<PolicySet, PolicyHandler> getPolicyHandlers();
 
 }

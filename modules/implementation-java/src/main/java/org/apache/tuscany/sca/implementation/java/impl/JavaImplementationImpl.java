@@ -23,10 +23,13 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
 /**
  * A component type specialization for POJO implementations
@@ -49,6 +52,7 @@ public class JavaImplementationImpl extends BaseJavaImplementationImpl implement
     private long maxAge = -1;
     private long maxIdleTime = -1;
     private JavaScopeImpl scope = JavaScopeImpl.STATELESS;
+    private Map<PolicySet, PolicyHandler> policyHandlers = new Hashtable<PolicySet, PolicyHandler>();
 
     protected JavaImplementationImpl() {
         super();
@@ -152,5 +156,9 @@ public class JavaImplementationImpl extends BaseJavaImplementationImpl implement
 
     public void setMaxIdleTime(long maxIdleTime) {
         this.maxIdleTime = maxIdleTime;
+    }
+
+    public Map<PolicySet, PolicyHandler> getPolicyHandlers() {
+        return policyHandlers;
     }
 }
