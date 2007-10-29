@@ -38,13 +38,20 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-api</artifactId>
+            <artifactId>tuscany-host-jetty</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tutorial-assets</artifactId>
+            <version>1.1-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node-api</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
         </dependency>
 
@@ -72,13 +79,6 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-sca-axis2</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-jetty</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
