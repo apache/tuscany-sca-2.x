@@ -20,15 +20,15 @@
 <head>
 <title>Apache Tuscany Domain</TITLE>
 
-    <script type="text/javascript" src="../SCADomain/scaDomain.js"></script>
-
+	<script type="text/javascript" src="binding-jsonrpc.js"></script>
+	
     <script language="JavaScript">
     
-       domainManager = new JSONRpcClient("../DomainManagerComponent/DomainManagementService");
+       domainManager = new JSONRpcClient("../DomainManagerComponent/DomainManagementService").Service;
        var domainInfo;
 
        function getDomainInfo() {
-          domainManager.DomainManagementService.getDomainDescription(handleGetDomainInfo);
+          domainManager.getDomainDescription(handleGetDomainInfo);
        }
        
        function handleGetDomainInfo(result) {
@@ -83,7 +83,7 @@
        }
 
        function getNodeInfo(nodeURI) {
-          domainManager.DomainManagementService.getNodeDescription(nodeURI, handleGetNodeInfo);
+          domainManager.getNodeDescription(nodeURI, handleGetNodeInfo);
        }
        
        function handleGetNodeInfo(result) {
