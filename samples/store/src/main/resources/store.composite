@@ -19,16 +19,22 @@
 -->
 <composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
 		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
-		xmlns:s="http://store"			
+		targetNamespace="http://store"			
 		name="store">
 		
-	<component name="ufs">
-		<t:implementation.resource location="ufservices"/>
-		<service name="Resource">
-			<t:binding.http/>
-		</service> 	
-	</component>		
-  
+    <component name="store">
+        <t:implementation.widget location="ufservices/store.html"/>
+        <service name="Widget">
+        	<t:binding.http/> 
+        </service>
+		<reference name="catalog" target="Catalog">
+		 	<t:binding.jsonrpc/>
+		 </reference>
+		 <reference name="shoppingCart" target="ShoppingCart">
+		 	<t:binding.atom/>
+		 </reference>
+    </component>
+    
 	<component name="Catalog">
 		<implementation.java class="services.CatalogImpl"/> 
 		<property name="currencyCode">USD</property>
