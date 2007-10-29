@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -60,7 +61,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                                 CompositeBuilderMonitor monitor) {
         
         if (monitor == null) {
-            // Create a default monitor that does nothing.
+            // Create a default monitor that logs using the JDK logger.
             monitor = new CompositeBuilderMonitor() {
                 public void problem(Problem problem) {
                     if (problem.getSeverity() == Severity.INFO) {
@@ -68,7 +69,11 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                     } else if (problem.getSeverity() == Severity.WARNING) {
                         logger.warning(problem.toString());
                     } else if (problem.getSeverity() == Severity.ERROR) {
-                        logger.severe(problem.toString());
+                        if (problem.getCause() != null) {
+                            logger.log(Level.SEVERE, problem.toString(), problem.getCause());
+                        } else {
+                            logger.severe(problem.toString());
+                        }
                     }
                 }
             };

@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import org.apache.tuscany.sca.assembly.builder.Problem;
 
 /**
@@ -100,18 +97,16 @@ public class ProblemImpl implements Problem {
 
     @Override
     public String toString() {
-        StringWriter sw = new StringWriter();
-        PrintWriter writer = new PrintWriter(sw);
-        writer.format("[%s] %s %s", severity, message, resource);
-        //PrintUtil util = new PrintUtil(writer, false);
-        //if (model != null) {
-        //    writer.println();
-        //    util.print(model);
-        //}
-        if (cause != null) {
-            writer.println();
-            cause.printStackTrace(writer);
+        StringBuffer sb = new StringBuffer();
+        if (message !=  null) {
+            sb.append(message);
         }
-        return sw.toString();
+        if (resource != null) {
+            if (sb.length() != 0) {
+                sb.append(" - ");
+            }
+            sb.append(resource.toString());
+        }
+        return sb.toString();
     }
 }
