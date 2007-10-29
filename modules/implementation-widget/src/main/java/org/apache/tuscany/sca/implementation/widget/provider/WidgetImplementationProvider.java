@@ -18,14 +18,18 @@
  */
 package org.apache.tuscany.sca.implementation.widget.provider;
 
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.implementation.widget.WidgetImplementation;
-import org.apache.tuscany.sca.implementation.widget.WidgetReferenceServlet;
+import org.apache.tuscany.sca.implementation.widget.WidgetComponentServlet;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.osoa.sca.ServiceRuntimeException;
+
 
 /**
  * The model representing a resource implementation in an SCA assembly model.
@@ -33,8 +37,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 class WidgetImplementationProvider implements ImplementationProvider {
     private RuntimeComponent component;
     private WidgetImplementation implementation;
-
     private ServletHost servletHost;
+    private String servletMapping;
 
     /**
      * Constructs a new resource implementation provider.
@@ -57,13 +61,31 @@ class WidgetImplementationProvider implements ImplementationProvider {
 
     public void start() {
 
-        WidgetReferenceServlet widgetServlet = new WidgetReferenceServlet(component);
+        // Determine the widget URI
+        String widgetURI = null;
+        for (ComponentService componentService: component.getServices()) {
+            if (componentService.getName().equals("Widget")) {
+                if (componentService.getBindings().size() != 0) {
+                    widgetURI = componentService.getBindings().get(0).getURI();
+                }
+                break;
+            }
+        }
+        if (widgetURI == null) {
+            throw new ServiceRuntimeException("Could not find Widget service");
+        }
         
-        String uri = component.getURI() + "/" + component.getURI() + ".js";
-        servletHost.addServletMapping(uri, widgetServlet);        
+        // Register the widget's ComponentServlet under the same URI as the widget
+        String widgetArtifact = implementation.getLocation();
+        widgetArtifact = widgetArtifact.substring(0, widgetArtifact.lastIndexOf('.'));
+        widgetArtifact = widgetArtifact.substring(widgetArtifact.lastIndexOf('/') + 1);
+        servletMapping = widgetURI + "/" + widgetArtifact + ".js";
+        WidgetComponentServlet widgetComponentServlet = new WidgetComponentServlet(component, servletMapping);
+        servletHost.addServletMapping(servletMapping, widgetComponentServlet);        
     }
 
     public void stop() {
+        servletHost.removeServletMapping(servletMapping);
     }
 
 }

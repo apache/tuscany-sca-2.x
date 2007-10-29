@@ -22,9 +22,9 @@ package org.apache.tuscany.sca.implementation.widget;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WidgetProxyHelper {
-    protected static Map<String, String> proxyFileRegistry = new HashMap<String, String>();
-    protected static Map<String, String> proxyClient = new HashMap<String, String>();
+class WidgetProxyHelper {
+    private static Map<String, String> proxyFileRegistry = new HashMap<String, String>();
+    private static Map<String, String> proxyClient = new HashMap<String, String>();
 
     static {
         proxyFileRegistry.put("org.apache.tuscany.sca.binding.feed.impl.AtomBindingImpl", "binding-atom.js");
@@ -34,15 +34,11 @@ public class WidgetProxyHelper {
         proxyClient.put("org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding", "JSONRpcClient");
     }
     
-    protected WidgetProxyHelper() {
-        
-    }
-    
-    public static String getJavaScriptProxyFile(String bindingClass) {
+    static String getJavaScriptProxyFile(String bindingClass) {
         return proxyFileRegistry.get(bindingClass);
     }
     
-    public static String getJavaScriptProxyClient(String bindingClass) {
+    static String getJavaScriptProxyClient(String bindingClass) {
         return proxyClient.get(bindingClass);
     }
 }

@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  * The model representing a widget implementation in an SCA assembly model.
  */
 public class WidgetImplementation implements Implementation {
-    AssemblyFactory assemblyFactory;
+    private AssemblyFactory assemblyFactory;
     
     private Service widgetService;
     private List<Reference> references = null;
