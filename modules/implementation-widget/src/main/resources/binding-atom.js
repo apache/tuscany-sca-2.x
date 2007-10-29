@@ -88,5 +88,3 @@ function AtomClient(uri) {
 		return null;
 	}
 }
-
-bindingatom = "loaded";
