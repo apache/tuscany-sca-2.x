@@ -28,7 +28,7 @@ import java.net.Socket;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainFactory;
 
-public class SCADomainLauncher {
+public class SCADomainControllerLauncher {
 
     /**
      * @param args
@@ -64,49 +64,4 @@ public class SCADomainLauncher {
         System.exit(0);
     }
     
-    private static final String PING_HEADER =
-        "GET / HTTP/1.0\n" + "Host: localhost\n"
-            + "Content-Type: text/xml\n"
-            + "Connection: close\n"
-            + "Content-Length: ";
-    private static final String PING_CONTENT = "";
-    private static final String PING =
-        PING_HEADER + PING_CONTENT.getBytes().length + "\n\n" + PING_CONTENT;
-
-    /**
-     * Ping the domain controller at http://localhost:9999
-     * 
-     * @return true if the domain is there, false otherwise
-     * @throws IOException
-     */
-    public static boolean pingDomain() throws IOException {
-        try {
-            Socket client = new Socket("localhost", 9999);
-            OutputStream os = client.getOutputStream();
-            os.write(PING.getBytes());
-            os.flush();
-            read(client);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-    }
-
-    private static String read(Socket socket) throws IOException {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            StringBuffer sb = new StringBuffer();
-            String str;
-            while ((str = reader.readLine()) != null) {
-                sb.append(str);
-            }
-            return sb.toString();
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-        }
-    }
-
 }
