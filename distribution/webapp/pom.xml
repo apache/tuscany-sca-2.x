@@ -33,16 +33,6 @@
     <dependencies>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-domain</artifactId>
-            <version>${pom.version}</version>
-        </dependency>    
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-node-impl</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-assembly</artifactId>
             <version>${pom.version}</version>
         </dependency>
@@ -158,6 +148,11 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-core-spring</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-databinding</artifactId>
             <version>${pom.version}</version>
         </dependency>
@@ -183,6 +178,36 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-definitions</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-definitions-xml</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-domain</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-domain-api</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-domain-impl</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-extension-helper</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
             <version>${pom.version}</version>
         </dependency>
@@ -199,6 +224,56 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-host-webapp</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-implementation-java</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-implementation-java-xml</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-implementation-node</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-implementation-node-runtime</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-implementation-node-xml</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-implementation-notification</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-implementation-resource</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-implementation-script</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-implementation-spring</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
@@ -228,32 +303,17 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-implementation-java</artifactId>
+            <artifactId>tuscany-node</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-implementation-java-xml</artifactId>
+            <artifactId>tuscany-node-api</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-implementation-resource</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-implementation-script</artifactId>
-            <version>${pom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-implementation-spring</artifactId>
+            <artifactId>tuscany-node-impl</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
