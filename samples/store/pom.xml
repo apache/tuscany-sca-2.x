@@ -124,7 +124,7 @@
                         </goals>
                         <configuration>
                             <driver>org.apache.derby.jdbc.EmbeddedDriver</driver>
-                            <url>jdbc:derby:target/store_db;create=true</url>
+                            <url>jdbc:derby:${pom.basedir}/target/store_db;create=true</url>
                             <autocommit>true</autocommit>
                             <onError>continue</onError>
                             <delimiter>;</delimiter>
