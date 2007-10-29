@@ -50,6 +50,8 @@ import org.apache.tuscany.sca.domain.model.Node;
 import org.apache.tuscany.sca.domain.model.Service;
 import org.apache.tuscany.sca.domain.model.impl.DomainModelFactoryImpl;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
+import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.node.NodeFactoryImpl;
@@ -126,6 +128,15 @@ public class SCADomainImpl implements SCADomainSPI  {
             // create a runtime for the domain management services to run on
             domainManagementRuntime = new ReallySmallRuntime(domainClassLoader);
             domainManagementRuntime.start();
+            
+            // Configure the default server port
+            int port = URI.create(domainModel.getDomainURI()).getPort();
+            if (port != -1) {
+                ServletHostExtensionPoint servletHosts = domainManagementRuntime.getExtensionPointRegistry().getExtensionPoint(ServletHostExtensionPoint.class);
+                for (ServletHost servletHost: servletHosts.getServletHosts()) {
+                    servletHost.setDefaultPort(port);
+                }
+            }
             
             // Create an in-memory domain level management composite
             AssemblyFactory assemblyFactory = domainManagementRuntime.getAssemblyFactory();
