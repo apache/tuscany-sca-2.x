@@ -169,5 +169,8 @@ public class DomainManagerNodeImpl implements SCANode {
 
     public void addToDomainLevelComposite(String compositePath) throws NodeException {
     }
+
+    public void startContribution(String contributionURI) throws NodeException {
+    }
       
 }
