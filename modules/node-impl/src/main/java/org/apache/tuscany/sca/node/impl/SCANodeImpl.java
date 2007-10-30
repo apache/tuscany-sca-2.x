@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
@@ -314,7 +315,22 @@ public class SCANodeImpl implements SCANode {
             throw new NodeException(ex);
         }        
     }
-    
+
+    public void startContribution(String contributionURI) throws NodeException {
+        try {
+
+            Contribution contribution = contributions.get(contributionURI);
+            for (Composite composite : contribution.getDeployables()) {
+                    startComposite(composite);
+            }  
+
+        } catch (ActivationException e) {
+            throw new NodeException(e);
+        } catch (CompositeBuilderException e) {
+            throw new NodeException(e);
+        }
+    }
+
     public void removeContribution(String contributionURI) throws NodeException {
         try { 
             Contribution contribution = contributions.get(contributionURI);
@@ -454,17 +470,7 @@ public class SCANodeImpl implements SCANode {
                     if (composite == null) {
                         logger.log(Level.INFO, "Composite not found during start: " + compositeName);
                     } else {
-                        logger.log(Level.INFO, "Starting composite: " + compositeName);
-                        
-                        // Add the composite to the top level domain
-                        nodeComposite.getIncludes().add(composite);
-                        nodeRuntime.getCompositeBuilder().build(composite); 
-                        
-                        // activate the composite
-                        nodeRuntime.getCompositeActivator().activate(composite);              
-                        
-                        //start the composite
-                        nodeRuntime.getCompositeActivator().start(composite);
+                        startComposite(composite);
                     }
                 }
             }
@@ -472,6 +478,20 @@ public class SCANodeImpl implements SCANode {
         } catch (Exception ex) {
             throw new NodeException(ex);
         }  
+    }
+
+    private void startComposite(Composite composite) throws CompositeBuilderException, ActivationException {
+        logger.log(Level.INFO, "Starting composite: " + composite.getName());
+        
+        // Add the composite to the top level domain
+        nodeComposite.getIncludes().add(composite);
+        nodeRuntime.getCompositeBuilder().build(composite); 
+        
+        // activate the composite
+        nodeRuntime.getCompositeActivator().activate(composite);              
+        
+        //start the composite
+        nodeRuntime.getCompositeActivator().start(composite);
     }    
 
     private void stopComposites() throws NodeException {
