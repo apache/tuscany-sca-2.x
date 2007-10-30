@@ -316,12 +316,28 @@ public class SCANodeImpl implements SCANode {
     }
     
     public void removeContribution(String contributionURI) throws NodeException {
-        try {     
+        try { 
+            Contribution contribution = contributions.get(contributionURI);
+            
+            // remove the local record of composites associated with this contribution
+            for (DeployedArtifact artifact : contribution.getArtifacts()) {
+                if (artifact.getModel() instanceof Composite) {
+                    Composite composite = (Composite)artifact.getModel();
+                    composites.remove(composite.getName());
+                    compositeFiles.remove(composite.getURI());
+                    compositesToStart.remove(composite.getName());
+                }
+            }            
+        
+            // remove the contribution from the runtime
             nodeRuntime.getContributionService().remove(contributionURI);
+            
+            // remove the local record of the contribution
+            contributions.remove(contributionURI);
         } catch (Exception ex) {
             throw new NodeException(ex);
         }   
-        contributions.remove(contributionURI);
+
     }
 
     private void removeAllContributions() throws NodeException {
@@ -329,8 +345,14 @@ public class SCANodeImpl implements SCANode {
             // Remove all contributions
             for (String contributionURI : contributions.keySet()){
                 nodeRuntime.getContributionService().remove(contributionURI);
-                contributions.remove(contributionURI);
             }
+            
+            // remove local records
+            contributions.clear();
+            composites.clear();
+            compositeFiles.clear();
+            compositesToStart.clear();
+            
         } catch (Exception ex) {
             throw new NodeException(ex);
         }   
@@ -467,15 +489,10 @@ public class SCANodeImpl implements SCANode {
 
                 nodeRuntime.getCompositeActivator().stop(composite);
                 nodeRuntime.getCompositeActivator().deactivate(composite);
-                
-                composites.remove(compositeName);
-                compositeFiles.remove(composite.getURI());
             }
             
-            compositesToStart.clear(); 
         } catch (NodeException ex) {
-        throw ex;            
-            
+            throw ex;                  
         } catch (Exception ex) {
             throw new NodeException(ex);
         }              

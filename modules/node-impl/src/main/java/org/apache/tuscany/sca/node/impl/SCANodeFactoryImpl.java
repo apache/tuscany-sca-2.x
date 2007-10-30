@@ -33,12 +33,24 @@ public class SCANodeFactoryImpl extends SCANodeFactory {
     
         
     /**
-     * Returns a new SCA domain finder instance.
+     * Create a new SCA node factory instance.
      *  
-     * @return a new SCA domain finder
+     * @return a new SCA node factory
      */
     public SCANodeFactoryImpl() {
 
+    }
+    
+    /**
+     * Creates a new standalone SCA node. i.e. a node that is not connected to a 
+     * wider distributed domain
+     * 
+     * @param nodeURI the URI of the node, this is the endpoint URI of the
+     * node administration service
+     * @return a new SCA node.
+     */
+    public SCANode createSCANode(String nodeURI) throws NodeException {
+        return new SCANodeImpl(nodeURI, null, null);
     }
 
     /**

@@ -66,6 +66,16 @@ public abstract class SCANodeFactory {
     }
 
     /**
+     * Creates a new standalone SCA node. i.e. a node that is not connected to a 
+     * wider distributed domain
+     * 
+     * @param nodeURI the URI of the node, this is the endpoint URI of the
+     * node administration service
+     * @return a new SCA node.
+     */
+    public abstract SCANode createSCANode(String nodeURI) throws NodeException;
+    
+    /**
      * Creates a new SCA node.
      * 
      * @param nodeURI the URI of the node, this is the endpoint URI of the
