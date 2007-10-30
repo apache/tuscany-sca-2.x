@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.domain.management;
 
 import org.apache.tuscany.sca.domain.model.Domain;
+import org.osoa.sca.annotations.Remotable;
 
 
 
@@ -28,6 +29,7 @@ import org.apache.tuscany.sca.domain.model.Domain;
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-11 18:45:36 +0100 (Tue, 11 Sep 2007) $
  */
+@Remotable
 public interface DomainManagementService {
      
     /**
