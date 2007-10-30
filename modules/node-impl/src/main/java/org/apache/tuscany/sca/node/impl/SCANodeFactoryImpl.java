@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.node.impl;
 
-import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.node.NodeException;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;

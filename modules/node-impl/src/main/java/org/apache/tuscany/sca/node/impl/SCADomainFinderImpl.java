@@ -23,7 +23,6 @@ import java.util.HashMap;
 
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.node.NodeException;
 import org.apache.tuscany.sca.node.SCADomainFinder;
 
 /**

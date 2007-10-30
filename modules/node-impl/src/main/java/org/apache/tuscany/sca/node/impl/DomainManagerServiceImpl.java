@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.node.impl;
 
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

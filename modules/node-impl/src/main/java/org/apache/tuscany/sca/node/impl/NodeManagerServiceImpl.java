@@ -28,9 +28,7 @@ import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.RuntimeComponentImpl;
-import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.node.ComponentInfo;
 import org.apache.tuscany.sca.node.ComponentManagerService;
 import org.apache.tuscany.sca.node.NodeManagerInitService;
