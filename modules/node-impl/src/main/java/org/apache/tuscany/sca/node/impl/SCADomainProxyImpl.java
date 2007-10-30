@@ -244,7 +244,9 @@ public class SCADomainProxyImpl implements SCADomainProxySPI {
     }  
     
     public void registerContribution(String nodeURI, String contributionURI, String contributionURL){
-        domainManager.registerContribution(nodeURI, contributionURI, contributionURL);
+        if (domainManager != null) {
+            domainManager.registerContribution(nodeURI, contributionURI, contributionURL);
+        }
     }
     
     public void unregisterContribution(String contributionURI){
