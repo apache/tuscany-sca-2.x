@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.webapp;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -37,21 +36,15 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.contribution.service.ContributionException;
-import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.node.NodeException;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
-import org.apache.tuscany.sca.node.impl.SCANodeImpl;
 
 /**
  * A ServletContextListener for the Tuscany WAR distribution.
  * 
  * Starts and stops a Tuscany SCA domain Node for the webapp. 
- * 
- * TODO: Use Node instead of NodeImpl?
  */
 public class WarContextListener implements ServletContextListener {
     private final static Logger logger = Logger.getLogger(WarContextListener.class.getName());
@@ -105,32 +98,25 @@ public class WarContextListener implements ServletContextListener {
         }
     }
 
-    protected void initNode() throws ContributionException, ActivationException, IOException,
-        CompositeBuilderException, URISyntaxException {
-        try {
-            logger.log(Level.INFO, "SCA node starting");
-    
-            classLoader = new AddableURLClassLoader(new URL[] {}, Thread.currentThread().getContextClassLoader());
-            Thread.currentThread().setContextClassLoader(classLoader);
-            
-            SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-            node = nodeFactory.createSCANode(nodeName, domainName);
-            domain = node.getDomain();
-            
-    
-            existingContributions = new HashMap<URL, Long>();
-            URL[] contributions = getContributionJarURLs(repository);
-            for (URL contribution : contributions) {
-                    addContribution(contribution);
-            }
-            
-            node.start();
-    
-            initHotDeploy(repository);
-        } catch (Throwable e) {
-            e.printStackTrace();
-            logger.log(Level.WARNING, "Exception adding contribution: " + e);
+    protected void initNode() throws NodeException, URISyntaxException {
+        logger.log(Level.INFO, "SCA node starting");
+        
+        classLoader = new AddableURLClassLoader(new URL[] {}, Thread.currentThread().getContextClassLoader());
+        Thread.currentThread().setContextClassLoader(classLoader);
+        
+        SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
+        node = nodeFactory.createSCANode(nodeName, domainName);
+        domain = node.getDomain();
+
+        existingContributions = new HashMap<URL, Long>();
+        URL[] contributions = getContributionJarURLs(repository);
+        for (URL contribution : contributions) {
+                addContribution(contribution);
         }
+        
+        node.start();
+
+        initHotDeploy(repository);
     }
 
     protected void addContribution(URL contribution) throws URISyntaxException, NodeException {
@@ -195,9 +181,18 @@ public class WarContextListener implements ServletContextListener {
         for (URL contribution : addedContributions) {
             try {
                 addContribution(contribution);
+                node.startContribution(contribution.toString());
             } catch (Throwable e) {
                 e.printStackTrace();
                 logger.log(Level.WARNING, "Exception adding contribution: " + e);
+            }
+        }
+        if (addedContributions.size() > 0) {
+            try {
+                node.start();
+            } catch (NodeException e) {
+                e.printStackTrace();
+                logger.log(Level.WARNING, "Exception restarting node for added contributions: " + e);
             }
         }
         
