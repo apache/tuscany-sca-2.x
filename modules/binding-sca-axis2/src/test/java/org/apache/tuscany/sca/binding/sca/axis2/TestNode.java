@@ -286,5 +286,8 @@ public class TestNode implements SCANode {
                 return componentContext.createSelfReference(businessInterface);
             }
         }
+    }
+
+    public void startContribution(String contributionURI) throws NodeException {
     }     
 }
