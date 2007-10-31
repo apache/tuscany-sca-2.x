@@ -29,17 +29,25 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
   </listener>
 
   <context-param>
+     <param-name>repositoryFolder</param-name>
+     <param-value>/TuscanyRepository</param-value>
+  </context-param>
+
+  <!-- context-param>
      <param-name>domainName</param-name>
      <param-value>http://localhost:8877/</param-value>
-  </context-param>
+  </context-param -->
+
   <context-param>
      <param-name>nodeName</param-name>
      <param-value>http://localhost:8080/</param-value>
   </context-param>
+
   <context-param>
      <param-name>hotDeployInterval</param-name>
      <param-value>2000</param-value>
   </context-param>
+
   <context-param>
      <param-name>hotUpdate</param-name>
      <param-value>no</param-value>
