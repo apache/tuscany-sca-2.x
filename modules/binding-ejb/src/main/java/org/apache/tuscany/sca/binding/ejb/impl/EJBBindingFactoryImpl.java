@@ -16,19 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.binding.ejb.impl;
 
-package org.apache.tuscany.sca.binding.ejb;
+import org.apache.tuscany.sca.binding.ejb.EJBBinding;
+import org.apache.tuscany.sca.binding.ejb.EJBBindingFactory;
 
-import javax.xml.namespace.QName;
+public class EJBBindingFactoryImpl implements EJBBindingFactory {
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.core.ModuleActivator;
-import org.apache.tuscany.sca.extension.helper.impl.BindingsActivator;
-
-public class EJBBindingsActivator extends BindingsActivator implements ModuleActivator {
-
-    @Override
-    protected QName getBindingQName(Class bindingClass) {
-        return new QName(Constants.SCA10_NS, "binding.ejb");
+    public EJBBinding createEJBBinding() {
+        return new EJBBindingImpl();
     }
+
 }

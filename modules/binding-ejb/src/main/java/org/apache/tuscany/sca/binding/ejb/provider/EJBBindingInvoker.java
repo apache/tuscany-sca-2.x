@@ -16,8 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.ejb;
+package org.apache.tuscany.sca.binding.ejb.provider;
 
+import org.apache.tuscany.sca.binding.ejb.EJBBinding;
 import org.apache.tuscany.sca.binding.ejb.util.EJBHandler;
 import org.apache.tuscany.sca.binding.ejb.util.NamingEndpoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -27,15 +28,15 @@ import org.apache.tuscany.sca.invocation.Message;
 /**
  * EJBTargetInvoker
  */
-public class EJBTargetInvoker implements Invoker {
+public class EJBBindingInvoker implements Invoker {
 
     private Operation operation;
     private String location;
     private Class serviceInterface;
 
-    public EJBTargetInvoker(EJBBinding ejbBinding, Class serviceInterface, Operation operation) {
+    public EJBBindingInvoker(EJBBinding ejbBinding, Class serviceInterface, Operation operation) {
         this.serviceInterface = serviceInterface;
-        this.location = ejbBinding.getUri();
+        this.location = ejbBinding.getURI();
         this.operation = operation;
     }
 

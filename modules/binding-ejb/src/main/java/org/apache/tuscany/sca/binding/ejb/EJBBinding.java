@@ -18,85 +18,75 @@
  */
 package org.apache.tuscany.sca.binding.ejb;
 
+import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Base;
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 
 /**
  * An implementation of EJBBinding.
  */
-public class EJBBinding {
+public interface EJBBinding extends Binding, Base {
+    // Contants used when describing the EJB binding
+    // model and for setting up defaults
+    String BINDING_EJB = "binding.ejb";
+    QName BINDING_JMS_QNAME = new QName(Constants.SCA10_NS, BINDING_EJB);
 
-    /**
-     * corba location For exmaple,
-     * "corbaname:iiop:localhost:2809/NameServiceServerRoot#ejb/MyEJBHome"
-     */
-    private String uri;
+    // Constants for the XML describing the EJB Binding
+    String HOME_INTERFACE = "homeInterface";
+    String EJB_LINK_NAME = "ejb-link-name";
+    String SESSION_TYPE = "session-type";
+    String EJB_VERSION = "ejb-version";
+    String NAME = "name";
+    String POLICY_SETS = "policySets";
+    String REQUIRES = "requires";
+    String URI = "uri";
 
-    /**
-     * homeInterface. remote or local
-     */
-    private String homeInterface;
+    // Enums for the EJB Binding
+    enum EJBVersion {
+        EJB2, EJB3
+    };
 
-    /**
-     * The ejb-link-name attribute allows a SCA client to bind to an EJB that is
-     * packaged in the same JEE EAR file as the SCA client. This is functionally
-     * equivalent to using the <ejb-link/> subelement of the <ejb-ref/> element
-     * in s EJB deployment descriptor. Used only for Service binding
-     */
-    private String ejbLinkName;
+    enum SessionType {
+        STATEFUL, STATELESS
+    };
 
     /**
      * Gets the homeInterface.
      * 
      * @return home interface of the service binding
      */
-    public String getHomeInterface() {
-        return homeInterface;
-    }
+    String getHomeInterface();
 
     /**
      * Set homeInterface
      * 
      * @param homeInterface
      */
-    public void setHomeInterface(String homeInterface) {
-        this.homeInterface = homeInterface;
-    }
+    void setHomeInterface(String homeInterface);
 
     /**
      * get ejb-link-name
      * 
      * @return ejb-link-name
      */
-    public String getEjbLinkName() {
-        return ejbLinkName;
-    }
+    String getEjbLinkName();
 
     /**
      * Set ejb-link-name
      * 
      * @param ejb-link-name
      */
-    public void setEjbLinkName(String ejbLinkName) {
-        this.ejbLinkName = ejbLinkName;
-    }
+    void setEjbLinkName(String ejbLinkName);
 
-    // TODO: uri needs to be part of runtime extension helper
-    
-    /**
-     * Sets binding URI.
-     * 
-     * @param value the binding uri
-     */
-    public void setUri(String value) {
-        this.uri = value;
-    }
+    SessionType getSessionType();
+    void setSessionType(SessionType sessionType);
 
-    /**
-     * gets binding URI.
-     * 
-     * @return value the binding uri
-     */
-    public String getUri() {
-        return uri;
-    }
+    EJBVersion getEjbVersion();
+    void setEjbVersion(EJBVersion ejbVersion);
+
+    // FIXME: Should use Intent instead of String
+    String getRequires();
+    void setRequires(String requires);
 }
