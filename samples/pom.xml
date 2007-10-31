@@ -49,8 +49,6 @@
                 <module>calculator-webapp</module>
                 <module>calculator-ws-webapp</module>
                 <module>chat-webapp</module>
-                <module>company-das</module>
-                <module>company-das-webapp</module>
                 <module>databinding-echo</module>
                 <!--module>domain-webapp</module-->
                 <module>feed-aggregator</module>
