@@ -48,7 +48,7 @@ public class AlertsServiceImpl implements AlertsService {
     }
     
     @Reference
-    public void alertsSources(AlertsSourcesService alertsSources) {
+    public void setAlertsSources(AlertsSourcesService alertsSources) {
         this.alertsSources = alertsSources;
     }    
     
