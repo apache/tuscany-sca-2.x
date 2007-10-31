@@ -74,7 +74,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
             this.serviceContract = service.getInterfaceContract();
         }
         
-        setDataBinding(serviceContract.getInterface(), false);
+        setDataBinding(serviceContract.getInterface());
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -165,8 +165,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         return ((JavaInterface)targetInterface).getJavaClass();
     }
     
-    private void setDataBinding(Interface interfaze, boolean isReference) {
-        interfaze.setDefaultDataBinding(JSONDataBinding.NAME);
+    private void setDataBinding(Interface interfaze) {
         List<Operation> operations = interfaze.getOperations();
         for (Operation operation : operations) {
             operation.setDataBinding(JSONDataBinding.NAME);
@@ -174,22 +173,14 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
             if (inputType != null) {
                 List<DataType> logical = inputType.getLogical();
                 for (DataType inArg : logical) {
-                    if (SimpleJavaDataBinding.NAME.equals(inArg.getDataBinding())) {
-                        if (!isReference) {
-                            inArg.setDataBinding(JSONDataBinding.NAME);
-                        }
-                    } else {
+                    if (!SimpleJavaDataBinding.NAME.equals(inArg.getDataBinding())) {
                         inArg.setDataBinding(JSONDataBinding.NAME);
-                    }
+                    } 
                 }
             }
             DataType outputType = operation.getOutputType();
             if (outputType != null) {
-                if (SimpleJavaDataBinding.NAME.equals(outputType.getDataBinding())) {
-                    if (!isReference) {
-                        outputType.setDataBinding(JSONDataBinding.NAME);
-                    }
-                } else {
+                if (!SimpleJavaDataBinding.NAME.equals(outputType.getDataBinding())) {
                     outputType.setDataBinding(JSONDataBinding.NAME);
                 }
             }

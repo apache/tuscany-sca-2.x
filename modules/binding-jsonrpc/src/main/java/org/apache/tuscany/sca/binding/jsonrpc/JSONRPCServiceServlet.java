@@ -243,6 +243,9 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
             } catch (JSONException e1) {
                 throw new ServiceRuntimeException(e);
             }
+        } catch(RuntimeException e) {
+            e.printStackTrace();
+            throw e;
         }
         
         //get response to send to client
