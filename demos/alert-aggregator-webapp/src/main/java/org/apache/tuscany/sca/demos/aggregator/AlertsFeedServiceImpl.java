@@ -49,7 +49,7 @@ public class AlertsFeedServiceImpl implements Collection {
     private AlertsService alerts;
     
     @Reference
-    public void alerts(AlertsService alerts) {
+    public void setAlerts(AlertsService alerts) {
         this.alerts = alerts;
     }    
     
