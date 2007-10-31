@@ -45,11 +45,15 @@
    List companyList = null;
 
    try{
-		dasService.configureService(getClass().getClassLoader().getResourceAsStream("CompanyConfig.xml"));
+		dasService.configureService(this.getClass().getClassLoader().getResourceAsStream("company.xml"));
 		DataObject root = dasService.executeCommand("all companies", null);
    	    companyList = root.getList("COMPANY");
+   	    if(companyList == null) {
+   	        System.out.println("::NULL::");
+   	    }
    }catch(Exception e){
        //TODO: handle case where dasService can't be initiated properly
+       e.printStackTrace();
    }
 
 %>

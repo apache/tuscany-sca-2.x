@@ -30,7 +30,7 @@ import commonj.sdo.DataObject;
 @Scope("COMPOSITE")
 public class DASServiceImpl implements DASService {
 
-    protected DAS das = null;
+    private DAS das = null;
 
 
     /**

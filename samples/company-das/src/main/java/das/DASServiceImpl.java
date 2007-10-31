@@ -23,6 +23,7 @@ import java.util.Vector;
 
 import org.apache.tuscany.das.rdb.Command;
 import org.apache.tuscany.das.rdb.DAS;
+import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Scope;
 
 import commonj.sdo.DataObject;
@@ -30,8 +31,7 @@ import commonj.sdo.DataObject;
 @Scope("COMPOSITE")
 public class DASServiceImpl implements DASService {
 
-    protected DAS das = null;
-
+    private DAS das = null;
 
     /**
      * Initialize DAS
@@ -49,6 +49,13 @@ public class DASServiceImpl implements DASService {
         }
 
         this.das = DAS.FACTORY.createDAS(config);
+    }
+    
+    @Destroy
+    protected void destroyDAS() {
+        if(das != null) {
+            das.releaseResources();
+        }
     }
 
     /**
