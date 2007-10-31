@@ -23,14 +23,14 @@
     <!-- 
         <service name="CreditCheckService" promote="CreditCheckServiceComponent">
         <interface.wsdl interface="http://credit#wsdl.interface(CreditCheck)" />
-        <binding.ws wsdlElement="http://credit#wsdl.endpoint(CreditCheckService/CreditCheckSoapPort)" />
+        <binding.ws wsdlElement="http://credit#wsdl.port(CreditCheckService/CreditCheckSoapPort)" />
         </service>
     -->
 
     <component name="CreditCheckServiceComponent">
         <implementation.java class="credit.CreditCheckImpl" />
         <service name="CreditCheck">
-            <binding.ws wsdlElement="http://credit#wsdl.endpoint(CreditCheckService/CreditCheckSoapPort)" />
+            <binding.ws wsdlElement="http://credit#wsdl.port(CreditCheckService/CreditCheckSoapPort)" />
         </service>
     </component>
 
