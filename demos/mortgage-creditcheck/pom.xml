@@ -26,7 +26,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>demo-mortgage-creditcheck</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>Apache Tuscany SCA Mortgage Credit Check Demo</name>
     <description>A sample Mortgage application made of several SCA components wired together.</description>
 
@@ -53,7 +53,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-webapp</artifactId>
+            <artifactId>tuscany-host-jetty</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
