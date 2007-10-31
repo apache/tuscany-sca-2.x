@@ -28,7 +28,7 @@ import commonj.sdo.DataObject;
 
 public class DASServiceTestCase extends TestCase {
 
-    SCADomain scaDomain;
+    private SCADomain scaDomain;
     private DASService dasService;
     
     @Override
@@ -43,7 +43,7 @@ public class DASServiceTestCase extends TestCase {
     }
 
     public void testDAS() throws Exception{
-        dasService.configureService(getClass().getResourceAsStream("/CompanyConfig.xml"));
+        dasService.configureService(getClass().getResourceAsStream("/company.xml"));
         DataObject root = dasService.executeCommand("all companies", null);
         List companyList = root.getList("COMPANY");
         

@@ -22,11 +22,6 @@
            xmlns:das-service="http://das-service"
            name="DASService">
 
-    <service name="DASService"  promote="DASServiceComponent">
-        <interface.java interface="das.DASService"/>
-        <reference>DASServiceComponent</reference>
-    </service>
-    
     <component name="DASServiceComponent">
 	    <implementation.java class="das.DASServiceImpl"/>
     </component>
