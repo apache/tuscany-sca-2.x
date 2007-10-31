@@ -277,7 +277,12 @@ public class WarContextListener implements ServletContextListener {
 
         useHotUpdate = Boolean.valueOf(servletContext.getInitParameter("hotUpdate")).booleanValue();
 
-        repository = new File(servletContext.getRealPath(REPOSITORY_FOLDER_NAME));
+        if (servletContext.getInitParameter("repositoryFolder") != null) {
+            repository = new File(servletContext.getInitParameter("repositoryFolder"));
+        } else {
+            repository = new File(servletContext.getRealPath(REPOSITORY_FOLDER_NAME));
+        }
+        logger.info("Tuscany Contribution Repository -> " + repository);
     }
 
 }
