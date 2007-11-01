@@ -20,16 +20,17 @@ package org.apache.tuscany.sca.databinding;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.tuscany.sca.databinding.impl.ServiceConfigurationUtil;
+import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
+import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -61,17 +62,19 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
     }
 
     public void addDataBinding(DataBinding dataBinding) {
-        if (logger.isLoggable(Level.FINE)) {
-            String className = dataBinding.getClass().getName();
-            boolean lazy = false;
-            if (dataBinding instanceof LazyDataBinding) {
-                className = ((LazyDataBinding)dataBinding).className;
-                lazy = true;
-            }
-            logger.fine("Adding databinding: " + className + ";type=" + dataBinding.getName() + ",lazy=" + lazy);
-        }
+    	if (logger.isLoggable(Level.FINE)) {
+			String className = dataBinding.getClass().getName();
+			boolean lazy = false;
+			if (dataBinding instanceof LazyDataBinding) {
+				className = ((LazyDataBinding) dataBinding).dataBindingDeclaration.getClassName();
+				lazy = true;
+			}
+			logger.fine("Adding databinding: " + className + ";type="
+					+ dataBinding.getName() + ",lazy=" + lazy);
+		}
         databindings.add(dataBinding);
-        bindings.put(dataBinding.getName().toLowerCase(), dataBinding);
+		bindings.put(dataBinding.getName().toLowerCase(), dataBinding);
+
         String[] aliases = dataBinding.getAliases();
         if (aliases != null) {
             for (String alias : aliases) {
@@ -105,24 +108,22 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             return;
 
         // Get the databinding service declarations
-        ClassLoader classLoader = DataBinding.class.getClassLoader();
-        List<String> dataBindingDeclarations;
+        Set<ServiceDeclaration> dataBindingDeclarations;
         try {
             dataBindingDeclarations =
-                ServiceConfigurationUtil.getServiceClassNames(classLoader, DataBinding.class.getName());
+                ServiceDiscovery.getInstance().getServiceDeclarations(DataBinding.class);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
 
         // Load data bindings
-        for (String dataBindingDeclaration : dataBindingDeclarations) {
-            Map<String, String> attributes = ServiceConfigurationUtil.parseServiceDeclaration(dataBindingDeclaration);
-            String className = attributes.get("class");
+        for (ServiceDeclaration dataBindingDeclaration : dataBindingDeclarations) {
+            Map<String, String> attributes = dataBindingDeclaration.getAttributes();
             String type = attributes.get("type");
             String name = attributes.get("name");
 
             // Create a data binding wrapper and register it
-            DataBinding dataBinding = new LazyDataBinding(type, name, classLoader, className);
+            DataBinding dataBinding = new LazyDataBinding(type, name, dataBindingDeclaration);
             addDataBinding(dataBinding);
         }
 
@@ -137,17 +138,15 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
 
         private String name;
         private String[] aliases;
-        private WeakReference<ClassLoader> classLoader;
-        private String className;
+        private ServiceDeclaration dataBindingDeclaration;
         private DataBinding dataBinding;
 
-        private LazyDataBinding(String type, String name, ClassLoader classLoader, String className) {
+        private LazyDataBinding(String type, String name, ServiceDeclaration dataBindingDeclaration) {
             this.name = type;
             if (name != null) {
                 this.aliases = new String[] {name};
             }
-            this.classLoader = new WeakReference<ClassLoader>(classLoader);
-            this.className = className;
+            this.dataBindingDeclaration = dataBindingDeclaration;
         }
 
         /**
@@ -160,7 +159,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             if (dataBinding == null) {
                 try {
                     Class<DataBinding> dataBindingClass =
-                        (Class<DataBinding>)Class.forName(className, true, classLoader.get());
+                        (Class<DataBinding>)dataBindingDeclaration.loadClass();
                     Constructor<DataBinding> constructor = dataBindingClass.getConstructor();
                     dataBinding = constructor.newInstance();
                 } catch (Exception e) {

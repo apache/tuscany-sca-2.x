@@ -20,10 +20,12 @@ package org.apache.tuscany.sca.contribution.resolver;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
+import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
+import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
+
 
 /**
  * The default implementation of a model resolver Class registry.
@@ -33,7 +35,7 @@ import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
 public class DefaultModelResolverExtensionPoint implements ModelResolverExtensionPoint {
     
     private final Map<Class<?>, Class<? extends ModelResolver>> resolvers = new HashMap<Class<?>, Class<? extends ModelResolver>>();
-    private Map<String, String> loadedResolvers;
+    private Map<String, ServiceDeclaration> loadedResolvers;
 
     /**
      * Constructs a new model resolver registry.
@@ -49,6 +51,7 @@ public class DefaultModelResolverExtensionPoint implements ModelResolverExtensio
         resolvers.remove(modelType);
     }
 
+    @SuppressWarnings("unchecked")
     public Class<? extends ModelResolver> getResolver(Class<?> modelType) {
         loadModelResolvers();
         
@@ -56,10 +59,10 @@ public class DefaultModelResolverExtensionPoint implements ModelResolverExtensio
         for (Class<?> c : classes) {
             Class<? extends ModelResolver> resolver = resolvers.get(c);
             if (resolver == null) {
-                String className = loadedResolvers.get(c.getName());
-                if (className != null) {
+                ServiceDeclaration resolverClass = loadedResolvers.get(c.getName());
+                if (resolverClass != null) {
                     try {
-                        return (Class<? extends ModelResolver>)Class.forName(className, true, modelType.getClassLoader());
+                        return (Class<? extends ModelResolver>)resolverClass.loadClass();
                     } catch (ClassNotFoundException e) {
                         throw new IllegalArgumentException(e);
                     }
@@ -71,10 +74,10 @@ public class DefaultModelResolverExtensionPoint implements ModelResolverExtensio
 
         Class<? extends ModelResolver > resolver = resolvers.get(modelType);
         if (resolver == null) {
-            String className = loadedResolvers.get(modelType.getName());
-            if (className != null) {
+            ServiceDeclaration resolverClass = loadedResolvers.get(modelType.getName());
+            if (resolverClass != null) {
                 try {
-                    return (Class<? extends ModelResolver>)Class.forName(className, true, modelType.getClassLoader());
+                    return (Class<? extends ModelResolver>)resolverClass.loadClass();
                 } catch (ClassNotFoundException e) {
                     throw new IllegalArgumentException(e);
                 }
@@ -89,24 +92,22 @@ public class DefaultModelResolverExtensionPoint implements ModelResolverExtensio
     private void loadModelResolvers() {
         if (loadedResolvers != null)
             return;
-        loadedResolvers = new HashMap<String, String>();
+        loadedResolvers = new HashMap<String, ServiceDeclaration>();
 
         // Get the model resolver service declarations
-        ClassLoader classLoader = ModelResolver.class.getClassLoader();
-        List<String> modelResolverDeclarations; 
+        Set<ServiceDeclaration> modelResolverDeclarations; 
         try {
-            modelResolverDeclarations = ServiceConfigurationUtil.getServiceClassNames(classLoader, ModelResolver.class.getName());
+            modelResolverDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ModelResolver.class);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
         
         // Load model resolvers
-        for (String dataBindingDeclaration: modelResolverDeclarations) {
-            Map<String, String> attributes = ServiceConfigurationUtil.parseServiceDeclaration(dataBindingDeclaration);
-            String className = attributes.get("class");
+        for (ServiceDeclaration dataBindingDeclaration: modelResolverDeclarations) {
+            Map<String, String> attributes = dataBindingDeclaration.getAttributes();
             String model = attributes.get("model");
 
-            loadedResolvers.put(model, className);
+            loadedResolvers.put(model, dataBindingDeclaration);
         }
     }
 

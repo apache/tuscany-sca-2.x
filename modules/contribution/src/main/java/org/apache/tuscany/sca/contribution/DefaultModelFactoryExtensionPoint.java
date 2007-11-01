@@ -22,9 +22,8 @@ package org.apache.tuscany.sca.contribution;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.List;
 
-import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
+import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 
 
 /**
@@ -89,14 +88,10 @@ public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionP
             if (factoryInterface.isInterface()) {
                 
                 // Dynamically load a factory class declared under META-INF/services 
-                ClassLoader classLoader = factoryInterface.getClassLoader();
-                if (classLoader == null)
-                    classLoader = ClassLoader.getSystemClassLoader();
                 try {
-                    List<String> classNames = ServiceConfigurationUtil.getServiceClassNames(classLoader, factoryInterface.getName());
-                    if (!classNames.isEmpty()) {
-                        Class<?> factoryClass = Class.forName(classNames.iterator().next(), true, classLoader);
-                        
+                	Class<?> factoryClass = ServiceDiscovery.getInstance().loadFirstServiceClass(factoryInterface);
+                    if (factoryClass != null) {
+                    	
                         try {
                             // Default empty constructor
                             Constructor<?> constructor = factoryClass.getConstructor();

@@ -19,13 +19,18 @@
 
 package org.apache.tuscany.sca.implementation.java.invocation;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
+import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
@@ -109,11 +114,16 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
         
     }
     
+
     private void loadPolicyHandlers(JavaImplementation javaImpl) throws Exception {
         if ( policyHandlerClassNames == null ) {
-            policyHandlerClassNames = 
-                PolicySetHandlerUtil.getPolicyHandlers(Thread.currentThread().getContextClassLoader(), 
-                                                        "org.apache.tuscany.sca.implementation.java.PolicySetHandlers");
+        	Hashtable<ClassLoader, Set<URL>> policySetResources = 
+        		ServiceDiscovery.getInstance().getServiceResources("org.apache.tuscany.sca.policy.PolicySetHandlers");
+            policyHandlerClassNames = new HashMap<QName, String>();
+            for (ClassLoader classLoader : policySetResources.keySet()) {
+            	policyHandlerClassNames.putAll(PolicySetHandlerUtil.getPolicyHandlers(
+            			classLoader, policySetResources.get(classLoader)));
+            }
         }
         
         if ( implementation instanceof PolicySetAttachPoint ) {
@@ -131,7 +141,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
                     //FIXME : maybe there must be a warning thrown here
                 }
             }
-        }
+        }   	
     }
 
     private void handleResources(JavaImplementation componentType, ProxyFactory proxyService) {

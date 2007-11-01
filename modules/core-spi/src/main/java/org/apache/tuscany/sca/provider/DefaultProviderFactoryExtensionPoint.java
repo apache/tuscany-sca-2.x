@@ -19,16 +19,17 @@
 
 package org.apache.tuscany.sca.provider;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
+import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
+import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -112,11 +113,11 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
     private List<ProviderFactory> loadProviderFactories(Class<?> factoryClass) {
 
         // Get the provider factory service declarations
-        List<String> factoryDeclarations; 
+        Set<ServiceDeclaration> factoryDeclarations; 
+        ServiceDiscovery serviceDiscovery = ServiceDiscovery.getInstance();
         try {
-            ClassLoader classLoader = factoryClass.getClassLoader();
-            factoryDeclarations = ServiceConfigurationUtil.getServiceClassNames(classLoader, factoryClass.getName());
-        } catch (IOException e) {
+            factoryDeclarations = serviceDiscovery.getServiceDeclarations(factoryClass);
+        } catch (Exception e) {
             throw new IllegalStateException(e);
         }
         
@@ -124,16 +125,15 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         ProviderFactoryExtensionPoint factoryExtensionPoint = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         List<ProviderFactory> factories = new ArrayList<ProviderFactory>();
         
-        for (String factoryDeclaration: factoryDeclarations) {
-            Map<String, String> attributes = ServiceConfigurationUtil.parseServiceDeclaration(factoryDeclaration);
-            String className = attributes.get("class");
+        for (ServiceDeclaration factoryDeclaration: factoryDeclarations) {
+            Map<String, String> attributes = factoryDeclaration.getAttributes();
             
             // Load an implementation provider factory
             if (factoryClass == ImplementationProviderFactory.class) {
                 String modelTypeName = attributes.get("model");
                 
                 // Create a provider factory wrapper and register it
-                ImplementationProviderFactory factory = new LazyImplementationProviderFactory(registry, modelTypeName, className);
+                ImplementationProviderFactory factory = new LazyImplementationProviderFactory(registry, modelTypeName, factoryDeclaration);
                 factoryExtensionPoint.addProviderFactory(factory);
                 factories.add(factory);
 
@@ -143,7 +143,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
                 String modelTypeName = attributes.get("model");
                 
                 // Create a provider factory wrapper and register it
-                BindingProviderFactory factory = new LazyBindingProviderFactory(registry, modelTypeName, className);
+                BindingProviderFactory factory = new LazyBindingProviderFactory(registry, modelTypeName, factoryDeclaration);
                 factoryExtensionPoint.addProviderFactory(factory);
                 factories.add(factory);
             }
@@ -159,22 +159,23 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
 
         private ExtensionPointRegistry registry;
         private String modelTypeName;
-        private String className;
+        private ServiceDeclaration factoryDeclaration;
         private BindingProviderFactory factory;
         private Class modelType;
         
-        private LazyBindingProviderFactory(ExtensionPointRegistry registry, String modelTypeName, String className) {
+        private LazyBindingProviderFactory(ExtensionPointRegistry registry, 
+        		String modelTypeName, 
+        		ServiceDeclaration factoryDeclaration) {
             this.registry = registry;
             this.modelTypeName = modelTypeName;
-            this.className = className;
+            this.factoryDeclaration = factoryDeclaration;
         }
 
         @SuppressWarnings("unchecked")
         private BindingProviderFactory getFactory() {
             if (factory == null) {
                 try {
-                    ClassLoader classLoader = BindingProviderFactory.class.getClassLoader();
-                    Class<BindingProviderFactory> factoryClass = (Class<BindingProviderFactory>)Class.forName(className, true, classLoader);
+                    Class<BindingProviderFactory> factoryClass = (Class<BindingProviderFactory>)factoryDeclaration.loadClass();
                     Constructor<BindingProviderFactory> constructor = factoryClass.getConstructor(ExtensionPointRegistry.class);
                     factory = constructor.newInstance(registry);
                 } catch (Exception e) {
@@ -197,8 +198,7 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         public Class getModelType() {
             if (modelType == null) {
                 try {
-                    ClassLoader classLoader = BindingProviderFactory.class.getClassLoader();
-                    modelType = Class.forName(modelTypeName, true, classLoader);
+                	modelType = factoryDeclaration.loadClass(modelTypeName);
                 } catch (Exception e) {
                     throw new IllegalStateException(e);
                 }
@@ -216,22 +216,21 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
 
         private ExtensionPointRegistry registry;
         private String modelTypeName;
-        private String className;
+        private ServiceDeclaration providerClass;
         private ImplementationProviderFactory factory;
         private Class modelType;
         
-        private LazyImplementationProviderFactory(ExtensionPointRegistry registry, String modelTypeName, String className) {
+        private LazyImplementationProviderFactory(ExtensionPointRegistry registry, String modelTypeName, ServiceDeclaration providerClass) {
             this.registry = registry;
             this.modelTypeName = modelTypeName;
-            this.className = className;
+            this.providerClass = providerClass;
         }
 
         @SuppressWarnings("unchecked")
         private ImplementationProviderFactory getFactory() {
             if (factory == null) {
                 try {
-                    ClassLoader classLoader = ImplementationProviderFactory.class.getClassLoader();
-                    Class<ImplementationProviderFactory> factoryClass = (Class<ImplementationProviderFactory>)Class.forName(className, true, classLoader);
+                    Class<ImplementationProviderFactory> factoryClass = (Class<ImplementationProviderFactory>)providerClass.loadClass();
                     Constructor<ImplementationProviderFactory> constructor = factoryClass.getConstructor(ExtensionPointRegistry.class);
                     factory = constructor.newInstance(registry);
                 } catch (Exception e) {
@@ -249,8 +248,8 @@ public class DefaultProviderFactoryExtensionPoint implements ProviderFactoryExte
         public Class getModelType() {
             if (modelType == null) {
                 try {
-                    ClassLoader classLoader = ImplementationProviderFactory.class.getClassLoader();
-                    modelType = Class.forName(modelTypeName, true, classLoader);
+                    
+                    modelType = providerClass.loadClass(modelTypeName);
                 } catch (Exception e) {
                     throw new IllegalStateException(e);
                 }

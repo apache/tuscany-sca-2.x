@@ -19,19 +19,15 @@
 
 package org.apache.tuscany.sca.extension.helper.impl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
+import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
@@ -40,16 +36,23 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
  */
 public class DiscoveryUtils {
 
-    public static <T> List<T> discoverActivators(Class<T> activatorClass, ClassLoader classLoader, ExtensionPointRegistry registry) {
-        Set<Class> activatorClasses = getServiceClasses(classLoader, activatorClass);
-        List<T> activators = new ArrayList<T>();
-        for (Class<T> c : activatorClasses) {
-            try {
-                activators.add(c.cast(instantiateActivator(c, registry)));
-            } catch (Throwable e) {
-                e.printStackTrace(); // TODO: log
-            }
-        }
+	@SuppressWarnings("unchecked")
+    public static <T> List<T> discoverActivators(Class<T> activatorClass, ExtensionPointRegistry registry) {
+        List<T> activators;
+		try {
+			Set<ServiceDeclaration> activatorClasses = ServiceDiscovery.getInstance().getServiceDeclarations(activatorClass);
+			activators = new ArrayList<T>();
+			for (ServiceDeclaration declaration : activatorClasses) {
+			    try {
+			    	Class<T> c = (Class<T>)declaration.loadClass();
+			        activators.add(c.cast(instantiateActivator(c, registry)));
+			    } catch (Throwable e) {
+			        e.printStackTrace(); // TODO: log
+			    }
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
         return activators;
     }
 
@@ -104,61 +107,5 @@ public class DiscoveryUtils {
         }
     }
 
-    static Set<Class> getServiceClasses(ClassLoader classLoader, Class name) {
-        try {
-
-            Set<Class> set = new HashSet<Class>();
-            Enumeration<URL> urls = classLoader.getResources("META-INF/services/" + name.getName());
-            while (urls.hasMoreElements()) {
-                URL url = urls.nextElement();
-                Set<String> services = getServiceClassNames(url);
-                if (services != null) {
-                    for (String className : services) {
-                        try {
-                            set.add(Class.forName(className, true, classLoader));
-                        } catch (Throwable e) {
-                            // TODO: log 
-                        }
-                    }
-                }
-            }
-            return set;
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    static Set<String> getServiceClassNames(URL url) throws IOException {
-        Set<String> names = new HashSet<String>();
-        InputStream is = url.openStream();
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(is));
-            while (true) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-                line = line.trim();
-                if (!line.startsWith("#") && !"".equals(line)) {
-                    names.add(line.trim());
-                }
-            }
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-            
-            if (is != null){
-                try {
-                    is.close();
-                } catch( IOException ioe) {
-                    //ignore
-                }
-            }
-        }
-        return names;
-    }
 
 }

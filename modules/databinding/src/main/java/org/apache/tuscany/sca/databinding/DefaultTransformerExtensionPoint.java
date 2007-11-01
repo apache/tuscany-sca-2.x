@@ -19,16 +19,17 @@
 package org.apache.tuscany.sca.databinding;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
+import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 import org.apache.tuscany.sca.databinding.impl.DirectedGraph;
-import org.apache.tuscany.sca.databinding.impl.ServiceConfigurationUtil;
 
 /**
  * @version $Rev$ $Date$
@@ -43,18 +44,18 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
     }
 
     public void addTransformer(String sourceType, String resultType, int weight, Transformer transformer) {
-        if (logger.isLoggable(Level.FINE)) {
-            String className = transformer.getClass().getName();
-            boolean lazy = false;
-            boolean pull = (transformer instanceof PullTransformer);
-            if (transformer instanceof LazyPullTransformer) {
-                className = ((LazyPullTransformer)transformer).className;
-                lazy = true;
-            }
-            if (transformer instanceof LazyPushTransformer) {
-                className = ((LazyPushTransformer)transformer).className;
-                lazy = true;
-            }
+    	if (logger.isLoggable(Level.FINE)) {
+			String className = transformer.getClass().getName();
+			boolean lazy = false;
+			boolean pull = (transformer instanceof PullTransformer);
+			if (transformer instanceof LazyPullTransformer) {
+				className = ((LazyPullTransformer) transformer).transformerDeclaration.getClassName();
+				lazy = true;
+			}
+			if (transformer instanceof LazyPushTransformer) {
+				className = ((LazyPushTransformer) transformer).transformerDeclaration.getClassName();
+				lazy = true;
+			}
 
             logger.fine("Adding transformer: " + className
                 + ";source="
@@ -110,19 +111,19 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
     private void loadTransformers(Class<?> transformerClass) {
 
         // Get the transformer service declarations
-        ClassLoader classLoader = transformerClass.getClassLoader();
-        List<String> transformerDeclarations;
+        Set<ServiceDeclaration> transformerDeclarations; 
+
         try {
-            transformerDeclarations =
-                ServiceConfigurationUtil.getServiceClassNames(classLoader, transformerClass.getName());
+            transformerDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(transformerClass);
+
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
 
         // Load transformers
-        for (String transformerDeclaration : transformerDeclarations) {
-            Map<String, String> attributes = ServiceConfigurationUtil.parseServiceDeclaration(transformerDeclaration);
-            String className = attributes.get("class");
+        for (ServiceDeclaration transformerDeclaration: transformerDeclarations) {
+            Map<String, String> attributes = transformerDeclaration.getAttributes();
+
             String source = attributes.get("source");
             String target = attributes.get("target");
             int weight = Integer.valueOf(attributes.get("weight"));
@@ -130,9 +131,9 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
             // Create a transformer wrapper and register it
             Transformer transformer;
             if (transformerClass == PullTransformer.class) {
-                transformer = new LazyPullTransformer(source, target, weight, classLoader, className);
+                transformer = new LazyPullTransformer(source, target, weight, transformerDeclaration);
             } else {
-                transformer = new LazyPushTransformer(source, target, weight, classLoader, className);
+                transformer = new LazyPushTransformer(source, target, weight, transformerDeclaration);
             }
             addTransformer(transformer);
         }
@@ -147,16 +148,14 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
         private String source;
         private String target;
         private int weight;
-        private WeakReference<ClassLoader> classLoader;
-        private String className;
+        private ServiceDeclaration transformerDeclaration;
         private PullTransformer<Object, Object> transformer;
 
-        public LazyPullTransformer(String source, String target, int weight, ClassLoader classLoader, String className) {
+        public LazyPullTransformer(String source, String target, int weight, ServiceDeclaration transformerDeclaration) {
             this.source = source;
             this.target = target;
             this.weight = weight;
-            this.classLoader = new WeakReference<ClassLoader>(classLoader);
-            this.className = className;
+            this.transformerDeclaration = transformerDeclaration;
         }
 
         /**
@@ -169,7 +168,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
             if (transformer == null) {
                 try {
                     Class<PullTransformer<Object, Object>> transformerClass =
-                        (Class<PullTransformer<Object, Object>>)Class.forName(className, true, classLoader.get());
+                        (Class<PullTransformer<Object, Object>>)transformerDeclaration.loadClass();
                     Constructor<PullTransformer<Object, Object>> constructor = transformerClass.getConstructor();
                     transformer = constructor.newInstance();
                 } catch (Exception e) {
@@ -197,7 +196,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
 
         public String toString() {
             StringBuffer sb = new StringBuffer(super.toString());
-            sb.append(";className=").append(className);
+            sb.append(";className=").append(transformerDeclaration.getClassName());
             return sb.toString();
         }
     }
@@ -211,16 +210,14 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
         private String source;
         private String target;
         private int weight;
-        private WeakReference<ClassLoader> classLoader;
-        private String className;
+        private ServiceDeclaration transformerDeclaration;
         private PushTransformer<Object, Object> transformer;
 
-        public LazyPushTransformer(String source, String target, int weight, ClassLoader classLoader, String className) {
+        public LazyPushTransformer(String source, String target, int weight, ServiceDeclaration transformerDeclaration) {
             this.source = source;
             this.target = target;
             this.weight = weight;
-            this.classLoader = new WeakReference<ClassLoader>(classLoader);
-            this.className = className;
+            this.transformerDeclaration = transformerDeclaration;
         }
 
         /**
@@ -233,7 +230,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
             if (transformer == null) {
                 try {
                     Class<PushTransformer<Object, Object>> transformerClass =
-                        (Class<PushTransformer<Object, Object>>)Class.forName(className, true, classLoader.get());
+                        (Class<PushTransformer<Object, Object>>)transformerDeclaration.loadClass();
                     Constructor<PushTransformer<Object, Object>> constructor = transformerClass.getConstructor();
                     transformer = constructor.newInstance();
                 } catch (Exception e) {
@@ -261,7 +258,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
 
         public String toString() {
             StringBuffer sb = new StringBuffer(super.toString());
-            sb.append(";className=").append(className);
+            sb.append(";className=").append(transformerDeclaration.getClassName());
             return sb.toString();
         }
     }

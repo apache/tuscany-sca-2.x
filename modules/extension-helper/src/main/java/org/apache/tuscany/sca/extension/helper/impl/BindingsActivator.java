@@ -61,10 +61,9 @@ public class BindingsActivator implements ModuleActivator {
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         this.assemblyFactory = factories.getFactory(AssemblyFactory.class);
 
-        //FIXME The classloader should be passed in
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
         this.bindingActivators =
-            DiscoveryUtils.discoverActivators(BindingActivator.class, classLoader, registry);
+            DiscoveryUtils.discoverActivators(BindingActivator.class, registry);
 
         StAXArtifactProcessorExtensionPoint staxProcessors =
             registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);

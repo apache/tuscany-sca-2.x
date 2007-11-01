@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,7 +38,8 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensi
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
-import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
+import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
+import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
@@ -136,7 +138,7 @@ public class ReallySmallRuntime {
 
         
         // Load the runtime modules
-        modules = loadModules(registry, classLoader);
+        modules = loadModules(registry);
         
         // Start the runtime modules
         startModules(registry, modules);
@@ -222,14 +224,15 @@ public class ReallySmallRuntime {
     }
 
     @SuppressWarnings("unchecked")
-    private List<ModuleActivator> loadModules(ExtensionPointRegistry registry, ClassLoader classLoader) throws ActivationException {
+    private List<ModuleActivator> loadModules(ExtensionPointRegistry registry) throws ActivationException {
 
-        // Load and instantiate the modules found on the classpath
+        // Load and instantiate the modules found on the classpath (or any registered classloaders)
         modules = new ArrayList<ModuleActivator>();
         try {
-            List<String> classNames = ServiceConfigurationUtil.getServiceClassNames(classLoader, ModuleActivator.class.getName());
-            for (String className : classNames) {       
-                Class moduleClass = Class.forName(className, true, classLoader);
+        	Set<ServiceDeclaration> moduleActivators = ServiceDiscovery.getInstance().getServiceDeclarations(ModuleActivator.class);
+        	
+            for (ServiceDeclaration moduleDeclarator : moduleActivators) { 
+            	Class<?> moduleClass = moduleDeclarator.loadClass();
                 ModuleActivator module = (ModuleActivator)moduleClass.newInstance();
                 modules.add(module);
             }

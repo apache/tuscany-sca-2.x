@@ -27,4 +27,5 @@
     </parent>
     <artifactId>tuscany-policy</artifactId>
     <name>Apache Tuscany SCA Policy Model</name>
+
 </project>

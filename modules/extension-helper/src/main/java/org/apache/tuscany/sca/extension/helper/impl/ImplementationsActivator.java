@@ -62,9 +62,7 @@ public class ImplementationsActivator implements ModuleActivator {
         PropertyValueObjectFactory propertyFactory = new DefaultPropertyValueObjectFactory(mediator);
         registry.addExtensionPoint(propertyFactory);
 
-        // FIXME The classloader should be passed in
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        this.implementationActivators = DiscoveryUtils.discoverActivators(ImplementationActivator.class, classLoader, registry);
+        this.implementationActivators = DiscoveryUtils.discoverActivators(ImplementationActivator.class, registry);
 
         StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);

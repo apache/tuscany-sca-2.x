@@ -28,9 +28,11 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.tuscany.sca.contribution.service.ContributionException;
-import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
+import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
+import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 
 /**
  * Default implementation of ContributionProcessorRegistry
@@ -63,23 +65,21 @@ public class DefaultPackageProcessorExtensionPoint implements PackageProcessorEx
             return;
 
         // Get the processor service declarations
-        ClassLoader classLoader = PackageProcessor.class.getClassLoader();
-        List<String> processorDeclarations; 
+        Set<ServiceDeclaration> processorDeclarations; 
         try {
-            processorDeclarations = ServiceConfigurationUtil.getServiceClassNames(classLoader, PackageProcessor.class.getName());
+            processorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(PackageProcessor.class);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
         
-        for (String processorDeclaration: processorDeclarations) {
-            Map<String, String> attributes = ServiceConfigurationUtil.parseServiceDeclaration(processorDeclaration);
-            String className = attributes.get("class");
+        for (ServiceDeclaration processorDeclaration: processorDeclarations) {
+            Map<String, String> attributes = processorDeclaration.getAttributes();
             
             // Load a URL artifact processor
             String packageType = attributes.get("type");
             
             // Create a processor wrapper and register it
-            PackageProcessor processor = new LazyPackageProcessor(packageType, className);
+            PackageProcessor processor = new LazyPackageProcessor(packageType, processorDeclaration);
             addPackageProcessor(processor);
         }
         
@@ -91,12 +91,12 @@ public class DefaultPackageProcessorExtensionPoint implements PackageProcessorEx
      */
     private static class LazyPackageProcessor implements PackageProcessor {
         
-        private String className;
+        private ServiceDeclaration processorDeclaration;
         private String packageType;
         private PackageProcessor processor;
         
-        private LazyPackageProcessor(String packageType, String className) {
-            this.className = className;
+        private LazyPackageProcessor(String packageType, ServiceDeclaration processorDeclaration) {
+            this.processorDeclaration = processorDeclaration;
             this.packageType = packageType;
         }
 
@@ -116,8 +116,7 @@ public class DefaultPackageProcessorExtensionPoint implements PackageProcessorEx
         private PackageProcessor getProcessor() {
             if (processor == null) {
                 try {
-                    ClassLoader classLoader = PackageProcessor.class.getClassLoader();
-                    Class<PackageProcessor> processorClass = (Class<PackageProcessor>)Class.forName(className, true, classLoader);
+                    Class<PackageProcessor> processorClass = (Class<PackageProcessor>)processorDeclaration.loadClass();
                     Constructor<PackageProcessor> constructor = processorClass.getConstructor();
                     processor = constructor.newInstance();
                 } catch (Exception e) {
