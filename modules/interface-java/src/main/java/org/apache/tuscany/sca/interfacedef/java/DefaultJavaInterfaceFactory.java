@@ -26,7 +26,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
+import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceFactoryImpl;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 
@@ -55,19 +58,18 @@ public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implem
             return;
 
         // Get the databinding service declarations
-        ClassLoader classLoader = JavaInterfaceVisitor.class.getClassLoader();
-        List<String> visitorDeclarations; 
+        Set<ServiceDeclaration> visitorDeclarations; 
         try {
-            visitorDeclarations = getServiceClassNames(classLoader, JavaInterfaceVisitor.class.getName());
+            visitorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(JavaInterfaceVisitor.class);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
         
         // Load data bindings
-        for (String visitorDeclaration: visitorDeclarations) {
+        for (ServiceDeclaration visitorDeclaration: visitorDeclarations) {
             JavaInterfaceVisitor visitor;
             try {
-                Class<JavaInterfaceVisitor> visitorClass = (Class<JavaInterfaceVisitor>)Class.forName(visitorDeclaration, true, classLoader);
+                Class<JavaInterfaceVisitor> visitorClass = (Class<JavaInterfaceVisitor>)visitorDeclaration.loadClass();
                 visitor = visitorClass.newInstance();
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(e);
@@ -82,41 +84,6 @@ public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implem
         loadedVisitors = true;
     }
 
-    /**
-     * Read the service name from a configuration file
-     * 
-     * @param classLoader
-     * @param name The name of the service class
-     * @return A class name which extends/implements the service class
-     * @throws IOException
-     */
-    private List<String> getServiceClassNames(ClassLoader classLoader, String name) throws IOException {
-        List<String> classNames = new ArrayList<String>();
-        for (URL url: Collections.list(classLoader.getResources("META-INF/services/" + name))) {
-            InputStream is = url.openStream();
-            BufferedReader reader = null;
-            try {
-                reader = new BufferedReader(new InputStreamReader(is));
-                while (true) {
-                    String line = reader.readLine();
-                    if (line == null)
-                        break;
-                    line = line.trim();
-                    if (!line.startsWith("#") && !"".equals(line)) {
-                        classNames.add(line.trim());
-                    }
-                }
-            } finally {
-                if (reader != null)
-                    reader.close();
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (IOException ioe) {}
-                }
-            }
-        }
-        return classNames;
-    }
+    
 
 }

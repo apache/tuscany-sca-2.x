@@ -22,8 +22,10 @@ package org.apache.tuscany.sca.contribution.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
+import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
+import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 
 /**
  * Default implementation of a contribution listener extension point.
@@ -51,24 +53,24 @@ public class DefaultContributionListenerExtensionPoint implements ContributionLi
     /**
      * Dynamically load listeners declared under META-INF/services
      */
+    @SuppressWarnings("unchecked")
     private void loadListeners() {
         if (loadedListeners)
             return;
 
         // Get the databinding service declarations
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        List<String> listenerDeclarations; 
+        Set<ServiceDeclaration> listenerDeclarations; 
         try {
-            listenerDeclarations = ServiceConfigurationUtil.getServiceClassNames(classLoader, ContributionListener.class.getName());
+            listenerDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ContributionListener.class);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
         
         // Load data bindings
-        for (String listenerDeclaration: listenerDeclarations) {
+        for (ServiceDeclaration listenerDeclaration: listenerDeclarations) {
             ContributionListener listener;
             try {
-                Class<ContributionListener> listenerClass = (Class<ContributionListener>)Class.forName(listenerDeclaration, true, classLoader);
+                Class<ContributionListener> listenerClass = (Class<ContributionListener>)listenerDeclaration.loadClass();
                 listener = listenerClass.newInstance();
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(e);

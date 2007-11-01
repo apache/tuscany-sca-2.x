@@ -25,12 +25,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
+import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 
 /**
  * Default implementation of a registry to hold all the Tuscany core extension
@@ -66,16 +65,11 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
         Object extensionPoint = extensionPoints.get(extensionPointType);
         if (extensionPoint == null) {
             
-            // Dynamically load an extension point class declared under META-INF/services 
-            ClassLoader classLoader = extensionPointType.getClassLoader();
-            if (classLoader == null) {
-                classLoader = Thread.currentThread().getContextClassLoader();
-            }
+            // Dynamically load an extension point class declared under META-INF/services           
             try {
-                List<String> classNames = ServiceConfigurationUtil.getServiceClassNames(classLoader, extensionPointType.getName());
-                if (!classNames.isEmpty()) {
-                    Class<?> extensionPointClass = Class.forName(classNames.iterator().next(), true, classLoader);
-                    
+                Class<?> extensionPointClass = 
+                	ServiceDiscovery.getInstance().loadFirstServiceClass(extensionPointType);
+                if (extensionPointClass != null) {
                     // Construct the extension point
                     try {
                         Constructor constructor = extensionPointClass.getConstructor();

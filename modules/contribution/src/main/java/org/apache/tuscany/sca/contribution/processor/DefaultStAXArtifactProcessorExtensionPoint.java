@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.contribution.processor;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -34,7 +34,8 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
+import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
+import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
@@ -83,17 +84,15 @@ public class DefaultStAXArtifactProcessorExtensionPoint
             return;
 
         // Get the processor service declarations
-        ClassLoader classLoader = StAXArtifactProcessor.class.getClassLoader();
-        List<String> processorDeclarations; 
+        Set<ServiceDeclaration> processorDeclarations; 
         try {
-            processorDeclarations = ServiceConfigurationUtil.getServiceClassNames(classLoader, StAXArtifactProcessor.class.getName());
+            processorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(StAXArtifactProcessor.class);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
         
-        for (String processorDeclaration: processorDeclarations) {
-            Map<String, String> attributes = ServiceConfigurationUtil.parseServiceDeclaration(processorDeclaration);
-            String className = attributes.get("class");
+        for (ServiceDeclaration processorDeclaration: processorDeclarations) {
+            Map<String, String> attributes = processorDeclaration.getAttributes();
             
             // Load a StAX artifact processor
             
@@ -112,7 +111,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint
             String factoryName = attributes.get("factory");
             
             // Create a processor wrapper and register it
-            StAXArtifactProcessor processor = new LazyStAXArtifactProcessor(modelFactories, artifactType, modelTypeName, factoryName, className);
+            StAXArtifactProcessor processor = new LazyStAXArtifactProcessor(modelFactories, artifactType, modelTypeName, factoryName, processorDeclaration);
             addArtifactProcessor(processor);
         }
         
@@ -129,16 +128,21 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         private QName artifactType;
         private String modelTypeName;
         private String factoryName;
-        private String className;
+        private ServiceDeclaration processorDeclaration;
         private StAXArtifactProcessor processor;
         private Class modelType;
         
-        LazyStAXArtifactProcessor(ModelFactoryExtensionPoint modelFactories, QName artifactType, String modelTypeName, String factoryName, String className) {
+        LazyStAXArtifactProcessor(ModelFactoryExtensionPoint modelFactories, 
+        		QName artifactType, 
+        		String modelTypeName, 
+        		String factoryName, 
+        		ServiceDeclaration processorDeclaration) {
+        	
             this.modelFactories = modelFactories;
             this.artifactType = artifactType;
             this.modelTypeName = modelTypeName;
             this.factoryName = factoryName;
-            this.className = className;
+            this.processorDeclaration = processorDeclaration;
         }
 
         public QName getArtifactType() {
@@ -149,17 +153,16 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         private StAXArtifactProcessor getProcessor() {
             if (processor == null) {
 
-                if (className.equals("org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor")) {
+                if (processorDeclaration.getClassName().equals("org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor")) {
                     
                     // Specific initialization for the DefaultBeanModelProcessor
                     AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
                     PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
                     try {
-                        ClassLoader classLoader = URLArtifactProcessor.class.getClassLoader();
-                        Class<StAXArtifactProcessor> processorClass = (Class<StAXArtifactProcessor>)Class.forName(className, true, classLoader);
+                        Class<StAXArtifactProcessor> processorClass = (Class<StAXArtifactProcessor>)processorDeclaration.loadClass();
                         Object modelFactory;
                         if (factoryName != null) {
-                            Class<?> factoryClass = (Class<?>)Class.forName(factoryName, true, classLoader);
+                            Class<?> factoryClass = (Class<?>)processorDeclaration.loadClass(factoryName);
                             modelFactory = modelFactories.getFactory(factoryClass);
                         } else {
                             modelFactory = null;
@@ -173,8 +176,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint
                     
                     // Load and instanciate the processor class
                     try {
-                        ClassLoader classLoader = URLArtifactProcessor.class.getClassLoader();
-                        Class<StAXArtifactProcessor> processorClass = (Class<StAXArtifactProcessor>)Class.forName(className, true, classLoader);
+                        Class<StAXArtifactProcessor> processorClass = (Class<StAXArtifactProcessor>)processorDeclaration.loadClass();
                         Constructor<StAXArtifactProcessor> constructor = processorClass.getConstructor(ModelFactoryExtensionPoint.class);
                         processor = constructor.newInstance(modelFactories);
                     } catch (Exception e) {
@@ -197,8 +199,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         public Class getModelType() {
             if (modelType == null) {
                 try {
-                    ClassLoader classLoader = URLArtifactProcessor.class.getClassLoader();
-                    modelType = Class.forName(modelTypeName, true, classLoader);
+                    modelType = processorDeclaration.loadClass(modelTypeName);
                 } catch (Exception e) {
                     throw new IllegalStateException(e);
                 }

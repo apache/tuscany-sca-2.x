@@ -24,9 +24,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Iterator;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
@@ -192,7 +192,7 @@ public class ContributionClassLoader extends URLClassLoader {
     @Override
     public Enumeration<URL> findResources(String name) throws IOException {
               
-        return collectionToEnumeration(findResourceSet(name));
+        return Collections.enumeration(findResourceSet(name));
     }
     
     
@@ -236,7 +236,7 @@ public class ContributionClassLoader extends URLClassLoader {
         HashSet<URL> resourceSet = findResourceSet(resName);
         addEnumerationToCollection(resourceSet, super.getResources(resName));
         
-        return collectionToEnumeration(resourceSet);
+        return Collections.enumeration(resourceSet);
     }
     
 
@@ -344,25 +344,7 @@ public class ContributionClassLoader extends URLClassLoader {
             collection.add(enumeration.nextElement());
     }
     
-    /*
-     * Return an enumeration corresponding to a collection
-     */
-    private <T extends Object> Enumeration<T>  collectionToEnumeration(Collection<T> collection) {
-        
-        final Iterator<T> iterator = collection.iterator();
-        
-        return new Enumeration<T>() {
-            public boolean hasMoreElements() {
-                return iterator.hasNext();
-            }
-
-            public T nextElement() {
-                return iterator.next();
-            }
-        };
-    }
-
-
+    
     @Override
     public String toString() {
         return "SCA contribution classloader for : " + contribution.getLocation();

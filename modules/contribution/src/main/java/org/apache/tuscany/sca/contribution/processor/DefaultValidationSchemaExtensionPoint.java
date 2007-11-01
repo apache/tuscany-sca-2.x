@@ -24,8 +24,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import org.apache.tuscany.sca.contribution.util.ServiceConfigurationUtil;
+import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
+import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 
 /**
  * DefaultValidationSchemaExtensionPoint
@@ -54,19 +56,18 @@ public class DefaultValidationSchemaExtensionPoint implements ValidationSchemaEx
             return;
 
         // Get the schema declarations
-        ClassLoader classLoader = ValidationSchemaExtensionPoint.class.getClassLoader();
-        List<String> schemaDeclarations; 
+        Set<ServiceDeclaration> schemaDeclarations; 
         try {
-            schemaDeclarations = ServiceConfigurationUtil.getServiceClassNames(classLoader, "org.apache.tuscany.sca.contribution.processor.ValidationSchema");
+            schemaDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations("org.apache.tuscany.sca.contribution.processor.ValidationSchema");
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
         
         // Find each schema
-        for (String schemaDeclaration: schemaDeclarations) {
-            URL url = classLoader.getResource(schemaDeclaration);
+        for (ServiceDeclaration schemaDeclaration: schemaDeclarations) {
+            URL url = schemaDeclaration.getResource();
             if (url == null) {
-                throw new IllegalArgumentException(new FileNotFoundException(schemaDeclaration));
+                throw new IllegalArgumentException(new FileNotFoundException(schemaDeclaration.getClassName()));
             }
             schemas.add(url.toString());
         }

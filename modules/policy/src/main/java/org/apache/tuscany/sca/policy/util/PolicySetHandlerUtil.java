@@ -22,11 +22,11 @@ package org.apache.tuscany.sca.policy.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,20 +38,25 @@ public class PolicySetHandlerUtil {
     /**
      * Read the PolicyHandler class names from a configuration file
      * 
-     * @param classLoader
-     * @param name The name of the configuration file 
+     * The policy handler class specified in the policy configuration file should be visible
+     * from the classloader used to load the configuration file.
+     * 
+     * @param classLoader ClassLoader used to read this resource
+     * @param policyURLs The list of the configuration file URLs visible to this classloader
      * @return A map of policyset handlers keyed against the QName of the policyset
      * @throws IOException
      */
     public static Map<QName, String> getPolicyHandlers(ClassLoader classLoader, 
-                                                             String name) throws IOException {
+                                                             Set<URL> policyURLs) 
+         throws IOException {
+
         boolean debug = logger.isLoggable(Level.FINE);
         if (debug) {
             logger.fine("Discovering service providers using class loader " + classLoader);
         }
         
         Map<QName, String> policyHandlersMap = new Hashtable<QName, String>();
-        for (URL url : Collections.list(classLoader.getResources("META-INF/services/" + name))) {
+        for (URL url : policyURLs) {
             if (debug) {
                 logger.fine("Reading service provider file: " + url.toExternalForm());
             }
