@@ -35,13 +35,6 @@
 		 </reference>
     </component>
     
-	<component name="ShoppingCart">
-		<implementation.java class="services.ShoppingCartImpl"/>
-		<service name="Collection">
-			<t:binding.atom/>
-		</service>    	
-	</component>
-    
 	<component name="Catalog">
 		<implementation.java class="services.merger.MergedCatalogImpl"/> 
 		<property name="currencyCode">EUR</property>
@@ -54,4 +47,11 @@
 		<reference name="currencyConverter" target="CloudCurrencyConverter"/>	
 	</component>
  	
+	<component name="ShoppingCart">
+		<implementation.java class="services.ShoppingCartImpl"/>
+		<service name="Collection">
+			<t:binding.atom/>
+		</service>    	
+	</component>
+    
 </composite>

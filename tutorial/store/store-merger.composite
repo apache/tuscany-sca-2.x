@@ -35,12 +35,6 @@
 		 </reference>
     </component>
     
-	<component name="FruitsCatalog">
-		<implementation.java class="services.FruitsCatalogImpl"/> 
-		<property name="currencyCode">USD</property>
-		<reference name="currencyConverter" target="CurrencyConverter"/>	
-	</component> 
- 	
 	<component name="Catalog">
 		<implementation.java class="services.merger.MergedCatalogImpl"/> 
 		<property name="currencyCode">USD</property>
@@ -52,6 +46,12 @@
 		<reference name="vegetablesCatalog" target="CloudVegetablesCatalog"/>	
 		<reference name="currencyConverter" target="CurrencyConverter"/>	
 	</component>
+ 	
+	<component name="FruitsCatalog">
+		<implementation.java class="services.FruitsCatalogImpl"/> 
+		<property name="currencyCode">USD</property>
+		<reference name="currencyConverter" target="CurrencyConverter"/>	
+	</component> 
  	
 	<component name="ShoppingCart">
 		<implementation.java class="services.ShoppingCartImpl"/>
