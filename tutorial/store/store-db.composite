@@ -58,6 +58,7 @@
  	
 	<component name="ShoppingCart">
 		<implementation.java class="services.db.ShoppingCartTableImpl"/>
+		<property name="database">cart-db</property>
 		<service name="Collection">
 			<t:binding.atom/>
 		</service>    	
