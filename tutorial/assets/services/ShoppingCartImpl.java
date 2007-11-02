@@ -19,76 +19,67 @@
 
 package services;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.tuscany.sca.binding.feed.collection.Collection;
-import org.apache.tuscany.sca.binding.feed.collection.NotFoundException;
+import org.apache.tuscany.sca.implementation.data.collection.Collection;
+import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 
-import com.sun.syndication.feed.atom.Content;
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.feed.atom.Link;
+public class ShoppingCartImpl implements Collection<String, String>, Total {
+    
+    private static Map<String, String> cart = new HashMap<String, String>();
 
-public class ShoppingCartImpl implements Collection, Total {
-
-    private static Map<String, Entry> cart = new HashMap<String, Entry>();
-
-    public Feed getFeed() {
-        Feed feed = new Feed();
-        feed.setTitle("shopping cart");
-        feed.getEntries().addAll(cart.values());
-        return feed;
+    public Map<String, String> getAll() {
+        return cart;
     }
 
-    public Entry get(String id) throws NotFoundException {
-        return cart.get(id);
+    public String get(String key) throws NotFoundException {
+        String item = cart.get(key);
+        if (item == null) {
+            throw new NotFoundException(key);
+        } else {
+            return item;
+        }
     }
 
-    public Entry post(Entry entry) {
-        System.out.println("post" + entry);
-        String id = "cart-" + UUID.randomUUID().toString();
-        entry.setId(id);
-
-        Link link = new Link();
-        link.setRel("edit");
-        link.setHref(id);
-        entry.getOtherLinks().add(link);
-        link = new Link();
-        link.setRel("alternate");
-        link.setHref(id);
-        entry.getAlternateLinks().add(link);
-
-        entry.setCreated(new Date());
-
-        cart.put(id, entry);
-        return entry;
+    public String post(String item) {
+        String key = "cart-" + UUID.randomUUID().toString();
+        cart.put(key, item);
+        return key;
     }
 
-    public Entry put(String id, Entry entry) throws NotFoundException {
-        entry.setUpdated(new Date());
-        cart.put(id, entry);
-        return entry;
+    public String put(String key, String item) throws NotFoundException {
+        if (!cart.containsKey(key)) {
+            throw new NotFoundException(key);
+        }
+        cart.put(key, item);
+        return item;
     }
-
-    public void delete(String id) throws NotFoundException {
-        if (id.equals(""))
+    
+    public void delete(String key) throws NotFoundException {
+        if (key == null || key.equals("")) {
             cart.clear();
-        else
-            cart.remove(id);
+        } else {
+            String item = cart.remove(key);
+            if (item == null)
+                throw new NotFoundException(key);
+        }
     }
 
+    public Map<String, String> query(String queryString) {
+        // Implement queries later
+        return null;
+    }
+    
     public String getTotal() {
         double total = 0;
         String currencySymbol = "";
         if (!cart.isEmpty()) {
-            String item = ((Content)cart.values().iterator().next().getContents().get(0)).getValue();
+            String item = cart.values().iterator().next();
             currencySymbol = item.substring(item.indexOf("-") + 2, item.indexOf("-") + 3);
         }
-        for (Entry entry : cart.values()) {
-            String item = ((Content)entry.getContents().get(0)).getValue();
+        for (String item : cart.values()) {
             total += Double.valueOf(item.substring(item.indexOf("-") + 3));
         }
         return currencySymbol + String.valueOf(total);
