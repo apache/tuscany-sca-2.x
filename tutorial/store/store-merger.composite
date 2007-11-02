@@ -57,7 +57,7 @@
 	</component> 
  	
 	<component name="ShoppingCart">
-		<implementation.java class="services.db.ShoppingCartTableImpl"/>
+		<implementation.java class="services.ShoppingCartImpl"/>
 		<service name="Collection">
 			<t:binding.atom/>
 		</service>    	
