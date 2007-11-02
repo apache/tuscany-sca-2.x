@@ -30,8 +30,11 @@
 		<reference name="catalog" target="Catalog">
 		 	<t:binding.jsonrpc/>
 		 </reference>
-		 <reference name="shoppingCart" target="ShoppingCart">
+		 <reference name="shoppingCartCollection" target="ShoppingCart/Collection">
 		 	<t:binding.atom/>
+		 </reference>
+		 <reference name="shoppingCartTotal" target="ShoppingCart/Total">
+		 	<t:binding.jsonrpc/>
 		 </reference>
     </component>
     
@@ -54,9 +57,12 @@
 	</component> 
  	
 	<component name="ShoppingCart">
-		<implementation.java class="services.ShoppingCartImpl"/>
+		<implementation.java class="services.db.ShoppingCartTableImpl"/>
 		<service name="Collection">
 			<t:binding.atom/>
+		</service>    	
+		<service name="Total">
+			<t:binding.jsonrpc/>
 		</service>    	
 	</component>
     
