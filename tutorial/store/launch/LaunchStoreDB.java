@@ -39,7 +39,7 @@ public class LaunchStoreDB {
         node.addToDomainLevelComposite(new QName("http://store", "store-db"));
         node.start();
 
-        System.out.println("store.composite ready for big business !!!");
+        System.out.println("store-db.composite ready for big business !!!");
         System.in.read();
         
         System.out.println("Stopping ...");

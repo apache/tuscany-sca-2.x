@@ -39,7 +39,6 @@
                 <module>assets</module>
                 <module>cloud</module>
                 <module>store</module>
-                <module>store-db</module>
                 <module>store-eu</module>
                 <module>www-cloud</module>
             </modules>
