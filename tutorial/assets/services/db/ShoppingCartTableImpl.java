@@ -81,7 +81,9 @@ public class ShoppingCartTableImpl implements Collection<String, String>, Total 
         String key = "cart-" + UUID.randomUUID().toString();
         try {
             Statement statement = connection.createStatement();
-            statement.executeUpdate("insert into Cart values ('" + key + "', '" + item + "')");
+            String query = "insert into Cart values ('" + key + "', '" + item + "')";
+            System.out.println(query);
+            statement.executeUpdate(query);
         } catch (SQLException e) {
             throw new ServiceRuntimeException(e);
         }
@@ -91,7 +93,9 @@ public class ShoppingCartTableImpl implements Collection<String, String>, Total 
     public String put(String key, String item) throws NotFoundException {
         try {
             Statement statement = connection.createStatement();
-            int count = statement.executeUpdate("update into Cart set item = '" + item + "' where id = '" + key + "'");
+            String query = "update into Cart set item = '" + item + "' where id = '" + key + "'";
+            System.out.println(query);
+            int count = statement.executeUpdate(query);
             if (count == 0)
                 throw new NotFoundException(key);
         } catch (SQLException e) {
@@ -104,9 +108,13 @@ public class ShoppingCartTableImpl implements Collection<String, String>, Total 
         try {
             Statement statement = connection.createStatement();
             if (key == null || key.equals("")) {
-                statement.executeUpdate("delete from Cart");
+                String query = "delete from Cart";
+                System.out.println(query);
+                statement.executeUpdate(query);
             } else {
-                int count = statement.executeUpdate("delete from Cart where id = '" + key + "'");
+                String query = "delete from Cart where id = '" + key + "'";
+                System.out.println(query);
+                int count = statement.executeUpdate(query);
                 if (count == 0)
                     throw new NotFoundException(key);
             }
