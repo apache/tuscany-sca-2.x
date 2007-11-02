@@ -159,12 +159,12 @@
 	                     </goals>
 	                     <configuration>
 	                         <driver>org.apache.derby.jdbc.EmbeddedDriver</driver>
-	                         <url>jdbc:derby:target/cart-db;create=true</url>
+	                         <url>jdbc:derby:${basedir}/target/cart-db;create=true</url>
 	                         <autocommit>true</autocommit>
 	                         <onError>continue</onError>
 	                         <delimiter>;</delimiter>
 	                         <srcFiles>
-	                             <srcFile>${pom.basedir}/../assets/services/db/cart.sql</srcFile>
+	                             <srcFile>${basedir}/../assets/services/db/cart.sql</srcFile>
 	                         </srcFiles>
 	                     </configuration>
 	                 </execution>
