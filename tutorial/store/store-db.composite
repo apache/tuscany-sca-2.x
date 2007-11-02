@@ -20,12 +20,12 @@
 <composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
 		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
 		targetNamespace="http://store"
-		name="store">
+		name="store-db">
 		
     <component name="Store">
         <t:implementation.widget location="uiservices/store.html"/>
         <service name="Widget">
-        	<t:binding.http uri="http://localhost:8100/ui"/>
+        	<t:binding.http uri="http://localhost:8102/ui"/> 
         </service>
 		<reference name="catalog" target="Catalog">
 		 	<t:binding.jsonrpc/>
@@ -39,16 +39,25 @@
     </component>
     
 	<component name="Catalog">
-		<implementation.java class="services.FruitsCatalogImpl"/> 
+		<implementation.java class="services.merger.MergedCatalogImpl"/> 
 		<property name="currencyCode">USD</property>
 		<service name="Catalog">
 			<t:binding.jsonrpc/>
+			<binding.ws uri="CatalogWebService"/>
    		</service>
+		<reference name="fruitsCatalog" target="FruitsCatalog"/>	
+		<reference name="vegetablesCatalog" target="CloudVegetablesCatalog"/>	
+		<reference name="currencyConverter" target="CurrencyConverter"/>	
+	</component>
+ 	
+	<component name="FruitsCatalog">
+		<implementation.java class="services.FruitsCatalogImpl"/> 
+		<property name="currencyCode">USD</property>
 		<reference name="currencyConverter" target="CurrencyConverter"/>	
 	</component> 
  	
 	<component name="ShoppingCart">
-		<implementation.java class="services.ShoppingCartImpl"/>
+		<implementation.java class="services.db.ShoppingCartTableImpl"/>
 		<service name="Collection">
 			<t:binding.atom/>
 		</service>    	

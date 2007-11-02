@@ -28,7 +28,10 @@
 	var catalog = new Reference("catalog");
 	
 	//@Reference
-	var shoppingCart = new Reference("shoppingCart");
+	var shoppingCartCollection = new Reference("shoppingCartCollection");
+
+	//@Reference
+	var shoppingCartTotal = new Reference("shoppingCartTotal");
 
 
 	function catalog_getResponse(items) {
@@ -40,7 +43,7 @@
 		document.getElementById('catalog').innerHTML=catalog;
 	}
 	
-	function shoppingCart_getResponse(feed) {
+	function shoppingCartCollection_getResponse(feed) {
 		if (feed != null) {
 			var entries = feed.getElementsByTagName("entry");              
 			var list = "";
@@ -49,13 +52,20 @@
 				list += item + ' <br>';
 			}
 			document.getElementById("shoppingCart").innerHTML = list;
-			document.getElementById('total').innerHTML = feed.getElementsByTagName("subtitle")[0].firstChild.nodeValue;
+
+			if (entries.length != 0) {			
+				shoppingCartTotal.getTotal(shoppingCartTotal_getTotalResponse);
+			}
 		}
 	}
-	function shoppingCart_postResponse(entry) {
-		shoppingCart.get("", shoppingCart_getResponse);
+	
+	function shoppingCartTotal_getTotalResponse(total) {
+		document.getElementById('total').innerHTML = total;
+	}
+	
+	function shoppingCartCollection_postResponse(entry) {
+		shoppingCartCollection.get("", shoppingCartCollection_getResponse);
 	}				
-
 
 	function addToCart() {
 		var items  = document.catalogForm.items;
@@ -63,7 +73,7 @@
 		for (var i=0; i<items.length; i++)
 			if (items[i].checked) {
 				var entry = '<entry xmlns="http://www.w3.org/2005/Atom"><title>cart-item</title><content type="text">'+items[i].value+'</content></entry>'
-				shoppingCart.post(entry, shoppingCart_postResponse);
+				shoppingCartCollection.post(entry, shoppingCartCollection_postResponse);
 				items[i].checked = false;
 			}
 	}
@@ -79,16 +89,16 @@
 					'<br>'+
 					'<input type="submit" value="Continue Shopping">'+ 
 				'</form>';
-		shoppingCart.del("", null);
+		shoppingCartCollection.del("", null);
 	}
 	function deleteCart() {
-		shoppingCart.del("", null);
+		shoppingCartCollection.del("", null);
 		document.getElementById('shoppingCart').innerHTML = "";
 		document.getElementById('total').innerHTML = "";	
 	}	
 
 	catalog.get(catalog_getResponse);
-	shoppingCart.get("", shoppingCart_getResponse);
+	shoppingCartCollection.get("", shoppingCartCollection_getResponse);
 </script>
 
 </head>
@@ -113,7 +123,7 @@
 		<br>		
 		<input type="button" onClick="checkoutCart()" value="Checkout"> 
 		<input type="button" onClick="deleteCart()" value="Empty">     
-	   	<a href="../ShoppingCart/">(feed)</a>
+	   	<a href="../ShoppingCart/Collection/">(feed)</a>
 	</form>    
   </div>
 </body>

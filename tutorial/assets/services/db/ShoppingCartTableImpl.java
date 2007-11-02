@@ -17,10 +17,12 @@
  * under the License.    
  */
 
-package services;
+package services.db;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -32,63 +34,104 @@ import com.sun.syndication.feed.atom.Entry;
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.atom.Link;
 
-public class ShoppingCartImpl implements Collection, Total {
-
-    private static Map<String, Entry> cart = new HashMap<String, Entry>();
+public class ShoppingCartTableImpl implements Collection {
+    
+    private static Map<String, String> cart = new HashMap<String, String>();
 
     public Feed getFeed() {
         Feed feed = new Feed();
         feed.setTitle("shopping cart");
-        feed.getEntries().addAll(cart.values());
+        for (Map.Entry<String, String> item: getAllData().entrySet()) {
+            feed.getEntries().add(createEntry(item.getKey(), item.getValue()));
+        }
         return feed;
     }
+    
+    private Entry createEntry(String key, String item) {
+        Entry entry = new Entry();
+        entry.setId(key);
+        entry.setTitle("cart-item");
 
-    public Entry get(String id) throws NotFoundException {
-        return cart.get(id);
-    }
-
-    public Entry post(Entry entry) {
-        System.out.println("post" + entry);
-        String id = "cart-" + UUID.randomUUID().toString();
-        entry.setId(id);
+        Content content = new Content();
+        content.setType(Content.TEXT);
+        content.setValue(item);
+        List contents = new ArrayList();
+        contents.add(content);
+        entry.setContents(contents);
 
         Link link = new Link();
         link.setRel("edit");
-        link.setHref(id);
+        link.setHref(key);
         entry.getOtherLinks().add(link);
         link = new Link();
         link.setRel("alternate");
-        link.setHref(id);
+        link.setHref(key);
         entry.getAlternateLinks().add(link);
 
         entry.setCreated(new Date());
 
-        cart.put(id, entry);
         return entry;
+    }
+
+    public Entry get(String id) throws NotFoundException {
+        return createEntry(id, cart.get(id));
+    }
+
+    public Entry post(Entry entry) {
+        System.out.println("post" + entry);
+        String item = ((Content)entry.getContents().get(0)).getValue();
+        String key = postData(item);
+        return createEntry(key, item);
     }
 
     public Entry put(String id, Entry entry) throws NotFoundException {
-        entry.setUpdated(new Date());
-        cart.put(id, entry);
-        return entry;
+        String item = ((Content)entry.getContents().get(0)).getValue();
+        item = putData(id, item);
+        return createEntry(id, item);
     }
 
     public void delete(String id) throws NotFoundException {
-        if (id.equals(""))
-            cart.clear();
-        else
-            cart.remove(id);
+        deleteData(id);
     }
 
+    private Map<String, String> getAllData() {
+        return cart;
+    }
+
+    private String getData(String key) throws NotFoundException {
+        return cart.get(key);
+    }
+
+    private String postData(String item) {
+        String key = "cart-" + UUID.randomUUID().toString();
+        cart.put(key, item);
+        return key;
+    }
+
+    private String putData(String key, String item) throws NotFoundException {
+        cart.put(key, item);
+        return item;
+    }
+    
+    private void deleteData(String key) throws NotFoundException {
+        if (key == null || key.equals(""))
+            cart.clear();
+        else
+            cart.remove(key);
+    }
+
+    private Map<String, String> queryData(String queryString) {
+        return getAllData();
+    }
+    
     public String getTotal() {
         double total = 0;
         String currencySymbol = "";
         if (!cart.isEmpty()) {
-            String item = ((Content)cart.values().iterator().next().getContents().get(0)).getValue();
+            String item = cart.values().iterator().next();
             currencySymbol = item.substring(item.indexOf("-") + 2, item.indexOf("-") + 3);
         }
-        for (Entry entry : cart.values()) {
-            String item = ((Content)entry.getContents().get(0)).getValue();
+        for (String item : cart.values()) {
             total += Double.valueOf(item.substring(item.indexOf("-") + 3));
         }
         return currencySymbol + String.valueOf(total);
