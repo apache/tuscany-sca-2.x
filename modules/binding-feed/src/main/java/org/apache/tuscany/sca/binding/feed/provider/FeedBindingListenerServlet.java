@@ -22,6 +22,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
@@ -32,7 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.tuscany.sca.binding.feed.collection.NotFoundException;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -45,6 +48,7 @@ import org.jdom.Namespace;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
+import com.sun.syndication.feed.atom.Content;
 import com.sun.syndication.feed.atom.Entry;
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.atom.Link;
@@ -67,6 +71,8 @@ class FeedBindingListenerServlet extends HttpServlet {
 
     private RuntimeWire wire;
     private Invoker getFeedInvoker;
+    private Invoker getAllInvoker;
+    private Invoker queryInvoker;
     private Invoker getInvoker;
     private Invoker postInvoker;
     private Invoker postMediaInvoker;
@@ -93,6 +99,10 @@ class FeedBindingListenerServlet extends HttpServlet {
             String operationName = invocationChain.getSourceOperation().getName();
             if (operationName.equals("getFeed")) {
                 getFeedInvoker = invocationChain.getHeadInvoker();
+            } else if (operationName.equals("getAll")) {
+                getAllInvoker = invocationChain.getHeadInvoker();
+            } else if (operationName.equals("query")) {
+                queryInvoker = invocationChain.getHeadInvoker();
             } else if (operationName.equals("get")) {
                 getInvoker = invocationChain.getHeadInvoker();
             } else if (operationName.equals("put")) {
@@ -165,16 +175,39 @@ class FeedBindingListenerServlet extends HttpServlet {
             } else if (path == null || path.length() == 0 || path.equals("/")) {
 
                 // Return a feed containing the entries in the collection
+                Feed feed = null;
+                if (getFeedInvoker != null) {
 
-                // Get the Feed from the service implementation
-                Message requestMessage = messageFactory.createMessage();
-                Message responseMessage = getFeedInvoker.invoke(requestMessage);
-                if (responseMessage.isFault()) {
-                    throw new ServletException((Throwable)responseMessage.getBody());
+                    // The service implementation is Feed-aware, invoke its getFeed operation
+                    Message requestMessage = messageFactory.createMessage();
+                    Message responseMessage = getFeedInvoker.invoke(requestMessage);
+                    if (responseMessage.isFault()) {
+                        throw new ServletException((Throwable)responseMessage.getBody());
+                    }
+                    feed = (Feed)responseMessage.getBody();
+                    
+                } else {
+
+                    // The service implementation is not Feed-aware, invoke its getAll operation
+                    // to get the data item collection. then create a Feed from it
+                    Message requestMessage = messageFactory.createMessage();
+                    Message responseMessage = getAllInvoker.invoke(requestMessage);
+                    if (responseMessage.isFault()) {
+                        throw new ServletException((Throwable)responseMessage.getBody());
+                    }
+                    Map<Object, Object> collection = (Map<Object, Object>)responseMessage.getBody();
+                    if (collection != null) {
+                        // Create the feed
+                        feed = new Feed();
+                        feed.setTitle("Feed");
+                        for (Map.Entry<Object, Object> item: collection.entrySet()) {
+                            Entry entry = createEntry(item.getKey(), item.getValue());
+                            feed.getEntries().add(entry);
+                        }
+                    }
                 }
-                Feed feed = (Feed)responseMessage.getBody();
                 if (feed != null) {
-
+                    
                     // Write the Atom feed
                     response.setContentType("application/atom+xml; charset=utf-8");
                     feed.setFeedType(requestFeedType);
@@ -187,11 +220,13 @@ class FeedBindingListenerServlet extends HttpServlet {
                 } else {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
+                
             } else if (path.startsWith("/")) {
 
                 // Return a specific entry in the collection
+                Entry entry;
 
-                // Get the entry from the service implementation
+                // Invoke the get operation on the service implementation
                 Message requestMessage = messageFactory.createMessage();
                 String id = path.substring(1);
                 requestMessage.setBody(new Object[] {id});
@@ -199,7 +234,17 @@ class FeedBindingListenerServlet extends HttpServlet {
                 if (responseMessage.isFault()) {
                     throw new ServletException((Throwable)responseMessage.getBody());
                 }
-                Entry entry = responseMessage.getBody();
+                if (getFeedInvoker != null) {
+                    
+                    // The service implementation is Feed-aware and returns a Feed entry 
+                    entry = responseMessage.getBody();
+                    
+                } else {
+                    
+                    // The service implementation only returns a data item, create an entry
+                    // from it
+                    entry = createEntry(id, responseMessage.getBody());
+                }
 
                 // Write the Atom entry
                 if (entry != null) {
@@ -221,19 +266,43 @@ class FeedBindingListenerServlet extends HttpServlet {
         } else {
 
             // Handle an RSS request
-
             if (path == null || path.length() == 0 || path.equals("/")) {
 
-                // Get the Feed from the service
-                Message requestMessage = messageFactory.createMessage();
-                Message responseMessage = getFeedInvoker.invoke(requestMessage);
-                if (responseMessage.isFault()) {
-                    throw new ServletException((Throwable)responseMessage.getBody());
-                }
-                Feed feed = (Feed)responseMessage.getBody();
-                if (feed != null) {
+                // Return an RSS feed containing the entries in the collection
+                Feed feed = null;
+                if (getFeedInvoker != null) {
 
-                    // Convert to an RSS feed
+                    // The service implementation is Feed-aware, invoke its getFeed operation
+                    Message requestMessage = messageFactory.createMessage();
+                    Message responseMessage = getFeedInvoker.invoke(requestMessage);
+                    if (responseMessage.isFault()) {
+                        throw new ServletException((Throwable)responseMessage.getBody());
+                    }
+                    feed = (Feed)responseMessage.getBody();
+                    
+                } else {
+
+                    // The service implementation is not Feed-aware, invoke its getAll operation
+                    // to get the data item collection. then create a Feed from it
+                    Message requestMessage = messageFactory.createMessage();
+                    Message responseMessage = getAllInvoker.invoke(requestMessage);
+                    if (responseMessage.isFault()) {
+                        throw new ServletException((Throwable)responseMessage.getBody());
+                    }
+                    Map<Object, Object> collection = (Map<Object, Object>)responseMessage.getBody();
+                    if (collection != null) {
+                        // Create the feed
+                        feed = new Feed();
+                        feed.setTitle("Feed");
+                        for (Map.Entry<Object, Object> item: collection.entrySet()) {
+                            Entry entry = createEntry(item.getKey(), item.getValue());
+                            feed.getEntries().add(entry);
+                        }
+                    }
+                }
+
+                // Convert to an RSS feed
+                if (feed != null) {
                     response.setContentType("application/rss+xml; charset=utf-8");
                     feed.setFeedType("atom_1.0");
                     SyndFeed syndFeed = new SyndFeedImpl(feed);
@@ -250,6 +319,41 @@ class FeedBindingListenerServlet extends HttpServlet {
             } else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
+        }
+    }
+
+    /**
+     * Create an Atom entry for a key and item from a collection.
+     * @param key
+     * @param item
+     * @return
+     */
+    private Entry createEntry(Object key, Object item) {
+        if (item != null) {
+            Entry entry = new Entry();
+            entry.setId(key.toString());
+            entry.setTitle("item");
+    
+            Content content = new Content();
+            content.setType(Content.TEXT);
+            content.setValue(item.toString());
+            List contents = new ArrayList();
+            contents.add(content);
+            entry.setContents(contents);
+    
+            Link link = new Link();
+            link.setRel("edit");
+            link.setHref(key.toString());
+            entry.getOtherLinks().add(link);
+            link = new Link();
+            link.setRel("alternate");
+            link.setHref(key.toString());
+            entry.getAlternateLinks().add(link);
+    
+            entry.setCreated(new Date());
+            return entry;
+        } else {
+            return null;
         }
     }
 
@@ -285,13 +389,29 @@ class FeedBindingListenerServlet extends HttpServlet {
                 }
 
                 // Let the component implementation create it
-                Message requestMessage = messageFactory.createMessage();
-                requestMessage.setBody(new Object[] {entry});
-                Message responseMessage = postInvoker.invoke(requestMessage);
-                if (responseMessage.isFault()) {
-                    throw new ServletException((Throwable)responseMessage.getBody());
+                if (getFeedInvoker != null) {
+                    
+                    // The service implementation is Feed-aware, pass the entry to it
+                    Message requestMessage = messageFactory.createMessage();
+                    requestMessage.setBody(new Object[] {entry});
+                    Message responseMessage = postInvoker.invoke(requestMessage);
+                    if (responseMessage.isFault()) {
+                        throw new ServletException((Throwable)responseMessage.getBody());
+                    }
+                    createdEntry = responseMessage.getBody();
+                } else {
+                    
+                    // The service implementation is not Feed-aware, pass the data item to it
+                    Message requestMessage = messageFactory.createMessage();
+                    Object item = ((Content)entry.getContents().get(0)).getValue();
+                    requestMessage.setBody(new Object[] {item});
+                    Message responseMessage = postInvoker.invoke(requestMessage);
+                    if (responseMessage.isFault()) {
+                        throw new ServletException((Throwable)responseMessage.getBody());
+                    }
+                    Object key = responseMessage.getBody();
+                    createdEntry = createEntry(key, item);
                 }
-                createdEntry = responseMessage.getBody();
 
             } else if (contentType != null) {
 
@@ -380,18 +500,40 @@ class FeedBindingListenerServlet extends HttpServlet {
                 }
 
                 // Let the component implementation create it
-                Message requestMessage = messageFactory.createMessage();
-                requestMessage.setBody(new Object[] {id, entry});
-                Message responseMessage = putInvoker.invoke(requestMessage);
-                if (responseMessage.isFault()) {
-                    Object body = responseMessage.getBody();
-                    if (body instanceof NotFoundException) {
-                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                if (getFeedInvoker != null) {
+                    
+                    // The service implementation is Feed-aware, pass the entry to it
+                    Message requestMessage = messageFactory.createMessage();
+                    requestMessage.setBody(new Object[] {id, entry});
+                    Message responseMessage = putInvoker.invoke(requestMessage);
+                    if (responseMessage.isFault()) {
+                        Object body = responseMessage.getBody();
+                        if (body.getClass().getName().endsWith(".NotFoundException")) {
+                            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                        } else {
+                            throw new ServletException((Throwable)responseMessage.getBody());
+                        }
                     } else {
-                        throw new ServletException((Throwable)responseMessage.getBody());
+                        updatedEntry = responseMessage.getBody();
                     }
                 } else {
-                    updatedEntry = responseMessage.getBody();
+                    
+                    // The service implementation is not Feed-aware, pass the data item to it
+                    Message requestMessage = messageFactory.createMessage();
+                    Object item = ((Content)entry.getContents().get(0)).getValue();
+                    requestMessage.setBody(new Object[] {id, item});
+                    Message responseMessage = putInvoker.invoke(requestMessage);
+                    if (responseMessage.isFault()) {
+                        Object body = responseMessage.getBody();
+                        if (body.getClass().getName().endsWith(".NotFoundException")) {
+                            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                        } else {
+                            throw new ServletException((Throwable)responseMessage.getBody());
+                        }
+                    } else {
+                        item = responseMessage.getBody(); 
+                        updatedEntry = createEntry(id, item);
+                    }
                 }
 
             } else if (contentType != null) {
@@ -403,8 +545,8 @@ class FeedBindingListenerServlet extends HttpServlet {
                 requestMessage.setBody(new Object[] {id, contentType, request.getInputStream()});
                 Message responseMessage = putMediaInvoker.invoke(requestMessage);
                 Object body = responseMessage.getBody();
-                if (body instanceof NotFoundException) {
-                    if (body instanceof NotFoundException) {
+                if (responseMessage.isFault()) {
+                    if (body.getClass().getName().endsWith(".NotFoundException")) {
                         response.sendError(HttpServletResponse.SC_NOT_FOUND);
                     } else {
                         throw new ServletException((Throwable)responseMessage.getBody());
@@ -464,7 +606,7 @@ class FeedBindingListenerServlet extends HttpServlet {
         Message responseMessage = deleteInvoker.invoke(requestMessage);
         if (responseMessage.isFault()) {
             Object body = responseMessage.getBody();
-            if (body instanceof NotFoundException) {
+            if (body.getClass().getName().endsWith(".NotFoundException")) {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             } else {
                 throw new ServletException((Throwable)responseMessage.getBody());
