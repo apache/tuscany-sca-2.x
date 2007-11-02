@@ -50,7 +50,7 @@ public interface Collection <K, D> {
      * @param item
      * @return
      */
-    D post(D item);
+    K post(D item);
 
     /**
      * Retrieves an item.
