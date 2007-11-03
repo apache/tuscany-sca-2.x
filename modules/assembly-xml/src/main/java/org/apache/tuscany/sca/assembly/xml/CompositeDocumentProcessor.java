@@ -22,16 +22,20 @@ package org.apache.tuscany.sca.assembly.xml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ResourceReference;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 
@@ -107,6 +111,25 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
     
     public void resolve(Composite composite, ModelResolver resolver) throws ContributionResolveException {
         extensionProcessor.resolve(composite, resolver);
+        
+        for (Component component : composite.getComponents()) {
+        	for (ComponentProperty prop : component.getProperties()) {
+        		String file = prop.getFile();
+        		 if (file != null) {
+        			ResourceReference resourceRef = new ResourceReference(file);
+        			resourceRef = resolver.resolveModel(ResourceReference.class, resourceRef);
+
+        			try {
+        			    if (!resourceRef.isUnresolved()) {
+							prop.setFile(resourceRef.getResource().toURI().toString());
+						
+        			    }
+        			} catch (URISyntaxException e) {
+        			    	throw new IllegalArgumentException(e);
+        	        }
+        		}			    
+        	}
+        }
     }
 
     public String getArtifactType() {

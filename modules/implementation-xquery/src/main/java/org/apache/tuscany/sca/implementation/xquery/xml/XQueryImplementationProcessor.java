@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ResourceReference;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
@@ -110,6 +111,12 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
      */
     public void resolve(XQueryImplementation xqueryImplementation, ModelResolver resolver)
         throws ContributionResolveException {
+    	
+    	ResourceReference resourceRef = new ResourceReference(xqueryImplementation.getLocation());
+    	resourceRef = resolver.resolveModel(ResourceReference.class, resourceRef);
+    	if (!resourceRef.isUnresolved())
+    		throw new ContributionResolveException("Could not locate file: " + xqueryImplementation.getLocation());
+    	xqueryImplementation.setLocationURL(resourceRef.getResource());
 
         XQueryIntrospector introspector = new XQueryIntrospector(assemblyFactory, javaFactory);
 

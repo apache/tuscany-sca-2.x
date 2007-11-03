@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.implementation.xquery.impl;
 
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +35,7 @@ import org.apache.tuscany.sca.implementation.xquery.XQueryImplementation;
 public class XQueryImplementationImpl extends ComponentTypeImpl implements XQueryImplementation {
 
     private String location;
+    private URL locationURL;
     private String xqExpression;
 
     private Map<String, XQueryExpression> compiledExpressionsCache = new HashMap<String, XQueryExpression>();
@@ -49,6 +51,14 @@ public class XQueryImplementationImpl extends ComponentTypeImpl implements XQuer
 
     public void setLocation(String location) {
         this.location = location;
+    }
+    
+    public URL getLocationURL() {
+        return locationURL;
+    }
+
+    public void setLocationURL(URL locationURL) {
+        this.locationURL = locationURL;
     }
 
     public String getXqExpression() {

@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.extension.helper.impl;
 
+import java.lang.reflect.Method;
+
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.extension.helper.utils.DynamicImplementation;
 
 /**
@@ -38,5 +41,16 @@ public class PojoImplementation<Implementation> extends DynamicImplementation {
         return userImpl;
     }
     
+    public void resolve(ModelResolver resolver) {
+    	
+    	try {
+  		    Method resolveMethod;
+  		    if (userImpl != null &&
+  				  (resolveMethod = userImpl.getClass().getMethod("resolve", ModelResolver.class)) != null) {
+  			    resolveMethod.invoke(userImpl, resolver);
+  		  }
+  	    } catch (Exception e) {
+  	    }
+    }
 
 }

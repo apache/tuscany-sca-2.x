@@ -19,12 +19,11 @@
 package org.apache.tuscany.sca.implementation.xquery.xml;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Iterator;
 
 import javax.xml.namespace.QName;
@@ -74,12 +73,9 @@ public class XQueryIntrospector {
 
     public boolean introspect(XQueryImplementation xqueryImplementation) throws ContributionResolveException {
         
-        //FIXME The classloader should be passed in
-        cl = Thread.currentThread().getContextClassLoader();
-
         String xqExpression = null;
         try {
-            xqExpression = loadXQExpression(xqueryImplementation.getLocation(), cl);
+            xqExpression = loadXQExpression(xqueryImplementation.getLocationURL());
         } catch (FileNotFoundException e) {
             throw new ContributionResolveException(e);
         } catch (IOException e) {
@@ -124,14 +120,9 @@ public class XQueryIntrospector {
     /**
      * Loads the xquery expression from the location that is provided with the implementation
      */
-    private String loadXQExpression(String location, ClassLoader cl) throws FileNotFoundException, IOException {
-        File locationFile = new File(location);
-        InputStream xqResourceStream = null;
-        if (locationFile.exists()) {
-            xqResourceStream = new FileInputStream(locationFile);
-        } else {
-            xqResourceStream = cl.getResourceAsStream(location);
-        }
+    private String loadXQExpression(URL locationURL) throws FileNotFoundException, IOException {
+    	
+        InputStream xqResourceStream = locationURL.openStream();
 
         if (xqResourceStream == null) {
             return null;

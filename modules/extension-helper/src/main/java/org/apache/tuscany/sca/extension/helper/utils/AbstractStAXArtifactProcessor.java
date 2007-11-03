@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.extension.helper.utils;
 
+import java.lang.reflect.Method;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Implementation;
@@ -57,6 +59,15 @@ public abstract class AbstractStAXArtifactProcessor<I extends Implementation> im
               model.getServices().add(dynamicService);
           }
       }
+      
+      // Allow implementation classes to resolve themselves
+      try {
+		  Method resolveMethod;
+		  if ((resolveMethod = model.getClass().getMethod("resolve", ModelResolver.class)) != null) {
+			  resolveMethod.invoke(model, resolver);
+		  }
+	  } catch (Exception e) {
+	  }
 
       model.setUnresolved(false);
     }

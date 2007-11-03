@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.sca.implementation.script;
 
+import java.net.URL;
+
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ResourceReference;
 import org.apache.tuscany.sca.extension.helper.utils.ResourceHelper;
 
 /**
@@ -26,6 +30,7 @@ import org.apache.tuscany.sca.extension.helper.utils.ResourceHelper;
 public class ScriptImplementation {
 
     protected String scriptName;
+    protected URL scriptURL;
     protected String scriptSrc;
     protected String scriptLanguage;
 
@@ -60,10 +65,22 @@ public class ScriptImplementation {
             if (scriptName == null) {
                 throw new IllegalArgumentException("script name is null and no inline source used");
             }
+            if (scriptURL == null) {
+                throw new RuntimeException("No script: " + scriptName);
+            }
 
-            // TODO: how should resources be read? Soould this use the contrabution sevrice?
-            scriptSrc = ResourceHelper.readResource(scriptName);
+            scriptSrc = ResourceHelper.readResource(scriptURL);
         }
         return scriptSrc;
+    }
+    
+    public void resolve(ModelResolver resolver) {
+    	
+    	if (scriptName != null) {
+    	    ResourceReference resourceRef = new ResourceReference(scriptName);
+    	    resourceRef = resolver.resolveModel(ResourceReference.class, resourceRef);
+    	    if (!resourceRef.isUnresolved())
+    		    scriptURL = resourceRef.getResource();
+    	}
     }
 }

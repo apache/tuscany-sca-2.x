@@ -37,7 +37,7 @@ public class TransformationContextImpl implements TransformationContext {
 
     public TransformationContextImpl() {
         super();
-        //FIXME The classloader should be passed in
+        // This is used only for testing
         setClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
