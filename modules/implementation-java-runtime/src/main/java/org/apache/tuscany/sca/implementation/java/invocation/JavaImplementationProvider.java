@@ -61,7 +61,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
     private JavaImplementation implementation;
     private JavaComponentContextProvider componentContextProvider;
     private RequestContextFactory requestContextFactory;
-    private Map<QName, String> policyHandlerClassNames = null;
+    private Map<ClassLoader, Map<QName, String>> policyHandlerClassNames = null;
     
     public JavaImplementationProvider(RuntimeComponent component,
                                       JavaImplementation implementation,
@@ -119,9 +119,9 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
         if ( policyHandlerClassNames == null ) {
         	Hashtable<ClassLoader, Set<URL>> policySetResources = 
         		ServiceDiscovery.getInstance().getServiceResources("org.apache.tuscany.sca.policy.PolicySetHandlers");
-            policyHandlerClassNames = new HashMap<QName, String>();
+            policyHandlerClassNames = new HashMap<ClassLoader, Map<QName, String>>();
             for (ClassLoader classLoader : policySetResources.keySet()) {
-            	policyHandlerClassNames.putAll(PolicySetHandlerUtil.getPolicyHandlers(
+            	policyHandlerClassNames.put(classLoader, PolicySetHandlerUtil.getPolicyHandlers(
             			classLoader, policySetResources.get(classLoader)));
             }
         }
@@ -130,14 +130,19 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
             PolicyHandler aHandler = null;
             PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
             for ( PolicySet policySet : policiedImpl.getPolicySets() ) {
-                String handlerClassName = policyHandlerClassNames.get(policySet.getName());
-                
-                if ( handlerClassName != null ) {
-                    aHandler = 
-                        (PolicyHandler)Class.forName(handlerClassName, true, Thread.currentThread().getContextClassLoader()).newInstance();
-                    aHandler.setApplicablePolicySet(policySet);
-                    javaImpl.getPolicyHandlers().put(policySet, aHandler);
-                } else {
+                String handlerClassName = null;
+                for (ClassLoader classLoader : policyHandlerClassNames.keySet()) {
+                	handlerClassName = policyHandlerClassNames.get(classLoader).get(policySet.getName());
+                	if ( handlerClassName != null ) {
+                        aHandler = 
+                            (PolicyHandler)Class.forName(handlerClassName, true, classLoader).newInstance();
+                        aHandler.setApplicablePolicySet(policySet);
+                        javaImpl.getPolicyHandlers().put(policySet, aHandler);
+                        break;
+                	}
+                }
+                                
+                if (aHandler == null) {
                     //FIXME : maybe there must be a warning thrown here
                 }
             }

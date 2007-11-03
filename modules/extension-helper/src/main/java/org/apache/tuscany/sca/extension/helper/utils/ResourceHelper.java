@@ -30,15 +30,8 @@ import java.net.URL;
  */
 public class ResourceHelper {
 
-    public static String readResource(String scriptName) {
+    public static String readResource(URL scriptSrcUrl) {
         
-        //FIXME The classloader should be passed in
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        URL scriptSrcUrl = cl.getResource(scriptName);
-        if (scriptSrcUrl == null) {
-            throw new RuntimeException("No script: " + scriptName);
-        }
-
         InputStream is;
         try {
             is = scriptSrcUrl.openStream();

@@ -17,42 +17,40 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.java.impl;
+package org.apache.tuscany.sca.contribution.namespace.impl;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.ClassReference;
+import org.apache.tuscany.sca.contribution.resolver.ResourceReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
- * A Model Resolver for ClassReferences.
+ * A Model Resolver for ResourceReferences.
  *
- * @version $Rev: 557916 $ $Date: 2007-07-20 01:04:40 -0700 (Fri, 20 Jul 2007) $
  */
-public class ClassReferenceModelResolver implements ModelResolver {
+public class ResourceReferenceModelResolver implements ModelResolver {
     private Contribution contribution;
     protected WeakReference<ClassLoader> classLoader;
-    private Map<String, ClassReference> map = new HashMap<String, ClassReference>();
+    private Map<String, ResourceReference> map = new HashMap<String, ResourceReference>();
 
     private ModelResolver osgiResolver;
 
-    public ClassReferenceModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
+    public ResourceReferenceModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
-        if (this.contribution != null) {
-            this.classLoader = new WeakReference<ClassLoader>(this.contribution.getClassLoader());
-        } else {
-            // This path should be used only for unit testing.
-            this.classLoader = new WeakReference<ClassLoader>(this.getClass().getClassLoader());
-        }
+        this.classLoader = new WeakReference<ClassLoader>(this.contribution.getClassLoader());        
 
         try {
             Class osgiResolverClass =
-                Class.forName("org.apache.tuscany.sca.contribution.osgi.impl.OSGiClassReferenceModelResolver");
+                Class.forName("org.apache.tuscany.sca.contribution.osgi.impl.OSGiResourceReferenceModelResolver");
             if (osgiResolverClass != null) {
                 Constructor constructor =
                     osgiResolverClass.getConstructor(Contribution.class, ModelFactoryExtensionPoint.class);
@@ -63,12 +61,12 @@ public class ClassReferenceModelResolver implements ModelResolver {
     }
 
     public void addModel(Object resolved) {
-        ClassReference clazz = (ClassReference)resolved;
-        map.put(clazz.getClassName(), clazz);
+        ResourceReference resourceRef = (ResourceReference)resolved;
+        map.put(resourceRef.getResourceName(), resourceRef);
     }
 
     public Object removeModel(Object resolved) {
-        return map.remove(((ClassReference)resolved).getClassName());
+        return map.remove(((ResourceReference)resolved).getResourceName());
     }
 
   
@@ -80,43 +78,40 @@ public class ClassReferenceModelResolver implements ModelResolver {
             return modelClass.cast(resolved);
         }
 
-        //Load a class on demand
-        Class clazz = null;
+        //Get a resource
+        String resourceName = ((ResourceReference)unresolved).getResourceName();
+        URL resourceURL = null;
+        
+        if (URI.create(resourceName).isAbsolute()) {
+        	try {
+        		File resourceFile = new File(resourceName);
+        		if (resourceFile.exists())
+				    resourceURL = resourceFile.toURL();
+			} catch (MalformedURLException e) {
+			}
+        }
         
         if (osgiResolver != null) {
             resolved = osgiResolver.resolveModel(modelClass, unresolved);
-            clazz = ((ClassReference)resolved).getJavaClass();
+            resourceURL = ((ResourceReference)resolved).getResource();
         }
         
-        if (clazz == null) {
-            try {
-            	// Search contribution classloader (which has visibility of classes in the contribution
-            	// as well as explicitly imported packages from other contributions)
-                clazz = Class.forName(((ClassReference)unresolved).getClassName(), true, classLoader.get());
-            } catch (ClassNotFoundException e) {
-            }
+        if (resourceURL == null) {
+        	resourceURL = classLoader.get().getResource(resourceName);
         }
 
-        if (clazz != null) {
-            //if we load the class            
-            // Store a new ClassReference wrappering the loaded class
-            ClassReference classReference = new ClassReference(clazz);
-            map.put(getPackageName(classReference), classReference);
+        if (resourceURL != null) {          
+            // Store a new ResourceReference wrappering the resource
+            ResourceReference resourceReference = new ResourceReference(resourceName, resourceURL);
+            map.put(resourceName, resourceReference);
 
-            // Return the resolved ClassReference
-            return modelClass.cast(classReference);
+            // Return the resolved ResourceReference
+            return modelClass.cast(resourceReference);
         } else {
             return unresolved;
         }
 
     }
 
-    /***************
-     * Helper methods
-     ***************/
-
-    private String getPackageName(ClassReference clazz) {
-        int pos = clazz.getClassName().lastIndexOf(".");
-        return clazz.getClassName().substring(0, pos - 1);
-    }
+   
 }

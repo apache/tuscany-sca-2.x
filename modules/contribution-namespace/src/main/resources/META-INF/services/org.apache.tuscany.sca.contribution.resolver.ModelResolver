@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-org.apache.tuscany.sca.contribution.java.impl.ClassReferenceModelResolver;model=org.apache.tuscany.sca.contribution.resolver.ClassReference
+org.apache.tuscany.sca.contribution.namespace.impl.ResourceReferenceModelResolver;model=org.apache.tuscany.sca.contribution.resolver.ResourceReference

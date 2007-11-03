@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.implementation.xquery;
 
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Map;
 
 import net.sf.saxon.query.XQueryExpression;
@@ -38,6 +39,10 @@ public interface XQueryImplementation extends Implementation {
     public String getLocation();
 
     public void setLocation(String location);
+    
+    public URL getLocationURL();
+
+    public void setLocationURL(URL location);
 
     /**
      * The XQuery expression that is loaded from the xquery implementation file

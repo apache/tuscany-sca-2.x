@@ -89,13 +89,8 @@ public class PropertyUtil {
     static private Document loadFromFile(String file) throws MalformedURLException, IOException,
         TransformerException, ParserConfigurationException {
         URI uri = URI.create(file);
-        URL url = null;
-        if (!uri.isAbsolute()) {
-            //FIXME Should already be given an absolute file 
-            url = Thread.currentThread().getContextClassLoader().getResource(file);
-        } else {
-            url = uri.toURL();
-        }
+        // URI resolution for relative uris is done when the composite is resolved.
+        URL url = uri.toURL();
         InputStream is = url.openStream();
 
         Source streamSource = new SAXSource(new InputSource(is));
