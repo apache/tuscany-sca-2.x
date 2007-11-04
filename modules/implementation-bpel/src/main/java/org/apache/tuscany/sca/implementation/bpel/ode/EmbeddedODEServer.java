@@ -181,6 +181,8 @@ public class EmbeddedODEServer {
             __log.error(errmsg, ex);
             throw new ODEInitializationException(errmsg, ex);
         }
+        
+        _db.shutdown();
     }
 
     protected Scheduler createScheduler() {
