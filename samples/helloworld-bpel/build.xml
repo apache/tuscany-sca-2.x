@@ -16,136 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="sample-helloworld-bpel" default="package">
-    <property file="${user.home}/tuscany/build.properties" />
-    <property file="${user.home}/build.properties" />
-    
-    <property name="client.class" value="helloworld.BPELClient" />
-    <property name="test.jar"   value="sample-helloworld-bpel.jar" />
-    
-    <property name="tuscany.sca.manifest.location" value="../../lib/tuscany-sca-manifest.jar"/>
-    <property name="tuscany.sca.lib.location" value="../../lib"/>
-    <property name="tuscany.sca.modules.location" value="../../modules"/>
-            
-    <path id="project.classpath">
-        <pathelement path="target/classes"/>
-        <pathelement path="target/wsdl2java-source"/>
-        <pathelement path="target/jpadb"/>
-        <pathelement location="${tuscany.sca.manifest.location}"/>
-        
-        
-        <!-- Direct dependencies -->
-        <pathelement location="${tuscany.sca.lib.location}/commons-lang-2.1.jar"/>        
-        <pathelement location="${tuscany.sca.lib.location}/saxon-8.7.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/saxon-dom-8.7.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/saxon-xpath-8.7.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/serp-1.12.0.jar"/>                                                                                                                     
-        <pathelement location="${tuscany.sca.lib.location}/derby-10.1.3.1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-connector-1.2-beta.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-kernel-1.2-beta.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-transaction-1.2-beta.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-ejb_3.0_spec-1.0.jar"/>           
+<project name="sample-helloworld-bpel" default="compile">
 
-        <pathelement location="${tuscany.sca.lib.location}/ode-bpel-api-1.1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/ode-bpel-compiler-1.1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/ode-bpel-dao-1.1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/ode-bpel-epr-1.1.jar"/>    
-        <pathelement location="${tuscany.sca.lib.location}/ode-bpel-obj-1.1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/ode-bpel-runtime-1.1.jar"/>        
-        <pathelement location="${tuscany.sca.lib.location}/ode-bpel-schemas-1.1.jar"/>        
-        <pathelement location="${tuscany.sca.lib.location}/ode-bpel-store-1.1.jar"/>        
-        <pathelement location="${tuscany.sca.lib.location}/ode-dao-jpa-1.1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/ode-jacob-1.1.jar"/>         
-        <pathelement location="${tuscany.sca.lib.location}/ode-jacob-ap-1.1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/ode-scheduler-simple-1.1.jar"/>    
-        <pathelement location="${tuscany.sca.lib.location}/ode-utils-1.1.jar"/>
-
-        <pathelement location="${tuscany.sca.lib.location}/openjpa-all-0.9.7-incubating.jar"/>
-
-        <pathelement location="${tuscany.sca.lib.location}/tuscany-sdo-impl-1.0-incubating.jar"/>                
-        
-        <pathelement location="${tuscany.sca.lib.location}/xmlbeans-2.3.0.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/tranql-connector-1.1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/xercesImpl-2.8.0.jar"/>        
-        
-
-        <!-- Project Transitive Dependencies -->
-        <pathelement location="${tuscany.sca.lib.location}/activeio-2.0-r118.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/axion-1.0-M3-dev.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/backport-util-concurrent-2.2.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/cglib-nodep-2.1_3.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/commons-codec-1.2.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/commons-collections-3.1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/commons-jexl-1.1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/commons-logging-1.0.4.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/commons-primitives-1.0.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/jaxen-1.1-beta-9.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/log4j-1.2.12.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/javacc-3.2.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-common-1.2-beta.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-core-1.2-beta.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-deployment-1.2-beta.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-interceptor-1.2-beta.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-j2ee-1.2-beta.jar"/>        
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-management-1.2-beta.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-naming-1.2-beta.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-security-1.2-beta.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-system-1.2-beta.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-util-1.2-beta.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-commonj_1.1_spec-1.0.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-j2ee-connector_1.5_spec-1.1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-j2ee-jacc_1.0_spec-1.1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-j2ee-management_1.0_spec-1.1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-jpa_3.0_spec-1.0.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-jta_1.0.1B_spec-1.0.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/neethi-2.0.2.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/openjpa-persistence-0.9.7-incubating.jar"/>        
-        <pathelement location="${tuscany.sca.lib.location}/axiom-api-1.2.5.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/XmlSchema-1.3.2.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/xbean-naming-2.7.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/wstx-asl-3.2.1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/common-2.2.3.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/ecore-2.2.3.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/ecore-change-2.2.3.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/ecore-xmi-2.2.3.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/xsd-2.2.3.jar"/>        
-        <pathelement location="${tuscany.sca.lib.location}/howl-1.0.1-1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/regexp-1.3.jar"/>        
-        <pathelement location="${tuscany.sca.lib.location}/stax-api-1.0.1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/wsdl4j-1.6.2.jar"/>        
-        <pathelement location="${tuscany.sca.lib.location}/xalan-2.7.0.jar"/>        
-        <pathelement location="${tuscany.sca.lib.location}/xml-apis-1.3.03.jar"/>        
-        <pathelement location="${tuscany.sca.lib.location}/xml-resolver-1.1.jar"/>
-                        
-		<!-- Runtime dependencies -->
-        <pathelement location="${tuscany.sca.lib.location}/axiom-impl-1.2.5.jar"/>   
-
-		<!-- Others -->
-        <pathelement location="${tuscany.sca.lib.location}/tuscany-sdo-api-r2.1-1.0-incubating.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/tuscany-sdo-lib-1.0-incubating.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-spec-j2ee-connector-1.5-rc4.jar"/>
-        
-        <pathelement location="${tuscany.sca.lib.location}/geronimo-spec-jta-1.0.1B-rc4.jar"/>        
-        <pathelement location="${tuscany.sca.lib.location}/activation-1.1.jar"/>        
-        <pathelement location="${tuscany.sca.lib.location}/mail-1.4.jar"/>        
-        
-        <pathelement location="${tuscany.sca.lib.location}/xstream-1.1.3.jar"/>        
-		<!--
-
-        <pathelement location="${tuscany.sca.lib.location}/xpp3-1.1.3.3.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/ognl-2.6.9.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/mx4j-3.0.1.jar"/>
-        <pathelement location="${tuscany.sca.lib.location}/derbytools-10.1.2.1.jar"/>        
-		-->        
-
-    </path>
-    	
     <target name="init">
         <mkdir dir="target/classes"/>
         <mkdir dir="target/wsdl2java-source"/>
     </target>
-    
-	
+
     <target name="generate-wsdl" depends="init">
         <java classname="org.apache.tuscany.sdo.generate.XSD2JavaGenerator" fork="true">
             <arg value="-targetDirectory"/>
@@ -156,51 +33,186 @@
             <arg value="-noUnsettable"/>
             <arg value="src/main/resources/helloworld.wsdl"/>
 
-            <classpath refid="project.classpath"/>
+            <classpath>
+                <fileset refid="tuscany.jars"/>
+                <fileset refid="3rdparty.jars"/>
+            </classpath>
         </java>
+        
         <java classname="org.apache.tuscany.tools.wsdl2java.generate.WSDL2JavaGenerator" fork="true">
             <arg value="-targetDirectory"/>
             <arg value="target/wsdl2java-source"/>
             <arg value="src/main/resources/helloworld.wsdl"/>
 
-            <classpath refid="project.classpath"/>
+            <classpath>
+                <fileset refid="tuscany.jars"/>
+                <fileset refid="3rdparty.jars"/>
+            </classpath>
         </java>
     </target>
 
     <target name="unzip-ode-db" depends="init">
-    	<unzip src="${tuscany.sca.lib.location}/ode-dao-jpa-ojpa-derby-1.1.zip" dest="target/jpadb"/>
-    </target>    	
-    
+    	<unzip src="../../lib/ode-dao-jpa-ojpa-derby-1.1.zip" dest="target/database"/>
+    </target> 
+
     <target name="compile" depends="init,generate-wsdl,unzip-ode-db">
-        <javac destdir="target/classes"
-               debug="on"
-               source="1.5"
-               target="1.5">
-               <src location="src/main/java"/>
-               <src location="target/wsdl2java-source"/>
-               <classpath refid="project.classpath"/>
-        </javac> 
+        <mkdir dir="target/classes"/>
+        <javac destdir="target/classes" debug="on" source="1.5" target="1.5">
+            <src path="src/main/java"/>
+            <src path="target/wsdl2java-source"/>
+            <classpath>
+                <fileset refid="tuscany.jars"/>
+                <fileset refid="3rdparty.jars"/>
+            </classpath>
+        </javac>
         <copy todir="target/classes">
             <fileset dir="src/main/resources"/>
-            <fileset dir="target/wsdl2java-source"/>
         </copy>
-        <jar destfile="target/${test.jar}" basedir="target/classes">
+        <jar destfile="target/sample-helloworld-bpel.jar" basedir="target/classes">
             <manifest>
-                <attribute name="Main-Class" value="${client.class}" /> 
+                <attribute name="Main-Class" value="helloworld.BPELClient"/>
             </manifest>
-        </jar>    	
-    </target>	
-	
-    <target name="run">
-        <java classname="${client.class}" fork="true">
-            <classpath path="target/${test.jar}"/>
-            <classpath refid="project.classpath"/>
-        </java>    	
+        </jar>
     </target>
-    		
+
+    <target name="run">
+        <java classname="helloworld.BPELClient"> <!-- fork="true" -->
+            <!-- jvmarg value="-Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"/ -->
+            <classpath>
+                <pathelement location="target/classes"/>
+                <pathelement location="target/database"/>
+                <fileset refid="tuscany.jars"/>
+                <fileset refid="3rdparty.jars"/>
+            </classpath>
+        </java>
+    </target>
+
     <target name="clean">
-        <delete quiet="true" includeemptydirs="true">
+        <delete includeemptydirs="true">
             <fileset dir="target"/>
         </delete>
     </target>
+
+    <fileset id="tuscany.jars" dir="../../modules">
+        <include name="tuscany-interface-java-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-assembly-xsd-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-implementation-java-xml-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-interface-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-interface-java-xml-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-implementation-java-runtime-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-domain-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-implementation-bpel-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-assembly-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-sca-api-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-host-embedded-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-node-api-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-policy-xml-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-policy-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-contribution-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-policy-logging-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-implementation-java-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-contribution-impl-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-binding-sca-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-interface-wsdl-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-domain-api-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-core-spi-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-core-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-contribution-java-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-databinding-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-node-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-definitions-xml-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-binding-sca-xml-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-core-databinding-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-interface-wsdl-xml-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-contribution-namespace-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-definitions-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-assembly-xml-1.0.1-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-wsdl2java-1.0.1-incubating-SNAPSHOT.jar"/>
+    </fileset>
+    <fileset id="3rdparty.jars" dir="../../lib">
+        <include name="tuscany-sdo-impl-1.0-incubating-SNAPSHOT.jar"/>
+        <include name="tuscany-sdo-tools-1.0-incubating-SNAPSHOT.jar"/>
+        <include name="geronimo-security-1.2-beta.jar"/>
+        <include name="geronimo-spec-jta-1.0.1B-rc4.jar"/>
+        <include name="saxon-xpath-8.7.jar"/>
+        <include name="log4j-1.2.12.jar"/>
+        <include name="geronimo-interceptor-1.2-beta.jar"/>
+        <include name="geronimo-core-1.2-beta.jar"/>
+        <include name="geronimo-j2ee-jacc_1.0_spec-1.1.jar"/>
+        <include name="ode-bpel-compiler-1.1.jar"/>
+        <include name="ode-bpel-runtime-1.1.jar"/>
+        <include name="geronimo-jpa_3.0_spec-1.0.jar"/>
+        <include name="ode-jacob-1.1.jar"/>
+        <include name="xbean-naming-2.7.jar"/>
+        <include name="axiom-impl-1.2.5.jar"/>
+        <include name="openjpa-all-0.9.7-incubating.jar"/>
+        <include name="xml-resolver-1.1.jar"/>
+        <include name="xalan-2.7.0.jar"/>
+        <include name="ode-bpel-epr-1.1.jar"/>
+        <include name="activeio-2.0-r118.jar"/>
+        <include name="ode-bpel-obj-1.1.jar"/>
+        <include name="geronimo-management-1.2-beta.jar"/>
+        <include name="openjpa-persistence-0.9.7-incubating.jar"/>
+        <include name="ode-jacob-ap-1.1.jar"/>
+        <include name="commons-jexl-1.1.jar"/>
+        <include name="geronimo-ejb_3.0_spec-1.0.jar"/>
+        <include name="ecore-xmi-2.2.3.jar"/>
+        <include name="commons-lang-2.1.jar"/>
+        <include name="serp-1.12.0.jar"/>
+        <include name="neethi-2.0.2.jar"/>
+        <include name="geronimo-j2ee-management_1.0_spec-1.1.jar"/>
+        <include name="geronimo-spec-j2ee-connector-1.5-rc4.jar"/>
+        <include name="derby-10.1.3.1.jar"/>
+        <include name="geronimo-naming-1.2-beta.jar"/>
+        <include name="common-2.2.3.jar"/>
+        <include name="xsd-2.2.3.jar"/>
+        <include name="geronimo-j2ee-1.2-beta.jar"/>
+        <include name="cglib-nodep-2.1_3.jar"/>
+        <include name="geronimo-system-1.2-beta.jar"/>
+        <include name="wsdl4j-1.6.2.jar"/>
+        <include name="xercesImpl-2.8.1.jar"/>
+        <include name="ode-dao-jpa-1.1.jar"/>
+        <include name="geronimo-kernel-1.2-beta.jar"/>
+        <include name="stax-api-1.0-2.jar"/>
+        <include name="commons-collections-3.1.jar"/>
+        <include name="ode-utils-1.1.jar"/>
+        <include name="regexp-1.3.jar"/>
+        <include name="xml-apis-1.3.03.jar"/>
+        <include name="ode-bpel-api-1.1.jar"/>
+        <include name="tuscany-sdo-lib-1.0-incubating-SNAPSHOT.jar"/>
+        <include name="geronimo-common-1.2-beta.jar"/>
+        <include name="ode-bpel-store-1.1.jar"/>
+        <include name="backport-util-concurrent-2.2.jar"/>
+        <include name="geronimo-transaction-1.2-beta.jar"/>
+        <include name="ode-scheduler-simple-1.1.jar"/>
+        <include name="commons-primitives-1.0.jar"/>
+        <include name="geronimo-j2ee-connector_1.5_spec-1.1.jar"/>
+        <include name="tranql-connector-1.1.jar"/>
+        <include name="geronimo-util-1.2-beta.jar"/>
+        <include name="ode-bpel-schemas-1.1.jar"/>
+        <include name="xmlbeans-2.3.0.jar"/>
+        <include name="wstx-asl-3.2.1.jar"/>
+        <include name="geronimo-connector-1.2-beta.jar"/>
+        <include name="geronimo-deployment-1.2-beta.jar"/>
+        <include name="geronimo-jta_1.0.1B_spec-1.0.jar"/>
+        <include name="tuscany-sdo-api-r2.1-1.0-incubating-SNAPSHOT.jar"/>
+        <include name="commons-codec-1.2.jar"/>
+        <include name="geronimo-commonj_1.1_spec-1.0.jar"/>
+        <include name="jaxen-1.1-beta-9.jar"/>
+        <include name="XmlSchema-1.3.2.jar"/>
+        <include name="ode-bpel-dao-1.1.jar"/>
+        <include name="commons-logging-1.0.3.jar"/>
+        <include name="javacc-3.2.jar"/>
+        <include name="ecore-2.2.3.jar"/>
+        <include name="axion-1.0-M3-dev.jar"/>
+        <include name="axiom-api-1.2.5.jar"/>
+        <include name="ecore-change-2.2.3.jar"/>
+        <include name="howl-1.0.1-1.jar"/>
+        <include name="saxon-8.7.jar"/>
+        <include name="saxon-dom-8.7.jar"/>
+        <include name="codegen-2.2.3.jar"/>
+        <include name="codegen-ecore-2.2.3.jar"/>
+        <include name="commons-logging-1.1.jar"/>
+    </fileset>
+
 </project>
