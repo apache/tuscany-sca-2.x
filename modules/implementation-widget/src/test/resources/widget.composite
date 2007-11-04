@@ -23,30 +23,30 @@
 	xmlns:sr="http://sample/resource"
 	name="resource">
 
-    <component name="storeWidgetComponent">
+    <component name="store">
         <tuscany:implementation.widget location="content/store.html"/>
         <service name="Widget">
-        	<tuscany:binding.http/> 
+        	<tuscany:binding.http uri="http://localhost:8085/store"/> 
         </service>
 		<reference name="Catalog" target="Catalog">
-		 	<tuscany:binding.jsonrpc/>
+		 	<tuscany:binding.jsonrpc uri="http://localhost:8085/Catalog"/>
 		 </reference>
 		 <reference name="ShoppingCart" target="ShoppingCart">
-		 	<tuscany:binding.atom uri="/ShoppingCart"/>
+		 	<tuscany:binding.atom uri="http://localhost:8085/ShoppingCart"/>
 		 </reference>
     </component>
     
     <component name="Catalog">
 		<implementation.java class="store.CatalogImpl"/> 
 		<service name="Catalog">
-			<tuscany:binding.jsonrpc uri="/Catalog"/>
+			<tuscany:binding.jsonrpc uri="http://localhost:8085/Catalog"/>
    		</service>
 	</component> 
 	
 	<component name="ShoppingCart">
 		<implementation.java class="store.ShoppingCartImpl"/>
 		<service name="Collection">
-			<tuscany:binding.atom/>
+			<tuscany:binding.atom uri="http://localhost:8085/ShoppingCart"/>
 		</service>    	
 	</component>
 
