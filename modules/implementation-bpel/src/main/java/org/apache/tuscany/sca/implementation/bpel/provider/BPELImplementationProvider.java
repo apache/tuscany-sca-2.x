@@ -74,7 +74,7 @@ public class BPELImplementationProvider implements ImplementationProvider {
     }
 
     public void start() {
-        System.out.println("Starting " + component.getName() + " " + component.getClass().getName());
+        System.out.println("Starting " + component.getName());
 
         try {
             if (!odeServer.isInitialized()) {
@@ -111,7 +111,15 @@ public class BPELImplementationProvider implements ImplementationProvider {
     }
 
     public void stop() {
-        System.out.println("Stopping " + component.getName() + " " + component.getClass().getName());
+        System.out.println("Stopping " + component.getName());
+        
+        if (odeServer.isInitialized()) {
+            // start ode server
+            odeServer.stop();
+        }
+        
+        System.out.println("Stopped !!!");
+
     }
 
 }
