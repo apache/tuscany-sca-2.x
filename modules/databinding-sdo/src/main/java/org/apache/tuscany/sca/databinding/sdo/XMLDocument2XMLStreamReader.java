@@ -39,6 +39,9 @@ public class XMLDocument2XMLStreamReader extends BaseTransformer<XMLDocument, XM
      * @return
      */
     public XMLStreamReader transform(XMLDocument source, TransformationContext context) {
+        if (source == null) {
+            return null;
+        }
         try {
             HelperContext helperContext = SDOContextHelper.getHelperContext(context);
             XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(helperContext);

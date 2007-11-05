@@ -33,6 +33,9 @@ public class DataObject2String extends BaseTransformer<DataObject, String> imple
     PullTransformer<DataObject, String> {
 
     public String transform(DataObject source, TransformationContext context) {
+        if (source == null) {
+            return null;
+        }            
         try {
             HelperContext helperContext = SDOContextHelper.getHelperContext(context);
             XMLHelper xmlHelper = helperContext.getXMLHelper();

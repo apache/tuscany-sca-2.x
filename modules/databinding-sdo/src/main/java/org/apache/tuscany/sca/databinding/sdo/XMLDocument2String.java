@@ -33,6 +33,9 @@ public class XMLDocument2String extends BaseTransformer<XMLDocument, String> imp
     PullTransformer<XMLDocument, String> {
 
     public String transform(XMLDocument source, TransformationContext context) {
+        if (source == null) {
+            return null;
+        }
         try {
             HelperContext helperContext = SDOContextHelper.getHelperContext(context);
             XMLHelper xmlHelper = helperContext.getXMLHelper();

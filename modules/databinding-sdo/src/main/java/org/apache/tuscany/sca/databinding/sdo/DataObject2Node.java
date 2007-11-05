@@ -38,6 +38,9 @@ public class DataObject2Node extends BaseTransformer<DataObject, Node> implement
     PullTransformer<DataObject, Node> {
 
     public Node transform(DataObject source, TransformationContext context) {
+        if (source == null) {
+            return null;
+        }
         try {
             HelperContext helperContext = SDOContextHelper.getHelperContext(context);
             XMLHelper xmlHelper = helperContext.getXMLHelper();

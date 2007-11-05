@@ -38,6 +38,9 @@ public class DataObject2XMLStreamReader extends BaseTransformer<DataObject, XMLS
         PullTransformer<DataObject, XMLStreamReader> {
 
     public XMLStreamReader transform(DataObject source, TransformationContext context) {
+        if (source == null) {
+            return null;
+        }            
         try {
             HelperContext helperContext = SDOContextHelper.getHelperContext(context);
             XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(helperContext);
