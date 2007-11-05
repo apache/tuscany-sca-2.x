@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.itest.conversational.impl;
 
 import java.util.HashMap;
 
+import org.apache.tuscany.sca.itest.conversational.BusinessException;
 import org.apache.tuscany.sca.itest.conversational.ConversationalCallback;
 import org.apache.tuscany.sca.itest.conversational.ConversationalService;
 import org.osoa.sca.annotations.Callback;
@@ -84,8 +85,8 @@ public class ConversationalServiceRequestImpl implements ConversationalService {
         }
     }
     
-    public void businessException() throws Exception {
-        throw new Exception("Business Exception");
+    public void businessException() throws BusinessException {
+        throw new BusinessException("Business Exception");
     }    
     
     public void initializeCountCallback(int count){
@@ -105,7 +106,7 @@ public class ConversationalServiceRequestImpl implements ConversationalService {
         return conversationalCallback.retrieveCount();
     }
     
-    public void businessExceptionCallback() throws Exception {
+    public void businessExceptionCallback() throws BusinessException {
         calls.append("businessExceptionCallback,");        
         conversationalCallback.businessException();
     }

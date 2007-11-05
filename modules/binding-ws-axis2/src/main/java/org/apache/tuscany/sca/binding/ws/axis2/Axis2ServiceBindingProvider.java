@@ -22,6 +22,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -49,7 +50,30 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
             }
             wsBinding.setBindingInterfaceContract(contract);
         }
+        
+        // TODO - fix up the conversational flag and operation sequences in case the contract has come from WSDL
+        // as we don't yet support requires="conversational" or sca:endConversation annotations
+        // in WSDL interface descriptions (see section 1.5.4 of the assembly spec V1.0)
+        if (service.getInterfaceContract().getInterface() != null ) {
+            contract.getInterface().setConversational(service.getInterfaceContract().getInterface().isConversational());
+            
+            for (Operation operation : contract.getInterface().getOperations()){
+                Operation serviceOperation = null;
+                
+                for (Operation tmpOp : service.getInterfaceContract().getInterface().getOperations()){
+                    if ( operation.getName().equals(tmpOp.getName())) {
+                        serviceOperation = tmpOp;
+                        break;
+                    }
+                }
+                
+                if (serviceOperation != null ){
+                    operation.setConversationSequence(serviceOperation.getConversationSequence());
+                }
+            }
+        }
 
+        
         // Set to use the Axiom data binding
         contract.getInterface().resetDataBinding(OMElement.class.getName());
 

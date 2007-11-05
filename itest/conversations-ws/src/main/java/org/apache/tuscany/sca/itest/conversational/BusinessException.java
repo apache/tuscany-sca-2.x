@@ -16,39 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.sca.itest.conversational;
 
+public class BusinessException extends Exception {
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+    private String message;
 
-public class ConversationIdTestCase {
-
-    private SCADomain domain;
-
-    @Before
-    public void setUp() throws Exception {
-        domain = SCADomain.newInstance("conversationId.composite");
-
+    public BusinessException() {
+        super();
     }
 
-    @After
-    public void tearDown() throws Exception {
-        if (domain != null) {
-            domain.close();
-        }
+    public BusinessException(String message) {
+        super(message);
+        setMessage(message);
     }
 
-    @Test
-    public void testConversationId() {
-        ConversationIdService service =
-            domain.getService(ConversationIdService.class, "ConversationIdComponent");
-        Assert.assertNotNull(service.getCIDField());
-        Assert.assertNotNull(service.getCIDSetter());
+    public String getMessage() {
+        return message;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

@@ -32,9 +32,9 @@ import org.osoa.sca.annotations.Remotable;
 @Conversational
 public interface ConversationalCallback {
 	
-    public void init();
+   // public void init();
     
-    public void destroy();
+   // public void destroy();
     
     public void initializeCount(int count);
     
@@ -42,7 +42,7 @@ public interface ConversationalCallback {
     
     public int retrieveCount();
     
-    public void businessException() throws Exception;        
+    public void businessException() throws BusinessException;        
     
     @EndsConversation
     public String endConversation();

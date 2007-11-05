@@ -33,10 +33,7 @@ import org.osoa.sca.annotations.Remotable;
 @Conversational
 @Callback(NonConversationalCallback.class)
 public interface ConversationalServiceNonConversationalCallback {
-	
-    public void init();
-    
-    public void destroy();
+
     
     public void initializeCount(int count);
     
@@ -44,7 +41,7 @@ public interface ConversationalServiceNonConversationalCallback {
     
     public int retrieveCount();
     
-    public void businessException() throws Exception;        
+    public void businessException() throws BusinessException;        
     
     public void initializeCountCallback(int count);
     
@@ -52,7 +49,7 @@ public interface ConversationalServiceNonConversationalCallback {
     
     public int retrieveCountCallback();
     
-    public void businessExceptionCallback() throws Exception;    
+    public void businessExceptionCallback() throws BusinessException;    
     
     @EndsConversation
     public String endConversation();

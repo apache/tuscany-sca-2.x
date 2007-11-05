@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.itest.conversational.impl;
 
+import org.apache.tuscany.sca.itest.conversational.BusinessException;
 import org.apache.tuscany.sca.itest.conversational.ConversationalServiceNonConversationalCallback;
 import org.apache.tuscany.sca.itest.conversational.NonConversationalCallback;
 import org.osoa.sca.annotations.Callback;
@@ -78,8 +79,8 @@ public class ConversationalServiceStatefulNonConversationalCallbackImpl implemen
         return count;
     }
     
-    public void businessException() throws Exception {
-        throw new Exception("Business Exception");
+    public void businessException() throws BusinessException {
+        throw new BusinessException("Business Exception");
     }     
     
     public void initializeCountCallback(int count){
@@ -99,7 +100,7 @@ public class ConversationalServiceStatefulNonConversationalCallbackImpl implemen
         return nonConversationalCallback.retrieveCount();
     }
     
-    public void businessExceptionCallback() throws Exception {
+    public void businessExceptionCallback() throws BusinessException {
         calls.append("businessExceptionCallback,");        
         nonConversationalCallback.businessException();
     }    
