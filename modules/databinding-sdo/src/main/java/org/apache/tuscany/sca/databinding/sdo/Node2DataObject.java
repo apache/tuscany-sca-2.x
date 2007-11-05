@@ -36,6 +36,9 @@ import commonj.sdo.helper.XMLHelper;
 public class Node2DataObject extends BaseTransformer<Node, DataObject> implements PullTransformer<Node, DataObject> {
 
     public DataObject transform(Node source, TransformationContext context) {
+        if (source == null) {
+            return null;
+        }
         try {
             HelperContext helperContext = SDOContextHelper.getHelperContext(context);
             XMLHelper xmlHelper = helperContext.getXMLHelper();
