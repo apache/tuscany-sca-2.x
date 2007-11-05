@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.itest.conversational.impl;
 
+import org.apache.tuscany.sca.itest.conversational.BusinessException;
 import org.apache.tuscany.sca.itest.conversational.ConversationalService;
 import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.Scope;
@@ -31,10 +32,10 @@ public class ConversationAgeComponentImpl implements ConversationalService {
 
     private int count;
     
-    public void businessException() throws Exception {   
+    public void businessException() throws BusinessException {   
     }
     
-    public void businessExceptionCallback() throws Exception {   
+    public void businessExceptionCallback() throws BusinessException {   
     }      
 
     public void destroy() {

@@ -49,6 +49,7 @@
                 <module>contribution-import-export</module>
                 <module>contribution-classloader</module>
                 <module>conversations</module>
+                <module>conversations-ws</module>
                 <module>databindings</module>
                 <module>exceptions</module>
                 <module>exceptions-cross-binding</module>

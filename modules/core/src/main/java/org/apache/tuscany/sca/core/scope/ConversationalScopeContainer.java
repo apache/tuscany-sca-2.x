@@ -303,7 +303,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
 
             // find out if we are dealing with the original client conversation id
             // and reset accordingly
-            if (clientConversationId.equals(contextId)) {
+            if ( ( clientConversationId != null ) && ( clientConversationId.equals(contextId)) ) {
                 clientConversationId = null;
             } else {
                 // reset the conversationId in the conversation object if present 
@@ -372,7 +372,12 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
      * @see org.apache.tuscany.sca.core.conversation.ConversationListener#conversationEnded(org.apache.tuscany.sca.core.conversation.ExtendedConversation)
      */
     public void conversationEnded(ExtendedConversation conversation) {
-        stopContext(conversation.getConversationID());
+        //stopContext(conversation.getConversationID());
+        try {
+            remove(conversation.getConversationID());
+        } catch (Exception ex) {
+            
+        }
     }
 
     /**

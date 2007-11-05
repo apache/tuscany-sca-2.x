@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.itest.conversational.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.sca.itest.conversational.BusinessException;
 import org.apache.tuscany.sca.itest.conversational.ConversationalService;
 import org.osoa.sca.annotations.ConversationID;
 import org.osoa.sca.annotations.Service;
@@ -54,8 +55,8 @@ public class ConversationalServiceStatelessScopeImpl implements ConversationalSe
         state.put(cid, Integer.valueOf(state.get(cid)+1));
     }
 
-    public void businessException() throws Exception {
-        throw new Exception("Business Exception");
+    public void businessException() throws BusinessException {
+        throw new BusinessException("Business Exception");
     }
     
     public void incrementCountCallback() {
@@ -77,8 +78,8 @@ public class ConversationalServiceStatelessScopeImpl implements ConversationalSe
         
     }
     
-    public void businessExceptionCallback() throws Exception {
-        throw new Exception("Business Exception");
+    public void businessExceptionCallback() throws BusinessException {
+        throw new BusinessException("Business Exception");
     }    
 
     public int retrieveCount() {

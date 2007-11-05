@@ -329,11 +329,10 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         Operation operation = msg.getOperation();
         ConversationSequence sequence = operation.getConversationSequence();
         // We check that conversation has not already ended as there is only one
-        // comversation manager in the runtime and so, in the case of remote bindings, 
+        // conversation manager in the runtime and so, in the case of remote bindings, 
         // the conversation will already have been stopped when we get back to the client
         if ((sequence == ConversationSequence.CONVERSATION_END) && 
             (conversation.getState()!= ConversationState.ENDED)) {
-            conversation.end();
 
             // remove conversation id from scope container
             ScopeContainer scopeContainer = getConversationalScopeContainer(wire);
@@ -341,6 +340,8 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             if (scopeContainer != null) {
                 scopeContainer.remove(conversation.getConversationID());
             }
+            
+            conversation.end();            
         }
     }
 

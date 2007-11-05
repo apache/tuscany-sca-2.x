@@ -203,11 +203,7 @@ public class RuntimeWireInvoker {
      * @throws TargetResolutionException
      */
     private void conversationPreinvoke(Message msg) {
-        if (!conversational) {
-            // Not conversational or the conversation has been started
-            return;
-        }
-        if (conversation == null || conversation.getState() == ConversationState.ENDED) {
+        if (conversational) {
             // in some cases the ConversationID that should be used comes in with the 
             // message, e.g. when ws binding is in use. 
             if (msg.getTo().getReferenceParameters().getConversationID() != null) {
@@ -215,13 +211,12 @@ public class RuntimeWireInvoker {
             }
             conversation = conversationManager.getConversation(conversationID);
             
-            if (conversation == null) {
+            if (conversation == null || conversation.getState() == ConversationState.ENDED) {
                 conversation = conversationManager.startConversation(conversationID);
             }
+    
+            msg.getTo().getReferenceParameters().setConversationID(conversation.getConversationID());
         }
-        // TODO - assuming that the conversation ID is a string here when
-        //       it can be any object that is serializable to XML
-        msg.getTo().getReferenceParameters().setConversationID(conversation.getConversationID());
 
     }
 
@@ -233,16 +228,25 @@ public class RuntimeWireInvoker {
      */
     @SuppressWarnings("unchecked")
     private void conversationPostInvoke(Message msg) throws TargetDestructionException {
-        Operation operation = msg.getOperation();
-        ConversationSequence sequence = operation.getConversationSequence();
-        if (sequence == ConversationSequence.CONVERSATION_END) {
-            conversation.end();
-
-            // remove conversation id from scope container
-            ScopeContainer scopeContainer = getConversationalScopeContainer(msg);
-
-            if (scopeContainer != null) {
-                scopeContainer.remove(conversation.getConversationID());
+        if (conversational) {       
+            Operation operation = msg.getOperation();
+            ConversationSequence sequence = operation.getConversationSequence();
+            if (sequence == ConversationSequence.CONVERSATION_END) {
+                // in some cases the ConversationID that should be used comes in with the 
+                // message, e.g. when ws binding is in use. 
+                if (msg.getTo().getReferenceParameters().getConversationID() != null) {
+                    conversationID =  msg.getTo().getReferenceParameters().getConversationID();
+                }
+                conversation = conversationManager.getConversation(conversationID);            
+    
+                // remove conversation id from scope container
+                ScopeContainer scopeContainer = getConversationalScopeContainer(msg);
+    
+                if (scopeContainer != null) {
+                    scopeContainer.remove(conversation.getConversationID());
+                }
+                
+                conversation.end();
             }
         }
     }
@@ -251,7 +255,7 @@ public class RuntimeWireInvoker {
     private ScopeContainer getConversationalScopeContainer(Message msg) {
         ScopeContainer scopeContainer = null;
 
-        RuntimeComponent component = msg.getFrom().getComponent();
+        RuntimeComponent component = msg.getTo().getComponent();
 
         if (component instanceof ScopedRuntimeComponent) {
             ScopedRuntimeComponent scopedRuntimeComponent = (ScopedRuntimeComponent)component;
@@ -265,17 +269,6 @@ public class RuntimeWireInvoker {
         return scopeContainer;
     }
 
-    /**
-     * Creates a new conversational id
-     * 
-     * @return the conversational id
-     */
-    private Object createConversationID() {
-        if (conversationID == null) {
-            return UUID.randomUUID().toString();
-        }
-        return conversationID;
-    }
 
     /**
      * Minimal wrapper for a callback object contained in a ServiceReference
