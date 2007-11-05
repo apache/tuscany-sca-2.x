@@ -114,13 +114,14 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
     	
     	ResourceReference resourceRef = new ResourceReference(xqueryImplementation.getLocation());
     	resourceRef = resolver.resolveModel(ResourceReference.class, resourceRef);
-    	if (!resourceRef.isUnresolved())
-    		throw new ContributionResolveException("Could not locate file: " + xqueryImplementation.getLocation());
+    	if (resourceRef.isUnresolved()) {
+            throw new ContributionResolveException("Could not locate file: " + xqueryImplementation.getLocation());
+        }
     	xqueryImplementation.setLocationURL(resourceRef.getResource());
 
         XQueryIntrospector introspector = new XQueryIntrospector(assemblyFactory, javaFactory);
 
-        boolean success = introspector.introspect(xqueryImplementation);
+        boolean success = introspector.introspect(xqueryImplementation, resolver);
 
         if (success) {
             xqueryImplementation.setUnresolved(false);
