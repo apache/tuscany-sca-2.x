@@ -39,6 +39,8 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.contribution.resolver.ClassReference;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.implementation.xquery.XQueryImplementation;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -63,7 +65,6 @@ public class XQueryIntrospector {
 
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
-    private ClassLoader cl;
 
     public XQueryIntrospector(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory) {
         super();
@@ -71,7 +72,7 @@ public class XQueryIntrospector {
         this.javaFactory = javaFactory;
     }
 
-    public boolean introspect(XQueryImplementation xqueryImplementation) throws ContributionResolveException {
+    public boolean introspect(XQueryImplementation xqueryImplementation, ModelResolver resolver) throws ContributionResolveException {
         
         String xqExpression = null;
         try {
@@ -105,7 +106,7 @@ public class XQueryIntrospector {
         xqueryImplementation.getCompiledExpressionsCache().put(xqExpression, exp);
 
         try {
-            introspectServicesAndReferences(xqueryImplementation, exp);
+            introspectServicesAndReferences(xqueryImplementation, exp, resolver);
         } catch (ClassNotFoundException e) {
             throw new ContributionResolveException(e);
         } catch (InvalidInterfaceException e) {
@@ -141,12 +142,23 @@ public class XQueryIntrospector {
 
         return xqExpression;
     }
+    
+    private Class<?> resolveClass(ModelResolver resolver, String className) throws ClassNotFoundException {
+        ClassReference classReference = new ClassReference(className);
+        classReference = resolver.resolveModel(ClassReference.class, classReference);
+        Class<?> javaClass = classReference.getJavaClass();
+        if (javaClass == null) {
+            throw new ClassNotFoundException(className);
+        } else {
+            return javaClass;
+        }
+    }
 
     /**
      * From the compiled xquery expression get all namespaces and see if they
      * are services, references or properties declaraions
      */
-    private void introspectServicesAndReferences(XQueryImplementation xqueryImplementation, XQueryExpression exp)
+    private void introspectServicesAndReferences(XQueryImplementation xqueryImplementation, XQueryExpression exp, ModelResolver resolver)
         throws ClassNotFoundException, InvalidInterfaceException {
         StaticQueryContext compiledSqc = exp.getStaticContext();
         NamespaceResolver namespaceResolver = compiledSqc.getNamespaceResolver();
@@ -157,19 +169,19 @@ public class XQueryIntrospector {
             if (uri.startsWith(SCA_SERVICE_PREFIX)) {
                 String serviceName = prefix;
                 String className = uri.substring(SCA_SERVICE_PREFIX.length());
-                Class<?> interfaze = cl.loadClass(className);
+                Class<?> interfaze = resolveClass(resolver, className);
                 Service theService = createService(interfaze, serviceName);
                 xqueryImplementation.getServices().add(theService);
             } else if (uri.startsWith(SCA_REFERENCE_PREFIX)) {
                 String referenceName = prefix;
                 String className = uri.substring(SCA_REFERENCE_PREFIX.length());
-                Class<?> interfaze = cl.loadClass(className);
+                Class<?> interfaze = resolveClass(resolver, className);
                 Reference theReference = createReference(interfaze, referenceName);
                 xqueryImplementation.getReferences().add(theReference);
             } else if (uri.startsWith(SCA_PROPERTY_JAVA_PREFIX)) {
                 String propertyName = prefix;
                 String className = uri.substring(SCA_PROPERTY_JAVA_PREFIX.length());
-                Class<?> clazz = cl.loadClass(className);
+                Class<?> clazz = resolveClass(resolver, className);
                 QName xmlType = JavaXMLMapper.getXMLType(clazz);
                 Property theProperty = createProperty(xmlType, propertyName);
                 xqueryImplementation.getProperties().add(theProperty);
