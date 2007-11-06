@@ -10,7 +10,9 @@ import org.apache.ode.bpel.iapi.PartnerRoleChannel;
 import org.w3c.dom.Document;
 
 /**
- * @author Matthieu Riou <mriou@apache.org>
+ * Binding Context information
+ * 
+ * @version $Rev: 573789 $ $Date: 2007-09-07 23:59:49 -0700 (Fri, 07 Sep 2007) $
  */
 public class ODEBindingContext implements BindingContext {
 
