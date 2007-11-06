@@ -484,9 +484,9 @@ public class CompositeWireBuilderImpl {
                 Component targetComponent = target.getComponent();
                 ComponentService targetComponentService = target.getService();
                 if (targetComponentService.getService() instanceof CompositeService) {
-                    
+                    CompositeService compositeService = (CompositeService) targetComponentService.getService();
                     // Find the promoted component service
-                    targetComponentService = ((CompositeService)targetComponentService.getService()).getPromotedService();
+                    targetComponentService = CompositeConfigurationBuilderImpl.getPromotedComponentService(compositeService);
                 }
                 
                 determineApplicableBindingPolicySets(componentReference, targetComponentService);
@@ -677,7 +677,8 @@ public class CompositeWireBuilderImpl {
                                     // Wire to the actual component service
                                     // promoted by a composite service
                                     CompositeService compositeService = (CompositeService)target.getService();
-                                    ComponentService componentService = compositeService.getPromotedService();
+                                    // Find the promoted component service
+                                    ComponentService componentService = CompositeConfigurationBuilderImpl.getPromotedComponentService(compositeService);
                                     if (componentService != null) {
                                         promotedReference.getTargets().add(componentService);
                                     }

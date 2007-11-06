@@ -1015,7 +1015,7 @@ public class CompositeConfigurationBuilderImpl {
      * @param topCompositeService
      * @return
      */
-    private ComponentService getPromotedComponentService(CompositeService compositeService) {
+    static ComponentService getPromotedComponentService(CompositeService compositeService) {
         ComponentService componentService = compositeService.getPromotedService();
         if (componentService != null) {
             Service service = componentService.getService();
@@ -1043,7 +1043,7 @@ public class CompositeConfigurationBuilderImpl {
      * @param compositeService
      * @return
      */
-    private Component getPromotedComponent(CompositeService compositeService) {
+    static Component getPromotedComponent(CompositeService compositeService) {
         ComponentService componentService = compositeService.getPromotedService();
         if (componentService != null) {
             Service service = componentService.getService();
