@@ -124,8 +124,7 @@ public class AlertsFeedServiceImpl implements Collection {
     /**
      * @see org.apache.tuscany.sca.binding.feed.Collection#put(java.lang.String, com.sun.syndication.feed.atom.Entry)
      */
-    public Entry put(String id, Entry entry) throws NotFoundException {
-        return null;
+    public void put(String id, Entry entry) throws NotFoundException {
     }
 
     /**

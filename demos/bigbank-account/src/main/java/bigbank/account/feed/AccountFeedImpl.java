@@ -88,8 +88,7 @@ public class AccountFeedImpl implements Collection {
         return null;
     }
 
-    public Entry put(String id, Entry entry) {
-        return null;
+    public void put(String id, Entry entry) {
     }
 
 }
