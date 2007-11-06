@@ -81,6 +81,9 @@ public class EmbeddedODEServer {
     }
     
     public void init() throws ODEInitializationException {
+        Properties p = System.getProperties();
+        p.put("derby.system.home", "target");
+        
         _config = new OdeConfigProperties(new Properties(), "ode-sca");
 
         // Setting work root as the directory containing our database (wherever in the classpath)
