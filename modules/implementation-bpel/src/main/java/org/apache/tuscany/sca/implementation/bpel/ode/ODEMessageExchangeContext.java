@@ -7,7 +7,9 @@ import org.apache.ode.bpel.iapi.MyRoleMessageExchange;
 import org.apache.ode.bpel.iapi.PartnerRoleMessageExchange;
 
 /**
- * @author Matthieu Riou <mriou@apache.org>
+ * Message Exchange Context information
+ * 
+ * @version $Rev: 573789 $ $Date: 2007-09-07 23:59:49 -0700 (Fri, 07 Sep 2007) $
  */
 public class ODEMessageExchangeContext implements MessageExchangeContext {
     private EmbeddedODEServer _server;
@@ -17,10 +19,10 @@ public class ODEMessageExchangeContext implements MessageExchangeContext {
     }
 
     public void invokePartner(PartnerRoleMessageExchange partnerRoleMessageExchange) throws ContextException {
-        // TODO necessary to invoke an external service
+
     }
 
     public void onAsyncReply(MyRoleMessageExchange myRoleMessageExchange) throws BpelEngineException {
-        // TODO necessary to get the reply when is returned asynchronously (in a different thread)
+
     }
 }
