@@ -93,8 +93,7 @@ public class AggregatorImpl implements org.apache.tuscany.sca.binding.feed.colle
         return null;
     }
 
-    public Entry put(String id, Entry entry) throws NotFoundException {
-        return null;
+    public void put(String id, Entry entry) throws NotFoundException {
     }
 
 }
