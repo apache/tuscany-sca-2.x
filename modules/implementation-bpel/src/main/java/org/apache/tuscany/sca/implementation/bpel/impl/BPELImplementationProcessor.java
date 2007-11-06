@@ -196,8 +196,8 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
 
 
     private ComponentType getComponentType(ModelResolver resolver, BPELImplementation impl) {
-        String bpelName = impl.getProcess().getLocalPart().toLowerCase();
-        String componentTypeURI = bpelName.replace('.', '/') + ".componentType";
+        String bpelProcessURI = impl.getProcessDefinition().getURI().toString();
+        String componentTypeURI = bpelProcessURI.replace(".bpel", ".componentType");
         ComponentType componentType = assemblyFactory.createComponentType();
         componentType.setUnresolved(true);
         componentType.setURI(componentTypeURI);

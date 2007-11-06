@@ -71,6 +71,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
             //and relying on componentType file for service definition
             //so it's ok to set resolved for now
             processDefinition = indexRead(artifactURL);
+            processDefinition.setURI(artifactURI);
             processDefinition.setUnresolved(false);
         } catch (Exception e) {
             throw new ContributionReadException(e);
@@ -81,7 +82,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
 
 
     public void resolve(BPELProcessDefinition model, ModelResolver resolver) throws ContributionResolveException {
-        // TODO Auto-generated method stub
+
     }
     
     /**

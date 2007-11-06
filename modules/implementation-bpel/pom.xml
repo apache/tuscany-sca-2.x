@@ -376,7 +376,7 @@
 						<id>generate-bpel-helloworld</id>
 						<phase>generate-sources</phase>
 						<configuration>
-							<schemaFile>${basedir}/src/test/resources/helloworld.wsdl</schemaFile>
+							<schemaFile>${basedir}/src/test/resources/helloworld/helloworld.wsdl</schemaFile>
 							<targetDirectory>${basedir}/target/wsdl2java-source</targetDirectory>
 							<prefix>HelloWorld</prefix>
 							<noNotification>true</noNotification>
@@ -387,6 +387,7 @@
 							<goal>generate</goal>
 						</goals>
 					</execution>
+
 				</executions>
 			</plugin>
 			<plugin>
@@ -398,7 +399,7 @@
 						<configuration>
 							<wsdlFiles>
 								<wsdlFile>
-									<fileName>${basedir}/src/test/resources/helloworld.wsdl</fileName>
+									<fileName>${basedir}/src/test/resources/helloworld/helloworld.wsdl</fileName>
 								</wsdlFile>
 							</wsdlFiles>
 						</configuration>

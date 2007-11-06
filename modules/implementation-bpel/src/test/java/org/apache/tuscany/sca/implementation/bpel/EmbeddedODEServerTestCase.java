@@ -68,7 +68,7 @@ public class EmbeddedODEServerTestCase extends TestCase {
             fail("Server did not start !");
         }
 
-        URL deployURL = getClass().getClassLoader().getResource("deploy.xml");
+        URL deployURL = getClass().getClassLoader().getResource("helloworld/deploy.xml");
         File deploymentDir = new File(deployURL.toURI().getPath()).getParentFile();
         System.out.println("Deploying : " + deploymentDir.toString());
         System.out.println(deploymentDir);

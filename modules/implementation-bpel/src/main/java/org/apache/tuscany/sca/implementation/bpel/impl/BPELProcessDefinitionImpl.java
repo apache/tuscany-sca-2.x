@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.implementation.bpel.impl;
 
+import java.net.URI;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
@@ -32,6 +33,7 @@ import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
  */
 public class BPELProcessDefinitionImpl implements BPELProcessDefinition {
     private QName   name;
+    private URI     uri;
     private URL     location;
     private boolean unresolved;
     
@@ -43,8 +45,16 @@ public class BPELProcessDefinitionImpl implements BPELProcessDefinition {
         this.name = name;
     }
 
+    public URI getURI() {
+        return uri;
+    }
+    
+    public void setURI(URI uri) {
+        this.uri = uri;
+    }
+    
     public URL getLocation() {
-        return this.location;
+        return location;
     }
 
     public void setLocation(URL location) {

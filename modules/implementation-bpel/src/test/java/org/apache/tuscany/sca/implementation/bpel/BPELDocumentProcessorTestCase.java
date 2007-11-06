@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
  */
 public class BPELDocumentProcessorTestCase extends TestCase {
 
-    protected static final String BPEL_PROCESS_FILE = "helloworld.bpel";
+    protected static final String BPEL_PROCESS_FILE = "helloworld/helloworld.bpel";
 
     private ModelFactoryExtensionPoint modelFactories;
 
