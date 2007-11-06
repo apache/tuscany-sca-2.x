@@ -31,6 +31,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -144,7 +145,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         // FIXME: Need to clarify how to merge
         ComponentType componentType = getComponentType(resolver, impl);
         if (componentType != null && !componentType.isUnresolved()) {
-            /*
+            
             Map<String, Reference> refMap = new HashMap<String, Reference>();
             for (Reference ref : impl.getReferences()) {
                 refMap.put(ref.getName(), ref);
@@ -154,23 +155,6 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             }
             impl.getReferences().clear();
             impl.getReferences().addAll(refMap.values());
-
-            // Try to match references by type
-            Map<String, JavaElementImpl> refMembers = impl.getReferenceMembers();
-            for (Reference ref : impl.getReferences()) {
-                if (ref.getInterfaceContract() != null) {
-                    Interface i = ref.getInterfaceContract().getInterface();
-                    if (i instanceof JavaInterface) {
-                        Class<?> type = ((JavaInterface)i).getJavaClass();
-                        if (!refMembers.containsKey(ref.getName())) {
-                            JavaElementImpl e = getMemeber(impl, ref.getName(), type);
-                            if (e != null) {
-                                refMembers.put(ref.getName(), e);
-                            }
-                        }
-                    }
-                }
-            }*/
 
             Map<String, Service> serviceMap = new HashMap<String, Service>();
             for (Service svc : impl.getServices()) {

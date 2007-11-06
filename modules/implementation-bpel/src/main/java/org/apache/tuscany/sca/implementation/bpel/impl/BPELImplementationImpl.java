@@ -102,13 +102,6 @@ public class BPELImplementationImpl extends ComponentTypeImpl implements BPELImp
         return Collections.emptyList();
     }
 
-    
-    @Override
-    public List<Reference> getReferences() {
-        // The sample BPEL implementation does not support properties
-        return Collections.emptyList();
-    }
-
     public boolean isUnresolved() {
         return this.unresolved;
     }
