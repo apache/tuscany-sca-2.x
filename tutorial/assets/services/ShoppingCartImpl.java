@@ -49,12 +49,11 @@ public class ShoppingCartImpl implements Collection<String, String>, Total {
         return key;
     }
 
-    public String put(String key, String item) throws NotFoundException {
+    public void put(String key, String item) throws NotFoundException {
         if (!cart.containsKey(key)) {
             throw new NotFoundException(key);
         }
         cart.put(key, item);
-        return item;
     }
     
     public void delete(String key) throws NotFoundException {

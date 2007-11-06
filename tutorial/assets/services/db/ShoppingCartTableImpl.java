@@ -90,7 +90,7 @@ public class ShoppingCartTableImpl implements Collection<String, String>, Total 
         return key;
     }
 
-    public String put(String key, String item) throws NotFoundException {
+    public void put(String key, String item) throws NotFoundException {
         try {
             Statement statement = connection.createStatement();
             String query = "update into Cart set item = '" + item + "' where id = '" + key + "'";
@@ -101,7 +101,6 @@ public class ShoppingCartTableImpl implements Collection<String, String>, Total 
         } catch (SQLException e) {
             throw new ServiceRuntimeException(e);
         }
-        return item;
     }
     
     public void delete(String key) throws NotFoundException {
