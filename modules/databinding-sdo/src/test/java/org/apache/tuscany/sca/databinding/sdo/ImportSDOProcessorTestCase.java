@@ -26,6 +26,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.contribution.resolver.ClassReference;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+
 import com.example.ipo.sdo.SdoFactory;
 
 /**
@@ -57,7 +60,9 @@ public class ImportSDOProcessorTestCase extends TestCase {
         assertFalse(inited);
         ImportSDO importSDO = loader.read(reader);
         assertNotNull(importSDO);
-        loader.resolve(importSDO, new TestModelResolver());
+        ModelResolver resolver = new TestModelResolver();
+        resolver.addModel(new ClassReference(MockFactory.class));
+        loader.resolve(importSDO, resolver);
         assertTrue(inited);
     }
 
