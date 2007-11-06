@@ -388,6 +388,38 @@
 						</goals>
 					</execution>
 
+					<execution>
+						<id>generate-bpel-ping</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<schemaFile>${basedir}/src/test/resources/ping/ping.wsdl</schemaFile>
+							<targetDirectory>${basedir}/target/wsdl2java-source</targetDirectory>
+							<prefix>Ping</prefix>
+							<noNotification>true</noNotification>
+							<noContainer>true</noContainer>
+							<noUnsettable>true</noUnsettable>
+						</configuration>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+
+					<execution>
+						<id>generate-bpel-pong</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<schemaFile>${basedir}/src/test/resources/pong/pong.wsdl</schemaFile>
+							<targetDirectory>${basedir}/target/wsdl2java-source</targetDirectory>
+							<prefix>Pong</prefix>
+							<noNotification>true</noNotification>
+							<noContainer>true</noContainer>
+							<noUnsettable>true</noUnsettable>
+						</configuration>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+
 				</executions>
 			</plugin>
 			<plugin>
@@ -400,6 +432,12 @@
 							<wsdlFiles>
 								<wsdlFile>
 									<fileName>${basedir}/src/test/resources/helloworld/helloworld.wsdl</fileName>
+								</wsdlFile>
+								<wsdlFile>
+									<fileName>${basedir}/src/test/resources/ping/ping.wsdl</fileName>
+								</wsdlFile>
+								<wsdlFile>
+									<fileName>${basedir}/src/test/resources/pong/pong.wsdl</fileName>
 								</wsdlFile>
 							</wsdlFiles>
 						</configuration>
