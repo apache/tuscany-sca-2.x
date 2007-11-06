@@ -95,8 +95,7 @@ public class CompanyFeed implements Collection {
         return null;
     }
 
-    public Entry put(String id, Entry entry) throws NotFoundException {
-        return null;
+    public void put(String id, Entry entry) throws NotFoundException {
     }
 
 }

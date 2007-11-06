@@ -51,7 +51,7 @@ public class CustomerClientImpl implements CustomerClient {
         System.out.println("<<< get id=" + entry.getId() + " entry=" + entry.getTitle());
 
         System.out.println(">>> put id=" + newEntry.getId() + " entry=" + entry.getTitle());
-        entry = resourceCollection.put(entry.getId(), updateEntry(entry, "James Bond"));
+        resourceCollection.put(entry.getId(), updateEntry(entry, "James Bond"));
         System.out.println("<<< put id=" + entry.getId() + " entry=" + entry.getTitle());
 
         System.out.println(">>> delete id=" + entry.getId());

@@ -70,10 +70,9 @@ public class ShoppingCartImpl implements Collection {
         return entry;
     }
 
-    public Entry put(String id, Entry entry) throws NotFoundException {
+    public void put(String id, Entry entry) throws NotFoundException {
         entry.setUpdated(new Date());
         cart.put(id, entry);
-        return entry;
     }
 
     public void delete(String id) throws NotFoundException {
