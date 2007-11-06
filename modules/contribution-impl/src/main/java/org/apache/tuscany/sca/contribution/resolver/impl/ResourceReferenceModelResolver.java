@@ -17,9 +17,8 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.namespace.impl;
+package org.apache.tuscany.sca.contribution.resolver.impl;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
@@ -30,8 +29,8 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.ResourceReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ResourceReference;
 
 /**
  * A Model Resolver for ResourceReferences.
@@ -46,7 +45,7 @@ public class ResourceReferenceModelResolver implements ModelResolver {
 
     public ResourceReferenceModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
-        this.classLoader = new WeakReference<ClassLoader>(this.contribution.getClassLoader());        
+        this.classLoader = new WeakReference<ClassLoader>(this.contribution.getClassLoader());
 
         try {
             Class osgiResolverClass =
@@ -69,8 +68,6 @@ public class ResourceReferenceModelResolver implements ModelResolver {
         return map.remove(((ResourceReference)resolved).getResourceName());
     }
 
-  
-
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
         Object resolved = map.get(unresolved);
 
@@ -81,26 +78,27 @@ public class ResourceReferenceModelResolver implements ModelResolver {
         //Get a resource
         String resourceName = ((ResourceReference)unresolved).getResourceName();
         URL resourceURL = null;
-        
+
         if (URI.create(resourceName).isAbsolute()) {
-        	try {
-        		File resourceFile = new File(resourceName);
-        		if (resourceFile.exists())
-				    resourceURL = resourceFile.toURL();
-			} catch (MalformedURLException e) {
-			}
+            try {
+                resourceURL = URI.create(resourceName).toURL();
+            } catch (MalformedURLException e) {
+                // Ignore
+            }
         }
-        
-        if (osgiResolver != null) {
+
+        if (resourceURL == null && osgiResolver != null) {
+            // Try OSGi
             resolved = osgiResolver.resolveModel(modelClass, unresolved);
             resourceURL = ((ResourceReference)resolved).getResource();
         }
-        
+
         if (resourceURL == null) {
-        	resourceURL = classLoader.get().getResource(resourceName);
+            // Try class loader
+            resourceURL = classLoader.get().getResource(resourceName);
         }
 
-        if (resourceURL != null) {          
+        if (resourceURL != null) {
             // Store a new ResourceReference wrappering the resource
             ResourceReference resourceReference = new ResourceReference(resourceName, resourceURL);
             map.put(resourceName, resourceReference);
@@ -113,5 +111,4 @@ public class ResourceReferenceModelResolver implements ModelResolver {
 
     }
 
-   
 }
