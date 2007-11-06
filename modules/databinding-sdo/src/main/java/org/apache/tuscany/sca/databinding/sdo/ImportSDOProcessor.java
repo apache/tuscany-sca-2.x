@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
@@ -35,7 +34,9 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ResourceReference;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
@@ -62,7 +63,7 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
 
     public ImportSDO read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         assert IMPORT_SDO.equals(reader.getName());
- 
+
         // FIXME: How do we associate the application HelperContext with the one
         // imported by the composite
         ImportSDO importSDO = new ImportSDO(SDOContextHelper.getDefaultHelperContext());
@@ -84,13 +85,18 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
         return importSDO;
     }
 
-    private void importFactory(ImportSDO importSDO) throws ContributionResolveException {
+    private void importFactory(ImportSDO importSDO, ModelResolver resolver) throws ContributionResolveException {
         String factoryName = importSDO.getFactoryClassName();
         if (factoryName != null) {
-            //FIXME The classloader should be passed in
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            ClassReference reference = new ClassReference(factoryName);
+            ClassReference resolved = resolver.resolveModel(ClassReference.class, reference);
+            if (resolved == null || resolved.isUnresolved()) {
+                ContributionResolveException loaderException =
+                    new ContributionResolveException("Fail to resolve class: " + factoryName);
+                throw loaderException;
+            }
             try {
-                Class<?> factoryClass = cl.loadClass(factoryName);
+                Class<?> factoryClass = resolved.getJavaClass();
                 register(factoryClass, importSDO.getHelperContext());
             } catch (Exception e) {
                 throw new ContributionResolveException(e);
@@ -105,26 +111,24 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
         Method method = factory.getClass().getMethod("register", new Class[] {HelperContext.class});
         method.invoke(factory, new Object[] {helperContext});
 
-//        HelperContext defaultContext = HelperProvider.getDefaultContext();
-//        method.invoke(factory, new Object[] {defaultContext});
+        //        HelperContext defaultContext = HelperProvider.getDefaultContext();
+        //        method.invoke(factory, new Object[] {defaultContext});
     }
 
-    private void importWSDL(ImportSDO importSDO) throws ContributionResolveException {
+    private void importWSDL(ImportSDO importSDO, ModelResolver resolver) throws ContributionResolveException {
         String location = importSDO.getSchemaLocation();
         if (location != null) {
             try {
                 URL wsdlURL = null;
-                URI uri = URI.create(location);
-                if (uri.isAbsolute()) {
-                    wsdlURL = uri.toURL();
-                }
-                //FIXME The classloader should be passed in
-                wsdlURL = Thread.currentThread().getContextClassLoader().getResource(location);
-                if (null == wsdlURL) {
-                    ContributionResolveException loaderException = new ContributionResolveException(
-                                                                                                    "WSDL location error");
+                ResourceReference reference = new ResourceReference(location);
+                ResourceReference resolved = resolver.resolveModel(ResourceReference.class, reference);
+                if (resolved == null || resolved.isUnresolved()) {
+                    ContributionResolveException loaderException =
+                        new ContributionResolveException("Fail to resolve location: " + location);
                     throw loaderException;
                 }
+
+                wsdlURL = resolved.getResource();
                 InputStream xsdInputStream = wsdlURL.openStream();
                 try {
                     XSDHelper xsdHelper = importSDO.getHelperContext().getXSDHelper();
@@ -152,8 +156,8 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
     }
 
     public void resolve(ImportSDO importSDO, ModelResolver resolver) throws ContributionResolveException {
-        importFactory(importSDO);
-        importWSDL(importSDO);
+        importFactory(importSDO, resolver);
+        importWSDL(importSDO, resolver);
         if (!importSDO.isUnresolved()) {
             resolver.addModel(importSDO);
         }
