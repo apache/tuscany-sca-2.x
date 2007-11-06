@@ -50,6 +50,6 @@ public interface MediaCollection extends Collection {
      * @param media
      * @return
      */
-    Entry putMedia(String id, String contentType, InputStream media) throws NotFoundException;
+    void putMedia(String id, String contentType, InputStream media) throws NotFoundException;
 
 }

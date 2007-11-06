@@ -483,7 +483,6 @@ class FeedBindingListenerServlet extends HttpServlet {
 
         if (path != null && path.startsWith("/")) {
             String id = path.substring(1);
-            Entry updatedEntry = null;
 
             // Update an Atom entry
             String contentType = request.getContentType();
@@ -513,8 +512,6 @@ class FeedBindingListenerServlet extends HttpServlet {
                         } else {
                             throw new ServletException((Throwable)responseMessage.getBody());
                         }
-                    } else {
-                        updatedEntry = responseMessage.getBody();
                     }
                 } else {
                     
@@ -530,9 +527,6 @@ class FeedBindingListenerServlet extends HttpServlet {
                         } else {
                             throw new ServletException((Throwable)responseMessage.getBody());
                         }
-                    } else {
-                        item = responseMessage.getBody(); 
-                        updatedEntry = createEntry(id, item);
                     }
                 }
 
@@ -551,29 +545,10 @@ class FeedBindingListenerServlet extends HttpServlet {
                     } else {
                         throw new ServletException((Throwable)responseMessage.getBody());
                     }
-                } else {
-                    updatedEntry = (Entry) body;
                 }
-
             } else {
                 response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
             }
-
-            // The entry was successfully updated
-            if (updatedEntry != null) {
-
-                // Write the updated Atom entry
-                response.setContentType("application/atom+xml; charset=utf-8");
-                try {
-                    AtomEntryUtil.writeEntry(updatedEntry, feedType, getWriter(response));
-                } catch (FeedException e) {
-                    throw new ServletException(e);
-                }
-
-            } else {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            }
-
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }

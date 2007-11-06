@@ -108,12 +108,11 @@ public class CustomerCollectionImpl implements Collection {
         return entries.get(id);
     }
 
-    public Entry put(String id, Entry entry) {
+    public void put(String id, Entry entry) {
         System.out.println(">>> ResourceCollectionImpl.put id=" + id + " entry=" + entry.getTitle());
 
         entry.setUpdated(new Date());
         entries.put(id, entry);
-        return entry;
     }
 
     public void delete(String id) {

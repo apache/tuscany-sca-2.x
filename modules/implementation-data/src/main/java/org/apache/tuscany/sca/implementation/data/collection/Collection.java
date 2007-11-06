@@ -67,7 +67,7 @@ public interface Collection <K, D> {
      * @param item
      * @return
      */
-    D put(K key, D item) throws NotFoundException;
+    void put(K key, D item) throws NotFoundException;
 
     /**
      * Delete an item.
