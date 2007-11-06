@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.implementation.bpel;
 
+import java.net.URI;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
@@ -45,13 +46,25 @@ public interface BPELProcessDefinition extends Base {
     public void setName(QName name);
     
     /**
-     * Get the URI for the process location
+     * Get BPEL process URI
+     * @return uri for the process
+     */
+    public URI getURI();
+    
+    /**
+     * Set the BPEL process URI
+     * @param uri for the process
+     */
+    public void setURI(URI uri);
+    
+    /**
+     * Get the URL for the process location
      * @return
      */
     URL getLocation();
     
     /**
-     * Set the URI for the process location
+     * Set the URL for the process location
      * @param url
      */
     void setLocation(URL location);

@@ -39,7 +39,7 @@ public class BPELHelloWorldTestCase extends TestCase {
      */
     @Override
     protected void setUp() throws Exception {
-        scaDomain = SCADomain.newInstance("helloworld.composite");
+        scaDomain = SCADomain.newInstance("helloworld/helloworld.composite");
         bpelService = scaDomain.getService(HelloPortType.class, "BPELHelloWorldComponent");
 
     }
