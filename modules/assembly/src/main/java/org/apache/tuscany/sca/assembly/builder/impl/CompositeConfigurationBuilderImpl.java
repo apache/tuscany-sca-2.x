@@ -292,7 +292,7 @@ public class CompositeConfigurationBuilderImpl {
                     } else {
                         // Combine the specified binding URI with the component URI
                         bindingURI = binding.getURI();
-                        bindingURI = URI.create(component.getURI()).resolve(bindingURI).toString();
+                        bindingURI = URI.create(component.getURI() + '/').resolve(bindingURI).toString();
                     }
                     
                     binding.setURI(bindingURI);
