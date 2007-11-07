@@ -43,7 +43,7 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoint {
     private final Map<String, DataBinding> bindings = new HashMap<String, DataBinding>();
     private final List<DataBinding> databindings = new ArrayList<DataBinding>();
-    private static final Logger logger = Logger.getLogger(DefaultTransformerExtensionPoint.class.getName());
+    private static final Logger logger = Logger.getLogger(DefaultDataBindingExtensionPoint.class.getName());
     private boolean loadedDataBindings;
 
     public DefaultDataBindingExtensionPoint() {
