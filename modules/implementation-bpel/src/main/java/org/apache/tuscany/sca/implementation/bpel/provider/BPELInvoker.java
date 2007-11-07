@@ -184,7 +184,7 @@ public class BPELInvoker implements Invoker {
         Element contentPart = dom.createElement(bpelOperationInputPart.getName());
         Element contentInvocation = (Element) args[0];
         
-        contentPart.appendChild(dom.importNode(contentInvocation, false));
+        contentPart.appendChild(dom.importNode(contentInvocation, true));
         contentMessage.appendChild(contentPart);
         dom.appendChild(contentMessage);
         
@@ -192,7 +192,7 @@ public class BPELInvoker implements Invoker {
 
         org.apache.ode.bpel.iapi.Message request = mex.createMessage(new QName("", ""));
         request.setMessage(dom.getDocumentElement());
-        
+                
         return request;
     }
     
