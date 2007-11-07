@@ -80,5 +80,15 @@ public class EchoBindingImpl implements EchoBinding, PolicySetAttachPoint {
     public void setUnresolved(boolean unresolved) {
         // The sample binding is always resolved
     }
+    
+    public void setPolicySets(List<PolicySet> policySets) {
+        this.policySets = policySets;
+        
+    }
+
+    public void setRequiredIntents(List<Intent> intents) {
+        this.requiredIntents = intents;
+        
+    }
 
 }
