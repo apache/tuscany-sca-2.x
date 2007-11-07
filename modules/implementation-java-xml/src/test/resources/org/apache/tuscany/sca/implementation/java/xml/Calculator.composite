@@ -51,5 +51,9 @@
     <component name="DivideServiceComponent">
         <implementation.java class="calculator.DivideServiceImpl"/>
     </component>
+    
+    <component name="AnotherCalculatorServiceComponent" requires="cns:tuscanyIntent_4">
+		<implementation.java class="calculator.CalculatorServiceImpl" requires="cns:tuscanyIntent_5" />
+    </component>
 
 </composite>

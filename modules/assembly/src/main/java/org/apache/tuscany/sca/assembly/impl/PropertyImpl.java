@@ -47,5 +47,8 @@ public class PropertyImpl extends AbstractPropertyImpl implements Property, Clon
     public List<PolicySet> getPolicySets() {
         return policySets;
     }
-
+    
+    public void setPolicySets(List<PolicySet> policySets) {
+        this.policySets = policySets; 
+    }
 }

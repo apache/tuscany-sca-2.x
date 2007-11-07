@@ -33,5 +33,6 @@ public interface PolicySetAttachPoint extends IntentAttachPoint {
      * @return a list of policy sets.
      */
     List<PolicySet> getPolicySets();
-
+    
+    void setPolicySets(List<PolicySet> policySets);
 }

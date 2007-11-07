@@ -29,7 +29,10 @@ import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicyContext;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.impl.PolicyContextImpl;
 
 /**
  * Represents a component.
@@ -48,6 +51,8 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private Boolean autowire;
     private IntentAttachPointType type;
+    private PolicyContext policyContext = new PolicyContextImpl();
+    String IMPL_POLICY_CONTEXT = "IMPL_POLICY_CONTEXT";
 
     /**
      * Constructs a new component.
@@ -87,6 +92,13 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
     }
 
     public Implementation getImplementation() {
+        if ( implementation instanceof PolicySetAttachPoint ) {
+            PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
+            if ( policyContext.getIntents(IMPL_POLICY_CONTEXT) != null ) {
+                policiedImpl.setRequiredIntents(policyContext.getIntents(IMPL_POLICY_CONTEXT));
+                policiedImpl.setPolicySets(policyContext.getPolicySets(IMPL_POLICY_CONTEXT));
+            }
+        }
         return implementation;
     }
 
@@ -112,6 +124,16 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
 
     public void setImplementation(Implementation implementation) {
         this.implementation = implementation;
+        if ( implementation instanceof PolicySetAttachPoint 
+            && implementation.isUnresolved() )  {
+            PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
+            policyContext.clearIntents(IMPL_POLICY_CONTEXT);
+            policyContext.addIntents(IMPL_POLICY_CONTEXT, policiedImpl.getRequiredIntents());
+            
+            policyContext.clearPolicySets(IMPL_POLICY_CONTEXT);
+            policyContext.addPolicySets(IMPL_POLICY_CONTEXT, policiedImpl.getPolicySets());
+        }
+        
     }
 
     public void setName(String name) {
@@ -144,6 +166,16 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
 
     public void setType(IntentAttachPointType type) {
         this.type = type;
+    }
+
+    public void setPolicySets(List<PolicySet> policySets) {
+        this.policySets = policySets;
+        
+    }
+
+    public void setRequiredIntents(List<Intent> intents) {
+        this.requiredIntents = intents;
+        
     }
 
 }

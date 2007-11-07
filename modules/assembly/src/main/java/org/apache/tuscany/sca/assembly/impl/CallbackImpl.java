@@ -59,5 +59,13 @@ public class CallbackImpl extends ExtensibleImpl implements Callback {
 
     public void setType(IntentAttachPointType type) {
     }
+    
+    public void setPolicySets(List<PolicySet> policySets) {
+        this.policySets = policySets; 
+    }
+
+    public void setRequiredIntents(List<Intent> intents) {
+        this.requiredIntents = intents;
+    }
 
 }

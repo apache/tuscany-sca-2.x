@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -51,6 +52,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
@@ -144,6 +146,23 @@ public class ReadTestCase extends TestCase {
         
         //intents are computed and aggregate intents from ancestor elements
         assertEquals(((PolicySetAttachPoint)composite.getComponents().get(0).getImplementation()).getRequiredIntents().size(), 3);
+        assertEquals(((PolicySetAttachPoint)composite.getComponents().get(5).getImplementation()).getRequiredIntents().size(), 3);
+        
+        for ( Intent intent : ((PolicySetAttachPoint)composite.getComponents().get(0).getImplementation()).getRequiredIntents() ) {
+            String intentName = intent.getName().getLocalPart();
+            if ( !(intentName.equals("tuscanyIntent_1") || intentName.equals("tuscanyIntent_2") ||
+                intentName.equals("tuscanyIntent_3")) ) {
+                fail();
+            }
+        }
+        
+        for ( Intent intent : ((PolicySetAttachPoint)composite.getComponents().get(5).getImplementation()).getRequiredIntents() ) {
+            String intentName = intent.getName().getLocalPart();
+            if ( !(intentName.equals("tuscanyIntent_1") || intentName.equals("tuscanyIntent_4") ||
+                intentName.equals("tuscanyIntent_5")) ) {
+                fail();
+            }
+        }
 
         //new PrintUtil(System.out).print(composite);
     }

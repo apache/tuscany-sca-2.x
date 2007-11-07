@@ -98,4 +98,8 @@ public class ConstrainingTypeImpl extends ExtensibleImpl implements Constraining
 
     public void setType(IntentAttachPointType type) {
     }
+    
+    public void setRequiredIntents(List<Intent> intents) {
+        this.requiredIntents = intents;
+    }
 }

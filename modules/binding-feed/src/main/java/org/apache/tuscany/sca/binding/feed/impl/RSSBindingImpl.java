@@ -78,4 +78,12 @@ class RSSBindingImpl implements RSSBinding, PolicySetAttachPoint {
     public void setType(IntentAttachPointType intentAttachPointType) {
         this.intentAttachPointType = intentAttachPointType;
     }
+    
+    public void setPolicySets(List<PolicySet> policySets) {
+        this.policySets = policySets; 
+    }
+
+    public void setRequiredIntents(List<Intent> intents) {
+        this.requiredIntents = intents;
+    }
 }

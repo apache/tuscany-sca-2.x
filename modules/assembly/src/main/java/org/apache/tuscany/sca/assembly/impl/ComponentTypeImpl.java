@@ -114,6 +114,16 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
     public void setType(IntentAttachPointType type) {
         this.type = type;
     }
+    
+    public void setPolicySets(List<PolicySet> policySets) {
+        this.policySets = policySets; 
+    }
+
+    public void setRequiredIntents(List<Intent> intents) {
+        this.requiredIntents = intents;
+    }
+
+    
 
     @Override
     public int hashCode() {
