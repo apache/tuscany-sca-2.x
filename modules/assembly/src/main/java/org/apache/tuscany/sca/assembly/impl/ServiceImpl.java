@@ -86,5 +86,9 @@ public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneab
     public void setCallback(Callback callback) {
         this.callback = callback;
     }
+    
+    public void setPolicySets(List<PolicySet> policySets) {
+        this.policySets = policySets; 
+    }
 
 }

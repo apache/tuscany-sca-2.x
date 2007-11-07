@@ -210,5 +210,13 @@ public class BeanComponentImpl extends ChildBeanDefinition implements Component,
     public void setUnresolved(boolean undefined) {
         this.unresolved = undefined;
     }
+    
+    public void setPolicySets(List<PolicySet> policySets) {
+        this.policySets = policySets; 
+    }
+
+    public void setRequiredIntents(List<Intent> intents) {
+        this.requiredIntents = intents;
+    }
 
 }

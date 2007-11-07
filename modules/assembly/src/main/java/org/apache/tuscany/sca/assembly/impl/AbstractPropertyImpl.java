@@ -107,4 +107,8 @@ public class AbstractPropertyImpl extends ExtensibleImpl implements AbstractProp
 
     public void setType(IntentAttachPointType type) {
     }
+    
+    public void setRequiredIntents(List<Intent> intents) {
+        this.requiredIntents = intents;
+    }
 }

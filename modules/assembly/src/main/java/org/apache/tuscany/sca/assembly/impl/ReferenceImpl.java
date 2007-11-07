@@ -103,4 +103,9 @@ public class ReferenceImpl extends AbstractReferenceImpl implements Reference, C
     public void setCallback(Callback callback) {
         this.callback = callback;
     }
+    
+    public void setPolicySets(List<PolicySet> policySets) {
+        this.policySets = policySets; 
+    }
+
 }

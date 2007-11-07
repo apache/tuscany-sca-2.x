@@ -73,5 +73,9 @@ public class ContractImpl extends ExtensibleImpl implements AbstractContract {
 
     public void setType(IntentAttachPointType type) {
     }
+    
+    public void setRequiredIntents(List<Intent> intents) {
+        this.requiredIntents = intents;
+    }
 
 }

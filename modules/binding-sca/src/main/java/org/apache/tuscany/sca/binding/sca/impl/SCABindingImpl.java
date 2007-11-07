@@ -191,4 +191,12 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPo
     public void setTargetBinding(Binding targetBinding) {
         this.targetBinding = targetBinding;
     }
+    
+    public void setPolicySets(List<PolicySet> policySets) {
+        this.policySets = policySets; 
+    }
+
+    public void setRequiredIntents(List<Intent> intents) {
+        this.requiredIntents = intents;
+    }
 }

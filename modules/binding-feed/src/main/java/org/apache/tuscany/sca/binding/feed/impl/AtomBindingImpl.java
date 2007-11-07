@@ -120,4 +120,11 @@ class AtomBindingImpl implements AtomBinding, OptimizableBinding, PolicySetAttac
         this.targetComponentService = service; 
     }
 
+    public void setPolicySets(List<PolicySet> policySets) {
+        this.policySets = policySets; 
+    }
+
+    public void setRequiredIntents(List<Intent> intents) {
+        this.requiredIntents = intents;
+    }
 }

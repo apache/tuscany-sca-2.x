@@ -260,4 +260,12 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
     public void setEndPointReference(Element epr) {
         this.endPointReference = epr;
     }
+    
+    public void setPolicySets(List<PolicySet> policySets) {
+        this.policySets = policySets; 
+    }
+
+    public void setRequiredIntents(List<Intent> intents) {
+        this.requiredIntents = intents;
+    }
 }
