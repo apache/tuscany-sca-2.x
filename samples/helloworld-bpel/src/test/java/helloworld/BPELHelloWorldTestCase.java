@@ -54,6 +54,6 @@ public class BPELHelloWorldTestCase extends TestCase {
     
     public void testInvoke() {
         String response = bpelService.hello("Hello");
-        assertEquals("World", response);
+        assertEquals("Hello World", response);
     }
 }
