@@ -114,6 +114,11 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
             WrapperInfo wrapper = targetOp.getWrapper();
             ElementInfo wrapperElement = wrapper.getInputWrapperElement();
 
+            if (source == null) {
+                Object targetWrapper = targetWrapperHandler.create(wrapperElement, context);
+                return new Object[] {targetWrapper};
+            }
+
             // If the source can be wrapped, wrapped it first
             if (sourceWrapperHandler != null) {
                 DataType sourceWrapperType =
@@ -134,9 +139,6 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
             }
             // Fall back to child by child transformation
             Object targetWrapper = targetWrapperHandler.create(wrapperElement, context);
-            if (source == null) {
-                return new Object[] {targetWrapper};
-            }
             List<DataType> argTypes = wrapper.getUnwrappedInputType().getLogical();
 
             for (int i = 0; i < source.length; i++) {
