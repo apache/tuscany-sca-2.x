@@ -54,8 +54,6 @@ public class BPELHelloWorldTestCase extends TestCase {
     
     public void testInvoke() {
         String response = bpelService.hello("Hello");
-        System.out.println("Response : " + response);
-        System.out.println("Expected Response : 'Hello World'");
         assertEquals("Hello World", response);
     }
 }
