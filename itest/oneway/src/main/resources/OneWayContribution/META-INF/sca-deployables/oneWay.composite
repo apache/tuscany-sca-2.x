@@ -18,13 +18,13 @@
  * under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	name="OneWayITest">
+	       name="OneWayITest">
  	      
     <component name="OneWayClientComponent">
 		<implementation.java class="org.apache.tuscany.sca.itest.oneway.impl.OneWayClientImpl"/>
-		<reference name="oneWayService">
+		<reference name="oneWayService" target="OneWayServiceComponent">
 		    <interface.java interface="org.apache.tuscany.sca.itest.oneway.OneWayService" />       
-            <binding.ws uri="http://localhost:8080/OneWayServiceComponent"/>
+            <binding.ws/>
         </reference>
 	</component> 
           
