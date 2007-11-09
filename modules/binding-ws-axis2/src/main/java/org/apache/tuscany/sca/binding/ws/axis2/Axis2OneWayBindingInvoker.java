@@ -46,7 +46,11 @@ public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
 
         // ensure connections are tracked so that they can be closed by the reference binding
         MessageContext requestMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
-        requestMC.getOptions().setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
+        //requestMC.getOptions().setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
+        Options opt = requestMC.getOptions();
+        opt.setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
+        opt.setUseSeparateListener(true);
+        opt.setProperty(HTTPConstants.AUTO_RELEASE_CONNECTION,Boolean.TRUE);        
 
         operationClient.execute(false);
 

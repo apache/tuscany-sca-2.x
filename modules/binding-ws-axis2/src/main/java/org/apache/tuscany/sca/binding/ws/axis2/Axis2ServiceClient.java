@@ -52,8 +52,10 @@ import org.apache.axis2.description.Parameter;
 import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
 import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.axis2.util.threadpool.ThreadPool;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.neethi.Policy;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
@@ -106,7 +108,26 @@ public class Axis2ServiceClient {
             AxisService axisService =
                 createClientSideAxisService(wsdlDefinition, serviceQName, portName, new Options());
 
+            HttpClient httpClient = (HttpClient) configContext.getProperty(HTTPConstants.CACHED_HTTP_CLIENT); 
+            if (httpClient == null)
+            {
+                MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
+                HttpConnectionManagerParams connectionManagerParams = new HttpConnectionManagerParams();
+                connectionManagerParams.setDefaultMaxConnectionsPerHost(2);
+                connectionManagerParams.setTcpNoDelay(true);
+                connectionManagerParams.setStaleCheckingEnabled(true);
+                connectionManagerParams.setLinger(0);
+                connectionManager.setParams(connectionManagerParams);
+                httpClient  = new HttpClient(connectionManager);
+                configContext.setThreadPool(new ThreadPool(1, 5));
+                configContext.setProperty(HTTPConstants.REUSE_HTTP_CLIENT,
+                                          Boolean.TRUE);
+                configContext.setProperty(HTTPConstants.CACHED_HTTP_CLIENT,
+                                          httpClient);
+            }
+
             return new ServiceClient(configContext, axisService);
+           
         } catch (AxisFault e) {
             throw new RuntimeException(e); // TODO: better exception
         }

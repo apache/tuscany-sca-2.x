@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.itest.oneway;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.itest.oneway.impl.OneWayClientImpl;
 import org.apache.tuscany.sca.itest.oneway.impl.OneWayServiceImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -50,20 +51,24 @@ public class OneWayTestCase {
             domain.getService(OneWayClient.class, "OneWayClientComponent");
         try {
             
-            for (int count = 0; count < 1; count++){
+            int count = 100;
+
+            for (int i = 0; i < 10; i++){
                 System.out.println("Test: doSomething " + count);
                 System.out.flush();
                 client.doSomething(count);
+    
+                Thread.sleep(2000);
+                
+                System.out.println("Finished callCount = " + OneWayServiceImpl.callCount);
+                
+                Assert.assertEquals(OneWayClientImpl.callCount, OneWayServiceImpl.callCount);                
             }
-
-            Thread.sleep(5000);
         } catch (Exception ex) {
             System.err.println("Exception: " + ex.toString());
         }
         
-        System.out.println("Finished callCount = " + OneWayServiceImpl.callCount);
-        
-        Assert.assertEquals(99, OneWayServiceImpl.callCount);
+
 
     }
 
