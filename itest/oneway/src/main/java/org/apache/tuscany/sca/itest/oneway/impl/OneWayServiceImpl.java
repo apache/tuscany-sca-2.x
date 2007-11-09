@@ -37,8 +37,8 @@ public class OneWayServiceImpl implements OneWayService {
             callCount++;
         }            
         
-        System.out.println("Service: doSomething " + count + " callCount = " + callCount);
-        System.out.flush();
+       // System.out.println("Service: doSomething " + count + " callCount = " + callCount);
+       // System.out.flush();
         
         
     }	

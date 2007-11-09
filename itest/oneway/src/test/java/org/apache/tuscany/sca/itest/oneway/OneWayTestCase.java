@@ -19,11 +19,15 @@
 
 package org.apache.tuscany.sca.itest.oneway;
 
+import javax.xml.namespace.QName;
+
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.itest.oneway.impl.OneWayClientImpl;
 import org.apache.tuscany.sca.itest.oneway.impl.OneWayServiceImpl;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,14 +38,17 @@ public class OneWayTestCase {
 
     @Before
     public void setUp() throws Exception {
-        domain = SCADomain.newInstance("oneWay.composite");
-
+        SCANode node = SCANodeFactory.newInstance().createSCANode(null, null);
+        node.addContribution("mycontribution",      
+                             OneWayTestCase.class.getResource("/OneWayContribution/."));                                                                    
+        node.start();
+        domain = node.getDomain();
     }
 
     @After
     public void tearDown() throws Exception {
         if (domain != null) {
-            domain.close();
+            domain.destroy();
         }
     }
 
@@ -54,8 +61,8 @@ public class OneWayTestCase {
             int count = 100;
 
             for (int i = 0; i < 10; i++){
-                System.out.println("Test: doSomething " + count);
-                System.out.flush();
+               // System.out.println("Test: doSomething " + count);
+               // System.out.flush();
                 client.doSomething(count);
     
                 Thread.sleep(2000);

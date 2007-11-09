@@ -43,8 +43,8 @@ public class OneWayClientImpl implements OneWayClient {
         callCount = callCount + count;
         
         for (int loopCount = 0; loopCount < count; loopCount++){
-            System.out.println("Client: doSomething " + loopCount);
-            System.out.flush();
+            //System.out.println("Client: doSomething " + loopCount);
+            //System.out.flush();
             oneWayService.doSomething(loopCount);
         }
         

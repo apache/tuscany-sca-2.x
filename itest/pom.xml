@@ -62,6 +62,7 @@
                 <module>interop-soap-service</module>
                 -->
                 <module>large-sdo-ws</module>
+                <module>oneway</module>
                 <module>operation-overloading</module>
                 <module>osgi-implementation</module>
                 <module>osgi-contribution</module>
