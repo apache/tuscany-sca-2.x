@@ -24,89 +24,89 @@
     <component name="ConversationalStatelessClientStatelessService">
 	    <implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl"/>
         <reference name="conversationalReferenceClient" target="ConversationalReferenceClient"/>		
-		<reference name="conversationalService">
+		<reference name="conversationalService" target="ConversationalServiceStatelessSL">
 		    <interface.java interface="org.apache.tuscany.sca.itest.conversational.ConversationalService"
                             callbackInterface="org.apache.tuscany.sca.itest.conversational.ConversationalCallback" />
-            <binding.ws uri="http://localhost:8080/ConversationalServiceStatelessSL"/>
+            <binding.ws/>
             <callback>
                 <binding.ws/>
             </callback>
         </reference>
-		<reference name="conversationalService2">
-            <binding.ws uri="http://localhost:8080/ConversationalServiceStatelessSL"/>
+		<reference name="conversationalService2" target="ConversationalServiceStatelessSL">
+            <binding.ws/>
         </reference> 		
     </component>   
     
     <component name="ConversationalStatelessClientStatefulService">
         <implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl"/>
         <reference name="conversationalReferenceClient" target="ConversationalReferenceClient"/>       
-        <reference name="conversationalService">
+        <reference name="conversationalService" target="ConversationalServiceStateful">
             <interface.java interface="org.apache.tuscany.sca.itest.conversational.ConversationalService"
                             callbackInterface="org.apache.tuscany.sca.itest.conversational.ConversationalCallback" />
-            <binding.ws uri="http://localhost:8080/ConversationalServiceStateful"/>
+            <binding.ws/>
             <callback>
                 <binding.ws/>
             </callback>
         </reference>
-        <reference name="conversationalService2">  
-            <binding.ws uri="http://localhost:8080/ConversationalServiceStateful"/>
+        <reference name="conversationalService2" target="ConversationalServiceStateful">  
+            <binding.ws/>
         </reference>     
     </component>     
     
     <component name="ConversationalStatefulClientStatelessService">
         <implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatefulImpl"/>
         <reference name="conversationalReferenceClient" target="ConversationalReferenceClient"/>       
-        <reference name="conversationalService">
+        <reference name="conversationalService" target="ConversationalServiceStatelessSL">
             <interface.java interface="org.apache.tuscany.sca.itest.conversational.ConversationalService"
                             callbackInterface="org.apache.tuscany.sca.itest.conversational.ConversationalCallback" />
-            <binding.ws uri="http://localhost:8080/ConversationalServiceStatelessSL"/>
+            <binding.ws/>
             <callback>
                 <binding.ws/>
             </callback>
         </reference>
-        <reference name="conversationalService2">
-            <binding.ws uri="http://localhost:8080/ConversationalServiceStatelessSL"/>
+        <reference name="conversationalService2" target="ConversationalServiceStatelessSL">
+            <binding.ws/>
         </reference>        
     </component>   
     
     <component name="ConversationalStatefulClientStatefulService">
         <implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatefulImpl"/>
         <reference name="conversationalReferenceClient" target="ConversationalReferenceClient"/>       
-        <reference name="conversationalService">
-            <binding.ws uri="http://localhost:8080/ConversationalServiceStateful"/>
+        <reference name="conversationalService" target="ConversationalServiceStateful">
+            <binding.ws/>
             <callback>
                 <binding.ws/>
             </callback>            
         </reference>        
-        <reference name="conversationalService2">
-            <binding.ws uri="http://localhost:8080/ConversationalServiceStateful"/>
+        <reference name="conversationalService2" target="ConversationalServiceStateful">
+            <binding.ws/>
         </reference>
     </component>  
     
     <component name="ConversationalStatelessClientRequestService">
 	    <implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl"/>
         <reference name="conversationalReferenceClient" target="ConversationalReferenceClient"/>		
-        <reference name="conversationalService">
-            <binding.ws uri="http://localhost:8080/ConversationalServiceRequest"/>
+        <reference name="conversationalService" target="ConversationalServiceRequest">
+            <binding.ws/>
             <callback>
                 <binding.ws/>
             </callback>            
         </reference>        
-        <reference name="conversationalService2">
-            <binding.ws uri="http://localhost:8080/ConversationalServiceRequest"/>
+        <reference name="conversationalService2" target="ConversationalServiceRequest">
+            <binding.ws/>
         </reference>
     </component> 
     
     <component name="ConversationalStatefulClientNonConversationalCallbackStatefulService">
         <implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatefulNonConversationalCallbackImpl"/>
-        <reference name="conversationalService">
-            <binding.ws uri="http://localhost:8080/ConversationalServiceStatefulNonConversationalCallback"/>
+        <reference name="conversationalService" target="ConversationalServiceStatefulNonConversationalCallback">
+            <binding.ws/>
             <callback>
                 <binding.ws/>
             </callback>            
         </reference>        
-        <reference name="conversationalService2">
-            <binding.ws uri="http://localhost:8080/ConversationalServiceStatefulNonConversationalCallback"/>
+        <reference name="conversationalService2" target="ConversationalServiceStatefulNonConversationalCallback">
+            <binding.ws/>
         </reference>
     </component>     
     

@@ -20,8 +20,16 @@
 package org.apache.tuscany.sca.itest.conversational;
 
 
+import java.net.URL;
+
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.impl.SCANodeFactoryImpl;
+import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,9 +42,14 @@ public class ConversationWSDLTestCase {
 
     @Before
     public void setUp() throws Exception {
-        domain = SCADomain.newInstance("conversationalWSDL.composite");
-        conversationalStatelessClientStatefulService  = domain.getService(ConversationalClient.class,
-                                                                          "ConversationalStatelessClientStatefulService");
+        SCANode node = SCANodeFactory.newInstance().createSCANode(null, null);
+        node.addContribution("mycontribution",      
+                             ConversationWSDLTestCase.class.getResource("/ConversationalWSDL/."));                                                                    
+        node.addToDomainLevelComposite(new QName("http://conversations", "ConversationalWSDLITest"));
+        node.start();
+        
+        conversationalStatelessClientStatefulService  = node.getDomain().getService(ConversationalClient.class,
+                                                                                    "ConversationalStatelessClientStatefulService");
         
         ConversationalClientStatelessImpl.calls  = new StringBuffer(); 
     }

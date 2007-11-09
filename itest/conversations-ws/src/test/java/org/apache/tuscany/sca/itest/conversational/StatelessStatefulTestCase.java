@@ -19,9 +19,11 @@
 
 package org.apache.tuscany.sca.itest.conversational;
 
+import javax.xml.namespace.QName;
+
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatefulImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatefulNonConversationalCallbackImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl;
@@ -29,6 +31,8 @@ import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceReq
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatefulImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatefulNonConversationalCallbackImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatelessImpl;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -48,7 +52,12 @@ public class StatelessStatefulTestCase {
     @BeforeClass
     public static void setUp() throws Exception {
     	try {
-	        domain = SCADomain.newInstance("conversational.composite");
+                SCANode node = SCANodeFactory.newInstance().createSCANode(null, null);
+                node.addContribution("mycontribution",
+                                     StatefulStatefulTestCase.class.getResource("/Conversational/."));                                                                     
+                node.addToDomainLevelComposite(new QName("http://conversations", "ConversationalITest"));
+                node.start();
+                domain = node.getDomain();
 	
 	        conversationalStatelessClientStatelessService = domain.getService(ConversationalClient.class,
 	                                                                          "ConversationalStatelessClientStatelessService");
@@ -81,7 +90,7 @@ public class StatelessStatefulTestCase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        domain.close();
+        domain.destroy();
     }
     
     private static void resetCallStack() {
