@@ -40,24 +40,16 @@ public class SCANodeFactoryImpl extends SCANodeFactory {
 
     }
     
-    /**
-     * Creates a new standalone SCA node. i.e. a node that is not connected to a 
-     * wider distributed domain
-     * 
-     * @param nodeURI the URI of the node, this is the endpoint URI of the
-     * node administration service
-     * @return a new SCA node.
-     */
-    public SCANode createSCANode(String nodeURI) throws NodeException {
-        return new SCANodeImpl(nodeURI, null, null);
-    }
 
     /**
-     * Finds an existing SCA domain.
+     * Creates a new SCA node.
      * 
-     * @param domainURI the URI of the domain, this is the endpoint
-     * URI of the domain administration service
-     * @return the SCA domain
+     * @param nodeURI the URI of the node, this URI is used to provide the default 
+     *        host and port information for the runtime for situations when bindings
+     *        do provide this information
+     * @param domainURI the URI of the domain that the node belongs to. This URI is 
+     *        used to locate the domain manager on the network
+     * @return a new SCA node.
      */
     public SCANode createSCANode(String nodeURI, String domainURI) throws NodeException {
         return new SCANodeImpl(nodeURI, domainURI, null);
@@ -68,11 +60,13 @@ public class SCANodeFactoryImpl extends SCANodeFactory {
      *  and failover scenarios where each node in the group runs the same contribution and 
      *  active composites 
      * 
-     * @param nodeURI the URI of the node, this is the endpoint URI of the
-     * node administration service
-     * @param domainURI the URI of the domain that the node belongs to
+     * @param nodeURI the URI of the node, this URI is used to provide the default 
+     *        host and port information for the runtime for situations when bindings
+     *        do provide this information
+     * @param domainURI the URI of the domain that the node belongs to. This URI is 
+     *        used to locate the domain manager on the network
      * @param nodeGroupURI the uri of the node group. This is the enpoint URI of the head of the
-     * group of nodes. For example, in load balancing scenarios this will be the loaded balancer itself
+     * group of nodes. For example, in load balancing scnearios this will be the loaded balancer itself
      * @return a new SCA node.
      */
     public SCANode createSCANode(String nodeURI, String domainURI, String nodeGroupURI) throws NodeException {

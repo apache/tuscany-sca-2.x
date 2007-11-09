@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.node.impl;
 
+import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URL;
 import java.util.logging.Level;
@@ -27,7 +29,9 @@ import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
@@ -41,14 +45,25 @@ import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.domain.DomainException;
+import org.apache.tuscany.sca.domain.DomainManagerInitService;
 import org.apache.tuscany.sca.domain.DomainManagerNodeEventService;
+import org.apache.tuscany.sca.domain.SCADomainSPI;
+import org.apache.tuscany.sca.domain.impl.DomainManagerNodeImpl;
+import org.apache.tuscany.sca.domain.impl.SCADomainImpl;
 import org.apache.tuscany.sca.domain.model.Domain;
+import org.apache.tuscany.sca.domain.model.DomainModelFactory;
+import org.apache.tuscany.sca.domain.model.impl.DomainModelFactoryImpl;
 import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
+import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
+import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.node.NodeFactoryImpl;
 import org.apache.tuscany.sca.node.NodeManagerInitService;
 import org.apache.tuscany.sca.node.SCADomainProxySPI;
 import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -61,28 +76,16 @@ import org.osoa.sca.ServiceRuntimeException;
  * 
  * @version $Rev$ $Date$
  */
-public class SCADomainProxyImpl implements SCADomainProxySPI {
+public class SCADomainProxyImpl extends SCADomainImpl implements SCADomainProxySPI {
 	
     private final static Logger logger = Logger.getLogger(SCADomainProxyImpl.class.getName());
 	    
-    // the domain used to talk to the rest of the domain
-    private EmbeddedSCADomain domainManagementRuntime;
-    
-    // class loader used to get the runtime going
-    private ClassLoader domainClassLoader;  
-    
-    // representation of the private state of the node that the domain is running on
-    private String domainURI; 
-    private URL domainURL; 
-    
-    // proxy to the domain
-    private DomainManagerNodeEventService domainManager;
-    
-    // proxy to the node manager
-    private NodeManagerInitService nodeManagerInit;
-    private String nodeManagerUrl;
-    
+    // management services
+    private DomainManagerNodeEventService domainManagerService;   
+    private NodeManagerInitService nodeManagerInitService;
+        
     // the local node implementation
+    private String nodeURI;
     private SCANodeImpl nodeImpl;
        
     // methods defined on the implementation only
@@ -94,146 +97,100 @@ public class SCADomainProxyImpl implements SCADomainProxySPI {
      * @throws ActivationException
      */
     public SCADomainProxyImpl(String domainURI) throws DomainException {
-        this.domainURI = domainURI;
-        this.domainClassLoader = SCADomainProxyImpl.class.getClassLoader(); 
-        init();
+        super(domainURI);
     }    
     
     /**
      * Start the composite that connects to the domain manager
      */
-    private void init()
-      throws DomainException {
+    protected void init() throws DomainException {
         try {
-            // check where domain and node uris are urls, they will be used to configure various
+            // check where domain uris are urls, they will be used to configure various
             // endpoints if they are
             URI tmpURI;
             try {
-                tmpURI = new URI(domainURI); 
-                if (tmpURI.isAbsolute() == true){
-                    domainURL = tmpURI.toURL();
+                tmpURI = new URI(domainModel.getDomainURI()); 
+                if (tmpURI.isAbsolute()){
+                    domainModel.setDomainURL(tmpURI.toURL().toExternalForm());
                 }
             } catch(Exception ex) {
-                domainURL = null;
+                domainModel.setDomainURL(null);
             }            
           
             // Check if node has been given a valid domain name to connect to
-            if (domainURL == null) {
+            if (domainModel.getDomainURL() == null) {
             	logger.log(Level.INFO, "Domain will be started stand-alone as domain URL is not provided");
-            } else {
-                // load the composite that allows this domain representation to 
-                // connect to the rest of the domain
-                String domainCompositeName = "node.composite";
-                URL contributionURL = SCANodeUtil.findContributionURLFromCompositeNameOrPath(domainClassLoader, null, new String[]{domainCompositeName} );
-                
-                if ( contributionURL != null ){ 
-                    logger.log(Level.INFO, "Domain management configured from " + contributionURL);
-                    
-                    // start a local domain in order to talk to the logical domain
-                    domainManagementRuntime = new EmbeddedSCADomain(domainClassLoader, domainURI);   
-                    domainManagementRuntime.start();
-                
-                    // add node composite to the management domain
-                    ContributionService contributionService = domainManagementRuntime.getContributionService();
-                    Contribution contribution = null;
-
-                    contribution = contributionService.contribute(domainURI, 
-                                                                  contributionURL, 
-                                                                  false);
-                    
-                    Composite composite = null;
-                    for (DeployedArtifact artifact: contribution.getArtifacts()) {
-                        if (domainCompositeName.equals(artifact.getURI())) {
-                            composite = (Composite)artifact.getModel();
-                        }
-                    }
-                    
-                    if (composite != null) {
-                    
-                        domainManagementRuntime.getDomainComposite().getIncludes().add(composite);
-                        domainManagementRuntime.getCompositeBuilder().build(composite);
-                        
-                        // deal with the special case of registering the node manager service 
-                        // in service discovery. It's not on an SCA binding. 
-                        // TODO - really want to be able to hand out service references but they
-                        //        don't serialize out over web services yet. 
-                        SCANodeUtil.fixUpNodeServiceUrls(domainManagementRuntime.getDomainComposite().getIncludes().get(0).getComponents(), null); 
-                        SCANodeUtil.fixUpNodeReferenceUrls(domainManagementRuntime.getDomainComposite().getIncludes().get(0).getComponents(), domainURL);  
-                      
-                        domainManagementRuntime.getCompositeActivator().activate(composite); 
-                        domainManagementRuntime.getCompositeActivator().start(composite);
-                    
-                        // get the management components out of the domain so that they 
-                        // can be configured/used. 
-                        domainManager = domainManagementRuntime.getService(DomainManagerNodeEventService.class, "DomainManagerComponent");
-                        nodeManagerInit = domainManagementRuntime.getService(NodeManagerInitService.class, "NodeManagerComponent/NodeManagerInitService");
-                        
-                        // Now get the uri back out of the component now it has been built and started
-                        // TODO - this doesn't pick up the url from external hosting environments
-                        nodeManagerUrl = SCANodeUtil.getNodeManagerServiceUrl(domainManagementRuntime.getDomainComposite().getIncludes().get(0).getComponents());                       
-                             
-                    } else {
-                        throw new ActivationException("Domain management contribution " + 
-                                                      contributionURL + 
-                                                      " found but could not be loaded");
-                    }
-                } else {
-                    throw new ActivationException("Doamin management contribution " + 
-                                                  domainCompositeName + 
-                                                  " not found on the classpath");
-                }
-            }                   
+            } 
+            
         } catch(Exception ex) {
             throw new DomainException(ex);
-        }
+        }            
     }
     
-   // SPI methods 
-    
-    public String addNode(String nodeURI, String nodeURL){
-        // Does nothing in the proxy
-        return null;
-    }
-    
-    public String removeNode(String nodeURI){
-        // Does nothing in the proxy
-        return null;
-    }  
+    // SPI methods 
     
     public void addNode(SCANode nodeImpl) throws DomainException {
-        this.nodeImpl = (SCANodeImpl)nodeImpl;
+        this.nodeImpl = (SCANodeImpl)nodeImpl; 
         
-        // register node with wider domain
-        if (domainURL != null){
-            // pass this object into the node manager service
-            nodeManagerInit.setNode(nodeImpl);
-            
+        // add the node into the local domain model 
+        super.addNode(nodeImpl.getURI(), nodeImpl.getURI());
+        
+        // the registration of the node with the node is delayed until
+        // after the runtime has been started
+        start();
+    }
+    
+    private void addNode() throws DomainException {
+
+        // pass this object into the node manager service
+        nodeManagerInitService.setNode(nodeImpl);   
+        
+        if (domainModel.getDomainURL() != null){
+            // add the 
+        
             try {
+                // create the node manager endpoint
+                // TODO - we really need to pass in a callable reference
+                URI nodeURI = new URI(nodeImpl.getURI());
+                String nodeHost = nodeURI.getHost();
+                
+                if (nodeHost.equals("localhost")){
+                    nodeHost = InetAddress.getLocalHost().getHostName();
+                }
+                
+                String nodeManagerURL = nodeURI.getScheme()+ "://" +
+                                        nodeHost + ":" +
+                                        nodeURI.getPort() + "/NodeManagerComponent/NodeManagerService";
+                
                 // go out and add this node to the wider domain
-                domainManager.registerNode(nodeImpl.getURI(),nodeManagerUrl);
+                domainManagerService.registerNode(nodeImpl.getURI(),nodeManagerURL);
 
             } catch(Exception ex) {
                 logger.log(Level.SEVERE,  
                            "Can't connect to domain manager at: " + 
-                           domainURL);
+                           domainModel.getDomainURL());
                 throw new DomainException(ex);
-            }              
-        }
+            }  
+        }      
     }
     
     public void removeNode(SCANode nodeImpl) throws DomainException {
         
-        if (domainURL != null){
-            // remove the node from node manager service
-            //nodeManagerInit.removeNode(nodeImpl);
-            
+        // remove this object from the node manager service
+        //nodeManagerInitService.removeNode(nodeImpl);
+        
+        // remove the node from the local domain model
+        super.removeNode(nodeImpl.getURI());
+        
+        if (domainModel.getDomainURL() != null){
+
             try {
-                // go out and add this node to the wider domain
-                domainManager.removeNode(nodeImpl.getURI());
+                // go out and remove this node to the wider domain
+                domainManagerService.removeNode(nodeImpl.getURI());
             } catch(Exception ex) {
                 logger.log(Level.SEVERE,  
                            "Can't connect to domain manager at: " + 
-                           domainURL);
+                           domainModel.getDomainURL());
                 throw new DomainException(ex);
             }
         }  
@@ -242,34 +199,180 @@ public class SCADomainProxyImpl implements SCADomainProxySPI {
     }  
     
     public void registerContribution(String nodeURI, String contributionURI, String contributionURL){
-        if (domainManager != null) {
-            domainManager.registerContribution(nodeURI, contributionURI, contributionURL);
+        
+        if (domainModel.getDomainURL() != null) {
+            domainManagerService.registerContribution(nodeURI, contributionURI, contributionURL);
         }
     }
     
     public void unregisterContribution(String contributionURI){
-        domainManager.unregisterContribution(contributionURI);
+        if (domainModel.getDomainURL() != null) {
+            domainManagerService.unregisterContribution(contributionURI);
+        }
     }    
      
 
-    public String registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
-        return domainManager.registerServiceEndpoint(domainUri, nodeUri, serviceName, bindingName, URL);
+    public String registerServiceEndpoint(String domainURI, String nodeURI, String serviceName, String bindingName, String URL){
+        
+        super.registerServiceEndpoint(domainURI, nodeURI, serviceName, bindingName, URL);
+        
+        if (domainModel.getDomainURL() != null) {
+            return domainManagerService.registerServiceEndpoint(domainURI, nodeURI, serviceName, bindingName, URL);
+        } else {
+            return null;
+        }
     }
    
-    public String  removeServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName){
-        return domainManager.removeServiceEndpoint(domainUri, nodeUri, serviceName, bindingName);
+    public String  removeServiceEndpoint(String domainURI, String nodeURI, String serviceName, String bindingName){
+        
+        super.removeServiceEndpoint(domainURI, nodeURI, serviceName, bindingName);
+        
+        if (domainModel.getDomainURL() != null) {
+            return domainManagerService.removeServiceEndpoint(domainURI, nodeURI, serviceName, bindingName);
+        } else {
+            return null;
+        }
     }
      
-    public String findServiceEndpoint(String domainUri, String serviceName, String bindingName){
-        return domainManager.findServiceEndpoint(domainUri, serviceName, bindingName);
+    public String findServiceEndpoint(String domainURI, String serviceName, String bindingName){
+        
+        String endpoint = super.findServiceEndpoint(domainURI, serviceName, bindingName);
+        
+        if ( (endpoint.equals("")) && (domainModel.getDomainURL() != null)){
+            endpoint = domainManagerService.findServiceEndpoint(domainURI, serviceName, bindingName);
+        }
+        
+        return endpoint;
     }
     
     public Domain getDomainModel(){        
-        return null;
+        return domainModel;
     }     
-       
       
     // API methods 
+    public void start() throws DomainException {
+        try {
+            
+            // if there is no node create a runtime otherwise use the runtime from the node
+            if (nodeImpl == null){
+                // create a runtime for the domain management services to run on
+                domainManagementRuntime = new ReallySmallRuntime(domainClassLoader);
+                domainManagementRuntime.start();
+                
+
+                // invent a default URL for the runtime
+                String host = InetAddress.getLocalHost().getHostName();
+                ServerSocket socket = new ServerSocket(0);
+                int port = socket.getLocalPort();
+                nodeURI = "http://" + host + ":" + port;
+                socket.close();
+                
+                ServletHostExtensionPoint servletHosts = domainManagementRuntime.getExtensionPointRegistry().getExtensionPoint(ServletHostExtensionPoint.class);
+                for (ServletHost servletHost: servletHosts.getServletHosts()) {
+                    servletHost.setDefaultPort(port);
+                }
+
+                // Create an in-memory domain level management composite
+                AssemblyFactory assemblyFactory = domainManagementRuntime.getAssemblyFactory();
+                domainManagementComposite = assemblyFactory.createComposite();
+                domainManagementComposite.setName(new QName(Constants.SCA10_NS, "domainManagement"));
+                domainManagementComposite.setURI(domainModel.getDomainURI() + "/Management"); 
+            } else {
+                domainManagementRuntime = nodeImpl.getNodeRuntime();
+                domainManagementComposite = domainManagementRuntime.getCompositeActivator().getDomainComposite();
+            }
+          
+            // Find the composite that will configure the domain
+            String domainCompositeName = "node.composite";
+            URL contributionURL = SCAContributionUtil.findContributionFromResource(domainClassLoader, domainCompositeName);
+            
+            if ( contributionURL != null ){ 
+                logger.log(Level.INFO, "Domain management configured from " + contributionURL);
+                           
+                // add node composite to the management domain
+                domainManagementContributionService = domainManagementRuntime.getContributionService();
+                Contribution contribution = null;
+
+                contribution = domainManagementContributionService.contribute("nodedomain", 
+                                                                              contributionURL, 
+                                                                              false);
+                
+                Composite composite = null;
+                for (DeployedArtifact artifact: contribution.getArtifacts()) {
+                    if (domainCompositeName.equals(artifact.getURI())) {
+                        composite = (Composite)artifact.getModel();
+                    }
+                }
+                
+                if (composite != null) {
+                
+                    domainManagementComposite.getIncludes().add(composite);
+                    domainManagementRuntime.getCompositeBuilder().build(composite);
+                    
+                    if (domainModel.getDomainURL() != null) {
+                        URI domainURI = URI.create(domainModel.getDomainURI());
+                        String domainHost = domainURI.getHost();
+                        int domainPort = domainURI.getPort();
+                        
+                        // override any domain URLs in node.composite and replace with the
+                        // domain url provided on start up
+                        for ( Component component : composite.getComponents()){
+                            for (ComponentReference reference : component.getReferences() ){
+                                for (Binding binding : reference.getBindings() ) {
+                                    String bindingURIString = binding.getURI();
+                                    if (bindingURIString != null) {
+                                        URI bindingURI = URI.create(bindingURIString);
+                                        String bindingHost = bindingURI.getHost();
+                                        int bindingPort = bindingURI.getPort();
+                                        
+                                        if ( bindingPort == 9999){
+                                            // replace the old with the new
+                                            bindingURIString = bindingURIString.replace(String.valueOf(bindingPort), String.valueOf(domainPort));          
+                                            bindingURIString = bindingURIString.replace(bindingHost, domainHost);
+                                            
+                                            // set the address back into the NodeManager binding.
+                                            binding.setURI(bindingURIString);                                               
+                                        }
+                                    }
+                                }
+                            } 
+                        }
+                    }
+                                        
+                    domainManagementRuntime.getCompositeActivator().activate(composite); 
+                    domainManagementRuntime.getCompositeActivator().start(composite);
+                    
+                    // get the management components out of the domain so that they 
+                    // can be configured/used. 
+                    domainManagerService = getService(DomainManagerNodeEventService.class, 
+                                                      "DomainManagerComponent", 
+                                                      domainManagementRuntime, 
+                                                      domainManagementComposite); 
+                    
+                    nodeManagerInitService = getService(NodeManagerInitService.class, 
+                                                        "NodeManagerComponent/NodeManagerInitService", 
+                                                        domainManagementRuntime, 
+                                                        domainManagementComposite); 
+                    
+                    // add the registered node now that the runtime is started
+                    addNode();
+
+                                                
+                } else {
+                    throw new ActivationException("Domain management contribution " + 
+                                                  contributionURL + 
+                                                  " found but could not be loaded");
+                }
+            } else {
+                throw new ActivationException("Domain management contribution " + 
+                                              domainCompositeName + 
+                                              " not found on the classpath");
+            }       
+            
+        } catch(Exception ex) {
+            throw new DomainException(ex);
+        }
+    }
     
     public void destroy() throws DomainException {
         try {
@@ -280,9 +383,6 @@ public class SCADomainProxyImpl implements SCADomainProxySPI {
         }
     }
  
-    public String getURI(){
-        return domainURI;
-    }
 
     public void addContribution(String contributionURI, URL contributionURL) throws DomainException {
         try {
@@ -334,108 +434,17 @@ public class SCADomainProxyImpl implements SCADomainProxySPI {
         } catch(Exception ex) {
             new DomainException(ex);
         }         
-    }    
-           
-    public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
-        return (R)nodeImpl.getNodeRuntime().getProxyFactory().cast(target);
-    }
-
-    public <B> B getService(Class<B> businessInterface, String serviceName) {
-        ServiceReference<B> serviceReference = getServiceReference(businessInterface, serviceName);
-        if (serviceReference == null) {
-            throw new ServiceRuntimeException("Service not found: " + serviceName);
-        }
-        return serviceReference.getService();
-    }
-
-    private <B> ServiceReference<B> createServiceReference(Class<B> businessInterface, String targetURI) {
-        try {
-            AssemblyFactory assemblyFactory = nodeImpl.getNodeRuntime().getAssemblyFactory();
-            Composite composite = assemblyFactory.createComposite();
-            composite.setName(new QName(Constants.SCA10_TUSCANY_NS, "default"));
-            RuntimeComponent component = (RuntimeComponent)assemblyFactory.createComponent();
-            component.setName("default");
-            component.setURI("default");
-            nodeImpl.getNodeRuntime().getCompositeActivator().configureComponentContext(component);
-            composite.getComponents().add(component);
-            RuntimeComponentReference reference = (RuntimeComponentReference)assemblyFactory.createComponentReference();
-            reference.setName("default");
-            ModelFactoryExtensionPoint factories =
-                nodeImpl.getNodeRuntime().getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
-            JavaInterfaceFactory javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
-            InterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
-            interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(businessInterface));
-            reference.setInterfaceContract(interfaceContract);
-            component.getReferences().add(reference);
-            reference.setComponent(component);
-            SCABindingFactory scaBindingFactory = factories.getFactory(SCABindingFactory.class);
-            SCABinding binding = scaBindingFactory.createSCABinding();
-            binding.setURI(targetURI);
-            reference.getBindings().add(binding);       
-            return new ServiceReferenceImpl<B>(businessInterface, component, reference, binding, nodeImpl.getNodeRuntime()
-                .getProxyFactory(), nodeImpl.getNodeRuntime().getCompositeActivator());
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
-        }
-    }
-
-    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String name) {
-
-        // Extract the component name
-        String componentName;
-        String serviceName;
-        int i = name.indexOf('/');
-        if (i != -1) {
-            componentName = name.substring(0, i);
-            serviceName = name.substring(i + 1);
-
-        } else {
-            componentName = name;
-            serviceName = null;
-        }
-
-        // Lookup the component in the domain
-        Component component = null;
-        
-        if (nodeImpl != null) {
-            component = nodeImpl.getComponent(componentName);
+    } 
        
-            if (component == null) {
-                // The component is not local in the partition, try to create a remote service ref
-                return createServiceReference(businessInterface, name);
-            }
-        }
-        
-        RuntimeComponentContext componentContext = null;
-
-        // If the component is a composite, then we need to find the
-        // non-composite component that provides the requested service
-        if (component.getImplementation() instanceof Composite) {
-            for (ComponentService componentService : component.getServices()) {
-                if (serviceName == null || serviceName.equals(componentService.getName())) {
-                    CompositeService compositeService = (CompositeService)componentService.getService();
-                    if (compositeService != null) {
-                        if (serviceName != null) {
-                            serviceName = "$promoted$." + serviceName;
-                        }
-                        componentContext =
-                            ((RuntimeComponent)compositeService.getPromotedComponent()).getComponentContext();
-                        return componentContext.createSelfReference(businessInterface, compositeService
-                            .getPromotedService());
-                    }
-                    break;
-                }
-            }
-            // No matching service is found
-            throw new ServiceRuntimeException("Composite service not found: " + name);
-        } else {
-            componentContext = ((RuntimeComponent)component).getComponentContext();
-            if (serviceName != null) {
-                return componentContext.createSelfReference(businessInterface, serviceName);
-            } else {
-                return componentContext.createSelfReference(businessInterface);
-            }
-        }
+    public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
+        return (R)cast(target, domainManagementRuntime);
     }
-
+    
+    public <B> B getService(Class<B> businessInterface, String serviceName) {
+        return getService( businessInterface, serviceName, domainManagementRuntime, domainManagementComposite);
+    }
+    
+    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String name) {
+        return getServiceReference(businessInterface, name, domainManagementRuntime, domainManagementComposite);
+    }
 }

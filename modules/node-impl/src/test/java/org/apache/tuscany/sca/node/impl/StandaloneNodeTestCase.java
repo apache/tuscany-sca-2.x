@@ -61,7 +61,7 @@ public class StandaloneNodeTestCase {
             SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             
             // rely on meta data to start composite
-            node = nodeFactory.createSCANode("http://localhost:8200/node");
+            node = nodeFactory.createSCANode("http://localhost:8200/node", null);
             node.addContribution("nodeC", cl.getResource("nodeC/"));
             node.addToDomainLevelComposite(new QName("http://sample", "Calculator"));
             node.start();

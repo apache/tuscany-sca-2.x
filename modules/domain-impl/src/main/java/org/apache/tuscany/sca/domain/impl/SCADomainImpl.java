@@ -76,28 +76,26 @@ public class SCADomainImpl implements SCADomainSPI  {
     private final static Logger logger = Logger.getLogger(SCADomainImpl.class.getName());
 	     
     // class loader used to get the runtime going
-    private ClassLoader domainClassLoader;
+    protected ClassLoader domainClassLoader;
     
     // management runtime
-    private ReallySmallRuntime domainManagementRuntime;
-    private ContributionService domainManagementContributionService;
-    private Composite domainManagementComposite;
-    private DomainManagerNodeImpl domainManagerNode;
-    
-    // management services
-    private DomainManagerInitService domainManagerInitService;
+    protected ReallySmallRuntime domainManagementRuntime;
+    protected ContributionService domainManagementContributionService;
+    protected Composite domainManagementComposite;
+    protected DomainManagerNodeImpl domainManagerNode;
           
     // The domain model
-    private DomainModelFactory domainModelFactory = new DomainModelFactoryImpl();
-    private Domain domainModel;
-    private HashMap<String, Contribution> contributions = new HashMap<String, Contribution>();
-     
+    protected DomainModelFactory domainModelFactory = new DomainModelFactoryImpl();
+    protected Domain domainModel;
+    protected HashMap<String, Contribution> contributions = new HashMap<String, Contribution>();
+    
+    // management services
+    private DomainManagerInitService domainManagerInitService;    
      
     /** 
      * Create a domain giving the URI for the domain. 
      * 
      * @param domainUri - identifies what host and port the domain service is running on, e.g. http://localhost:8081
-     * @param nodeUri - if this is a url it is assumed that this will be used as root url for management components, e.g. http://localhost:8082
      * @throws ActivationException
      */
     public SCADomainImpl(String domainURI) throws DomainException {
@@ -110,7 +108,7 @@ public class SCADomainImpl implements SCADomainSPI  {
     /**
      * Create the domain management runtime etc
      */
-    private void init() throws DomainException {
+    protected void init() throws DomainException {
         try {
             // check whether domain uri is a url
             URI tmpURI;
@@ -122,7 +120,7 @@ public class SCADomainImpl implements SCADomainSPI  {
             } catch(Exception ex) {
                 throw new ActivationException("domain uri " + 
                                               domainModel.getDomainURI() + 
-                                              "must be a valid url");
+                                              " must be a valid url");
             }
                 
             // create a runtime for the domain management services to run on
@@ -286,6 +284,11 @@ public class SCADomainImpl implements SCADomainSPI  {
             modifiedServiceName = serviceName;
         }
         
+        // if the service name starts with a "/" remove it
+        if ( modifiedServiceName.startsWith("/") ) {
+            modifiedServiceName = modifiedServiceName.substring(1, serviceName.length());
+        } 
+        
         // collect the service info
         Service service = domainModelFactory.createService();
         service.setServiceURI(modifiedServiceName);
@@ -297,7 +300,7 @@ public class SCADomainImpl implements SCADomainSPI  {
         
         if (node != null){
             //store the service
-            node.getServices().put(serviceName+bindingName, service);
+            node.getServices().put(modifiedServiceName+bindingName, service);
             logger.log(Level.INFO, "Registered service: " + modifiedServiceName);
         } else {
             logger.log(Level.WARNING, "Trying to register service: " + 
@@ -356,6 +359,11 @@ public class SCADomainImpl implements SCADomainSPI  {
         
         
     // SCADomain API methods 
+    
+    public void start() throws DomainException {
+        // Does nothing in the domain implementation but 
+        // is used in the proxy
+    }
     
     public void destroy() throws DomainException {
         try {
@@ -539,7 +547,7 @@ public class SCADomainImpl implements SCADomainSPI  {
         return (R)cast(target, domainManagementRuntime);
     }
     
-    private <B, R extends CallableReference<B>> R cast(B target, ReallySmallRuntime runtime) throws IllegalArgumentException {
+    protected <B, R extends CallableReference<B>> R cast(B target, ReallySmallRuntime runtime) throws IllegalArgumentException {
         return (R)runtime.getProxyFactory().cast(target);
     }
 
@@ -547,7 +555,7 @@ public class SCADomainImpl implements SCADomainSPI  {
         return getService( businessInterface, serviceName, domainManagementRuntime, null);
     }
     
-    private <B> B getService(Class<B> businessInterface, String serviceName, ReallySmallRuntime runtime, Composite domainComposite) {
+    protected <B> B getService(Class<B> businessInterface, String serviceName, ReallySmallRuntime runtime, Composite domainComposite) {
         
         ServiceReference<B> serviceReference = getServiceReference(businessInterface, serviceName, runtime, domainComposite);
         if (serviceReference == null) {
@@ -556,12 +564,12 @@ public class SCADomainImpl implements SCADomainSPI  {
         return serviceReference.getService();
     }
 
-    private <B> ServiceReference<B> createServiceReference(Class<B> businessInterface, String targetURI) {
+    protected <B> ServiceReference<B> createServiceReference(Class<B> businessInterface, String targetURI) {
         return createServiceReference(businessInterface, targetURI, domainManagementRuntime, null);
     }
 
     
-    private <B> ServiceReference<B> createServiceReference(Class<B> businessInterface, String targetURI, ReallySmallRuntime runtime, Composite domainComposite) {
+    protected <B> ServiceReference<B> createServiceReference(Class<B> businessInterface, String targetURI, ReallySmallRuntime runtime, Composite domainComposite) {
         try {
           
             AssemblyFactory assemblyFactory = runtime.getAssemblyFactory();
@@ -600,7 +608,7 @@ public class SCADomainImpl implements SCADomainSPI  {
     }
 
         
-    private <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String name, ReallySmallRuntime runtime, Composite domainComposite) {
+    protected <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String name, ReallySmallRuntime runtime, Composite domainComposite) {
         
         // Extract the component name
         String componentName;

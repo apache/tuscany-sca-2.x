@@ -25,7 +25,7 @@
     <component name="CalculatorServiceComponentA">
 		<implementation.java class="calculator.CalculatorServiceImpl"/>
         <service name="CalculatorService">
-            <binding.sca uri="http://localhost:8087/CalculatorServiceComponentA"/>
+            <binding.sca/>
         </service>		
         <reference name="addService" target="AddServiceComponentB" />     
         <reference name="subtractService" target="SubtractServiceComponentC" />

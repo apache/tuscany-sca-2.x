@@ -57,7 +57,7 @@ public class SCANodeUtil {
      * @return the contribution URL
      * @throws MalformedURLException
      */
-
+/*
     public static URL findContributionURLFromCompositeNameOrPath(ClassLoader classLoader, String contributionPath, String[] composites)
       throws MalformedURLException {
         
@@ -141,7 +141,7 @@ public class SCANodeUtil {
     
         return contributionURL;
     }	
-    
+*/   
     /** 
      * A rather ugly method to find and fix the url of the service, assuming that there
      * is one. 
@@ -154,7 +154,8 @@ public class SCANodeUtil {
      *         but this doesn't work yet     
      * 
      * @return node manager url
-     */    
+     */
+/*	
     public static void fixUpNodeServiceUrls(List<Component> nodeComponents, URL nodeUrlString)
       throws MalformedURLException, UnknownHostException, IOException {
       
@@ -166,13 +167,14 @@ public class SCANodeUtil {
             }            
         }
     }   
-    
+*/
     /**
      * Find and return the URL of the NodeManagerService
      * 
      * @param nodeComponents
      * @return
      */
+/*
     public static String getNodeManagerServiceUrl(List<Component> nodeComponents){
         String nodeManagerUrl = null;
               
@@ -186,7 +188,8 @@ public class SCANodeUtil {
         }
         
         return nodeManagerUrl;
-    }    
+    } 
+*/   
     
     /**
      * For node management services that use the http(s) protocol then use the node url as the enpoint
@@ -196,6 +199,7 @@ public class SCANodeUtil {
      * @param binding
      * @param nodeURL the URL provided as the identifier of the node
      */
+/*
     public static void fixUpNodeServiceBindingUrl(Binding binding, URL manualUrl)
       throws MalformedURLException, UnknownHostException, IOException {
 
@@ -236,20 +240,22 @@ public class SCANodeUtil {
         // set the address back into the NodeManager binding.
         binding.setURI(urlString);   
     }  
-    
+*/    
     /**
      * Find a port on this machine that isn't in use. 
      * 
      * @param startPort
      * @return
      */
+/*
     public static int findFreePort(int startPort) throws IOException
     {
         ServerSocket socket = new ServerSocket(0);
         int port = socket.getLocalPort();
         socket.close();
         return port;
-    }  
+    }
+*/  
     
     /**
      * For node services that have to talk to the domain fix up the reference URL using the 
@@ -260,6 +266,7 @@ public class SCANodeUtil {
      * @throws MalformedURLException
      * @throws UnknownHostException
      */
+/*    
     public static void fixUpNodeReferenceUrls(List<Component> nodeComponents, URL domainUrl)
     throws MalformedURLException, UnknownHostException, ActivationException{
             
@@ -274,7 +281,7 @@ public class SCANodeUtil {
           }            
        }
     }   
-    
+*/
     /**
      * For node management references to the domain fix up the binding URLs so that they point
      * to the endpoint described in the domainURL
@@ -282,6 +289,7 @@ public class SCANodeUtil {
      * @param binding
      * @param nodeURL the URL provided as the identifier of the node
      */
+/*    
     public static void fixUpNodeReferenceBindingUrl(Binding binding, URL manualUrl)
       throws MalformedURLException, UnknownHostException, ActivationException{
 
@@ -315,5 +323,6 @@ public class SCANodeUtil {
         
         // set the address back into the NodeManager binding.
         binding.setURI(urlString);   
-    }      
+    } 
+    */   
 }

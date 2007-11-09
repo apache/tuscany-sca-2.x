@@ -86,6 +86,8 @@ public class DomainManagerNodeImpl implements SCANode {
         }
             
         // SCADomain API methods 
+        public void start() throws DomainException {
+        }        
         
         public void destroy() throws DomainException {
         }
