@@ -24,7 +24,7 @@
 		<implementation.java class="org.apache.tuscany.sca.itest.oneway.impl.OneWayClientImpl"/>
 		<reference name="oneWayService">
 		    <interface.java interface="org.apache.tuscany.sca.itest.oneway.OneWayService" />       
-            <binding.ws uri="http://localhost:8085/OneWayServiceComponent"/>
+            <binding.ws uri="http://localhost:8080/OneWayServiceComponent"/>
         </reference>
 	</component> 
           

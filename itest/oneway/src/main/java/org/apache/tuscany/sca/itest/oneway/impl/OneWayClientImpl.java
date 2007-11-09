@@ -34,14 +34,15 @@ public class OneWayClientImpl implements OneWayClient {
     
     @Reference 
     protected OneWayService oneWayService;
+    
+    public static int callCount = 0;
 
 
     public int doSomething(int count){
-           
-        int start = count * 10;
-        int end = start + 100;
+                   
+        callCount = callCount + count;
         
-        for (int loopCount = start; loopCount < end; loopCount++){
+        for (int loopCount = 0; loopCount < count; loopCount++){
             System.out.println("Client: doSomething " + loopCount);
             System.out.flush();
             oneWayService.doSomething(loopCount);
