@@ -19,19 +19,17 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	targetNamespace="http://conversations"
-	name="ConversationalITest">
+	name="ConversationalWSDLITest">
  	      
     
     <component name="ConversationalStatelessClientStatefulService">
         <implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl"/>
         <reference name="conversationalReferenceClient" target="ConversationalReferenceClient"/>       
         <reference name="conversationalService" target="ConversationalServiceStateful">
-           <binding.ws wsdlElement="http://conversational.itest.sca.tuscany.apache.org#wsdl.port(ConversationalService/ConversationalServiceSOAP11port_http)"
-                       uri="http://localhost:8080/ConversationalServiceStateful"/>
+           <binding.ws wsdlElement="http://conversational.itest.sca.tuscany.apache.org#wsdl.binding(ConversationalServiceSOAP11Binding)"/>
         </reference>
         <reference name="conversationalService2" target="ConversationalServiceStateful">  
-            <binding.ws wsdlElement="http://conversational.itest.sca.tuscany.apache.org#wsdl.port(ConversationalService/ConversationalServiceSOAP11port_http)"
-                        uri="http://localhost:8080/ConversationalServiceStateful"/>
+            <binding.ws wsdlElement="http://conversational.itest.sca.tuscany.apache.org#wsdl.binding(ConversationalServiceSOAP11Binding)"/>
         </reference>     
     </component>     
        
@@ -39,7 +37,7 @@
     <component name="ConversationalServiceStateful">
 		<implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatefulImpl"/>
 		<service name="ConversationalService">
-		    <binding.ws wsdlElement="http://conversational.itest.sca.tuscany.apache.org#wsdl.port(ConversationalService/ConversationalServiceSOAP11port_http)"/>
+		    <binding.ws wsdlElement="http://conversational.itest.sca.tuscany.apache.org#wsdl.binding(ConversationalServiceSOAP11Binding)"/>
 		</service>
     </component>  
       

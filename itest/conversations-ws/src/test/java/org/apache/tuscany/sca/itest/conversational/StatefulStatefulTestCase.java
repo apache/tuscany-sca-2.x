@@ -19,9 +19,11 @@
 
 package org.apache.tuscany.sca.itest.conversational;
 
+import javax.xml.namespace.QName;
+
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatefulImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatefulNonConversationalCallbackImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl;
@@ -29,6 +31,9 @@ import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceReq
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatefulImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatefulNonConversationalCallbackImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatelessImpl;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -48,23 +53,28 @@ public class StatefulStatefulTestCase {
     @BeforeClass
     public static void setUp() throws Exception {
     	try {
-	        domain = SCADomain.newInstance("conversational.composite");
+                SCANode node = SCANodeFactory.newInstance().createSCANode(null, null);
+                node.addContribution("mycontribution",
+                                     StatefulStatefulTestCase.class.getResource("/Conversational/."));                                                                     
+                node.addToDomainLevelComposite(new QName("http://conversations", "ConversationalITest"));
+                node.start();
+                domain = node.getDomain();
 	
 	        conversationalStatelessClientStatelessService = domain.getService(ConversationalClient.class,
-	                                                                          "ConversationalStatelessClientStatelessService");
+	                                                                                    "ConversationalStatelessClientStatelessService");
 	
 	        conversationalStatelessClientStatefulService  = domain.getService(ConversationalClient.class,
-	                                                                          "ConversationalStatelessClientStatefulService");
+	                                                                                    "ConversationalStatelessClientStatefulService");
 	
 	        conversationalStatefulClientStatelessService  = domain.getService(ConversationalClient.class,
-	                                                                          "ConversationalStatefulClientStatelessService");
+	                                                                                    "ConversationalStatefulClientStatelessService");
 	
 	        conversationalStatefulClientStatefulService   = domain.getService(ConversationalClient.class,
-	                                                                          "ConversationalStatefulClientStatefulService");
+	                                                                                    "ConversationalStatefulClientStatefulService");
 	        conversationalStatelessClientRequestService    = domain.getService(ConversationalClient.class,
-	                                                                          "ConversationalStatelessClientRequestService");
+	                                                                                     "ConversationalStatelessClientRequestService");
 	        conversationalStatefulClientNonConversationalCallbackStatelessService    = domain.getService(ConversationalClient.class,
-	                                                                          "ConversationalStatefulClientNonConversationalCallbackStatefulService");
+	                                                                                                     "ConversationalStatefulClientNonConversationalCallbackStatefulService");
 	        
 	        // reset the place where we record the sequence of calls passing
 	        // through each component instance
@@ -81,7 +91,7 @@ public class StatefulStatefulTestCase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        domain.close();
+        domain.destroy();
     }
     
     private static void resetCallStack() {

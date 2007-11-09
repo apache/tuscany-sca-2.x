@@ -373,11 +373,11 @@
   </wsdl:binding>
   <wsdl:service name="ConversationalService">
     <wsdl:port name="ConversationalServiceSOAP11port_http" binding="ns0:ConversationalServiceSOAP11Binding">
-      <soap:address location="http://localhost:8080/ConversationalServiceStateful"/>
+      <soap:address location="http://localhost:8085/ConversationalServiceStateful"/>
     </wsdl:port>
 
     <wsdl:port name="ConversationalServiceHttpport" binding="ns0:ConversationalServiceHttpBinding">
-      <http:address location="http://localhost:8080/ConversationalServiceStateful"/>
+      <http:address location="http://localhost:8085/ConversationalServiceStateful"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>
