@@ -132,7 +132,7 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-domain-impl</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
-            <scope>test</scope>
+            <scope>runtime</scope>
         </dependency>        
        
     </dependencies>

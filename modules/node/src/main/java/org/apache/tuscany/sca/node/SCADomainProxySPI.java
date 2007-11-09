@@ -28,10 +28,10 @@ import org.apache.tuscany.sca.domain.SCADomainSPI;
  * 
  * @version $Rev: 580520 $ $Date: 2007-09-29 00:50:25 +0100 (Sat, 29 Sep 2007) $
  */
-public interface SCADomainProxySPI extends SCADomainSPI {
+public interface SCADomainProxySPI /* extends SCADomainSPI*/ {
 
     /**
-     * Add a node implementation to the domain proxy
+     * Add a node implementation with the domain proxy
      * 
      * @param nodeImpl
      * @throws DomainException

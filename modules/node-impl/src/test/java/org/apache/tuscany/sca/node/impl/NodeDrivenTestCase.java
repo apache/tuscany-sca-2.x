@@ -89,7 +89,7 @@ public class NodeDrivenTestCase {
             calculatorServiceA = nodeA.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentA");
             calculatorServiceB = nodeB.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentB");
             
-            //addServiceB = domain.getService(AddService.class, "AddServiceComponentB");
+            //addServiceB = domainProxy.getService(AddService.class, "AddServiceComponentB");
             addServiceB = nodeA.getDomain().getService(AddService.class, "AddServiceComponentB");
             
         } catch(Exception ex){

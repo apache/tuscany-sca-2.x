@@ -33,6 +33,12 @@ import org.osoa.sca.ServiceReference;
  * @version $Rev: 580520 $ $Date: 2007-09-29 00:50:25 +0100 (Sat, 29 Sep 2007) $
  */
 public interface SCADomain {
+    
+    /**
+     * Start the SCA domain service.
+     */
+    public void start()
+      throws DomainException;    
 
     /**
      * Destroy the SCA domain service.

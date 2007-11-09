@@ -119,7 +119,7 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
                 // work out what the endpoint address is that the component service name will be registered
                 // against. Be default this is the url calculated by the web services binding but
                 // we have to adjust that to:
-                // 1. correct the host and port in the case that this is a web app as the container controlls the port
+                // 1. correct the host and port in the case that this is a web app as the container controls the port
                 // 2. correct the host name in the case that it's localhost		        
                 String componentServiceUrlString = wsBinding.getURI();
                 URI componentServiceUrl = URI.create(componentServiceUrlString);
