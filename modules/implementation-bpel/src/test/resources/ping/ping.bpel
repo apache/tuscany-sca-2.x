@@ -23,17 +23,17 @@
         xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
         xmlns:bpws="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-        xmlns:tns="urn:/Ping.bpel"
-        xmlns:ping="urn:/Ping.wsdl"
-        xmlns:pong="urn:/Pong.wsdl"
+        xmlns:tns="http://tuscany.apache.org/implementation/bpel/example/ping"
+        xmlns:ping="http://tuscany.apache.org/implementation/bpel/example/ping.wsdl"
+        xmlns:pong="http://tuscany.apache.org/implementation/bpel/example/pong.wsdl"
         expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
 
-    <import location="Ping.wsdl"
-            namespace="urn:/Ping.wsdl"
+    <import location="ping.wsdl"
+            namespace="http://tuscany.apache.org/implementation/bpel/example/ping.wsdl"
             importType="http://schemas.xmlsoap.org/wsdl/" />
 
-    <import location="Pong.wsdl"
-            namespace="urn:/Pong.wsdl"
+    <import location="pong.wsdl"
+            namespace="http://tuscany.apache.org/implementation/bpel/example/pong.wsdl"
             importType="http://schemas.xmlsoap.org/wsdl/" />
 
     <partnerLinks>
