@@ -137,8 +137,8 @@ public class TransactionManagerHelperTestCase extends TestCase {
     }
 
     public void testHelper() throws Exception {
-        TransactionModuleActivator activator = new TransactionModuleActivator();
-        activator.start(null);
+        TransactionManagerWrapper activator = new TransactionManagerWrapper();
+        activator.start();
         TransactionManager tm = activator.getTransactionManager();
         // GeronimoUserTransaction tx = new GeronimoUserTransaction(tm);
         TransactionManagerHelper helper = new TransactionManagerHelper(tm);
@@ -150,10 +150,16 @@ public class TransactionManagerHelperTestCase extends TestCase {
         assertNotNull(t1);
         // The current TX should be T1
         assertSame(t1, tm.getTransaction());
-        tm.getTransaction().enlistResource(new MockXAResource("Derby", "001"));
-        tm.getTransaction().enlistResource(new MockXAResource("DB2", "002"));
+        
+        XAResource res1 = new MockXAResource("Derby", "001");
+        XAResource res2 = new MockXAResource("DB2", "002");
+        tm.getTransaction().enlistResource(res1);
+        tm.getTransaction().enlistResource(res2);
 
         Transaction suspended = helper.suspendsTransactionPreInvoke();
+        suspended.delistResource(res1, XAResource.TMSUSPEND);
+        suspended.delistResource(res2, XAResource.TMSUSPEND);
+       
         // T1 is suspended
         assertSame(t1, suspended);
         // No more active TX
@@ -163,21 +169,26 @@ public class TransactionManagerHelperTestCase extends TestCase {
         assertNotNull(t2);
         // The current TX should be T2
         assertSame(t2, tm.getTransaction());
-        tm.getTransaction().enlistResource(new MockXAResource("Oracle", "003"));
+        
+        XAResource res3 = new MockXAResource("Oracle", "003");
+        tm.getTransaction().enlistResource(res3);
 
+        tm.getTransaction().delistResource(res3, XAResource.TMSUCCESS);
         tm.rollback();
 
         // Skip post
         // helper.managedGlobalTransactionPostInvoke(t2);
 
         helper.suspendsTransactionPostInvoke(suspended);
-        // T1 is not resumed
+        suspended.enlistResource(res1);
+        suspended.enlistResource(res2);
+        // T1 is now resumed
         assertSame(t1, tm.getTransaction());
 
-        helper.managedGlobalTransactionPostInvoke(t1);
+        helper.managedGlobalTransactionPostInvoke(t1, false);
         assertNotNull(tm.getTransaction());
         assertEquals(6, t1.getStatus());
 
-        activator.stop(null);
+        activator.stop();
     }
 }
