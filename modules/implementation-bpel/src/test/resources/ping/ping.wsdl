@@ -17,16 +17,16 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-<definitions name="Ping"
-        targetNamespace="urn:/Ping.wsdl"
-        xmlns:tns="urn:/Ping.wsdl"
+<definitions name="ping"
+        targetNamespace="http://tuscany.apache.org/implementation/bpel/example/ping.wsdl"
+        xmlns="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:tns="http://tuscany.apache.org/implementation/bpel/example/ping.wsdl"
         xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-        xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
-        xmlns="http://schemas.xmlsoap.org/wsdl/">
+        xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype">
 
     <types>
-        <schema targetNamespace="urn:/Ping.wsdl"
-                xmlns="http://www.w3.org/2000/10/XMLSchema">
+        <schema targetNamespace="http://tuscany.apache.org/implementation/bpel/example/ping.wsdl"
+                xmlns="http://www.w3.org/2001/XMLSchema">
             <element name="PingRequest">
                 <complexType>
                     <all>
