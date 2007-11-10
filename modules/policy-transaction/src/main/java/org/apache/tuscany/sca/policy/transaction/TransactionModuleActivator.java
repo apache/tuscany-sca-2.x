@@ -19,14 +19,8 @@
 
 package org.apache.tuscany.sca.policy.transaction;
 
-import java.io.File;
-
 import javax.transaction.TransactionManager;
 
-import org.apache.geronimo.transaction.log.HOWLLog;
-import org.apache.geronimo.transaction.manager.GeronimoTransactionManager;
-import org.apache.geronimo.transaction.manager.XidFactory;
-import org.apache.geronimo.transaction.manager.XidFactoryImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 
@@ -34,50 +28,26 @@ import org.apache.tuscany.sca.core.ModuleActivator;
  * @version $Rev$ $Date$
  */
 public class TransactionModuleActivator implements ModuleActivator {
-    private TransactionManager transactionManager;
-    private HOWLLog howlLog;
-
-    private String logFileDir = "target/logs";
-    private String bufferClassName = "org.objectweb.howl.log.BlockLogBuffer";
-    private int bufferSizeKBytes = 32;
-    private boolean checksumEnabled = true;
-    private boolean adler32Checksum = true;
-    private int flushSleepTimeMilliseconds = 50;
-    private String logFileExt = "log";
-    private String logFileName = "transaction";
-    private int maxBlocksPerFile = -1;
-    private int maxLogFiles = 2;
-    private int maxBuffers = 0;
-    private int minBuffers = 4;
-    private int threadsWaitingForceThreshold = -1;
-    private File serverBaseDir = new File(System.getProperty("basedir", System.getProperty("user.dir")));
-
+    private TransactionManagerWrapper wrapper;
     /**
      * @see org.apache.tuscany.sca.core.ModuleActivator#start(org.apache.tuscany.sca.core.ExtensionPointRegistry)
      */
     public void start(ExtensionPointRegistry registry) {
         if (registry != null) {
-            transactionManager = registry.getExtensionPoint(TransactionManager.class);
+            TransactionManager transactionManager = registry.getExtensionPoint(TransactionManager.class);
             if (transactionManager != null) {
                 // The transaction manage is provided by the hosting environment
                 return;
             }
         }
         try {
-            XidFactory xidFactory = new XidFactoryImpl();
-            howlLog =
-                new HOWLLog(bufferClassName, bufferSizeKBytes, checksumEnabled, adler32Checksum,
-                            flushSleepTimeMilliseconds, logFileDir, logFileExt, logFileName, maxBlocksPerFile,
-                            maxBuffers, maxLogFiles, minBuffers, threadsWaitingForceThreshold, xidFactory,
-                            serverBaseDir);
-
-            howlLog.doStart();
-            transactionManager = new GeronimoTransactionManager(1200, xidFactory, howlLog);
+            wrapper = new TransactionManagerWrapper();
+            wrapper.start();
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
         if (registry != null) {
-            registry.addExtensionPoint(transactionManager);
+            registry.addExtensionPoint(wrapper.getTransactionManager());
         }
     }
 
@@ -86,19 +56,15 @@ public class TransactionModuleActivator implements ModuleActivator {
      */
     public void stop(ExtensionPointRegistry registry) {
         try {
-            if (howlLog != null) {
-                howlLog.doStop();
+            if (wrapper != null) {
+                wrapper.stop();
             }
-            if (registry != null && transactionManager != null) {
-                registry.removeExtensionPoint(transactionManager);
+            if (registry != null && wrapper != null) {
+                registry.removeExtensionPoint(wrapper.getTransactionManager());
             }
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-    }
-
-    TransactionManager getTransactionManager() {
-        return transactionManager;
     }
 
 }

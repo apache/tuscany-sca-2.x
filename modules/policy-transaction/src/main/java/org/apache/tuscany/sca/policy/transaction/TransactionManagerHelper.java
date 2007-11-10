@@ -20,13 +20,13 @@
 package org.apache.tuscany.sca.policy.transaction;
 
 import java.lang.reflect.InvocationTargetException;
-import java.security.PrivilegedExceptionAction;
 
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.InvalidTransactionException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
+import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
@@ -45,18 +45,29 @@ public class TransactionManagerHelper {
     }
 
     public Transaction managedGlobalTransactionPreInvoke() throws SystemException, NotSupportedException {
-        if (tm.getTransaction() == null) {
+        int status = tm.getStatus();
+        if (status == Status.STATUS_COMMITTED || status == Status.STATUS_NO_TRANSACTION
+            || status == Status.STATUS_ROLLEDBACK) {
             tm.begin();
             return tm.getTransaction();
         }
         return null;
     }
 
-    public void managedGlobalTransactionPostInvoke(Transaction created) throws InvalidTransactionException,
-        IllegalStateException, SystemException, SecurityException, HeuristicMixedException, HeuristicRollbackException,
-        RollbackException {
+    public void managedGlobalTransactionPostInvoke(Transaction created, boolean rollback)
+        throws InvalidTransactionException, IllegalStateException, SystemException, SecurityException,
+        HeuristicMixedException, HeuristicRollbackException, RollbackException {
         if (created != null) {
-            created.commit();
+            int status = created.getStatus();
+            if (status == Status.STATUS_MARKED_ROLLBACK) {
+                created.rollback();
+            } else if (status == Status.STATUS_ACTIVE) {
+                if (rollback) {
+                    created.rollback();
+                } else {
+                    created.commit();
+                }
+            }
         }
     }
 
@@ -112,7 +123,7 @@ public class TransactionManagerHelper {
 
     public <T> T handlesOutbound(TransactionIntent referenceIntent,
                                  TransactionIntent implIntent,
-                                 PrivilegedExceptionAction<T> action) throws Exception {
+                                 TransactionalAction<T> action) throws Exception {
 
         if (implIntent == null) {
             implIntent = TransactionIntent.noManagedTransaction;
@@ -137,17 +148,31 @@ public class TransactionManagerHelper {
         }
     }
 
-    private <T> T run(PrivilegedExceptionAction<T> action) throws Exception {
+    private <T> T run(TransactionalAction<T> action) throws Exception {
+        // Make sure a global TX is in place
+        Transaction tx = managedGlobalTransactionPreInvoke();
+        boolean rollback = false;
         try {
             return action.run();
-        } catch (Exception e) {
-            throw new InvocationTargetException(e);
+        } catch (InvocationTargetException e) {
+            throw e;
+        } catch (Throwable e) {
+            rollback = true;
+            if (e instanceof Error) {
+                throw (Error)e;
+            } else if (e instanceof RuntimeException) {
+                throw (RuntimeException)e;
+            } else {
+                throw (Exception)e;
+            }
+        } finally {
+            managedGlobalTransactionPostInvoke(tx, rollback);
         }
     }
 
     public <T> T handlesInbound(TransactionIntent serviceIntent,
                                 TransactionIntent implIntent,
-                                PrivilegedExceptionAction<T> action) throws Exception {
+                                TransactionalAction<T> action) throws Exception {
         if (serviceIntent == null && implIntent == null) {
             return run(action);
         }
@@ -160,28 +185,15 @@ public class TransactionManagerHelper {
             if (implIntent != TransactionIntent.managedTransactionGlobal) {
                 throw new IncompatibleIntentException(serviceIntent + "<-X->" + implIntent);
             } else {
-                // Make sure a global TX is in place
-                Transaction tx = managedGlobalTransactionPreInvoke();
-                try {
-                    return run(action);
-                } finally {
-                    managedGlobalTransactionPostInvoke(tx);
-                }
+                return run(action);
             }
         } else if (serviceIntent == TransactionIntent.suspendsTransaction) {
             Transaction tx1 = suspendsTransactionPreInvoke();
             try {
                 if (implIntent == TransactionIntent.managedTransactionGlobal) {
-                    // Start a new TX
-                    Transaction tx2 = managedGlobalTransactionPreInvoke();
-                    try {
-                        return run(action);
-                    } finally {
-                        // Commit tx2
-                        managedGlobalTransactionPostInvoke(tx2);
-                    }
-                } else {
                     return run(action);
+                } else {
+                    return action.run();
                 }
             } finally {
                 suspendsTransactionPostInvoke(tx1);
@@ -189,22 +201,16 @@ public class TransactionManagerHelper {
         } else {
             if (implIntent == TransactionIntent.managedTransactionGlobal) {
                 // Start a new TX
-                Transaction tx2 = managedGlobalTransactionPreInvoke();
-                try {
-                    return run(action);
-                } finally {
-                    // Commit tx2
-                    managedGlobalTransactionPostInvoke(tx2);
-                }
-            } else {
                 return run(action);
+            } else {
+                return action.run();
             }
         }
     }
 
     public <T> void handlesOneWay(TransactionIntent onewayIntent,
                                   TransactionIntent implIntent,
-                                  PrivilegedExceptionAction<T> action) throws Exception {
+                                  TransactionalAction<T> action) throws Exception {
         if (implIntent == null) {
             implIntent = TransactionIntent.noManagedTransaction;
         }
