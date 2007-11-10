@@ -19,8 +19,9 @@
   -->
 <process
         name="Ping"
+        targetNamespace="http://tuscany.apache.org/implementation/bpel/example/ping"
         xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
-        targetNamespace="urn:/Ping.bpel"
+        xmlns:bpws="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
         xmlns:tns="urn:/Ping.bpel"
         xmlns:ping="urn:/Ping.wsdl"
