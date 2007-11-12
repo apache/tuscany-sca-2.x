@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.databinding.xml.BeanXMLStreamReaderImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
-public class JavaBean2XMLStreamReader extends BaseTransformer<Object, XMLStreamReader> implements
+public class JavaBean2XMLStreamReaderTransformer extends BaseTransformer<Object, XMLStreamReader> implements
     PullTransformer<Object, XMLStreamReader> {
 
     public XMLStreamReader transform(Object source, TransformationContext context) {

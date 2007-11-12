@@ -22,6 +22,7 @@ org.apache.tuscany.sca.databinding.javabeans.DOMNode2JavaBeanTransformer;source=
 org.apache.tuscany.sca.databinding.xml.Node2String;source=org.w3c.dom.Node,target=java.lang.String,weight=80
 org.apache.tuscany.sca.databinding.xml.Node2XMLStreamReader;source=org.w3c.dom.Node,target=javax.xml.stream.XMLStreamReader,weight=80
 org.apache.tuscany.sca.databinding.javabeans.JavaBean2DOMNodeTransformer;source=java:complexType,target=org.w3c.dom.Node,weight=80000
+#org.apache.tuscany.sca.databinding.javabeans.JavaBean2XMLStreamReaderTransformer;source=java:complexType,target=javax.xml.stream.XMLStreamReader,weight=79000
 org.apache.tuscany.sca.databinding.xml.Reader2Node;source=java.io.Reader,target=org.w3c.dom.Node,weight=80
 org.apache.tuscany.sca.databinding.xml.SAX2DOMPipe;source=org.xml.sax.ContentHandler,target=org.w3c.dom.Node,weight=70
 org.apache.tuscany.sca.databinding.xml.StreamDataPipe;source=java.io.OutputStream,target=java.io.InputStream,weight=90
