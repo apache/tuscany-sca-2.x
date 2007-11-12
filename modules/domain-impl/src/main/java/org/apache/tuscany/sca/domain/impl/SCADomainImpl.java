@@ -114,9 +114,7 @@ public class SCADomainImpl implements SCADomainSPI  {
             URI tmpURI;
             try {
                 tmpURI = new URI(domainModel.getDomainURI()); 
-                if (tmpURI.isAbsolute()){
-                    domainModel.setDomainURL(tmpURI.toURL().toExternalForm());
-                }
+                domainModel.setDomainURL(tmpURI.toURL().toExternalForm());
             } catch(Exception ex) {
                 throw new ActivationException("domain uri " + 
                                               domainModel.getDomainURI() + 

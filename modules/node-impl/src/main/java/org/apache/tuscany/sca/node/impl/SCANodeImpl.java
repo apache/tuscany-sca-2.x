@@ -154,9 +154,7 @@ public class SCANodeImpl implements SCANode {
             // check whether node uri is an absolute url,  
             try {
                 URI tmpURI = new URI(nodeURI); 
-                if (tmpURI.isAbsolute()){
-                    nodeURL = tmpURI.toURL();
-                }
+                nodeURL = tmpURI.toURL(); 
             } catch(Exception ex) {
                 throw new NodeException("node uri " + 
                                         nodeURI + 
