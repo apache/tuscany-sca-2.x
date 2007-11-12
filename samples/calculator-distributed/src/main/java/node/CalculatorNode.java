@@ -54,7 +54,7 @@ public class CalculatorNode {
             ClassLoader cl = CalculatorNode.class.getClassLoader();
              
             SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-            SCANode node = nodeFactory.createSCANode(nodeName, domainName);
+            SCANode node = nodeFactory.createSCANode(null, domainName);
             node.addContribution(nodeName, cl.getResource(nodeName + "/"));
             node.addToDomainLevelComposite(new QName("http://sample", "Calculator"));
             node.start();             

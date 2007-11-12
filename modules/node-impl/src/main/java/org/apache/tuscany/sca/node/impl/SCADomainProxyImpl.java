@@ -110,9 +110,7 @@ public class SCADomainProxyImpl extends SCADomainImpl implements SCADomainProxyS
             URI tmpURI;
             try {
                 tmpURI = new URI(domainModel.getDomainURI()); 
-                if (tmpURI.isAbsolute()){
-                    domainModel.setDomainURL(tmpURI.toURL().toExternalForm());
-                }
+                domainModel.setDomainURL(tmpURI.toURL().toExternalForm());
             } catch(Exception ex) {
                 domainModel.setDomainURL(null);
             }            
