@@ -40,7 +40,7 @@ public class OneWayTestCaseFIXME {
     public void setUp() throws Exception {
         SCANode node = SCANodeFactory.newInstance().createSCANode(null, null);
         node.addContribution("mycontribution",
-                             OneWayTestCase.class.getResource("/OneWayContribution/."));
+                             OneWayTestCaseFIXME.class.getResource("/OneWayContribution/."));
         node.start();
         domain = node.getDomain();
     }
