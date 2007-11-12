@@ -28,15 +28,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.tuscany.sca.implementation.data.collection.Collection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
+import services.Cart;
+import services.Item;
 import services.Total;
 
-public class ShoppingCartTableImpl implements Collection<String, String>, Total {
+public class ShoppingCartTableImpl implements Cart, Total {
     
     @Property
     public String database;
@@ -49,26 +50,26 @@ public class ShoppingCartTableImpl implements Collection<String, String>, Total 
         connection = DriverManager.getConnection("jdbc:derby:target/" + database, "", "");
     }
 
-    public Map<String, String> getAll() {
+    public Map<String, Item> getAll() {
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from Cart");
-            Map<String, String> result = new HashMap<String, String>();
-            while (resultSet.next()) {
-                result.put(resultSet.getString("id"), resultSet.getString("item"));
+            ResultSet results = statement.executeQuery("select * from Cart");
+            Map<String, Item> items = new HashMap<String, Item>();
+            while (results.next()) {
+                items.put(results.getString("id"), new Item(results.getString("name"), results.getString("price")));
             }
-            return result;
+            return items;
         } catch (SQLException e) {
             throw new ServiceRuntimeException(e);
         }
     }
 
-    public String get(String key) throws NotFoundException {
+    public Item get(String key) throws NotFoundException {
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from Cart where id = '" + key + "'");
-            if (resultSet.next()) {
-                return resultSet.getString("item");
+            ResultSet results = statement.executeQuery("select * from Cart where id = '" + key + "'");
+            if (results.next()) {
+                return new Item(results.getString("name"), results.getString("price"));
             } else {
                 throw new NotFoundException(key);
             }
@@ -77,11 +78,11 @@ public class ShoppingCartTableImpl implements Collection<String, String>, Total 
         }
     }
 
-    public String post(String item) {
+    public String post(Item item) {
         String key = "cart-" + UUID.randomUUID().toString();
         try {
             Statement statement = connection.createStatement();
-            String query = "insert into Cart values ('" + key + "', '" + item + "')";
+            String query = "insert into Cart values ('" + key + "', '" + item.getName() + "', '" + item.getPrice() + "')";
             System.out.println(query);
             statement.executeUpdate(query);
         } catch (SQLException e) {
@@ -90,10 +91,10 @@ public class ShoppingCartTableImpl implements Collection<String, String>, Total 
         return key;
     }
 
-    public void put(String key, String item) throws NotFoundException {
+    public void put(String key, Item item) throws NotFoundException {
         try {
             Statement statement = connection.createStatement();
-            String query = "update into Cart set item = '" + item + "' where id = '" + key + "'";
+            String query = "update into Cart set name = '" + item.getName() + "', price = '" + item.getPrice() + "' where id = '" + key + "'";
             System.out.println(query);
             int count = statement.executeUpdate(query);
             if (count == 0)
@@ -122,31 +123,31 @@ public class ShoppingCartTableImpl implements Collection<String, String>, Total 
         }
     }
 
-    public Map<String, String> query(String queryString) {
+    public Map<String, Item> query(String queryString) {
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from Cart where " + queryString);
-            Map<String, String> result = new HashMap<String, String>();
-            while (resultSet.next()) {
-                result.put(resultSet.getString("id"), resultSet.getString("item"));
+            ResultSet results = statement.executeQuery("select * from Cart where " + queryString);
+            Map<String, Item> items = new HashMap<String, Item>();
+            while (results.next()) {
+                items.put(results.getString("id"), new Item(results.getString("name"), results.getString("price")));
             }
-            return result;
+            return items;
         } catch (SQLException e) {
             throw new ServiceRuntimeException(e);
         }
     }
     
     public String getTotal() {
-        Map<String, String> cart = getAll(); 
+        Map<String, Item> cart = getAll(); 
         double total = 0;
         String currencySymbol = "";
         if (!cart.isEmpty()) {
-            String item = cart.values().iterator().next();
-            currencySymbol = item.substring(item.indexOf("-") + 2, item.indexOf("-") + 3);
+            Item item = cart.values().iterator().next();
+            currencySymbol = item.getPrice().substring(0, 1);
         }
-        for (String item : cart.values()) {
-            total += Double.valueOf(item.substring(item.indexOf("-") + 3));
+        for (Item item : cart.values()) {
+            total += Double.valueOf(item.getPrice().substring(1));
         }
-        return currencySymbol + String.valueOf(total);
+        return currencySymbol + total;
     }
 }

@@ -28,43 +28,48 @@
 	var catalog = new Reference("catalog");
 	
 	//@Reference
-	var shoppingCartCollection = new Reference("shoppingCartCollection");
+	var shoppingCart = new Reference("shoppingCart");
 
 	//@Reference
-	var shoppingCartTotal = new Reference("shoppingCartTotal");
-
+	var shoppingTotal = new Reference("shoppingTotal");
+	
+	var catalogItems;
 
 	function catalog_getResponse(items) {
 		var catalog = "";
 		for (var i=0; i<items.length; i++) {
+			var item = items[i].name + ' - ' + items[i].price;
 			catalog += '<input name="items" type="checkbox" value="' + 
-						items[i] + '">' + items[i] + ' <br>';
+						item + '">' + item + ' <br>';
 		}
 		document.getElementById('catalog').innerHTML=catalog;
+		catalogItems = items;
 	}
 	
-	function shoppingCartCollection_getResponse(feed) {
+	function shoppingCart_getResponse(feed) {
 		if (feed != null) {
 			var entries = feed.getElementsByTagName("entry");              
 			var list = "";
 			for (var i=0; i<entries.length; i++) {
-				var item = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
-				list += item + ' <br>';
+				var content = entries[i].getElementsByTagName("content")[0];
+				var name = content.getElementsByTagName("name")[0].firstChild.nodeValue;
+				var price = content.getElementsByTagName("price")[0].firstChild.nodeValue;
+				list += name + ' - ' + price + ' <br>';
 			}
 			document.getElementById("shoppingCart").innerHTML = list;
 
 			if (entries.length != 0) {			
-				shoppingCartTotal.getTotal(shoppingCartTotal_getTotalResponse);
+				shoppingTotal.getTotal(shoppingTotal_getTotalResponse);
 			}
 		}
 	}
 	
-	function shoppingCartTotal_getTotalResponse(total) {
+	function shoppingTotal_getTotalResponse(total) {
 		document.getElementById('total').innerHTML = total;
 	}
 	
-	function shoppingCartCollection_postResponse(entry) {
-		shoppingCartCollection.get("", shoppingCartCollection_getResponse);
+	function shoppingCart_postResponse(entry) {
+		shoppingCart.get("", shoppingCart_getResponse);
 	}				
 
 	function addToCart() {
@@ -72,8 +77,11 @@
 		var j = 0;
 		for (var i=0; i<items.length; i++)
 			if (items[i].checked) {
-				var entry = '<entry xmlns="http://www.w3.org/2005/Atom"><title>cart-item</title><content type="text">'+items[i].value+'</content></entry>'
-				shoppingCartCollection.post(entry, shoppingCartCollection_postResponse);
+				var entry = '<entry xmlns="http://www.w3.org/2005/Atom"><title>item</title><content type="text/xml">' +
+                	'<Item xmlns="http://services/">' +
+                	'<name>' + catalogItems[i].name + '</name>' + '<price>' + catalogItems[i].price + '</price>' +
+                 	'</Item>' + '</content></entry>';
+				shoppingCart.post(entry, shoppingCart_postResponse);
 				items[i].checked = false;
 			}
 	}
@@ -89,16 +97,16 @@
 					'<br>'+
 					'<input type="submit" value="Continue Shopping">'+ 
 				'</form>';
-		shoppingCartCollection.del("", null);
+		shoppingCart.del("", null);
 	}
 	function deleteCart() {
-		shoppingCartCollection.del("", null);
+		shoppingCart.del("", null);
 		document.getElementById('shoppingCart').innerHTML = "";
 		document.getElementById('total').innerHTML = "";	
 	}	
 
 	catalog.get(catalog_getResponse);
-	shoppingCartCollection.get("", shoppingCartCollection_getResponse);
+	shoppingCart.get("", shoppingCart_getResponse);
 </script>
 
 </head>
@@ -124,7 +132,7 @@
 		<br>		
 		<input type="button" onClick="checkoutCart()" value="Checkout"> 
 		<input type="button" onClick="deleteCart()" value="Empty">     
-	   	<a href="../ShoppingCart/Collection/">(feed)</a>
+	   	<a href="../ShoppingCart/Cart/">(feed)</a>
 	</form>    
   </div>
 </body>
