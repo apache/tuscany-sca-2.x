@@ -19,9 +19,14 @@
 package org.apache.tuscany.sca.interfacedef.java.impl;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -60,17 +65,17 @@ public class JavaInterfaceIntrospectorImpl {
         this.visitors = javaFactory.getInterfaceVisitors();
     }
 
-    public void introspectInterface(JavaInterface javaInterface, Class<?> type) throws InvalidInterfaceException {
-        javaInterface.setJavaClass(type);
-
-        boolean remotable = type.isAnnotationPresent(Remotable.class);
+    public void introspectInterface(JavaInterface javaInterface, Class<?> clazz) throws InvalidInterfaceException {
+        javaInterface.setJavaClass(clazz);
+        
+        boolean remotable = clazz.isAnnotationPresent(Remotable.class);
         javaInterface.setRemotable(remotable);
 
-        boolean conversational = type.isAnnotationPresent(Conversational.class);
+        boolean conversational = clazz.isAnnotationPresent(Conversational.class);
         javaInterface.setConversational(conversational);
 
         Class<?> callbackClass = null;
-        org.osoa.sca.annotations.Callback callback = type.getAnnotation(org.osoa.sca.annotations.Callback.class);
+        org.osoa.sca.annotations.Callback callback = clazz.getAnnotation(org.osoa.sca.annotations.Callback.class);
         if (callback != null && !Void.class.equals(callback.value())) {
             callbackClass = callback.value();
         } else if (callback != null && Void.class.equals(callback.value())) {
@@ -78,17 +83,50 @@ public class JavaInterfaceIntrospectorImpl {
         }
         javaInterface.setCallbackClass(callbackClass);
 
-        String ns = JavaInterfaceUtil.getNamespace(type);
-        javaInterface.getOperations().addAll(getOperations(type, remotable, conversational, ns));
+        String ns = JavaInterfaceUtil.getNamespace(clazz);
+        javaInterface.getOperations().addAll(getOperations(clazz, remotable, conversational, ns));
 
         for (JavaInterfaceVisitor extension : visitors) {
             extension.visitInterface(javaInterface);
         }
     }
+    
+    private Class<?>[] getActualTypes(Type[] types, Class<?>[] rawTypes, Map<String, Type> typeBindings) {
+        Class<?>[] actualTypes = new Class<?>[types.length];
+        for (int i = 0; i < actualTypes.length; i++) {
+            actualTypes[i] = getActualType(types[i], rawTypes[i], typeBindings);
+        }
+        return actualTypes;
+    }
+    
+    private Class<?> getActualType(Type type, Class<?> rawType, Map<String, Type> typeBindings) {
+        if (type instanceof TypeVariable<?>) {
+            TypeVariable<?> typeVariable = (TypeVariable<?>)type;
+            type = typeBindings.get(typeVariable.getName());
+            if (type instanceof Class<?>) {
+                return (Class<?>)type;
+            }
+        }
+        return rawType;
+    }
 
-    private <T> List<Operation> getOperations(Class<T> type, boolean remotable, boolean conversational, String ns)
+    private <T> List<Operation> getOperations(Class<T> clazz, boolean remotable, boolean conversational, String ns)
         throws InvalidInterfaceException {
-        Method[] methods = type.getMethods();
+        
+        Type[] genericInterfaces = clazz.getGenericInterfaces();
+        Map<String, Type> typeBindings = new HashMap<String, Type>();
+        for (Type genericInterface: genericInterfaces) {
+            if (genericInterface instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType)genericInterface;
+                TypeVariable<?>[] typeVariables = ((Class<?>)parameterizedType.getRawType()).getTypeParameters();
+                Type[] typeArguments = parameterizedType.getActualTypeArguments();
+                for (int i = 0; i < typeArguments.length; i++) {
+                    typeBindings.put(typeVariables[i].getName(), typeArguments[i]);
+                }
+            }
+        }
+        
+        Method[] methods = clazz.getMethods();
         List<Operation> operations = new ArrayList<Operation>(methods.length);
         Set<String> names = remotable ? new HashSet<String>() : null;
         for (Method method : methods) {
@@ -104,9 +142,10 @@ public class JavaInterfaceIntrospectorImpl {
                 names.add(name);
             }
 
-            Class returnType = method.getReturnType();
-            Class[] paramTypes = method.getParameterTypes();
-            Class[] faultTypes = method.getExceptionTypes();
+            Class<?> returnType = getActualType(method.getGenericReturnType(), method.getReturnType(), typeBindings);
+            Class<?>[] parameterTypes = getActualTypes(method.getGenericParameterTypes(), method.getParameterTypes(), typeBindings);
+            Class<?>[] faultTypes = getActualTypes(method.getGenericExceptionTypes(), method.getExceptionTypes(), typeBindings);
+            
             boolean nonBlocking = method.isAnnotationPresent(OneWay.class);
             ConversationSequence conversationSequence = ConversationSequence.CONVERSATION_NONE;
             if (method.isAnnotationPresent(EndsConversation.class)) {
@@ -125,14 +164,14 @@ public class JavaInterfaceIntrospectorImpl {
             DataType<XMLType> returnDataType =
                 returnType == void.class ? null : new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, returnType,
                                                                             xmlReturnType);
-            List<DataType> paramDataTypes = new ArrayList<DataType>(paramTypes.length);
-            for (int i = 0; i < paramTypes.length; i++) {
-                Class paramType = paramTypes[i];
+            List<DataType> paramDataTypes = new ArrayList<DataType>(parameterTypes.length);
+            for (int i = 0; i < parameterTypes.length; i++) {
+                Class paramType = parameterTypes[i];
                 XMLType xmlParamType = new XMLType(new QName(ns, "arg" + i), null);
                 paramDataTypes.add(new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, paramType, xmlParamType));
             }
             List<DataType> faultDataTypes = new ArrayList<DataType>(faultTypes.length);
-            for (Class faultType : faultTypes) {
+            for (Class<?> faultType : faultTypes) {
                 // Only add checked exceptions
                 if (Exception.class.isAssignableFrom(faultType) && (!RuntimeException.class.isAssignableFrom(faultType))) {
                     XMLType xmlFaultType = new XMLType(new QName(ns, faultType.getSimpleName()), null);
