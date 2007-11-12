@@ -55,12 +55,17 @@ public abstract class XML2JavaBeanTransformer<T> extends BaseTransformer<T, Obje
     }
     
     public Object transform(T source, TransformationContext context) {
-        XMLType xmlType = (XMLType) context.getSourceDataType().getLogical();
-        return toJavaObject(xmlType.getTypeName(), getRootElement(source), context);
+        //FIXME why is the logical type sometimes a Class instead of an XMLType?
+        if (context.getSourceDataType().getLogical() instanceof XMLType) {
+            XMLType xmlType = (XMLType) context.getSourceDataType().getLogical();
+            return toJavaObject(xmlType.getTypeName(), getRootElement(source), context);
+        } else {
+            return toJavaObject(null, getRootElement(source), context);
+        }
     }
 
     public Object toJavaObject(QName xmlType, T xmlElement, TransformationContext context) {
-        if (SimpleTypeMapperImpl.isSimpleXSDType(xmlType)) {
+        if (xmlType != null && SimpleTypeMapperImpl.isSimpleXSDType(xmlType)) {
             return mapper.toJavaObject(xmlType, getText(xmlElement), context);
         } else {
             Class<?> javaType = (Class<?>)context.getTargetDataType().getPhysical();

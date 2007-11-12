@@ -22,7 +22,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.databinding.javabeans.JavaBean2XMLStreamReader;
+import org.apache.tuscany.sca.databinding.javabeans.JavaBean2XMLStreamReaderTransformer;
 import org.custommonkey.xmlunit.XMLAssert;
 
 public class JavaBean2XMLStreamReaderTestCase extends TestCase {
@@ -41,7 +41,7 @@ public class JavaBean2XMLStreamReaderTestCase extends TestCase {
     }
 
     public void testTransformation() throws Exception {
-        JavaBean2XMLStreamReader t2 = new JavaBean2XMLStreamReader();
+        JavaBean2XMLStreamReaderTransformer t2 = new JavaBean2XMLStreamReaderTransformer();
         MyBean bean = new MyBean();
         bean.str = "ABC";
         bean.i = 1;
