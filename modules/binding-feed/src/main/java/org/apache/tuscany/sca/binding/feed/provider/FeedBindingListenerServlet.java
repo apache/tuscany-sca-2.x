@@ -34,8 +34,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.namespace.QName;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.tuscany.sca.databinding.Mediator;
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -81,6 +87,10 @@ class FeedBindingListenerServlet extends HttpServlet {
     private Invoker deleteInvoker;
     private MessageFactory messageFactory;
     private String feedType;
+    private Mediator mediator;
+    private DataType<?> itemClassType;
+    private DataType<?> itemXMLType;
+    private boolean supportsEntries;
 
     /**
      * Constructs a new binding listener.
@@ -89,14 +99,17 @@ class FeedBindingListenerServlet extends HttpServlet {
      * @param messageFactory
      * @param feedType
      */
-    FeedBindingListenerServlet(RuntimeWire wire, MessageFactory messageFactory, String feedType) {
+    FeedBindingListenerServlet(RuntimeWire wire, MessageFactory messageFactory, Mediator mediator, String feedType) {
         this.wire = wire;
         this.messageFactory = messageFactory;
+        this.mediator = mediator;
         this.feedType = feedType;
 
         // Get the invokers for the supported operations
+        Operation getOperation = null;
         for (InvocationChain invocationChain : this.wire.getInvocationChains()) {
-            String operationName = invocationChain.getSourceOperation().getName();
+            Operation operation = invocationChain.getTargetOperation();
+            String operationName = operation.getName();
             if (operationName.equals("getFeed")) {
                 getFeedInvoker = invocationChain.getHeadInvoker();
             } else if (operationName.equals("getAll")) {
@@ -105,6 +118,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                 queryInvoker = invocationChain.getHeadInvoker();
             } else if (operationName.equals("get")) {
                 getInvoker = invocationChain.getHeadInvoker();
+                getOperation = operation;
             } else if (operationName.equals("put")) {
                 putInvoker = invocationChain.getHeadInvoker();
             } else if (operationName.equals("putMedia")) {
@@ -117,6 +131,18 @@ class FeedBindingListenerServlet extends HttpServlet {
                 deleteInvoker = invocationChain.getHeadInvoker();
             }
         }
+
+        // Determine the collection item type
+        itemXMLType = new DataTypeImpl<Class<?>>(String.class.getName(), String.class, String.class);
+        Class<?> itemClass = getOperation.getOutputType().getPhysical();
+        if (itemClass == Entry.class) {
+            supportsEntries = true;
+        }
+        DataType<XMLType> outputType = getOperation.getOutputType();
+        QName qname = outputType.getLogical().getElementName();
+        qname = new QName(qname.getNamespaceURI(), itemClass.getSimpleName());
+        itemClassType = new DataTypeImpl<XMLType>("java:complexType", itemClass, new XMLType(qname, null));
+        
     }
 
     @Override
@@ -132,8 +158,7 @@ class FeedBindingListenerServlet extends HttpServlet {
         String path = request.getPathInfo();
 
         // The feedType parameter is used to override what type of feed is going
-        // to
-        // be produced
+        // to be produced
         String requestFeedType = request.getParameter("feedType");
         if (requestFeedType == null)
             requestFeedType = feedType;
@@ -176,9 +201,9 @@ class FeedBindingListenerServlet extends HttpServlet {
 
                 // Return a feed containing the entries in the collection
                 Feed feed = null;
-                if (getFeedInvoker != null) {
+                if (supportsEntries) {
 
-                    // The service implementation is Feed-aware, invoke its getFeed operation
+                    // The service implementation supports feed entries, invoke its getFeed operation
                     Message requestMessage = messageFactory.createMessage();
                     Message responseMessage = getFeedInvoker.invoke(requestMessage);
                     if (responseMessage.isFault()) {
@@ -188,8 +213,9 @@ class FeedBindingListenerServlet extends HttpServlet {
                     
                 } else {
 
-                    // The service implementation is not Feed-aware, invoke its getAll operation
-                    // to get the data item collection. then create a Feed from it
+                    // The service implementation does not support feed entries,
+                    // invoke its getAll operation to get the data item collection, then create
+                    // feed entries from the items
                     Message requestMessage = messageFactory.createMessage();
                     Message responseMessage = getAllInvoker.invoke(requestMessage);
                     if (responseMessage.isFault()) {
@@ -234,9 +260,9 @@ class FeedBindingListenerServlet extends HttpServlet {
                 if (responseMessage.isFault()) {
                     throw new ServletException((Throwable)responseMessage.getBody());
                 }
-                if (getFeedInvoker != null) {
+                if (supportsEntries) {
                     
-                    // The service implementation is Feed-aware and returns a Feed entry 
+                    // The service implementation returns a feed entry 
                     entry = responseMessage.getBody();
                     
                 } else {
@@ -270,9 +296,9 @@ class FeedBindingListenerServlet extends HttpServlet {
 
                 // Return an RSS feed containing the entries in the collection
                 Feed feed = null;
-                if (getFeedInvoker != null) {
+                if (supportsEntries) {
 
-                    // The service implementation is Feed-aware, invoke its getFeed operation
+                    // The service implementation supports feed entries, invoke its getFeed operation
                     Message requestMessage = messageFactory.createMessage();
                     Message responseMessage = getFeedInvoker.invoke(requestMessage);
                     if (responseMessage.isFault()) {
@@ -282,8 +308,9 @@ class FeedBindingListenerServlet extends HttpServlet {
                     
                 } else {
 
-                    // The service implementation is not Feed-aware, invoke its getAll operation
-                    // to get the data item collection. then create a Feed from it
+                    // The service implementation does not support feed entries, invoke its
+                    // getAll operation to get the data item collection. then create feed entries
+                    // from the data items
                     Message requestMessage = messageFactory.createMessage();
                     Message responseMessage = getAllInvoker.invoke(requestMessage);
                     if (responseMessage.isFault()) {
@@ -334,10 +361,14 @@ class FeedBindingListenerServlet extends HttpServlet {
             entry.setId(key.toString());
             entry.setTitle("item");
     
+            // Convert the item to XML
+            String value = mediator.mediate(item, itemClassType, itemXMLType, null).toString();
+            value = value.substring(value.indexOf('>') +1);
+            
             Content content = new Content();
-            content.setType(Content.TEXT);
-            content.setValue(item.toString());
-            List contents = new ArrayList();
+            content.setType("text/xml");
+            content.setValue(value);
+            List<Content> contents = new ArrayList<Content>();
             contents.add(content);
             entry.setContents(contents);
     
@@ -352,6 +383,30 @@ class FeedBindingListenerServlet extends HttpServlet {
     
             entry.setCreated(new Date());
             return entry;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Create a data item from an Atom entry.
+     * @param key
+     * @param item
+     * @return
+     */
+    private Object createItem(Entry entry) {
+        if (entry != null) {
+            List<?> contents = entry.getContents();
+            if (contents.isEmpty()) {
+                return null;
+            }
+            Content content = (Content)contents.get(0);
+    
+            // Create the item from XML
+            String value = content.getValue();
+            Object item = mediator.mediate(value, itemXMLType, itemClassType, null);
+
+            return item;
         } else {
             return null;
         }
@@ -389,9 +444,9 @@ class FeedBindingListenerServlet extends HttpServlet {
                 }
 
                 // Let the component implementation create it
-                if (getFeedInvoker != null) {
+                if (supportsEntries) {
                     
-                    // The service implementation is Feed-aware, pass the entry to it
+                    // The service implementation supports feed entries, pass the entry to it
                     Message requestMessage = messageFactory.createMessage();
                     requestMessage.setBody(new Object[] {entry});
                     Message responseMessage = postInvoker.invoke(requestMessage);
@@ -401,9 +456,9 @@ class FeedBindingListenerServlet extends HttpServlet {
                     createdEntry = responseMessage.getBody();
                 } else {
                     
-                    // The service implementation is not Feed-aware, pass the data item to it
+                    // The service implementation does not support feed entries, pass the data item to it
                     Message requestMessage = messageFactory.createMessage();
-                    Object item = ((Content)entry.getContents().get(0)).getValue();
+                    Object item = createItem(entry);
                     requestMessage.setBody(new Object[] {item});
                     Message responseMessage = postInvoker.invoke(requestMessage);
                     if (responseMessage.isFault()) {
@@ -499,9 +554,9 @@ class FeedBindingListenerServlet extends HttpServlet {
                 }
 
                 // Let the component implementation create it
-                if (getFeedInvoker != null) {
+                if (supportsEntries) {
                     
-                    // The service implementation is Feed-aware, pass the entry to it
+                    // The service implementation supports feed entries, pass the entry to it
                     Message requestMessage = messageFactory.createMessage();
                     requestMessage.setBody(new Object[] {id, entry});
                     Message responseMessage = putInvoker.invoke(requestMessage);
@@ -515,9 +570,9 @@ class FeedBindingListenerServlet extends HttpServlet {
                     }
                 } else {
                     
-                    // The service implementation is not Feed-aware, pass the data item to it
+                    // The service implementation does not support feed entries, pass the data item to it
                     Message requestMessage = messageFactory.createMessage();
-                    Object item = ((Content)entry.getContents().get(0)).getValue();
+                    Object item = createItem(entry);
                     requestMessage.setBody(new Object[] {id, item});
                     Message responseMessage = putInvoker.invoke(requestMessage);
                     if (responseMessage.isFault()) {

@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.binding.feed.provider;
 
 import org.apache.tuscany.sca.binding.feed.RSSBinding;
+import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -38,16 +39,19 @@ class RSSServiceBindingProvider implements ServiceBindingProvider {
     private ServletHost servletHost;
     private MessageFactory messageFactory;
     private String servletMapping;
+    private Mediator mediator;
 
     RSSServiceBindingProvider(RuntimeComponent component,
                                      RuntimeComponentService service,
                                      RSSBinding binding,
                                      ServletHost servletHost,
-                                     MessageFactory messageFactory) {
+                                     MessageFactory messageFactory,
+                                     Mediator mediator) {
         this.service = service;
         this.binding = binding;
         this.servletHost = servletHost;
         this.messageFactory = messageFactory;
+        this.mediator = mediator;
     }
 
     public InterfaceContract getBindingInterfaceContract() {
@@ -63,7 +67,7 @@ class RSSServiceBindingProvider implements ServiceBindingProvider {
         RuntimeWire wire = componentService.getRuntimeWire(binding);
 
         FeedBindingListenerServlet servlet =
-            new FeedBindingListenerServlet(wire, messageFactory, "rss_2.0");
+            new FeedBindingListenerServlet(wire, messageFactory, mediator, "rss_2.0");
 
         servletMapping = binding.getURI();
         servletHost.addServletMapping(servletMapping, servlet);

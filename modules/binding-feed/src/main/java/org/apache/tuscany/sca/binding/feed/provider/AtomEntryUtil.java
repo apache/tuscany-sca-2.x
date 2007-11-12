@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.feed.provider;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
+import com.sun.syndication.feed.atom.Content;
 import com.sun.syndication.feed.atom.Entry;
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.io.FeedException;
@@ -71,6 +73,19 @@ class AtomEntryUtil {
         WireFeedInput input = new WireFeedInput();
         feed = (Feed)input.build(document);
         Entry entry = (Entry)feed.getEntries().get(0);
+        if (entry.getContents().size() != 0) {
+            Content content = (Content)entry.getContents().get(0);
+            if ("text/xml".equals(content.getType())) {
+                Element element = root.getChild("content", root.getNamespace());
+                if (!element.getChildren().isEmpty()) {
+                    element = (Element)element.getChildren().get(0);
+                    XMLOutputter outputter = new XMLOutputter();
+                    StringWriter sw = new StringWriter();
+                    outputter.output(element, sw);
+                    content.setValue(sw.toString());
+                }
+            }
+        }
         return entry;
     }
 
