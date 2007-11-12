@@ -2,6 +2,7 @@ DROP TABLE CART;
 
 CREATE TABLE CART(
    id VARCHAR(50) NOT NULL,
-   item VARCHAR(50),
+   name VARCHAR(50),
+   price VARCHAR(10),
    primary key (id)
 );

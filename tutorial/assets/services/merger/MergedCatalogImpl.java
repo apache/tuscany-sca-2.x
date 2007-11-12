@@ -24,6 +24,7 @@ import org.osoa.sca.annotations.Reference;
 
 import services.Catalog;
 import services.CurrencyConverter;
+import services.Item;
 
 public class MergedCatalogImpl implements Catalog {
 
@@ -39,26 +40,24 @@ public class MergedCatalogImpl implements Catalog {
     @Reference
     public Catalog vegetablesCatalog;
     
-    public String[] get() {
+    public Item[] get() {
         String currencySymbol = currencyConverter.getCurrencySymbol(currencyCode);
         
-        String[] fruits = fruitsCatalog.get();
-        String[] vegetables = vegetablesCatalog.get();
+        Item[] fruits = fruitsCatalog.get();
+        Item[] vegetables = vegetablesCatalog.get();
         
-        String[] catalog = new String[fruits.length + vegetables.length];
+        Item[] catalog = new Item[fruits.length + vegetables.length];
         int i =0;
-        for (String item: fruits) {
-            String name = item.substring(0, item.indexOf('-') - 1);
-            double price = Double.valueOf(item.substring(item.indexOf("-") + 3));
+        for (Item item: fruits) {
+            double price = Double.valueOf(item.getPrice().substring(1));  
             price = currencyConverter.getConversion("USD", currencyCode, price);
-            catalog[i++] = name + " - " + currencySymbol + price;
+            catalog[i++] = new Item(item.getName(), currencySymbol + price);
         }
         
-        for (String item: vegetables) {
-            String name = item.substring(0, item.indexOf('-') - 1);
-            double price = Double.valueOf(item.substring(item.indexOf("-") + 3));
+        for (Item item: vegetables) {
+            double price = Double.valueOf(item.getPrice().substring(1));  
             price = currencyConverter.getConversion("USD", currencyCode, price);
-            catalog[i++] = name + " - " + currencySymbol + price;
+            catalog[i++] = new Item(item.getName(), currencySymbol + price);
         }
         
         return catalog;

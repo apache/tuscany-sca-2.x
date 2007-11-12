@@ -23,19 +23,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.tuscany.sca.implementation.data.collection.Collection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
 
-public class ShoppingCartImpl implements Collection<String, String>, Total {
+@Scope("COMPOSITE")
+public class ShoppingCartImpl implements Cart, Total {
     
-    private static Map<String, String> cart = new HashMap<String, String>();
+    private Map<String, Item> cart = new HashMap<String, Item>();
+    
+    @Init
+    protected void init() {
+    }
 
-    public Map<String, String> getAll() {
+    public Map<String, Item> getAll() {
         return cart;
     }
 
-    public String get(String key) throws NotFoundException {
-        String item = cart.get(key);
+    public Item get(String key) throws NotFoundException {
+        Item item = cart.get(key);
         if (item == null) {
             throw new NotFoundException(key);
         } else {
@@ -43,13 +49,13 @@ public class ShoppingCartImpl implements Collection<String, String>, Total {
         }
     }
 
-    public String post(String item) {
+    public String post(Item item) {
         String key = "cart-" + UUID.randomUUID().toString();
         cart.put(key, item);
         return key;
     }
 
-    public void put(String key, String item) throws NotFoundException {
+    public void put(String key, Item item) throws NotFoundException {
         if (!cart.containsKey(key)) {
             throw new NotFoundException(key);
         }
@@ -60,13 +66,13 @@ public class ShoppingCartImpl implements Collection<String, String>, Total {
         if (key == null || key.equals("")) {
             cart.clear();
         } else {
-            String item = cart.remove(key);
+            Item item = cart.remove(key);
             if (item == null)
                 throw new NotFoundException(key);
         }
     }
 
-    public Map<String, String> query(String queryString) {
+    public Map<String, Item> query(String queryString) {
         // Implement queries later
         return null;
     }
@@ -75,11 +81,11 @@ public class ShoppingCartImpl implements Collection<String, String>, Total {
         double total = 0;
         String currencySymbol = "";
         if (!cart.isEmpty()) {
-            String item = cart.values().iterator().next();
-            currencySymbol = item.substring(item.indexOf("-") + 2, item.indexOf("-") + 3);
+            Item item = cart.values().iterator().next();
+            currencySymbol = item.getPrice().substring(0, 1);
         }
-        for (String item : cart.values()) {
-            total += Double.valueOf(item.substring(item.indexOf("-") + 3));
+        for (Item item : cart.values()) {
+            total += Double.valueOf(item.getPrice().substring(1));
         }
         return currencySymbol + String.valueOf(total);
     }

@@ -19,9 +19,36 @@
 
 package services;
 
-import org.osoa.sca.annotations.Remotable;
+import java.io.Serializable;
 
-@Remotable
-public interface Catalog {
-    Item[] get();
+public class Item implements Serializable {
+    private static final long serialVersionUID = -5847326138627338217L;
+    
+    private String name;
+    private String price;
+    
+    public Item() {
+    }
+    
+    public Item(String name, String price) {
+        this.name = name;
+        this.price = price;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public String getPrice() {
+        return price;
+    }
+    
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
 }
