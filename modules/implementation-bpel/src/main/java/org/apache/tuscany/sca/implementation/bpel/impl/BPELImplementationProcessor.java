@@ -90,8 +90,6 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         // Create an initialize the BPEL implementation model
         BPELImplementation implementation = bpelFactory.createBPELImplementation();
         implementation.setProcess(process);
-        //FIXME:lresende
-        //implementation.setCompiledProcess(compiledProcess.toByteArray());
         implementation.setUnresolved(true);
         
         // Skip to end element
