@@ -18,9 +18,9 @@
   ~ under the License.
   -->
 <deploy xmlns="http://www.apache.org/ode/schemas/dd/2007/03"
-        xmlns:process="urn:/Ping.bpel"
-        xmlns:ping="urn:/Ping.wsdl"
-        xmlns:pong="urn:/Pong.wsdl">
+        xmlns:process="http://tuscany.apache.org/implementation/bpel/example/ping"
+        xmlns:ping="http://tuscany.apache.org/implementation/bpel/example/ping.wsdl"
+        xmlns:pong="http://tuscany.apache.org/implementation/bpel/example/pong.wsdl">
 
 	<process name="process:Ping">
 		<active>true</active>

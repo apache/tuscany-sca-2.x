@@ -18,8 +18,8 @@
   ~ under the License.
   -->
 <deploy xmlns="http://www.apache.org/ode/schemas/dd/2007/03"
-        xmlns:process="urn:/Pong.bpel"
-        xmlns:pong="urn:/Pong.wsdl">
+        xmlns:process="http://tuscany.apache.org/implementation/bpel/example/pong"
+        xmlns:pong="http://tuscany.apache.org/implementation/bpel/example/pong.wsdl">
 
 	<process name="process:Pong">
 		<active>true</active>

@@ -20,6 +20,8 @@
 <definitions name="pong"
         targetNamespace="http://tuscany.apache.org/implementation/bpel/example/pong.wsdl"
         xmlns:tns="http://tuscany.apache.org/implementation/bpel/example/pong.wsdl"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+        xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
         xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
         xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
         xmlns="http://schemas.xmlsoap.org/wsdl/">
@@ -59,6 +61,25 @@
         </operation>
     </portType>
 
+	<binding name="PongSoapBinding" type="tns:PongPortType">
+	    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="Pong">
+            <wsdlsoap:operation soapAction=""/>
+            <input name="PongRequest">
+                <wsdlsoap:body use="literal"/>
+            </input>
+            <output name="PongResponse">
+                <wsdlsoap:body use="literal"/>
+            </output>
+        </operation>
+	</binding>
+    
+    <service name="PongService">
+		<port name="PongPort" binding="tns:PongSoapBinding">
+     		<soap:address location="http://localhost:8085/ode/processes/pong"/>
+		</port>
+    </service>    
+    
     <plnk:partnerLinkType name="PongPartnerLinkType">
         <plnk:role name="Provider" portType="tns:PongPortType"/>
     </plnk:partnerLinkType>
