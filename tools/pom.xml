@@ -30,9 +30,17 @@
     <artifactId>tuscany-sca-tools</artifactId>
     <name>Apache Tuscany SCA Tools</name>
 
-    <modules>
-        <!--
-        <module>registry-inspector</module>
-        -->
-    </modules>
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>maven</module>
+                <module>eclipse</module>
+            </modules>
+        </profile>
+    </profiles>
+
 </project>
