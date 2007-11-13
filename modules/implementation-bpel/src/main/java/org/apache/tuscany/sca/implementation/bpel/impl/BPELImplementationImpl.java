@@ -18,30 +18,18 @@
  */
 package org.apache.tuscany.sca.implementation.bpel.impl;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URI;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
 
-import org.apache.ode.bpel.evt.BpelEvent;
-import org.apache.ode.bpel.iapi.Endpoint;
-import org.apache.ode.bpel.iapi.ProcessConf;
-import org.apache.ode.bpel.iapi.ProcessState;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
-import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-import org.w3c.dom.Node;
 
 /**
  * The model representing a BPEL implementation in an SCA assembly model.
@@ -52,8 +40,6 @@ public class BPELImplementationImpl extends ComponentTypeImpl implements BPELImp
 
     private QName _processName;
     private BPELProcessDefinition _processDefinition;
-
-    private boolean unresolved;
 
     /**
      * Constructs a new BPEL implementation.
@@ -101,87 +87,24 @@ public class BPELImplementationImpl extends ComponentTypeImpl implements BPELImp
         // The sample BPEL implementation does not support properties
         return Collections.emptyList();
     }
-
-    public boolean isUnresolved() {
-        return this.unresolved;
+    
+    @Override
+    public int hashCode() {
+        return String.valueOf(this.getProcess()).hashCode();
     }
 
-    public void setUnresolved(boolean unresolved) {
-        this.unresolved = unresolved;
-    }
-
-    private class ProcessConfImpl implements ProcessConf {
-        public QName getProcessId() {
-            return _processName;
-        }
-
-        public QName getType() {
-            return _processName;
-        }
-
-        public long getVersion() {
-            // TODO Versioniong?
-            return 0;
-        }
-
-        public boolean isTransient() {
-            return false;
-        }
-
-        public InputStream getCBPInputStream() {
-            return null; //new ByteArrayInputStream(_compiledProcess);
-        }
-
-        public String getBpelDocument() {
-            return null;
-        }
-
-        public URI getBaseURI() {
-            return null;
-        }
-
-        public Date getDeployDate() {
-            return null;
-        }
-
-        public String getDeployer() {
-            return null;
-        }
-
-        public ProcessState getState() {
-            return null;
-        }
-
-        public List<File> getFiles() {
-            return null;
-        }
-
-        public Map<QName, Node> getProperties() {
-            return null;
-        }
-
-        public String getPackage() {
-            return null;
-        }
-
-        public Definition getDefinitionForService(QName qName) {
-            return null;
-        }
-
-        public Definition getDefinitionForPortType(QName qName) {
-            return null;
-        }
-
-        public Map<String, Endpoint> getProvideEndpoints() {
-            return null;
-        }
-
-        public Map<String, Endpoint> getInvokeEndpoints() {
-            return null;
-        }
-
-        public boolean isEventEnabled(List<String> strings, BpelEvent.TYPE type) {
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
             return true;
+        } else if (obj instanceof BPELImplementation) {
+            if (getProcess() != null) {
+                return getProcess().equals(((BPELImplementation)obj).getProcess());
+            } else {
+                return ((BPELImplementation)obj).getProcess() == null;
+            }
+        } else {
+            return false;
         }
     }
 }
