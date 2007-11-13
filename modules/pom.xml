@@ -108,9 +108,6 @@
                 <module>implementation-widget</module>
                 <module>implementation-xquery</module>
                 <module>java2wsdl</module>
-                <module>maven-java2wsdl</module>
-                <module>maven-wsdl2java</module>
-                <module>maven-ant-generator</module>
                 <module>node</module>
                 <module>node-api</module>
                 <module>node-impl</module>
