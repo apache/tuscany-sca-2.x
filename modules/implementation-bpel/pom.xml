@@ -91,7 +91,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tuscany.sca</groupId>
-			<artifactId>tuscany-maven-wsdl2java</artifactId>
+			<artifactId>tuscany-wsdl2java</artifactId>
 			<version>1.1-incubating-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
