@@ -21,6 +21,8 @@
         targetNamespace="http://tuscany.apache.org/implementation/bpel/example/ping.wsdl"
         xmlns="http://schemas.xmlsoap.org/wsdl/"
         xmlns:tns="http://tuscany.apache.org/implementation/bpel/example/ping.wsdl"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+        xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
         xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
         xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype">
 
@@ -58,6 +60,25 @@
             <output message="tns:PingResponse"/>
         </operation>
     </portType>
+    
+    <binding name="PingSoapBinding" type="tns:PingPortType">
+	    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="Ping">
+            <wsdlsoap:operation soapAction=""/>
+            <input name="PingRequest">
+                <wsdlsoap:body use="literal"/>
+            </input>
+            <output name="PingResponse">
+                <wsdlsoap:body use="literal"/>
+            </output>
+        </operation>
+	</binding>
+    
+    <service name="PingService">
+		<port name="PingPort" binding="tns:PingSoapBinding">
+     		<soap:address location="http://localhost:8085/ode/processes/pong"/>
+		</port>
+    </service>        
 
     <plnk:partnerLinkType name="PingPartnerLinkType">
         <plnk:role name="Provider" portType="tns:PingPortType"/>
