@@ -114,6 +114,15 @@ public class Launcher {
           startDomainManager();
         }
         
+        startNode();
+
+        initHotDeploy(repository);
+
+        logger.log(Level.INFO, "SCA runtime started");
+    }
+
+    private void startNode() throws NodeException, URISyntaxException {
+        logger.log(Level.INFO, "SCA runtime starting node " + nodeName);
         classLoader = new AddableURLClassLoader(new URL[] {}, Thread.currentThread().getContextClassLoader());
         Thread.currentThread().setContextClassLoader(classLoader);
         
@@ -128,13 +137,13 @@ public class Launcher {
         }
         
         node.start();
-        initHotDeploy(repository);
-
-        logger.log(Level.INFO, "SCA runtime started");
+        logger.log(Level.INFO, "SCA runtime started node " + nodeName);
     }
     
     protected void startDomainManager() throws DomainException {
+        logger.log(Level.INFO, "SCA runtime starting domain manager");
         managerDomain = SCADomainFactory.newInstance().createSCADomain("http://localhost:8080/tuscany/manager"); 
+        logger.log(Level.INFO, "SCA runtime started domain manager");
     }
 
     public void stop() {
