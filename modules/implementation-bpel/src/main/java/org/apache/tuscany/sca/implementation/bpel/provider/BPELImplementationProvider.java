@@ -105,9 +105,6 @@ public class BPELImplementationProvider implements ImplementationProvider {
         } catch(Exception e) {
             throw new RuntimeException("BPEl Component Type Implementation initialization failure : " + e.getMessage(), e);
         }
-
-        // FIXME:lresende
-        // odeServer.getBpelServer().register(implementation.getProcessConf());
     }
 
     public void stop() {

@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
  */
 public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements URLArtifactProcessor<BPELProcessDefinition> {
     public final static QName BPEL_PROCESS_DEFINITION = new QName("http://schemas.xmlsoap.org/ws/2004/03/business-process/", "process");
+    public final static QName BPEL_EXECUTABLE_DEFINITION = new QName("http://docs.oasis-open.org/wsbpel/2.0/process/executable", "process");
     public final static String NAME_ELEMENT = "name";
     
     private final static XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -82,7 +83,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
 
 
     public void resolve(BPELProcessDefinition model, ModelResolver resolver) throws ContributionResolveException {
-
+        
     }
     
     /**
@@ -106,7 +107,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
             while (true) {
                 if (eventType == XMLStreamConstants.START_ELEMENT) {
                     QName elementName = reader.getName();
-                    if (BPEL_PROCESS_DEFINITION.equals(elementName)) {
+                    if (BPEL_PROCESS_DEFINITION.equals(elementName) || BPEL_EXECUTABLE_DEFINITION.equals(elementName) ) {
                         QName processName = new QName(getString(reader, org.apache.tuscany.sca.assembly.xml.Constants.TARGET_NAMESPACE), getString(reader, NAME_ELEMENT));
                         processDefinition.setName(processName);
                         break;
