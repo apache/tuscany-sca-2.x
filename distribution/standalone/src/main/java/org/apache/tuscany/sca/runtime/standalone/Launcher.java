@@ -110,6 +110,12 @@ public class Launcher {
         
         initFromPropertyFile();
 
+        logger.info("nodeName: " + nodeName);
+        logger.info("domainName: " + domainName);
+        logger.info("startManager: " + startManager);
+        logger.info("useHotUpdate: " + useHotUpdate);
+        logger.info("hotDeployInterval: " + hotDeployInterval);
+
         if (startManager) {
           startDomainManager();
         }
@@ -142,7 +148,7 @@ public class Launcher {
     
     protected void startDomainManager() throws DomainException {
         logger.log(Level.INFO, "SCA runtime starting domain manager");
-        managerDomain = SCADomainFactory.newInstance().createSCADomain("http://localhost:8080/tuscany/manager"); 
+        managerDomain = SCADomainFactory.newInstance().createSCADomain(domainName); 
         logger.log(Level.INFO, "SCA runtime started domain manager");
     }
 
@@ -310,6 +316,7 @@ public class Launcher {
         if (!file.exists()) {
             return;
         }
+        logger.info("using config properties at: " + file);
 
         Properties properties = new Properties();
         try {
