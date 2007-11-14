@@ -93,6 +93,8 @@ public class TomcatServer implements ServletHost {
 
     private WorkScheduler workScheduler;
 
+    private String contextPath = "/";
+
     /**
      * Constructs a new embedded Tomcat server.
      *
@@ -186,8 +188,8 @@ public class TomcatServer implements ServletHost {
 
         // Register the servlet mapping
         String path = uri.getPath();
-        if (!path.startsWith("/")) {
-            path = '/' + path;
+        if (!path.startsWith(contextPath)) {
+            path = contextPath + path;
         }
         
         ServletWrapper wrapper;
@@ -262,8 +264,8 @@ public class TomcatServer implements ServletHost {
         
         // Construct the URL
         String path = uri.getPath();
-        if (!path.startsWith("/")) {
-            path = '/' + path;
+        if (!path.startsWith(contextPath)) {
+            path = contextPath + path;
         }
         URL url;
         try {
@@ -356,7 +358,7 @@ public class TomcatServer implements ServletHost {
     }
     
     public String getContextPath() {
-        return "/";
+        return contextPath;
     }
 
     /**
@@ -428,6 +430,10 @@ public class TomcatServer implements ServletHost {
         CustomConnector() throws Exception {
             protocolHandler = new CustomHttpProtocolHandler();
         }
+    }
+
+    public void setContextPath(String path) {
+        this.contextPath = path;
     }
 
 }
