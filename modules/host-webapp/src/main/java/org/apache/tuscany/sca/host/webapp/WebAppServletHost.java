@@ -255,4 +255,10 @@ public class WebAppServletHost implements ServletHost {
         return contextPath;
     }
 
+    public void setContextPath(String path) {
+        if (!contextPath.equals(path)) {
+            throw new IllegalArgumentException("invalid context path for webapp, existing context path: " + contextPath + " new contextPath: " + path);
+        }
+    }
+
 }
