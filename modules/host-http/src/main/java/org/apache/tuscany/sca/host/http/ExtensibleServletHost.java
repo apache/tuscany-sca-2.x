@@ -112,4 +112,8 @@ public class ExtensibleServletHost implements ServletHost {
 
         return servletHosts.getServletHosts().get(0).getURLMapping(uri);
     }
+
+    public void setContextPath(String path) {
+        servletHosts.getServletHosts().get(0).setContextPath(path);
+    }
 }
