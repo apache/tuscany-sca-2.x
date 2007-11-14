@@ -97,6 +97,13 @@ public interface ServletHost {
     String getContextPath();
 
     /**
+     * Sets the portion of the request URI that indicates the context of the request
+     * 
+     * @param path the context path
+     */
+    void setContextPath(String path);
+
+    /**
      * Returns the complete URL mapped to the specified URI. 
      * @return the URL mapped to the specified URI
      */
