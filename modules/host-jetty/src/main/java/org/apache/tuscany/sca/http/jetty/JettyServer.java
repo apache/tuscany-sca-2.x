@@ -93,6 +93,8 @@ public class JettyServer implements ServletHost {
     
     private Map<Integer, Port> ports = new HashMap<Integer, Port>();
 
+    private String contextPath = "/";
+
     static {
         // Hack to replace the static Jetty logger
         System.setProperty("org.mortbay.log.class", JettyLogger.class.getName());
@@ -183,7 +185,7 @@ public class JettyServer implements ServletHost {
                 }
     
                 ContextHandler contextHandler = new ContextHandler();
-                contextHandler.setContextPath("/");
+                contextHandler.setContextPath(contextPath);
                 server.setHandler(contextHandler);
     
                 SessionHandler sessionHandler = new SessionHandler();
@@ -278,8 +280,8 @@ public class JettyServer implements ServletHost {
         
         // Construct the URL
         String path = uri.getPath();
-        if (!path.startsWith("/")) {
-            path = '/' + path;
+        if (!path.startsWith(contextPath)) {
+            path = contextPath + path;
         }
         URL url;
         try {
@@ -368,7 +370,11 @@ public class JettyServer implements ServletHost {
     }
     
     public String getContextPath() {
-        return "/";
+        return contextPath;
+    }
+    
+    public void setContextPath(String path) {
+        this.contextPath = path;
     }
 
     /**
