@@ -43,7 +43,7 @@
 		<property name="currencyCode">EUR</property>
 		<service name="Catalog">
 			<t:binding.jsonrpc/>
-			<binding.ws uri="CatalogWebService"/>
+			<binding.ws uri="/CatalogWebService"/>
    		</service>
 		<reference name="fruitsCatalog" target="CloudFruitsCatalog"/>	
 		<reference name="vegetablesCatalog" target="CloudVegetablesCatalog"/>	
