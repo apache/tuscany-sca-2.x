@@ -125,12 +125,16 @@ public class SCADomainImpl implements SCADomainSPI  {
             domainManagementRuntime = new ReallySmallRuntime(domainClassLoader);
             domainManagementRuntime.start();
             
-            // Configure the default server port
+            // Configure the default server port and path
             int port = URI.create(domainModel.getDomainURI()).getPort();
+            String path = URI.create(domainModel.getDomainURI()).getPath();
             if (port != -1) {
                 ServletHostExtensionPoint servletHosts = domainManagementRuntime.getExtensionPointRegistry().getExtensionPoint(ServletHostExtensionPoint.class);
                 for (ServletHost servletHost: servletHosts.getServletHosts()) {
                     servletHost.setDefaultPort(port);
+                    if (path != null && path.length() > 0 && !path.equals("/")) {
+                        servletHost.setContextPath(path);
+                    }
                 }
             }
             
