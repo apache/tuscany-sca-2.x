@@ -165,11 +165,16 @@ public class SCANodeImpl implements SCANode {
             nodeRuntime = new ReallySmallRuntime(nodeClassLoader);
             nodeRuntime.start();
             
-            // configure the default port for this runtime
+            // configure the default port and path for this runtime
             int port = URI.create(nodeURI).getPort();
+            String path = nodeURL.getPath();
             ServletHostExtensionPoint servletHosts = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ServletHostExtensionPoint.class);
             for (ServletHost servletHost: servletHosts.getServletHosts()) {
                 servletHost.setDefaultPort(port);
+                if (path != null && path.length() > 0 && !path.equals("/")) {
+// TODO: doing this breaks testcase
+//                    servletHost.setContextPath(path);
+                }
             }            
             
             // If a non-null domain name is provided make the node available to the model

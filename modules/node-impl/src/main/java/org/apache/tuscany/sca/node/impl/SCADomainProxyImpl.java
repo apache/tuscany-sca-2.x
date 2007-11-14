@@ -257,17 +257,21 @@ public class SCADomainProxyImpl extends SCADomainImpl implements SCADomainProxyS
                 domainManagementRuntime = new ReallySmallRuntime(domainClassLoader);
                 domainManagementRuntime.start();
                 
+                String path = URI.create(domainModel.getDomainURI()).getPath();
 
                 // invent a default URL for the runtime
                 String host = InetAddress.getLocalHost().getHostName();
                 ServerSocket socket = new ServerSocket(0);
                 int port = socket.getLocalPort();
-                nodeURI = "http://" + host + ":" + port;
+                nodeURI = "http://" + host + ":" + port + path;
                 socket.close();
                 
                 ServletHostExtensionPoint servletHosts = domainManagementRuntime.getExtensionPointRegistry().getExtensionPoint(ServletHostExtensionPoint.class);
                 for (ServletHost servletHost: servletHosts.getServletHosts()) {
                     servletHost.setDefaultPort(port);
+                    if (path != null && path.length() > 0 && !path.equals("/")) {
+                        servletHost.setContextPath(path);
+                    }
                 }
 
                 // Create an in-memory domain level management composite
@@ -278,6 +282,16 @@ public class SCADomainProxyImpl extends SCADomainImpl implements SCADomainProxyS
             } else {
                 domainManagementRuntime = nodeImpl.getNodeRuntime();
                 domainManagementComposite = domainManagementRuntime.getCompositeActivator().getDomainComposite();
+
+// TODO: doing this breaks testcase
+//                // set the context path for the node
+//                String path = URI.create(nodeImpl.getURI()).getPath();
+//                if (path != null && path.length() > 0 && !path.equals("/")) {
+//                    ServletHostExtensionPoint servletHosts = domainManagementRuntime.getExtensionPointRegistry().getExtensionPoint(ServletHostExtensionPoint.class);
+//                    for (ServletHost servletHost: servletHosts.getServletHosts()) {
+//                        servletHost.setContextPath(path);
+//                    }
+//                }
             }
           
             // Find the composite that will configure the domain
@@ -325,8 +339,7 @@ public class SCADomainProxyImpl extends SCADomainImpl implements SCADomainProxyS
                                         
                                         if ( bindingPort == 9999){
                                             // replace the old with the new
-                                            bindingURIString = bindingURIString.replace(String.valueOf(bindingPort), String.valueOf(domainPort));          
-                                            bindingURIString = bindingURIString.replace(bindingHost, domainHost);
+                                            bindingURIString = domainURI + bindingURI.getPath() ;
                                             
                                             // set the address back into the NodeManager binding.
                                             binding.setURI(bindingURIString);                                               
