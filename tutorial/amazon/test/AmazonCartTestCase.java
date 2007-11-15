@@ -49,7 +49,7 @@ public class AmazonCartTestCase {
 
             System.out.println("Starting ...");
             SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-            node = nodeFactory.createSCANode(null, "http://localhost:9999");
+            node = nodeFactory.createSCANode(null, null);
             
             URL contribution = SCAContributionUtil.findContributionFromClass(LaunchAmazonCart.class);
             node.addContribution("http://amazonCart", contribution);
