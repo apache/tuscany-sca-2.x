@@ -27,7 +27,7 @@
     expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
 
   <import location="helloworld.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
-     namespace="file:///home/mriou/dev/projects/ode/distro-axis2/src/examples/HelloWorld2/HelloWorld2.wsdl"/>
+     namespace="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl"/>
 
    <partnerLinks>
       <partnerLink name="helloPartnerLink" partnerLinkType="test:HelloPartnerLinkType" myRole="me" />
