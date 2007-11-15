@@ -417,7 +417,6 @@ public class SCANodeImpl implements SCANode {
     /**
      * Configure the default HTTP port for this node.
      */
-/*    
     private void configureDefaultPort() {
         Composite composite = composites.get(compositesToStart.get(0));
         if (composite == null) {
@@ -472,7 +471,7 @@ public class SCANodeImpl implements SCANode {
             }
         }
     }
-*/    
+
     private void startComposites() throws NodeException {
         try {
             if (compositesToStart.size() == 0 ){
@@ -481,7 +480,7 @@ public class SCANodeImpl implements SCANode {
             } else {
                 
                 // Configure the default server port for the node
-                //configureDefaultPort();
+                configureDefaultPort();
                 
                 for (QName compositeName : compositesToStart) {
                     Composite composite = composites.get(compositeName);
