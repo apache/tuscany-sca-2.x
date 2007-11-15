@@ -149,6 +149,10 @@ public class SCANodeImpl implements SCANode {
                ServerSocket socket = new ServerSocket(0);
                nodeURI = "http://" + host + ":" + socket.getLocalPort();
                socket.close();
+            } else {
+                if (!nodeURI.endsWith("/")) {
+                    nodeURI += "/";
+                }
             }
             
             // check whether node uri is an absolute url,  
@@ -172,8 +176,7 @@ public class SCANodeImpl implements SCANode {
             for (ServletHost servletHost: servletHosts.getServletHosts()) {
                 servletHost.setDefaultPort(port);
                 if (path != null && path.length() > 0 && !path.equals("/")) {
-// TODO: doing this breaks testcase
-//                    servletHost.setContextPath(path);
+                    servletHost.setContextPath(path);
                 }
             }            
             

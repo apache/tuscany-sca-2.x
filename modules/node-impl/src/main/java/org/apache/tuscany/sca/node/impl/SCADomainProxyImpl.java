@@ -158,7 +158,7 @@ public class SCADomainProxyImpl extends SCADomainImpl implements SCADomainProxyS
                 
                 String nodeManagerURL = nodeURI.getScheme()+ "://" +
                                         nodeHost + ":" +
-                                        nodeURI.getPort() + "/NodeManagerComponent/NodeManagerService";
+                                        nodeURI.getPort() + nodeURI.getPath() + "/NodeManagerComponent/NodeManagerService";
                 
                 // go out and add this node to the wider domain
                 domainManagerService.registerNode(nodeImpl.getURI(),nodeManagerURL);
@@ -283,15 +283,14 @@ public class SCADomainProxyImpl extends SCADomainImpl implements SCADomainProxyS
                 domainManagementRuntime = nodeImpl.getNodeRuntime();
                 domainManagementComposite = domainManagementRuntime.getCompositeActivator().getDomainComposite();
 
-// TODO: doing this breaks testcase
-//                // set the context path for the node
-//                String path = URI.create(nodeImpl.getURI()).getPath();
-//                if (path != null && path.length() > 0 && !path.equals("/")) {
-//                    ServletHostExtensionPoint servletHosts = domainManagementRuntime.getExtensionPointRegistry().getExtensionPoint(ServletHostExtensionPoint.class);
-//                    for (ServletHost servletHost: servletHosts.getServletHosts()) {
-//                        servletHost.setContextPath(path);
-//                    }
-//                }
+                // set the context path for the node
+                String path = URI.create(nodeImpl.getURI()).getPath();
+                if (path != null && path.length() > 0 && !path.equals("/")) {
+                    ServletHostExtensionPoint servletHosts = domainManagementRuntime.getExtensionPointRegistry().getExtensionPoint(ServletHostExtensionPoint.class);
+                    for (ServletHost servletHost: servletHosts.getServletHosts()) {
+                        servletHost.setContextPath(path);
+                    }
+                }
             }
           
             // Find the composite that will configure the domain
