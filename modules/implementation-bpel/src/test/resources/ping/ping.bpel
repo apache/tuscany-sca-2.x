@@ -19,11 +19,10 @@
   -->
 <process
         name="Ping"
-        targetNamespace="http://tuscany.apache.org/implementation/bpel/example/ping"
         xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
-        xmlns:bpws="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+        targetNamespace="http://tuscany.apache.org/implementation/bpel/example/ping.bpel"
         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-        xmlns:tns="http://tuscany.apache.org/implementation/bpel/example/ping"
+        xmlns:tns="http://tuscany.apache.org/implementation/bpel/example/ping.bpel"
         xmlns:ping="http://tuscany.apache.org/implementation/bpel/example/ping.wsdl"
         xmlns:pong="http://tuscany.apache.org/implementation/bpel/example/pong.wsdl"
         expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">

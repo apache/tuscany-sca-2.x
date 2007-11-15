@@ -17,11 +17,9 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-<definitions name="pong"
+<definitions name="Pong"
         targetNamespace="http://tuscany.apache.org/implementation/bpel/example/pong.wsdl"
         xmlns:tns="http://tuscany.apache.org/implementation/bpel/example/pong.wsdl"
-        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
-        xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
         xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
         xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
         xmlns="http://schemas.xmlsoap.org/wsdl/">
@@ -61,15 +59,15 @@
         </operation>
     </portType>
 
-	<binding name="PongSoapBinding" type="tns:PongPortType">
-	    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <binding name="PongSoapBinding" type="tns:PongPortType">
+	    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
         <operation name="Pong">
-            <wsdlsoap:operation soapAction=""/>
+            <soap:operation soapAction=""/>
             <input name="PongRequest">
-                <wsdlsoap:body use="literal"/>
+                <soap:body use="literal"/>
             </input>
             <output name="PongResponse">
-                <wsdlsoap:body use="literal"/>
+                <soap:body use="literal"/>
             </output>
         </operation>
 	</binding>
