@@ -57,6 +57,7 @@ public class DomainManagerServiceImpl implements DomainManagerNodeEventService{
                 returnValue =  domainManager.registerNode(nodeURI, nodeURL);
                 break;
             } catch(UndeclaredThrowableException ex) {
+                ex.printStackTrace();
                 logger.log(Level.INFO, "Trying to register node " + 
                                        nodeURI + 
                                        " at endpoint " +
