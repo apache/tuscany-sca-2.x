@@ -197,6 +197,7 @@
                         <configuration>
                             <sources>
                                 <source>target/sdo-source</source>
+                                <source>target/wsdl2java-source</source>
                             </sources>
                         </configuration>
                     </execution>
