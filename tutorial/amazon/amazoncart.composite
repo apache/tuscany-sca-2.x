@@ -1,0 +1,14 @@
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+			targetNamespace="http://amazon.cart.com/"
+			xmlns:tns="http://amazon.cart.com/"
+           name="AmazonCart">
+    
+    <component name="AmazonCartServiceComponent">
+    	<implementation.java class="amazon.cart.AmazonCartImpl" />
+	    <service name="AmazonCartService" >
+	        <interface.wsdl interface="http://amazon.cart.com/#wsdl.interface(AmazonCartServicePortType)" />
+	        <binding.ws />
+	    </service>
+    </component>
+
+</composite>

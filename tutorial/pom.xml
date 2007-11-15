@@ -41,6 +41,7 @@
                 <module>store</module>
                 <module>store-eu</module>
                 <module>www-cloud</module>
+                <module>amazon</module>
             </modules>
         </profile>
 
