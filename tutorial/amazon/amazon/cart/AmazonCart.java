@@ -18,15 +18,27 @@
  */
 package amazon.cart;
 
+import org.apache.tuscany.sca.databinding.annotation.DataBinding;
 import org.osoa.sca.annotations.Remotable;
 
-import com.cart.amazon.*;
+import com.cart.amazon.CartAdd;
+import com.cart.amazon.CartAddResponse;
+import com.cart.amazon.CartClear;
+import com.cart.amazon.CartClearResponse;
+import com.cart.amazon.CartCreate;
+import com.cart.amazon.CartCreateResponse;
+import com.cart.amazon.CartGet;
+import com.cart.amazon.CartGetResponse;
 
 @Remotable
+@DataBinding(value="commonj.sdo.DataObject", wrapped=true)
 public interface AmazonCart {
-	
-	public CartCreateResponse CartCreate(CartCreate cartCreate);
-	public CartAddResponse CartAdd(CartAdd cartAdd);
-	public CartClearResponse CartClear(CartClear cartClear);
-	public CartGetResponse CartGet(CartGet cartGet);
+
+    public CartCreateResponse CartCreate(CartCreate cartCreate);
+
+    public CartAddResponse CartAdd(CartAdd cartAdd);
+
+    public CartClearResponse CartClear(CartClear cartClear);
+
+    public CartGetResponse CartGet(CartGet cartGet);
 }

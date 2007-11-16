@@ -78,6 +78,9 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
             }
         }
         for (Method method : clazz.getMethods()) {
+            if (method.getDeclaringClass() == Object.class) {
+                continue;
+            }
             Operation operation = opMap.get(method.getName());
             DataBinding methodDataBinding = clazz.getAnnotation(DataBinding.class);
             if (methodDataBinding == null) {

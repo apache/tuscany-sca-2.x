@@ -18,88 +18,103 @@
  */
 package amazon.cart;
 
-import org.osoa.sca.annotations.Remotable;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.cart.amazon.*;
+import org.osoa.sca.annotations.Service;
 
+import com.cart.amazon.AmazonFactory;
+import com.cart.amazon.Cart;
+import com.cart.amazon.CartAdd;
+import com.cart.amazon.CartAddRequest;
+import com.cart.amazon.CartAddResponse;
+import com.cart.amazon.CartClear;
+import com.cart.amazon.CartClearResponse;
+import com.cart.amazon.CartCreate;
+import com.cart.amazon.CartCreateResponse;
+import com.cart.amazon.CartGet;
+import com.cart.amazon.CartGetResponse;
+import com.cart.amazon.CartItem;
+import com.cart.amazon.CartItems;
+import com.cart.amazon.Item1;
+import com.cart.amazon.Items1;
 
-@Remotable
+@Service(AmazonCart.class)
 public class AmazonCartImpl {
 
-	protected Map<String, Cart> cartsHash = new HashMap<String, Cart>();
-		
-	public CartCreateResponse CartCreate(CartCreate cartCreate){
-	
-		System.out.println("CartServiceID: " + this.toString());
-		System.out.println("Entering cartCreate...");
-		String userId = cartCreate.getAWSAccessKeyId();
+    protected Map<String, Cart> cartsHash = new HashMap<String, Cart>();
 
-		Cart cart = getCart(userId);
-		if(cart != null){
-			System.out.println("User " + cartCreate.getAWSAccessKeyId() + " has already created a cart with ID: " + cart.getCartId());
-			return null;
-		}
-		cart = new Cart();		
-		cart.setCartItems(new CartItems());		
-		addCart(userId, cart);		
-		
-		System.out.println("Exiting cartCreate...");
-		return null;
-			
-	}
-	
-	public CartAddResponse CartAdd(CartAdd cartAdd){
-		
-		String userId = cartAdd.getAWSAccessKeyId();
-		
-		Cart cart = getCart(userId);
-		if(cart == null){
-			System.out.println("User has not associated Cart yet...");
-			return null;
-		}
-		
-		List cartAddRequestList = cartAdd.getRequest();
-		CartAddRequest car = (CartAddRequest) cartAddRequestList.get(0);
-		Items1 carItems = car.getItems();
-		List itemList = carItems.getItem();
-		Item1 item = (Item1) itemList.get(0); //Take only the first one, no iteration for now
-		System.out.println("item.getASIN: " + item.getASIN());
-		System.out.println("item.getQuantity(): " + item.getQuantity());
-		CartItems cartItems = cart.getCartItems();
-		List<CartItem> cartItemList = cartItems.getCartItem();
-		cart.setCartItems(cartItems);
-		return null;
-	}
-	
-	public CartClearResponse CartClear(CartClear cartClear){
-		String userId = cartClear.getAWSAccessKeyId();
-		
-		Cart cart = getCart(userId);
-		if(cart == null){
-			System.out.println("User has not associated Cart yet...");
-			return null;
-		}
-		
-		cart.setCartItems(new CartItems());
-		return null;
-	}
-	
-	public CartGetResponse CartGet(CartGet cartGet){
-		return null;
-	}
+    public CartCreateResponse CartCreate(CartCreate cartCreate) {
 
-	
-	private Cart getCart(String userId){
-		Cart cart = null;
-		cart = this.cartsHash.get(userId);
-		return cart;
-	}
-	
-	private void addCart(String userId, Cart cart){
-		this.cartsHash.put(userId, cart);
-	}
+        System.out.println("CartServiceID: " + this.toString());
+        System.out.println("Entering cartCreate...");
+        String userId = cartCreate.getAWSAccessKeyId();
+
+        Cart cart = getCart(userId);
+        if (cart != null) {
+            System.out.println("User " + cartCreate.getAWSAccessKeyId()
+                + " has already created a cart with ID: "
+                + cart.getCartId());
+            return null;
+        }
+        cart = new Cart();
+        cart.setCartItems(new CartItems());
+        addCart(userId, cart);
+
+        CartCreateResponse response = AmazonFactory.INSTANCE.createCartCreateResponse();
+        System.out.println("Exiting cartCreate...");
+        return response;
+
+    }
+
+    public CartAddResponse CartAdd(CartAdd cartAdd) {
+
+        String userId = cartAdd.getAWSAccessKeyId();
+
+        Cart cart = getCart(userId);
+        if (cart == null) {
+            System.out.println("User has not associated Cart yet...");
+            return null;
+        }
+
+        List cartAddRequestList = cartAdd.getRequest();
+        CartAddRequest car = (CartAddRequest)cartAddRequestList.get(0);
+        Items1 carItems = car.getItems();
+        List itemList = carItems.getItem();
+        Item1 item = (Item1)itemList.get(0); //Take only the first one, no iteration for now
+        System.out.println("item.getASIN: " + item.getASIN());
+        System.out.println("item.getQuantity(): " + item.getQuantity());
+        CartItems cartItems = cart.getCartItems();
+        List<CartItem> cartItemList = cartItems.getCartItem();
+        cart.setCartItems(cartItems);
+        return null;
+    }
+
+    public CartClearResponse CartClear(CartClear cartClear) {
+        String userId = cartClear.getAWSAccessKeyId();
+
+        Cart cart = getCart(userId);
+        if (cart == null) {
+            System.out.println("User has not associated Cart yet...");
+            return null;
+        }
+
+        cart.setCartItems(new CartItems());
+        return null;
+    }
+
+    public CartGetResponse CartGet(CartGet cartGet) {
+        return null;
+    }
+
+    private Cart getCart(String userId) {
+        Cart cart = null;
+        cart = this.cartsHash.get(userId);
+        return cart;
+    }
+
+    private void addCart(String userId, Cart cart) {
+        this.cartsHash.put(userId, cart);
+    }
 }

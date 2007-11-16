@@ -33,6 +33,8 @@ import org.junit.Test;
 
 import amazon.cart.AmazonCart;
 
+import com.cart.amazon.AmazonFactory;
+import com.cart.amazon.CartCreate;
 import commonj.sdo.DataObject;
 
 /**
@@ -69,7 +71,8 @@ public class AmazonCartTestCase {
     @Test
     public void testCartCreate() throws Exception {
         System.out.println("Entering test...");
-        DataObject root = amazonCart.CartCreate(null);
+        CartCreate create = AmazonFactory.INSTANCE.createCartCreate();
+        DataObject root = amazonCart.CartCreate(create);
         // Assert.assertEquals("Hello Smith", msg);
         System.out.println("Exiting test...");
     }

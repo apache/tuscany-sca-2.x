@@ -25,11 +25,12 @@ import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 
-public class OMElement2XMLStreamReader extends BaseTransformer<OMElement, XMLStreamReader> implements PullTransformer<OMElement, XMLStreamReader> {
+public class OMElement2XMLStreamReader extends BaseTransformer<OMElement, XMLStreamReader> implements
+    PullTransformer<OMElement, XMLStreamReader> {
     // private XmlOptions options;
-    
+
     public XMLStreamReader transform(OMElement source, TransformationContext context) {
-        return source.getXMLStreamReader();
+        return source != null ? source.getXMLStreamReader() : null;
     }
 
     @Override
