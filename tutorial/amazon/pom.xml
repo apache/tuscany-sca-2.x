@@ -101,6 +101,7 @@
     <build>
         <finalName>${artifactId}</finalName>
         <sourceDirectory>${basedir}</sourceDirectory>
+        <testSourceDirectory>${basedir}/test</testSourceDirectory>
         <resources>
             <resource>
                 <directory>${basedir}</directory>
