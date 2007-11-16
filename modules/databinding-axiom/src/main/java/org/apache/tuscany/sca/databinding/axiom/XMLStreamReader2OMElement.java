@@ -35,6 +35,9 @@ public class XMLStreamReader2OMElement extends BaseTransformer<XMLStreamReader, 
     }
 
     public OMElement transform(XMLStreamReader source, TransformationContext context) {
+        if (source == null) {
+            return null;
+        }
         try {
             StAXOMBuilder builder = new StAXOMBuilder(source);
             OMElement element = builder.getDocumentElement();

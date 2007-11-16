@@ -17,17 +17,17 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-			targetNamespace="http://amazon.cart.com/"
-			xmlns:tns="http://amazon.cart.com/"
-           name="AmazonCart">
-    
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" 
+    targetNamespace="http://amazonCart" 
+    xmlns:tns="http://amazonCart"
+    name="amazonCart">
+
     <component name="AmazonCartServiceComponent">
-    	<implementation.java class="amazon.cart.AmazonCartImpl" />
-	    <service name="AmazonCartService" >
-	        <interface.wsdl interface="http://amazon.cart.com/#wsdl.interface(AmazonCartServicePortType)" />
-	        <binding.ws />
-	    </service>
+        <implementation.java class="amazon.cart.AmazonCartImpl" />
+        <service name="AmazonCart">
+            <interface.wsdl interface="http://amazon.cart.com/#wsdl.interface(AmazonCartServicePortType)" />
+            <binding.ws />
+        </service>
     </component>
 
 </composite>

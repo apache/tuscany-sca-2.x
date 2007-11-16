@@ -55,8 +55,8 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         if (source == target) {
             return true;
         }
-        
-        if(source.isDynamic() || target.isDynamic()) {
+
+        if (source.isDynamic() || target.isDynamic()) {
             return true;
         }
 
@@ -64,10 +64,14 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         if (!source.getName().equals(target.getName())) {
             return false;
         }
-        
+
         if (source.getInterface().isRemotable() != target.getInterface().isRemotable()) {
             return false;
         }
+
+        //        if (source.getInterface().isRemotable()) {
+        //            return true;
+        //        }
 
         // FIXME: We need to deal with wrapped<-->unwrapped conversion
 
@@ -81,15 +85,22 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
             return false;
         }
 
+        boolean checkSourceWrapper = true;
         List<DataType> sourceInputType = source.getInputType().getLogical();
-        if (source.isWrapperStyle()) {
+        if (source.isWrapperStyle() && source.getWrapper() != null) {
             sourceInputType = source.getWrapper().getUnwrappedInputType().getLogical();
+            checkSourceWrapper = false;
         }
+        boolean checkTargetWrapper = true;
         List<DataType> targetInputType = target.getInputType().getLogical();
-        if (target.isWrapperStyle()) {
+        if (target.isWrapperStyle() && target.getWrapper() != null) {
             targetInputType = target.getWrapper().getUnwrappedInputType().getLogical();
+            checkTargetWrapper = false;
         }
 
+        if (checkSourceWrapper != checkTargetWrapper) {
+            return true;
+        }
         if (sourceInputType.size() != targetInputType.size()) {
             return false;
         }
@@ -144,7 +155,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         if (source.getInterface().isDynamic() || target.getInterface().isDynamic()) {
             return true;
         }
-        
+
         if (source.getInterface().isRemotable() != target.getInterface().isRemotable()) {
             if (!silent) {
                 throw new IncompatibleInterfaceContractException("Remotable settings do not match", source, target);
@@ -198,7 +209,8 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         }
 
         for (Operation operation : source.getCallbackInterface().getOperations()) {
-            Operation targetOperation = getOperation(target.getCallbackInterface().getOperations(), operation.getName());
+            Operation targetOperation =
+                getOperation(target.getCallbackInterface().getOperations(), operation.getName());
             if (targetOperation == null) {
                 if (!silent) {
                     throw new IncompatibleInterfaceContractException("Callback operation not found on target", source,
@@ -230,11 +242,11 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
         if (source == null || target == null) {
             return false;
         }
-        
+
         if (source.isDynamic() || target.isDynamic()) {
             return true;
         }
-        
+
         if (source.isRemotable() != target.isRemotable()) {
             return false;
         }
