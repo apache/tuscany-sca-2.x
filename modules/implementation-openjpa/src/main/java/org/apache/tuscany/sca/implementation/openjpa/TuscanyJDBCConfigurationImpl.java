@@ -26,17 +26,20 @@ import org.apache.openjpa.jdbc.sql.DBDictionary;
 import org.apache.openjpa.jdbc.sql.DerbyDictionary;
 import org.apache.openjpa.kernel.BrokerImpl;
 import org.apache.openjpa.lib.conf.Configurations;
+import javax.sql.*;
+import org.apache.openjpa.ee.*;
+import org.apache.openjpa.kernel.*;
 
 public class TuscanyJDBCConfigurationImpl extends JDBCConfigurationImpl {
     private TransactionManager tm;
 
-    public TuscanyJDBCConfigurationImpl(TransactionManager tm) {
+    public TuscanyJDBCConfigurationImpl(TransactionManager tm,DataSource _ds) {
         this.tm = tm;
+		ds2 = _ds;
     }
-    
-    public BrokerImpl newBrokerInstance(String user, String pass) {
-        return new TuscanyBrokerImpl(tm);
-    }
+    public ManagedRuntime getManagedRuntimeInstance() {
+		return new TuscanyManagerRuntime(tm);
+	}
 
     public Object getConnectionFactory() {
         return null;
@@ -47,4 +50,10 @@ public class TuscanyJDBCConfigurationImpl extends JDBCConfigurationImpl {
         Configurations.configureInstance(dd, this, "", "");
         return dd;
     }
+	private DataSource ds2;
+	@Override
+	public DataSource getDataSource2(StoreContext ctx) {
+	
+		return ds2;
+	}
 }

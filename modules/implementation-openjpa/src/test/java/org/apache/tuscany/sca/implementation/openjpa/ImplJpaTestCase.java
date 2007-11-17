@@ -26,26 +26,44 @@ import javax.persistence.*;
 import java.util.*;
 
 public class ImplJpaTestCase extends TestCase {
-	private EntityManager em;
-	private Log log = LogFactory.getLog(this.getClass());
+    private EntityManager em;
+    private Log log = LogFactory.getLog(this.getClass());
+    private SCADomain domain;
 
-	public void setUp() {
-		SCADomain domain = SCADomain.newInstance("openjpa.composite");
-		em = domain.getService(EntityManager.class, "OpenJPAServiceComponent");
+    public void setUp() {
+        domain = SCADomain.newInstance("openjpa.composite");
+        em = domain.getService(EntityManager.class, "OpenJPAServiceComponent");
 
-	}
+    }
 
-	public void testAccess() {
-		Abc a = new Abc();
-		int i = new Random().nextInt();
-		a.setId(i);
-		em.persist(a);
-		log.info(em.find(Abc.class, i));
-		Query q = em.createQuery("select a from Abc a");
-		log.info("There are "+q.getResultList().size()+" Abc in the database now");
-	}
+    public void testAccess() {
+        Abc a = new Abc();
+        int i = new Random().nextInt();
+        a.setId(i);
+        em.persist(a);
+        log.info(em.find(Abc.class, i));
+        Query q = em.createQuery("select a from Abc a");
+        q.setMaxResults(5);
+        log.info("There are " + q.getResultList().size() + " Abc in the database now");
+    }
 
-	public void tearDown() {
+    public void testRollback() {
+        try {
+            Abc a = new Abc();
+            int i = new Random().nextInt();
+            a.setId(i);
+            em.persist(a);
+            Abc a2 = new Abc();
+            a2.setId(i);
+            em.persist(a2);
 
-	}
+        } catch (RuntimeException ex) {
+            log.info("An expected exception occured, Tuscany is rolling back...");
+        }
+    }
+
+    public void tearDown() {
+        em.close();
+        domain.close();
+    }
 }
