@@ -28,7 +28,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.axis2.description.AxisMessage;
 import org.apache.axis2.description.AxisOperation;
-import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.util.FileWriter;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.axis2.wsdl.codegen.CodeGenConfiguration;
@@ -37,7 +36,6 @@ import org.apache.axis2.wsdl.codegen.writer.InterfaceWriter;
 import org.apache.axis2.wsdl.databinding.TypeMapper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 /**
  * Overrides the Axis2 JavaEmitter to generate unwrapped methods.
  */
@@ -68,6 +66,10 @@ public class JavaInterfaceEmitter extends JavaEmitter {
             List typeMappings;
             if (wrapped) {
                 typeMappings = typeMappingEntry.getPropertyClassNames();
+                if(typeMappings == null) {
+                    typeMappings = new ArrayList();
+                    typeMappings.add(typeMappingEntry.getClassName());
+                }
             } else {
                 typeMappings = new ArrayList();
                 typeMappings.add(typeMappingEntry.getClassName());
@@ -126,59 +128,12 @@ public class JavaInterfaceEmitter extends JavaEmitter {
         return parameterElementList;
     }
 
-    protected boolean isWrapped(AxisOperation operation) {
-        boolean wrapped = false;
-
-        if (isInputPresentForMEP(operation.getMessageExchangePattern())) {
-            QName qname = operation.getMessage(WSDLConstants.MESSAGE_LABEL_IN_VALUE).getElementQName();
-            if (qname != null && qname.getLocalPart().equals(operation.getName().getLocalPart())) {
-
-                //
-                // Maybe we should be more strict than this but there's no point
-                // in ruling out named
-                // complex types.
-                //
-                // wrapped = true;
-
-                // *
-                SDODataBindingTypeMappingEntry typeMappingEntry =
-                    (SDODataBindingTypeMappingEntry)this.typeMapper.getTypeMappingObject(qname);
-                if (typeMappingEntry.isAnonymous()) {
-                    wrapped = true;
-                }
-                // */
-            }
-        }
-
-        return wrapped;
-    }
-
-    private boolean isInputPresentForMEP(String MEP) {
-        // TODO: verify if thi is still correct with Axis2 1.2
-        return WSDL2Constants.MEP_URI_IN_ONLY.equals(MEP) || WSDL2Constants.MEP_URI_IN_OPTIONAL_OUT.equals(MEP)
-            || WSDL2Constants.MEP_URI_OUT_OPTIONAL_IN.equals(MEP)
-            || WSDL2Constants.MEP_URI_ROBUST_OUT_ONLY.equals(MEP)
-            || WSDL2Constants.MEP_URI_ROBUST_IN_ONLY.equals(MEP)
-            || WSDL2Constants.MEP_URI_IN_OUT.equals(MEP)
-            ||
-
-            WSDLConstants.WSDL20_2006Constants.MEP_URI_IN_ONLY.equals(MEP)
-            || WSDLConstants.WSDL20_2006Constants.MEP_URI_IN_OPTIONAL_OUT.equals(MEP)
-            || WSDLConstants.WSDL20_2006Constants.MEP_URI_OUT_OPTIONAL_IN.equals(MEP)
-            || WSDLConstants.WSDL20_2006Constants.MEP_URI_ROBUST_OUT_ONLY.equals(MEP)
-            || WSDLConstants.WSDL20_2006Constants.MEP_URI_ROBUST_IN_ONLY.equals(MEP)
-            || WSDLConstants.WSDL20_2006Constants.MEP_URI_IN_OUT.equals(MEP)
-            ||
-
-            WSDLConstants.WSDL_MESSAGE_DIRECTION_IN.endsWith(MEP);
-    }
-
     @Override
     protected Element getInputElement(Document doc, AxisOperation operation, List headerParameterQNameList) {
         return getElement(doc,
                           "input",
                           operation.getMessage(WSDLConstants.MESSAGE_LABEL_IN_VALUE),
-                          isWrapped(operation),
+                          operation.getMessage(WSDLConstants.MESSAGE_LABEL_IN_VALUE).isWrapped(),
                           headerParameterQNameList);
     }
 
@@ -187,7 +142,7 @@ public class JavaInterfaceEmitter extends JavaEmitter {
         return getElement(doc,
                           "output",
                           operation.getMessage(WSDLConstants.MESSAGE_LABEL_OUT_VALUE),
-                          isWrapped(operation),
+                          operation.getMessage(WSDLConstants.MESSAGE_LABEL_OUT_VALUE).isWrapped(),
                           headerParameterQNameList);
     }
 
@@ -234,6 +189,7 @@ public class JavaInterfaceEmitter extends JavaEmitter {
 
 //      JIRA TUSCANY-1561 Port to Axis2 1.3                
 //        writeClass(interfaceModel, interfaceWriter);
+
         writeFile(interfaceModel, interfaceWriter);
     }
 
