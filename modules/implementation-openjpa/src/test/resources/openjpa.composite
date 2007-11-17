@@ -36,7 +36,7 @@
 			<tuscany:datasource>
 				<dbtype>Derby</dbtype>
 				<dbname>test</dbname>
-				<dbcreate>no thanks</dbcreate>
+				<dbcreate>create</dbcreate>
 			</tuscany:datasource>
 		</tuscany:implementation.jpa>
 	</component>

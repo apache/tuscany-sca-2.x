@@ -22,15 +22,33 @@ package org.apache.tuscany.sca.implementation.openjpa;
 import javax.sql.XAConnection;
 import javax.transaction.TransactionManager;
 
-import org.apache.derby.jdbc.EmbeddedXADataSource;
+import org.apache.derby.jdbc.*;
 import org.apache.openjpa.conf.OpenJPAConfiguration;
 import org.apache.openjpa.kernel.AbstractBrokerFactory;
 import org.apache.openjpa.kernel.StoreManager;
 import org.apache.openjpa.lib.conf.ConfigurationProvider;
+import java.util.*;
+import org.apache.commons.logging.*;
+import org.apache.openjpa.jdbc.meta.MappingTool;
+import org.apache.openjpa.jdbc.conf.*;
+import org.apache.openjpa.meta.*;
 
 public class TuscanyBrokerFactory extends AbstractBrokerFactory {
+	private Log log = LogFactory.getLog(this.getClass());
     protected TuscanyBrokerFactory(OpenJPAConfiguration conf) {
         super(conf);
+		if (buildSchema != null && buildSchema.equals("buildSchema")) {
+			MappingTool tool = new MappingTool((JDBCConfiguration) conf,
+					(String) buildSchema, false);
+			Collection classes = meta.loadPersistentTypes(false, this
+					.getClass().getClassLoader());
+			for (Iterator itr = classes.iterator(); itr.hasNext();) {
+				tool.run((Class) itr.next());
+			}
+			log
+					.info("creating database and tables accroding to class mappings...");
+			tool.record();
+		}
     }
 
     private XAConnection xaconn;
@@ -42,7 +60,7 @@ public class TuscanyBrokerFactory extends AbstractBrokerFactory {
                 if (cp.getProperties().get("dbtype").equals("Derby")) {
                     EmbeddedXADataSource xads = new EmbeddedXADataSource();
                     xads.setDatabaseName((String)cp.getProperties().get("dbname"));
-                    xads.setCreateDatabase((String)cp.getProperties().get("dbcreate"));
+        
                     xaconn = xads.getXAConnection();
                 }
 
@@ -59,11 +77,23 @@ public class TuscanyBrokerFactory extends AbstractBrokerFactory {
 
     private static TransactionManager tm;
     private static ConfigurationProvider cp;
+	private static Object buildSchema;
+	private static MetaDataRepository meta;
 
     public static TuscanyBrokerFactory newInstance(ConfigurationProvider _cp) {
         tm = (TransactionManager)_cp.getProperties().get("TransactionManager");
-        TuscanyJDBCConfigurationImpl conf = new TuscanyJDBCConfigurationImpl(tm);
+		EmbeddedDataSource ds2 = null;
+		if (_cp.getProperties().get("dbtype").equals("Derby")) {
+			ds2 = new EmbeddedDataSource();
+			ds2.setDatabaseName((String) _cp.getProperties().get("dbname"));
+			ds2.setCreateDatabase((String) _cp.getProperties().get("dbcreate"));
+		}
+        TuscanyJDBCConfigurationImpl conf = new TuscanyJDBCConfigurationImpl(tm, ds2);
         _cp.setInto(conf);
+		buildSchema = _cp.getProperties().get(
+				"openjpa.jdbc.SynchronizeMappings");
+
+		meta = conf.getMetaDataRepositoryInstance();
         cp = _cp;
         return new TuscanyBrokerFactory(conf);
     }
