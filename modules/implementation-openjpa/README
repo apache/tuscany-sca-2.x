@@ -1,0 +1,33 @@
+Tuscany implementation OpenJpa
+===============================
+Persistence technology is a very part of enterprise level application system. Tuscany has provided 
+SDO implementation and a non standard but useful DAS infrastructure.
+But Tuscany also considered much existed software resource has used popular technologies as 
+hibernate and jpa.
+Hibernate has license problem so an implementation based on it can not be hosted by Apache.
+This implementation is developed on the bases of Tuscany¡¯s robust extensible architecture and of 
+course the jpa implementation project: Apache OpenJPA.
+
+This module is under the process of more improvement:
+
+For the time being, user of this module could configure a component as did by the *.composite file 
+in this module. The component is infact a proxy of a JPA top api:
+	javax.persitence.EntityManager
+User of this module could use all the method provided by this interface.
+
+An difference is: OpenJPA could work with 2PC only if there is JNDI context and 
+TransactionManager registered in the JNDI. This module modified much to work with 
+policy-transaction module.
+
+For the time being, the Transaction boundary is located around one invocation of the EntityManager. But in the future, these boundary will move up to an component who references the EntityManager, that will be the righteous way for SCA developers!
+
+The data base working in this module is now Derby, it is for the ease of test running. MySQL 
+could also work with this module, but it need database deployment in before. Not all types of database could work with this module, such as HSql, it did not provided a XA DataSource implementation up to now.
+
+There are much powerful features provided by openjpa, such as table auto generation, it is now also working in this module.
+
+User could get start from looking at what is done by:
+??org.apache.tuscany.sca.implementation.openjpa.ImplJpaTestCase 
+??and
+??openjpa.composite
+When running the testcase, a RuntimeException stack trace(from inside openjpa api) will get printed on your screen, it is just ok, because of a trying of duplication primary key insertion, and it causes transaction rolling back.
