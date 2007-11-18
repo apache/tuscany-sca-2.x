@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.CallableReferenceObjectFactory;
+import org.apache.tuscany.sca.core.invocation.CallbackReferenceObjectFactory;
 import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.WireObjectFactory;
@@ -161,8 +162,7 @@ public class JavaComponentContextProvider {
                     businessInterface =
                         JavaIntrospectionHelper.getBusinessInterface(element.getType(), element.getGenericType());
                     factory =
-                        new CallableReferenceObjectFactory(new CallbackWireObjectFactory(businessInterface,
-                                                                                         proxyFactory, wires));
+                        new CallbackReferenceObjectFactory(businessInterface, proxyFactory, wires);
                 } else {
                     factory = new CallbackWireObjectFactory(businessInterface, proxyFactory, wires);
                 }

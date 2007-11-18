@@ -66,9 +66,6 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     protected ExtendedConversation conversation;
     protected MessageFactory messageFactory;
     protected EndpointReference target;
-    protected Object conversationID;
-    protected Object callbackID;
-    protected Object callbackObject;
     protected RuntimeWire wire;
     protected CallableReference<?> callableReference;
     protected Class<?> businessInterface;
@@ -88,13 +85,8 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         this.callableReference = callableReference;
         if (callableReference != null) {
             this.businessInterface = callableReference.getBusinessInterface();
-            this.callbackID = callableReference.getCallbackID();
             this.conversation = (ExtendedConversation)callableReference.getConversation();
             this.wire = ((CallableReferenceImpl<?>)callableReference).getRuntimeWire();
-            if (callableReference instanceof ServiceReference) {
-                this.conversationID = ((ServiceReference)callableReference).getConversationID();
-                this.callbackObject = ((ServiceReference)callableReference).getCallback();
-            }
             if (wire != null) {
                 init(wire);
             }
@@ -112,6 +104,30 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         }
         InterfaceContract contract = wire.getSource().getInterfaceContract();
         this.conversational = contract.getInterface().isConversational();
+    }
+
+    protected Object getCallbackID() {
+        if (callableReference != null) {
+            return callableReference.getCallbackID();
+        } else {
+            return null;
+        }
+    }
+
+    protected Object getConversationID() {
+        if (callableReference != null && callableReference instanceof ServiceReference) {
+            return ((ServiceReference)callableReference).getConversationID();
+        } else {
+            return null;
+        }
+    }
+
+    protected Object getCallbackObject() {
+        if (callableReference != null && callableReference instanceof ServiceReference) {
+            return ((ServiceReference)callableReference).getCallback();
+        } else {
+            return null;
+        }
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -251,7 +267,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     private void handleCallback(Message msg, RuntimeWire wire, Object currentConversationID)
         throws TargetResolutionException {
         ReferenceParameters parameters = msg.getTo().getReferenceParameters();
-        parameters.setCallbackID(callbackID);
+        parameters.setCallbackID(getCallbackID());
         if (wire.getSource() == null || wire.getSource().getCallbackEndpoint() == null) {
             return;
         }
@@ -262,6 +278,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         // register the calling component instance against this 
         // new conversation id so that stateful callbacks will be
         // able to find it
+        Object callbackObject = getCallbackObject();
         if (conversational && callbackObject == null) {
             // the component instance is already registered
             // so add another registration
@@ -307,7 +324,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         }
         ConversationManager conversationManager = ((RuntimeWireImpl)wire).getConversationManager();
         if (conversation == null || conversation.getState() == ConversationState.ENDED) {
-            conversation = conversationManager.startConversation(conversationID);
+            conversation = conversationManager.startConversation(getConversationID());
             if (callableReference != null) {
                 ((CallableReferenceImpl)callableReference).attachConversation(conversation);
             }
@@ -363,15 +380,16 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     }
 
     /**
-     * Creates a new conversational id
+     * Creates a new conversation id
      * 
-     * @return the conversational id
+     * @return the conversation id
      */
     private Object createConversationID() {
-        if (conversationID == null) {
+        if (getConversationID() != null) {
+            return getConversationID();
+        } else {
             return UUID.randomUUID().toString();
         }
-        return conversationID;
     }
 
     /**

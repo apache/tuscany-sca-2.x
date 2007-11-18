@@ -43,8 +43,8 @@ import org.osoa.sca.ServiceRuntimeException;
 public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
     private static final long serialVersionUID = -3350283555825935609L;
 
-    public JDKCallbackInvocationHandler(MessageFactory messageFactory, CallbackWireObjectFactory wireFactory) {
-        super(messageFactory, wireFactory);
+    public JDKCallbackInvocationHandler(MessageFactory messageFactory, CallbackReferenceImpl ref) {
+        super(messageFactory, ref);
         this.fixedWire = false;
     }
 
@@ -57,7 +57,7 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
 
         // wire not pre-selected, so select a wire now to be used for the callback
         Message msgContext = ThreadMessageContext.getMessageContext();
-        RuntimeWire wire = ((CallbackWireObjectFactory)callableReference).selectCallbackWire(msgContext);
+        RuntimeWire wire = ((CallbackReferenceImpl)callableReference).selectCallbackWire(msgContext);
         if (wire == null) {
             //FIXME: need better exception
             throw new ServiceRuntimeException("No callback wire found for " + msgContext.getFrom().getURI());
@@ -91,8 +91,8 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
             }
         }
 
-        callbackID = msgContext.getTo().getReferenceParameters().getCallbackID();
-        ((CallbackWireObjectFactory)callableReference).attachCallbackID(callbackID);
+        Object callbackID = msgContext.getTo().getReferenceParameters().getCallbackID();
+        ((CallbackReferenceImpl)callableReference).attachCallbackID(callbackID);
 
         EndpointReference epr = msgContext.getTo().getReferenceParameters().getCallbackReference();
         setEndpoint(epr);

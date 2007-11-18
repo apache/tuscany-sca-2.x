@@ -122,8 +122,8 @@ public class CglibProxyFactory implements ProxyFactory {
         }
 
         public CglibMethodInterceptor(Class<T> interfaze, List<RuntimeWire> wires) {
-            CallbackWireObjectFactory wireFactory = new CallbackWireObjectFactory(interfaze, CglibProxyFactory.this, wires);
-            invocationHandler = new JDKCallbackInvocationHandler(messageFactory, wireFactory);
+            CallbackReferenceImpl ref = new CallbackReferenceImpl(interfaze, CglibProxyFactory.this, wires);
+            invocationHandler = new JDKCallbackInvocationHandler(messageFactory, ref);
         }
 
         /**
