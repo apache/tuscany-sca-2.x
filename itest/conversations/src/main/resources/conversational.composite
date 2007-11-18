@@ -85,6 +85,15 @@
     
     <component name="ConversationalServiceStatefulNonConversationalCallback">
 		<implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatefulNonConversationalCallbackImpl"/>
-	</component>   
+	</component>
+
+    <component name="ConversationalAComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.AServiceImpl"/>
+        <reference name="b" target="ConversationalBComponent" />
+    </component>
+
+    <component name="ConversationalBComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.BServiceImpl"/>
+    </component>
 
 </composite>

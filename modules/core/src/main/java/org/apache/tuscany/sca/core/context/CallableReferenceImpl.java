@@ -38,7 +38,6 @@ import org.apache.tuscany.sca.core.conversation.ConversationManager;
 import org.apache.tuscany.sca.core.conversation.ConversationState;
 import org.apache.tuscany.sca.core.conversation.ExtendedConversation;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
-import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -58,7 +57,7 @@ import org.osoa.sca.ServiceRuntimeException;
  * @version $Rev$ $Date$
  * @param <B> the type of the business interface
  */
-public class CallableReferenceImpl<B> implements CallableReference<B>, Externalizable, ObjectFactory<B> {
+public class CallableReferenceImpl<B> implements CallableReference<B>, Externalizable {
     protected transient CompositeActivator compositeActivator;
     protected transient ProxyFactory proxyFactory;
 
@@ -147,7 +146,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         }
     }
 
-    public B getInstance() throws ObjectCreationException {
+    public B getProxy() throws ObjectCreationException {
         try {
             resolve();
             //FIXME Can't we just return a single proxy
@@ -159,7 +158,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
 
     public B getService() {
         try {
-            return getInstance();
+            return getProxy();
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }

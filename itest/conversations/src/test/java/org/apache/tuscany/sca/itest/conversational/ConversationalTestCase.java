@@ -594,5 +594,58 @@ public class ConversationalTestCase {
         String id = conversationalStatefulClientNonConversationalCallbackStatelessService.runConversationCallingEndedConversationCallbackCheckConversationId();
         Assert.assertEquals("MyConversation3", id);
     }    
+
+    private static final String NEW_A_VALUE = "First Instance - TestCode Set state on A";
+    private static final String NEW_B_VALUE = "First Instance - TestCode Set state on B";
+    private static final String SECOND_NEW_A_VALUE = "Second Instance - TestCode Set state on A";
+    private static final String SECOND_NEW_B_VALUE = "Second Instance - TestCode Set state on B";
+    
+    @Test
+    public void testMultipleConversations() {
+        //////////
+        // Tests on first instance
+        //////////
+        System.out.println("========= First instance tests =========");
+        AService aService = domain.getService(AService.class, "ConversationalAComponent");
+        
+        // Make sure initial values are correct
+        Assert.assertEquals(Constants.A_INITIAL_VALUE, aService.getState());
+        Assert.assertEquals(Constants.B_INITIAL_VALUE, aService.getStateOnB());
+
+        // Set some new values
+        aService.setState(NEW_A_VALUE);
+        aService.setStateOnB(NEW_B_VALUE);
+        
+        // Verify the set worked
+        Assert.assertEquals(NEW_A_VALUE, aService.getState());
+        Assert.assertEquals(NEW_B_VALUE, aService.getStateOnB());
+
+        
+        //////////
+        // Tests on second instance
+        //////////
+        System.out.println("========= Second instance tests =========");
+
+        // Do another look up
+        AService aService2 = domain.getService(AService.class, "ConversationalAComponent");
+
+        // Make sure initial values are correct on the second instance
+        Assert.assertEquals(Constants.A_INITIAL_VALUE, aService2.getState());
+        Assert.assertEquals(Constants.B_INITIAL_VALUE, aService2.getStateOnB());
+        
+        // Set some new values on the second instance
+        aService2.setState(SECOND_NEW_A_VALUE);
+        aService2.setStateOnB(SECOND_NEW_B_VALUE);
+    
+        // Verify the set worked on the second instance
+        Assert.assertEquals(SECOND_NEW_A_VALUE, aService2.getState());
+        Assert.assertEquals(SECOND_NEW_B_VALUE, aService2.getStateOnB());
+
+        // Verify the values have not been changed on the first instance
+        Assert.assertEquals(NEW_A_VALUE, aService.getState());
+        Assert.assertEquals(NEW_B_VALUE, aService.getStateOnB());
+        
+        System.out.println("========= Done instance tests =========");
+    }
         
 }

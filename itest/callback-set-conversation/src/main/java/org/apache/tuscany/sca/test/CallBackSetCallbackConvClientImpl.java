@@ -85,9 +85,7 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
         ServiceReference<CallBackSetCallbackConvService> aCallBackServiceRef
                 = componentContext.cast(aCallBackService);
         aCallBackServiceRef.setCallback(aCallbackObject);
-        //FIXME: remove the following workaround for runtime bug
-        aCallBackServiceRef.getService().knockKnock("Knock Knock");
-        //aCallBackService.knockKnock("Knock Knock");
+        aCallBackService.knockKnock("Knock Knock");
 
         Assert.assertEquals("CallBackSetCallbackConv - Test7", 2, aCallbackObject.getCount());
 
@@ -108,9 +106,7 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
             ServiceReference<CallBackSetCallbackConvService> aCallBackServiceRef
                     = componentContext.cast(aCallBackService);
             aCallBackServiceRef.setCallback(new CallBackSetCallbackConvBadCallback());
-            //FIXME: remove the following workaround for runtime bug
-            aCallBackServiceRef.getService().knockKnock("Knock Knock");
-            //aCallBackService.knockKnock("Knock Knock");
+            aCallBackService.knockKnock("Knock Knock");
         }
 
         //
@@ -148,9 +144,7 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
             ServiceReference<CallBackSetCallbackConvService> aCallBackServiceRef
                     = componentContext.cast(aCallBackService);
             aCallBackServiceRef.setCallback(new CallBackSetCallbackConvNonSerCallback());
-            //FIXME: remove the following workaround for runtime bug
-            aCallBackServiceRef.getService().knockKnock("Knock Knock");
-            //aCallBackService.knockKnock("Knock Knock");
+            aCallBackService.knockKnock("Knock Knock");
         }
         //
         // This should catch an appropriate exception.

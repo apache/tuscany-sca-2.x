@@ -31,32 +31,33 @@ import org.osoa.sca.CallableReference;
  * @version $Rev$ $Date$
  */
 public class CallableReferenceObjectFactory implements ObjectFactory<CallableReference<?>> {
-    private CallableReference<?> callableReference;
+    private Class<?> businessInterface;
+    private RuntimeComponent component;
+    private RuntimeComponentReference reference;
+    private Binding binding;
 
     /**
      * Constructor.
      * 
      * To support the @Reference protected CallableReference<MyService> ref;
      * 
-     * @param interfaze the interface to inject on the client
-     * @param wire the backing wire
-     * @param proxyService the wire service to create the proxy
-     * @throws NoMethodForOperationException
+     * @param businessInterface the interface to inject
+     * @param component the component defining the reference to be injected
+     * @param reference the reference to be injected
+     * @param binding the binding for the reference
      */
     public CallableReferenceObjectFactory(Class<?> businessInterface,
                                           RuntimeComponent component,
                                           RuntimeComponentReference reference,
                                           Binding binding) {
-        this.callableReference =
-            component.getComponentContext().getServiceReference(businessInterface, reference, binding);
-    }
-
-    public CallableReferenceObjectFactory(CallableReference<?> callableReference) {
-        this.callableReference = callableReference;
+        this.businessInterface = businessInterface;
+        this.component = component;
+        this.reference = reference;
+        this.binding = binding;
     }
 
     public CallableReference<?> getInstance() throws ObjectCreationException {
-        return callableReference;
+        return component.getComponentContext().getServiceReference(businessInterface, reference, binding);
     }
 
 }

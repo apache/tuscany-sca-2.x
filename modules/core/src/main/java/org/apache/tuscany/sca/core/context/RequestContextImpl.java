@@ -22,7 +22,7 @@ import java.util.List;
 
 import javax.security.auth.Subject;
 
-import org.apache.tuscany.sca.core.invocation.CallbackWireObjectFactory;
+import org.apache.tuscany.sca.core.invocation.CallbackReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -93,13 +93,13 @@ public class RequestContextImpl implements RequestContext {
         JavaInterface javaInterface = (JavaInterface) callbackReference.getInterfaceContract().getInterface();
         Class<CB> javaClass = (Class<CB>)javaInterface.getJavaClass();
         List<RuntimeWire> wires = callbackReference.getRuntimeWires();
-        CallbackWireObjectFactory factory = new CallbackWireObjectFactory(javaClass, proxyFactory, wires);
-        factory.resolveTarget();
+        CallbackReferenceImpl ref = new CallbackReferenceImpl(javaClass, proxyFactory, wires);
+        ref.resolveTarget();
         ReferenceParameters parameters = msgContext.getTo().getReferenceParameters();
-        factory.attachCallbackID(parameters.getCallbackID());
-        if (factory.getConversation() != null) {
-            factory.attachConversationID(parameters.getConversationID());
+        ref.attachCallbackID(parameters.getCallbackID());
+        if (ref.getConversation() != null) {
+            ref.attachConversationID(parameters.getConversationID());
         }
-        return factory;
+        return ref;
     }
 }
