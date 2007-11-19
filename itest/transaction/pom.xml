@@ -25,7 +25,7 @@
         <version>1.1-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-itest-transaction</artifactId>
+    <artifactId>itest-transaction</artifactId>
     <name>Apache Tuscany SCA Transaction Policy Integration Test</name>
 
     <dependencies>
