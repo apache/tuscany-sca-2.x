@@ -188,6 +188,11 @@ public class TomcatServer implements ServletHost {
 
         // Register the servlet mapping
         String path = uri.getPath();
+        
+        if (!path.startsWith("/")) {
+            path = '/' + path;
+        }
+        
         if (!path.startsWith(contextPath)) {
             path = contextPath + path;
         }
@@ -264,6 +269,11 @@ public class TomcatServer implements ServletHost {
         
         // Construct the URL
         String path = uri.getPath();
+
+        if (!path.startsWith("/")) {
+            path = '/' + path;
+        }
+        
         if (!path.startsWith(contextPath)) {
             path = contextPath + path;
         }
@@ -277,6 +287,11 @@ public class TomcatServer implements ServletHost {
     }
         
     public Servlet getServletMapping(String suri) throws ServletMappingException {
+        
+        if (suri == null){
+           return null;
+        }
+        
         URI uri = URI.create(suri);
         
         // Get the URI port
