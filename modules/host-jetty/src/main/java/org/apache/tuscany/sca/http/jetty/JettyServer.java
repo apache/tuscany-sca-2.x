@@ -185,7 +185,8 @@ public class JettyServer implements ServletHost {
                 }
     
                 ContextHandler contextHandler = new ContextHandler();
-                contextHandler.setContextPath(contextPath);
+                //contextHandler.setContextPath(contextPath);
+                contextHandler.setContextPath("/");
                 server.setHandler(contextHandler);
     
                 SessionHandler sessionHandler = new SessionHandler();
@@ -220,10 +221,11 @@ public class JettyServer implements ServletHost {
             }
             if (servletPath.endsWith("/")) {
                 servletPath = servletPath.substring(0, servletPath.length()-1);
-            }
+            }          
             if (!servletPath.startsWith("/")) {
                 servletPath = '/' + servletPath;
-            }
+            }     
+       
             DefaultResourceServlet resourceServlet = (DefaultResourceServlet)servlet;
             DefaultServlet defaultServlet = new JettyDefaultServlet(servletPath, resourceServlet.getDocumentRoot());
             holder = new ServletHolder(defaultServlet);
@@ -232,12 +234,19 @@ public class JettyServer implements ServletHost {
             holder = new ServletHolder(servlet);
         }
         servletHandler.addServlet(holder);
+        
         ServletMapping mapping = new ServletMapping();
         mapping.setServletName(holder.getName());
         String path = uri.getPath();
+        
         if (!path.startsWith("/")) {
             path = '/' + path;
         }
+        
+        if (!path.startsWith(contextPath)) {
+            path = contextPath + path;
+        }  
+                
         mapping.setPathSpec(path);
         servletHandler.addServletMapping(mapping);
         
@@ -280,9 +289,17 @@ public class JettyServer implements ServletHost {
         
         // Construct the URL
         String path = uri.getPath();
+
+       
+        if (!path.startsWith("/")) {
+            path = '/' + path;
+        }
+
         if (!path.startsWith(contextPath)) {
             path = contextPath + path;
         }
+        
+
         URL url;
         try {
             url = new URL(scheme, host, portNumber, path);
@@ -293,6 +310,11 @@ public class JettyServer implements ServletHost {
     }
         
     public Servlet getServletMapping(String suri) throws ServletMappingException {
+        
+        if (suri == null){
+            return null;
+        }
+        
         URI uri = URI.create(suri);
         
         // Get the URI port
