@@ -52,6 +52,5 @@ public class MyClientImpl implements MyClient, MyServiceCallback {
         Thread.sleep(5000);  // don't exit before callback arrives
         System.out.println("Closing the domain");
         scaDomain.close();
-        System.out.println("Domain was closed");
     }
 }
