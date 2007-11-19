@@ -64,6 +64,7 @@
             </activation>
             <modules>
                 <module>modules</module>
+                <module>tools</module>
                 <module>samples</module>
                 <module>itest</module>
             </modules>
@@ -73,6 +74,7 @@
             <id>distribution</id>
             <modules>
                 <module>modules</module>
+                <module>tools</module>
                 <module>samples</module>
                 <module>itest</module>
                 <module>distribution</module>
@@ -83,6 +85,7 @@
             <id>eclipse</id>
             <modules>
                 <module>modules</module>
+                <module>tools</module>
                 <module>samples</module>
                 <module>itest</module>
                 <module>demos</module>
