@@ -79,7 +79,7 @@ public class NodeDrivenTestCase {
             // explicitly ask for composite to be started
             nodeC = nodeFactory.createSCANode("http://localhost:8300/nodeC", "http://localhost:9999");
             nodeC.addContribution("nodeC", cl.getResource("nodeC/"));
-            nodeC.addToDomainLevelComposite(new QName("http://sample", "Calculator")); 
+            nodeC.addToDomainLevelComposite(new QName("http://sample", "CalculatorC")); 
             nodeC.start();
 
             SCADomainFinder domainFinder = SCADomainFinder.newInstance();
@@ -105,6 +105,12 @@ public class NodeDrivenTestCase {
         nodeB.destroy();    
         nodeC.destroy();
     }
+    
+    //@Test
+    public void testKeepServerRunning() throws Exception {
+        System.out.println("press enter to continue");
+        System.in.read();
+    }    
 
     @Test
     public void testCalculator() throws Exception {       

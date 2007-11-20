@@ -28,10 +28,17 @@ package org.apache.tuscany.sca.node;
 public interface NodeFactory {
     
     /**
-     * Returns the domain object
+     * Returns the node object
      * 
-     * @return the domain 
+     * @return the node 
      */
     public SCANode getNode();
+    
+    /**
+     * Set the node object
+     * 
+     * @param node the node  
+     */
+    public void setNode(SCANode node);
     
 }

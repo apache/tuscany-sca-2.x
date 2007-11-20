@@ -81,6 +81,7 @@ public class SCADomainImpl implements SCADomainSPI  {
     // management runtime
     protected ReallySmallRuntime domainManagementRuntime;
     protected ContributionService domainManagementContributionService;
+    protected Contribution domainManagementContribution = null;
     protected Composite domainManagementComposite;
     protected DomainManagerNodeImpl domainManagerNode;
           

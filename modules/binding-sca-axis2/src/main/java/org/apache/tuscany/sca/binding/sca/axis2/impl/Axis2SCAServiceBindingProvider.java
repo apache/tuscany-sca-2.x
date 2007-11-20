@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -55,7 +56,7 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
     
     private final static Logger logger = Logger.getLogger(Axis2SCAServiceBindingProvider.class.getName());
 
-    private SCANode node;
+    private NodeFactory nodeFactory;
     private SCABinding binding;
     private Axis2ServiceProvider axisProvider;
     private WebServiceBinding wsBinding;
@@ -63,13 +64,13 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
     private boolean started = false;
 
 
-    public Axis2SCAServiceBindingProvider(SCANode node,
+    public Axis2SCAServiceBindingProvider(NodeFactory nodeFactory,
     		                          RuntimeComponent component,
                                           RuntimeComponentService service,
                                           DistributedSCABinding binding,
                                           ServletHost servletHost,
                                           MessageFactory messageFactory) {
-    	this.node = node;
+     	this.nodeFactory = nodeFactory;
         this.binding = binding.getSCABinding();
         wsBinding = (new DefaultWebServiceBindingFactory()).createWebServiceBinding();
         
@@ -94,9 +95,9 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
                                                    messageFactory);
         
 
-        if (node != null){
+        if ((nodeFactory != null) && (nodeFactory.getNode() != null)){
             
-            SCADomainSPI domainProxy = (SCADomainSPI)node.getDomain();
+            SCADomainSPI domainProxy = (SCADomainSPI)nodeFactory.getNode().getDomain();
             
             if (domainProxy != null) {
 
@@ -135,7 +136,7 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
                     // The node url will have been set via init parameters in the web app
                     URL nodeUrl;
                     try {
-                        URI tmpURI = new URI(node.getURI());
+                        URI tmpURI = new URI(nodeFactory.getNode().getURI());
                         nodeUrl = tmpURI.toURL();
                     } catch (Exception ex) {
                         throw new IllegalStateException("Node running inside a webapp and node was not created with a valid node url");
@@ -176,16 +177,16 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
                 }
     		        		
                 try {
-                    domainProxy.registerServiceEndpoint(node.getDomain().getURI(), 
-                                                        node.getURI(), 
+                    domainProxy.registerServiceEndpoint(nodeFactory.getNode().getDomain().getURI(), 
+                                                        nodeFactory.getNode().getURI(), 
                                                         componentServiceName, 
                                                         SCABinding.class.getName(), 
                                                         componentServiceUrlString);
                 } catch(Exception ex) {
                     logger.log(Level.WARNING, 
                                "Unable to  register service: "  +
-                               node.getDomain().getURI() + " " +
-                               node.getURI() + " " +
+                               nodeFactory.getNode().getDomain().getURI() + " " +
+                               nodeFactory.getNode().getURI() + " " +
                                componentServiceName + " " +
                                SCABinding.class.getName() + " " +
                                componentServiceUrlString);

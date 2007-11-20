@@ -39,30 +39,25 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public class RuntimeSCABindingProviderFactory implements BindingProviderFactory<SCABinding> {
     
     private ExtensionPointRegistry extensionPoints;
-    private SCANode node = null;
+    private NodeFactory nodeFactory;
     
     public RuntimeSCABindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
         ModelFactoryExtensionPoint factories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
-        NodeFactory domainFactory = factories.getFactory(NodeFactory.class);
-        
-        if (domainFactory != null) {
-        	node = domainFactory.getNode(); 
-        }
-        
+        nodeFactory = factories.getFactory(NodeFactory.class);        
     } 
     
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
                                                                    RuntimeComponentReference reference,
                                                                    SCABinding binding) {
               
-        return  new RuntimeSCAReferenceBindingProvider(extensionPoints, node, component, reference, binding);
+        return  new RuntimeSCAReferenceBindingProvider(extensionPoints, nodeFactory, component, reference, binding);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
                                                                RuntimeComponentService service,
                                                                SCABinding binding) {
-        return new RuntimeSCAServiceBindingProvider(extensionPoints, node, component, service, binding);
+        return new RuntimeSCAServiceBindingProvider(extensionPoints, nodeFactory, component, service, binding);
     }
 
     public Class<SCABinding> getModelType() {

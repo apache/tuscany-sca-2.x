@@ -91,6 +91,13 @@ public class StatelessStatefulTestCase {
     @AfterClass
     public static void tearDown() throws Exception {
         domain.destroy();
+        domain = null;
+        conversationalStatelessClientStatelessService = null;
+        conversationalStatelessClientStatefulService = null;
+        conversationalStatefulClientStatelessService = null;
+        conversationalStatefulClientStatefulService = null; 
+        conversationalStatelessClientRequestService = null;
+        conversationalStatefulClientNonConversationalCallbackStatelessService = null;    
     }
     
     private static void resetCallStack() {

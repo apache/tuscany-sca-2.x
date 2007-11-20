@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,6 +50,7 @@ import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
+import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
@@ -89,11 +91,19 @@ public class SCANodeImpl implements SCANode {
     // the domain that the node belongs to. This object acts as a proxy to the domain
     private SCADomain scaDomain;
     
+    // the started status of the node
+    private boolean nodeStarted = false;
+    
     // collection for managing contributions that have been added to the node 
     private Map<String, Contribution> contributions = new HashMap<String, Contribution>();    
     private Map<QName, Composite> composites = new HashMap<QName, Composite>();
     private Map<String, Composite> compositeFiles = new HashMap<String, Composite>();
-    private List<QName> compositesToStart = new ArrayList<QName>();
+    
+    private QName nodeManagementCompositeName = new QName("http://tuscany.apache.org/xmlns/tuscany/1.0", "node");
+    
+    // Used to pipe node information into the model
+    NodeFactoryImpl nodeFactory;
+    
        
     // methods defined on the implementation only
        
@@ -149,11 +159,7 @@ public class SCANodeImpl implements SCANode {
                ServerSocket socket = new ServerSocket(0);
                nodeURI = "http://" + host + ":" + socket.getLocalPort();
                socket.close();
-            } else {
-                if (!nodeURI.endsWith("/")) {
-                    nodeURI += "/";
-                }
-            }
+            } 
             
             // check whether node uri is an absolute url,  
             try {
@@ -180,15 +186,13 @@ public class SCANodeImpl implements SCANode {
                 }
             }            
             
-            // If a non-null domain name is provided make the node available to the model
+            // make the node available to the model
             // this causes the runtime to start registering binding-sca service endpoints
-            // with the domain so only makes sense if we know we have a domain to talk to
-            if (domainURI != null) {
-                ModelFactoryExtensionPoint factories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
-                NodeFactoryImpl nodeFactory = new NodeFactoryImpl(this);
-                factories.addFactory(nodeFactory);    
-            }
- 
+            // with the domain proxy
+            ModelFactoryExtensionPoint factories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
+            nodeFactory = new NodeFactoryImpl(this);
+            factories.addFactory(nodeFactory); 
+            
             // Create an in-memory domain level composite
             AssemblyFactory assemblyFactory = nodeRuntime.getAssemblyFactory();
             nodeComposite = assemblyFactory.createComposite();
@@ -258,20 +262,43 @@ public class SCANodeImpl implements SCANode {
     // API methods 
     
     public void start() throws NodeException {
-        startComposites();
+        if (!nodeStarted){
+            startComposites();
+            nodeStarted = true;
+        }
     }
     
     public void stop() throws NodeException {
-        stopComposites();
+        if (nodeStarted){
+            stopComposites();
+            nodeStarted = false;
+        } 
     }
     
     public void destroy() throws NodeException {
         try {
-            if (compositesToStart.size() != 0) {
-                stopComposites();
-            }
-            removeAllContributions();           
-            nodeRuntime.stop();
+            stop();
+            
+            removeAllContributions(); 
+            
+            ModelFactoryExtensionPoint factories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
+            factories.removeFactory(nodeFactory); 
+            nodeFactory.setNode(null);
+            
+            ((SCADomainProxyImpl)scaDomain).removeNode(this);  
+            ((SCADomainProxyImpl)scaDomain).destroy();
+            
+            // node runtime is stopped by the domain proxy once it has
+            // removed the management components
+            
+            scaDomain = null;            
+            nodeRuntime = null;
+            contributions = null;
+            composites = null;
+            compositeFiles = null;
+            
+        } catch(NodeException ex) {
+            throw ex;            
         } catch (Exception ex) {
             throw new NodeException(ex);
         }
@@ -318,10 +345,10 @@ public class SCANodeImpl implements SCANode {
                         compositeFiles.put(composite.getURI(), composite);
                     }
                 }
-                
-                // remember all the deployable composites ready to be started
+
+                // place all the deployable composites into the node level composite
                 for (Composite composite : contribution.getDeployables()) {
-                    compositesToStart.add(composite.getName());
+                    nodeComposite.getIncludes().add(composite);
                 }  
                 
                 // add the contribution to the domain. It will generally already be there
@@ -329,8 +356,9 @@ public class SCANodeImpl implements SCANode {
                 ((SCADomainProxyImpl)scaDomain).registerContribution(nodeURI, contributionURI, contributionURL.toExternalForm());                  
                 
             } else {
-                    throw new ActivationException("Contribution " + contributionURL + " not found");
+                    throw new NodeException("Contribution " + contributionURL + " not found");
             }  
+            
         } catch (Exception ex) {
             throw new NodeException(ex);
         }        
@@ -340,9 +368,14 @@ public class SCANodeImpl implements SCANode {
         try {
 
             Contribution contribution = contributions.get(contributionURI);
-            for (Composite composite : contribution.getDeployables()) {
-                    startComposite(composite);
-            }  
+            
+            if (contribution != null){
+                for (Composite composite : contribution.getDeployables()) {
+                        startComposite(composite);
+                }  
+            } else {
+                throw new NodeException("Contribution " + contributionURI + " not added");
+            }
 
         } catch (ActivationException e) {
             throw new NodeException(e);
@@ -350,9 +383,29 @@ public class SCANodeImpl implements SCANode {
             throw new NodeException(e);
         }
     }
+    
+    public void stopContribution(String contributionURI) throws NodeException {
+        try {
+
+            Contribution contribution = contributions.get(contributionURI);
+            
+            if (contribution != null){
+                for (Composite composite : contribution.getDeployables()) {
+                        stopComposite(composite);
+                }  
+            } else {
+                throw new NodeException("Contribution " + contributionURI + " not added");
+            }
+
+        } catch (ActivationException e) {
+            throw new NodeException(e);
+        } 
+    }    
 
     public void removeContribution(String contributionURI) throws NodeException {
         try { 
+            stopContribution(contributionURI);
+            
             Contribution contribution = contributions.get(contributionURI);
             
             // remove the local record of composites associated with this contribution
@@ -361,67 +414,87 @@ public class SCANodeImpl implements SCANode {
                     Composite composite = (Composite)artifact.getModel();
                     composites.remove(composite.getName());
                     compositeFiles.remove(composite.getURI());
-                    compositesToStart.remove(composite.getName());
                 }
             }            
         
-            // remove the contribution from the runtime
+            // remove the contribution from the contribution service
             nodeRuntime.getContributionService().remove(contributionURI);
+            
+            // remove all the deployable composites from the node level composite
+            for (Composite composite : contribution.getDeployables()) {
+                nodeComposite.getIncludes().remove(composite);
+            }
             
             // remove the local record of the contribution
             contributions.remove(contributionURI);
-        } catch (Exception ex) {
+
+        } catch (ContributionException ex) {
             throw new NodeException(ex);
-        }   
+        }  
 
     }
 
     private void removeAllContributions() throws NodeException {
         try {     
-            // Remove all contributions
+            // copy the keys so we don't get a concurrency error
+            List<String> keys = new ArrayList<String>();
+            
             for (String contributionURI : contributions.keySet()){
-                nodeRuntime.getContributionService().remove(contributionURI);
+                keys.add(contributionURI);
             }
             
-            // remove local records
-            contributions.clear();
-            composites.clear();
-            compositeFiles.clear();
-            compositesToStart.clear();
-            
+            // Remove all contributions
+            for (String contributionURI : keys){
+                removeContribution(contributionURI);
+            }
         } catch (Exception ex) {
             throw new NodeException(ex);
-        }   
+        }              
     }
     
     public void addToDomainLevelComposite(QName compositeName) throws NodeException {
-        // if the named composite is not already in the list then add it
-        Composite composite = composites.get(compositeName);
-        if (composite == null) {
-            throw new NodeException("Composite not found: " + compositeName);
-        }
-        if (compositesToStart.indexOf(compositeName) == -1 ){
-            compositesToStart.add(compositeName);  
-        }
+        try {         
+            // if the named composite is not already in the list then add it
+            Composite composite = composites.get(compositeName);
+            if (composite == null) {
+                throw new NodeException("Composite not found: " + compositeName);
+            }
+                   
+            
+            // include in top level domain
+            nodeComposite.getIncludes().add(composite);
+             
+        } catch (Exception ex) {
+            throw new NodeException(ex);
+        }          
     }
     
     public void addToDomainLevelComposite(String compositePath) throws NodeException {
-        // if the composite is not already in the list then add it
-        Composite composite = compositeFiles.get(compositePath);
-        if (composite == null) {
-            throw new NodeException("Composite file not found: " + compositePath);
-        }
-        QName compositeName = composite.getName();
-        if (compositesToStart.indexOf(compositeName) == -1 ){
-            compositesToStart.add(compositeName);  
-        }
+        try {           
+            // if the composite is not already in the list then add it
+            Composite composite = compositeFiles.get(compositePath);
+            if (composite == null) {
+                throw new NodeException("Composite file not found: " + compositePath);
+            }       
+            
+            // include in top level domain    
+            nodeComposite.getIncludes().add(composite); 
+               
+        } catch (Exception ex) {
+            throw new NodeException(ex);
+        }         
     }
 
     /**
      * Configure the default HTTP port for this node.
-     */
+     * The motivation here is to set the default binding on the servlet container
+     * based on whatever information is available. In particular if no Node URL is 
+     * provided then one of the ports from the first composite is used so that 
+     * some recognizable default is provided for any bindings that are specified
+     * without URIs 
+     */    
     private void configureDefaultPort() {
-        Composite composite = composites.get(compositesToStart.get(0));
+        Composite composite = composites.get(nodeComposite.getIncludes().get(0));
         if (composite == null) {
             return;
         }
@@ -477,7 +550,7 @@ public class SCANodeImpl implements SCANode {
 
     private void startComposites() throws NodeException {
         try {
-            if (compositesToStart.size() == 0 ){
+            if (nodeComposite.getIncludes().size() == 0 ){
                 logger.log(Level.INFO, nodeURI + 
                                        " has no composites to start" );
             } else {
@@ -485,11 +558,10 @@ public class SCANodeImpl implements SCANode {
                 // Configure the default server port for the node
                 configureDefaultPort();
                 
-                for (QName compositeName : compositesToStart) {
-                    Composite composite = composites.get(compositeName);
-                    if (composite == null) {
-                        logger.log(Level.INFO, "Composite not found during start: " + compositeName);
-                    } else {
+                for (Composite composite : nodeComposite.getIncludes()) {
+                    // don't try and restart the management composite
+                    // they will already have been started by the domain proxy
+                    if (!composite.getName().equals(nodeManagementCompositeName)){
                         startComposite(composite);
                     }
                 }
@@ -503,8 +575,7 @@ public class SCANodeImpl implements SCANode {
     private void startComposite(Composite composite) throws CompositeBuilderException, ActivationException {
         logger.log(Level.INFO, "Starting composite: " + composite.getName());
         
-        // Add the composite to the top level domain
-        nodeComposite.getIncludes().add(composite);
+        // Create the model for the composite
         nodeRuntime.getCompositeBuilder().build(composite); 
         
         // activate the composite
@@ -521,19 +592,15 @@ public class SCANodeImpl implements SCANode {
     private void stopComposites() throws NodeException {
         
         try {
-            if (compositesToStart.size() == 0 ){
-                throw new NodeException("Stopping node " + 
-                                        nodeURI + 
-                                        " with no composite started");
-            }
-            for (QName compositeName : compositesToStart) {
-                Composite composite = composites.get(compositeName);   
 
-                stopComposite(composite);
+            for (Composite composite : nodeComposite.getIncludes()) { 
+                // don't try and stop the management composite
+                // if we do that we can't manage the node
+                if (!composite.getName().equals(nodeManagementCompositeName)){
+                    stopComposite(composite);
+                }
             }
-            
-        } catch (NodeException ex) {
-            throw ex;                  
+                            
         } catch (Exception ex) {
             throw new NodeException(ex);
         }              

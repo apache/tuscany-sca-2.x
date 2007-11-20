@@ -43,30 +43,26 @@ public class Axis2SCABindingProviderFactory implements BindingProviderFactory<Di
     
     private MessageFactory messageFactory;
     private ServletHost servletHost;
-    private SCANode node = null;
+    private NodeFactory nodeFactory = null;
 
     public Axis2SCABindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
         this.servletHost = servletHosts.getServletHosts().get(0);
         ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         this.messageFactory = modelFactories.getFactory(MessageFactory.class);
-        NodeFactory nodeFactory = modelFactories.getFactory(NodeFactory.class);
-        
-        if (nodeFactory != null) {
-            this.node = nodeFactory.getNode();
-        }
+        nodeFactory = modelFactories.getFactory(NodeFactory.class);
     }    
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
                                                                    RuntimeComponentReference reference,
                                                                    DistributedSCABinding binding) {
-        return new Axis2SCAReferenceBindingProvider(node, component, reference, binding, servletHost, messageFactory);
+        return new Axis2SCAReferenceBindingProvider(nodeFactory, component, reference, binding, servletHost, messageFactory);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
                                                                RuntimeComponentService service,
                                                                DistributedSCABinding binding) {
-        return new Axis2SCAServiceBindingProvider(node, component, service, binding, servletHost, messageFactory);
+        return new Axis2SCAServiceBindingProvider(nodeFactory, component, service, binding, servletHost, messageFactory);
     }
 
     public Class<DistributedSCABinding> getModelType() {

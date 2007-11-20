@@ -37,12 +37,12 @@ import org.junit.Test;
 
 public class ConversationWSDLTestCase {
 
-    private SCADomain domain;
+    private SCANode node; 
     private ConversationalClient conversationalStatelessClientStatefulService;    
 
     @Before
     public void setUp() throws Exception {
-        SCANode node = SCANodeFactory.newInstance().createSCANode(null, null);
+        node = SCANodeFactory.newInstance().createSCANode(null, null);
         node.addContribution("mycontribution",      
                              ConversationWSDLTestCase.class.getResource("/ConversationalWSDL/."));                                                                    
         node.addToDomainLevelComposite(new QName("http://conversations", "ConversationalWSDLITest"));
@@ -56,9 +56,8 @@ public class ConversationWSDLTestCase {
 
     @After
     public void tearDown() throws Exception {
-        if (domain != null) {
-            domain.close();
-        }
+        node.getDomain().destroy();
+        conversationalStatelessClientStatefulService = null;
     }
 
     @Test

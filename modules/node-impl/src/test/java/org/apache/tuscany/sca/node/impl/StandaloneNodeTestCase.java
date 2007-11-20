@@ -43,8 +43,10 @@ import calculator.SubtractService;
  */
 public class StandaloneNodeTestCase {
     
+    private static SCANodeFactory nodeFactory;
     private static SCANode   node;
     private static CalculatorService calculatorServiceD;
+    private static CalculatorService calculatorServiceB;
     private static AddService addServiceD;
     private static SubtractService subtractServiceC;
     private static ClassLoader cl;
@@ -57,17 +59,7 @@ public class StandaloneNodeTestCase {
             System.out.println("Setting up add node");
             
             cl = StandaloneNodeTestCase.class.getClassLoader();
-            
-            SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-            
-            // rely on meta data to start composite
-            node = nodeFactory.createSCANode("http://localhost:8200/node", null);
-            node.addContribution("nodeC", cl.getResource("nodeC/"));
-            node.addToDomainLevelComposite(new QName("http://sample", "Calculator"));
-            node.start();
-           
-            // get a reference to various services in the node
-            subtractServiceC = node.getDomain().getService(SubtractService.class, "SubtractServiceComponentC");            
+            nodeFactory = SCANodeFactory.newInstance();
             
         } catch(Exception ex){
             System.err.println(ex.toString());
@@ -80,33 +72,66 @@ public class StandaloneNodeTestCase {
         // stop the node      
         node.destroy();    
     }
+    
+    @Test
+    public void testAddContributionAndStartNode() throws Exception {       
+        node = nodeFactory.createSCANode("http://localhost:8200/node", null);
+        node.addContribution("nodeC", cl.getResource("nodeC/"));
+        node.addToDomainLevelComposite(new QName("http://sample", "CalculatorC"));
+        node.start();
+       
+        // get a reference to various services in the node
+        subtractServiceC = node.getDomain().getService(SubtractService.class, "SubtractServiceComponentC");            
+      
+    }    
 
     @Test
     public void testSubtract() throws Exception {       
         Assert.assertEquals(subtractServiceC.subtract(3, 2), 1.0);        
     }
     
+    //@Test
+    public void testKeepServerRunning1() throws Exception {
+        System.out.println("press enter to continue");
+        System.in.read();
+    }  
+    
     @Test
-    public void testAddSecondContribution() throws Exception {       
+    public void testStopNode() throws Exception {       
         node.stop();
         try {
             subtractServiceC.subtract(3, 2); 
+            Assert.fail();
         } catch (Exception ex) {
            // System.out.println(ex.toString());
-        }
-        
+        }       
+    }    
+    
+    @Test
+    public void testAddOtherContributionsAndStartNode() throws Exception {       
+        node.addContribution("nodeB", cl.getResource("nodeB/"));
         node.addContribution("nodeD", cl.getResource("nodeD/"));
         node.start();
         subtractServiceC = node.getDomain().getService(SubtractService.class, "SubtractServiceComponentC");
         calculatorServiceD = node.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentD");
+        calculatorServiceB = node.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentB");
         addServiceD = node.getDomain().getService(AddService.class, "AddServiceComponentD");        
         
     } 
     
+    //@Test
+    public void testKeepServerRunning2() throws Exception {
+        System.out.println("press enter to continue");
+        System.in.read();
+    }    
+    
     @Test
-    public void testCalculate() throws Exception {       
-        
-        // Calculate       
+    public void testCalculate() throws Exception {         
+        // Calculate   
+        Assert.assertEquals(calculatorServiceB.add(3, 2), 5.0);
+        Assert.assertEquals(calculatorServiceB.subtract(3, 2), 1.0);
+        Assert.assertEquals(calculatorServiceB.multiply(3, 2), 6.0);
+        Assert.assertEquals(calculatorServiceB.divide(3, 2), 1.5);
         Assert.assertEquals(calculatorServiceD.add(3, 2), 5.0);
         Assert.assertEquals(calculatorServiceD.subtract(3, 2), 1.0);
         Assert.assertEquals(calculatorServiceD.multiply(3, 2), 6.0);
@@ -114,5 +139,40 @@ public class StandaloneNodeTestCase {
         Assert.assertEquals(addServiceD.add(3, 2), 5.0);
         Assert.assertEquals(subtractServiceC.subtract(3, 2), 1.0);        
         
-    }    
+    } 
+    
+    @Test
+    public void testRemoveContribution() throws Exception { 
+        node.stop();
+        node.removeContribution("nodeD");
+        
+        try {
+            calculatorServiceD.add(3, 2);
+            Assert.fail();
+        } catch (Exception ex) {
+            // System.out.println(ex.toString());
+        }            
+
+        calculatorServiceD = node.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentD");
+             
+        try {       
+            Assert.assertEquals(calculatorServiceD.add(3, 2), 5.0);
+            Assert.fail();
+        } catch (Exception ex) {
+            // System.out.println(ex.toString());
+        } 
+        
+    }
+    
+    @Test
+    public void testAddContributionBackAgain() throws Exception {       
+       
+        node.addContribution("nodeD", cl.getResource("nodeD/"));  
+        node.start();
+        
+        calculatorServiceD = node.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentD");
+               
+        Assert.assertEquals(calculatorServiceD.add(3, 2), 5.0);
+    }
+            
 }
