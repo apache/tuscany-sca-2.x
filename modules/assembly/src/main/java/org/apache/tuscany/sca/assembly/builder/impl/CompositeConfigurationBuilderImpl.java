@@ -280,7 +280,8 @@ public class CompositeConfigurationBuilderImpl {
 
                     String bindingURI;
                     if (binding.getURI() == null) {
-                        if (componentServices.size() > 1) {
+                        //if (componentServices.size() > 1) {
+                        if (component.getServices().size() > 1) {
                             // Binding URI defaults to component URI / binding name
                             bindingURI = String.valueOf(binding.getName());
                             bindingURI = URI.create(component.getURI() + '/').resolve(bindingURI).toString();
