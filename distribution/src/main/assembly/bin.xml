@@ -127,15 +127,22 @@
                 <exclude>*/.project</exclude>
                 <exclude>*/.settings</exclude>
                 <exclude>*/.settings/**/*</exclude>
+                <exclude>*/.externalToolBuilders</exclude>
+                <exclude>*/.externalToolBuilders/**/*</exclude>
                 <exclude>*/target/mvn-eclipse-cache.properties</exclude>
                 <exclude>*/target/classes</exclude>
                 <exclude>*/target/classes/**/*</exclude>
+                <exclude>*/target/dependency-maven-plugin-markers</exclude>
+                <exclude>*/target/dependency-maven-plugin-markers/**/*</exclude>
                 <exclude>*/target/test-classes</exclude>
                 <exclude>*/target/test-classes/**/*</exclude>
                 <exclude>*/target/surefire-reports</exclude>
                 <exclude>*/target/surefire-reports/**/*</exclude>
                 <exclude>*/target/sdo-source</exclude>
                 <exclude>*/target/sdo-source/**/*</exclude>
+                <exclude>*/target/wsdl2java-source</exclude>
+                <exclude>*/target/wsdl2java-source/**/*</exclude>
+                <exclude>*/**/derby.log</exclude>
                 <exclude>*/**/*.svg</exclude>
                 <exclude>calculator-ws-webapp/target/sample-calculator-ws-webapp.war</exclude>
                 <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-ws-sdo-webapp.war</exclude>
