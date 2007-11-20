@@ -30,9 +30,6 @@
             namespace="http://tuscany.apache.org/implementation/bpel/example/pong.wsdl"
             importType="http://schemas.xmlsoap.org/wsdl/" />
 
-    <import location="pong.wsdl"
-            namespace="http://tuscany.apache.org/implementation/bpel/example/pong.wsdl"
-            importType="http://schemas.xmlsoap.org/wsdl/" />
 
     <partnerLinks>
         <partnerLink name="PongPartnerLink"

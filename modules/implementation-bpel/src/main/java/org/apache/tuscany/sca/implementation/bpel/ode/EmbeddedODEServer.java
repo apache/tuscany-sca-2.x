@@ -215,8 +215,9 @@ public class EmbeddedODEServer {
 
             // _deployed.add(d);
         } catch (Exception ex) {
-            System.out.println(d + "DEPLOY: Unexpected exception: " + ex.getMessage());
-            return;
+            String errMsg = ">>> DEPLOY: Unexpected exception: " + ex.getMessage();
+            __log.debug(errMsg, ex);
+            throw new ODEDeploymentException(errMsg,ex);
         }
         
         try {
@@ -227,7 +228,9 @@ public class EmbeddedODEServer {
                 _bpelServer.register(conf);
             }
         } catch (Exception ex) {
-            System.out.println(d + "REGISTER: Unexpected exception: " + ex.getMessage());
+            String errMsg =">>>REGISTER: Unexpected exception: " + ex.getMessage();
+            __log.debug(errMsg , ex);
+            throw new ODEDeploymentException(errMsg, ex);
         }
     }
     

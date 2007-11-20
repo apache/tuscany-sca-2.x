@@ -22,15 +22,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-  <reference name="Pong">
-  	<interface.wsdl interface="http://tuscany.apache.org/implementation/bpel/example/pong.wsdl#wsdl.interface(PongPortType)" />
-  </reference>
-
   <service name="PingService">
-        <interface.wsdl interface="http://tuscany.apache.org/implementation/bpel/example/ping.wsdl#wsdl.interface(PingPortType)" />
+  	<interface.wsdl interface="http://tuscany.apache.org/implementation/bpel/example/ping.wsdl#wsdl.interface(PingPortType)" />
   </service>
 
   <service name="PongService">
-        <interface.wsdl interface="http://tuscany.apache.org/implementation/bpel/example/pong.wsdl#wsdl.interface(PongPortType)" />
+  	<interface.wsdl interface="http://tuscany.apache.org/implementation/bpel/example/pong.wsdl#wsdl.interface(PongPortType)" />
   </service>
+
+  <reference name="Pong">
+  	<interface.wsdl interface="http://tuscany.apache.org/implementation/bpel/example/pong.wsdl#wsdl.interface(PongPortType)" />
+  </reference>
 </componentType>  
