@@ -377,12 +377,14 @@ public class JettyServer implements ServletHost {
                     throw new IllegalStateException(e);
                 }
                 mappings.remove(mapping);
+                //logger.info("Remove Servlet mapping: " + path);
                 break;
             }
         }
         if (removedServlet != null) {
             servletHandler.setServletMappings(mappings.toArray(new ServletMapping[mappings.size()]));
-        }
+        } 
+        
         return removedServlet;
     }
 
