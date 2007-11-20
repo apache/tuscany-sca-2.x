@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.extension.helper.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
@@ -40,6 +41,7 @@ public abstract class AbstractImplementation implements Implementation {
     private ConstrainingType constrainingType;
     private String uri;
     private boolean unresolved = true;
+    private List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
 
     public AbstractImplementation() {
     }
@@ -110,5 +112,9 @@ public abstract class AbstractImplementation implements Implementation {
             }
         }
         return null;
+    }
+
+    public List<ConfiguredOperation> getConfiguredOperations() {
+        return configuredOperations;
     }
 }

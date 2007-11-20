@@ -27,6 +27,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
@@ -53,7 +54,7 @@ public class JavaImplementationImpl extends BaseJavaImplementationImpl implement
     private long maxIdleTime = -1;
     private JavaScopeImpl scope = JavaScopeImpl.STATELESS;
     private Map<PolicySet, PolicyHandler> policyHandlers = new Hashtable<PolicySet, PolicyHandler>();
-
+    
     protected JavaImplementationImpl() {
         super();
     }    

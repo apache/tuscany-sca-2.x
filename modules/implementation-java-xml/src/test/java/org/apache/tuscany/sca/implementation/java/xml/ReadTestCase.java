@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -33,10 +32,10 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
-import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.binding.sca.impl.SCABindingFactoryImpl;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -55,6 +54,7 @@ import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
@@ -121,7 +121,7 @@ public class ReadTestCase extends TestCase {
 
     }
 
-    public void testReadAndResolveComposite() throws Exception {
+    public void testPolicyIntents() throws Exception {
         ModelResolver resolver = new TestModelResolver(getClass().getClassLoader());
         
         URL url = getClass().getResource("definitions.xml");
@@ -141,13 +141,18 @@ public class ReadTestCase extends TestCase {
         //intents are not computed for the implementation as yet
         assertEquals(((PolicySetAttachPoint)composite.getComponents().get(0).getImplementation()).getRequiredIntents().size(), 1);
         
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, mapper, null, null);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, mapper, scaDefns.getPolicySets(), null);
         compositeUtil.build(composite);
         
         //intents are computed and aggregate intents from ancestor elements
         assertEquals(((PolicySetAttachPoint)composite.getComponents().get(0).getImplementation()).getRequiredIntents().size(), 3);
         assertEquals(((PolicySetAttachPoint)composite.getComponents().get(5).getImplementation()).getRequiredIntents().size(), 3);
         
+        assertEquals(((OperationsConfigurator)composite.getComponents().get(0).getImplementation()).getConfiguredOperations().isEmpty(), true);
+        assertEquals(((OperationsConfigurator)composite.getComponents().get(5).getImplementation()).getConfiguredOperations().isEmpty(), false);
+        
+        
+        //test for proper aggregation of policy intents on implementation elements
         for ( Intent intent : ((PolicySetAttachPoint)composite.getComponents().get(0).getImplementation()).getRequiredIntents() ) {
             String intentName = intent.getName().getLocalPart();
             if ( !(intentName.equals("tuscanyIntent_1") || intentName.equals("tuscanyIntent_2") ||
@@ -164,6 +169,94 @@ public class ReadTestCase extends TestCase {
             }
         }
 
+        //test for proper aggregation of policy intents and policysets on operations of implementation
+        OperationsConfigurator opConf = (OperationsConfigurator)composite.getComponents().get(5).getImplementation();
+        assertEquals(opConf.getConfiguredOperations().get(0).getRequiredIntents().size(), 4);
+        for ( Intent intent :  opConf.getConfiguredOperations().get(0).getRequiredIntents()) {
+            String intentName = intent.getName().getLocalPart();
+            if ( !(intentName.equals("tuscanyIntent_1") || intentName.equals("tuscanyIntent_4") ||
+                intentName.equals("tuscanyIntent_5") || intentName.equals("tuscanyIntent_6") ) ) {
+                fail();
+            }
+        }
+        
+        opConf = (OperationsConfigurator)composite.getComponents().get(6).getImplementation();
+        assertEquals(opConf.getConfiguredOperations().get(0).getRequiredIntents().size(), 3);
+        for ( Intent intent :  opConf.getConfiguredOperations().get(0).getRequiredIntents()) {
+            String intentName = intent.getName().getLocalPart();
+            if ( !(intentName.equals("tuscanyIntent_1") || intentName.equals("tuscanyIntent_4") ||
+                intentName.equals("tuscanyIntent_6.qualified2") ) ) {
+                fail();
+            }
+        }
+        
+        //new PrintUtil(System.out).print(composite);
+    }
+    
+    public void testPolicySets() throws Exception {
+        ModelResolver resolver = new TestModelResolver(getClass().getClassLoader());
+        
+        URL url = getClass().getResource("definitions_with_policysets.xml");
+        URI uri = URI.create("definitions_with_policysets.xml");
+        scaDefnDocProcessor.setDomainModelResolver(resolver);
+        SCADefinitions scaDefns = scaDefnDocProcessor.read(null, uri, url);
+                
+        CompositeProcessor compositeProcessor = new CompositeProcessor(new ContributionFactoryImpl(), assemblyFactory, policyFactory, mapper, staxProcessor);
+        InputStream is = getClass().getResourceAsStream("Calculator.composite");
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+        Composite composite = compositeProcessor.read(reader);
+        assertNotNull(composite);
+        
+        staxProcessor.resolve(scaDefns, resolver);
+        staxProcessor.resolve(composite, resolver);
+
+        //intents are not computed for the implementation as yet
+        assertEquals(((PolicySetAttachPoint)composite.getComponents().get(0).getImplementation()).getRequiredIntents().size(), 1);
+        
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, mapper, scaDefns.getPolicySets(), null);
+        compositeUtil.build(composite);
+        
+        //intents are computed and erased since there will be matching policysets
+        assertEquals(((PolicySetAttachPoint)composite.getComponents().get(0).getImplementation()).getRequiredIntents().size(), 0);
+        assertEquals(((PolicySetAttachPoint)composite.getComponents().get(5).getImplementation()).getRequiredIntents().size(), 0);
+        
+        //test for determination of policysets for implementation
+        assertEquals(((PolicySetAttachPoint)composite.getComponents().get(0).getImplementation()).getPolicySets().size(), 1);
+        for ( PolicySet policySet : ((PolicySetAttachPoint)composite.getComponents().get(0).getImplementation()).getPolicySets() ) {
+            String policySetName = policySet.getName().getLocalPart();
+            if ( !(policySetName.equals("tuscanyPolicySet_1")) ) {
+                fail();
+            }
+        }
+        
+        assertEquals(((PolicySetAttachPoint)composite.getComponents().get(5).getImplementation()).getPolicySets().size(), 2);
+        for ( PolicySet policySet : ((PolicySetAttachPoint)composite.getComponents().get(5).getImplementation()).getPolicySets() ) {
+            String policySetName = policySet.getName().getLocalPart();
+            if ( !(policySetName.equals("tuscanyPolicySet_1") || policySetName.equals("tuscanyPolicySet_2")) ) {
+                fail();
+            }
+        }
+
+        //test for computation of policysets on operations of implementation
+        OperationsConfigurator opConf = (OperationsConfigurator)composite.getComponents().get(5).getImplementation();
+        assertEquals(opConf.getConfiguredOperations().get(0).getPolicySets().size(), 3);
+        for ( PolicySet policySet : opConf.getConfiguredOperations().get(0).getPolicySets() ) {
+            String policySetName = policySet.getName().getLocalPart();
+            if ( !(policySetName.equals("tuscanyPolicySet_1") || policySetName.equals("tuscanyPolicySet_2")
+                    || policySetName.equals("tuscanyPolicySet_3")) ) {
+                fail();
+            }
+        }
+        
+        opConf = (OperationsConfigurator)composite.getComponents().get(6).getImplementation();
+        assertEquals(opConf.getConfiguredOperations().get(0).getPolicySets().size(), 3);
+        for ( PolicySet policySet : opConf.getConfiguredOperations().get(0).getPolicySets() ) {
+            String policySetName = policySet.getName().getLocalPart();
+            if ( !(policySetName.equals("tuscanyPolicySet_1") || policySetName.equals("tuscanyPolicySet_2")
+                    || policySetName.equals("tuscanyPolicySet_4")) ) {
+                fail();
+            }
+        }
         //new PrintUtil(System.out).print(composite);
     }
 

@@ -238,11 +238,6 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                         resolver.addModel(implementation);
                     }
                 }
-
-                if (implementation instanceof PolicySetAttachPoint) {
-                    resolveIntents(((PolicySetAttachPoint)implementation).getRequiredIntents(), resolver);
-                    resolvePolicySets(((PolicySetAttachPoint)implementation).getPolicySets(), resolver);
-                }
             }
         }
         return implementation;

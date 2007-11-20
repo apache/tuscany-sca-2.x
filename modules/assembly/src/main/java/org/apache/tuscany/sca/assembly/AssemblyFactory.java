@@ -152,5 +152,10 @@ public interface AssemblyFactory {
      * @return a new operation
      */
     Operation createOperation();
-
+    
+    /** Create a new configured operation.
+     * 
+     * @return a new ConfiguredOperation 
+     */
+    ConfiguredOperation createConfiguredOperation();
 }

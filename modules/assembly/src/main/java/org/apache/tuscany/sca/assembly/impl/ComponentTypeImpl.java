@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -36,7 +38,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, Cloneable, PolicySetAttachPoint {
+public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, Cloneable, PolicySetAttachPoint, OperationsConfigurator {
     private String uri;
     private ConstrainingType constrainingType;
     private List<Property> properties = new ArrayList<Property>();
@@ -45,6 +47,7 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private IntentAttachPointType type = null;
+    private List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
     
     /**
      * Constructs a new component type.
@@ -122,8 +125,14 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
     public void setRequiredIntents(List<Intent> intents) {
         this.requiredIntents = intents;
     }
-
     
+    public List<ConfiguredOperation> getConfiguredOperations() {
+        return configuredOperations;
+    }
+
+    public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
+        this.configuredOperations = configuredOperations;
+    }
 
     @Override
     public int hashCode() {

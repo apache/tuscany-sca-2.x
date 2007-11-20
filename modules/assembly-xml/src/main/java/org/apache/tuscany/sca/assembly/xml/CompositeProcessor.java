@@ -42,9 +42,11 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -729,6 +731,22 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             if (implementation != null) {
                 implementation = resolveImplementation(implementation, resolver);
                 component.setImplementation(implementation);
+                
+                //do a getImplementation to resolve policy intents and policysets
+                //that the implementation is configured with under this component
+                implementation = component.getImplementation();
+                if (implementation instanceof PolicySetAttachPoint) {
+                    resolveIntents(((PolicySetAttachPoint)implementation).getRequiredIntents(), resolver);
+                    resolvePolicySets(((PolicySetAttachPoint)implementation).getPolicySets(), resolver);
+                }
+                
+                if ( implementation instanceof OperationsConfigurator ) {
+                    OperationsConfigurator opConfigurator = (OperationsConfigurator)implementation;
+                    for ( ConfiguredOperation op : opConfigurator.getConfiguredOperations() ) {
+                        resolveIntents(op.getRequiredIntents(), resolver);
+                        resolvePolicySets(op.getPolicySets(), resolver);
+                    }
+                }
             }
 
             for (ComponentProperty componentProperty : component.getProperties()) {
