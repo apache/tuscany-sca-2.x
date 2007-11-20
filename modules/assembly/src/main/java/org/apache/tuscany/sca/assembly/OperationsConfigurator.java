@@ -16,17 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.policy.xml;
 
-import javax.xml.namespace.QName;
+package org.apache.tuscany.sca.assembly;
+
+import java.util.List;
+
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 
 /**
- * Interface that will abstract various types of policy specifications
- * and attachments for example WS-Policy
- *
+ * Interface to be implemented by SCA artifacts that support configuration of 'operation' child
+ * elements for policies etc. 
  */
-public interface Policy {
-    QName getSchemaName();
-    void setUnresolved(boolean unresolved);
-    boolean isUnresolved();
+
+public interface OperationsConfigurator {
+    List<ConfiguredOperation> getConfiguredOperations();
+    void setConfiguredOperations(List<ConfiguredOperation> cofiguredOps);
 }

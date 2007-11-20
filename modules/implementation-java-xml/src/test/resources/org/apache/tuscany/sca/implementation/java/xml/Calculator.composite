@@ -53,7 +53,14 @@
     </component>
     
     <component name="AnotherCalculatorServiceComponent" requires="cns:tuscanyIntent_4">
-		<implementation.java class="calculator.CalculatorServiceImpl" requires="cns:tuscanyIntent_5" />
+		<implementation.java class="calculator.CalculatorServiceImpl" requires="cns:tuscanyIntent_5">
+			<operation name="add"  requires="cns:tuscanyIntent_6"/>
+		</implementation.java>	
     </component>
-
+    
+    <component name="YetAnotherCalculatorServiceComponent" requires="cns:tuscanyIntent_4">
+		<implementation.java class="calculator.CalculatorServiceImpl" requires="cns:tuscanyIntent_6.qualified1">
+			<operation name="add"  requires="cns:tuscanyIntent_6.qualified2" policySets="cns:tuscanyPolicySet_4"/>
+		</implementation.java>	
+    </component>
 </composite>

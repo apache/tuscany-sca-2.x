@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.implementation.java.xml;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -34,9 +35,12 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.xml.ConfiguredOperationProcessor;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -66,6 +70,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
     private PolicyFactory policyFactory;
     private PolicyAttachPointProcessor policyProcessor;
     private IntentAttachPointTypeFactory  intentAttachPointTypeFactory;
+    private ConfiguredOperationProcessor configuredOperationProcessor;
 
     public JavaImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
@@ -73,6 +78,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         this.javaFactory = modelFactories.getFactory(JavaImplementationFactory.class);
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
         this.intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
+        this.configuredOperationProcessor = new ConfiguredOperationProcessor(modelFactories);
     }
 
     public JavaImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
@@ -93,9 +99,24 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         // Read policies
         policyProcessor.readPolicies(javaImplementation, reader);
 
-        // Skip to end element
+        // read operation elements if exists or skip unto end element
+        int event;
+        ConfiguredOperation confOp = null;
         while (reader.hasNext()) {
-            if (reader.next() == END_ELEMENT && IMPLEMENTATION_JAVA_QNAME.equals(reader.getName())) {
+            event = reader.next();
+            switch ( event ) {
+                case START_ELEMENT  : {
+                    if ( Constants.OPERATION_QNAME.equals(reader.getName()) ) {
+                        confOp = configuredOperationProcessor.read(reader);
+                        if ( confOp != null ) {
+                            ((OperationsConfigurator)javaImplementation).getConfiguredOperations().add(confOp);
+                        }
+                    }
+                }
+                break;
+            }
+
+            if (event == END_ELEMENT && IMPLEMENTATION_JAVA_QNAME.equals(reader.getName())) {
                 break;
             }
         }

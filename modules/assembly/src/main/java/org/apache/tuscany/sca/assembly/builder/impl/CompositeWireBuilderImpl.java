@@ -37,9 +37,11 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
@@ -970,8 +972,105 @@ public class CompositeWireBuilderImpl {
     private void computeImplementationIntentsAndPolicySets(Implementation implementation, Component parent) {
         if ( implementation instanceof PolicySetAttachPoint ) {
             computeIntentsForIntentAttachPoint((IntentAttachPoint)implementation, parent.getRequiredIntents());
+            computeIntentsForImplOperations(implementation);
             computePolicySetsForPolicySetAttachPoint(parent, (PolicySetAttachPoint)implementation, parent.getPolicySets());
             determineApplicableImplementationPolicySets(parent);
+        }
+    }
+    
+    private void computeIntentsForImplOperations(Implementation implementation) {
+        if ( implementation instanceof PolicySetAttachPoint && 
+                implementation instanceof OperationsConfigurator ) {
+            IntentAttachPoint intentAttachPoint = (IntentAttachPoint)implementation;
+            IntentAttachPointType attachPointType = intentAttachPoint.getType();
+            
+            boolean found = false;
+            
+            OperationsConfigurator opConfigurator = (OperationsConfigurator)implementation;
+            List<Intent> expandedIntents = null;
+            for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
+                //expand profile intents specified on operations
+                if ( confOp.getRequiredIntents().size() > 0 ) {
+                    expandedIntents = expandProfileIntents(confOp.getRequiredIntents());
+                    confOp.getRequiredIntents().clear();
+                    confOp.getRequiredIntents().addAll(expandedIntents);
+                }
+                
+                //validate intents specified against the parent (binding / implementation)
+                found = false;
+                for (Intent intent : confOp.getRequiredIntents()) {
+                    for (QName constrained : intent.getConstrains()) {
+                        if (attachPointType != null && attachPointType.getName().getNamespaceURI().equals(constrained
+                            .getNamespaceURI()) && attachPointType.getName().getLocalPart()
+                            .startsWith(constrained.getLocalPart())) {
+                            found = true;
+                            break;
+                        }
+                    }
+    
+                    if (!found) {
+                        warning("Policy Intent '" + intent.getName() 
+                                + " specified for operation " + confOp.getName()  
+                            + "' does not constrain extension type  "
+                            + attachPointType.getName(), intentAttachPoint);
+                    }
+                }
+                        
+                //add intents specified for parent intent attach point (binding / implementation)
+                //wherever its not overriden in the operation
+                Intent tempIntent = null;
+                List<Intent> implIntents = new ArrayList<Intent>();
+                for (Intent parentIntent : intentAttachPoint.getRequiredIntents()) {
+                    found = false;
+                
+                    tempIntent = parentIntent;
+                    while ( tempIntent instanceof QualifiedIntent ) {
+                        tempIntent = ((QualifiedIntent)tempIntent).getQualifiableIntent();
+                    }
+                    
+                    for ( Intent opIntent : confOp.getRequiredIntents() ) {
+                        if ( opIntent.getName().getLocalPart().startsWith(tempIntent.getName().getLocalPart())) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    
+                    if ( !found ) {
+                        implIntents.add(parentIntent);
+                    }
+                }
+                
+                confOp.getRequiredIntents().addAll(implIntents);
+                
+                //remove duplicates
+                Map<QName, Intent> intentsTable = new HashMap<QName, Intent>();
+                for ( Intent intent : confOp.getRequiredIntents() ) {
+                    intentsTable.put(intent.getName(), intent);
+                }
+                
+                //where qualified form of intent exists retain it and remove the qualifiable intent
+                Map<QName, Intent> intentsTableCopy = new HashMap<QName, Intent>(intentsTable);
+                //if qualified form of intent exists remove the unqualified form
+                for ( Intent intent : intentsTableCopy.values() ) {
+                    if ( intent instanceof QualifiedIntent ) {
+                        QualifiedIntent qualifiedIntent = (QualifiedIntent)intent;
+                        if ( intentsTable.get(qualifiedIntent.getQualifiableIntent().getName()) != null ) {
+                            intentsTable.remove(qualifiedIntent.getQualifiableIntent().getName());
+                        }
+                    }
+                }
+                confOp.getRequiredIntents().clear();
+                confOp.getRequiredIntents().addAll(intentsTable.values());
+                
+                //exclude intents that are inherently supported by the parent
+                //attachpoint-type (binding-type  / implementation-type)
+                List<Intent> requiredIntents = new ArrayList<Intent>(confOp.getRequiredIntents());
+                for ( Intent intent : requiredIntents ) {
+                    if ( isProvidedInherently(attachPointType, intent) ) {
+                        confOp.getRequiredIntents().remove(intent);
+                    }
+                }
+            }
         }
     }
     
@@ -1002,7 +1101,7 @@ public class CompositeWireBuilderImpl {
             if (!found) {
                 warning("Policy Intent '" + intent.getName()
                     + "' does not constrain extension type  "
-                    + attachPointType, intentAttachPoint);
+                    + attachPointType.getName(), intentAttachPoint);
             }
         }
         
@@ -1189,21 +1288,11 @@ public class CompositeWireBuilderImpl {
         }
     }
     
-    
-    
     private void determineApplicableDomainPolicySets(Contract contract, PolicySetAttachPoint policiedBinding) {
-        if ( domainPolicySets != null && policiedBinding.getRequiredIntents().size() > 0 ) {
-            IntentAttachPointType bindingType = policiedBinding.getType();
-            for ( PolicySet policySet : domainPolicySets ) {
-                if ( isPolicySetApplicable(contract, policySet.getAppliesTo(), bindingType) ) {
-                    int prevSize = policiedBinding.getRequiredIntents().size();
-                    trimProvidedIntents(policiedBinding.getRequiredIntents(), policySet);
-                    //if any intent was trimmed off, then this policyset must be attached to the binding
-                    if ( prevSize != policiedBinding.getRequiredIntents().size() ) {
-                        policiedBinding.getPolicySets().add(policySet);
-                    }   
-                }
-            }
+        if ( domainPolicySets != null) {
+            determineApplicableDomainPolicySets(contract, 
+                                                policiedBinding,
+                                                policiedBinding.getType());
             
             if ( policiedBinding.getRequiredIntents().size() > 0 ) {
                 if ( contract instanceof Service ) {
@@ -1215,23 +1304,53 @@ public class CompositeWireBuilderImpl {
         }
     }
     
+    private void determineApplicableDomainPolicySets(Component component) {
+        if ( component.getImplementation() instanceof PolicySetAttachPoint && domainPolicySets != null ) {
+            PolicySetAttachPoint policiedImplementation = (PolicySetAttachPoint)component.getImplementation();
+            
+            //determine for operations configured under implemenatation element
+            if ( component.getImplementation() instanceof OperationsConfigurator ) {
+                OperationsConfigurator opConfigurator = (OperationsConfigurator)component.getImplementation();
+                if ( opConfigurator.getConfiguredOperations() != null ) {
+                    for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
+                        determineApplicableDomainPolicySets(component.getImplementation(), 
+                                                            confOp,
+                                                            policiedImplementation.getType());
     
-    private void determineApplicableDomainPolicySets(Component component, PolicySetAttachPoint policiedImplementation) {
-        if ( domainPolicySets != null && policiedImplementation.getRequiredIntents().size() > 0 ) {
-            IntentAttachPointType implType = policiedImplementation.getType();
-            for ( PolicySet policySet : domainPolicySets ) {
-                if ( isPolicySetApplicable(component, policySet.getAppliesTo(), implType) ) {
-                    int prevSize = policiedImplementation.getRequiredIntents().size();
-                    trimProvidedIntents(policiedImplementation.getRequiredIntents(), policySet);
-                    //if any intent was trimmed off, then this policyset must be attached to the implementation
-                    if ( prevSize != policiedImplementation.getRequiredIntents().size() ) {
-                        policiedImplementation.getPolicySets().add(policySet);
-                    }   
+                        if (confOp.getRequiredIntents().size() > 0) {
+                            warning("There are unfulfilled intents for operations configured in "
+                                    + "component implementation - " + component.getName(), component);
+                        }
+                    }
                 }
             }
             
-            if ( policiedImplementation.getRequiredIntents().size() > 0 ) {
-                warning("There are unfulfilled intents for component implementation - " + component.getName(), component);
+            
+            determineApplicableDomainPolicySets(component, 
+                                                policiedImplementation,
+                                                policiedImplementation.getType());
+                                                
+            if (policiedImplementation.getRequiredIntents().size() > 0) {
+                warning("There are unfulfilled intents for component implementation - " + component
+                    .getName(), component);
+            }
+        }
+    }
+    
+    private void determineApplicableDomainPolicySets(Base parentElement,
+                                                     PolicySetAttachPoint policySetAttachPoint,
+                                                     IntentAttachPointType intentAttachPointType) {
+        if (policySetAttachPoint.getRequiredIntents().size() > 0) {
+            for (PolicySet policySet : domainPolicySets) {
+                if (isPolicySetApplicable(parentElement, policySet.getAppliesTo(), intentAttachPointType)) {
+                    int prevSize = policySetAttachPoint.getRequiredIntents().size();
+                    trimProvidedIntents(policySetAttachPoint.getRequiredIntents(), policySet);
+                    // if any intent was trimmed off, then this policyset must
+                    // be attached to the intent attachpoint's policyset
+                    if (prevSize != policySetAttachPoint.getRequiredIntents().size()) {
+                        policySetAttachPoint.getPolicySets().add(policySet);
+                    }
+                }
             }
         }
     }
@@ -1240,19 +1359,20 @@ public class CompositeWireBuilderImpl {
     
         
     private void determineApplicableBindingPolicySets(Contract source, Contract target) {
-        for ( Binding aBinding : source.getBindings() ) {
-            if ( aBinding instanceof PolicySetAttachPoint ) {
+        for (Binding aBinding : source.getBindings()) {
+            if (aBinding instanceof PolicySetAttachPoint) {
                 PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)aBinding;
                 IntentAttachPointType bindingType = policiedBinding.getType();
-                
-                //add the target component's intents to the reference binding
-                if ( target != null ) {
-                    for ( Intent intent : target.getRequiredIntents() ) {
-                        if ( !policiedBinding.getRequiredIntents().contains(intent) ) {
+
+                // add the target component's intents to the reference binding
+                if (target != null) {
+                    for (Intent intent : target.getRequiredIntents()) {
+                        if (!policiedBinding.getRequiredIntents().contains(intent)) {
                             for (QName constrained : intent.getConstrains()) {
-                                if (bindingType != null && bindingType.getName().getNamespaceURI().equals(constrained
-                                    .getNamespaceURI()) && bindingType.getName().getLocalPart()
-                                    .startsWith(constrained.getLocalPart())) {
+                                if (bindingType != null && bindingType.getName().getNamespaceURI()
+                                    .equals(constrained.getNamespaceURI())
+                                    && bindingType.getName().getLocalPart().startsWith(constrained
+                                        .getLocalPart())) {
                                     policiedBinding.getRequiredIntents().add(intent);
                                     break;
                                 }
@@ -1260,13 +1380,16 @@ public class CompositeWireBuilderImpl {
                         }
                     }
                 }
-                
-                trimProvidedIntents(policiedBinding.getRequiredIntents(), policiedBinding.getPolicySets());
-                
-                //determine additional policysets that match remaining intents
-                //TODO: resolved to domain policy registry and attach suitable policy sets to the binding
-                //for now using the SCA Definitions instead of registry
-                //if there are intents that are not provided by any policy set throw a warning
+
+                trimProvidedIntents(policiedBinding.getRequiredIntents(), policiedBinding
+                    .getPolicySets());
+
+                // determine additional policysets that match remaining intents
+                // TODO: resolved to domain policy registry and attach suitable
+                // policy sets to the binding
+                // for now using the SCA Definitions instead of registry
+                // if there are intents that are not provided by any policy set
+                // throw a warning
                 determineApplicableDomainPolicySets(source, policiedBinding);
             }
         }
@@ -1276,6 +1399,17 @@ public class CompositeWireBuilderImpl {
         if ( component.getImplementation() instanceof PolicySetAttachPoint ) {
             PolicySetAttachPoint policiedImplementation = (PolicySetAttachPoint)component.getImplementation();
             IntentAttachPointType implType = policiedImplementation.getType();
+            
+            //trim intents specified in operations.  First check for policysets specified on the operation
+            //and then in the parent implementation
+            if ( component.getImplementation() instanceof OperationsConfigurator ) {
+                OperationsConfigurator opConfigurator = (OperationsConfigurator)component.getImplementation();
+                
+                for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
+                    trimProvidedIntents(confOp.getRequiredIntents(), confOp.getPolicySets());
+                    trimProvidedIntents(confOp.getRequiredIntents(), policiedImplementation.getPolicySets());
+                }
+            }
                 
             trimProvidedIntents(policiedImplementation.getRequiredIntents(), policiedImplementation.getPolicySets());
                 
@@ -1283,7 +1417,7 @@ public class CompositeWireBuilderImpl {
             //if there are intents that are not provided by any policy set throw a warning
             //TODO: resolved to domain policy registry and attach suitable policy sets to the implementation
             //...for now using the SCA Definitions instead of registry
-            determineApplicableDomainPolicySets(component, policiedImplementation);
+            determineApplicableDomainPolicySets(component);
         }
     }
 

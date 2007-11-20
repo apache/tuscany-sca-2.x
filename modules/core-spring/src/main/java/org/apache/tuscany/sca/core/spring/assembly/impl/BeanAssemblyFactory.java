@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.Property;
@@ -47,8 +48,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
  *  @version $Rev$ $Date$
  */
 public class BeanAssemblyFactory implements AssemblyFactory {
-	
-	private AssemblyFactory defaultFactory;
+    private AssemblyFactory defaultFactory;
 	private BeanDefinitionRegistry beanRegistry;
 	
 	public BeanAssemblyFactory(AssemblyFactory defaultFactory, BeanDefinitionRegistry beanRegistry) {
@@ -131,4 +131,11 @@ public class BeanAssemblyFactory implements AssemblyFactory {
 	public Operation createOperation() {
 		return defaultFactory.createOperation();
 	}
+    
+    
+    public ConfiguredOperation createConfiguredOperation() {
+        return defaultFactory.createConfiguredOperation();
+    }
+
+    
 }

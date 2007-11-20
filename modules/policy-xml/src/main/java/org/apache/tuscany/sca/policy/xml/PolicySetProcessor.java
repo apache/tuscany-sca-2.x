@@ -38,6 +38,7 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
+import org.apache.neethi.Policy;
 import org.apache.neethi.PolicyEngine;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
@@ -47,7 +48,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.Policy;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 
@@ -161,7 +161,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                                 }
                             } else if ( WS_POLICY_QNAME.equals(name) )  {
                                 OMElement policyElement = loadElement(reader);
-                                org.apache.neethi.Policy wsPolicy = PolicyEngine.getPolicy(policyElement);
+                                Policy wsPolicy = PolicyEngine.getPolicy(policyElement);
                                 policySet.getPolicies().add(wsPolicy);
                                 
                                 List<Object> policyList = mappedPolicies.get(qualifiedIntent);
@@ -268,9 +268,9 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
        boolean unresolved = false;
        for ( Object o : policySet.getPolicies() ) {
            extensionProcessor.resolve(o, resolver);
-           if ( o instanceof Policy && ((Policy)o).isUnresolved() ) {
+           /*if ( o instanceof Policy && ((Policy)o).isUnresolved() ) {
               unresolved = true;
-           }
+           }*/
        }
        policySet.setUnresolved(unresolved);
    }
