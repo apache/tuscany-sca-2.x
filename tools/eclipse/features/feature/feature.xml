@@ -20,7 +20,7 @@
 <feature
       id="org.apache.tuscany.sca.feature"
       label="Apache Tuscany SCA Tools"
-      version="1.0.0.qualifier"
+      version="1.1.0.incubating-SNAPSHOT"
       provider-name="Apache Software Foundation">
 
    <description url="http://incubator.apache.org/tuscany">
