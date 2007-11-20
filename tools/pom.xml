@@ -25,9 +25,8 @@
         <version>1.1-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-
-    <packaging>pom</packaging>
     <artifactId>tuscany-sca-tools</artifactId>
+    <packaging>pom</packaging>
     <name>Apache Tuscany SCA Tools</name>
 
     <profiles>
@@ -37,8 +36,10 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>maven</module>
                 <module>eclipse</module>
+                <module>java2wsdl</module>
+                <module>maven</module>
+                <module>wsdl2java</module>
             </modules>
         </profile>
     </profiles>

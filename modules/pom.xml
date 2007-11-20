@@ -107,7 +107,6 @@
                 <module>implementation-spring</module>
                 <module>implementation-widget</module>
                 <module>implementation-xquery</module>
-                <module>java2wsdl</module>
                 <module>node</module>
                 <module>node-api</module>
                 <module>node-impl</module>
@@ -120,7 +119,6 @@
                 <module>sca-api</module>
                 <module>definitions</module>
                 <module>definitions-xml</module>
-                <module>wsdl2java</module>
             </modules>
         </profile>
 
