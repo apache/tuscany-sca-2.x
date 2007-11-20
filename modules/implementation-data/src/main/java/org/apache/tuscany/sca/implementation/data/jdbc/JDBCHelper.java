@@ -141,8 +141,10 @@ public class JDBCHelper {
             if(connection == null){
                 throw new DataSourceInitializationException("Error initializing connection : null");
             }
-
-            connection.setAutoCommit(false);
+            
+            //FIXME we should make this flexible, we can't autocommit when participating in transactions
+            connection.setAutoCommit(true);
+            
         }catch(ClassNotFoundException cnf){
             throw new DataSourceInitializationException("JDBC Driver '" + connectionInfo.getConnectionProperties().getDriverClass() + "' not found", cnf);
         }catch(SQLException sqle){

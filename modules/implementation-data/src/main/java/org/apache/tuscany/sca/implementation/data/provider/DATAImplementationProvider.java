@@ -48,6 +48,9 @@ public class DATAImplementationProvider implements ImplementationProvider {
 
         if (operationName.equals("get")) {
             return new DATAInvoker.GetInvoker(operation, implementation.getConnectionInfo(), tableName);
+        }      
+        else if (operationName.equals("delete")) {
+            return new DATAInvoker.DeleteInvoker(operation, implementation.getConnectionInfo(), tableName);
         }
 
         return new DATAInvoker(operation, implementation.getConnectionInfo(), tableName);

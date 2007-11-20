@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 package org.apache.tuscany.sca.implementation.data;
@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * Tests the DAS service
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class DATATestCase extends TestCase {
@@ -43,7 +43,7 @@ public class DATATestCase extends TestCase {
         scaDomain = SCADomain.newInstance("data.composite");
         dataService = scaDomain.getService(DATA.class, "DataComponent/COMPANY");
     }
-
+    
     /**
      * @throws java.lang.Exception
      */
@@ -51,9 +51,17 @@ public class DATATestCase extends TestCase {
     protected void tearDown() throws Exception {
         scaDomain.close();
     }
-
+    
+    public void testDeleteByID() throws Exception {
+        System.out.println(">testDeleteByID");
+        
+        Integer companyID = new Integer(52);
+        int dRows = dataService.delete(companyID.toString());
+        System.out.println("Deleted rows: "+dRows);
+    }
+    
     public void testGet() throws Exception {
-        System.out.println("testGet");
+        System.out.println(">testGet");
         
         XMLStreamReader reader = dataService.get(null);
         String xml = new XMLStreamReader2String().transform(reader, null);
@@ -62,13 +70,22 @@ public class DATATestCase extends TestCase {
     }
     
     public void testGetByID() throws Exception {
+        System.out.println(">testGetByID");
+        
         Integer companyID = new Integer(51);
-
+        
         XMLStreamReader reader = dataService.get(companyID.toString());
         assertNotNull(reader);
         String xml = new XMLStreamReader2String().transform(reader, null);
         System.out.println(xml);
-        reader.close();        
+        reader.close();
     }
-
+    
+    public void testDelete() throws Exception {
+        System.out.println(">testDelete");
+        
+        int dRows = dataService.delete(null);
+        System.out.println("Deleted rows: "+dRows);
+    }
+    
 }
