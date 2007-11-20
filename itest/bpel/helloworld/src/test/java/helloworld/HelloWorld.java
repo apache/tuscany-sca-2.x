@@ -21,7 +21,6 @@ package helloworld;
 
 import org.apache.tuscany.implementation.bpel.example.helloworld.HelloPortType;
 import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Remotable;
 
 /**
  * @version $Rev$ $Date$

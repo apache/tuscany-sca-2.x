@@ -25,7 +25,8 @@
     <component name="BPELHelloWorld">
         <implementation.java class="helloworld.HelloWorld"/>
         <reference name="helloService" target="BPELHelloWorldService">
-        	<interface.wsdl interface="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl#wsdl.interface(HelloPortType)" />
+            <!--  Workaround for databinding issue -->
+        	<!--  interface.wsdl interface="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl#wsdl.interface(HelloPortType)" / -->
         </reference>
     </component>
     
