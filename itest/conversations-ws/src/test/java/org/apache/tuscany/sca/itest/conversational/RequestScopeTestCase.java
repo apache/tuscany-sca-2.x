@@ -51,7 +51,7 @@ public class RequestScopeTestCase {
 
     @BeforeClass
     public static void setUp() throws Exception {
-    	try {
+    	try {    
                 SCANode node = SCANodeFactory.newInstance().createSCANode(null, null);
                 node.addContribution("mycontribution",
                                      StatefulStatefulTestCase.class.getResource("/Conversational/."));                                                                     
@@ -91,6 +91,13 @@ public class RequestScopeTestCase {
     @AfterClass
     public static void tearDown() throws Exception {
         domain.destroy();
+        domain = null;
+        conversationalStatelessClientStatelessService = null;
+        conversationalStatelessClientStatefulService = null;
+        conversationalStatefulClientStatelessService = null;
+        conversationalStatefulClientStatefulService = null; 
+        conversationalStatelessClientRequestService = null;
+        conversationalStatefulClientNonConversationalCallbackStatelessService = null;            
     }
     
     private static void resetCallStack() {

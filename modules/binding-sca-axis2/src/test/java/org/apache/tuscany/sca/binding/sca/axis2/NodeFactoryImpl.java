@@ -44,4 +44,8 @@ public class NodeFactoryImpl implements NodeFactory {
     	return node;
     }
     
+    public void setNode(SCANode node){
+        this.node = node;
+    }    
+    
 }

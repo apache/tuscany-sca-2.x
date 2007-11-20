@@ -19,10 +19,13 @@
 
 package org.apache.tuscany.sca.binding.sca.impl;
 
+import java.net.URI;
+
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
@@ -40,18 +43,18 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider {
   
-	private SCANode node; 
+    private NodeFactory nodeFactory; 
     private RuntimeComponentService service;
     private BindingProviderFactory<DistributedSCABinding> distributedProviderFactory;
     private ServiceBindingProvider distributedProvider;
     private DistributedSCABinding distributedBinding;
     
     public RuntimeSCAServiceBindingProvider(ExtensionPointRegistry extensionPoints,
-    		                                SCANode node,
+    		                            NodeFactory nodeFactory,
                                             RuntimeComponent component,
                                             RuntimeComponentService service,
                                             SCABinding binding) {
-    	this.node = node;
+    	this.nodeFactory = nodeFactory;
         this.service = service;
         // if there is potentially a wire to this service that crosses the node boundary 
         if (service.getInterfaceContract().getInterface().isRemotable()) {  
@@ -71,7 +74,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
             // - distributed domain in which to look for remote endpoints 
             // - remotable interface on the service
             if (distributedProviderFactory != null) {
-                if (this.node != null) {
+                if ((this.nodeFactory != null) && (this.nodeFactory.getNode() != null)) {
                     if (!service.getInterfaceContract().getInterface().isRemotable()) {
                         throw new IllegalStateException("Reference interface not remoteable for component: "+
                                                         component.getName() +
@@ -131,6 +134,21 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
         if (distributedProvider != null) {
             distributedProvider.stop();
         }
+        
+        if (distributedBinding != null) {
+            // reset the binding URI to null so that if the composite containing the component
+            // with the service/binding is restarted the binding will have the correct URI set
+            SCABinding scaBinding = distributedBinding.getSCABinding();
+            try {
+                URI tempURI = new URI(scaBinding.getURI());
+                if (!tempURI.isAbsolute()){
+                    scaBinding.setURI(null);
+                }
+            } catch (Exception ex){
+                scaBinding.setURI(null);
+            } 
+        }
+        
     }
 
 }

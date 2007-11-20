@@ -133,7 +133,7 @@ public class SCADomainProxyImpl extends SCADomainImpl implements SCADomainProxyS
         // add the node into the local domain model 
         super.addNode(nodeImpl.getURI(), nodeImpl.getURI());
         
-        // the registration of the node with the node is delayed until
+        // the registration of the node with the domain is delayed until
         // after the runtime has been started
         start();
     }
@@ -144,7 +144,7 @@ public class SCADomainProxyImpl extends SCADomainImpl implements SCADomainProxyS
         nodeManagerInitService.setNode(nodeImpl);   
         
         if (domainModel.getDomainURL() != null){
-            // add the 
+            // add the node to the domain
         
             try {
                 // create the node manager endpoint
@@ -173,10 +173,7 @@ public class SCADomainProxyImpl extends SCADomainImpl implements SCADomainProxyS
     }
     
     public void removeNode(SCANode nodeImpl) throws DomainException {
-        
-        // remove this object from the node manager service
-        //nodeManagerInitService.removeNode(nodeImpl);
-        
+                
         // remove the node from the local domain model
         super.removeNode(nodeImpl.getURI());
         
@@ -192,6 +189,9 @@ public class SCADomainProxyImpl extends SCADomainImpl implements SCADomainProxyS
                 throw new DomainException(ex);
             }
         }  
+        
+        // remove this object from the node manager service
+        nodeManagerInitService.setNode(null);        
         
         this.nodeImpl = null;
     }  
@@ -302,14 +302,13 @@ public class SCADomainProxyImpl extends SCADomainImpl implements SCADomainProxyS
                            
                 // add node composite to the management domain
                 domainManagementContributionService = domainManagementRuntime.getContributionService();
-                Contribution contribution = null;
-
-                contribution = domainManagementContributionService.contribute("nodedomain", 
-                                                                              contributionURL, 
-                                                                              false);
+                domainManagementContribution = domainManagementContributionService.contribute("nodedomain", 
+                                                                                              contributionURL, 
+                                                                                              false);
                 
                 Composite composite = null;
-                for (DeployedArtifact artifact: contribution.getArtifacts()) {
+                
+                for (DeployedArtifact artifact: domainManagementContribution.getArtifacts()) {
                     if (domainCompositeName.equals(artifact.getURI())) {
                         composite = (Composite)artifact.getModel();
                     }
@@ -384,10 +383,45 @@ public class SCADomainProxyImpl extends SCADomainImpl implements SCADomainProxyS
         }
     }
     
+    public void stop() throws DomainException {
+        try {
+            Composite composite = domainManagementComposite.getIncludes().get(0);
+            
+            domainManagementRuntime.getCompositeActivator().stop(composite);
+            domainManagementRuntime.getCompositeActivator().deactivate(composite);
+            
+            if (nodeImpl != null){
+                nodeImpl.stop();
+            } else {
+                domainManagementRuntime.stop();   
+            }
+        } catch (Exception ex) {
+            throw new DomainException(ex);
+        }
+    }
+    
     public void destroy() throws DomainException {
         try {
-          // Stop the domain
-          domainManagementRuntime.stop();
+            if (nodeImpl != null){
+                nodeImpl.destroy();
+            } else {
+                Composite composite = domainManagementComposite.getIncludes().get(0);
+                
+                domainManagementRuntime.getCompositeActivator().stop(composite);
+                domainManagementRuntime.getCompositeActivator().deactivate(composite);
+                
+                domainManagementComposite.getIncludes().clear();
+                domainManagementRuntime.getContributionService().remove(domainManagementContribution.getURI());
+                
+                domainManagementRuntime.stop(); 
+                
+                domainManagementRuntime = null;
+                domainManagementComposite = null;
+                
+                domainManagerService = null;
+                nodeManagerInitService = null;
+            }
+ 
         } catch (Exception ex) {
             throw new DomainException(ex);
         }

@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
@@ -49,7 +50,7 @@ import org.osoa.sca.ServiceUnavailableException;
  */
 public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvider {
 
-    private SCANode node;
+    private NodeFactory nodeFactory;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
     private SCABinding binding;
@@ -59,11 +60,11 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
     private ReferenceBindingProvider distributedProvider = null;
 
     public RuntimeSCAReferenceBindingProvider(ExtensionPointRegistry extensionPoints,
-    		                                  SCANode domain,
+                                              NodeFactory nodeFactory,
                                               RuntimeComponent component,
                                               RuntimeComponentReference reference,
                                               SCABinding binding) {
-        this.node = domain;
+        this.nodeFactory = nodeFactory;
         this.component = component;
         this.reference = reference;
         this.binding = binding;
@@ -98,11 +99,11 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             // reference, e.g. a callback, so check the domain to see if the service is available
             // at this node. The binding uri might be null here if the dynamic reference has been
             // fully configured yet. It won't have all of the information until invocation time
-            if ((node != null) && (binding.getURI() != null)) {
-                SCADomainSPI domainProxy = (SCADomainSPI)node.getDomain();
+            if ( (nodeFactory != null) && (nodeFactory.getNode() != null) && (binding.getURI() != null)) {
+                SCADomainSPI domainProxy = (SCADomainSPI)nodeFactory.getNode().getDomain();
 
                 String serviceUrl =
-                    domainProxy.findServiceEndpoint(node.getDomain().getURI(),
+                    domainProxy.findServiceEndpoint(nodeFactory.getNode().getDomain().getURI(),
                                                          binding.getURI(),
                                                          SCABinding.class.getName());
                 if ((serviceUrl == null) || serviceUrl.equals("")) {
@@ -132,7 +133,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                         + reference.getName());
                 }
 
-                if (node == null) {
+                if (nodeFactory.getNode() == null) {
                     throw new IllegalStateException("No distributed domain available for component: " + component
                         .getName()
                         + " and reference: "
@@ -189,13 +190,15 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             RuntimeWire wire = reference.getRuntimeWire(binding);
             Invoker invoker = getInvoker(wire, operation);
             if (invoker == null) {
-                throw new ServiceUnavailableException("No service invoker is available for reference " + reference
-                    .getName()
+                throw new ServiceUnavailableException("Service not found for component "
+                    + component.getName()
+                    + " reference " 
+                    + reference.getName()
                     + " (bindingURI="
                     + binding.getURI()
                     + " operation="
                     + operation.getName()
-                    + ").");
+                    + "). Ensure that the composite containing the service it loaded and started somewhere in the SCA domain");
             }
             return invoker;
         }
