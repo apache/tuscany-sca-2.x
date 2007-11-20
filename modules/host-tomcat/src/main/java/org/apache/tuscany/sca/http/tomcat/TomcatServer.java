@@ -351,6 +351,9 @@ public class TomcatServer implements ServletHost {
         }
         if (md.wrapper instanceof ServletWrapper) {
             ServletWrapper servletWrapper = (ServletWrapper)md.wrapper;
+            
+            port.getConnector().getMapper().removeWrapper("localhost", "", mapping);
+
             try {
                context.removeServletMapping(mapping);
             } catch (NegativeArraySizeException e) {
@@ -361,6 +364,7 @@ public class TomcatServer implements ServletHost {
             }
             context.removeChild(servletWrapper);
             servletWrapper.destroyServlet();
+            //logger.info("Remove Servlet mapping: " + suri);
             return servletWrapper.getServlet();
         } else {
             return null;

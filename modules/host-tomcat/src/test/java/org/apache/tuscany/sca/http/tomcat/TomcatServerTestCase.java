@@ -74,7 +74,7 @@ public class TomcatServerTestCase extends TestCase {
 
         public void destroy() {
         }
-    };
+    };      
 
     /**
      * Verifies requests are properly routed according to the servlet mapping
@@ -133,7 +133,41 @@ public class TomcatServerTestCase extends TestCase {
         read(client);
         service.stop();
         assertFalse(servlet.invoked);
+        
     }
+    
+    public void testRegisterUnregisterMapping() throws Exception {
+        TomcatServer service = new TomcatServer(workScheduler);
+        TestServlet servlet = new TestServlet();
+        service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/foo", servlet);
+        {
+            Socket client = new Socket("127.0.0.1", HTTP_PORT);
+            OutputStream os = client.getOutputStream();
+            os.write(REQUEST1.getBytes());
+            os.flush();
+            read(client);            
+        }
+        assertTrue(servlet.invoked);
+        service.removeServletMapping("http://127.0.0.1:" + HTTP_PORT + "/foo");
+        {
+            Socket client = new Socket("127.0.0.1", HTTP_PORT);
+            OutputStream os = client.getOutputStream();
+            os.write(REQUEST1.getBytes());
+            os.flush();
+            read(client);            
+        }
+        servlet = new TestServlet();
+        service.addServletMapping("http://127.0.0.1:" + HTTP_PORT + "/foo", servlet);
+        {
+            Socket client = new Socket("127.0.0.1", HTTP_PORT);
+            OutputStream os = client.getOutputStream();
+            os.write(REQUEST1.getBytes());
+            os.flush();
+            read(client);            
+        }
+        assertTrue(servlet.invoked);
+        service.stop();
+    } 
 
     public void testRequestSession() throws Exception {
         TomcatServer service = new TomcatServer(workScheduler);
