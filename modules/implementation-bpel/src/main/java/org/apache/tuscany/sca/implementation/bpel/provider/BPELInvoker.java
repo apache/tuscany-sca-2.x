@@ -61,6 +61,7 @@ public class BPELInvoker implements Invoker {
     
     public BPELInvoker(Operation operation, EmbeddedODEServer odeServer, TransactionManager txMgr) {
         this.operation = operation;
+        this.bpelOperationName = operation.getName();
         this.odeServer = odeServer;
         this.txMgr = txMgr;
 
@@ -69,15 +70,13 @@ public class BPELInvoker implements Invoker {
 
     
     private void initializeInvocation() {
-
-        this.bpelOperationName = operation.getName();
-        
+      
         Interface interfaze = operation.getInterface();
         if(interfaze instanceof WSDLInterface){
             WSDLInterface wsdlInterface = null;
             wsdlInterface = (WSDLInterface) interfaze;
             
-            Service serviceDefinition = (Service) wsdlInterface.getWsdlDefinition().getDefinition().getServices().values().iterator().next(); 
+            Service serviceDefinition = (Service) wsdlInterface.getWsdlDefinition().getDefinition().getAllServices().values().iterator().next(); 
             bpelServiceName = serviceDefinition.getQName();
                 
             bpelOperationInputPart = (Part) wsdlInterface.getPortType().getOperation(bpelOperationName,null,null).getInput().getMessage().getParts().values().iterator().next();
@@ -188,6 +187,7 @@ public class BPELInvoker implements Invoker {
         contentMessage.appendChild(contentPart);
         dom.appendChild(contentMessage);
         
+        System.out.println("::arg:::::: " + DOMUtils.domToString((Element) args[0]));
         System.out.println("::message:: " + DOMUtils.domToString(dom.getDocumentElement()));
 
         org.apache.ode.bpel.iapi.Message request = mex.createMessage(new QName("", ""));

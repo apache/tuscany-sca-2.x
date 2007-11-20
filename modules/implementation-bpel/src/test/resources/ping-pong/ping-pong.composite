@@ -21,9 +21,16 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	targetNamespace="http://bpel"
     xmlns:ping="http://tuscany.apache.org/implementation/bpel/example/ping.bpel"
+    xmlns:pong="http://tuscany.apache.org/implementation/bpel/example/pong.bpel"
     name="ping">
     
-    <component name="BPELPingComponent">
+    <component name="BPELPingPong-PingComponent">
         <implementation.bpel process="ping:Ping"/>
+        <reference name="Pong" target="BPELPingPong-PongComponent/PongService"/>
     </component>
+    
+    <component name="BPELPingPong-PongComponent">
+        <implementation.bpel process="pong:Pong"/>
+    </component>
+
 </composite>

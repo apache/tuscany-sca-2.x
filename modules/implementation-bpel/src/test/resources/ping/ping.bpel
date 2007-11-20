@@ -25,7 +25,7 @@
         xmlns:tns="http://tuscany.apache.org/implementation/bpel/example/ping.bpel"
         xmlns:ping="http://tuscany.apache.org/implementation/bpel/example/ping.wsdl"
         xmlns:pong="http://tuscany.apache.org/implementation/bpel/example/pong.wsdl"
-        expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+        expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
 
     <import location="ping.wsdl"
             namespace="http://tuscany.apache.org/implementation/bpel/example/ping.wsdl"
