@@ -26,11 +26,9 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>org.apache.tuscany.sca.feature</artifactId>
-    <version>1.1.0.0-incubating-SNAPSHOT</version>
     <name>Apache Tuscany SCA Eclipse Tools Feature</name>
 
     <build>
-       <finalName>${artifactId}_${project.version}</finalName>
        <resources>
           <resource>
               <directory>${basedir}</directory>
@@ -41,6 +39,18 @@
               </excludes>
           </resource>
        </resources>
+
+       <plugins>
+           <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-jar-plugin</artifactId>
+               <configuration>
+                   <archive>
+                       <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+                   </archive>
+               </configuration>
+            </plugin>
+        </plugins>
     </build>
 
 </project>

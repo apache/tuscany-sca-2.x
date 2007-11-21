@@ -28,24 +28,23 @@
 
     <packaging>pom</packaging>
     <artifactId>org.apache.tuscany.sca.updatesite</artifactId>
-    <version>1.1.0.0-incubating-SNAPSHOT</version>
     <name>Apache Tuscany SCA Eclipse Tools Update Site</name>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>org.apache.tuscany.sca.core</artifactId>
-            <version>1.1.0.0-incubating-SNAPSHOT</version>
+            <version>1.1-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>org.apache.tuscany.sca.runtime</artifactId>
-            <version>1.1.0.0-incubating-SNAPSHOT</version>
+            <version>1.1-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>org.apache.tuscany.sca.feature</artifactId>
-            <version>1.1.0.0-incubating-SNAPSHOT</version>
+            <version>1.1-incubating-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -77,7 +76,6 @@
                                 <descriptor>src/main/assembly/updatesite.xml</descriptor>
                             </descriptors>
                             <tarLongFileMode>gnu</tarLongFileMode>
-                            <finalName>${artifactId}_${project.version}</finalName>
                         </configuration>
                     </execution>
                 </executions>
