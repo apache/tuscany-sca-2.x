@@ -37,6 +37,9 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>features/feature</module>
+                <module>plugins/core</module>
+                <module>plugins/runtime</module>
             </modules>
         </profile>
     </profiles>

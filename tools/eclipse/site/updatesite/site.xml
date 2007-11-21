@@ -3,5 +3,5 @@
    <description url="http://people.apache.org/~jsdelfino/tuscany/tools/updatesite">
       Apache Tuscany SCA Tools.
    </description>
-   <feature url="features/org.apache.tuscany.sca.feature_1.1.0.incubating-SNAPSHOT.jar" id="org.apache.tuscany.sca.feature" version="1.1.0.incubating-SNAPSHOT"/>
+   <feature url="features/org.apache.tuscany.sca.feature_1.1.0.0-incubating-SNAPSHOT.jar" id="org.apache.tuscany.sca.feature" version="1.1.0.0-incubating-SNAPSHOT"/>
 </site>
