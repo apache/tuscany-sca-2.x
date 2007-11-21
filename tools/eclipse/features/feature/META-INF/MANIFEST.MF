@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Apache Tuscany SCA Runtime
-Bundle-SymbolicName: org.apache.tuscany.sca.runtime
+Bundle-Name: Apache Tuscany SCA Tools
+Bundle-SymbolicName: org.apache.tuscany.sca.feature
 Bundle-Version: 1.1.0
 Bundle-Vendor: Apache Software Foundation

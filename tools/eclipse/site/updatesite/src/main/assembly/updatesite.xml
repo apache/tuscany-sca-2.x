@@ -19,7 +19,7 @@
 -->
 <assembly>
     <id></id>
-    <includeBaseDirectory>true</includeBaseDirectory>
+    <includeBaseDirectory>false</includeBaseDirectory>
     <formats>
         <format>zip</format>
     </formats>
@@ -44,6 +44,7 @@
                 <include>org.apache.tuscany.sca:org.apache.tuscany.sca.runtime</include>
             </includes>
             <scope>runtime</scope>
+            <outputFileNameMapping>${artifactId}_1.1.0.${extension}</outputFileNameMapping>
         </dependencySet>
 
         <dependencySet>
@@ -53,6 +54,7 @@
                 <include>org.apache.tuscany.sca:org.apache.tuscany.sca.feature</include>
             </includes>
             <scope>runtime</scope>
+            <outputFileNameMapping>${artifactId}_1.1.0.${extension}</outputFileNameMapping>
         </dependencySet>
     </dependencySets>
 
