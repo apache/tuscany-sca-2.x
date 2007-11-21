@@ -17,56 +17,90 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.domain.management;
+package org.apache.tuscany.sca.domain.model.impl;
 
 import java.net.URL;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.domain.model.CompositeModel;
 import org.apache.tuscany.sca.domain.model.ContributionModel;
-import org.apache.tuscany.sca.domain.model.ServiceModel;
-
 
 /**
- * A collection of info for a contribution
+ * A contribution.
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public interface ContributionInfo {
+public class ContributionModelImpl implements ContributionModel {
     
+    private Contribution contribution;
+    private String contributionURI;
+    private String contributionURL;
+    private Map<QName, CompositeModel> composites = new HashMap<QName, CompositeModel>();   
+    private Map<QName, CompositeModel> deployableComposites = new HashMap<QName, CompositeModel>();
+    
+    /**
+     * Retrieve the contribution object
+     * 
+     * @return contribution 
+     */
+    public Contribution getContribution(){
+        return contribution;
+    }
+    
+    /**
+     * Set the contribution object
+     * 
+     * @param contribution
+     */    
+    public void setContribution(Contribution contribution){
+        this.contribution = contribution;
+    }
     
     /**
      * Retrieve the contribution uri
      * 
      * @return contribution uri
      */
-    public String getContributionURI();
+    public String getContributionURI() {
+        return contributionURI;
+    }
     
     /**
      * Set the contribution uri
      * 
      * @param contributionURI
      */    
-    public void setContributionURI(String contributionURI);    
+    public void setContributionURI(String contributionURI){
+        this.contributionURI = contributionURI;
+    }
     
     /**
      * Retrieve the contribution url
      * 
      * @return contribution url
      */    
-    public URL getContributionURL();
+    public String getContributionURL(){
+        return contributionURL;
+    }
    
     /**
      * Set the contribution url
      * 
      * @param contributionURL
      */    
-    public void setContributionURL(URL contributionURL);
+    public void setContributionURL(String contributionURL){
+        this.contributionURL = contributionURL;
+    }
     
-    public List<QName> getComposites();       
-    public List<QName> getDeployableComposites();
- 
+    public Map<QName, CompositeModel> getComposites(){
+        return composites;
+    }   
+    
+    public Map<QName, CompositeModel> getDeployableComposites(){
+        return deployableComposites;
+    }    
 }

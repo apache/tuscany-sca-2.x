@@ -189,6 +189,8 @@ public class SCANodeImpl implements SCANode {
             // make the node available to the model
             // this causes the runtime to start registering binding-sca service endpoints
             // with the domain proxy
+            // TBD - This code is due to be pulled out and combined with the register and 
+            //       resolution code that appears in this class
             ModelFactoryExtensionPoint factories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
             nodeFactory = new NodeFactoryImpl(this);
             factories.addFactory(nodeFactory); 
@@ -317,95 +319,76 @@ public class SCANodeImpl implements SCANode {
     }
     
     public void addContribution(String contributionURI, URL contributionURL, ClassLoader contributionClassLoader ) throws NodeException {
-       try {            
-            if (contributionURL != null) {
-                ModelResolver modelResolver = null;
-                
-                // if the contribution is to be resolved using a separate class loader
-                // then create a new model resolver
-                if (contributionClassLoader != null)  {
-                    modelResolver = new ModelResolverImpl(contributionClassLoader);
-                }
-                
-                // Add the contribution to the node
-                ContributionService contributionService = nodeRuntime.getContributionService();
-                Contribution contribution = contributionService.contribute(contributionURI, 
-                                                                           contributionURL, 
-                                                                           modelResolver, 
-                                                                           false);
-                
-                // remember the contribution
-                contributions.put(contributionURI, contribution);
-                    
-                // remember all the composites that have been found
-                for (DeployedArtifact artifact : contribution.getArtifacts()) {
-                    if (artifact.getModel() instanceof Composite) {
-                        Composite composite = (Composite)artifact.getModel();
-                        composites.put(composite.getName(), composite);
-                        compositeFiles.put(composite.getURI(), composite);
-                    }
-                }
-
-                // place all the deployable composites into the node level composite
-                for (Composite composite : contribution.getDeployables()) {
-                    nodeComposite.getIncludes().add(composite);
-                }  
-                
-                // add the contribution to the domain. It will generally already be there
-                // unless the contribution has been added to the node itself. 
-                ((SCADomainProxyImpl)scaDomain).registerContribution(nodeURI, contributionURI, contributionURL.toExternalForm());                  
-                
-            } else {
-                    throw new NodeException("Contribution " + contributionURL + " not found");
-            }  
+        
+        if (nodeStarted){
+            throw new NodeException("Can't add contribution " + contributionURI + " when the node is running. Call stop() on the node first");
+        }
+       
+        if (contributionURI == null){
+            throw new NodeException("Contribution URI cannot be null");
+        }
+        
+        if (contributionURL == null){
+            throw new NodeException("Contribution URL cannot be null");
+        }
+        
+        if (contributions.containsKey(contributionURI)) {
+            throw new NodeException("Contribution " + contributionURI + " has already been added");
+        }
+        
+        try {          
+            ModelResolver modelResolver = null;
             
+            // if the contribution is to be resolved using a separate class loader
+            // then create a new model resolver
+            if (contributionClassLoader != null)  {
+                modelResolver = new ModelResolverImpl(contributionClassLoader);
+            }
+            
+            // Add the contribution to the node
+            ContributionService contributionService = nodeRuntime.getContributionService();
+            Contribution contribution = contributionService.contribute(contributionURI, 
+                                                                       contributionURL, 
+                                                                       modelResolver, 
+                                                                       false);
+            
+            // remember the contribution
+            contributions.put(contributionURI, contribution);
+                
+            // remember all the composites that have been found
+            for (DeployedArtifact artifact : contribution.getArtifacts()) {
+                if (artifact.getModel() instanceof Composite) {
+                    Composite composite = (Composite)artifact.getModel();
+                    composites.put(composite.getName(), composite);
+                    compositeFiles.put(composite.getURI(), composite);
+                }
+            } 
+            
+            // add the contribution to the domain. It will generally already be there
+            // unless the contribution has been added to the node itself. 
+            ((SCADomainProxyImpl)scaDomain).registerContribution(nodeURI, contributionURI, contributionURL.toExternalForm());                  
+        
         } catch (Exception ex) {
             throw new NodeException(ex);
         }        
     }
 
-    public void startContribution(String contributionURI) throws NodeException {
-        try {
-
-            Contribution contribution = contributions.get(contributionURI);
-            
-            if (contribution != null){
-                for (Composite composite : contribution.getDeployables()) {
-                        startComposite(composite);
-                }  
-            } else {
-                throw new NodeException("Contribution " + contributionURI + " not added");
-            }
-
-        } catch (ActivationException e) {
-            throw new NodeException(e);
-        } catch (CompositeBuilderException e) {
-            throw new NodeException(e);
-        }
-    }
-    
-    public void stopContribution(String contributionURI) throws NodeException {
-        try {
-
-            Contribution contribution = contributions.get(contributionURI);
-            
-            if (contribution != null){
-                for (Composite composite : contribution.getDeployables()) {
-                        stopComposite(composite);
-                }  
-            } else {
-                throw new NodeException("Contribution " + contributionURI + " not added");
-            }
-
-        } catch (ActivationException e) {
-            throw new NodeException(e);
-        } 
-    }    
-
     public void removeContribution(String contributionURI) throws NodeException {
+        
+        if (nodeStarted){
+            throw new NodeException("Can't remove contribution " + contributionURI + " when the node is running. Call stop() on the node first");
+        }
+       
+        if (contributionURI == null){
+            throw new NodeException("Contribution URI cannot be null");
+        }
+        
+        if (!contributions.containsKey(contributionURI)) {
+            throw new NodeException("Contribution " + contributionURI + " has not been added");
+        }        
+        
         try { 
-            stopContribution(contributionURI);
-            
+
             Contribution contribution = contributions.get(contributionURI);
             
             // remove the local record of composites associated with this contribution
@@ -420,14 +403,18 @@ public class SCANodeImpl implements SCANode {
             // remove the contribution from the contribution service
             nodeRuntime.getContributionService().remove(contributionURI);
             
-            // remove all the deployable composites from the node level composite
+            // remove any deployed composites from the node level composite
             for (Composite composite : contribution.getDeployables()) {
                 nodeComposite.getIncludes().remove(composite);
             }
             
             // remove the local record of the contribution
             contributions.remove(contributionURI);
-
+            
+            // remove the contribution from the domain. It will generally already be remove
+            // unless the contribution has been remove from the node itself. 
+            //((SCADomainProxyImpl)scaDomain).unregisterContribution(nodeURI, contributionURI);                  
+            
         } catch (ContributionException ex) {
             throw new NodeException(ex);
         }  
@@ -452,37 +439,77 @@ public class SCANodeImpl implements SCANode {
         }              
     }
     
-    public void addToDomainLevelComposite(QName compositeName) throws NodeException {
-        try {         
-            // if the named composite is not already in the list then add it
-            Composite composite = composites.get(compositeName);
-            if (composite == null) {
-                throw new NodeException("Composite not found: " + compositeName);
+    private boolean isDeployable(Composite composite){
+        boolean deployable = false;
+        
+        for (Contribution contribution : contributions.values()){
+            if (contribution.getDeployables().contains(composite)) {
+                deployable = true;
+                break;
             }
-                   
+        }
+        
+        return deployable;
+    }
+    
+    public void addToDomainLevelComposite(QName compositeName) throws NodeException {
+        
+        if (nodeStarted){
+            throw new NodeException("Can't add composite " + compositeName.toString() + " when the node is running. Call stop() on the node first");
+        }
+       
+        // if no composite name is specified add all deployable composites
+        // to the domain
+        if (compositeName == null){
+            for (Contribution contribution : contributions.values()){
+                for (Composite composite : contribution.getDeployables()) {
+                    if (!nodeComposite.getIncludes().contains(composite)) {
+                        nodeComposite.getIncludes().add(composite);
+                    }
+                } 
+            }
+        } else {          
+            Composite composite = composites.get(compositeName);
             
-            // include in top level domain
-            nodeComposite.getIncludes().add(composite);
-             
-        } catch (Exception ex) {
-            throw new NodeException(ex);
-        }          
+            if (composite == null) {
+                throw new NodeException("Composite " + compositeName.toString() + " not found" );
+            }
+            
+            if ( !isDeployable(composite)){
+                throw new NodeException("Composite " + compositeName.toString() + " is not deployable");
+            }
+            
+            // if the named composite is not already in the list then deploy it
+            if (!nodeComposite.getIncludes().contains(composite)) {
+                nodeComposite.getIncludes().add(composite);
+            }
+        }        
     }
     
     public void addToDomainLevelComposite(String compositePath) throws NodeException {
-        try {           
-            // if the composite is not already in the list then add it
-            Composite composite = compositeFiles.get(compositePath);
-            if (composite == null) {
-                throw new NodeException("Composite file not found: " + compositePath);
-            }       
-            
-            // include in top level domain    
-            nodeComposite.getIncludes().add(composite); 
-               
-        } catch (Exception ex) {
-            throw new NodeException(ex);
-        }         
+        
+        if (nodeStarted){
+            throw new NodeException("Can't add composite " + compositePath + " when the node is running. Call stop() on the node first");
+        }
+       
+        if (compositePath == null){
+            throw new NodeException("Composite path cannot be null");
+        }
+                 
+        Composite composite = compositeFiles.get(compositePath);
+        
+        if (composite == null) {
+            throw new NodeException("Composite file " + compositePath + " not found");
+        }     
+      
+        if ( !isDeployable(composite)){
+            throw new NodeException("Composite " + compositePath + " is not deployable");
+        }            
+        
+        // if the named composite is not already in the list then deploy it
+        if (!nodeComposite.getIncludes().contains(composite)) {
+            nodeComposite.getIncludes().add(composite);
+        }
     }
 
     /**

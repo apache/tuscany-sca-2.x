@@ -181,7 +181,7 @@ public class WarContextListener implements ServletContextListener {
         for (URL contribution : addedContributions) {
             try {
                 addContribution(contribution);
-                node.startContribution(contribution.toString());
+  //              node.startContribution(contribution.toString());
             } catch (Throwable e) {
                 e.printStackTrace();
                 logger.log(Level.WARNING, "Exception adding contribution: " + e);

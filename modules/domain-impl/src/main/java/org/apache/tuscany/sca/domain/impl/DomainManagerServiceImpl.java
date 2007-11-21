@@ -29,8 +29,8 @@ import org.apache.tuscany.sca.domain.management.DomainManagementService;
 import org.apache.tuscany.sca.domain.management.NodeInfo;
 import org.apache.tuscany.sca.domain.management.impl.DomainInfoImpl;
 import org.apache.tuscany.sca.domain.management.impl.NodeInfoImpl;
-import org.apache.tuscany.sca.domain.model.Domain;
-import org.apache.tuscany.sca.domain.model.Node;
+import org.apache.tuscany.sca.domain.model.DomainModel;
+import org.apache.tuscany.sca.domain.model.NodeModel;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
@@ -90,7 +90,7 @@ public class DomainManagerServiceImpl implements DomainManagerNodeEventService, 
     public DomainInfo getDomainDescription(){
         
         DomainInfo domainInfo = new DomainInfoImpl();
-        Domain domain =  scaDomain.getDomainModel();
+        DomainModel domain =  scaDomain.getDomainModel();
         
         domainInfo.setDomainURI(domain.getDomainURI());
         domainInfo.setDomainURL(domain.getDomainURL());
@@ -104,8 +104,8 @@ public class DomainManagerServiceImpl implements DomainManagerNodeEventService, 
     public NodeInfo getNodeDescription(String nodeURI){
         
         NodeInfo nodeInfo = new NodeInfoImpl();
-        Domain domain =  scaDomain.getDomainModel();
-        Node node = domain.getNodes().get(nodeURI);
+        DomainModel domain =  scaDomain.getDomainModel();
+        NodeModel node = domain.getNodes().get(nodeURI);
         
         nodeInfo.setNodeURI(nodeURI);
         nodeInfo.setNodeURL(node.getNodeURL());

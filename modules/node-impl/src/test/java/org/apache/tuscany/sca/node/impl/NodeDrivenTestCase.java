@@ -66,20 +66,23 @@ public class NodeDrivenTestCase {
             
             SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             
-            // rely on meta data to start composite
+            // sca-contribution.xml test
             nodeA = nodeFactory.createSCANode("http://localhost:8100/nodeA", "http://localhost:9999");
             nodeA.addContribution("nodeA", cl.getResource("nodeA/"));
+            nodeA.addToDomainLevelComposite(new QName("http://sample", "CalculatorA"));
             nodeA.start();
 
-            // rely on meta data to start composite
+            // sca-deployables test
             nodeB = nodeFactory.createSCANode("http://localhost:8200/nodeB", "http://localhost:9999");
             nodeB.addContribution("nodeB", cl.getResource("nodeB/"));
+            nodeB.addToDomainLevelComposite(new QName("http://sample", "CalculatorB"));
             nodeB.start();
 
-            // explicitly ask for composite to be started
+            // sca-deployables test
             nodeC = nodeFactory.createSCANode("http://localhost:8300/nodeC", "http://localhost:9999");
             nodeC.addContribution("nodeC", cl.getResource("nodeC/"));
             nodeC.addToDomainLevelComposite(new QName("http://sample", "CalculatorC")); 
+            nodeC.addToDomainLevelComposite(new QName("http://sample", "CalculatorC"));
             nodeC.start();
 
             SCADomainFinder domainFinder = SCADomainFinder.newInstance();

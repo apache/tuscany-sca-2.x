@@ -110,7 +110,9 @@ public class StandaloneNodeTestCase {
     @Test
     public void testAddOtherContributionsAndStartNode() throws Exception {       
         node.addContribution("nodeB", cl.getResource("nodeB/"));
+        node.addToDomainLevelComposite(new QName("http://sample", "CalculatorB"));
         node.addContribution("nodeD", cl.getResource("nodeD/"));
+        node.addToDomainLevelComposite(new QName("http://sample", "CalculatorD"));
         node.start();
         subtractServiceC = node.getDomain().getService(SubtractService.class, "SubtractServiceComponentC");
         calculatorServiceD = node.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentD");
@@ -168,6 +170,7 @@ public class StandaloneNodeTestCase {
     public void testAddContributionBackAgain() throws Exception {       
        
         node.addContribution("nodeD", cl.getResource("nodeD/"));  
+        node.addToDomainLevelComposite(new QName("http://sample", "CalculatorD"));
         node.start();
         
         calculatorServiceD = node.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentD");

@@ -19,28 +19,51 @@
 
 package org.apache.tuscany.sca.domain.model;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
 
 /**
- * A composite. 
+ * A domain. Manages nodes
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public interface Composite {
+public interface DomainModel {
+
     
     /**
-     * Retrieve the composite qname
+     * Retrieve the domain uri
      * 
-     * @return composite qname
+     * @return domain uri
      */
-    public QName getCompositeQName();
+    public String getDomainURI();
     
     /**
-     * Set the composite qname
+     * Set the domain uri
      * 
-     * @param compositeQName
+     * @param domainURI
      */    
-    public void setCompositeQName(QName compositeQName);    
+    public void setDomainURI(String domainURI);    
+    
+    /**
+     * Retrieve the domain url
+     * 
+     * @return domain url
+     */    
+    public String  getDomainURL();
+   
+    /**
+     * Set the domain url
+     * 
+     * @param domainURL
+     */    
+    public void setDomainURL(String domainURL);
+   
+    public Map<String, NodeModel> getNodes();
+    public Map<String, ContributionModel> getContributions();
+    public Map<QName, CompositeModel> getDeployedComposites();
 }

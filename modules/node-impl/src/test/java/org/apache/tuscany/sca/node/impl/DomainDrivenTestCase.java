@@ -73,21 +73,17 @@ public class DomainDrivenTestCase {
             domain.addContribution("nodeB", cl.getResource("nodeB/"));
             domain.addContribution("nodeC", cl.getResource("nodeC/"));
             
+            domain.addToDomainLevelComposite(new QName("http://sample", "CalculatorA"));
+            domain.addToDomainLevelComposite(new QName("http://sample", "CalculatorB"));
             domain.addToDomainLevelComposite(new QName("http://sample", "CalculatorC"));
             
+            domain.startComposite(new QName("http://sample", "CalculatorA"));
+            domain.startComposite(new QName("http://sample", "CalculatorB"));
             domain.startComposite(new QName("http://sample", "CalculatorC"));
             
             calculatorServiceA = domain.getService(CalculatorService.class, "CalculatorServiceComponentA");
             calculatorServiceB = domain.getService(CalculatorService.class, "CalculatorServiceComponentB");
             
-/*
-            // get a reference to various services in the domain            
-            calculatorServiceA = nodeA.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentA");
-            calculatorServiceB = nodeB.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentB");
-            
-            //addServiceB = domain.getService(AddService.class, "AddServiceComponentB");
-            addServiceB = nodeA.getDomain().getService(AddService.class, "AddServiceComponentB");
-*/            
             
         } catch(Exception ex){
             System.err.println(ex.toString());
@@ -106,7 +102,6 @@ public class DomainDrivenTestCase {
 
     @Test
     public void testCalculator() throws Exception {       
-        /*
         // Calculate
         Assert.assertEquals(calculatorServiceA.add(3, 2), 5.0);
         Assert.assertEquals(calculatorServiceA.subtract(3, 2), 1.0);
@@ -116,6 +111,5 @@ public class DomainDrivenTestCase {
         Assert.assertEquals(calculatorServiceB.subtract(3, 2), 1.0);
         Assert.assertEquals(calculatorServiceB.multiply(3, 2), 6.0);
         Assert.assertEquals(calculatorServiceB.divide(3, 2), 1.5);
-      */ 
     }
 }

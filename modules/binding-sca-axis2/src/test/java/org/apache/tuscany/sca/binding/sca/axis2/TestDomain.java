@@ -28,7 +28,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
-import org.apache.tuscany.sca.domain.model.Domain;
+import org.apache.tuscany.sca.domain.model.DomainModel;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
 
@@ -113,7 +113,7 @@ public class TestDomain implements SCADomainSPI {
         }
     }
     
-    public Domain getDomainModel() {
+    public DomainModel getDomainModel() {
         return null;
     }
      

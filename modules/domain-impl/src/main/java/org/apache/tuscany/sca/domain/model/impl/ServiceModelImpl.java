@@ -19,14 +19,14 @@
 
 package org.apache.tuscany.sca.domain.model.impl;
 
-import org.apache.tuscany.sca.domain.model.Service;
+import org.apache.tuscany.sca.domain.model.ServiceModel;
 
 /**
  * A service.
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public class ServiceImpl implements Service {
+public class ServiceModelImpl implements ServiceModel {
     
     private String serviceURI;
     private String serviceURL;
