@@ -62,6 +62,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
     private JavaComponentContextProvider componentContextProvider;
     private RequestContextFactory requestContextFactory;
     private Map<ClassLoader, Map<QName, String>> policyHandlerClassNames = null;
+    private static final String POLICY_HANDLERS_STORE_FILE = "org.apache.tuscany.sca.implementation.java.PolicySetHandlers";
     
     public JavaImplementationProvider(RuntimeComponent component,
                                       JavaImplementation implementation,
@@ -117,8 +118,8 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
 
     private void loadPolicyHandlers(JavaImplementation javaImpl) throws Exception {
         if ( policyHandlerClassNames == null ) {
-        	Hashtable<ClassLoader, Set<URL>> policySetResources = 
-        		ServiceDiscovery.getInstance().getServiceResources("org.apache.tuscany.sca.policy.PolicySetHandlers");
+            Hashtable<ClassLoader, Set<URL>> policySetResources = 
+        		ServiceDiscovery.getInstance().getServiceResources(POLICY_HANDLERS_STORE_FILE);
             policyHandlerClassNames = new HashMap<ClassLoader, Map<QName, String>>();
             for (ClassLoader classLoader : policySetResources.keySet()) {
             	policyHandlerClassNames.put(classLoader, PolicySetHandlerUtil.getPolicyHandlers(
