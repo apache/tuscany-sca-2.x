@@ -40,6 +40,7 @@
                 <module>features/feature</module>
                 <module>plugins/core</module>
                 <module>plugins/runtime</module>
+                <module>site/updatesite</module>
             </modules>
         </profile>
     </profiles>
