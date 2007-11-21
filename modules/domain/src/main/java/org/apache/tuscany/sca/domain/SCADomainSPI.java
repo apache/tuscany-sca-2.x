@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.domain.model.Domain;
+import org.apache.tuscany.sca.domain.model.DomainModel;
 
 /**
  * Represents an SCA domain.
@@ -110,7 +110,7 @@ public interface SCADomainSPI extends SCADomain {
      * Returns the model of the domain
      * @return
      */
-    public Domain getDomainModel();
+    public DomainModel getDomainModel();
   
     
 }

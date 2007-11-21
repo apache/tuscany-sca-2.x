@@ -27,7 +27,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
-import org.apache.tuscany.sca.domain.model.Domain;
+import org.apache.tuscany.sca.domain.model.DomainModel;
 import org.apache.tuscany.sca.node.NodeException;
 import org.apache.tuscany.sca.node.SCANode;
 import org.osoa.sca.CallableReference;
@@ -81,7 +81,7 @@ public class DomainManagerNodeImpl implements SCANode {
             
         }
 
-        public Domain getDomainModel(){
+        public DomainModel getDomainModel(){
             return null;
         }
             

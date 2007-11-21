@@ -20,55 +20,48 @@
 package org.apache.tuscany.sca.domain.model;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
+
 /**
- * A service
+ * A node. Runs SCA composites
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public interface Service {
+public interface NodeModel {
     
     /**
-     * Retrieve the service uri
+     * Retrieve the node uri
      * 
-     * @return service uri
+     * @return node uri
      */
-    public String getServiceURI();
+    public String getNodeURI();
     
     /**
-     * Set the service uri
+     * Set the node uri
      * 
-     * @param serviceURI
+     * @param nodeURI
      */    
-    public void setServiceURI(String serviceURI);    
+    public void setNodeURI(String nodeURI);    
     
     /**
-     * Retrieve the service url
-     * 
-     * @return service url
+     * Retrieve the node url
+     *
+     * @return node url
      */    
-    public String getServiceURL();
+    public String getNodeURL();
    
     /**
-     * Set the service url
+     * Set the node url
      * 
-     * @param serviceURL
+     * @param nodeURL
      */    
-    public void setServiceURL(String serviceURL);
-    
+    public void setNodeURL(String nodeURL);
    
-    /**
-     * Retrieve the service binding
-     * 
-     * @return service binding
-     */    
-    public String getServiceBinding();
-   
-    /**
-     * Set the service binding
-     * 
-     * @param serviceBinding
-     */    
-    public void setServiceBinding(String serviceBinding);    
+    public Map<String, ContributionModel> getContributions();
+    public Map<QName, CompositeModel> getDeployedComposites();
+    public Map<String, ServiceModel> getServices();
 }

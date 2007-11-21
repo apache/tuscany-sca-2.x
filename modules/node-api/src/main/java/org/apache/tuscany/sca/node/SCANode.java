@@ -66,13 +66,6 @@ public interface SCANode {
     public void removeContribution(String contributionURI) throws NodeException;
 
     /**
-     * Starts all the deployable composites in a contribution  
-
-     * @param contributionURI the URI of the contribution
-     */
-    public void startContribution(String contributionURI) throws NodeException;
-    
-    /**
      * Add the named deployable composite to the domain level composite
      * 
      * @param compositeQName the name of the composite

@@ -19,12 +19,12 @@
 
 package org.apache.tuscany.sca.domain.model.impl;
 
-import org.apache.tuscany.sca.domain.model.Composite;
-import org.apache.tuscany.sca.domain.model.Contribution;
-import org.apache.tuscany.sca.domain.model.Domain;
+import org.apache.tuscany.sca.domain.model.CompositeModel;
+import org.apache.tuscany.sca.domain.model.ContributionModel;
+import org.apache.tuscany.sca.domain.model.DomainModel;
 import org.apache.tuscany.sca.domain.model.DomainModelFactory;
-import org.apache.tuscany.sca.domain.model.Node;
-import org.apache.tuscany.sca.domain.model.Service;
+import org.apache.tuscany.sca.domain.model.NodeModel;
+import org.apache.tuscany.sca.domain.model.ServiceModel;
 
 /**
  * A node. Runs SCA composites
@@ -38,16 +38,16 @@ public class DomainModelFactoryImpl implements DomainModelFactory {
      * 
      * @return new domain model
      */
-    public Domain createDomain(){
-        return new DomainImpl();
+    public DomainModel createDomain(){
+        return new DomainModelImpl();
     }
     /**
      * Create a new node model
      * 
      * @return new node model
      */
-    public Node createNode(){
-        return new NodeImpl();
+    public NodeModel createNode(){
+        return new NodeModelImpl();
     }
     
     /**
@@ -55,8 +55,8 @@ public class DomainModelFactoryImpl implements DomainModelFactory {
      * 
      * @return new contribution model
      */
-    public Contribution createContribution(){
-        return new ContributionImpl();
+    public ContributionModel createContribution(){
+        return new ContributionModelImpl();
     }
     
     /**
@@ -64,8 +64,8 @@ public class DomainModelFactoryImpl implements DomainModelFactory {
      * 
      * @return new composite model
      */
-    public Composite createComposite(){
-        return new CompositeImpl();
+    public CompositeModel createComposite(){
+        return new CompositeModelImpl();
     }
     
     /**
@@ -73,8 +73,8 @@ public class DomainModelFactoryImpl implements DomainModelFactory {
      * 
      * @return new service model
      */
-    public Service createService(){
-        return new ServiceImpl();
+    public ServiceModel createService(){
+        return new ServiceModelImpl();
     }
 
 }

@@ -50,7 +50,7 @@ import org.apache.tuscany.sca.domain.DomainManagerNodeEventService;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.domain.impl.DomainManagerNodeImpl;
 import org.apache.tuscany.sca.domain.impl.SCADomainImpl;
-import org.apache.tuscany.sca.domain.model.Domain;
+import org.apache.tuscany.sca.domain.model.DomainModel;
 import org.apache.tuscany.sca.domain.model.DomainModelFactory;
 import org.apache.tuscany.sca.domain.model.impl.DomainModelFactoryImpl;
 import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
@@ -243,7 +243,7 @@ public class SCADomainProxyImpl extends SCADomainImpl implements SCADomainProxyS
         return endpoint;
     }
     
-    public Domain getDomainModel(){        
+    public DomainModel getDomainModel(){        
         return domainModel;
     }     
       

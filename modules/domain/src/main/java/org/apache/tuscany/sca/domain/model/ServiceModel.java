@@ -22,43 +22,53 @@ package org.apache.tuscany.sca.domain.model;
 import java.net.URL;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
-
 /**
- * A contribution.
+ * A service
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public interface Contribution {
+public interface ServiceModel {
     
     /**
-     * Retrieve the contribution uri
+     * Retrieve the service uri
      * 
-     * @return contribution uri
+     * @return service uri
      */
-    public String getContributionURI();
+    public String getServiceURI();
     
     /**
-     * Set the contribution uri
+     * Set the service uri
      * 
-     * @param contributionURI
+     * @param serviceURI
      */    
-    public void setContributionURI(String contributionURI);    
+    public void setServiceURI(String serviceURI);    
     
     /**
-     * Retrieve the contribution url
+     * Retrieve the service url
      * 
-     * @return contribution url
+     * @return service url
      */    
-    public String getContributionURL();
+    public String getServiceURL();
    
     /**
-     * Set the contribution url
+     * Set the service url
      * 
-     * @param contributionURL
+     * @param serviceURL
      */    
-    public void setContributionURL(String contributionURL);
+    public void setServiceURL(String serviceURL);
     
-    public Map<QName, Composite> getComposites();       
-    public Map<QName, Composite> getDeployableComposites();   
+   
+    /**
+     * Retrieve the service binding
+     * 
+     * @return service binding
+     */    
+    public String getServiceBinding();
+   
+    /**
+     * Set the service binding
+     * 
+     * @param serviceBinding
+     */    
+    public void setServiceBinding(String serviceBinding);    
 }

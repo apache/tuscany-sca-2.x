@@ -29,9 +29,9 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.domain.management.NodeInfo;
-import org.apache.tuscany.sca.domain.model.Composite;
-import org.apache.tuscany.sca.domain.model.Contribution;
-import org.apache.tuscany.sca.domain.model.Service;
+import org.apache.tuscany.sca.domain.model.CompositeModel;
+import org.apache.tuscany.sca.domain.model.ContributionModel;
+import org.apache.tuscany.sca.domain.model.ServiceModel;
 
 /**
  * Information relating to an exposed service

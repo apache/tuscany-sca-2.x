@@ -24,10 +24,10 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.domain.model.Composite;
-import org.apache.tuscany.sca.domain.model.Contribution;
-import org.apache.tuscany.sca.domain.model.Node;
-import org.apache.tuscany.sca.domain.model.Domain;
+import org.apache.tuscany.sca.domain.model.CompositeModel;
+import org.apache.tuscany.sca.domain.model.ContributionModel;
+import org.apache.tuscany.sca.domain.model.NodeModel;
+import org.apache.tuscany.sca.domain.model.DomainModel;
 
 
 /**
@@ -35,13 +35,13 @@ import org.apache.tuscany.sca.domain.model.Domain;
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public class DomainImpl implements Domain {
+public class DomainModelImpl implements DomainModel {
     
     private String domainURI;
     private String domainURL;
-    private Map<String, Node> nodes = new HashMap<String, Node>();
-    private Map<String, Contribution> contributions = new HashMap<String, Contribution>();    
-    private Map<QName, Composite> composites = new HashMap<QName, Composite>();
+    private Map<String, NodeModel> nodes = new HashMap<String, NodeModel>();
+    private Map<String, ContributionModel> contributions = new HashMap<String, ContributionModel>();    
+    private Map<QName, CompositeModel> deployedComposites = new HashMap<QName, CompositeModel>();
        
     
     /**
@@ -80,15 +80,15 @@ public class DomainImpl implements Domain {
         this.domainURL = domainURL;
     }
    
-    public Map<String, Node> getNodes(){
+    public Map<String, NodeModel> getNodes(){
         return nodes;
     }
     
-    public Map<String, Contribution> getContributions(){
+    public Map<String, ContributionModel> getContributions(){
         return contributions;
     }
     
-    public Map<QName, Composite> getDeployedComposites(){
-        return composites;
+    public Map<QName, CompositeModel> getDeployedComposites(){
+        return deployedComposites;
     }    
 }

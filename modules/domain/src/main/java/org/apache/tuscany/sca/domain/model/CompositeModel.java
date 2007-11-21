@@ -17,12 +17,10 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.domain.model.impl;
+package org.apache.tuscany.sca.domain.model;
 
 
 import javax.xml.namespace.QName;
-
-import org.apache.tuscany.sca.domain.model.Composite;
 
 
 /**
@@ -30,25 +28,19 @@ import org.apache.tuscany.sca.domain.model.Composite;
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public class CompositeImpl implements Composite {
-    
-    private QName compositeQName;
+public interface CompositeModel {
     
     /**
      * Retrieve the composite qname
      * 
      * @return composite qname
      */
-    public QName getCompositeQName(){
-        return compositeQName;
-    }
+    public QName getCompositeQName();
     
     /**
      * Set the composite qname
      * 
      * @param compositeQName
      */    
-    public void setCompositeQName(QName compositeQName) {
-        this.compositeQName = compositeQName;
-    }
+    public void setCompositeQName(QName compositeQName);    
 }
