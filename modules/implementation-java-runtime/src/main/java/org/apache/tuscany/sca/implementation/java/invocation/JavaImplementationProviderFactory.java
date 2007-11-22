@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.implementation.java.invocation;
 
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
@@ -38,24 +42,33 @@ public class JavaImplementationProviderFactory implements ImplementationProvider
     private ProxyFactory proxyService;
     private ComponentContextFactory componentContextFactory;
     private RequestContextFactory requestContextFactory;
+    private Map<ClassLoader, Map<QName, String>> policyHandlerClassNames = null;
 
     public JavaImplementationProviderFactory(ProxyFactory proxyService,
                                              DataBindingExtensionPoint dataBindingRegistry,
                                              JavaPropertyValueObjectFactory propertyValueObjectFactory,
                                              ComponentContextFactory componentContextFactory,
-                                             RequestContextFactory requestContextFactory) {
+                                             RequestContextFactory requestContextFactory,
+                                             Map<ClassLoader, Map<QName, String>> policyHandlerClassNames) {
         super();
         this.proxyService = proxyService;
         this.dataBindingRegistry = dataBindingRegistry;
         this.propertyValueObjectFactory = propertyValueObjectFactory;
         this.componentContextFactory = componentContextFactory;
         this.requestContextFactory = requestContextFactory;
+        this.policyHandlerClassNames = policyHandlerClassNames;
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component,
                                                                JavaImplementation implementation) {
-        return new JavaImplementationProvider(component, implementation, proxyService, dataBindingRegistry,
-                                              propertyValueObjectFactory, componentContextFactory, requestContextFactory);
+        return new JavaImplementationProvider(component, 
+                                              implementation, 
+                                              proxyService, 
+                                              dataBindingRegistry,
+                                              propertyValueObjectFactory, 
+                                              componentContextFactory, 
+                                              requestContextFactory,
+                                              policyHandlerClassNames);
     }
 
     public Class<JavaImplementation> getModelType() {

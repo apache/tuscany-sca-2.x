@@ -19,11 +19,21 @@
 
 package org.apache.tuscany.sca.implementation.java.module;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.invocation.CglibProxyFactory;
@@ -59,6 +69,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.util.PolicySetHandlerUtil;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 
@@ -66,6 +77,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
  * @version $Rev$ $Date$
  */
 public class JavaRuntimeModuleActivator implements ModuleActivator {
+    private static final String POLICY_HANDLERS_STORE_FILE = "org.apache.tuscany.sca.implementation.java.PolicySetHandlers";
     
     public JavaRuntimeModuleActivator() {
     }
@@ -114,9 +126,21 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         ContextFactoryExtensionPoint contextFactories = registry.getExtensionPoint(ContextFactoryExtensionPoint.class);
         ComponentContextFactory componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);
         RequestContextFactory requestContextFactory = contextFactories.getFactory(RequestContextFactory.class);
+        
+        Map<ClassLoader, Map<QName, String>> policyHandlerClassNames = null;
+        try {
+            policyHandlerClassNames = loadPolicyHandlerClassnames();
+        } catch ( IOException e ) {
+            throw new RuntimeException(e);
+        }
+        
         JavaImplementationProviderFactory javaImplementationProviderFactory =
-            new JavaImplementationProviderFactory(proxyFactory, dataBindings, factory, componentContextFactory,
-                                                  requestContextFactory);
+            new JavaImplementationProviderFactory(proxyFactory, 
+                                                  dataBindings, 
+                                                  factory, 
+                                                  componentContextFactory,
+                                                  requestContextFactory,
+                                                  policyHandlerClassNames);
         
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         providerFactories.addProviderFactory(javaImplementationProviderFactory);
@@ -130,6 +154,19 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
     }
 
     public void stop(ExtensionPointRegistry registry) {
+    }
+    
+    private Map<ClassLoader, Map<QName, String>> loadPolicyHandlerClassnames() throws IOException {
+        Map<ClassLoader, Map<QName, String>> policyHandlerClassNames = 
+                                    new HashMap<ClassLoader, Map<QName, String>>();
+        Hashtable<ClassLoader, Set<URL>> policySetResources = 
+                ServiceDiscovery.getInstance().getServiceResources(POLICY_HANDLERS_STORE_FILE);
+        for (ClassLoader classLoader : policySetResources.keySet()) {
+            policyHandlerClassNames.put(classLoader, PolicySetHandlerUtil.getPolicyHandlers(
+                    classLoader, policySetResources.get(classLoader)));
+        }
+
+        return policyHandlerClassNames;
     }
 
 }

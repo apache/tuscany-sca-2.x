@@ -19,18 +19,13 @@
 
 package org.apache.tuscany.sca.implementation.java.invocation;
 
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
-import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
@@ -45,10 +40,6 @@ import org.apache.tuscany.sca.implementation.java.injection.ResourceHost;
 import org.apache.tuscany.sca.implementation.java.injection.ResourceObjectFactory;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.apache.tuscany.sca.policy.util.PolicyHandler;
-import org.apache.tuscany.sca.policy.util.PolicySetHandlerUtil;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.osoa.sca.ComponentContext;
@@ -61,8 +52,6 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
     private JavaImplementation implementation;
     private JavaComponentContextProvider componentContextProvider;
     private RequestContextFactory requestContextFactory;
-    private Map<ClassLoader, Map<QName, String>> policyHandlerClassNames = null;
-    private static final String POLICY_HANDLERS_STORE_FILE = "org.apache.tuscany.sca.implementation.java.PolicySetHandlers";
     
     public JavaImplementationProvider(RuntimeComponent component,
                                       JavaImplementation implementation,
@@ -70,16 +59,23 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
                                       DataBindingExtensionPoint dataBindingRegistry,
                                       JavaPropertyValueObjectFactory propertyValueObjectFactory,
                                       ComponentContextFactory componentContextFactory,
-                                      RequestContextFactory requestContextFactory) {
+                                      RequestContextFactory requestContextFactory,
+                                      Map<ClassLoader, Map<QName, String>> policyHandlerClassNames) {
         super();
         this.implementation = implementation;
         this.requestContextFactory = requestContextFactory;
+        this.implementation.setPolicyHandlerClassNames(policyHandlerClassNames);
+        
         try {
             JavaInstanceFactoryProvider configuration = new JavaInstanceFactoryProvider(implementation);
             configuration.setProxyFactory(proxyService);
             componentContextProvider =
-                new JavaComponentContextProvider(component, configuration, dataBindingRegistry, propertyValueObjectFactory,
-                                      componentContextFactory, requestContextFactory, implementation.getPolicyHandlers());
+                new JavaComponentContextProvider(component, 
+                                                 configuration, 
+                                                 dataBindingRegistry,
+                                                 propertyValueObjectFactory,
+                                                 componentContextFactory, 
+                                                 requestContextFactory);
 
             Scope scope = getScope();
 
@@ -108,7 +104,6 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
 
             componentContextProvider.configureProperties(component.getProperties());
             handleResources(implementation, proxyService);
-            loadPolicyHandlers(implementation);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -116,7 +111,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
     }
     
 
-    private void loadPolicyHandlers(JavaImplementation javaImpl) throws Exception {
+    /*private void loadPolicyHandlers(JavaImplementation javaImpl) throws Exception {
         if ( policyHandlerClassNames == null ) {
             Hashtable<ClassLoader, Set<URL>> policySetResources = 
         		ServiceDiscovery.getInstance().getServiceResources(POLICY_HANDLERS_STORE_FILE);
@@ -127,28 +122,33 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
             }
         }
         
+        
         if ( implementation instanceof PolicySetAttachPoint ) {
-            PolicyHandler aHandler = null;
-            PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
-            for ( PolicySet policySet : policiedImpl.getPolicySets() ) {
-                String handlerClassName = null;
-                for (ClassLoader classLoader : policyHandlerClassNames.keySet()) {
-                	handlerClassName = policyHandlerClassNames.get(classLoader).get(policySet.getName());
-                	if ( handlerClassName != null ) {
-                        aHandler = 
-                            (PolicyHandler)Class.forName(handlerClassName, true, classLoader).newInstance();
-                        aHandler.setApplicablePolicySet(policySet);
-                        javaImpl.getPolicyHandlers().put(policySet, aHandler);
-                        break;
-                	}
-                }
-                                
-                if (aHandler == null) {
-                    //FIXME : maybe there must be a warning thrown here
+            loadHandlerClasses(javaImpl);
+        }
+            
+            
+    }*/
+    
+    /*private void loadHandlerClasses(JavaImplementation javaImpl) throws Exception {
+        String handlerClassName = null;
+        PolicyHandler aHandler = null;
+        for (ClassLoader classLoader : policyHandlerClassNames.keySet()) {
+            Map<QName, String> policyHandlerClassnamesMap = policyHandlerClassNames.get(classLoader);
+            for ( QName policySetName : policyHandlerClassnamesMap.keySet() ) {
+                handlerClassName = policyHandlerClassnamesMap.get(policySetName);
+                if ( handlerClassName != null ) {
+                    aHandler = 
+                        (PolicyHandler)Class.forName(handlerClassName, true, classLoader).newInstance();
+                    if ( aHandler != null ) {
+                        javaImpl.getPolicyHandlers().put(policySetName, aHandler);
+                    } 
                 }
             }
-        }   	
-    }
+        }
+        
+    }*/
+    
 
     private void handleResources(JavaImplementation componentType, ProxyFactory proxyService) {
         for (JavaResourceImpl resource : componentType.getResources().values()) {

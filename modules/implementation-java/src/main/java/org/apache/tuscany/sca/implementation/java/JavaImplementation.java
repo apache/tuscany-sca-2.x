@@ -25,12 +25,12 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
 /**
  * Represents a Java implementation.
@@ -186,8 +186,13 @@ public interface JavaImplementation extends BaseJavaImplementation {
     public void setMaxIdleTime(long maxIdleTime);
     
     /**
-     * @return the map of policy handlers that need to be applied to the implementation instance
+     * @return the map of a policy handler classnames
      */
-    public Map<PolicySet, PolicyHandler> getPolicyHandlers();
-
+    public Map<ClassLoader, Map<QName, String>> getPolicyHandlerClassNames();
+    
+    /**
+     * @param map of policyhandler classnames
+     */
+    public void setPolicyHandlerClassNames(Map<ClassLoader, Map<QName, String>> policyHandlerClassNames);
+        
 }

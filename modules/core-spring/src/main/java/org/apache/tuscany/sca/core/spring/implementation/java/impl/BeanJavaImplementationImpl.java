@@ -23,17 +23,16 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
 /**
@@ -60,7 +59,7 @@ public class BeanJavaImplementationImpl extends BeanBaseJavaImplementationImpl i
     private long maxAge = -1;
     private long maxIdleTime = -1;
     private JavaScopeImpl scope = JavaScopeImpl.STATELESS;
-    private Map<PolicySet, PolicyHandler> policyHandlers = new Hashtable<PolicySet, PolicyHandler>();
+    private Map<ClassLoader, Map<QName, String>> policyHandlerClassNames = null;
 
     protected BeanJavaImplementationImpl(BeanDefinitionRegistry beanRegistry) {
         super(beanRegistry);
@@ -166,7 +165,11 @@ public class BeanJavaImplementationImpl extends BeanBaseJavaImplementationImpl i
         this.maxIdleTime = maxIdleTime;
     }
     
-    public Map<PolicySet, PolicyHandler> getPolicyHandlers() {
-        return policyHandlers;
+    public Map<ClassLoader, Map<QName, String>> getPolicyHandlerClassNames() {
+        return policyHandlerClassNames;
+    }
+
+    public void setPolicyHandlerClassNames(Map<ClassLoader, Map<QName, String>> policyHandlerClassNames) {
+        this.policyHandlerClassNames = policyHandlerClassNames;
     }
 }

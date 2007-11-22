@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
@@ -57,7 +59,6 @@ import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospect
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -76,15 +77,13 @@ public class JavaComponentContextProvider {
     private RuntimeComponent component;
     private JavaInstanceFactoryProvider<?> instanceFactoryProvider;
     private ProxyFactory proxyFactory;
-    private Map<PolicySet, PolicyHandler> policyHandlers = null;
 
     public JavaComponentContextProvider(RuntimeComponent component,
                                         JavaInstanceFactoryProvider configuration,
                                         DataBindingExtensionPoint dataBindingExtensionPoint,
                                         JavaPropertyValueObjectFactory propertyValueObjectFactory,
                                         ComponentContextFactory componentContextFactory,
-                                        RequestContextFactory requestContextFactory,
-                                        Map<PolicySet, PolicyHandler> policyHandlers) {
+                                        RequestContextFactory requestContextFactory) {
         super();
         this.instanceFactoryProvider = configuration;
         this.proxyFactory = configuration.getProxyFactory();
@@ -96,7 +95,6 @@ public class JavaComponentContextProvider {
         this.component = component;
         this.dataBindingRegistry = dataBindingExtensionPoint;
         this.propertyValueFactory = propertyValueObjectFactory;
-        this.policyHandlers = policyHandlers;
     }
 
     InstanceWrapper<?> createInstanceWrapper() throws ObjectCreationException {
@@ -250,7 +248,7 @@ public class JavaComponentContextProvider {
         ComponentContextImpl ccImpl = (ComponentContextImpl)component.getComponentContext();
         ccImpl.setPropertyValueFactory(propertyValueFactory);
 
-        setUpPolicyHandlers();
+        //setUpPolicyHandlers();
     }
 
     void addResourceFactory(String name, ObjectFactory<?> factory) {
@@ -290,20 +288,14 @@ public class JavaComponentContextProvider {
     }
 
     void stop() {
-        cleanUpPolicyHandlers();
+        //cleanUpPolicyHandlers();
     }
 
     Invoker createInvoker(Operation operation) throws NoSuchMethodException {
         Class<?> implClass = instanceFactoryProvider.getImplementationClass();
 
         Method method = JavaInterfaceUtil.findMethod(implClass, operation);
-
-        /*if ( component.getImplementation() instanceof PolicySetAttachPoint  &&
-              !((PolicySetAttachPoint)component.getImplementation()).getPolicySets().isEmpty() ) {
-            return new PoliciedJavaImplementationInvoker(operation, method, component, policyHandlers);
-        } else {*/
         return new JavaImplementationInvoker(operation, method, component);
-        //}
     }
 
     private static class OptimizedObjectFactory<T> implements ObjectFactory<T> {
@@ -375,16 +367,16 @@ public class JavaComponentContextProvider {
         return component;
     }
 
-    private void setUpPolicyHandlers() {
+    /*private void setUpPolicyHandlers() {
         for (PolicyHandler policyHandler : policyHandlers.values()) {
             policyHandler.setUp(component.getImplementation());
         }
     }
 
     private void cleanUpPolicyHandlers() {
-        for (PolicyHandler policyHandler : policyHandlers.values()) {
+        for (PolicyHandler policyHandler : policyHandlers.values() ) {
             policyHandler.cleanUp(this);
         }
-    }
+    }*/
 
 }
