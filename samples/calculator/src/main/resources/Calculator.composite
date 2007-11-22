@@ -31,7 +31,7 @@
     </component>
 
     <component name="AddServiceComponent">
-        <implementation.java class="calculator.AddServiceImpl" requires="logging"/>
+        <implementation.java class="calculator.AddServiceImpl"/>
     </component>
 
     <component name="SubtractServiceComponent">
