@@ -1,5 +1,6 @@
 package org.apache.tuscany.sca.policy.logging.jdk;
 import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,7 +42,7 @@ public class JDKLoggingPolicyHandler implements PolicyHandler {
     private Logger logger = null;
     
     private PolicySet applicablePolicySet = null;
-
+    
     public void setUp(Object... context) {
         if ( applicablePolicySet != null ) {
             JDKLoggingPolicy policy = (JDKLoggingPolicy)applicablePolicySet.getPolicies().get(0);
@@ -49,9 +50,19 @@ public class JDKLoggingPolicyHandler implements PolicyHandler {
             logger.setLevel(policy.getLogLevel());
             logger.setUseParentHandlers(policy.isUseParentHandlers());
             
-            ConsoleHandler consoleHandler = new ConsoleHandler();
-            consoleHandler.setLevel(Level.ALL);
-            logger.addHandler(consoleHandler);
+            boolean found = false;
+            for ( Handler handler : logger.getHandlers() ) {
+                if ( handler instanceof ConsoleHandler ) {
+                    found = true;
+                    break;
+                }
+            }
+            
+            if ( !found ) {
+                ConsoleHandler consoleHandler = new ConsoleHandler();
+                consoleHandler.setLevel(Level.ALL);
+                logger.addHandler(consoleHandler);
+            }
         }
     }
     

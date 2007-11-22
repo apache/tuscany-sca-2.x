@@ -18,13 +18,12 @@
  */
 package org.apache.tuscany.sca.implementation.java.invocation;
 
-import java.util.Map;
+import java.util.List;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
 /**
@@ -33,11 +32,11 @@ import org.apache.tuscany.sca.policy.util.PolicyHandler;
  */
 public class PolicyHandlingInterceptor implements Interceptor {
     private Invoker next;
-    private Map<PolicySet, PolicyHandler> policyHandlers = null;
+    private List<PolicyHandler> policyHandlers = null;
     private Operation targetOperation = null;
 
     public PolicyHandlingInterceptor(Operation targetOperation,
-                                     Map<PolicySet, PolicyHandler> policyHandlers) {
+                                     List<PolicyHandler> policyHandlers) {
         this.policyHandlers = policyHandlers;
         this.targetOperation = targetOperation;
     }
@@ -58,13 +57,13 @@ public class PolicyHandlingInterceptor implements Interceptor {
     }
     
     private void applyPreInvocationPolicies(Object... context) {
-        for ( PolicyHandler policyHandler : policyHandlers.values() ) {
+        for ( PolicyHandler policyHandler : policyHandlers ) {
             policyHandler.beforeInvoke(context);
         }
     }
     
     private void applyPostInvocationPolices(Object...  context) {
-        for ( PolicyHandler policyHandler : policyHandlers.values() ) {
+        for ( PolicyHandler policyHandler : policyHandlers ) {
             policyHandler.afterInvoke(context);
         }
     }

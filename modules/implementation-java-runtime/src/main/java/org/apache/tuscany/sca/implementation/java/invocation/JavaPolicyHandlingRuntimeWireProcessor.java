@@ -19,9 +19,20 @@
 
 package org.apache.tuscany.sca.implementation.java.invocation;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.Contract;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -45,17 +56,66 @@ public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProces
         if ( component != null && component.getImplementation() instanceof JavaImplementation ) {
             JavaImplementation javaImpl = (JavaImplementation)component.getImplementation();
             
-            //if the implementation has policysets specified and if there are 
-            //handlers for those policysets
-            if ( !javaImpl.getPolicyHandlers().isEmpty() ) {
-                //TODO: Right now we assume policy handlers are to be applied for all operations
-                //... need to modify this if certain policies apply only to select operations 
-                for (InvocationChain chain : wire.getInvocationChains() ) { 
-                    chain.addInterceptor(0, new PolicyHandlingInterceptor(chain.getTargetOperation(),
-                                                                       javaImpl.getPolicyHandlers()));
-                }   
+            if ( javaImpl instanceof PolicySetAttachPoint ) {
+                PolicyHandler policyHandler = null;
+                List<PolicyHandler> implPolicyHandlers = new ArrayList<PolicyHandler>();
+                PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)javaImpl;
+                
+                try {
+                    for ( PolicySet policySet : policiedImpl.getPolicySets() ) {
+                        policyHandler = getPolicyHandler(policySet, javaImpl.getPolicyHandlerClassNames());
+                        policyHandler.setUp(javaImpl);
+                        implPolicyHandlers.add(policyHandler);
+                    }    
+                    
+                    List<PolicyHandler> applicablePolicyHandlers = null;
+                    for (InvocationChain chain : wire.getInvocationChains() ) {
+                        applicablePolicyHandlers = new ArrayList<PolicyHandler>(implPolicyHandlers);
+                        if ( javaImpl instanceof OperationsConfigurator ) {
+                            String operationName = chain.getTargetOperation().getName();
+                            OperationsConfigurator opConfigurator = (OperationsConfigurator)javaImpl;
+                            for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
+                                if ( confOp.getName().equals(operationName)) {
+                                    for ( PolicySet policySet : confOp.getPolicySets() ) {
+                                        policyHandler = getPolicyHandler(policySet, javaImpl.getPolicyHandlerClassNames());
+                                        policyHandler.setUp(javaImpl);
+                                        applicablePolicyHandlers.add(policyHandler);
+                                    }
+                                }
+                            }
+                        }
+                        
+                        if ( !applicablePolicyHandlers.isEmpty() ) {
+                            chain.addInterceptor(0, new PolicyHandlingInterceptor(chain.getTargetOperation(),
+                                                                                  applicablePolicyHandlers));
+                        }
+                    }
+                } catch ( Exception e ) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
-
+    
+    private PolicyHandler getPolicyHandler(PolicySet policySet, 
+                                           Map<ClassLoader, Map<QName, String>> policyHandlerClassNames) throws IllegalAccessException, ClassNotFoundException, InstantiationException {
+        PolicyHandler handler = null;
+        String handlerClassName = null;
+        
+        for (ClassLoader classLoader : policyHandlerClassNames.keySet()) {
+            Map<QName, String> policyHandlerClassnamesMap = policyHandlerClassNames.get(classLoader);
+            for ( QName policySetName : policyHandlerClassnamesMap.keySet() ) {
+                if ( policySet.getName().equals(policySetName) ) {
+                    handlerClassName = policyHandlerClassnamesMap.get(policySet.getName());
+                    if ( handlerClassName != null ) {
+                        handler = 
+                            (PolicyHandler)Class.forName(handlerClassName, true, classLoader).newInstance();
+                        handler.setApplicablePolicySet(policySet);
+                        break;
+                    }
+                }
+            }
+        } 
+        return handler;
+    }
 }
