@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -35,13 +34,12 @@ import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceProvider;
 import org.apache.tuscany.sca.binding.ws.axis2.Java2WSDLHelper;
-import org.apache.tuscany.sca.domain.SCADomainSPI;
+import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -97,7 +95,7 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
 
         if ((nodeFactory != null) && (nodeFactory.getNode() != null)){
             
-            SCADomainSPI domainProxy = (SCADomainSPI)nodeFactory.getNode().getDomain();
+            SCADomainEventService domainProxy = (SCADomainEventService)nodeFactory.getNode().getDomain();
             
             if (domainProxy != null) {
 

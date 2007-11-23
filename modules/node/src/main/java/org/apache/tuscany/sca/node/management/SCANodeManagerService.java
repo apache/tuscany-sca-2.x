@@ -17,13 +17,15 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node;
+package org.apache.tuscany.sca.node.management;
 
 import java.net.URL;
+import java.util.logging.Level;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.domain.SCADomain;
+import org.apache.tuscany.sca.node.NodeException;
 import org.osoa.sca.annotations.Remotable;
 
 
@@ -33,7 +35,7 @@ import org.osoa.sca.annotations.Remotable;
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
 @Remotable
-public interface NodeManagerService {
+public interface SCANodeManagerService {
      
     /**
      * Returns the URI of the SCA node. That URI is the endpoint of the
@@ -49,23 +51,30 @@ public interface NodeManagerService {
      * @param uri the URI of the contribution
      * @param url the URL of the contribution
      */
-    public void addContribution(String contributionURI, String contributionURL);
+    public void addContribution(String contributionURI, String contributionURL) throws NodeException;
+    
+    /**
+     * Remove an SCA contribution from the node.
+     *  
+     * @param contributionURI the URI of the contribution
+     */
+    public void removeContribution(String contributionURI) throws NodeException;
    
     /**
-     * Start the specified deployable composite on the node.
+     * Add the named deployable composite to the domain level composite
      * 
-     * @param composite
-     */
-    public void deployComposite(String compositeName);
+     * @param compositeQName the name of the composite
+     */    
+    public void addToDomainLevelComposite(String compositeName) throws NodeException;
     
     /**
      * Start the SCA node service.
      */
-    public void start();    
+    public void start() throws NodeException;    
     
     /**
      * Stop the SCA node service.
      */
-    public void stop();    
- 
+    public void stop() throws NodeException; 
+      
 }

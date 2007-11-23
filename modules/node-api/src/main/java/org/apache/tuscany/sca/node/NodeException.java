@@ -28,11 +28,23 @@ public class NodeException extends Exception {
 
     static final long serialVersionUID = 2096658015909178325L;
     
+    private String message;
+    
     public NodeException(String message) {
         super(message);
+        setMessage(message);
     }
 
     public NodeException(Throwable cause) {
         super(cause);
+        setMessage(cause.getMessage());
     }
+    
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }    
 }

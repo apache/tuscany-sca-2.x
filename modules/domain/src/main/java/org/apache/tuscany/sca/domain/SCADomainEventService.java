@@ -32,31 +32,26 @@ import org.osoa.sca.annotations.Remotable;
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
 @Remotable
-public interface DomainManagerNodeEventService {
+public interface SCADomainEventService {
 
     /**
-     * A node registers with the distributed domain manager. The mechanism whereby this
-     * registration interface is discovered is not defined. For example, JMS, JINI
-     * or a hard coded configuration could all be candidates in the java world. 
+     * Add information about a node in the domain
      * 
-     * @param domainUri the string uri for the distributed domain
-     * @param nodeUri the string uri for the current node
-     * @param nodeManagementUrl the endpoint for the nodes management service
+     * @param nodeURI
+     * @param nodeURL
+     * @return
      */
-    public String registerNode(String nodeURI, String nodeURL);
-    
+    public void registerNode(String nodeURI, String nodeURL) throws DomainException;
+        
     /**
-     * A node registers with the distributed domain manager. The mechanism whereby this
-     * registration interface is discovered is not defined. For example, JMS, JINI
-     * or a hard coded configuration could all be candidates in the java world. 
+     * Remove information about a node in a domain
      * 
-     * @param domainUri the string uri for the distributed domain
-     * @param nodeUri the string uri for the current node
-     * @param nodeManagementUrl the endpoint for the nodes management service
+     * @param nodeURI
+     * @param nodeURL
+     * @return
      */
-    public String removeNode(String nodeURI);  
+    public void unregisterNode(String nodeURI) throws DomainException;
     
-
     /**
      * In the case where a contribution is added at a node this method is used to 
      * record the relationship directly. This is different from adding a contribution
@@ -67,18 +62,20 @@ public interface DomainManagerNodeEventService {
      * @param nodeURL the location of the contribution
      * @return
      */
-    public void registerContribution(String nodeURI, String contributionURI, String contributionURL);
+    public void registerContribution(String nodeURI, String contributionURI, String contributionURL) throws DomainException;
     
 
     /** 
      * In the case where a contribution is removed from a node locally this method is
      * used to remove the contribution from the domain
      * 
+     * @param nodeURI the string uri for the node
      * @param contributionURI the string uri for the contribution
      * @return
      */
-    public void unregisterContribution(String contributionURI);     
-     
+    public void unregisterContribution(String nodeURI, String contributionURI) throws DomainException;     
+
+    
     /**
      * Accepts information about a service endpoint and holds onto it
      * 
@@ -86,10 +83,10 @@ public interface DomainManagerNodeEventService {
      * @param nodeUri the string uri for the current node
      * @param serviceName the name of the service that is exposed and the provided endpoint
      * @param bindingName the remote binding that is providing the endpoint
-     * @param url the enpoint url
+     * @param url the endpoint url
      * @return TBD - information about the registration
      */
-    public String registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL);
+    public void registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL) throws DomainException;
     
     /**
      * Removes information about a service endpoint
@@ -99,8 +96,8 @@ public interface DomainManagerNodeEventService {
      * @param serviceName the name of the service that is exposed and the provided endpoint
      * @param bindingName the remote binding that is providing the endpoint
      */    
-    public String removeServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName);
-        
+    public void unregisterServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName) throws DomainException;
+     
     /**
      * Locates information about a service endpoint 
      * 
@@ -109,6 +106,6 @@ public interface DomainManagerNodeEventService {
      * @param bindingName the remote binding that we want to find an endpoint for
      * @return url the endpoint url
      */
-    public String findServiceEndpoint(String domainUri, String serviceName, String bindingName); 
+    public String findServiceEndpoint(String domainUri, String serviceName, String bindingName) throws DomainException; 
      
 }

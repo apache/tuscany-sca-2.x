@@ -17,18 +17,17 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.domain.impl;
+package org.apache.tuscany.sca.domain.management.impl;
 
 import java.util.logging.Logger;
 
-import org.apache.tuscany.sca.domain.DomainManagerInitService;
-import org.apache.tuscany.sca.domain.DomainManagerNodeEventService;
+import org.apache.tuscany.sca.domain.DomainException;
+import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.domain.management.DomainInfo;
-import org.apache.tuscany.sca.domain.management.DomainManagementService;
+import org.apache.tuscany.sca.domain.management.SCADomainManagerInitService;
+import org.apache.tuscany.sca.domain.management.SCADomainManagerService;
 import org.apache.tuscany.sca.domain.management.NodeInfo;
-import org.apache.tuscany.sca.domain.management.impl.DomainInfoImpl;
-import org.apache.tuscany.sca.domain.management.impl.NodeInfoImpl;
 import org.apache.tuscany.sca.domain.model.DomainModel;
 import org.apache.tuscany.sca.domain.model.NodeModel;
 import org.osoa.sca.annotations.Scope;
@@ -41,48 +40,53 @@ import org.osoa.sca.annotations.Service;
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
 @Scope("COMPOSITE")
-@Service(interfaces = {DomainManagerNodeEventService.class, DomainManagerInitService.class, DomainManagementService.class})
-public class DomainManagerServiceImpl implements DomainManagerNodeEventService, DomainManagerInitService, DomainManagementService {
+@Service(interfaces = {SCADomainEventService.class, SCADomainManagerInitService.class, SCADomainManagerService.class})
+public class SCADomainManagerServiceImpl implements SCADomainEventService, SCADomainManagerInitService, SCADomainManagerService {
     
-    private final static Logger logger = Logger.getLogger(DomainManagerServiceImpl.class.getName());
+    private final static Logger logger = Logger.getLogger(SCADomainManagerServiceImpl.class.getName());
     
-    private SCADomainSPI scaDomain;
+    private SCADomainSPI domainSPI;
+    private SCADomainEventService domainEventService;
     
     // DomainManagerInitService methods
     
-    public void setDomain(SCADomainSPI scaDomain) {
-        this.scaDomain = scaDomain;
+    public void setDomainSPI(SCADomainSPI domainSPI) {
+        this.domainSPI = domainSPI;
     }
     
-    // DomainManagerNodeEventService methods
-    
-    public String registerNode(String nodeURI, String nodeURL){ 
-        return scaDomain.addNode(nodeURI, nodeURL);
+    public void setDomainEventService(SCADomainEventService domainEventService) {
+        this.domainEventService = domainEventService;
     }
     
-    public String removeNode(String nodeURI){ 
-        return scaDomain.removeNode(nodeURI);
+    // DomainEventService methods
+    
+    public void registerNode(String nodeURI, String nodeURL) throws DomainException{ 
+        domainEventService.registerNode(nodeURI, nodeURL);
+    }
+    
+    public void unregisterNode(String nodeURI) throws DomainException { 
+        domainEventService.unregisterNode(nodeURI);
     }  
     
-    public void registerContribution(String nodeURI, String contributionURI, String contributionURL) {
-        scaDomain.registerContribution(nodeURI, contributionURI, contributionURL);
+    public void registerContribution(String nodeURI, String contributionURI, String contributionURL) throws DomainException {
+        domainEventService.registerContribution(nodeURI, contributionURI, contributionURL);
     }
     
-    public void unregisterContribution(String contributionURI){
-        scaDomain.unregisterContribution(contributionURI);
+    public void unregisterContribution(String nodeURI,String contributionURI)throws DomainException {
+        domainEventService.unregisterContribution(nodeURI, contributionURI);
     }
     
-    public String  registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
-        return scaDomain.registerServiceEndpoint(domainUri, nodeUri, serviceName, bindingName, URL);
+    public void registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL) throws DomainException {
+        domainEventService.registerServiceEndpoint(domainUri, nodeUri, serviceName, bindingName, URL);
     }
    
-    public String  removeServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName){
-        return scaDomain.removeServiceEndpoint(domainUri, nodeUri, serviceName, bindingName);
+    public void unregisterServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName) throws DomainException{
+         domainEventService.unregisterServiceEndpoint(domainUri, nodeUri, serviceName, bindingName);
     }
    
 
-    public String findServiceEndpoint(String domainUri, String serviceName, String bindingName){
-        return scaDomain.findServiceEndpoint(domainUri, serviceName, bindingName);
+    public String findServiceEndpoint(String domainUri, String serviceName, String bindingName) throws DomainException{
+        return domainEventService.findServiceEndpoint(domainUri, serviceName, bindingName);
     }    
     
     // DomainManagementService methods
@@ -90,7 +94,7 @@ public class DomainManagerServiceImpl implements DomainManagerNodeEventService, 
     public DomainInfo getDomainDescription(){
         
         DomainInfo domainInfo = new DomainInfoImpl();
-        DomainModel domain =  scaDomain.getDomainModel();
+        DomainModel domain =  domainSPI.getDomainModel();
         
         domainInfo.setDomainURI(domain.getDomainURI());
         domainInfo.setDomainURL(domain.getDomainURL());
@@ -104,7 +108,7 @@ public class DomainManagerServiceImpl implements DomainManagerNodeEventService, 
     public NodeInfo getNodeDescription(String nodeURI){
         
         NodeInfo nodeInfo = new NodeInfoImpl();
-        DomainModel domain =  scaDomain.getDomainModel();
+        DomainModel domain =  domainSPI.getDomainModel();
         NodeModel node = domain.getNodes().get(nodeURI);
         
         nodeInfo.setNodeURI(nodeURI);

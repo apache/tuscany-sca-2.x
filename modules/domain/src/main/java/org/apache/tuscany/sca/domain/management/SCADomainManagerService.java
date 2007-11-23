@@ -17,22 +17,32 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.domain;
+package org.apache.tuscany.sca.domain.management;
+
+import org.apache.tuscany.sca.domain.model.DomainModel;
+import org.osoa.sca.annotations.Remotable;
 
 
 
 /**
- * Connects the domain to the domain manager service
+ * Connects the domain management operations
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-11 18:45:36 +0100 (Tue, 11 Sep 2007) $
  */
-public interface DomainManagerInitService {
+@Remotable
+public interface SCADomainManagerService {
      
     /**
-     * Set the node object into the NodeManagement component so that is can manage it
+     * Return description of the domain
      * 
-     * @param node
      */
-    public void setDomain(SCADomainSPI node);
+    public DomainInfo getDomainDescription();
+    
+    /**
+     * Return description of the node
+     * 
+     * @param nodeURI
+     */
+    public NodeInfo getNodeDescription(String nodeURI); 
     
 }

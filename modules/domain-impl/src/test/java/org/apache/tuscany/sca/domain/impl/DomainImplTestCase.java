@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.domain.impl;
 import java.net.URL;
 
 import org.apache.tuscany.sca.domain.SCADomain;
+import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.domain.SCADomainFactory;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.node.SCANode;
@@ -40,7 +41,7 @@ import calculator.CalculatorService;
 public class DomainImplTestCase {
 
     private static SCADomain domain;
-    private static SCADomainSPI domainSPI;
+    private static SCADomainEventService domainSPI;
     private static ClassLoader cl;
 
     @BeforeClass
@@ -50,7 +51,7 @@ public class DomainImplTestCase {
             cl = DomainImplTestCase.class.getClassLoader();
             SCADomainFactory domainFactory = SCADomainFactory.newInstance();
             domain = domainFactory.createSCADomain("http://localhost:9999"); 
-            domainSPI = (SCADomainSPI)domain;
+            domainSPI = (SCADomainEventService)domain;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,8 +69,8 @@ public class DomainImplTestCase {
     
     @Test
     public void testAddNode() throws Exception {    
-        domainSPI.addNode("http://localhost:8100/mynode1", "http://localhost:9999");
-        domainSPI.addNode("http://localhost:8200/mynode2", "http://localhost:9999");
+        domainSPI.registerNode("http://localhost:8100/mynode1", "http://localhost:9999");
+        domainSPI.registerNode("http://localhost:8200/mynode2", "http://localhost:9999");
     }
     
     @Test

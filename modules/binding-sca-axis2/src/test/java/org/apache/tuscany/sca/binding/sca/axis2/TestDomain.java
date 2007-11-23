@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomain;
+import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.domain.model.DomainModel;
 import org.osoa.sca.CallableReference;
@@ -38,7 +39,7 @@ import org.osoa.sca.ServiceReference;
  * 
  * @version $Rev: 552343 $ $Date$
  */
-public class TestDomain implements SCADomainSPI {
+public class TestDomain implements SCADomain, SCADomainEventService {
     
     private String domainURI;
         
@@ -49,6 +50,9 @@ public class TestDomain implements SCADomainSPI {
     
     public void start() throws DomainException {
     }    
+    
+    public void stop() throws DomainException {
+    }       
     
     public void destroy() throws DomainException {
     }
@@ -126,7 +130,7 @@ public class TestDomain implements SCADomainSPI {
      * @param bindingName the remote binding that is providing the endpoint
      * @param url the enpoint url
      */
-    public String registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
+    public void registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
         // if the service name ends in a "/" remove it
         String modifiedServiceName = null;
         if ( serviceName.endsWith("/") ) {
@@ -137,11 +141,9 @@ public class TestDomain implements SCADomainSPI {
         ServiceEndpoint serviceEndpoint = new ServiceEndpoint (domainUri, nodeUri, modifiedServiceName, bindingName, URL);
         serviceEndpoints.add(serviceEndpoint);
         System.err.println("Registering service: " + serviceEndpoint.toString());
-        return "";
     }
     
-    public String removeServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName){
-        return "";  
+    public void unregisterServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName){  
     }
     /**
      * Locates information about a service endpoint 
@@ -173,19 +175,21 @@ public class TestDomain implements SCADomainSPI {
         return null;
     }
     
-    public String addNode(String nodeURI, String nodeURL){
-        return null;
+    public void registerNode(String nodeURI, String nodeURL){
     }
     
 
-    public String removeNode(String nodeURI){
-        return null;
+    public void unregisterNode(String nodeURI){
     }
     
     public void registerContribution(String nodeURI, String contributionURI, String contributionURL){
     }
     
-    public void unregisterContribution(String contributionURI){
+    public void updateContribution(String contributionURI, URL contributionURL) throws DomainException {
+        
+    }
+    
+    public void unregisterContribution(String nodeURI, String contributionURI){
     }    
     
     public void addContribution(String contributionURI, URL contributionURL) throws DomainException {
@@ -197,11 +201,23 @@ public class TestDomain implements SCADomainSPI {
     
     public void addDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
     }
+    
+    public void updateDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
+        
+    }
 
     public void addToDomainLevelComposite(QName compositeQName) throws DomainException {
     }
   
     public void removeFromDomainLevelComposite(QName compositeQName) throws DomainException {
+    }
+    
+    public String getDomainLevelComposite(){
+        return null;
+    }
+
+    public String getQNameDefinition(QName artifact){
+        return null;
     }
     
     public void startComposite(QName compositeName) throws DomainException {

@@ -42,8 +42,10 @@ import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.domain.DomainException;
-import org.apache.tuscany.sca.domain.DomainManagerInitService;
+import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
+import org.apache.tuscany.sca.domain.SCADomainEventService;
+import org.apache.tuscany.sca.domain.management.SCADomainManagerInitService;
 import org.apache.tuscany.sca.domain.model.CompositeModel;
 import org.apache.tuscany.sca.domain.model.ContributionModel;
 import org.apache.tuscany.sca.domain.model.DomainModel;
@@ -57,7 +59,7 @@ import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.node.NodeFactoryImpl;
-import org.apache.tuscany.sca.node.NodeManagerService;
+import org.apache.tuscany.sca.node.management.SCANodeManagerService;
 import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
@@ -73,7 +75,7 @@ import org.osoa.sca.ServiceRuntimeException;
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-09 23:54:46 +0100 (Sun, 09 Sep 2007) $
  */
-public class SCADomainImpl implements SCADomainSPI  {
+public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomainSPI  {
 	
     private final static Logger logger = Logger.getLogger(SCADomainImpl.class.getName());
 	     
@@ -92,7 +94,7 @@ public class SCADomainImpl implements SCADomainSPI  {
     protected DomainModel domainModel;
     
     // management services
-    private DomainManagerInitService domainManagerInitService;    
+    private SCADomainManagerInitService domainManagerInitService;    
      
     /** 
      * Create a domain giving the URI for the domain. 
@@ -184,11 +186,12 @@ public class SCADomainImpl implements SCADomainSPI  {
                 
                     // get the management components out of the domain so that they 
                     // can be configured/used. 
-                    domainManagerInitService = getService(DomainManagerInitService.class, 
-                                                          "DomainManagerComponent/DomainManagerInitService", 
+                    domainManagerInitService = getService(SCADomainManagerInitService.class, 
+                                                          "SCADomainManagerComponent/SCADomainManagerInitService", 
                                                           domainManagementRuntime, 
                                                           domainManagementComposite);
-                    domainManagerInitService.setDomain((SCADomainSPI)this);
+                    domainManagerInitService.setDomainSPI((SCADomainSPI)this);
+                    domainManagerInitService.setDomainEventService((SCADomainEventService)this);
                     
                         
                 } else {
@@ -218,15 +221,17 @@ public class SCADomainImpl implements SCADomainSPI  {
         return null;
     }       
     
-    // SCADomain SPI methods 
+    // SCADomainSPI methods 
     
     public DomainModel getDomainModel(){        
         return domainModel;
-    }    
+    } 
     
-    public String addNode(String nodeURI, String nodeURL){ 
+    // SCADomainEventService methods 
+    
+    public void registerNode(String nodeURI, String nodeURL) throws DomainException { 
         // try and remove it first just in case it's already registered
-        removeNode(nodeURI);
+        unregisterNode(nodeURI);
         
         NodeModel node = domainModelFactory.createNode();
         node.setNodeURI(nodeURI);
@@ -238,20 +243,17 @@ public class SCADomainImpl implements SCADomainSPI  {
                                " at endpoint " + 
                                nodeURL);
 
-        return "DummyReturn";
     }
     
-    public String removeNode(String nodeURI){ 
+    public void unregisterNode(String nodeURI) throws DomainException{ 
         
         domainModel.getNodes().remove(nodeURI);
                
         logger.log(Level.FINE, "Removed node: " + nodeURI);
-        
-        return "DummyReturn";
     }
     
 
-    public void registerContribution(String nodeURI, String contributionURI, String contributionURL){
+    public void registerContribution(String nodeURI, String contributionURI, String contributionURL) throws DomainException{
         try {
             ContributionModel contributionModel = null;
             
@@ -277,9 +279,29 @@ public class SCADomainImpl implements SCADomainSPI  {
     }
     
 
-    public void unregisterContribution(String contributionURI){
+    public void unregisterContribution(String nodeURI, String contributionURI) throws DomainException {
         try {
-            removeContribution(contributionURI);  
+            
+            if ( domainModel.getContributions().containsKey(contributionURI) == true ){
+                // get the contribution model
+                ContributionModel contributionModel = domainModel.getContributions().get(contributionURI);
+                
+                // remove deployed composites
+                for (QName compositeQName : contributionModel.getDeployableComposites().keySet()){
+                    domainModel.getDeployedComposites().remove(compositeQName);
+                }
+                    
+                // remove contribution from the domain
+                domainModel.getContributions().remove(contributionURI);
+
+                // remove the contribution from the referenced node
+                NodeModel node = domainModel.getNodes().get(nodeURI);
+                
+                if ((node != null)) {
+                    node.getContributions().remove(contributionURI);
+                } 
+            }            
+ 
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Exception when removing contribution " + 
                                      contributionURI + 
@@ -287,7 +309,7 @@ public class SCADomainImpl implements SCADomainSPI  {
         }
     }
     
-    public String  registerServiceEndpoint(String domainURI, String nodeURI, String serviceName, String bindingName, String URL){
+    public void registerServiceEndpoint(String domainURI, String nodeURI, String serviceName, String bindingName, String URL)throws DomainException {
         // if the service name ends in a "/" remove it
         String modifiedServiceName = null;
         if ( serviceName.endsWith("/") ) {
@@ -321,19 +343,16 @@ public class SCADomainImpl implements SCADomainSPI  {
                                       nodeURI + 
                                       "that isn't registered");
         }
-        
-        return "";
     }
      
-    public String  removeServiceEndpoint(String domainUri, String nodeURI, String serviceName, String bindingName){
+    public void unregisterServiceEndpoint(String domainUri, String nodeURI, String serviceName, String bindingName) throws DomainException{
         NodeModel node = domainModel.getNodes().get(nodeURI);
         node.getServices().remove(serviceName + bindingName);
         logger.log(Level.FINE, "Removed service: " +  serviceName );     
         
-        return "";
     }
    
-    public String findServiceEndpoint(String domainUri, String serviceName, String bindingName){
+    public String findServiceEndpoint(String domainUri, String serviceName, String bindingName) throws DomainException{
         logger.log(Level.FINE, "Finding service: [" + 
                                domainUri + " " +
                                serviceName + " " +
@@ -362,9 +381,13 @@ public class SCADomainImpl implements SCADomainSPI  {
     // SCADomain API methods 
     
     public void start() throws DomainException {
-        // Does nothing in the domain implementation but 
-        // is used in the proxy
+        // call start on all nodes
+        
     }
+    
+    public void stop() throws DomainException {
+
+    }    
     
     public void destroy() throws DomainException {
         try {
@@ -391,13 +414,23 @@ public class SCADomainImpl implements SCADomainSPI  {
         // contributions are not assigned to a node until a composite
         // in the contribution is started. 
     }
+     
+    public void updateContribution(String contributionURI, URL contributionURL) throws DomainException {
+        // TODO
+    }
 
     public void removeContribution(String contributionURI) throws DomainException {
         if ( domainModel.getContributions().containsKey(contributionURI) == true ){
             
-            domainModel.getContributions().remove(contributionURI);
+            // get the contribution model
+            ContributionModel contributionModel = domainModel.getContributions().get(contributionURI);
             
-            // TODO remove composite info
+            // remove deployed composites
+            for (QName compositeQName : contributionModel.getDeployableComposites().keySet()){
+                domainModel.getDeployedComposites().remove(compositeQName);
+            }
+            
+            domainModel.getContributions().remove(contributionURI);
             
             for ( NodeModel node : domainModel.getNodes().values()){
                 if (node.getContributions().containsKey(contributionURI)) {
@@ -410,6 +443,10 @@ public class SCADomainImpl implements SCADomainSPI  {
     
     public void addDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
         // TODO
+    }
+    
+    public void updateDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
+        
     }
     
     public void addToDomainLevelComposite(QName compositeName) throws DomainException {
@@ -429,6 +466,14 @@ public class SCADomainImpl implements SCADomainSPI  {
         // remove from deployed list
         // if the node has only one composite remove contribution from node
         domainModel.getDeployedComposites().remove(compositeName);
+    }
+    
+    public String getDomainLevelComposite() throws DomainException {
+        return null;
+    }
+
+    public String getQNameDefinition(QName artifact) throws DomainException {
+        return null;
     }
       
     public void startComposite(QName compositeName) throws DomainException {
@@ -481,25 +526,30 @@ public class SCADomainImpl implements SCADomainSPI  {
         // physical endpoint set by the domain node manage we have just 
         // configured
         // TODO - replace with a cached callable reference to the node
-        NodeManagerService nodeManagerService = getService(NodeManagerService.class, 
+        SCANodeManagerService nodeManagerService = getService(SCANodeManagerService.class, 
                                                 "NodeManagerComponent/NodeManagerService",
                                                 domainManagementRuntime, 
                                                 domainManagementComposite);                
         
-        // add contributions
-        for (ContributionModel tmpContribution : node.getContributions().values()){
-            nodeManagerService.addContribution(contribution.getContributionURI(),
-                                               contribution.getContributionURL().toString());
+        try {
+            // add contributions
+            for (ContributionModel tmpContribution : node.getContributions().values()){
+                nodeManagerService.addContribution(contribution.getContributionURI(),
+                                                   contribution.getContributionURL().toString());
+            }
+    
+            // deploy composite
+            nodeManagerService.addToDomainLevelComposite(compositeName.toString());
+            
+            // start node
+            nodeManagerService.start();
+            
+            // TODO
+            // somewhere we need to add the deployed composites into the node model 
+            
+        } catch (Exception ex) {
+            throw new DomainException(ex);
         }
-
-        // deploy composite
-        nodeManagerService.deployComposite(compositeName.toString());
-        
-        // start node
-        nodeManagerService.start();
-        
-        // TODO
-        // somewhere we need to add the deployed composites into the node model 
         
         // reset the endpoint setting function
         domainManagerNode.setNodeEndpoint(null);

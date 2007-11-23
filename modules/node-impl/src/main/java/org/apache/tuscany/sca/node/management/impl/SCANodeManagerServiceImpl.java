@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node.impl;
+package org.apache.tuscany.sca.node.management.impl;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,11 +29,15 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.core.assembly.RuntimeComponentImpl;
+import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.node.ComponentInfo;
 import org.apache.tuscany.sca.node.ComponentManagerService;
-import org.apache.tuscany.sca.node.NodeManagerInitService;
-import org.apache.tuscany.sca.node.NodeManagerService;
+import org.apache.tuscany.sca.node.NodeException;
 import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.impl.ComponentInfoImpl;
+import org.apache.tuscany.sca.node.impl.SCANodeImpl;
+import org.apache.tuscany.sca.node.management.SCANodeManagerInitService;
+import org.apache.tuscany.sca.node.management.SCANodeManagerService;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
@@ -43,10 +47,10 @@ import org.osoa.sca.annotations.Service;
  * @version $Rev: 552343 $ $Date: 2007-09-11 18:45:36 +0100 (Tue, 11 Sep 2007) $
  */
 @Scope("COMPOSITE")
-@Service(interfaces = {NodeManagerService.class, NodeManagerInitService.class, ComponentManagerService.class})
-public class NodeManagerServiceImpl implements NodeManagerService, NodeManagerInitService, ComponentManagerService {
+@Service(interfaces = {SCANodeManagerService.class, SCANodeManagerInitService.class, ComponentManagerService.class})
+public class SCANodeManagerServiceImpl implements SCANodeManagerService, SCANodeManagerInitService, ComponentManagerService {
     
-    private final static Logger logger = Logger.getLogger(NodeManagerServiceImpl.class.getName());
+    private final static Logger logger = Logger.getLogger(SCANodeManagerServiceImpl.class.getName());
 
     private SCANodeImpl node;
 
@@ -57,25 +61,13 @@ public class NodeManagerServiceImpl implements NodeManagerService, NodeManagerIn
         this.node = (SCANodeImpl)node;
     }
     
-    // NodeManagerSerivice
+    // SCANodeManagerService methods
     
-    /**
-     * Returns the URI of the SCA node. That URI is the endpoint of the
-     * SCA node administration service.
-     * 
-     * @return the URI of the SCA node
-     */
-    public String getURI(){
+    public String getURI() {
         return node.getURI();
     }
-        
-    /**
-     * Add an SCA contribution into the node.
-     *  
-     * @param uri the URI of the contribution
-     * @param url the URL of the contribution
-     */
-    public void addContribution(String contributionURI, String contributionURL){
+   
+    public void addContribution(String contributionURI, String contributionURL) throws NodeException {
         try {
             node.addContribution(contributionURI, new URL(contributionURL));
         } catch (Exception ex){
@@ -84,24 +76,21 @@ public class NodeManagerServiceImpl implements NodeManagerService, NodeManagerIn
         }
     }
    
-    /**
-     * deploy deployable composite on the node.
-     * 
-     * @param composite
-     */
-    public void deployComposite(String compositeName) {
+    public void removeContribution(String contributionURI) throws NodeException {
+        
+    }
+
+    public void addToDomainLevelComposite(String compositeName) throws NodeException {
         try {
             node.addToDomainLevelComposite(QName.valueOf(compositeName));
         } catch (Exception ex){
             // TODO - sort out exceptions passing across binding.sca
             logger.log(Level.SEVERE, ex.toString());
         }
+        
     }
     
-    /**
-     * Start the SCA node service.
-     */
-    public void start(){
+    public void start() throws NodeException {
         try {
             node.start();
         } catch (Exception ex){
@@ -110,10 +99,7 @@ public class NodeManagerServiceImpl implements NodeManagerService, NodeManagerIn
         }
     }
     
-    /**
-     * Stop the SCA node service.
-     */
-    public void stop(){
+    public void stop() throws NodeException {
         try {
             node.stop();
         } catch (Exception ex){

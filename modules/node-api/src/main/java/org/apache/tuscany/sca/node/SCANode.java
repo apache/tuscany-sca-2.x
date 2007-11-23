@@ -24,6 +24,7 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.domain.SCADomain;
+import org.osoa.sca.annotations.Remotable;
 
 /**
  * Represents an SCA processing node. An SCA node belongs to an SCA domain.
@@ -31,9 +32,8 @@ import org.apache.tuscany.sca.domain.SCADomain;
  * 
  * @version $Rev: 580520 $ $Date: 2007-09-29 00:50:25 +0100 (Sat, 29 Sep 2007) $
  */
+@Remotable
 public interface SCANode {
-
-
 
     /**
      * Returns the URI of the SCA node. That URI is the endpoint of the

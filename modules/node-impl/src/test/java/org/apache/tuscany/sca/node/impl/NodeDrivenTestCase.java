@@ -96,7 +96,7 @@ public class NodeDrivenTestCase {
             addServiceB = nodeA.getDomain().getService(AddService.class, "AddServiceComponentB");
             
         } catch(Exception ex){
-            System.err.println(ex.toString());
+            ex.printStackTrace();
         }  
         
    }

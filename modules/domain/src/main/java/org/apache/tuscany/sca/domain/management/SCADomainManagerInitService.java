@@ -17,22 +17,32 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node;
+package org.apache.tuscany.sca.domain.management;
+
+import org.apache.tuscany.sca.domain.SCADomainEventService;
+import org.apache.tuscany.sca.domain.SCADomainSPI;
 
 
 
 /**
- * Initializes the Node Management component
+ * Connects the domain to the domain manager service
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-11 18:45:36 +0100 (Tue, 11 Sep 2007) $
  */
-public interface NodeManagerInitService {
+public interface SCADomainManagerInitService {
      
     /**
-     * Set the node object into the NodeManagement component so that is can manage it
+     * Set the domain SPI object
      * 
      * @param node
      */
-    public void setNode(SCANode node);
+    public void setDomainSPI(SCADomainSPI domainSPI);
+    
+    /**
+     * Set the domain event object
+     * 
+     * @param node
+     */
+    public void setDomainEventService(SCADomainEventService domainEventService);    
     
 }

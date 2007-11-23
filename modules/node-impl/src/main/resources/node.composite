@@ -29,26 +29,26 @@
            xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
            name="node">
           
-    <component name="DomainManagerComponent">
-        <implementation.java class="org.apache.tuscany.sca.node.impl.DomainManagerServiceImpl"/>
-        <service name="DomainManagerNodeEventService">
-            <interface.java interface="org.apache.tuscany.sca.domain.DomainManagerNodeEventService"/>
+    <component name="SCADomainEventServiceProxyComponent">
+        <implementation.java class="org.apache.tuscany.sca.node.impl.SCADomainEventServiceProxyImpl"/>
+        <service name="SCADomainEventService">
+            <interface.java interface="org.apache.tuscany.sca.domain.SCADomainEventService"/>
             <binding.sca/>
         </service>
         <reference name="domainManager">
-            <interface.java interface="org.apache.tuscany.sca.domain.DomainManagerNodeEventService"/>
-            <binding.ws uri="http://localhost:9999/DomainManagerComponent/DomainManagerNodeEventService"/>
+            <interface.java interface="org.apache.tuscany.sca.domain.SCADomainEventService"/>
+            <binding.ws uri="http://localhost:9999/SCADomainManagerComponent/SCADomainEventService"/>
         </reference>
     </component>           
            
-    <component name="NodeManagerComponent">
-        <implementation.java class="org.apache.tuscany.sca.node.impl.NodeManagerServiceImpl"/>
-        <service name="NodeManagerInitService">
-            <interface.java interface="org.apache.tuscany.sca.node.NodeManagerInitService"/>
+    <component name="SCANodeManagerComponent">
+        <implementation.java class="org.apache.tuscany.sca.node.management.impl.SCANodeManagerServiceImpl"/>
+        <service name="SCANodeManagerInitService">
+            <interface.java interface="org.apache.tuscany.sca.node.management.SCANodeManagerInitService"/>
             <binding.sca/>
         </service>
-        <service name="NodeManagerService">
-            <interface.java interface="org.apache.tuscany.sca.node.NodeManagerService"/>
+        <service name="SCANodeManagerService">
+            <interface.java interface="org.apache.tuscany.sca.node.management.SCANodeManagerService"/>
             <binding.ws/>
         </service>
         <service name="ComponentManagerService">

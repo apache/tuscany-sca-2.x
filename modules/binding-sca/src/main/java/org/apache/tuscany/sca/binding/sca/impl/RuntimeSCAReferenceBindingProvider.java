@@ -19,16 +19,18 @@
 
 package org.apache.tuscany.sca.binding.sca.impl;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.domain.SCADomainSPI;
+import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
@@ -49,6 +51,8 @@ import org.osoa.sca.ServiceUnavailableException;
  * @version $Rev$ $Date$
  */
 public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvider {
+    
+    private final static Logger logger = Logger.getLogger(RuntimeSCAReferenceBindingProvider.class.getName());
 
     private NodeFactory nodeFactory;
     private RuntimeComponent component;
@@ -100,12 +104,25 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             // at this node. The binding uri might be null here if the dynamic reference has been
             // fully configured yet. It won't have all of the information until invocation time
             if ( (nodeFactory != null) && (nodeFactory.getNode() != null) && (binding.getURI() != null)) {
-                SCADomainSPI domainProxy = (SCADomainSPI)nodeFactory.getNode().getDomain();
+                SCADomainEventService domainProxy = (SCADomainEventService)nodeFactory.getNode().getDomain();
 
-                String serviceUrl =
-                    domainProxy.findServiceEndpoint(nodeFactory.getNode().getDomain().getURI(),
-                                                         binding.getURI(),
-                                                         SCABinding.class.getName());
+                String serviceUrl = null;
+                
+                try {
+                    serviceUrl =
+                        domainProxy.findServiceEndpoint(nodeFactory.getNode().getDomain().getURI(),
+                                                             binding.getURI(),
+                                                             SCABinding.class.getName());
+                } catch (Exception ex) {
+                    logger.log(Level.WARNING, 
+                            "Unable to  find service service: "  +
+                            nodeFactory.getNode().getDomain().getURI() + " " +
+                            nodeFactory.getNode().getURI() + " " +
+                            binding.getURI() + " " +
+                            SCABinding.class.getName());                    
+                    
+                }
+                
                 if ((serviceUrl == null) || serviceUrl.equals("")) {
                     targetIsRemote = false;
                 } else {
@@ -198,7 +215,9 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                     + binding.getURI()
                     + " operation="
                     + operation.getName()
-                    + "). Ensure that the composite containing the service it loaded and started somewhere in the SCA domain");
+                    + "). Ensure that the composite containing the service is loaded and "
+                    + "started somewhere in the SCA domain and that if running in a "
+                    + "remote node that the interface of the target service marked as @Remotable");
             }
             return invoker;
         }
