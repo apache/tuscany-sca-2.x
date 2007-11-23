@@ -67,7 +67,7 @@ public class CallableReferenceRemoteTestCase {
             nodeA.addToDomainLevelComposite(new QName("http://foo", "CompositeA"));
             nodeA.start();
             
-            nodeB = nodeFactory.createSCANode("http://localhost:8100/nodeB", "http://localhost:9999");
+            nodeB = nodeFactory.createSCANode("http://localhost:8200/nodeB", "http://localhost:9999");
             nodeB.addContribution("nodeB", cl.getResource("nodeB/"));
             nodeB.addToDomainLevelComposite(new QName("http://foo", "CompositeB"));
             nodeB.start();                  
@@ -86,7 +86,7 @@ public class CallableReferenceRemoteTestCase {
         nodeA.destroy();
         nodeB.destroy();
     }
-
+/*
     @Test
     public void testBReference() {
         assertEquals("BComponent", acomponent.fooB());
@@ -107,12 +107,16 @@ public class CallableReferenceRemoteTestCase {
         assertEquals("CComponent", acomponent.fooC1());
     }    
 
-    /* Commented it out as it's still failing
+    @Test
+    public void testDReferenceString() {
+        assertEquals("DAComponent", acomponent.fooStringD());
+    }
+*/  
     @Test
     public void testDReference() {
         assertEquals("DAComponent", acomponent.fooD());
-    }
-    */
+    }    
+
     
     //@Test
     public void testBCReference() {

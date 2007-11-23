@@ -21,3 +21,6 @@ org.apache.tuscany.sca.databinding.xml.XMLStringDataBinding;type=java.lang.Strin
 org.apache.tuscany.sca.databinding.xml.XMLGroupDataBinding;type=databinding:group
 org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;type=java:complexType
 org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;type=java:simpleType
+org.apache.tuscany.sca.databinding.externalizable.ExternalizableDataBinding;type=java.io.Externalizable,name=externalizable
+org.apache.tuscany.sca.databinding.externalizable.CallableReferenceDataBinding;type=org.osoa.sca.CallableReference,name=callablereference
+

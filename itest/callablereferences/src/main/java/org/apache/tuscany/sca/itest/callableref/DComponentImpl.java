@@ -20,9 +20,12 @@ package org.apache.tuscany.sca.itest.callableref;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
+import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter.Base64Binary;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.annotations.Context;
@@ -48,5 +51,17 @@ public class DComponentImpl implements DComponent {
         System.out.println("Invoking service: " + requestContext.getServiceName());
         return "D" + aReference.getService().foo();
     }
-
+    
+    public String fooString(String aReferenceString) {
+        CallableReference<AComponent> aReference = null;
+        try {
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(Base64Binary.decode(aReferenceString)));
+            Object obj = ois.readObject();
+            aReference = (CallableReference<AComponent>) obj;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Invoking service: " + requestContext.getServiceName());
+        return "D" + aReference.getService().foo();
+    }
 }

@@ -18,11 +18,18 @@
  */
 package org.apache.tuscany.sca.itest.callableref;
 
+import java.io.Externalizable;
+
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.annotations.Remotable;
 
 @Remotable
 public interface DComponent {
 
-    String foo(CallableReference<AComponent> aReference);
+    String foo(CallableReference<AComponent> aReference); 
+    
+    String fooString(String aReferenceString);
 }
