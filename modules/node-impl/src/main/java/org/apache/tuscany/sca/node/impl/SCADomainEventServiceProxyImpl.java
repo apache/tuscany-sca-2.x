@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.node.impl;
 
+import java.io.Externalizable;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,11 +50,11 @@ public class SCADomainEventServiceProxyImpl implements SCADomainEventService{
     @Reference
     protected SCADomainEventService domainManager;
 
-    public void registerNode(String nodeURI, String nodeURL) throws DomainException {
+    public void registerNode(String nodeURI, String nodeURL, Externalizable nodeManagerService) throws DomainException {
               
         for (int i =0; i < retryCount; i++){
             try {        
-                domainManager.registerNode(nodeURI, nodeURL);
+                domainManager.registerNode(nodeURI, nodeURL, nodeManagerService);
                 break;
             } catch(UndeclaredThrowableException ex) {
                 ex.printStackTrace();

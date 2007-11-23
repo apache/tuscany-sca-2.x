@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.domain.management.impl;
 
+import java.io.Externalizable;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.domain.DomainException;
@@ -30,6 +31,8 @@ import org.apache.tuscany.sca.domain.management.SCADomainManagerService;
 import org.apache.tuscany.sca.domain.management.NodeInfo;
 import org.apache.tuscany.sca.domain.model.DomainModel;
 import org.apache.tuscany.sca.domain.model.NodeModel;
+import org.apache.tuscany.sca.node.management.SCANodeManagerService;
+import org.osoa.sca.CallableReference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
@@ -60,8 +63,15 @@ public class SCADomainManagerServiceImpl implements SCADomainEventService, SCADo
     
     // DomainEventService methods
     
-    public void registerNode(String nodeURI, String nodeURL) throws DomainException{ 
-        domainEventService.registerNode(nodeURI, nodeURL);
+    public void registerNode(String nodeURI, String nodeURL, Externalizable nodeManagerReference) throws DomainException{
+        // get a reference to the node manager here so that the callable reference
+        // the right context to construct itself. Don't actually have to do 
+        // anything with the result as the context is cached inside the callable
+        // reference
+        ((CallableReference<SCANodeManagerService>)nodeManagerReference).getService();
+        
+        // pass on to the domain
+        domainEventService.registerNode(nodeURI, nodeURL, nodeManagerReference);
     }
     
     public void unregisterNode(String nodeURI) throws DomainException { 

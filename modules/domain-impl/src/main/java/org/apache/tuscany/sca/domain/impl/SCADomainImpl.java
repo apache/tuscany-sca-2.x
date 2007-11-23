@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.domain.impl;
 
+import java.io.Externalizable;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
@@ -87,7 +88,6 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
     protected ContributionService domainManagementContributionService;
     protected Contribution domainManagementContribution;
     protected Composite domainManagementComposite;
-    protected DomainManagerNodeImpl domainManagerNode;
           
     // The domain model
     protected DomainModelFactory domainModelFactory = new DomainModelFactoryImpl();
@@ -148,12 +148,12 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             domainManagementComposite.setName(new QName(Constants.SCA10_NS, "domainManagement"));
             domainManagementComposite.setURI(domainModel.getDomainURI() + "/Management");            
             
-            // Set up the domain so that we can push in the node endpoint before we
-            // call a node
-            domainManagerNode = new DomainManagerNodeImpl(this);
+            // Set up the domain so that local callable references can find 
+            // service out there in the domain
+            SCADummyNodeImpl node = new SCADummyNodeImpl(this);
             ModelFactoryExtensionPoint factories = domainManagementRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
-            NodeFactoryImpl domainFactory = new NodeFactoryImpl(domainManagerNode);
-            factories.addFactory(domainFactory);            
+            NodeFactoryImpl nodeFactory = new NodeFactoryImpl(node);
+            factories.addFactory(nodeFactory); 
             
             // Find the composite that will configure the domain
             String domainCompositeName = "domain.composite";
@@ -229,13 +229,14 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
     
     // SCADomainEventService methods 
     
-    public void registerNode(String nodeURI, String nodeURL) throws DomainException { 
+    public void registerNode(String nodeURI, String nodeURL, Externalizable nodeManagerReference) throws DomainException { 
         // try and remove it first just in case it's already registered
         unregisterNode(nodeURI);
         
         NodeModel node = domainModelFactory.createNode();
         node.setNodeURI(nodeURI);
         node.setNodeURL(nodeURL);
+        node.setNodeManagerReference(nodeManagerReference);
         domainModel.getNodes().put(nodeURI, node);     
         
         logger.log(Level.INFO, "Registered node: " + 
@@ -335,7 +336,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         if (node != null){
             //store the service
             node.getServices().put(modifiedServiceName+bindingName, service);
-            logger.log(Level.FINE, "Registered service: " + modifiedServiceName);
+            logger.log(Level.FINE, "Registered service: " + modifiedServiceName + " with URL " + URL);
         } else {
             logger.log(Level.WARNING, "Trying to register service: " + 
                                       modifiedServiceName + 
@@ -514,22 +515,10 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             throw new DomainException("No free node available for to run composite "  + compositeName.toString());
         }        
         
-        // get the endpoint of the node in question and set it into the
-        // domain manager node in order to flip the node reference to 
-        // the correct endpoint
-        // TODO - replace with a cached callable reference to the node
-        String nodeURL = node.getNodeURL();
-        domainManagerNode.setNodeEndpoint(nodeURL);
-        
-        
-        // get a node manager service reference. This will have to have its
-        // physical endpoint set by the domain node manage we have just 
-        // configured
-        // TODO - replace with a cached callable reference to the node
-        SCANodeManagerService nodeManagerService = getService(SCANodeManagerService.class, 
-                                                "NodeManagerComponent/NodeManagerService",
-                                                domainManagementRuntime, 
-                                                domainManagementComposite);                
+        // get the node manager for the node in question
+        CallableReference<SCANodeManagerService> nodeManagerReference = 
+            (CallableReference<SCANodeManagerService>)node.getNodeManagerReference();
+        SCANodeManagerService nodeManagerService = nodeManagerReference.getService();
         
         try {
             // add contributions
@@ -550,9 +539,6 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         } catch (Exception ex) {
             throw new DomainException(ex);
         }
-        
-        // reset the endpoint setting function
-        domainManagerNode.setNodeEndpoint(null);
             
     }
       

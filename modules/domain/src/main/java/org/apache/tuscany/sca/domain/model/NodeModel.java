@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.domain.model;
 
+import java.io.Externalizable;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,20 @@ public interface NodeModel {
      * @param nodeURL
      */    
     public void setNodeURL(String nodeURL);
+    
+    /**
+     * Retrieve the node manager reference
+     *
+     * @return node manager reference
+     */    
+    public Externalizable getNodeManagerReference();
+   
+    /**
+     * Set the node url
+     * 
+     * @param nodeURL
+     */    
+    public void setNodeManagerReference(Externalizable nodeManagerReference);    
    
     public Map<String, ContributionModel> getContributions();
     public Map<QName, CompositeModel> getDeployedComposites();

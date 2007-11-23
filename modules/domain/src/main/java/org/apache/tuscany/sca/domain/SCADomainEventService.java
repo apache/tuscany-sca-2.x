@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.domain;
 
+import java.io.Externalizable;
 import java.util.List;
 
 import org.osoa.sca.annotations.Remotable;
@@ -41,7 +42,7 @@ public interface SCADomainEventService {
      * @param nodeURL
      * @return
      */
-    public void registerNode(String nodeURI, String nodeURL) throws DomainException;
+    public void registerNode(String nodeURI, String nodeURL, Externalizable nodeManageReference) throws DomainException;
         
     /**
      * Remove information about a node in a domain
