@@ -1,6 +1,7 @@
-Calculator Sample
-=================
-This sample implements a simple calculator using SCA components. 
+Calculator Implementation Policies Sample
+=========================================
+This sample builds over simple calculator sample to demonstrate how Implementation Policies can 
+be use in Tuscany SCA Java.
 
 The README in the samples directory (the directory above this) provides 
 general instructions about building and running samples. Take a look there 
@@ -19,35 +20,63 @@ and on *nix do
 
 java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator.jar calculator.CalculatorClient
 
+
 Sample Overview
 ---------------
-The sample provides a single calculator service with a default SCA (java) 
-binding. The CalculatorClient exercises this interface by calling add, 
-subtract, multiply and divide operations. This results in messages passing to 
-the appropriate components in the composite across the local wires.
+The sample provides the calculator service with a default SCA (java) binding.  The 'logging' policy
+which is handled by the Tuscany SCA java policy-logging module is used in this calculator 
+composite to specify the need for 'logging'.  
+
+The logging intent and policyset that is to be used by this calculator application must be 
+defined in the definitions.xml file.  Here we use the policyset structure already defined in
+Tuscany for logging under the policy-logging and hence there is no need to specify the policyset processors 
+and policy handler classes as part of this application.  
+
+There are two components that provide the calculator service namely 'CalculatorServiceComponent'
+and 'AnotherCalculatorServiceComponent'.  The logging intent is specified for the 'subtract' and 'divide' 
+operations of the 'CalculatorServiceCompnent' implementation, and on the entire implementation 
+(i.e. all operations) for the AddServiceComponent and AnotherCalculatorServiceComponent. 
+
+
+The CalculatorClient first exercises the CalculatorServiceComponent calling add, 
+subtract, multiply and divide operations.  This results in logging messages appearing on the 
+console for 'add', 'subtract' and 'divide' operations.  The CalculatorClient then exercises the 
+AnotherCalculatorServiceComponent calling all the service methods.  This will result in logging messages
+printed on the console for all the operations.  For the 'add' operation there will be two sets of messages
+printed - one that has resulted from specifying the 'logging' intent on the implementation element of the
+AnotherCalculatorServiceComponent and another from specifying the 'logging' intent on the 'AddServiceCompoent'
+
+Thus this sample demonstrates how intents could be applied to either implementations as a whole or to some
+selective operations on an implementation.
+
 
 calculator/
   src/
     main/
       java/
         calculator/
-          CalculatorService.java  - the first component, calls +-/* as 
-                                    appropriate
+          CalculatorService.java                - the first component, calls +-/* as 
+                                                appropriate
           CalculatorServiceImpl.java
-          AddService.java         - adds two numbers
+          AddService.java                       - adds two numbers
           AddServiceImpl.java
-          SubtractService.java    - subtracts one number from another
+          SubtractService.java                  - subtracts one number from another
           SubtractServiceImpl.java
-          MultiplyService.java    - multiplies two numbers
+          MultiplyService.java                  - multiplies two numbers
           MultiplyServiceImpl.java
-          DivideService.java      - divides one number by another
+          DivideService.java                    - divides one number by another
           DivideServiceImpl.java
-          CalculatorClient.java   - starts the SCA Runtime and 
-                                    deploys the Calculator.composite. 
-                                    It then calls the deployed Calculator 
-                                    Components services
+          CalculatorClient.java                 - starts the SCA Runtime and 
+                                                deploys the Calculator.composite. 
+                                                It then calls the deployed Calculator 
+                                                Components services
       resources/
-        Calculator.composite      - the SCA assembly for this sample
+        Calculator.composite                    - the SCA assembly for this sample
+        definitions.xml                         - sca definitions file that defines the 'logging' intent 
+                                                and policyset
+                                                used by this application
+        CalculatorLogMessages.properties        - A resource bundle contain the log messages to be 
+                                                used.
     test/
       java/
         calculator/
@@ -56,6 +85,8 @@ calculator/
                                     .composite file
   build.xml                       - the Ant build file
   pom.xml                         - the Maven build file        
+
+
 
 Building And Running The Sample Using Ant
 -----------------------------------------
@@ -69,10 +100,48 @@ ant run
 You should see the following output from the run target.
 
 run:
-     [java] 3 + 2=5.0
-     [java] 3 - 2=1.0
-     [java] 3 * 2=6.0
-     [java] 3 / 2=1.5
+        [java] Calling CalculatorServiceComponent configured with 'logging' policy for subtract and divide operations...
+        [java] Nov 23, 2007 1:06:10 PM
+        [java] INFO:  Invoking operation - add
+        [java] Nov 23, 2007 1:06:10 PM
+        [java] INFO:  Returned from operation - add
+        [java] 3 + 2=5.0
+        [java] 3 - 2=1.0
+        [java] 3 * 2=6.0
+        [java] 3 / 2=1.5
+        [java] Calling CalculatorServiceComponent configured with 'logging' for all operations in the implementation...
+        [java] Nov 23, 2007 1:06:10 PM
+        [java] INFO:  Invoking operation - subtract
+        [java] Nov 23, 2007 1:06:10 PM
+        [java] INFO:  Returned from operation - subtract
+        [java] Nov 23, 2007 1:06:10 PM
+        [java] INFO:  Invoking operation - divide
+        [java] Nov 23, 2007 1:06:10 PM
+        [java] INFO:  Returned from operation - divide
+        [java] Nov 23, 2007 1:06:10 PM
+        [java] 3 + 2=5.0
+        [java] 3 - 2=1.0
+        [java] 3 * 2=6.0
+        [java] INFO:  Invoking operation - add
+        [java] 3 / 2=1.5
+        [java] Nov 23, 2007 1:06:10 PM
+        [java] INFO:  Invoking operation - add
+        [java] Nov 23, 2007 1:06:10 PM
+        [java] INFO:  Returned from operation - add
+        [java] Nov 23, 2007 1:06:10 PM
+        [java] INFO:  Returned from operation - add
+        [java] Nov 23, 2007 1:06:10 PM
+        [java] INFO:  Invoking operation - subtract
+        [java] Nov 23, 2007 1:06:10 PM
+        [java] INFO:  Returned from operation - subtract
+        [java] Nov 23, 2007 1:06:10 PM
+        [java] INFO:  Invoking operation - multiply
+        [java] Nov 23, 2007 1:06:10 PM
+        [java] INFO:  Returned from operation - multiply
+        [java] Nov 23, 2007 1:06:10 PM
+        [java] INFO:  Invoking operation - divide
+        [java] Nov 23, 2007 1:06:10 PM
+        [java] INFO:  Returned from operation - divide
 
 Building And Running The Sample Using Maven 
 -------------------------------------------
@@ -82,16 +151,57 @@ using Maven as follows.
 cd calculator
 mvn
 
-You should see the following output from the test phase.
+You should see the following output from the test phase. Notice the log messages.
 
 -------------------------------------------------------
  T E S T S
 -------------------------------------------------------
 Running calculator.CalculatorTestCase
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.272 sec
+Nov 23, 2007 1:00:11 PM org.apache.tuscany.sca.contribution.processor.ValidatingXMLStreamReader$1 error
+WARNING: XMLSchema validation problem in: file:/F:/LatestTrunk/sca/samples/calculator-impl-policies/target/classes/Ca
+lculator.composite, line: 27, column: 4
+cvc-complex-type.2.4.a: Invalid content was found starting with element 'operation'. One of '{WC[##other:"http://www.
+osoa.org/xmlns/sca/1.0"]}' is expected.
+Nov 23, 2007 1:00:12 PM
+INFO:  Invoking operation - add
+Nov 23, 2007 1:00:12 PM
+INFO:  Returned from operation - add
+Nov 23, 2007 1:00:12 PM
+INFO:  Invoking operation - subtract
+Nov 23, 2007 1:00:12 PM
+INFO:  Returned from operation - subtract
+Nov 23, 2007 1:00:12 PM
+INFO:  Invoking operation - divide
+Nov 23, 2007 1:00:12 PM
+INFO:  Returned from operation - divide
+Nov 23, 2007 1:00:13 PM org.apache.tuscany.sca.contribution.processor.ValidatingXMLStreamReader$1 error
+WARNING: XMLSchema validation problem in: file:/F:/LatestTrunk/sca/samples/calculator-impl-policies/target/classes/Ca
+lculator.composite, line: 27, column: 4
+cvc-complex-type.2.4.a: Invalid content was found starting with element 'operation'. One of '{WC[##other:"http://www.
+osoa.org/xmlns/sca/1.0"]}' is expected.
+Nov 23, 2007 1:00:13 PM
+INFO:  Invoking operation - add
+Nov 23, 2007 1:00:13 PM
+INFO:  Invoking operation - add
+Nov 23, 2007 1:00:13 PM
+INFO:  Returned from operation - add
+Nov 23, 2007 1:00:13 PM
+INFO:  Returned from operation - add
+Nov 23, 2007 1:00:13 PM
+INFO:  Invoking operation - subtract
+Nov 23, 2007 1:00:13 PM
+INFO:  Returned from operation - subtract
+Nov 23, 2007 1:00:13 PM
+INFO:  Invoking operation - multiply
+Nov 23, 2007 1:00:13 PM
+INFO:  Returned from operation - multiply
+Nov 23, 2007 1:00:13 PM
+INFO:  Invoking operation - divide
+Nov 23, 2007 1:00:13 PM
+INFO:  Returned from operation - divide
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.985 sec
 
 Results :
 
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
-
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
 This shows that the Junit test cases have run successfully. 
