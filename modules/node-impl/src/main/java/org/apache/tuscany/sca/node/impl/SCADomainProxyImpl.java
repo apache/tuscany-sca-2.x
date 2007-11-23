@@ -48,7 +48,6 @@ import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
-import org.apache.tuscany.sca.domain.impl.DomainManagerNodeImpl;
 import org.apache.tuscany.sca.domain.impl.SCADomainImpl;
 import org.apache.tuscany.sca.domain.management.SCADomainManagerInitService;
 import org.apache.tuscany.sca.domain.model.DomainModel;
