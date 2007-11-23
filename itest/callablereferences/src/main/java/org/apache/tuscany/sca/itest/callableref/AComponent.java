@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.itest.callableref;
 
+import org.osoa.sca.annotations.Remotable;
+
+@Remotable
 public interface AComponent {
     String foo();
     
@@ -27,6 +30,7 @@ public interface AComponent {
     String fooC();
     String fooC1();
     
+    String fooStringD();
     String fooD();
 
     String fooBC();

@@ -58,6 +58,7 @@ import org.osoa.sca.ServiceRuntimeException;
  * @param <B> the type of the business interface
  */
 public class CallableReferenceImpl<B> implements CallableReference<B>, Externalizable {
+    static final long serialVersionUID = -521548304761848325L;
     protected transient CompositeActivator compositeActivator;
     protected transient ProxyFactory proxyFactory;
 

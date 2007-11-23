@@ -19,7 +19,7 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:foo="http://foo" targetNamespace="http://foo"
     name="CompositeA" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <service name="AComponent" promote="AComponent">
+    <service name="AComponentService" promote="AComponent">
         <interface.java interface="org.apache.tuscany.sca.itest.callableref.AComponent" />
     </service>
 
