@@ -106,8 +106,8 @@ public class WSDLOperationIntrospectorImpl {
     public boolean isWrapperStyle() throws InvalidWSDLException {
         if (wrapperStyle == null) {
             wrapperStyle =
-                (operation.getInput().getMessage().getParts().values().size() == 0 || wrapper.getInputChildElements() != null) && (operation
-                    .getOutput() == null || wrapper.getOutputChildElements() != null);
+                (operation.getInput() == null || operation.getInput().getMessage().getParts().size() == 0 || wrapper.getInputChildElements() != null) && 
+                (operation.getOutput() == null || operation.getOutput().getMessage().getParts().size() == 0 || wrapper.getOutputChildElements() != null);
         }
         return wrapperStyle;
     }
