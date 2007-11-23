@@ -48,7 +48,7 @@
                 <module>calculator-script</module>
                 <module>calculator-webapp</module>
                 <module>calculator-ws-webapp</module>
-                <!--module>callback-ws-client</module-->
+                <module>callback-ws-client</module>
                 <module>callback-ws-service</module>
                 <module>chat-webapp</module>
                 <module>databinding-echo</module>
