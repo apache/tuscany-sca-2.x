@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2;
 
+import java.io.Externalizable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -175,7 +176,7 @@ public class TestDomain implements SCADomain, SCADomainEventService {
         return null;
     }
     
-    public void registerNode(String nodeURI, String nodeURL){
+    public void registerNode(String nodeURI, String nodeURL, Externalizable nodeManagerRefence){
     }
     
 

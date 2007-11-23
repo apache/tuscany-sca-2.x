@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
+import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomainEventService;
@@ -63,6 +64,7 @@ import org.apache.tuscany.sca.node.NodeFactoryImpl;
 import org.apache.tuscany.sca.node.SCADomainProxySPI;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.management.SCANodeManagerInitService;
+import org.apache.tuscany.sca.node.management.SCANodeManagerService;
 import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
@@ -83,6 +85,7 @@ public class SCADomainProxyImpl extends SCADomainImpl {
     // management services
     private SCADomainEventService domainManagerService;   
     private SCANodeManagerInitService nodeManagerInitService;
+    private CallableReferenceImpl<SCANodeManagerService> nodeManagerService;
         
     // the local node implementation
     private String nodeURI;
@@ -244,6 +247,12 @@ public class SCADomainProxyImpl extends SCADomainImpl {
                                                         domainManagementRuntime, 
                                                         domainManagementComposite); 
                     
+                    nodeManagerService = (CallableReferenceImpl<SCANodeManagerService>)
+                                         getServiceReference(SCANodeManagerService.class, 
+                                                             "SCANodeManagerComponent/SCANodeManagerService", 
+                                                             domainManagementRuntime, 
+                                                             domainManagementComposite);
+                    
                     // add the registered node now that the runtime is started
                     addNode();
 
@@ -270,7 +279,7 @@ public class SCADomainProxyImpl extends SCADomainImpl {
         this.nodeImpl = (SCANodeImpl)nodeImpl; 
         
         // add the node into the local domain model 
-        super.registerNode(nodeImpl.getURI(), nodeImpl.getURI());
+        super.registerNode(nodeImpl.getURI(), nodeImpl.getURI(), nodeManagerService);
         
         // the registration of the node with the domain is delayed until
         // after the runtime has been started
@@ -300,7 +309,7 @@ public class SCADomainProxyImpl extends SCADomainImpl {
                                         nodeURI.getPort() + nodeURI.getPath() + "/SCANodeManagerComponent/SCANodeManagerService";
                 
                 // go out and add this node to the wider domain
-                domainManagerService.registerNode(nodeImpl.getURI(),nodeManagerURL);
+                domainManagerService.registerNode(nodeImpl.getURI(), nodeManagerURL, nodeManagerService);
 
             } catch(Exception ex) {
                 logger.log(Level.SEVERE,  

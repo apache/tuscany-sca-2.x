@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.domain.model.impl;
 
+import java.io.Externalizable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +40,7 @@ public class NodeModelImpl implements NodeModel {
     
     private String nodeURI;
     private String nodeURL;
+    private Externalizable nodeManagerReference;
     private Map<String, ContributionModel> contributions = new HashMap<String, ContributionModel>();
     private Map<QName, CompositeModel> composites = new HashMap<QName, CompositeModel>();
     private Map<String, ServiceModel> services = new HashMap<String, ServiceModel>();
@@ -77,6 +79,24 @@ public class NodeModelImpl implements NodeModel {
      */    
     public void setNodeURL(String nodeURL){
         this.nodeURL = nodeURL;
+    }
+    
+    /**
+     * Retrieve the node manager reference
+     *
+     * @return node manager reference
+     */    
+    public Externalizable getNodeManagerReference(){
+        return nodeManagerReference;
+    }
+   
+    /**
+     * Set the node url
+     * 
+     * @param nodeURL
+     */    
+    public void setNodeManagerReference(Externalizable nodeManagerReference){
+        this.nodeManagerReference = nodeManagerReference;
     }
    
     public Map<String, ContributionModel> getContributions(){

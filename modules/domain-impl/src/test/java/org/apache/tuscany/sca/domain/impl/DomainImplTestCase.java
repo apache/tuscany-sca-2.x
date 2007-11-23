@@ -69,8 +69,8 @@ public class DomainImplTestCase {
     
     @Test
     public void testAddNode() throws Exception {    
-        domainSPI.registerNode("http://localhost:8100/mynode1", "http://localhost:9999");
-        domainSPI.registerNode("http://localhost:8200/mynode2", "http://localhost:9999");
+        domainSPI.registerNode("http://localhost:8100/mynode1", "http://localhost:9999", null);
+        domainSPI.registerNode("http://localhost:8200/mynode2", "http://localhost:9999", null);
     }
     
     @Test

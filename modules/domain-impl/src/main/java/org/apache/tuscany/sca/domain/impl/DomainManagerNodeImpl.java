@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.domain.impl;
 
+import java.io.Externalizable;
 import java.net.URL;
 import java.util.logging.Logger;
 
@@ -51,7 +52,7 @@ public class DomainManagerNodeImpl implements SCANode {
     private SCADomainEventService realSCADomain = null;
 	
     class DomainManagerDomainImpl implements SCADomain, SCADomainSPI, SCADomainEventService {
-        public void registerNode(String nodeURI, String nodeURL)throws DomainException{ 
+        public void registerNode(String nodeURI, String nodeURL, Externalizable nodeReference)throws DomainException{ 
         }
         
         public void unregisterNode(String nodeURI)throws DomainException{ 
