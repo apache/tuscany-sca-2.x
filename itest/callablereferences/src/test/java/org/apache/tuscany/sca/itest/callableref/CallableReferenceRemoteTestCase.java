@@ -86,7 +86,7 @@ public class CallableReferenceRemoteTestCase {
         nodeA.destroy();
         nodeB.destroy();
     }
-/*
+
     @Test
     public void testBReference() {
         assertEquals("BComponent", acomponent.fooB());
@@ -111,14 +111,14 @@ public class CallableReferenceRemoteTestCase {
     public void testDReferenceString() {
         assertEquals("DAComponent", acomponent.fooStringD());
     }
-*/  
+  
     @Test
     public void testDReference() {
         assertEquals("DAComponent", acomponent.fooD());
     }    
 
     
-    //@Test
+    @Test
     public void testBCReference() {
         assertEquals("BCComponent", acomponent.fooBC());
     }
