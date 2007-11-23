@@ -20,7 +20,8 @@ package myapp;
 
 import myserver.MyService;
 import myserver.MyServiceCallback;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
@@ -46,11 +47,11 @@ public class MyClientImpl implements MyClient, MyServiceCallback {
     }
 
     public static void main(String[] args) throws Exception {
-        SCADomain scaDomain = SCADomain.newInstance("myapp.composite");
-        MyClient myClient = scaDomain.getService(MyClient.class, "MyClientComponent");
+        SCANode node = SCANodeFactory.createNodeWithComposite("myapp.composite");
+        MyClient myClient = node.getDomain().getService(MyClient.class, "MyClientComponent");
         myClient.aClientMethod();
         Thread.sleep(5000);  // don't exit before callback arrives
         System.out.println("Closing the domain");
-        scaDomain.close();
+        node.destroy();
     }
 }

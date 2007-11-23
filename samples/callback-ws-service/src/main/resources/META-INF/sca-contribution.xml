@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,33 +16,9 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
- */
-package myserver;
-
-import java.io.IOException;
-
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
-
-/**
- * This server program shows how to create and start an SCA runtime that
- * activates the MyService Web service endpoint.
- */
-public class CallbackServer {
-
-    public static void main(String[] args) throws Exception {
-
-        SCANode node = SCANodeFactory.createNodeWithComposite("callbackws.composite");
-
-        try {
-            System.out.println("Callback server started (press enter to shutdown)");
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        node.destroy();
-        System.out.println("Callback server stopped");
-    }
-
-}
+-->
+<contribution xmlns="http://www.osoa.org/xmlns/sca/1.0"
+              targetNamespace="http://callbackws"
+              xmlns:cbws="http://callbackws">
+    <deployable composite="cbws:callbackws" />
+</contribution>

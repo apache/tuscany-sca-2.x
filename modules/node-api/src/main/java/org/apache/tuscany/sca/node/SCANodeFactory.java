@@ -20,7 +20,9 @@
 package org.apache.tuscany.sca.node;
 
 import java.lang.reflect.Constructor;
+import java.net.URL;
 
+import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
@@ -64,6 +66,21 @@ public abstract class SCANodeFactory {
             throw new ServiceRuntimeException(e);
         }  
     }
+
+    private static SCANodeFactory singletonInstance;
+
+    /**
+     * Returns a singleton SCA node factory instance, and creates a new
+     * singleton instance if none exists.
+     *  
+     * @return an SCA node factory
+     */
+    public static SCANodeFactory getInstance() {
+        if (singletonInstance == null) {
+            singletonInstance = newInstance();
+        }
+        return singletonInstance;
+    }
         
     /**
      * Creates a new SCA node.
@@ -93,5 +110,28 @@ public abstract class SCANodeFactory {
      */
     public abstract SCANode createSCANode(String nodeURI, String domainURI, String nodeGroupURI) throws NodeException;
     
+    /**
+     * Convenience method to create and start a node and embedded domain
+     * that deploys a single composite within a single contribution.
+     * 
+     * @param composite the composite to be deployed.
+     * @return a new SCA node.
+     */
+    public static SCANode createNodeWithComposite(String composite) throws NodeException {
+        try {
+            final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            final URL url = SCAContributionUtil.findContributionFromResource(loader, composite);
+
+            final SCANode node = getInstance().createSCANode(null, null);
+            node.addContribution(url.toString(), url);                                                                    
+            node.addToDomainLevelComposite(composite);
+            node.start();
+
+            return node;
+
+        } catch (Exception e) {
+            throw new NodeException(e);
+        }  
+    }
     
 }
