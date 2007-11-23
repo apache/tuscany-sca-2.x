@@ -35,13 +35,19 @@ import org.osoa.sca.ServiceReference;
 public interface SCADomain {
     
     /**
-     * Start the SCA domain service.
+     * Start all of the services in the domain.
      */
     public void start()
-      throws DomainException;    
+      throws DomainException;  
 
     /**
-     * Destroy the SCA domain service.
+     * Stop all of the services in the domain.
+     */
+    public void stop()
+      throws DomainException; 
+
+    /**
+     * Destroy the SCA domain.
      */
     public void destroy()
       throws DomainException;
@@ -65,6 +71,16 @@ public interface SCADomain {
       throws DomainException;
     
     /**
+     * Update an SCA contribution that has previousle been added to the domain.
+     *  
+     * @param contributionURI the URI of the contribution
+     * @param contributionURL the URL of the contribution
+     * @throws DomainException
+     */  
+    public void updateContribution(String contributionURI, URL contributionURL)
+      throws DomainException;    
+    
+    /**
      * Remove a contribution from the domain.
      * 
      * @param contributionURI the URI of the contribution
@@ -82,6 +98,16 @@ public interface SCADomain {
      */
     public void addDeploymentComposite(String contributionURI, String compositeXML)
       throws DomainException;
+    
+    /**
+     * Use the supplied composite XML to update the identified contribution
+     * 
+     * @param contributionURI the URI of the contribution
+     * @param compositeXML the XML string of the composite 
+     * @throws DomainException
+     */
+    public void updateDeploymentComposite(String contributionURI, String compositeXML)
+      throws DomainException;    
 
     /**
      * Add a deployable composite to the domain.
@@ -99,13 +125,30 @@ public interface SCADomain {
      * @throws DomainException     
      */
     public void removeFromDomainLevelComposite(QName compositeQName)
-      throws DomainException;   
+      throws DomainException; 
+    
+    /**
+     * Returns an XML string representation of the domain level composite
+     * 
+     * @return xml representing the domain level composite
+     */
+    public String getDomainLevelComposite()
+      throws DomainException;
+    
+    /**
+     * Returns an XML String representation of a artifact from within the 
+     * domain namespace formed by the domain level composite
+     * 
+     * @return xml representing the specified artifact
+     */
+    public String getQNameDefinition(QName artifact)
+      throws DomainException;
     
     /**
      * Start a composite. The domain is responsible for starting all the
      * components in the composite. It may decompose the composite into
-     * one ore more smaller composites and load these composites into
-     * different SCA nodes.
+     * one or more smaller composites and load these composites into
+     * an appropriate SCA node for execution.
      * 
      * @param compositeQName The QName of the composite
      * @throws DomainException

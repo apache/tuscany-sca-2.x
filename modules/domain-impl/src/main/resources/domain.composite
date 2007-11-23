@@ -29,20 +29,20 @@
         </service>
     </component>            
                  
-    <component name="DomainManagerComponent">
-        <implementation.java class="org.apache.tuscany.sca.domain.impl.DomainManagerServiceImpl"/>
-        <service name="DomainManagerInitService">
-            <interface.java interface="org.apache.tuscany.sca.domain.DomainManagerInitService"/>
+    <component name="SCADomainManagerComponent">
+        <implementation.java class="org.apache.tuscany.sca.domain.management.impl.SCADomainManagerServiceImpl"/>
+        <service name="SCADomainManagerInitService">
+            <interface.java interface="org.apache.tuscany.sca.domain.management.SCADomainManagerInitService"/>
             <binding.sca/>
         </service>
-        <service name="DomainManagerNodeEventService">
-            <interface.java interface="org.apache.tuscany.sca.domain.DomainManagerNodeEventService"/>
+        <service name="SCADomainManagerService">
+            <interface.java interface="org.apache.tuscany.sca.domain.management.SCADomainManagerService"/>
+            <t:binding.jsonrpc/>
+        </service>         
+        <service name="SCADomainEventService">
+            <interface.java interface="org.apache.tuscany.sca.domain.SCADomainEventService"/>
             <binding.ws/>
         </service>
-        <service name="DomainManagementService">
-            <interface.java interface="org.apache.tuscany.sca.domain.management.DomainManagementService"/>
-            <t:binding.jsonrpc/>
-        </service>        
     </component>  
     
 </composite>

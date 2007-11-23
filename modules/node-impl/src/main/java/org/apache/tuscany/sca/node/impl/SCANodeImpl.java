@@ -55,6 +55,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.domain.SCADomain;
+import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.host.http.ServletHost;
@@ -411,11 +412,11 @@ public class SCANodeImpl implements SCANode {
             // remove the local record of the contribution
             contributions.remove(contributionURI);
             
-            // remove the contribution from the domain. It will generally already be remove
-            // unless the contribution has been remove from the node itself. 
-            //((SCADomainProxyImpl)scaDomain).unregisterContribution(nodeURI, contributionURI);                  
+            // remove the contribution from the domain. It will generally already be removed
+            // unless the contribution has been removed from the node itself. 
+            ((SCADomainEventService)scaDomain).unregisterContribution(nodeURI, contributionURI);                  
             
-        } catch (ContributionException ex) {
+        } catch (Exception ex) {
             throw new NodeException(ex);
         }  
 
@@ -651,11 +652,11 @@ public class SCANodeImpl implements SCANode {
                 String uri = binding.getURI();
                 if (uri != null) {
                     try {
-                        ((SCADomainSPI)scaDomain).registerServiceEndpoint(domainURI, 
-                                                                          nodeURI, 
-                                                                          service.getName(), 
-                                                                          binding.getClass().getName(), 
-                                                                          uri);
+                        ((SCADomainEventService)scaDomain).registerServiceEndpoint(domainURI, 
+                                                                                   nodeURI, 
+                                                                                   service.getName(), 
+                                                                                   binding.getClass().getName(), 
+                                                                                   uri);
                     } catch(Exception ex) {
                         logger.log(Level.WARNING, 
                                    "Unable to  register service: "  +
@@ -679,11 +680,11 @@ public class SCANodeImpl implements SCANode {
                         if (uriString != null) {
                             try {
                                 URI uri = new URI(uriString);
-                                ((SCADomainSPI)scaDomain).registerServiceEndpoint(domainURI, 
-                                                                                  nodeURI, 
-                                                                                  uri.getPath(),
-                                                                                  binding.getClass().getName(), 
-                                                                                  uriString);
+                                ((SCADomainEventService)scaDomain).registerServiceEndpoint(domainURI, 
+                                                                                           nodeURI, 
+                                                                                           uri.getPath(),
+                                                                                           binding.getClass().getName(), 
+                                                                                           uriString);
                             } catch(Exception ex) {
                                 logger.log(Level.WARNING, 
                                            "Unable to  register service: "  +
@@ -717,9 +718,9 @@ public class SCANodeImpl implements SCANode {
                         // binding uri
                         String uri = "";
                         try {
-                            uri = ((SCADomainSPI)scaDomain).findServiceEndpoint(domainURI, 
-                                                                                binding.getURI(), 
-                                                                                binding.getClass().getName());
+                            uri = ((SCADomainEventService)scaDomain).findServiceEndpoint(domainURI, 
+                                                                                         binding.getURI(), 
+                                                                                         binding.getClass().getName());
                         } catch(Exception ex) {
                             logger.log(Level.WARNING, 
                                        "Unable to  find service: "  +
@@ -750,9 +751,9 @@ public class SCANodeImpl implements SCANode {
                             // binding uri
                             String uri = "";
                             try {
-                                uri = ((SCADomainSPI)scaDomain).findServiceEndpoint(domainURI, 
-                                                                                    binding.getURI(), 
-                                                                                    binding.getClass().getName());
+                                uri = ((SCADomainEventService)scaDomain).findServiceEndpoint(domainURI, 
+                                                                                             binding.getURI(), 
+                                                                                             binding.getClass().getName());
                             } catch(Exception ex) {
                                 logger.log(Level.WARNING, 
                                            "Unable to  find service: "  +

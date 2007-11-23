@@ -86,7 +86,7 @@ public class DomainDrivenTestCase {
             
             
         } catch(Exception ex){
-            System.err.println(ex.toString());
+            ex.printStackTrace();
         }  
         
    }

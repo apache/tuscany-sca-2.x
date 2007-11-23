@@ -26,6 +26,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomain;
+import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.domain.model.DomainModel;
 import org.apache.tuscany.sca.node.NodeException;
@@ -47,32 +48,29 @@ public class DomainManagerNodeImpl implements SCANode {
     
     private String nodeEndpoint;
     private SCADomain scaDomain = new DomainManagerDomainImpl();
-    private SCADomainSPI realSCADomain = null;
+    private SCADomainEventService realSCADomain = null;
 	
-    class DomainManagerDomainImpl implements SCADomainSPI {
-        public String addNode(String nodeURI, String nodeURL){ 
-            return null;
+    class DomainManagerDomainImpl implements SCADomain, SCADomainSPI, SCADomainEventService {
+        public void registerNode(String nodeURI, String nodeURL)throws DomainException{ 
         }
         
-        public String removeNode(String nodeURI){ 
-            return null;
+        public void unregisterNode(String nodeURI)throws DomainException{ 
         }
         
-        public void registerContribution(String nodeURI, String contributionURI, String contributionURL) {
+        public void registerContribution(String nodeURI, String contributionURI, String contributionURL) throws DomainException{
         }
         
-        public void unregisterContribution(String contributionURI){
+        public void unregisterContribution(String nodeURI, String contributionURI)throws DomainException{
         }        
         
-        public String  registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
-            return null;
+        public void  registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL){
+
         }
          
-        public String  removeServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName){
-            return null;
+        public void  unregisterServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName){
         }
        
-        public String findServiceEndpoint(String domainUri, String serviceName, String bindingName){
+        public String findServiceEndpoint(String domainUri, String serviceName, String bindingName)throws DomainException{
             if (nodeEndpoint != null){
                 return nodeEndpoint;
             } else {
@@ -87,7 +85,10 @@ public class DomainManagerNodeImpl implements SCANode {
             
         // SCADomain API methods 
         public void start() throws DomainException {
-        }        
+        }    
+
+        public void stop() throws DomainException{
+        }
         
         public void destroy() throws DomainException {
         }
@@ -99,16 +100,32 @@ public class DomainManagerNodeImpl implements SCANode {
         public void addContribution(String contributionURI, URL contributionURL) throws DomainException {
         }
 
+        public void updateContribution(String contributionURI, URL contributionURL) throws DomainException {
+            
+        }
+        
         public void removeContribution(String uri) throws DomainException {
         }
         
         public void addDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
+        }
+        
+        public void updateDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
+            
         }
 
         public void addToDomainLevelComposite(QName compositeQName) throws DomainException {
         }
      
         public void removeFromDomainLevelComposite(QName compositeQName) throws DomainException {
+        }
+        
+        public String getDomainLevelComposite(){
+            return null;
+        }
+
+        public String getQNameDefinition(QName artifact){
+            return null;
         }
           
         public void startComposite(QName compositeName) throws DomainException {            
@@ -132,7 +149,7 @@ public class DomainManagerNodeImpl implements SCANode {
         
     }
 
-    public DomainManagerNodeImpl(SCADomainSPI scaDomain) {
+    public DomainManagerNodeImpl(SCADomainEventService scaDomain) {
         this.realSCADomain = scaDomain;
     }    
     

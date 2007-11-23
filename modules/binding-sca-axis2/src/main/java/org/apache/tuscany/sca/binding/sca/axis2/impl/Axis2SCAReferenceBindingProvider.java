@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.SCABinding;
@@ -28,7 +31,7 @@ import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ReferenceBindingProvider;
 import org.apache.tuscany.sca.binding.ws.axis2.Java2WSDLHelper;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
-import org.apache.tuscany.sca.domain.SCADomainSPI;
+import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -36,7 +39,6 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -51,6 +53,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
  */
 public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvider {
 
+    private final static Logger logger = Logger.getLogger(Axis2SCAReferenceBindingProvider.class.getName());
+    
     private NodeFactory nodeFactory;
     private RuntimeComponent component;
     private RuntimeComponentReference reference;
@@ -114,16 +118,26 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
         
         if ( serviceEPR == null && nodeFactory.getNode() != null ){
             // try to resolve the service endpoint with the registry 
-            SCADomainSPI domainProxy = (SCADomainSPI)nodeFactory.getNode().getDomain();
+            SCADomainEventService domainProxy = (SCADomainEventService)nodeFactory.getNode().getDomain();
             
             if (domainProxy != null){
             
 	            // The binding URI might be null in the case where this reference is completely
 	            // dynamic, for example, in the case of callbacks
 	            if (binding.getURI() != null) {
-	                String serviceUrl = domainProxy.findServiceEndpoint(nodeFactory.getNode().getDomain().getURI(), 
-	                                                                         binding.getURI(), 
-	                                                                         SCABinding.class.getName());
+	                String serviceUrl  = null;
+	                try {
+	                    serviceUrl = domainProxy.findServiceEndpoint(nodeFactory.getNode().getDomain().getURI(), 
+	                                                                 binding.getURI(), 
+	                                                                 SCABinding.class.getName());
+	                } catch (Exception ex) {
+	                    logger.log(Level.WARNING, 
+	                               "Unable to  find service service: "  +
+	                               nodeFactory.getNode().getDomain().getURI() + " " +
+	                               nodeFactory.getNode().getURI() + " " +
+	                               binding.getURI() + " " +
+	                               SCABinding.class.getName());	                 
+	                }
 	                
 	                if ( (serviceUrl != null ) &&
 	                     (!serviceUrl.equals(""))){

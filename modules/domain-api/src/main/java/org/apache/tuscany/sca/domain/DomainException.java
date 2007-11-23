@@ -28,6 +28,8 @@ public class DomainException extends Exception {
 
     static final long serialVersionUID = 2096658015909178325L;
     
+    private String message;    
+    
     public DomainException(String message) {
         super(message);
     }
@@ -35,4 +37,12 @@ public class DomainException extends Exception {
     public DomainException(Throwable cause) {
         super(cause);
     }
+    
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }     
 }
