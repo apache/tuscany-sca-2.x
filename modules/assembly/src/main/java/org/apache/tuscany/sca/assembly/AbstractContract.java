@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface AbstractContract extends Base, Extensible, IntentAttachPoint {
+public interface AbstractContract extends Base, Extensible, IntentAttachPoint, OperationsConfigurator {
 
     /**
      * Returns the name of the contract.

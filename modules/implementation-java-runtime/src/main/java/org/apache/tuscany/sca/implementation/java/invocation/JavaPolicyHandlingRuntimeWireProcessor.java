@@ -70,7 +70,7 @@ public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProces
                     
                     List<PolicyHandler> applicablePolicyHandlers = null;
                     for (InvocationChain chain : wire.getInvocationChains() ) {
-                        applicablePolicyHandlers = new ArrayList<PolicyHandler>(implPolicyHandlers);
+                        applicablePolicyHandlers = new ArrayList<PolicyHandler>();
                         if ( javaImpl instanceof OperationsConfigurator ) {
                             String operationName = chain.getTargetOperation().getName();
                             OperationsConfigurator opConfigurator = (OperationsConfigurator)javaImpl;
@@ -81,7 +81,14 @@ public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProces
                                         policyHandler.setUp(javaImpl);
                                         applicablePolicyHandlers.add(policyHandler);
                                     }
+                                    break;
                                 }
+                            }
+                            
+                            //if no policies have been specified at the operation level then simply
+                            //apply whatever is specified for the implementation level
+                            if ( applicablePolicyHandlers.isEmpty() ) {
+                                applicablePolicyHandlers = implPolicyHandlers;
                             }
                         }
                         

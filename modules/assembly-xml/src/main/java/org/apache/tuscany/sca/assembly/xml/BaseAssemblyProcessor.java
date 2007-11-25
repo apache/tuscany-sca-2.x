@@ -43,10 +43,12 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -269,6 +271,13 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                     PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
                     resolvePolicySets(policiedBinding.getPolicySets(), resolver);
                 }
+                if (binding instanceof OperationsConfigurator) {
+                    OperationsConfigurator opConfigurator = (OperationsConfigurator)binding;
+                    for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
+                        resolveIntents(confOp.getRequiredIntents(), resolver);
+                        resolvePolicySets(confOp.getPolicySets(), resolver);
+                    }
+                }
             }
 
             // Resolve callback bindings
@@ -287,11 +296,22 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                         PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
                         resolvePolicySets(policiedBinding.getPolicySets(), resolver);
                     }
+                    if (binding instanceof OperationsConfigurator) {
+                        OperationsConfigurator opConfigurator = (OperationsConfigurator)binding;
+                        for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
+                            resolveIntents(confOp.getRequiredIntents(), resolver);
+                            resolvePolicySets(confOp.getPolicySets(), resolver);
+                        }
+                    }
                 }
             }
 
             resolveIntents(contract.getRequiredIntents(), resolver);
             resolvePolicySets(contract.getPolicySets(), resolver);
+            for ( ConfiguredOperation confOp : contract.getConfiguredOperations() ) {
+                resolveIntents(confOp.getRequiredIntents(), resolver);
+                resolvePolicySets(confOp.getPolicySets(), resolver);
+            }
         }
     }
 

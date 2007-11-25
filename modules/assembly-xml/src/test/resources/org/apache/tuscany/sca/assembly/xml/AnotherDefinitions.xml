@@ -78,6 +78,19 @@
  			 </sca:description>
  </sca:intent>
  
+ <sca:intent name="tuscanyIntent_9" 
+ 			 constrains="sca:binding">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
+ 
+ <sca:intent name="tuscanyIntent_10" 
+ 			 constrains="sca:binding">
+ 			 <sca:description>
+ 			 Sample Intent
+ 			 </sca:description>
+ </sca:intent>
   <!-- qualified intents -->
  <sca:intent name="tuscanyIntent_1.qualified" />
  <sca:intent name="tuscanyIntent_2.qualified" />

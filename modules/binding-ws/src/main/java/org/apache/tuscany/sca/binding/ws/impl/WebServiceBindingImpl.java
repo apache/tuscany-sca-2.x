@@ -27,7 +27,9 @@ import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.Extensible;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -44,7 +46,7 @@ import org.w3c.dom.Element;
  *
  * @version $Rev$ $Date$
  */
-class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, Extensible {
+class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, Extensible, OperationsConfigurator {
     private String name;
     private String uri;
     private boolean unresolved;
@@ -52,6 +54,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private IntentAttachPointType intentAttachPointType;
+    private List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
     
     private String location;
     private Binding binding;
@@ -267,5 +270,13 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
 
     public void setRequiredIntents(List<Intent> intents) {
         this.requiredIntents = intents;
+    }
+    
+    public List<ConfiguredOperation> getConfiguredOperations() {
+        return configuredOperations;
+    }
+
+    public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
+        this.configuredOperations = configuredOperations;
     }
 }

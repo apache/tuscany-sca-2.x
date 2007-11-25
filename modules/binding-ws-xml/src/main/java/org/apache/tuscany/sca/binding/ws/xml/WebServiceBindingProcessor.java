@@ -33,6 +33,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
+import org.apache.tuscany.sca.assembly.xml.ConfiguredOperationProcessor;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
@@ -62,6 +65,8 @@ public class WebServiceBindingProcessor implements
     private PolicyFactory policyFactory;
     private PolicyAttachPointProcessor policyProcessor;
     private IntentAttachPointTypeFactory  intentAttachPointTypeFactory;
+    private ConfiguredOperationProcessor configuredOperationProcessor;
+    
 
     public WebServiceBindingProcessor(ModelFactoryExtensionPoint modelFactories) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
@@ -69,6 +74,7 @@ public class WebServiceBindingProcessor implements
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
         this.intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
+        this.configuredOperationProcessor = new ConfiguredOperationProcessor(modelFactories);
     }
 
     public WebServiceBinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
@@ -156,15 +162,28 @@ public class WebServiceBindingProcessor implements
         // Read wsdlLocation
         wsBinding.setLocation(reader.getAttributeValue(WSDLI_NS, WSDL_LOCATION));
 
+        ConfiguredOperation confOp = null;
         // Skip to end element
         while (reader.hasNext()) {
             int event = reader.next();
-            if (event == START_ELEMENT && "EndpointReference".equals(reader.getName().getLocalPart())) {
-                if (wsdlElementIsBinding != null && wsdlElementIsBinding) {
-                    throw new ContributionReadException(wsdlElement + " must use wsdl.binding when using wsa:EndpointReference");
+            switch (event) {
+                case START_ELEMENT  : {
+                    if (END_POINT_REFERENCE.equals(reader.getName().getLocalPart())) {
+                        if (wsdlElementIsBinding != null && wsdlElementIsBinding) {
+                            throw new ContributionReadException(wsdlElement + " must use wsdl.binding when using wsa:EndpointReference");
+                        }
+                        wsBinding.setEndPointReference(EndPointReferenceHelper.readEndPointReference(reader));
+                    } else if ( Constants.OPERATION_QNAME.equals(reader.getName()) ) {
+                        confOp = configuredOperationProcessor.read(reader);
+                        if ( confOp != null ) {
+                            ((OperationsConfigurator)wsBinding).getConfiguredOperations().add(confOp);
+                        }
+                    } 
                 }
-                wsBinding.setEndPointReference(EndPointReferenceHelper.readEndPointReference(reader));
+                break;
+                
             }
+            
             if (event == END_ELEMENT && BINDING_WS_QNAME.equals(reader.getName())) {
                 break;
             }
@@ -278,6 +297,10 @@ public class WebServiceBindingProcessor implements
             }
         }
         policyProcessor.resolvePolicies(model, resolver); 
+        OperationsConfigurator opCongigurator = (OperationsConfigurator)model;
+        for ( ConfiguredOperation confOp : opCongigurator.getConfiguredOperations() ) {
+            policyProcessor.resolvePolicies(confOp, resolver);
+        }
     }
 
     private PortType getPortType(WebServiceBinding model) {

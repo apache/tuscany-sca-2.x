@@ -33,6 +33,7 @@ public interface WebServiceConstants {
     QName WSDL_LOCATION_QNAME = new QName(WSDLI_NS, WSDL_LOCATION); 
     String NAME = "name"; 
     String URI = "uri"; 
+    String END_POINT_REFERENCE = "EndpointReference";
     
 
 }
