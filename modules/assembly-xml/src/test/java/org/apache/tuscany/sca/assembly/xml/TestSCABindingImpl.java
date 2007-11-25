@@ -26,6 +26,8 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.policy.Intent;
@@ -38,7 +40,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public class TestSCABindingImpl implements SCABinding, OptimizableBinding, PolicySetAttachPoint {
+public class TestSCABindingImpl implements SCABinding, OptimizableBinding, PolicySetAttachPoint, OperationsConfigurator {
     private String name;
     private String uri;
     private List<Object> extensions = new ArrayList<Object>();
@@ -50,6 +52,7 @@ public class TestSCABindingImpl implements SCABinding, OptimizableBinding, Polic
     List<Intent> requiredIntents = new ArrayList<Intent>();
     List<PolicySet> policySets = new ArrayList<PolicySet>();
     IntentAttachPointType bindingType = new TestSCABindingType();
+    List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
 
     /**
      * Constructs a new SCA binding.
@@ -193,5 +196,13 @@ public class TestSCABindingImpl implements SCABinding, OptimizableBinding, Polic
 
     public void setRequiredIntents(List<Intent> intents) {
         this.requiredIntents = intents;
+    }
+    
+    public List<ConfiguredOperation> getConfiguredOperations() {
+        return configuredOperations;
+    }
+
+    public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
+        this.configuredOperations = configuredOperations;
     }
 }

@@ -292,14 +292,27 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     } else if (OPERATION_QNAME.equals(name)) {
 
                         // Read an <operation>
-                        Operation operation = assemblyFactory.createOperation();
+                        ConfiguredOperation operation = assemblyFactory.createConfiguredOperation();
                         operation.setName(getString(reader, NAME));
                         operation.setUnresolved(true);
                         if (callback != null) {
-                            policyProcessor.readPolicies(callback, operation, reader);
+                            policyProcessor.readPolicies(operation, reader);
                         } else {
-                            policyProcessor.readPolicies(contract, operation, reader);
+                            policyProcessor.readPolicies(operation, reader);
                         }
+                        
+                        OperationsConfigurator opConfigurator = null;
+                        if ( compositeService != null ) {
+                            opConfigurator = compositeService;
+                        } else if ( componentService != null ) {
+                            opConfigurator = componentService;
+                        } else if ( compositeReference != null ) {
+                            opConfigurator = compositeReference;
+                        } else if ( componentReference != null ) {
+                            opConfigurator = componentReference;
+                        }
+                        
+                        opConfigurator.getConfiguredOperations().add(operation);
                     } else if (IMPLEMENTATION_COMPOSITE_QNAME.equals(name)) {
 
                         // Read an implementation.composite

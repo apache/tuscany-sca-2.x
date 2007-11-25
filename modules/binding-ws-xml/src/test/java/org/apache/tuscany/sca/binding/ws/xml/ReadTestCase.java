@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
@@ -113,6 +114,21 @@ public class ReadTestCase extends TestCase {
         CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null, null);
         compositeUtil.build(composite);
 
+        //new PrintUtil(System.out).print(composite);
+    }
+    
+    public void testReadPolicies() throws Exception {
+        CompositeProcessor compositeProcessor = new CompositeProcessor(new ContributionFactoryImpl(), assemblyFactory, policyFactory, mapper, staxProcessor);
+        InputStream is = getClass().getResourceAsStream("PoliciedCalculator.composite");
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+        Composite composite = compositeProcessor.read(reader);
+        assertNotNull(composite);
+
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null, null);
+        compositeUtil.build(composite);
+
+        assertEquals(((OperationsConfigurator)composite.getServices().get(0).getBindings().get(0))
+            .getConfiguredOperations().get(0).getRequiredIntents().size(), 2);
         //new PrintUtil(System.out).print(composite);
     }
 

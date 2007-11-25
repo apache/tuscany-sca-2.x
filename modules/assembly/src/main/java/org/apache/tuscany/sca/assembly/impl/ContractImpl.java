@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.AbstractContract;
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
@@ -30,6 +31,7 @@ public class ContractImpl extends ExtensibleImpl implements AbstractContract {
     private InterfaceContract interfaceContract;
     private String name;
     private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
     
     private boolean isCallback = false;
     
@@ -76,6 +78,14 @@ public class ContractImpl extends ExtensibleImpl implements AbstractContract {
     
     public void setRequiredIntents(List<Intent> intents) {
         this.requiredIntents = intents;
+    }
+    
+    public List<ConfiguredOperation> getConfiguredOperations() {
+        return configuredOperations;
+    }
+
+    public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
+        this.configuredOperations = configuredOperations;
     }
 
 }
