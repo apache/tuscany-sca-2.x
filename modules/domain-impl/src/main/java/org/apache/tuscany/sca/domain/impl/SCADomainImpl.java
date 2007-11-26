@@ -613,8 +613,34 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
     }
     
     public String getDomainLevelComposite() throws DomainException {
-        // TODO
-        return null;
+        
+        String domainLevelComposite = "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\"" + 
+                                      " targetNamespace=\"http://tuscany.apache.org/domain\"" + 
+                                      " xmlns:domain=\"http://tuscany.apache.org/domain\"";
+        
+        int includeCount = 0;
+        for (CompositeModel compositeModel : domainModel.getDeployedComposites().values()){
+            domainLevelComposite = domainLevelComposite + " xmlns:include" +
+                                                          includeCount +
+                                                          "=\"" + compositeModel.getCompositeQName().getNamespaceURI() + "\"";
+            includeCount++;
+        }
+        
+        domainLevelComposite = domainLevelComposite + " name=\"DomainLevelComposite\">";
+           
+        includeCount = 0;
+        for (CompositeModel compositeModel : domainModel.getDeployedComposites().values()){
+            domainLevelComposite = domainLevelComposite + "<include name=\"include" +
+                                                           includeCount + 
+                                                           ":" + 
+                                                           compositeModel.getCompositeQName().getLocalPart() +
+                                                           "\"/>";
+            includeCount++;
+        }
+        
+        domainLevelComposite = domainLevelComposite + "</composite>";
+     
+        return domainLevelComposite;
     }
 
     public String getQNameDefinition(QName artifact) throws DomainException {
