@@ -30,12 +30,17 @@ public class DomainException extends Exception {
     
     private String message;    
     
+    public DomainException() {
+    }    
+    
     public DomainException(String message) {
         super(message);
+        setMessage(message);
     }
 
     public DomainException(Throwable cause) {
         super(cause);
+        setMessage(cause.getMessage());
     }
     
     public String getMessage() {

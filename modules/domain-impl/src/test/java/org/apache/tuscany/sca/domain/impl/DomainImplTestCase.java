@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.domain.impl;
 
+import java.io.Externalizable;
 import java.net.URL;
 
 import org.apache.tuscany.sca.domain.SCADomain;
@@ -25,9 +26,11 @@ import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.domain.SCADomainFactory;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.management.SCANodeManagerService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.osoa.sca.CallableReference;
 
 import calculator.AddService;
 import calculator.CalculatorService;
@@ -68,9 +71,12 @@ public class DomainImplTestCase {
     }  
     
     @Test
-    public void testAddNode() throws Exception {    
-        domainSPI.registerNode("http://localhost:8100/mynode1", "http://localhost:9999", null);
-        domainSPI.registerNode("http://localhost:8200/mynode2", "http://localhost:9999", null);
+    public void testAddNode() throws Exception { 
+        CallableReference<SCANodeManagerService> node1Ref = new TestCallableReferenceImpl<SCANodeManagerService>();
+        domainSPI.registerNode("http://localhost:8100/mynode1", "http://localhost:9999", (Externalizable)node1Ref);
+        
+        CallableReference<SCANodeManagerService> node2Ref = new TestCallableReferenceImpl<SCANodeManagerService>();
+        domainSPI.registerNode("http://localhost:8200/mynode2", "http://localhost:9999", (Externalizable)node2Ref);
     }
     
     @Test
@@ -81,6 +87,18 @@ public class DomainImplTestCase {
     @Test
     public void testAddContributionWithoutMetaData() throws Exception {    
         domain.addContribution("contributionNodeB", cl.getResource("nodeB/"));
+    }    
+    
+    @Test
+    public void testRemoveContributions() throws Exception { 
+        domain.removeContribution("contributionNodeA");
+        domain.removeContribution("contributionNodeB");
+    }   
+    
+    @Test
+    public void testRemoveNodes() throws Exception { 
+        domainSPI.unregisterNode("http://localhost:8100/mynode1");
+        domainSPI.unregisterNode("http://localhost:8200/mynode2");
     }     
     
     //@Test

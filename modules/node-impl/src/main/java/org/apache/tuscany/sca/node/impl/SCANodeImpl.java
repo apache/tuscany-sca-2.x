@@ -259,13 +259,12 @@ public class SCANodeImpl implements SCANode {
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         
         return null;
-    }
+    } 
     
-    
-    // API methods 
+    // SCANode API methods 
     
     public void start() throws NodeException {
-        if (!nodeStarted){
+        if ((!nodeStarted) && (nodeComposite.getIncludes().size() > 0)){
             startComposites();
             nodeStarted = true;
         }

@@ -29,6 +29,8 @@ import org.apache.tuscany.sca.domain.model.CompositeModel;
 import org.apache.tuscany.sca.domain.model.ContributionModel;
 import org.apache.tuscany.sca.domain.model.NodeModel;
 import org.apache.tuscany.sca.domain.model.ServiceModel;
+import org.apache.tuscany.sca.node.management.SCANodeManagerService;
+import org.osoa.sca.CallableReference;
 
 
 /**
@@ -40,6 +42,7 @@ public class NodeModelImpl implements NodeModel {
     
     private String nodeURI;
     private String nodeURL;
+    private boolean isRunning = false;
     private Externalizable nodeManagerReference;
     private Map<String, ContributionModel> contributions = new HashMap<String, ContributionModel>();
     private Map<QName, CompositeModel> composites = new HashMap<QName, CompositeModel>();
@@ -82,6 +85,24 @@ public class NodeModelImpl implements NodeModel {
     }
     
     /**
+     * Returns true if the node has been started
+     *
+     * @return tru if the node is running
+     */    
+    public boolean getIsRunning() {
+        return isRunning;
+    }
+   
+    /**
+     * Set the running status of the node
+     * 
+     * @param isRunning
+     */    
+    public void setIsRunning(boolean isRunning) {
+        this.isRunning = isRunning;
+    }
+    
+    /**
      * Retrieve the node manager reference
      *
      * @return node manager reference
@@ -97,6 +118,15 @@ public class NodeModelImpl implements NodeModel {
      */    
     public void setNodeManagerReference(Externalizable nodeManagerReference){
         this.nodeManagerReference = nodeManagerReference;
+    }
+    
+    /** 
+     * Get the service proxy for the node mamager
+     * 
+     * @return node manager service proxy
+     */
+    public SCANodeManagerService getSCANodeManagerService(){
+        return ((CallableReference<SCANodeManagerService>)nodeManagerReference).getService();
     }
    
     public Map<String, ContributionModel> getContributions(){

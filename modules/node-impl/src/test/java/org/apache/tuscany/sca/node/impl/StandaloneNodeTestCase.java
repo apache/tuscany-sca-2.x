@@ -45,8 +45,9 @@ public class StandaloneNodeTestCase {
     
     private static SCANodeFactory nodeFactory;
     private static SCANode   node;
+    private static CalculatorService calculatorServiceA;
+    private static CalculatorService calculatorServiceB;    
     private static CalculatorService calculatorServiceD;
-    private static CalculatorService calculatorServiceB;
     private static AddService addServiceD;
     private static SubtractService subtractServiceC;
     private static ClassLoader cl;
@@ -73,6 +74,7 @@ public class StandaloneNodeTestCase {
         node.destroy();    
     }
     
+
     @Test
     public void testAddContributionAndStartNode() throws Exception {       
         node = nodeFactory.createSCANode("http://localhost:8200/node", null);
@@ -176,6 +178,29 @@ public class StandaloneNodeTestCase {
         calculatorServiceD = node.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentD");
                
         Assert.assertEquals(calculatorServiceD.add(3, 2), 5.0);
+        
+        // stop and remove all the contributions to date 
+        node.stop();
+        node.removeContribution("nodeB");
+        node.removeContribution("nodeC");
+        node.removeContribution("nodeD");        
     }
+
+    @Test
+    public void testAddDepdendentContributions() throws Exception {   
+        node = nodeFactory.createSCANode("http://localhost:8200/node", null);
+        
+        // add one contribution that depends on another
+        node.addContribution("dependent", cl.getResource("calculatordependent/"));        
+        node.addContribution("primary", cl.getResource("calculatorprimary/"));
+        node.addToDomainLevelComposite(new QName("http://primary", "CalculatorA"));
+        node.start();
+        calculatorServiceA = node.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentA");
+        Assert.assertEquals(calculatorServiceA.add(3, 2), 5.0);
+        Assert.assertEquals(calculatorServiceA.subtract(3, 2), 1.0);
+        Assert.assertEquals(calculatorServiceA.multiply(3, 2), 6.0);
+        Assert.assertEquals(calculatorServiceA.divide(3, 2), 1.5);
+    }
+         
             
 }

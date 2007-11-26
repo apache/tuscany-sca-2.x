@@ -63,6 +63,20 @@ public interface NodeModel {
     public void setNodeURL(String nodeURL);
     
     /**
+     * Returns true if the node has been started
+     *
+     * @return tru if the node is running
+     */    
+    public boolean getIsRunning();
+   
+    /**
+     * Set the running status of the node
+     * 
+     * @param isRunning
+     */    
+    public void setIsRunning(boolean isRunning);    
+    
+    /**
      * Retrieve the node manager reference
      *
      * @return node manager reference
