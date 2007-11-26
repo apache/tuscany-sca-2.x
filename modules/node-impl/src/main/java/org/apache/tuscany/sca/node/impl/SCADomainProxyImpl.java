@@ -32,45 +32,24 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
-import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomainEventService;
-import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.domain.impl.SCADomainImpl;
-import org.apache.tuscany.sca.domain.management.SCADomainManagerInitService;
-import org.apache.tuscany.sca.domain.model.DomainModel;
-import org.apache.tuscany.sca.domain.model.DomainModelFactory;
-import org.apache.tuscany.sca.domain.model.impl.DomainModelFactoryImpl;
-import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.node.NodeFactoryImpl;
-import org.apache.tuscany.sca.node.SCADomainProxySPI;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.management.SCANodeManagerInitService;
 import org.apache.tuscany.sca.node.management.SCANodeManagerService;
 import org.apache.tuscany.sca.node.util.SCAContributionUtil;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
-import org.osoa.sca.ServiceRuntimeException;
+
 
 /**
  * A local representation of the sca domain running on a single node

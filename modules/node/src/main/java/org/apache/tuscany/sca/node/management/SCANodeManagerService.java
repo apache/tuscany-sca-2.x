@@ -26,6 +26,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.node.NodeException;
+import org.osoa.sca.annotations.OneWay;
 import org.osoa.sca.annotations.Remotable;
 
 
@@ -76,5 +77,12 @@ public interface SCANodeManagerService {
      * Stop the SCA node service.
      */
     public void stop() throws NodeException; 
+    
+    /**
+     * Destroy the SCA node service. destroyNode rather than just destroy
+     * as the WSDL processing struggles with methods called destroy
+     */
+    @OneWay
+    public void destroyNode() throws NodeException;     
       
 }

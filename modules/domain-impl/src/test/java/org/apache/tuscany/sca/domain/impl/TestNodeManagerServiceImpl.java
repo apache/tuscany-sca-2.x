@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node.management.impl;
+package org.apache.tuscany.sca.domain.impl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,86 +35,49 @@ import org.apache.tuscany.sca.node.ComponentInfo;
 import org.apache.tuscany.sca.node.ComponentManagerService;
 import org.apache.tuscany.sca.node.NodeException;
 import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.impl.ComponentInfoImpl;
-import org.apache.tuscany.sca.node.impl.SCANodeImpl;
 import org.apache.tuscany.sca.node.management.SCANodeManagerInitService;
 import org.apache.tuscany.sca.node.management.SCANodeManagerService;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
 /**
- * Manages a node implementation
+ * A dummy interface for the domain to talk to when testing the domain and no nodes are running
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-11 18:45:36 +0100 (Tue, 11 Sep 2007) $
  */
-@Scope("COMPOSITE")
-@Service(interfaces = {SCANodeManagerService.class, SCANodeManagerInitService.class, ComponentManagerService.class})
-public class SCANodeManagerServiceImpl implements SCANodeManagerService, SCANodeManagerInitService, ComponentManagerService {
-    
-    private final static Logger logger = Logger.getLogger(SCANodeManagerServiceImpl.class.getName());
-
-    private SCANodeImpl node;
+public class TestNodeManagerServiceImpl implements SCANodeManagerService {
 
 
-    // NodeManagerInitService
-    
-    public void setNode(SCANode node) {
-        this.node = (SCANodeImpl)node;
-    }
     
     // SCANodeManagerService methods
     
     public String getURI() {
-        return node.getURI();
+        return null;
     }
    
     public void addContribution(String contributionURI, String contributionURL) throws NodeException {
-        try {
-            node.addContribution(contributionURI, new URL(contributionURL));
-        } catch (MalformedURLException ex){
-            throw new NodeException(ex);
-        }            
+        System.out.println("addContribution " + contributionURI + " " + contributionURL);           
     }
    
     public void removeContribution(String contributionURI) throws NodeException {
-        node.removeContribution(contributionURI);
+        System.out.println("addContribution " + contributionURI);
     }
 
     public void addToDomainLevelComposite(String compositeName) throws NodeException {
-        node.addToDomainLevelComposite(QName.valueOf(compositeName));       
+        System.out.println("addToDomainLevelComposite " + compositeName);     
     }
     
     public void start() throws NodeException {
-        node.start();
+        System.out.println("start");
     }
     
     public void stop() throws NodeException {
-        node.stop();
+        System.out.println("stop");
     }
     
     public void destroyNode() throws NodeException {
-        node.destroy();
+        System.out.println("destroy");
     }    
 
-    // ComponentManagerService
-    
-    public List<ComponentInfo> getComponentInfos() {
-        List<ComponentInfo> componentInfos = new ArrayList<ComponentInfo>();
-        for (Component component : node.getComponents()) {
-            ComponentInfo componentInfo = new ComponentInfoImpl();
-            componentInfo.setName(component.getName());
-            componentInfo.setStarted(((RuntimeComponentImpl)component).isStarted());
-            componentInfos.add(componentInfo);
-        }
-        return componentInfos;
-    }
-
-    public ComponentInfo getComponentInfo(String componentName) {
-        Component component = node.getComponent(componentName);
-        ComponentInfo componentInfo = new ComponentInfoImpl();
-        componentInfo.setName(component.getName());
-        componentInfo.setStarted(((RuntimeComponentImpl)component).isStarted());
-        return componentInfo;
-    }
 
 }
