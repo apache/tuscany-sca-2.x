@@ -28,7 +28,7 @@
     </service>
     
     <service name="HelloWorldWsPolicyService" promote="HelloWorldServiceComponent/HelloWorldService"
-    			policySets="wsSecurityPolicyForIntegrity">
+    		 requires="integrity">
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
         <binding.ws uri="http://localhost:8085/HelloWorldWsPolicyService"/>
     </service>
