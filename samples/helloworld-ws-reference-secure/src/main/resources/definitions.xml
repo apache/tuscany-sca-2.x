@@ -81,7 +81,7 @@
  </sca:intent>
  
  <!-- WS Security POLICY SETS -->
- <sca:policySet name="wsClientAuthenticationPolicy"
+ <sca:policySet name="hw:wsClientAuthenticationPolicy"
  	provides="hw:wsAuthentication"
  	appliesTo="sca:binding.ws">
  	<tuscany:wsConfigParam>
@@ -97,7 +97,7 @@
  </sca:policySet>
  
  <!-- A policyset that uses WS Policy --> 
- <sca:policySet name="wsSecurityPolicyForIntegrity"
+ <sca:policySet name="hw:wsSecurityPolicyForIntegrity"
  	provides="hw:wsIntegrity"
  	appliesTo="sca:binding.ws">
  	<wsp:Policy wsu:Id="SignOnly" 
@@ -173,7 +173,7 @@
  <!-- Since we use the helloworld-ws-service for the unit testing we need to 
 	 declare these policy sets and with the 'provides' set to the intents that the 
 	 composite in the helloworld-ws-service uses.  -->
- <sca:policySet name="wsAuthenticationPolicy"
+ <sca:policySet name="hw:wsAuthenticationPolicy"
  	provides="authentication"
  	appliesTo="sca:binding.ws"
  	>
@@ -187,7 +187,7 @@
  	</tuscany:wsConfigParam>
  </sca:policySet>
  
- <sca:policySet name="wsServerSecurityPolicyForIntegrity"
+ <sca:policySet name="hw:wsServerSecurityPolicyForIntegrity"
  	provides="integrity"
  	appliesTo="sca:binding.ws">
  	<wsp:Policy wsu:Id="SignOnly" 
