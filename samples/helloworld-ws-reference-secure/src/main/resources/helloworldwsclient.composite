@@ -27,7 +27,7 @@
      -->
     <component name="HelloTuscanyServiceComponent">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService" requires="wsAuthentication">
+      <reference name="helloWorldService" requires="hw:wsAuthentication">
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
       </reference>
     </component>
@@ -43,13 +43,13 @@
     </component>
     
     <reference name="HelloWorldService" promote="HelloWorldServiceComponent/helloWorldService" 
-    			requires="wsAuthentication">
+    			requires="hw:wsAuthentication">
         <interface.java interface="helloworld.HelloWorldService" />
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
     </reference>
     
     <reference name="HelloWorldWsPolicyService" promote="HelloWorldWsPolicyServiceComponent/helloWorldService"
-    			policySets="wsSecurityPolicyForIntegrity">
+    			requires="hw:wsIntegrity">
         <interface.java interface="helloworld.HelloWorldService" />
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldWsPolicyService/HelloWorldSoapPort)"/>
     </reference>
