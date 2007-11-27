@@ -28,10 +28,10 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
     <listener-class>org.apache.tuscany.sca.runtime.war.WarContextListener</listener-class>
   </listener>
 
-  <context-param>
+  <!-- context-param>
      <param-name>repositoryFolder</param-name>
-     <param-value>/TuscanyRepository</param-value>
-  </context-param>
+     <param-value>/sca-contributions</param-value>
+  </context-param -->
 
   <filter>
     <filter-name>tuscany</filter-name> 
