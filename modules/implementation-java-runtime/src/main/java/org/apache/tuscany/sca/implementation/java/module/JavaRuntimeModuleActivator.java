@@ -20,9 +20,7 @@
 package org.apache.tuscany.sca.implementation.java.module;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,6 +31,7 @@ import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
 import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
@@ -64,12 +63,11 @@ import org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcess
 import org.apache.tuscany.sca.implementation.java.invocation.JavaCallbackRuntimeWireProcessor;
 import org.apache.tuscany.sca.implementation.java.invocation.JavaImplementationProviderFactory;
 import org.apache.tuscany.sca.implementation.java.invocation.JavaPolicyHandlingRuntimeWireProcessor;
-import org.apache.tuscany.sca.implementation.java.invocation.PolicyHandlingInterceptor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.policy.util.PolicySetHandlerUtil;
+import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 
@@ -77,93 +75,122 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
  * @version $Rev$ $Date$
  */
 public class JavaRuntimeModuleActivator implements ModuleActivator {
-    private static final String POLICY_HANDLERS_STORE_FILE = "org.apache.tuscany.sca.implementation.java.PolicySetHandlers";
-    
+    private static final String POLICY_HANDLERS_STORE_FILE =
+        "org.apache.tuscany.sca.implementation.java.PolicySetHandlers";
+
     public JavaRuntimeModuleActivator() {
     }
-     
 
     public void start(ExtensionPointRegistry registry) {
 
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
         PolicyFactory policyFactory = factories.getFactory(PolicyFactory.class);
-        
+
         MessageFactory messageFactory = factories.getFactory(MessageFactory.class);
         ProxyFactoryExtensionPoint proxyFactory = registry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
-        proxyFactory.setClassProxyFactory(new CglibProxyFactory(messageFactory, proxyFactory.getInterfaceContractMapper()));
-        
+        proxyFactory.setClassProxyFactory(new CglibProxyFactory(messageFactory, proxyFactory
+            .getInterfaceContractMapper()));
+
         JavaInterfaceFactory javaFactory = factories.getFactory(JavaInterfaceFactory.class);
         JavaImplementationFactory javaImplementationFactory = factories.getFactory(JavaImplementationFactory.class);
-        
-        BaseJavaClassVisitor[] extensions = new BaseJavaClassVisitor[] {
-            new ConstructorProcessor(assemblyFactory),
-            new AllowsPassByReferenceProcessor(assemblyFactory),
-            new ComponentNameProcessor(assemblyFactory),
-            new ContextProcessor(assemblyFactory),
-            new ConversationIDProcessor(assemblyFactory),
-            new ConversationProcessor(assemblyFactory),
-            new DestroyProcessor(assemblyFactory),
-            new EagerInitProcessor(assemblyFactory),
-            new InitProcessor(assemblyFactory),
-            new PropertyProcessor(assemblyFactory),
-            new ReferenceProcessor(assemblyFactory, javaFactory),
-            new ResourceProcessor(assemblyFactory),
-            new ScopeProcessor(assemblyFactory),
-            new ServiceProcessor(assemblyFactory, javaFactory),
-            new HeuristicPojoProcessor(assemblyFactory, javaFactory),
-            new PolicyProcessor(assemblyFactory, policyFactory)
-        };
+
+        BaseJavaClassVisitor[] extensions =
+            new BaseJavaClassVisitor[] {new ConstructorProcessor(assemblyFactory),
+                                        new AllowsPassByReferenceProcessor(assemblyFactory),
+                                        new ComponentNameProcessor(assemblyFactory),
+                                        new ContextProcessor(assemblyFactory),
+                                        new ConversationIDProcessor(assemblyFactory),
+                                        new ConversationProcessor(assemblyFactory),
+                                        new DestroyProcessor(assemblyFactory), new EagerInitProcessor(assemblyFactory),
+                                        new InitProcessor(assemblyFactory), new PropertyProcessor(assemblyFactory),
+                                        new ReferenceProcessor(assemblyFactory, javaFactory),
+                                        new ResourceProcessor(assemblyFactory), new ScopeProcessor(assemblyFactory),
+                                        new ServiceProcessor(assemblyFactory, javaFactory),
+                                        new HeuristicPojoProcessor(assemblyFactory, javaFactory),
+                                        new PolicyProcessor(assemblyFactory, policyFactory)};
         for (JavaClassVisitor extension : extensions) {
             javaImplementationFactory.addClassVisitor(extension);
         }
-        
+
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
-        MediatorImpl mediator =new MediatorImpl(dataBindings, transformers);
+        MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
         JavaPropertyValueObjectFactory factory = new JavaPropertyValueObjectFactory(mediator);
 
         ContextFactoryExtensionPoint contextFactories = registry.getExtensionPoint(ContextFactoryExtensionPoint.class);
         ComponentContextFactory componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);
         RequestContextFactory requestContextFactory = contextFactories.getFactory(RequestContextFactory.class);
-        
+
         Map<ClassLoader, Map<QName, String>> policyHandlerClassNames = null;
         try {
             policyHandlerClassNames = loadPolicyHandlerClassnames();
-        } catch ( IOException e ) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        
+
         JavaImplementationProviderFactory javaImplementationProviderFactory =
-            new JavaImplementationProviderFactory(proxyFactory, 
-                                                  dataBindings, 
-                                                  factory, 
-                                                  componentContextFactory,
-                                                  requestContextFactory,
-                                                  policyHandlerClassNames);
-        
-        ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
+            new JavaImplementationProviderFactory(proxyFactory, dataBindings, factory, componentContextFactory,
+                                                  requestContextFactory, policyHandlerClassNames);
+
+        ProviderFactoryExtensionPoint providerFactories =
+            registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
         providerFactories.addProviderFactory(javaImplementationProviderFactory);
 
         InterfaceContractMapper interfaceContractMapper = registry.getExtensionPoint(InterfaceContractMapper.class);
-        RuntimeWireProcessorExtensionPoint wireProcessorExtensionPoint = registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
+        RuntimeWireProcessorExtensionPoint wireProcessorExtensionPoint =
+            registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
         if (wireProcessorExtensionPoint != null) {
-            wireProcessorExtensionPoint.addWireProcessor(new JavaCallbackRuntimeWireProcessor(interfaceContractMapper, javaFactory));
+            wireProcessorExtensionPoint.addWireProcessor(new JavaCallbackRuntimeWireProcessor(interfaceContractMapper,
+                                                                                              javaFactory));
             wireProcessorExtensionPoint.addWireProcessor(new JavaPolicyHandlingRuntimeWireProcessor());
-        }        
+        }
     }
 
     public void stop(ExtensionPointRegistry registry) {
     }
-    
+
+    private static QName getQName(String qname) {
+        if (qname == null) {
+            return null;
+        }
+        qname = qname.trim();
+        if (qname.startsWith("{")) {
+            int h = qname.indexOf('}');
+            if (h != -1) {
+                return new QName(qname.substring(1, h), qname.substring(h + 1));
+            }
+        } else {
+            int h = qname.indexOf('#');
+            if (h != -1) {
+                return new QName(qname.substring(0, h), qname.substring(h + 1));
+            }
+        }
+        throw new IllegalArgumentException("Invalid qname: " + qname);
+    }
+
     private Map<ClassLoader, Map<QName, String>> loadPolicyHandlerClassnames() throws IOException {
-        Map<ClassLoader, Map<QName, String>> policyHandlerClassNames = 
-                                    new HashMap<ClassLoader, Map<QName, String>>();
-        Hashtable<ClassLoader, Set<URL>> policySetResources = 
-                ServiceDiscovery.getInstance().getServiceResources(POLICY_HANDLERS_STORE_FILE);
-        for (ClassLoader classLoader : policySetResources.keySet()) {
-            policyHandlerClassNames.put(classLoader, PolicySetHandlerUtil.getPolicyHandlers(
-                    classLoader, policySetResources.get(classLoader)));
+        // Get the processor service declarations
+        Set<ServiceDeclaration> sds;
+        try {
+            sds = ServiceDiscovery.getInstance().getServiceDeclarations(PolicyHandler.class);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+
+        Map<ClassLoader, Map<QName, String>> policyHandlerClassNames = new HashMap<ClassLoader, Map<QName, String>>();
+
+        for (ServiceDeclaration sd : sds) {
+            Map<String, String> attributes = sd.getAttributes();
+            String qname = attributes.get("qname");
+            QName name = getQName(qname);
+            ClassLoader cl = sd.getClassLoader();
+            Map<QName, String> map = policyHandlerClassNames.get(cl);
+            if (map == null) {
+                map = new HashMap<QName, String>();
+                policyHandlerClassNames.put(cl, map);
+            }
+            map.put(name, sd.getClassName());
         }
 
         return policyHandlerClassNames;
