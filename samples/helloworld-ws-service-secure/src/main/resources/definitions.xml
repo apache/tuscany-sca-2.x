@@ -50,13 +50,6 @@
  			 </description>
  </sca:intent>
  
- <sca:intent name="wsAuthentication" 
- 			 constrains="sca:binding.ws">
- 			 <description>
- 			 Communitcation thro this binding required Authentication.
- 			 </description>
- </sca:intent>	
- 
  <sca:intent name="integrity" 
  			 constrains="sca:binding.ws">
  			 <description>
@@ -64,7 +57,7 @@
  			 </description>
  </sca:intent>
  
-  <sca:intent name="confidentiality" 
+ <sca:intent name="confidentiality" 
  			 constrains="sca:binding.ws">
  			 <description>
  			 	Communitcation thro this binding must prevent
@@ -84,21 +77,6 @@
  				<passwordCallbackClass>helloworld.ServerPWCBHandler</passwordCallbackClass>
        		</action>
       	</parameter>
- 	</tuscany:wsConfigParam>
- </sca:policySet>
- 
- <sca:policySet name="wsClientAuthenticationPolicy"
- 	provides="wsAuthentication"
- 	appliesTo="sca:binding.ws">
- 	<tuscany:wsConfigParam>
- 		<parameter name="OutflowSecurity">
- 			<action>
- 				<items>UsernameToken</items>
- 				<user>TuscanyWsUser</user>
-				<passwordCallbackClass>helloworld.ClientPWCBHandler</passwordCallbackClass>" +
-                <passwordType>PasswordText</passwordType>
-               </action>
-    	</parameter>
  	</tuscany:wsConfigParam>
  </sca:policySet>
  
