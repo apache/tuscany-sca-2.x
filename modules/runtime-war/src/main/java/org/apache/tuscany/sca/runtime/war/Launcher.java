@@ -141,19 +141,19 @@ public class Launcher {
     }
 
     protected void initNode(SCANode scaNode) throws NodeException, URISyntaxException, MalformedURLException {
-        URL[] contributions = getContributionJarURLs(repository);
-        if (contributions.length > 0) {
-            existingContributions = new HashMap<URL, Long>();
-            for (URL contribution : contributions) {
-                scaNode.addContribution(contribution.toString(), contribution);
-                existingContributions.put(contribution, new Long(new File(contribution.toURI()).lastModified()));
-                logger.log(Level.INFO, "Added contribution: " + contribution);
-            }
-        } else {
-            scaNode.addContribution(repository.toString(), repository.toURL());
-            logger.log(Level.INFO, "Added contribution folder: " + repository);
+        existingContributions = new HashMap<URL, Long>();
+
+        for (URL contribution : getContributionJarURLs(repository)) {
+            scaNode.addContribution(contribution.toString(), contribution);
+            existingContributions.put(contribution, new Long(new File(contribution.toURI()).lastModified()));
+            logger.log(Level.INFO, "Added contribution: " + contribution);
         }
-        
+            
+        for (URL contribution : getContributionFolderURLs(repository)) {
+            scaNode.addContribution(contribution.toString(), contribution);
+            logger.log(Level.INFO, "Added contribution folder: " + contribution);
+        }
+
         scaNode.addToDomainLevelComposite((QName)null);
         scaNode.start();
     }
@@ -193,6 +193,26 @@ public class Launcher {
         }
 
         return contributionJars.toArray(new URL[contributionJars.size()]);
+    }
+
+    protected URL[] getContributionFolderURLs(File repositoryDir) {
+        String[] folderNames = repositoryDir.list(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return new File(dir, name).isDirectory();
+            }});
+
+        List<URL> contributionFolders = new ArrayList<URL>();
+        if (folderNames != null) {
+            for (String folder : folderNames) {
+                try {
+                    contributionFolders.add(new File(repositoryDir, folder).toURL());
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        
+        return contributionFolders.toArray(new URL[contributionFolders.size()]);
     }
 
     protected void initHotDeploy(final File repository) {
