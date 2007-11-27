@@ -20,7 +20,8 @@
 <sca:definitions xmlns="http://www.osoa.org/xmlns/sca/1.0"
  			targetNamespace="http://www.osoa.org/xmlns/sca/1.0"
  			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
- 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
+ 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+ 			xmlns:hw="http://helloworld">
 
  <sca:intent name="soap"  
  			 constrains="sca:binding.ws">
@@ -66,7 +67,7 @@
  </sca:intent>
  
  <!-- WS Security POLICY SETS -->
-  <sca:policySet name="wsAuthenticationPolicy"
+  <sca:policySet name="hw:wsAuthenticationPolicy"
  	provides="authentication"
  	appliesTo="sca:binding.ws"
  	>
@@ -81,7 +82,7 @@
  </sca:policySet>
  
  <!-- A policyset that uses WS Policy --> 
- <sca:policySet name="wsSecurityPolicyForIntegrity"
+ <sca:policySet name="hw:wsSecurityPolicyForIntegrity"
  	provides="integrity"
  	appliesTo="sca:binding.ws">
  	<wsp:Policy wsu:Id="SignOnly" 
