@@ -29,7 +29,7 @@ public class POJOTestCase extends TestCase {
         assertTrue(e2.getValue() instanceof MyBean);
     }
 
-    public void testPrimitive() throws Exception {
+    public void testString() throws Exception {
         JAXBContext context = JAXBContext.newInstance(String.class);
         StringWriter writer = new StringWriter();
         JAXBElement<Object> element = new JAXBElement<Object>(new QName("http://ns1", "bean"), Object.class, "ABC");
@@ -40,6 +40,19 @@ public class POJOTestCase extends TestCase {
         assertTrue(result instanceof JAXBElement);
         JAXBElement e2 = (JAXBElement)result;
         assertTrue(e2.getValue() instanceof String);
+    }
+    
+    public void testPrimitive() throws Exception {
+        JAXBContext context = JAXBContext.newInstance(int.class);
+        StringWriter writer = new StringWriter();
+        JAXBElement<Object> element = new JAXBElement<Object>(new QName("http://ns1", "bean"), Object.class, 1);
+        context.createMarshaller().marshal(element, writer);
+        System.out.println(writer.toString());
+
+        Object result = context.createUnmarshaller().unmarshal(new StringReader(writer.toString()));
+        assertTrue(result instanceof JAXBElement);
+        JAXBElement e2 = (JAXBElement)result;
+        assertTrue(e2.getValue() instanceof Integer);
     }
 
     public void testException() throws Exception {
