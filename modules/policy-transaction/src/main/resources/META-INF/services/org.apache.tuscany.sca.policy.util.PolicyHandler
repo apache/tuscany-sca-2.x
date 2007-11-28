@@ -14,5 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-# Implementation class for the ModuleActivator
-{http\://tuscany.apache.org/xmlns/sca/1.0}TransactionPolicy=org.apache.tuscany.sca.policy.transaction.TransactionPolicyHandler
+org.apache.tuscany.sca.policy.transaction.TransactionPolicyHandler;qname=http://tuscany.apache.org/xmlns/sca/1.0#ManagedTransactionPolicySet
+org.apache.tuscany.sca.policy.transaction.TransactionPolicyHandler;qname=http://tuscany.apache.org/xmlns/sca/1.0#NoManagedTransactionPolicySet
+org.apache.tuscany.sca.policy.transaction.TransactionPolicyHandler;qname=http://tuscany.apache.org/xmlns/sca/1.0#PropagatesTransactionPolicySet
+org.apache.tuscany.sca.policy.transaction.TransactionPolicyHandler;qname=http://tuscany.apache.org/xmlns/sca/1.0#SuspendsTransactionPolicySet

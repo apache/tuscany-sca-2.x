@@ -23,12 +23,14 @@ import javax.transaction.TransactionManager;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 
 /**
  * @version $Rev$ $Date$
  */
 public class TransactionModuleActivator implements ModuleActivator {
     private TransactionManagerWrapper wrapper;
+
     /**
      * @see org.apache.tuscany.sca.core.ModuleActivator#start(org.apache.tuscany.sca.core.ExtensionPointRegistry)
      */
@@ -37,6 +39,10 @@ public class TransactionModuleActivator implements ModuleActivator {
             TransactionManager transactionManager = registry.getExtensionPoint(TransactionManager.class);
             if (transactionManager != null) {
                 // The transaction manage is provided by the hosting environment
+                RuntimeWireProcessorExtensionPoint wireProcessorExtensionPoint =
+                    registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
+                TransactionManagerHelper helper = new TransactionManagerHelper(transactionManager);
+                wireProcessorExtensionPoint.addWireProcessor(new TransactionRuntimeWireProcessor(helper));
                 return;
             }
         }
@@ -48,6 +54,10 @@ public class TransactionModuleActivator implements ModuleActivator {
         }
         if (registry != null) {
             registry.addExtensionPoint(wrapper.getTransactionManager());
+            RuntimeWireProcessorExtensionPoint wireProcessorExtensionPoint =
+                registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
+            TransactionManagerHelper helper = new TransactionManagerHelper(wrapper.getTransactionManager());
+            wireProcessorExtensionPoint.addWireProcessor(new TransactionRuntimeWireProcessor(helper));
         }
     }
 

@@ -26,17 +26,19 @@ import org.apache.tuscany.sca.policy.util.PolicyHandler;
  * @version $Rev$ $Date$
  */
 public class TransactionPolicyHandler implements PolicyHandler {
-
+    protected PolicySet policySet;
     /**
      * @see org.apache.tuscany.sca.policy.util.PolicyHandler#afterInvoke(java.lang.Object[])
      */
     public void afterInvoke(Object... context) {
+        System.out.println("afterInvoke");
     }
 
     /**
      * @see org.apache.tuscany.sca.policy.util.PolicyHandler#beforeInvoke(java.lang.Object[])
      */
     public void beforeInvoke(Object... context) {
+        System.out.println("beforeInvoke");
     }
 
     /**
@@ -49,13 +51,14 @@ public class TransactionPolicyHandler implements PolicyHandler {
      * @see org.apache.tuscany.sca.policy.util.PolicyHandler#getApplicablePolicySet()
      */
     public PolicySet getApplicablePolicySet() {
-        return null;
+        return policySet;
     }
 
     /**
      * @see org.apache.tuscany.sca.policy.util.PolicyHandler#setApplicablePolicySet(org.apache.tuscany.sca.policy.PolicySet)
      */
     public void setApplicablePolicySet(PolicySet context) {
+        this.policySet = context;
     }
 
     /**
