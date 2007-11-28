@@ -19,15 +19,27 @@
 
 package org.apache.tuscany.sca.policy.transaction;
 
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.assembly.xml.Constants;
+
 /**
+ * The model for Tuscany transaction policy
+ * 
  * @version $Rev$ $Date$
  */
 public interface TransactionPolicy {
-    enum Type {GLOBAL, LOCAL, NONE};
+    QName NAME = new QName(Constants.SCA10_TUSCANY_NS, "transactionPolicy");
+
+    enum Action {
+        PROPAGATE, SUSPEND, REQUIRE_GLOBAL, REQUIRE_LOCAL, REQUIRE_NONE
+    };
+
     int getTransactionTimeout();
 
     void setTransactionTimeout(int seconds);
-    
-    void setType(Type type);
-    Type getType();
+
+    void setAction(Action action);
+
+    Action getAction();
 }

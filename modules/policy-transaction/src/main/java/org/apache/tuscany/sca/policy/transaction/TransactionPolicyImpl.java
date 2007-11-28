@@ -24,7 +24,7 @@ package org.apache.tuscany.sca.policy.transaction;
  */
 public class TransactionPolicyImpl implements TransactionPolicy {
     private int transactionTimeout = 1200;
-    private Type type = Type.NONE;
+    private Action action = Action.PROPAGATE;
 
     public int getTransactionTimeout() {
         return transactionTimeout;
@@ -34,11 +34,11 @@ public class TransactionPolicyImpl implements TransactionPolicy {
         this.transactionTimeout = transactionTimeout;
     }
 
-    public Type getType() {
-        return type;
+    public Action getAction() {
+        return action;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setAction(Action policy) {
+        this.action = policy;
     }
 }

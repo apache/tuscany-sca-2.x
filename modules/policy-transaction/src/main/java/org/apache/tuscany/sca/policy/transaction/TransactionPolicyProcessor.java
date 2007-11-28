@@ -26,7 +26,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -38,19 +37,18 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
  * @version $Rev$ $Date$
  */
 public class TransactionPolicyProcessor implements StAXArtifactProcessor<TransactionPolicy> {
-    public static final QName POLICY_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "transactionPolicy");
     public static final String TIMEOUT = "transactionTimeout";
-    public static final String TYPE = "type";
+    public static final String ACTION = "action";
 
     public QName getArtifactType() {
-        return POLICY_QNAME;
+        return TransactionPolicy.NAME;
     }
 
     public TransactionPolicyProcessor(ModelFactoryExtensionPoint modelFactories) {
     }
 
     public TransactionPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        TransactionPolicy policy = new TransactionPolicyImpl();
+        TransactionPolicy txPolicy = new TransactionPolicyImpl();
         int event = reader.getEventType();
         while (reader.hasNext()) {
             event = reader.getEventType();
@@ -58,18 +56,18 @@ public class TransactionPolicyProcessor implements StAXArtifactProcessor<Transac
                 case START_ELEMENT: {
                     String timeout = reader.getAttributeValue(null, TIMEOUT);
                     if (timeout != null) {
-                        policy.setTransactionTimeout(Integer.parseInt(timeout));
+                        txPolicy.setTransactionTimeout(Integer.parseInt(timeout));
                     }
-                    String type = reader.getAttributeValue(null, TYPE);
-                    if (type != null) {
-                        policy.setType(TransactionPolicy.Type.valueOf(type.toUpperCase()));
+                    String action = reader.getAttributeValue(null, ACTION);
+                    if (action != null) {
+                        txPolicy.setAction(TransactionPolicy.Action.valueOf(action));
                     }
                     break;
                 }
             }
 
             if (event == END_ELEMENT) {
-                if (POLICY_QNAME.equals(reader.getName())) {
+                if (TransactionPolicy.NAME.equals(reader.getName())) {
                     break;
                 }
             }
@@ -80,7 +78,7 @@ public class TransactionPolicyProcessor implements StAXArtifactProcessor<Transac
             }
         }
 
-        return policy;
+        return txPolicy;
     }
 
     public void write(TransactionPolicy policy, XMLStreamWriter writer) throws ContributionWriteException,
