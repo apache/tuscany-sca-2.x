@@ -988,19 +988,23 @@ public class CompositeWireBuilderImpl {
         
         //validate intents specified for the attachpoint (binding / implementation)
         for (Intent intent : intentAttachPoint.getRequiredIntents()) {
-            for (QName constrained : intent.getConstrains()) {
-                if (attachPointType != null && attachPointType.getName().getNamespaceURI().equals(constrained
-                    .getNamespaceURI()) && attachPointType.getName().getLocalPart()
-                    .startsWith(constrained.getLocalPart())) {
-                    found = true;
-                    break;
+            if ( !intent.isUnresolved() ) {
+                for (QName constrained : intent.getConstrains()) {
+                    if (attachPointType != null && attachPointType.getName().getNamespaceURI().equals(constrained
+                        .getNamespaceURI()) && attachPointType.getName().getLocalPart()
+                        .startsWith(constrained.getLocalPart())) {
+                        found = true;
+                        break;
+                    }
                 }
-            }
-
-            if (!found) {
-                warning("Policy Intent '" + intent.getName()
-                    + "' does not constrain extension type  "
-                    + attachPointType.getName(), intentAttachPoint);
+    
+                if (!found) {
+                    warning("Policy Intent '" + intent.getName()
+                        + "' does not constrain extension type  "
+                        + attachPointType.getName(), intentAttachPoint);
+                }
+            } else {
+                warning("Policy Intent '" + intent.getName() + "' is not defined in this domain", intent);
             }
         }
         
@@ -1012,13 +1016,17 @@ public class CompositeWireBuilderImpl {
         //validate if inherited intent applies to the attachpoint (binding / implementation) and 
         //only add such intents to the attachpoint (binding / implementation)
         for (Intent intent : inheritedIntents) {
-            for (QName constrained : intent.getConstrains()) {
-                if (attachPointType != null && attachPointType.getName().getNamespaceURI().equals(constrained
-                    .getNamespaceURI()) && attachPointType.getName().getLocalPart()
-                    .startsWith(constrained.getLocalPart())) {
-                    intentAttachPoint.getRequiredIntents().add(intent);
-                    break;
+            if ( !intent.isUnresolved() ) { 
+                for (QName constrained : intent.getConstrains()) {
+                    if (attachPointType != null && attachPointType.getName().getNamespaceURI().equals(constrained
+                        .getNamespaceURI()) && attachPointType.getName().getLocalPart()
+                        .startsWith(constrained.getLocalPart())) {
+                        intentAttachPoint.getRequiredIntents().add(intent);
+                        break;
+                    }
                 }
+            } else {
+                warning("Policy Intent '" + intent.getName() + "' is not defined in this domain", intent);
             }
         }
         
@@ -1063,21 +1071,31 @@ public class CompositeWireBuilderImpl {
        //validate policysets specified for the attachPoint
        for (PolicySet policySet : policySetAttachPoint.getPolicySets()) {
            appliesTo = policySet.getAppliesTo();
-
-           if (!isPolicySetApplicable(parent, appliesTo, attachPointType)) {
+           if ( !policySet.isUnresolved() ) {
+               if (!isPolicySetApplicable(parent, appliesTo, attachPointType)) {
+                   warning("Policy Set '" + policySet.getName()
+                       + "' does not apply to binding type  "
+                       + attachPointType, policySetAttachPoint);
+    
+               } }
+           else {
                warning("Policy Set '" + policySet.getName()
-                   + "' does not apply to binding type  "
-                   + attachPointType, policySetAttachPoint);
-
+                      + "' is not defined in this domain  ", policySet);
            }
        }
            
        //from the inherited set of policysets add only what applies to the attach point
        for (PolicySet policySet : inheritedPolicySets) {
-           appliesTo = policySet.getAppliesTo();
-           if (isPolicySetApplicable(parent, appliesTo, attachPointType)) {
-               policySetAttachPoint.getPolicySets().add(policySet);
+           if ( !policySet.isUnresolved() ) { 
+               appliesTo = policySet.getAppliesTo();
+               if (isPolicySetApplicable(parent, appliesTo, attachPointType)) {
+                   policySetAttachPoint.getPolicySets().add(policySet);
+               }
+           } else {
+               warning("Policy Set '" + policySet.getName()
+                       + "' is not defined in this domain  ", policySet);
            }
+               
        }
            
        //get rid of duplicate entries
@@ -1331,20 +1349,26 @@ public class CompositeWireBuilderImpl {
                 //validate intents specified against the parent (binding / implementation)
                 found = false;
                 for (Intent intent : confOp.getRequiredIntents()) {
-                    for (QName constrained : intent.getConstrains()) {
-                        if (attachPointType != null && attachPointType.getName().getNamespaceURI().equals(constrained
-                            .getNamespaceURI()) && attachPointType.getName().getLocalPart()
-                            .startsWith(constrained.getLocalPart())) {
-                            found = true;
-                            break;
+                    if ( !intent.isUnresolved() ) {
+                        for (QName constrained : intent.getConstrains()) {
+                            if (attachPointType != null && attachPointType.getName().getNamespaceURI().equals(constrained
+                                .getNamespaceURI()) && attachPointType.getName().getLocalPart()
+                                .startsWith(constrained.getLocalPart())) {
+                                found = true;
+                                break;
+                            }
                         }
-                    }
-    
-                    if (!found) {
+        
+                        if (!found) {
+                            warning("Policy Intent '" + intent.getName() 
+                                    + " specified for operation " + confOp.getName()  
+                                + "' does not constrain extension type  "
+                                + attachPointType.getName(), intentAttachPoint);
+                        }
+                    } else {
                         warning("Policy Intent '" + intent.getName() 
                                 + " specified for operation " + confOp.getName()  
-                            + "' does not constrain extension type  "
-                            + attachPointType.getName(), intentAttachPoint);
+                            + "' is not defined in this domain  ", intent);
                     }
                 }
                         
@@ -1417,14 +1441,20 @@ public class CompositeWireBuilderImpl {
             for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
                 //validate policysets specified for the attachPoint
                 for (PolicySet policySet : confOp.getPolicySets()) {
-                    appliesTo = policySet.getAppliesTo();
-        
-                    if (!isPolicySetApplicable(parent, appliesTo, attachPointType)) {
+                    if ( !policySet.isUnresolved() ) {
+                        appliesTo = policySet.getAppliesTo();
+            
+                        if (!isPolicySetApplicable(parent, appliesTo, attachPointType)) {
+                            warning("Policy Set '" + policySet.getName() 
+                                    + " specified for operation " + confOp.getName()  
+                                + "' does not constrain extension type  "
+                                + attachPointType.getName(), policySetAttachPoint);
+            
+                        }
+                    } else {
                         warning("Policy Set '" + policySet.getName() 
                                 + " specified for operation " + confOp.getName()  
-                            + "' does not constrain extension type  "
-                            + attachPointType.getName(), policySetAttachPoint);
-        
+                            + "' is not defined in this domain  ", policySet);
                     }
                 }
                 
