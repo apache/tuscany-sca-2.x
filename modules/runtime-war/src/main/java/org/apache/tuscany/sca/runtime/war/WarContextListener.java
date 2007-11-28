@@ -27,6 +27,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.tuscany.sca.runtime.Launcher;
+
 public class WarContextListener implements ServletContextListener {
 
     private static final Logger logger = Logger.getLogger(WarContextListener.class.getName());
