@@ -111,15 +111,4 @@ public interface PolicySet {
      * @return
      */
     Map<Intent, List<Object>>getMappedPolicies();
-    
-    
-    
-    /**
-     * Returns the list of SCA constructs that this policy set is meant to
-     * configure.
-     * 
-     * @return the list of SCA constructs that this policy set is meant to
-     *         configure
-    List<QName> getAppliesTo(); */
-
 }
