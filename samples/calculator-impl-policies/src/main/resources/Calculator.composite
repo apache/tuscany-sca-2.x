@@ -20,12 +20,13 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            targetNamespace="http://sample"
            xmlns:sample="http://sample"
-           name="Calculator">
+           name="Calculator"
+           xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
 
     <component name="CalculatorServiceComponent">
 		<implementation.java class="calculator.CalculatorServiceImpl">
-			<operation name="divide" requires="logging"/>
-			<operation name="subtract" requires="logging"/>
+			<operation name="divide" requires="tuscany:logging"/>
+			<operation name="subtract" requires="tuscany:logging"/>
 		</implementation.java>
         <reference name="addService" target="AddServiceComponent" />
         <reference name="subtractService" target="SubtractServiceComponent" />
@@ -34,7 +35,7 @@
     </component>
 
     <component name="AddServiceComponent">
-        <implementation.java class="calculator.AddServiceImpl" requires="logging"/>
+        <implementation.java class="calculator.AddServiceImpl" requires="tuscany:logging"/>
     </component>
 
     <component name="SubtractServiceComponent">
@@ -50,7 +51,7 @@
     </component>
     
     <component name="AnotherCalculatorServiceComponent">
-		<implementation.java class="calculator.CalculatorServiceImpl" requires="logging"/>
+		<implementation.java class="calculator.CalculatorServiceImpl" requires="tuscany:logging"/>
         <reference name="addService" target="AddServiceComponent" />
         <reference name="subtractService" target="SubtractServiceComponent" />
         <reference name="multiplyService" target="MultiplyServiceComponent" />

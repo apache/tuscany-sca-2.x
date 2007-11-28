@@ -20,38 +20,24 @@
 <definitions xmlns="http://www.osoa.org/xmlns/sca/1.0"
  			targetNamespace="http://test"
  			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
- 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
+ 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+ 			xmlns:calc="http://calculator">
 
-<!-- Extension Types Metadata -->
-<!-- implementationType type="sca:implementation.java" alwaysProvides="logging"
-					mayProvide="tracing"/>
-<bindingType type="sca:binding.ws" alwaysProvides="confidentiality"
-					mayProvide="integrity"/-->					
+<!-- Policy Intents -->
+<intent name="tuscany:logging" 
+ 		constrains="sca:implementation.java">
+	<description>
+		All messages to and from this implementation must be logged
+	</description>
+</intent>
 
- <!-- POLICY SETS -->
+<!-- PolicySets -->
 <policySet name="tuscany:JDKLoggingPolicy"
- 	provides="logging"
+ 	provides="tuscany:logging"
  	appliesTo="sca:implementation.java"
  	xmlns="http://www.osoa.org/xmlns/sca/1.0">
  	<tuscany:jdkLogger xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0" name="calculator">
 		<logLevel>INFO</logLevel>
-		<resourceBundle>CalculatorLogMessages</resourceBundle>
 	</tuscany:jdkLogger>
 </policySet>
-
-<!-- simple intent -->
- <intent name="logging" 
- 			 constrains="sca:implementation">
- 			 <description>
- 			 	All messages to and from this implementation must be logged
- 			 </description>
- </intent>
- 
- <intent name="tracing" 
- 			 constrains="sca:implementation.java">
- 			 <description>
- 			 	Need to figure out some description for this 
- 			 </description>
- </intent>
- 
 </definitions>
