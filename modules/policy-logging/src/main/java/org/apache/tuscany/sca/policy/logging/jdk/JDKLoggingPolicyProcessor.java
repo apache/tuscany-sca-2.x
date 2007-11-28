@@ -41,10 +41,11 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
  *
  */
 public class JDKLoggingPolicyProcessor implements StAXArtifactProcessor<JDKLoggingPolicy> {
-    public static final QName JDK_LOGGING_POLICY_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "jdkLogger");
-    public static final String LOG_LEVEL = "logLevel";
-    public static final String RESOURCE_BUNDLE = "resourceBundle";
-    public static final String USE_PARENT_HANDLERS = "useParentHandlers";
+    private static final QName JDK_LOGGING_POLICY_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "jdkLogger");
+    private static final String LOG_LEVEL = "logLevel";
+    private static final String RESOURCE_BUNDLE = "resourceBundle";
+    private static final String USE_PARENT_HANDLERS = "useParentHandlers";
+    private static final String TUSACNY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
     
     public QName getArtifactType() {
         return JDK_LOGGING_POLICY_QNAME;
@@ -94,8 +95,34 @@ public class JDKLoggingPolicyProcessor implements StAXArtifactProcessor<JDKLoggi
         return policy;
     }
 
-    public void write(JDKLoggingPolicy arg0, XMLStreamWriter arg1) throws ContributionWriteException,
+    public void write(JDKLoggingPolicy policy, XMLStreamWriter writer) throws ContributionWriteException,
                                                         XMLStreamException {
+        String prefix = "tuscany";
+        writer.writeStartElement(prefix, 
+                                 JDK_LOGGING_POLICY_QNAME.getLocalPart(),
+                                 JDK_LOGGING_POLICY_QNAME.getNamespaceURI());
+        writer.writeNamespace("tuscany", Constants.SCA10_TUSCANY_NS);
+        
+        if (policy.getLoggerName() != null) {
+            writer.writeAttribute(Constants.NAME, policy.getLoggerName());
+        }
+        if ( policy.getLogLevel() != null ) {
+            writer.writeStartElement(prefix, 
+                                     LOG_LEVEL,
+                                     JDK_LOGGING_POLICY_QNAME.getNamespaceURI());
+            writer.writeCharacters(policy.getLogLevel().getLocalizedName());
+            writer.writeEndElement();
+        }
+        
+        if ( policy.getResourceBundleName() != null ) {
+            writer.writeStartElement(prefix,
+                                     RESOURCE_BUNDLE,
+                                     JDK_LOGGING_POLICY_QNAME.getNamespaceURI());
+            writer.writeCharacters(policy.getResourceBundleName());
+            writer.writeEndElement();
+        }
+        
+        writer.writeEndElement();
     }
 
     public Class<JDKLoggingPolicy> getModelType() {

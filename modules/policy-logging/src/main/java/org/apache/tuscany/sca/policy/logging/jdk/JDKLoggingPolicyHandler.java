@@ -95,7 +95,7 @@ public class JDKLoggingPolicyHandler implements PolicyHandler {
                 }
                 
                 Object[] logParams = new Object[]{operation.getName(), sb.toString()};
-                logger.logrb(Level.FINER,"","",policy.getResourceBundleName(), "CALLING_OPERATION", logParams);
+                logger.logp(Level.FINER,"","", "Inovoking operation {0} with arguments {1}", logParams);
             }
         }
     }
@@ -117,7 +117,7 @@ public class JDKLoggingPolicyHandler implements PolicyHandler {
             Object[] logParams = new Object[]{operation.getName(), msg.getBody()};
             
             logger.logp(Level.INFO,"", "", " Returned from operation - " + operation.getName());
-            logger.logrb(Level.FINER,"","",policy.getResourceBundleName(), "OPERATION_RETURNED", logParams);
+            logger.logp(Level.FINER,"","", "Returning from operation {0} with return value {1}", logParams);
         }
     }
 

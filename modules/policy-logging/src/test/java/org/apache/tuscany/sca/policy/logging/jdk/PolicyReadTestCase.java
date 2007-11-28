@@ -20,11 +20,17 @@ package org.apache.tuscany.sca.policy.logging.jdk;
 
 
 import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.logging.Level;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+
+import org.apache.tuscany.sca.assembly.xml.Constants;
 
 import junit.framework.TestCase;
 
@@ -56,6 +62,31 @@ public class PolicyReadTestCase extends TestCase {
         assertEquals(policy.getLoggerName(), "test.logger");
         assertEquals(policy.getLogLevel(), Level.INFO );
         assertEquals(policy.getResourceBundleName(), "Trace_Messages.properties");
+    }
+    
+    public void testPolicyWriting() throws Exception {
+        JDKLoggingPolicyProcessor processor = new JDKLoggingPolicyProcessor(null);
+        
+        JDKLoggingPolicy policy = new JDKLoggingPolicy();
+        policy.setLoggerName("test.logger");
+        policy.setLogLevel(Level.INFO);
+        policy.setResourceBundleName("Trace_Messages.properties");
+        
+        XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+        StringWriter sw = new StringWriter();
+        XMLStreamWriter writer = outputFactory.createXMLStreamWriter(sw);
+        processor.write(policy, writer);
+        writer.close();
+        
+        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+        StringReader sr = new StringReader(sw.toString());
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(sr);
+        
+        policy = processor.read(reader);
+        assertEquals(policy.getLoggerName(), "test.logger");
+        assertEquals(policy.getLogLevel(), Level.INFO );
+        assertEquals(policy.getResourceBundleName(), "Trace_Messages.properties");
+        
     }
 
 }
