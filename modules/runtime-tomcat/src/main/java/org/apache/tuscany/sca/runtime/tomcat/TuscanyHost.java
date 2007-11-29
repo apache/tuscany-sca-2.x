@@ -20,9 +20,19 @@
 package org.apache.tuscany.sca.runtime.tomcat;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.catalina.Container;
+import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
+import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardHost;
 import org.apache.tuscany.sca.runtime.Launcher;
@@ -39,10 +49,10 @@ import org.apache.tuscany.sca.runtime.Launcher;
  *       xmlValidation="false" xmlNamespaceAware="false">
  *       
  */
-public class TomcatHost extends StandardHost {
+public class TuscanyHost extends StandardHost {
     private static final long serialVersionUID = 1L;
 
-    private static final String REPO = "/sca-contributions";
+    private static final String REPO = "../sca-contributions";
 
     protected Launcher launcher;
     
@@ -58,14 +68,57 @@ public class TomcatHost extends StandardHost {
 
     private void startRuntime() {
         System.out.println("XXXXXXXX TomcatHost.startRuntime");
+        
+        TomcatServletHost.getInstance().setTuscanyHost(this);
+
+        addTuscany();
+        
         launcher = new Launcher(new File(REPO));
         try {
             launcher.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
     }
 
+    private void addTuscany() {
+        StandardContext tc = new TuscanyContext();
+        tc.setPath("/tuscany");
+        tc.setDocBase("tuscany");
+        super.addChild(tc);
+    }
+
+    public void registerMapping(String mapping, Servlet servlet) {
+        Context ctx = map(mapping);
+        if (ctx == null) {
+            throw new UnsupportedOperationException("Cannot find context for mapping " + mapping);
+        }
+        String contextPath = ctx.getPath();
+
+        mapping = mapping.substring(contextPath.length());
+        Wrapper wrapper = new TuscanyWrapper(servlet);
+        wrapper.setName(mapping);
+        ctx.addChild(wrapper);
+        wrapper.addMapping(mapping);
+        ctx.getMapper().addWrapper(mapping, wrapper, false);
+    }
+
+    public Servlet unregisterMapping(String mapping) {
+        Context ctx = map(mapping);
+        if (ctx == null) {
+            throw new UnsupportedOperationException("Cannot find context for mapping " + mapping);
+        }
+        String contextPath = ctx.getPath();
+
+        mapping = mapping.substring(contextPath.length());
+        
+        TuscanyWrapper wrapper = (TuscanyWrapper) ctx.findChild(mapping);
+        ctx.getMapper().removeWrapper(mapping);
+        ctx.removeChild(wrapper);
+
+        return wrapper.getServlet();
+    }
     private void stopRuntime() {
         System.out.println("XXXXXXXX TomcatHost.stopRuntime");
         if (launcher != null) {
@@ -82,4 +135,15 @@ public class TomcatHost extends StandardHost {
         ctx.addLifecycleListener(new TuscanyContextListener());
         super.addChild(child);
     }
+
+}
+
+class TestServlet extends HttpServlet {
+    public void doGet(HttpServletRequest request,
+                      HttpServletResponse response)
+        throws ServletException, IOException {
+      PrintWriter out = response.getWriter();
+      out.println("hi!");
+    }
+    
 }
