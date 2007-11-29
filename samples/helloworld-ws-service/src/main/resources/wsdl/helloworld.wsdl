@@ -70,19 +70,6 @@
         </wsdl:operation>
     </wsdl:binding>
 
-    <wsdl:binding name="HelloWorldSoapJmsBinding" type="tns:HelloWorld">
-        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/jms"/>
-        <wsdl:operation name="getGreetings">
-            <wsdlsoap:operation soapAction=""/>
-            <wsdl:input name="getGreetingsRequest">
-                <wsdlsoap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output name="getGreetingsResponse">
-                <wsdlsoap:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-    </wsdl:binding>
-
     <wsdl:service name="HelloWorldService">
         <wsdl:port binding="tns:HelloWorldSoapBinding" name="HelloWorldSoapPort">
             <wsdlsoap:address location="http://localhost:8085/HelloWorldServiceComponent"/>

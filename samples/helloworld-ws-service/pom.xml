@@ -37,13 +37,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>apache-activemq</artifactId>
-            <version>4.1.1</version>
-            <scope>provided</scope>
-        </dependency> 
-            
-        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
@@ -77,7 +70,6 @@
             <version>4.2</version>
             <scope>test</scope>
         </dependency>
-       
     </dependencies>
     
     <build>
