@@ -15,7 +15,7 @@ If you just want to run it to see what happens open four command prompts and
 navigate to this sample directory in each one. There is one command to be run 
 in each command prompt:
 
-ant runDomainNode
+ant runDomain
 ant runNodeB
 ant runNodeC
 ant runNodeA
