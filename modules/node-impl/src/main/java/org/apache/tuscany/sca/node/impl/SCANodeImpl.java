@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,37 +39,33 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
-import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainEventService;
-import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.node.NodeException;
 import org.apache.tuscany.sca.node.NodeFactoryImpl;
-import org.apache.tuscany.sca.node.SCADomainFinder;
 import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeSPI;
 
 /**
  * A local representation of the sca domain running on a single node
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-09 23:54:46 +0100 (Sun, 09 Sep 2007) $
  */
-public class SCANodeImpl implements SCANode {
+public class SCANodeImpl implements SCANode, SCANodeSPI {
 	
     private final static Logger logger = Logger.getLogger(SCANodeImpl.class.getName());
 	     
@@ -190,7 +185,7 @@ public class SCANodeImpl implements SCANode {
             // make the node available to the model
             // this causes the runtime to start registering binding-sca service endpoints
             // with the domain proxy
-            // TBD - This code is due to be pulled out and combined with the register and 
+            // TODO - This code is due to be pulled out and combined with the register and 
             //       resolution code that appears in this class
             ModelFactoryExtensionPoint factories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
             nodeFactory = new NodeFactoryImpl(this);
@@ -206,11 +201,10 @@ public class SCANodeImpl implements SCANode {
             nodeRuntime.getCompositeActivator().setDomainComposite(nodeComposite);             
             
             // create a link to the domain 
-            scaDomain = SCADomainFinder.newInstance().getSCADomain(domainURI);
+            scaDomain = new SCADomainProxyImpl(domainURI);
             
             // add the node URI to the domain
             ((SCADomainProxyImpl)scaDomain).addNode(this);  
-           
             
         } catch(NodeException ex) {
             throw ex;
@@ -221,9 +215,7 @@ public class SCANodeImpl implements SCANode {
     
     // temp methods to help integrate with existing code
     
-    public ReallySmallRuntime getNodeRuntime() {
-        return nodeRuntime;
-    }
+
     
     public Component getComponent(String componentName) {
         for (Composite composite: nodeComposite.getIncludes()) {
@@ -260,6 +252,12 @@ public class SCANodeImpl implements SCANode {
         
         return null;
     } 
+    
+    // SCANode SPI methods
+    
+    public Object getNodeRuntime() {
+        return nodeRuntime;
+    }
     
     // SCANode API methods 
     
@@ -465,6 +463,14 @@ public class SCANodeImpl implements SCANode {
                 for (Composite composite : contribution.getDeployables()) {
                     if (!nodeComposite.getIncludes().contains(composite)) {
                         nodeComposite.getIncludes().add(composite);
+                        
+                        try {
+                            // register the composite with the domain
+                            ((SCADomainProxyImpl)scaDomain).registerDomainLevelComposite(nodeURI, composite.getName().toString());                  
+                        
+                        } catch (Exception ex) {
+                            throw new NodeException(ex);
+                        }                        
                     }
                 } 
             }
@@ -482,8 +488,18 @@ public class SCANodeImpl implements SCANode {
             // if the named composite is not already in the list then deploy it
             if (!nodeComposite.getIncludes().contains(composite)) {
                 nodeComposite.getIncludes().add(composite);
+                
+                try {
+                    // register the composite with the domain
+                    ((SCADomainProxyImpl)scaDomain).registerDomainLevelComposite(nodeURI, composite.getName().toString());                  
+                
+                } catch (Exception ex) {
+                    throw new NodeException(ex);
+                }                 
             }
-        }        
+        }  
+        
+        
     }
     
     public void addToDomainLevelComposite(String compositePath) throws NodeException {
@@ -509,6 +525,14 @@ public class SCANodeImpl implements SCANode {
         // if the named composite is not already in the list then deploy it
         if (!nodeComposite.getIncludes().contains(composite)) {
             nodeComposite.getIncludes().add(composite);
+            
+            try {
+                // register the composite with the domain
+                ((SCADomainProxyImpl)scaDomain).registerDomainLevelComposite(nodeURI, composite.getName().toString());                  
+            
+            } catch (Exception ex) {
+                throw new NodeException(ex);
+            }             
         }
     }
 
@@ -608,8 +632,10 @@ public class SCANodeImpl implements SCANode {
         // activate the composite
         nodeRuntime.getCompositeActivator().activate(composite); 
         
+        // tell the domain where all the service endpoints are
         registerRemoteServices(composite);
         
+        // get up to date with where all services we depend on are
         resolveRemoteReferences(composite);
         
         //start the composite
@@ -640,61 +666,54 @@ public class SCANodeImpl implements SCANode {
         nodeRuntime.getCompositeActivator().stop(composite);
         nodeRuntime.getCompositeActivator().deactivate(composite);
     }
-    
+        
     private void registerRemoteServices(Composite composite){
         // Loop through all service binding URIs registering them with the domain 
-        // TODO - the sca binding does this for itself at the moment
-        //        so that function should move here to make it
-        //        applicable to other bindings
         for (Service service: composite.getServices()) {
             for (Binding binding: service.getBindings()) {
-                String uri = binding.getURI();
-                if (uri != null) {
-                    try {
-                        ((SCADomainEventService)scaDomain).registerServiceEndpoint(domainURI, 
-                                                                                   nodeURI, 
-                                                                                   service.getName(), 
-                                                                                   binding.getClass().getName(), 
-                                                                                   uri);
-                    } catch(Exception ex) {
-                        logger.log(Level.WARNING, 
-                                   "Unable to  register service: "  +
-                                   domainURI + " " +
-                                   nodeURI + " " +
-                                   service.getName()+ " " +
-                                   binding.getClass().getName() + " " +
-                                   uri);
-                    }
-                }
+                registerRemoteServiceBinding(null, service, binding);
             }
         }
         
         for (Component component: composite.getComponents()) {
             for (ComponentService service: component.getServices()) {
                 for (Binding binding: service.getBindings()) {
-                    if (binding instanceof SCABindingImpl){
-                        // TODO - only register it its in remote node
-                    } else {
-                        String uriString = binding.getURI();
-                        if (uriString != null) {
-                            try {
-                                URI uri = new URI(uriString);
-                                ((SCADomainEventService)scaDomain).registerServiceEndpoint(domainURI, 
-                                                                                           nodeURI, 
-                                                                                           uri.getPath(),
-                                                                                           binding.getClass().getName(), 
-                                                                                           uriString);
-                            } catch(Exception ex) {
-                                logger.log(Level.WARNING, 
-                                           "Unable to  register service: "  +
-                                           domainURI + " " +
-                                           nodeURI + " " +
-                                           service.getName()+ " " +
-                                           binding.getClass().getName() + " " +
-                                           uriString);
-                            }
-                        }
+                    registerRemoteServiceBinding(component, service, binding);
+                }
+            }
+        }
+    }
+    
+    private void registerRemoteServiceBinding(Component component, Service service, Binding binding ){
+        if (service.getInterfaceContract().getInterface().isRemotable()) {
+            String uriString = binding.getURI();
+            if (uriString != null) {
+                 
+                String serviceName = null; 
+                
+                if (component != null) {
+                    serviceName = component.getURI();
+                    if (component.getServices().size() > 1){
+                        serviceName = serviceName + '/' + binding.getName();
                     }
+                } else {
+                    serviceName = service.getName();
+                }
+                    
+                try {
+                    ((SCADomainEventService)scaDomain).registerServiceEndpoint(domainURI, 
+                                                                               nodeURI, 
+                                                                               serviceName, 
+                                                                               binding.getClass().getName(), 
+                                                                               uriString);
+                } catch(Exception ex) {
+                    logger.log(Level.WARNING, 
+                               "Unable to  register service: "  +
+                               domainURI + " " +
+                               nodeURI + " " +
+                               service.getName()+ " " +
+                               binding.getClass().getName() + " " +
+                               uriString);
                 }
             }
         }
@@ -703,73 +722,90 @@ public class SCANodeImpl implements SCANode {
     private void resolveRemoteReferences(Composite composite){
         // Loop through all reference binding URIs. Any that are not resolved
         // should be looked up in the domain
-        // TODO - the sca binding does this for itself at the moment
-        //        so that function should move here to make it
-        //        applicable to other bindings
         for (Reference reference: composite.getReferences()) {
             for (Binding binding: reference.getBindings()) {
-                if (binding.isUnresolved()) {
-                    if (binding instanceof SCABindingImpl){
-                        // TODO - only find uri if its in a remote node
-                    } else {
-                        // find the right endpoint for this reference/binding. This relies on looking
-                        // up every binding URI. If a response is returned then it's set back into the
-                        // binding uri
-                        String uri = "";
-                        try {
-                            uri = ((SCADomainEventService)scaDomain).findServiceEndpoint(domainURI, 
-                                                                                         binding.getURI(), 
-                                                                                         binding.getClass().getName());
-                        } catch(Exception ex) {
-                            logger.log(Level.WARNING, 
-                                       "Unable to  find service: "  +
-                                       domainURI + " " +
-                                       nodeURI + " " +
-                                       binding.getURI() + " " +
-                                       binding.getClass().getName() + " " +
-                                       uri);
-                        }
-                         
-                        if (uri.equals("") == false){
-                            binding.setURI(uri);
-                        }
-                    }
-                }
+                resolveRemoteReferenceBinding(reference, binding);
             }
         }
         
         for (Component component: composite.getComponents()) {
             for (ComponentReference reference: component.getReferences()) {
                 for (Binding binding: reference.getBindings()) {
-                    if (binding.isUnresolved()) {
-                        if (binding instanceof SCABindingImpl){
-                            // TODO - only find uri if its in a remote node
-                        } else {
-                            // find the right endpoint for this reference/binding. This relies on looking
-                            // up every binding URI. If a response is returned then it's set back into the
-                            // binding uri
-                            String uri = "";
-                            try {
-                                uri = ((SCADomainEventService)scaDomain).findServiceEndpoint(domainURI, 
-                                                                                             binding.getURI(), 
-                                                                                             binding.getClass().getName());
-                            } catch(Exception ex) {
-                                logger.log(Level.WARNING, 
-                                           "Unable to  find service: "  +
-                                           domainURI + " " +
-                                           nodeURI + " " +
-                                           binding.getURI() + " " +
-                                           binding.getClass().getName() + " " +
-                                           uri);
-                            }
-                             
-                            if (uri.equals("") == false){
-                                binding.setURI(uri);
-                            }
-                        }
+                    resolveRemoteReferenceBinding(reference, binding);
+                }
+            }
+        }         
+    }
+    
+    private void resolveRemoteReferenceBinding(Reference reference, Binding binding){
+        if (binding.isUnresolved()) {
+            // find the right endpoint for this reference/binding. This relies on looking
+            // up every binding URI. If a response is returned then it's set back into the
+            // binding uri
+            String uri = "";
+            
+            try {
+                uri = ((SCADomainEventService)scaDomain).findServiceEndpoint(domainURI, 
+                                                                             binding.getURI(), 
+                                                                             binding.getClass().getName());
+            } catch(Exception ex) {
+                logger.log(Level.WARNING, 
+                           "Unable to  find service: "  +
+                           domainURI + " " +
+                           nodeURI + " " +
+                           binding.getURI() + " " +
+                           binding.getClass().getName() + " " +
+                           uri);
+            }
+             
+            if (!uri.equals(SCADomainEventService.SERVICE_NOT_REGISTERED)){
+                binding.setURI(uri);
+            }
+        }          
+    }    
+    
+
+    public void setReferenceEndpoint(String referenceName, String bindingClassName, String serviceURI) throws NodeException {
+        // find the named reference and binding and update the uri from this message
+        Reference reference = findReference(referenceName);
+        
+        if (reference != null){
+            // find the matching binding and set it's uri
+            for( Binding binding : reference.getBindings()){
+                if (binding.getClass().getName().equals(bindingClassName)){
+                    binding.setURI(serviceURI);
+                }
+            }
+        }
+        
+    }
+    
+    private Reference findReference(String referenceName){
+
+        for (Reference reference: nodeComposite.getReferences()) {
+            if (reference.getName().equals(referenceName)){
+                return reference; 
+            }
+        }
+        
+        for (Component component: nodeComposite.getComponents()) {
+            for (ComponentReference reference: component.getReferences()) {
+                if (reference.getName().equals(referenceName)){
+                    return reference; 
+                }
+            }
+        }
+        
+        for (Composite composite : nodeComposite.getIncludes()) { 
+            for (Component component: composite.getComponents()) {
+                for (ComponentReference reference: component.getReferences()) {
+                    if (reference.getName().equals(referenceName)){
+                        return reference; 
                     }
                 }
             }
-        }        
+        }           
+
+        return null;
     }
 }

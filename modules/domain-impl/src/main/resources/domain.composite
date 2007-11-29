@@ -43,6 +43,10 @@
             <interface.java interface="org.apache.tuscany.sca.domain.SCADomainEventService"/>
             <binding.ws/>
         </service>
+        <service name="SCADomainAPIService">
+            <interface.java interface="org.apache.tuscany.sca.domain.SCADomainAPIService"/>
+            <binding.ws/>
+        </service>        
     </component>  
     
 </composite>

@@ -23,7 +23,11 @@ import java.util.HashMap;
 
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomain;
+import org.apache.tuscany.sca.domain.SCADomainSPI;
+import org.apache.tuscany.sca.domain.impl.SCADummyNodeImpl;
 import org.apache.tuscany.sca.node.SCADomainFinder;
+import org.apache.tuscany.sca.node.SCADomainProxySPI;
+import org.apache.tuscany.sca.node.SCANode;
 
 /**
  * A finder for SCA domains.
@@ -59,6 +63,10 @@ public class SCADomainFinderImpl extends SCADomainFinder {
             // TODO - not caching local domains as currently the local domain can
             //        - only handle one node
             //        - provides the management endpoint for that node
+            
+            // Add the dummy node as there will be no real node in this case
+            SCANode scaNode = new SCADummyNodeImpl(scaDomain);
+            ((SCADomainProxyImpl)scaDomain).addNode(scaNode);
         }
         return scaDomain;
     }

@@ -77,7 +77,12 @@ public class TestNodeManagerServiceImpl implements SCANodeManagerService {
     
     public void destroyNode() throws NodeException {
         System.out.println("destroy");
-    }    
+    } 
+    
+    public void setReferenceEndpoint(String referenceName, String bindingClassName, String serviceURI) throws NodeException {
+        System.out.println("setReferenceEndpoint "  + referenceName + " " + bindingClassName + " " + serviceURI);
+    }
+    
 
 
 }

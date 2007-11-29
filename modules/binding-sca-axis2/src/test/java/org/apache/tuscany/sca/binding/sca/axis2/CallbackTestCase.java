@@ -38,6 +38,8 @@ public class CallbackTestCase extends BaseTest {
             // create and start domains
             nodeA = createNode("http://localhost:8100/nodeE");
             nodeB = createNode("http://localhost:8200/nodeF");
+            nodeA.start();
+            nodeB.start();
 
         } catch (Exception ex) {
             System.err.println("Exception when creating domain " + ex.getMessage());

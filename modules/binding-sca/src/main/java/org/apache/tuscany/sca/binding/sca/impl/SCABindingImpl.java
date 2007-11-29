@@ -113,7 +113,11 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPo
      * @return true if the model element is unresolved.
      */
     public boolean isUnresolved() {
-        return false;
+        if (targetComponentService == null){
+            return true;
+        } else {
+            return targetComponentService.isUnresolved();
+        }
     }
     
     /**

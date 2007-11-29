@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
+import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -115,7 +116,51 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
      * @return An EPR for the target service that this reference refers to 
      */
     public EndpointReference getServiceEndpoint(){
+      
+        String endpointURL = null;
         
+        if (binding.getURI() != null) {
+            // check if the binding URI is already resolved if it is use is if not 
+            try {
+                URI uri = new URI(binding.getURI());
+                 if (uri.isAbsolute()) {
+                     endpointURL = binding.getURI();
+                 } 
+            } catch(Exception ex) {
+                // do nothing
+            } 
+            
+            if ( endpointURL == null) {  
+                SCADomainEventService domainProxy = (SCADomainEventService)nodeFactory.getNode().getDomain();
+                
+                try {
+                    endpointURL = domainProxy.findServiceEndpoint(nodeFactory.getNode().getDomain().getURI(), 
+                                                                  binding.getURI(), 
+                                                                  binding.getClass().getName());
+                } catch (Exception ex) {
+                    logger.log(Level.WARNING, 
+                               "Unable to  find service service: "  +
+                               nodeFactory.getNode().getDomain().getURI() + " " +
+                               nodeFactory.getNode().getURI() + " " +
+                               binding.getURI() + " " +
+                               binding.getClass().getName());                    
+                }
+                
+                if (endpointURL.equals(domainProxy.SERVICE_NOT_REGISTERED)){
+                    throw new IllegalStateException("Can't resolve reference as no SCA binding URI is available while trying to find target service. Component: "+
+                                                    component.getName() +
+                                                    " and reference: " + 
+                                                    reference.getName() ); 
+                }   
+            }  
+        }
+        
+        binding.setURI(endpointURL);
+
+        serviceEPR = new EndpointReferenceImpl(binding.getURI());
+            
+        
+/*        
         if ( serviceEPR == null && nodeFactory.getNode() != null ){
             // try to resolve the service endpoint with the registry 
             SCADomainEventService domainProxy = (SCADomainEventService)nodeFactory.getNode().getDomain();
@@ -124,24 +169,39 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
             
 	            // The binding URI might be null in the case where this reference is completely
 	            // dynamic, for example, in the case of callbacks
-	            if (binding.getURI() != null) {
-	                String serviceUrl  = null;
+                    String bindingURIString = binding.getURI();
+	            if (bindingURIString != null) {
+	                String serviceURL  = null;
+	                URI bindingURI = null;
+	                
+	                // first time through here assume that the binding URI is correct
 	                try {
-	                    serviceUrl = domainProxy.findServiceEndpoint(nodeFactory.getNode().getDomain().getURI(), 
-	                                                                 binding.getURI(), 
-	                                                                 SCABinding.class.getName());
-	                } catch (Exception ex) {
-	                    logger.log(Level.WARNING, 
-	                               "Unable to  find service service: "  +
-	                               nodeFactory.getNode().getDomain().getURI() + " " +
-	                               nodeFactory.getNode().getURI() + " " +
-	                               binding.getURI() + " " +
-	                               SCABinding.class.getName());	                 
+	                    bindingURI = new URI(bindingURIString);
+	                    if (bindingURI.isAbsolute()){
+	                        serviceURL = bindingURIString;
+	                    }
+	                } catch(Exception ex) {
+	                    
 	                }
 	                
-	                if ( (serviceUrl != null ) &&
-	                     (!serviceUrl.equals(""))){
-	                    serviceEPR = new EndpointReferenceImpl(serviceUrl);
+	                if ( serviceURL == null) {   
+        	                try {
+        	                    serviceURL = domainProxy.findServiceEndpoint(nodeFactory.getNode().getDomain().getURI(), 
+        	                                                                 bindingURI.getPath(), 
+        	                                                                 binding.getClass().getName());
+        	                } catch (Exception ex) {
+        	                    logger.log(Level.WARNING, 
+        	                               "Unable to  find service service: "  +
+        	                               nodeFactory.getNode().getDomain().getURI() + " " +
+        	                               nodeFactory.getNode().getURI() + " " +
+        	                               binding.getURI() + " " +
+        	                               binding.getClass().getName());	                 
+        	                }
+	                }
+	                
+	                if ( (serviceURL != null ) &&
+	                     (!serviceURL.equals(""))){
+	                    serviceEPR = new EndpointReferenceImpl(serviceURL);
 	                }
 	            }
             } else {
@@ -151,6 +211,7 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
 						                        reference.getName());	 
             }
         }
+*/        
         
         return serviceEPR;
     }
@@ -200,7 +261,7 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
 
     public void start() {
         // Try and resolve the service endpoint just in case it is available now
-        getServiceEndpoint();
+       // getServiceEndpoint();
         axisReferenceBindingProvider.start();
     }
 

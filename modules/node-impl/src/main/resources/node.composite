@@ -20,9 +20,9 @@
 
 
 <!--
-  The components used to interact with a Node. The components her are expect to be here
-  to edit with caution. In particular the service and reference urls are edited at runtime
-  in the in memory model. So don;t rely on the values here.  
+  The components used to interact with a Node. The components here are expected to be here
+  so edit with caution. In particular the service and reference urls are edited at runtime
+  in the in memory model. So don't rely on the values here.  
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            targetNamespace="http://tuscany.apache.org/xmlns/tuscany/1.0"
@@ -39,7 +39,19 @@
             <interface.java interface="org.apache.tuscany.sca.domain.SCADomainEventService"/>
             <binding.ws uri="http://localhost:9999/SCADomainManagerComponent/SCADomainEventService"/>
         </reference>
-    </component>           
+    </component> 
+    
+    <component name="SCADomainAPIServiceProxyComponent">
+        <implementation.java class="org.apache.tuscany.sca.node.impl.SCADomainAPIServiceProxyImpl"/>
+        <service name="SCADomainAPIService">
+            <interface.java interface="org.apache.tuscany.sca.domain.SCADomainAPIService"/>
+            <binding.sca/>
+        </service>
+        <reference name="domainManager">
+            <interface.java interface="org.apache.tuscany.sca.domain.SCADomainAPIService"/>
+            <binding.ws uri="http://localhost:9999/SCADomainManagerComponent/SCADomainAPIService"/>
+        </reference>
+    </component> 
            
     <component name="SCANodeManagerComponent">
         <implementation.java class="org.apache.tuscany.sca.node.management.impl.SCANodeManagerServiceImpl"/>

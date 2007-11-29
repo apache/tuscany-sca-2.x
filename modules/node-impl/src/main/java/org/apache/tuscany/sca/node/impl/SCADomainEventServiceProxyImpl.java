@@ -84,8 +84,11 @@ public class SCADomainEventServiceProxyImpl implements SCADomainEventService{
     public void unregisterContribution(String nodeURI, String contributionURI) throws DomainException {
         domainManager.unregisterContribution(nodeURI, contributionURI);
     }
-
-
+    
+    public void registerDomainLevelComposite(String nodeURI, String compositeQNameString) throws DomainException{
+        domainManager.registerDomainLevelComposite(nodeURI, compositeQNameString);
+    }
+    
     public void registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL) throws DomainException {
         
         for (int i =0; i < retryCount; i++){
@@ -153,5 +156,30 @@ public class SCADomainEventServiceProxyImpl implements SCADomainEventService{
         
         return url;
     }
+    
+    public String findServiceNode(String domainUri, String serviceName, String bindingName) throws DomainException {
+
+        String nodeName = null;
+        
+        for (int i =0; i < retryCount; i++){
+            try {
+                nodeName =  domainManager.findServiceNode(domainUri, serviceName, bindingName);
+                break;
+            } catch(UndeclaredThrowableException ex) {
+                logger.log(Level.INFO, "Trying to connect to domain " + 
+                                       domainUri + 
+                                       " to find service " +
+                                       serviceName);
+          
+            }
+            
+            try {
+                Thread.sleep(retryInterval);
+            } catch(InterruptedException ex) {
+            }
+         }
+        
+        return nodeName;
+    }    
  
 }

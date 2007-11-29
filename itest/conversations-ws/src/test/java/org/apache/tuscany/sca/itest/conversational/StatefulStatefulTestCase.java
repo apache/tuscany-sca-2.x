@@ -43,6 +43,7 @@ import org.junit.Test;
 public class StatefulStatefulTestCase {
 
     private static SCADomain domain;
+    private static SCANode node;
     private static ConversationalClient conversationalStatelessClientStatelessService;
     private static ConversationalClient conversationalStatelessClientStatefulService;
     private static ConversationalClient conversationalStatefulClientStatelessService;
@@ -53,7 +54,7 @@ public class StatefulStatefulTestCase {
     @BeforeClass
     public static void setUp() throws Exception {
     	try {
-                SCANode node = SCANodeFactory.newInstance().createSCANode(null, null);
+                node = SCANodeFactory.newInstance().createSCANode(null, null);
                 node.addContribution("mycontribution",
                                      StatefulStatefulTestCase.class.getResource("/Conversational/."));                                                                     
                 node.addToDomainLevelComposite(new QName("http://conversations", "ConversationalITest"));
@@ -91,7 +92,7 @@ public class StatefulStatefulTestCase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        domain.destroy();
+        node.destroy();
         domain = null;
         conversationalStatelessClientStatelessService = null;
         conversationalStatelessClientStatefulService = null;

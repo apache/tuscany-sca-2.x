@@ -92,7 +92,9 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
                                                    servletHost,
                                                    messageFactory);
         
-
+        this.binding.setURI(wsBinding.getURI());
+        
+/*
         if ((nodeFactory != null) && (nodeFactory.getNode() != null)){
             
             SCADomainEventService domainProxy = (SCADomainEventService)nodeFactory.getNode().getDomain();
@@ -196,6 +198,7 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
                                            " and service: " + 
                                            service.getName());        	
        }
+*/       
 
     }
 

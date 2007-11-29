@@ -20,9 +20,14 @@
 package org.apache.tuscany.sca.domain.management.impl;
 
 import java.io.Externalizable;
+import java.net.URL;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.domain.DomainException;
+import org.apache.tuscany.sca.domain.SCADomain;
+import org.apache.tuscany.sca.domain.SCADomainAPIService;
 import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.domain.management.DomainInfo;
@@ -43,15 +48,20 @@ import org.osoa.sca.annotations.Service;
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
 @Scope("COMPOSITE")
-@Service(interfaces = {SCADomainEventService.class, SCADomainManagerInitService.class, SCADomainManagerService.class})
-public class SCADomainManagerServiceImpl implements SCADomainEventService, SCADomainManagerInitService, SCADomainManagerService {
+@Service(interfaces = {SCADomainEventService.class, SCADomainManagerInitService.class, SCADomainManagerService.class, SCADomainAPIService.class})
+public class SCADomainManagerServiceImpl implements SCADomainEventService, SCADomainManagerInitService, SCADomainManagerService, SCADomainAPIService {
     
     private final static Logger logger = Logger.getLogger(SCADomainManagerServiceImpl.class.getName());
     
+    private SCADomain domain;
     private SCADomainSPI domainSPI;
     private SCADomainEventService domainEventService;
     
     // DomainManagerInitService methods
+    
+    public void setDomain(SCADomain domain) {
+        this.domain = domain;
+    }
     
     public void setDomainSPI(SCADomainSPI domainSPI) {
         this.domainSPI = domainSPI;
@@ -86,18 +96,96 @@ public class SCADomainManagerServiceImpl implements SCADomainEventService, SCADo
         domainEventService.unregisterContribution(nodeURI, contributionURI);
     }
     
-    public void registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL) throws DomainException {
-        domainEventService.registerServiceEndpoint(domainUri, nodeUri, serviceName, bindingName, URL);
+    public void registerDomainLevelComposite(String nodeURI, String compositeQNameString) throws DomainException{
+        domainEventService.registerDomainLevelComposite(nodeURI, compositeQNameString);
+    }
+    
+    public void registerServiceEndpoint(String domainURI, String nodeUri, String serviceName, String bindingName, String URL) throws DomainException {
+        domainEventService.registerServiceEndpoint(domainURI, nodeUri, serviceName, bindingName, URL);
     }
    
-    public void unregisterServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName) throws DomainException{
-         domainEventService.unregisterServiceEndpoint(domainUri, nodeUri, serviceName, bindingName);
+    public void unregisterServiceEndpoint(String domainURI, String nodeUri, String serviceName, String bindingName) throws DomainException{
+         domainEventService.unregisterServiceEndpoint(domainURI, nodeUri, serviceName, bindingName);
     }
    
 
-    public String findServiceEndpoint(String domainUri, String serviceName, String bindingName) throws DomainException{
-        return domainEventService.findServiceEndpoint(domainUri, serviceName, bindingName);
-    }    
+    public String findServiceEndpoint(String domainURI, String serviceName, String bindingName) throws DomainException{
+        return domainEventService.findServiceEndpoint(domainURI, serviceName, bindingName);
+    }  
+    
+    public String findServiceNode(String domainURI, String serviceName, String bindingName) throws DomainException {
+        return domainEventService.findServiceNode(domainURI, serviceName, bindingName);
+    }
+    
+    // DomainAPIService methods
+
+    public void start() throws DomainException {
+        domain.start();
+    }
+
+    public void stop() throws DomainException {
+        domain.stop();
+    }
+
+    public void destroyDomain() throws DomainException {
+        domain.destroy();
+    }
+
+    public String getURI() {
+        return domain.getURI();
+    }
+     
+    public void addContribution(String contributionURI, String contributionURL) throws DomainException {
+        try {
+            domain.addContribution(contributionURI, new URL(contributionURL));
+        } catch (Exception ex) {
+            throw new DomainException (ex);
+        }
+    }
+    
+    public void updateContribution(String contributionURI, String contributionURL) throws DomainException {
+        try {
+            domain.updateContribution(contributionURI, new URL(contributionURL));
+        } catch (Exception ex) {
+            throw new DomainException (ex);
+        }
+    }
+    
+    public void removeContribution(String contributionURI) throws DomainException {
+        domain.removeContribution(contributionURI);
+    }
+    
+    public void addDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
+        domain.addDeploymentComposite(contributionURI, compositeXML);
+    }
+    
+    public void updateDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
+        domain.updateDeploymentComposite(contributionURI, compositeXML);
+    }
+
+    public void addToDomainLevelComposite(String compositeQName) throws DomainException {
+        domain.addToDomainLevelComposite(QName.valueOf(compositeQName));
+    }
+    
+    public void removeFromDomainLevelComposite(String compositeQName) throws DomainException {
+       domain.removeFromDomainLevelComposite(QName.valueOf(compositeQName));
+    }
+    
+    public String getDomainLevelComposite() throws DomainException {
+        return domain.getDomainLevelComposite();
+    }
+    
+    public String getQNameDefinition(String artifact) throws DomainException {
+        return domain.getQNameDefinition(QName.valueOf(artifact));
+    }
+    
+    public void startComposite(String compositeQName) throws DomainException {
+        domain.startComposite(QName.valueOf(compositeQName));
+    }
+    
+    public void stopComposite(String compositeQName) throws DomainException {
+        domain.stopComposite(QName.valueOf(compositeQName));
+    }
     
     // DomainManagementService methods
     

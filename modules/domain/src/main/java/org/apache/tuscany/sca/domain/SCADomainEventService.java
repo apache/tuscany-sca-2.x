@@ -34,6 +34,10 @@ import org.osoa.sca.annotations.Remotable;
  */
 @Remotable
 public interface SCADomainEventService {
+    
+    // constants
+    public static final String SERVICE_NOT_KNOWN = "SERVICE_NOT_KNOWN";
+    public static final String SERVICE_NOT_REGISTERED = "SERVICE_NOT_REGISTERED";
 
     /**
      * Add information about a node in the domain
@@ -56,7 +60,7 @@ public interface SCADomainEventService {
     /**
      * In the case where a contribution is added at a node this method is used to 
      * record the relationship directly. This is different from adding a contribution
-     * to a domain as the contribution has alread been allocated to a node
+     * to a domain as the contribution has already been allocated to a node
      * 
      * @param nodeURI the string uri for the node
      * @param contributionURI the string uri for the contribution
@@ -76,6 +80,15 @@ public interface SCADomainEventService {
      */
     public void unregisterContribution(String nodeURI, String contributionURI) throws DomainException;     
 
+    /**
+     * In the case where a composite is added to the domain level composite at a node this 
+     * method is used to record the event with the domain. 
+     * 
+     * @param nodeURI the string uri for the node
+     * @param compositeQNameString the string QName of the composite
+     * @throws DomainException
+     */
+    public void registerDomainLevelComposite(String nodeURI, String compositeQNameString) throws DomainException;
     
     /**
      * Accepts information about a service endpoint and holds onto it
@@ -103,10 +116,20 @@ public interface SCADomainEventService {
      * Locates information about a service endpoint 
      * 
      * @param domainUri the string uri for the distributed domain
-     * @param serviceName the name of the service that is exposed and the provided endpoint
+     * @param serviceName the name of the service to be found
      * @param bindingName the remote binding that we want to find an endpoint for
-     * @return url the endpoint url
+     * @return url the endpoint url or SERVICE_NOT_REGISTERED
      */
-    public String findServiceEndpoint(String domainUri, String serviceName, String bindingName) throws DomainException; 
+    public String findServiceEndpoint(String domainUri, String serviceName, String bindingName) throws DomainException;
+    
+    /**
+     * Determines node that a service is avaialable on
+     * @param domainURI the string uri for the distributed domain
+     * @param serviceName the name of the service to be found
+     * @param bindingName the remote binding that we want to find an endpoint for
+     * @return name of node running service or SERVICE_NOT_KNOWN (it's not been contributed) or SERVICE_NOT_REGISTERED (it's been contributed but isn;t running)
+     * @throws DomainException
+     */
+    public String findServiceNode(String domainURI, String serviceName, String bindingName) throws DomainException;
      
 }

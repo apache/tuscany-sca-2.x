@@ -172,6 +172,10 @@ public class TestDomain implements SCADomain, SCADomainEventService {
         return url;
     }
     
+    public String findServiceNode(String domainUri, String serviceName, String bindingName){
+        return null;
+    }
+    
     public SCADomain getDomain(){
         return null;
     }
@@ -189,6 +193,10 @@ public class TestDomain implements SCADomain, SCADomainEventService {
     public void updateContribution(String contributionURI, URL contributionURL) throws DomainException {
         
     }
+    
+    public void registerDomainLevelComposite(String nodeURI, String compositeQNameString) throws DomainException{
+
+    }    
     
     public void unregisterContribution(String nodeURI, String contributionURI){
     }    

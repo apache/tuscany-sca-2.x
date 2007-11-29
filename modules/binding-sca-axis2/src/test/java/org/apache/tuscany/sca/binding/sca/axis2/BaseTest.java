@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.binding.sca.axis2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class BaseTest {
 
@@ -25,7 +28,11 @@ public class BaseTest {
     public static TestDomain testDomain = new TestDomain(DEFULT_DOMAIN_NAME);
 
     public static TestNode createNode(String nodeName) throws Exception {
-       
-        return new TestNode(DEFULT_DOMAIN_NAME, nodeName, testDomain);
+        TestNode node = new TestNode(DEFULT_DOMAIN_NAME, nodeName, testDomain);
+        return node;
+    }
+    
+    public static void startNodes() {
+        
     }
 }

@@ -56,7 +56,7 @@ public class ConversationWSDLTestCase {
 
     @After
     public void tearDown() throws Exception {
-        node.getDomain().destroy();
+        node.destroy();
         conversationalStatelessClientStatefulService = null;
     }
 

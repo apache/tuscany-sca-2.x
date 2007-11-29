@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.domain.management;
 
+import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.domain.SCADomainSPI;
 
@@ -30,18 +31,25 @@ import org.apache.tuscany.sca.domain.SCADomainSPI;
  * @version $Rev: 552343 $ $Date: 2007-09-11 18:45:36 +0100 (Tue, 11 Sep 2007) $
  */
 public interface SCADomainManagerInitService {
+    
+    /**
+     * Set the domain  object
+     * 
+     * @param domain
+     */
+    public void setDomain(SCADomain domain);
      
     /**
      * Set the domain SPI object
      * 
-     * @param node
+     * @param domain
      */
     public void setDomainSPI(SCADomainSPI domainSPI);
     
     /**
      * Set the domain event object
      * 
-     * @param node
+     * @param domain
      */
     public void setDomainEventService(SCADomainEventService domainEventService);    
     

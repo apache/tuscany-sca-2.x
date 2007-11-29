@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.binding.sca.impl;
 
+import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -85,23 +86,116 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
 
         // determine if the target is remote. If we can tell now then this will
         // do some initialization before we get to run time
-        isTargetRemote();
+        //isTargetRemote();
     }
 
     public boolean isTargetRemote() {
         boolean targetIsRemote = false;
 
         // first look at the target service and see if this has been resolved
-        if (((OptimizableBinding)binding).getTargetComponentService() != null) {
-            if (((OptimizableBinding)binding).getTargetComponentService().isUnresolved() == true) {
+        OptimizableBinding optimizableBinding = (OptimizableBinding)binding;
+        
+        // The descision is based primary on the results of the wiring process in the assembly model
+        // however there are two notable situations when this process doesn't give the right answer
+        // 1. When a callback is in operation. A callback reference bindings sometimes has to 
+        //    act as though there is a local wire and sometimes as if there is a remote wire
+        // 2. When a reference is retrieved from the domain. In this case the reference
+        //    will not have been part of the original wiring process and will only have 
+        //    a target set if the target is local 
+        if (optimizableBinding.getTargetComponentService() != null){
+            if (optimizableBinding.getTargetComponentService().isUnresolved() == true) {
                 targetIsRemote = true;
             } else {
                 targetIsRemote = false;
             }
         } else {
+            // deal with the case where the wire is completely dynamic (e.g. callbacks) and
+            // look at the provided URI to decide whether is a local or remote case
+            try {
+                URI uri = new URI(binding.getURI());
+                 if (uri.isAbsolute()) {
+                     targetIsRemote = true;
+                 } else {
+                     // look in the domain to see if this referenced service is available on this node
+                     // or on some other node
+                     String serviceNode = null;
+                     
+                     SCADomainEventService domainProxy = (SCADomainEventService)nodeFactory.getNode().getDomain();
+ 
+                     try {
+                         serviceNode =
+                             domainProxy.findServiceNode(nodeFactory.getNode().getDomain().getURI(),
+                                                         binding.getURI(),
+                                                         binding.getClass().getName());
+                     } catch (Exception ex) {
+                         logger.log(Level.WARNING, 
+                                    "Unable to contact domain to find service node. Service: "  +
+                                    nodeFactory.getNode().getDomain().getURI() + " " +
+                                    nodeFactory.getNode().getURI() + " " +
+                                    binding.getURI() + " " +
+                                    SCABinding.class.getName());                    
+                         
+                     }
+                     
+                     if (serviceNode.equals(domainProxy.SERVICE_NOT_KNOWN)){
+                         throw new IllegalStateException("Can't resolve : " + component.getName()
+                                                         + " and reference: "
+                                                         + reference.getName()
+                                                         + " as the service "
+                                                         + binding.getURI()
+                                                         + " has not been contributed to the domain"); 
+                     } else if ((serviceNode.equals(domainProxy.SERVICE_NOT_REGISTERED)) ||
+                                (!serviceNode.equals(nodeFactory.getNode().getURI()))){
+                         targetIsRemote = true;
+                     } else { 
+                         targetIsRemote = false;
+                     }
+                 }
+            } catch(Exception ex) {
+                targetIsRemote = false;
+            }
+        }
+        
+/*
+                     // look in the domain for the endpoint. This is the exception rather than the rule but we may
+                     // get to this point if this binding belongs to a reference that has been retrieved from the domain
+                     // and the reference was given a target that is remote or that didn't exist when the reference was requested
+                     String serviceURL = null;
+                     
+                     SCADomainEventService domainProxy = (SCADomainEventService)nodeFactory.getNode().getDomain();
+ 
+                     try {
+                         serviceURL =
+                             domainProxy.findServiceEndpoint(nodeFactory.getNode().getDomain().getURI(),
+                                                             binding.getURI(),
+                                                             binding.getClass().getName());
+                     } catch (Exception ex) {
+                         logger.log(Level.WARNING, 
+                                    "Unable to contact domain to find service. Service: "  +
+                                    nodeFactory.getNode().getDomain().getURI() + " " +
+                                    nodeFactory.getNode().getURI() + " " +
+                                    binding.getURI() + " " +
+                                    SCABinding.class.getName());                    
+                         
+                     }
+                     
+                     if ((serviceURL == null) || serviceURL.equals("")) {
+                         throw new IllegalStateException("Can't resolve : " + component
+                                 .getName()
+                                 + " and reference: "
+                                 + reference.getName()); 
+                     } else {
+                         targetIsRemote = true;
+                         binding.setURI(serviceURL);
+                     }  
+ 
+*/
+
+/*        
+        else {
             // if no target is found then this could be a completely dynamic
             // reference, e.g. a callback, so check the domain to see if the service is available
-            // at this node. The binding uri might be null here if the dynamic reference has been
+            // at this node. The binding uri might be null here if the dynamic reference hasn't been
             // fully configured yet. It won't have all of the information until invocation time
             if ( (nodeFactory != null) && (nodeFactory.getNode() != null) && (binding.getURI() != null)) {
                 SCADomainEventService domainProxy = (SCADomainEventService)nodeFactory.getNode().getDomain();
@@ -112,7 +206,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                     serviceUrl =
                         domainProxy.findServiceEndpoint(nodeFactory.getNode().getDomain().getURI(),
                                                              binding.getURI(),
-                                                             SCABinding.class.getName());
+                                                             binding.getClass().getName());
                 } catch (Exception ex) {
                     logger.log(Level.WARNING, 
                             "Unable to  find service service: "  +
@@ -165,13 +259,50 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                         .createReferenceBindingProvider(component, reference, distributedBinding);
             }
         }
-
+*/
         return targetIsRemote;
+    }
+    
+    private ReferenceBindingProvider getDistributedProvider(){
+
+        // initialize the remote provider if it hasn't been done already
+        if (distributedProvider == null) {
+            if (!reference.getInterfaceContract().getInterface().isRemotable()) {
+                throw new IllegalStateException("Reference interface not remoteable for component: " + component
+                    .getName()
+                    + " and reference: "
+                    + reference.getName());
+            }
+
+            if (distributedProviderFactory == null) {
+                throw new IllegalStateException("No distributed SCA binding available for component: " + component
+                    .getName()
+                    + " and reference: "
+                    + reference.getName());
+            }
+
+            if (nodeFactory.getNode() == null) {
+                throw new IllegalStateException("No distributed domain available for component: " + component
+                    .getName()
+                    + " and reference: "
+                    + reference.getName());
+            }
+
+            // create the remote provider
+            DistributedSCABinding distributedBinding = new DistributedSCABindingImpl();
+            distributedBinding.setSCABinging(binding);
+
+            distributedProvider = distributedProviderFactory
+                    .createReferenceBindingProvider(component, reference, distributedBinding);
+        }
+        
+        return distributedProvider;
+        
     }
 
     public InterfaceContract getBindingInterfaceContract() {
         if (isTargetRemote()) {
-            return distributedProvider.getBindingInterfaceContract();
+            return getDistributedProvider().getBindingInterfaceContract();
         } else {
             return reference.getInterfaceContract();
         }
@@ -179,7 +310,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
 
     public boolean supportsOneWayInvocation() {
         if (isTargetRemote()) {
-            return distributedProvider.supportsOneWayInvocation();
+            return getDistributedProvider().supportsOneWayInvocation();
         } else {
             return false;
         }
@@ -202,7 +333,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
 
     public Invoker createInvoker(Operation operation) {
         if (isTargetRemote()) {
-            return distributedProvider.createInvoker(operation);
+            return getDistributedProvider().createInvoker(operation);
         } else {
             RuntimeWire wire = reference.getRuntimeWire(binding);
             Invoker invoker = getInvoker(wire, operation);
@@ -229,16 +360,6 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         } else {
             started = true;
         }
-
-        //        ComponentService service = ((WireableBinding)binding).getTargetComponentService();
-        //        if (service != null) {
-        //            RuntimeWire wire = reference.getRuntimeWire(binding);
-        //            InterfaceContract interfaceContract = service.getInterfaceContract();
-        //            boolean dynamicService = interfaceContract.getInterface().isDynamic();
-        //            if (!dynamicService) {
-        //                wire.getTarget().setInterfaceContract(interfaceContract);
-        //            }
-        //        }
 
         if (distributedProvider != null) {
             distributedProvider.start();

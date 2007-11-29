@@ -35,7 +35,8 @@ public class PromotionTestCase extends BaseTest {
             // create and start domains
             nodeA = createNode("http://localhost:8100/nodeC");
             nodeB = createNode("http://localhost:8200/nodeD");
-
+            nodeA.start();
+            nodeB.start();
 
         } catch (Exception ex) {
             System.err.println("Exception when creating domain " + ex.getMessage());
