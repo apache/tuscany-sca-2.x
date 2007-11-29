@@ -35,15 +35,20 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.domain.DomainException;
+import org.apache.tuscany.sca.domain.SCADomainAPIService;
 import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.domain.impl.SCADomainImpl;
+import org.apache.tuscany.sca.domain.impl.SCADummyNodeImpl;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
+import org.apache.tuscany.sca.node.NodeFactoryImpl;
 import org.apache.tuscany.sca.node.SCANode;
+import org.apache.tuscany.sca.node.SCANodeSPI;
 import org.apache.tuscany.sca.node.management.SCANodeManagerInitService;
 import org.apache.tuscany.sca.node.management.SCANodeManagerService;
 import org.apache.tuscany.sca.node.util.SCAContributionUtil;
@@ -61,13 +66,13 @@ public class SCADomainProxyImpl extends SCADomainImpl {
     private final static Logger logger = Logger.getLogger(SCADomainProxyImpl.class.getName());
 	    
     // management services
-    private SCADomainEventService domainManagerService;   
+    private SCADomainAPIService domainAPIService; 
+    private SCADomainEventService domainEventService;   
     private SCANodeManagerInitService nodeManagerInitService;
     private CallableReferenceImpl<SCANodeManagerService> nodeManagerService;
         
     // the local node implementation
-    private String nodeURI;
-    private SCANodeImpl nodeImpl;
+    private SCANode node;
        
     // methods defined on the implementation only
           
@@ -108,13 +113,14 @@ public class SCADomainProxyImpl extends SCADomainImpl {
     
     private void createRuntime() throws DomainException {
         try {
-            // check we don;t try to do this twice
+            // check we don't try to do this twice
             if (domainManagementRuntime != null){
                 return;
             }
             
             // if there is no node create a runtime otherwise use the runtime from the node
-            if (nodeImpl == null){
+            if ((node == null) || 
+                ( (node != null) && (node.getClass().equals(SCADummyNodeImpl.class)))){
                 // create a runtime for the domain management services to run on
                 domainManagementRuntime = new ReallySmallRuntime(domainClassLoader);
                 domainManagementRuntime.start();
@@ -125,7 +131,6 @@ public class SCADomainProxyImpl extends SCADomainImpl {
                 String host = InetAddress.getLocalHost().getHostName();
                 ServerSocket socket = new ServerSocket(0);
                 int port = socket.getLocalPort();
-                nodeURI = "http://" + host + ":" + port + path;
                 socket.close();
                 
                 ServletHostExtensionPoint servletHosts = domainManagementRuntime.getExtensionPointRegistry().getExtensionPoint(ServletHostExtensionPoint.class);
@@ -135,18 +140,29 @@ public class SCADomainProxyImpl extends SCADomainImpl {
                         servletHost.setContextPath(path);
                     }
                 }
+                
+                // make the node available to the model
+                // this causes the runtime to start registering binding-sca service endpoints
+                // with the domain proxy
+                // TODO - This code is due to be pulled out and combined with the register and 
+                //        resolution code that appears in this class
+                ModelFactoryExtensionPoint factories = domainManagementRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
+                nodeFactory = new NodeFactoryImpl(node);
+                factories.addFactory(nodeFactory);                
 
                 // Create an in-memory domain level management composite
                 AssemblyFactory assemblyFactory = domainManagementRuntime.getAssemblyFactory();
                 domainManagementComposite = assemblyFactory.createComposite();
                 domainManagementComposite.setName(new QName(Constants.SCA10_NS, "domainManagement"));
                 domainManagementComposite.setURI(domainModel.getDomainURI() + "/Management"); 
+                
+                
             } else {
-                domainManagementRuntime = nodeImpl.getNodeRuntime();
+                domainManagementRuntime = (ReallySmallRuntime)((SCANodeSPI)node).getNodeRuntime();
                 domainManagementComposite = domainManagementRuntime.getCompositeActivator().getDomainComposite();
 
                 // set the context path for the node
-                String path = URI.create(nodeImpl.getURI()).getPath();
+                String path = URI.create(node.getURI()).getPath();
                 if (path != null && path.length() > 0 && !path.equals("/")) {
                     ServletHostExtensionPoint servletHosts = domainManagementRuntime.getExtensionPointRegistry().getExtensionPoint(ServletHostExtensionPoint.class);
                     for (ServletHost servletHost: servletHosts.getServletHosts()) {
@@ -215,7 +231,11 @@ public class SCADomainProxyImpl extends SCADomainImpl {
                     
                     // get the management components out of the domain so that they 
                     // can be configured/used. 
-                    domainManagerService = getService(SCADomainEventService.class, 
+                    domainAPIService = getService(SCADomainAPIService.class, 
+                                                  "SCADomainAPIServiceProxyComponent", 
+                                                  domainManagementRuntime, 
+                                                  domainManagementComposite);
+                    domainEventService = getService(SCADomainEventService.class, 
                                                       "SCADomainEventServiceProxyComponent", 
                                                       domainManagementRuntime, 
                                                       domainManagementComposite); 
@@ -232,7 +252,9 @@ public class SCADomainProxyImpl extends SCADomainImpl {
                                                              domainManagementComposite);
                     
                     // add the registered node now that the runtime is started
-                    addNode();
+                    if ((node != null) && (!node.getClass().equals(SCADummyNodeImpl.class))){
+                        addNode();
+                    }
 
                                                 
                 } else {
@@ -253,11 +275,11 @@ public class SCADomainProxyImpl extends SCADomainImpl {
     
     // SCADomainEventService methods 
     
-    public void addNode(SCANode nodeImpl) throws DomainException {
-        this.nodeImpl = (SCANodeImpl)nodeImpl; 
+    public void addNode(SCANode node) throws DomainException {
+        this.node = node; 
         
         // add the node into the local domain model 
-        super.registerNode(nodeImpl.getURI(), nodeImpl.getURI(), nodeManagerService);
+        super.registerNode(node.getURI(), node.getURI(), nodeManagerService);
         
         // the registration of the node with the domain is delayed until
         // after the runtime has been started
@@ -267,7 +289,7 @@ public class SCADomainProxyImpl extends SCADomainImpl {
     private void addNode() throws DomainException {
 
         // pass this object into the node manager service
-        nodeManagerInitService.setNode(nodeImpl);   
+        nodeManagerInitService.setNode(node);   
         
         if (domainModel.getDomainURL() != null){
             // add the node to the domain
@@ -275,7 +297,7 @@ public class SCADomainProxyImpl extends SCADomainImpl {
             try {
                 // create the node manager endpoint
                 // TODO - we really need to pass in a callable reference
-                URI nodeURI = new URI(nodeImpl.getURI());
+                URI nodeURI = new URI(node.getURI());
                 String nodeHost = nodeURI.getHost();
                 
                 if (nodeHost.equals("localhost")){
@@ -287,7 +309,7 @@ public class SCADomainProxyImpl extends SCADomainImpl {
                                         nodeURI.getPort() + nodeURI.getPath() + "/SCANodeManagerComponent/SCANodeManagerService";
                 
                 // go out and add this node to the wider domain
-                domainManagerService.registerNode(nodeImpl.getURI(), nodeManagerURL, nodeManagerService);
+                domainEventService.registerNode(node.getURI(), nodeManagerURL, nodeManagerService);
 
             } catch(Exception ex) {
                 logger.log(Level.SEVERE,  
@@ -298,16 +320,16 @@ public class SCADomainProxyImpl extends SCADomainImpl {
         }      
     }
     
-    public void removeNode(SCANode nodeImpl) throws DomainException {
+    public void removeNode(SCANode node) throws DomainException {
                 
         // remove the node from the local domain model
-        super.unregisterNode(nodeImpl.getURI());
+        super.unregisterNode(node.getURI());
         
         if (domainModel.getDomainURL() != null){
 
             try {
                 // go out and remove this node to the wider domain
-                domainManagerService.unregisterNode(nodeImpl.getURI());
+                domainEventService.unregisterNode(node.getURI());
             } catch(Exception ex) {
                 logger.log(Level.SEVERE,  
                            "Can't connect to domain manager at: " + 
@@ -319,29 +341,35 @@ public class SCADomainProxyImpl extends SCADomainImpl {
         // remove this object from the node manager service
         nodeManagerInitService.setNode(null);        
         
-        this.nodeImpl = null;
+        this.node = null;
     }  
     
     public void registerContribution(String nodeURI, String contributionURI, String contributionURL) throws DomainException {
         
-        if ((domainModel.getDomainURL() != null) && (domainManagerService != null)){
-            domainManagerService.registerContribution(nodeURI, contributionURI, contributionURL);
+        if ((domainModel.getDomainURL() != null) && (domainEventService != null)){
+            domainEventService.registerContribution(nodeURI, contributionURI, contributionURL);
         }
     }
     
     public void unregisterContribution(String nodeURI, String contributionURI) throws DomainException {
-        if ((domainModel.getDomainURL() != null) && (domainManagerService != null)) {
-            domainManagerService.unregisterContribution(nodeURI, contributionURI);
+        if ((domainModel.getDomainURL() != null) && (domainEventService != null)) {
+            domainEventService.unregisterContribution(nodeURI, contributionURI);
         }
-    }    
+    } 
+
+    public void registerDomainLevelComposite(String nodeURI, String compositeQNameString) throws DomainException{
+        if ((domainModel.getDomainURL() != null) && (domainEventService != null)) {
+            domainEventService.registerDomainLevelComposite(nodeURI, compositeQNameString);
+        }
+    }
      
 
     public void registerServiceEndpoint(String domainURI, String nodeURI, String serviceName, String bindingName, String URL) throws DomainException {
         
         super.registerServiceEndpoint(domainURI, nodeURI, serviceName, bindingName, URL);
         
-        if ((domainModel.getDomainURL() != null) && (domainManagerService != null)) {
-            domainManagerService.registerServiceEndpoint(domainURI, nodeURI, serviceName, bindingName, URL);
+        if ((domainModel.getDomainURL() != null) && (domainEventService != null)) {
+            domainEventService.registerServiceEndpoint(domainURI, nodeURI, serviceName, bindingName, URL);
         } 
     }
    
@@ -349,8 +377,8 @@ public class SCADomainProxyImpl extends SCADomainImpl {
         
         super.unregisterServiceEndpoint(domainURI, nodeURI, serviceName, bindingName);
         
-        if ((domainModel.getDomainURL() != null) && (domainManagerService != null)) {
-            domainManagerService.unregisterServiceEndpoint(domainURI, nodeURI, serviceName, bindingName);
+        if ((domainModel.getDomainURL() != null) && (domainEventService != null)) {
+            domainEventService.unregisterServiceEndpoint(domainURI, nodeURI, serviceName, bindingName);
         } 
     }
      
@@ -358,46 +386,53 @@ public class SCADomainProxyImpl extends SCADomainImpl {
         
         String endpoint = super.findServiceEndpoint(domainURI, serviceName, bindingName);
         
-        if ( (endpoint.equals("")) && (domainModel.getDomainURL() != null) && (domainManagerService != null)){
-            endpoint = domainManagerService.findServiceEndpoint(domainURI, serviceName, bindingName);
+        if ( (endpoint.equals(SERVICE_NOT_REGISTERED)) && (domainModel.getDomainURL() != null) && (domainEventService != null)){
+            endpoint = domainEventService.findServiceEndpoint(domainURI, serviceName, bindingName);
         }
         
         return endpoint;
     }
     
+    public String findServiceNode(String domainURI, String serviceName, String bindingName) throws DomainException {
+        
+        String nodeName = super.findServiceEndpoint(domainURI, serviceName, bindingName);
+        
+        if ( (nodeName.equals(SERVICE_NOT_KNOWN)) && (domainModel.getDomainURL() != null) && (domainEventService != null)){
+            nodeName = domainEventService.findServiceNode(domainURI, serviceName, bindingName);
+        }
+        
+        return nodeName;
+    }
+    
       
     // SCADomain API methods 
     public void start() throws DomainException {
-        try {
-            createRuntime();
-            
-            if (nodeImpl != null){
-                nodeImpl.start();
-            }             
-     
-            
-        } catch(Exception ex) {
-            throw new DomainException(ex);
+                  
+        if ((domainModel.getDomainURL() != null) && (domainAPIService != null)){
+            domainAPIService.start();
+        } else {
+            logger.log(Level.INFO,"Not connected to domain");
         }
     }
     
     public void stop() throws DomainException {
-        try {
-
-            if (nodeImpl != null){
-                nodeImpl.stop();
-            } 
-            
-        } catch (Exception ex) {
-            throw new DomainException(ex);
+        if ((domainModel.getDomainURL() != null) && (domainAPIService != null)){
+            domainAPIService.stop();
+        } else {
+            logger.log(Level.INFO,"Not connected to domain");
         }
     }
     
     public void destroy() throws DomainException {
+/*    
+        if ((domainModel.getDomainURL() != null) && (domainAPIService != null)){
+            domainAPIService.destroyDomain();
+        }
+*/   
+          
+        
         try {
-            if (nodeImpl != null){
-                nodeImpl.destroy();
-            } 
+
             
             if (domainManagementRuntime != null) {
                 Composite composite = domainManagementComposite.getIncludes().get(0);
@@ -413,7 +448,8 @@ public class SCADomainProxyImpl extends SCADomainImpl {
                 domainManagementRuntime = null;
                 domainManagementComposite = null;
                 
-                domainManagerService = null;
+                domainAPIService = null;
+                domainEventService = null;
                 nodeManagerInitService = null;
             }
           
@@ -425,71 +461,91 @@ public class SCADomainProxyImpl extends SCADomainImpl {
  
 
     public void addContribution(String contributionURI, URL contributionURL) throws DomainException {
-        try {
-            nodeImpl.addContribution(contributionURI, contributionURL);
-        } catch(Exception ex) {
-            new DomainException(ex);
+        if ((domainModel.getDomainURL() != null) && (domainAPIService != null)){
+            domainAPIService.addContribution(contributionURI, contributionURL.toString());
+        } else {
+            throw new DomainException("Not connected to domain");
         }
     }
     
     public void updateContribution(String contributionURI, URL contributionURL) throws DomainException {
-        // TODO
+        if ((domainModel.getDomainURL() != null) && (domainAPIService != null)){
+            domainAPIService.updateContribution(contributionURI, contributionURL.toString());
+        } else {
+            throw new DomainException("Not connected to domain");
+        }
     }
 
-    public void removeContribution(String uri) throws DomainException {
-        try {
-            //nodeImpl.removeContributions();
-        } catch(Exception ex) {
-            new DomainException(ex);
+    public void removeContribution(String contributionURI) throws DomainException {
+        if ((domainModel.getDomainURL() != null) && (domainAPIService != null)){
+            domainAPIService.removeContribution(contributionURI);
+        } else {
+            throw new DomainException("Not connected to domain");
         }
     }
     
     public void addDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
-        // TODO 
+        if ((domainModel.getDomainURL() != null) && (domainAPIService != null)){
+            domainAPIService.addDeploymentComposite(contributionURI, compositeXML);
+        } else {
+            throw new DomainException("Not connected to domain");
+        }
     }
     
     public void updateDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
-        // TODO        
+        if ((domainModel.getDomainURL() != null) && (domainAPIService != null)){
+            domainAPIService.updateDeploymentComposite(contributionURI, compositeXML);
+        } else {
+            throw new DomainException("Not connected to domain");
+        }       
     }
     
-    public void addToDomainLevelComposite(QName qname) throws DomainException {
-        try {
-            nodeImpl.addToDomainLevelComposite(qname);
-        } catch(Exception ex) {
-            new DomainException(ex);
+    public void addToDomainLevelComposite(QName compositeQName) throws DomainException {
+        if ((domainModel.getDomainURL() != null) && (domainAPIService != null)){
+            domainAPIService.addToDomainLevelComposite(compositeQName.toString());
+        } else {
+            throw new DomainException("Not connected to domain");
         }
     }
       
-    public void removeFromDomainLevelComposite(QName qname) throws DomainException {
-        try {
-            //nodeImpl.stopComposite();
-        } catch(Exception ex) {
-            new DomainException(ex);
+    public void removeFromDomainLevelComposite(QName compositeQName) throws DomainException {
+        if ((domainModel.getDomainURL() != null) && (domainAPIService != null)){
+            domainAPIService.removeFromDomainLevelComposite(compositeQName.toString());
+        } else {
+            throw new DomainException("Not connected to domain");
         }        
     }    
     
     public String getDomainLevelComposite() throws DomainException {
-        return null;
+        if ((domainModel.getDomainURL() != null) && (domainAPIService != null)){
+            return domainAPIService.getDomainLevelComposite();
+        } else {
+            throw new DomainException("Not connected to domain");
+        }
     }
     
     public String getQNameDefinition(QName artifact) throws DomainException {
-        return null;
+        if ((domainModel.getDomainURL() != null) && (domainAPIService != null)){
+            return domainAPIService.getQNameDefinition(artifact.toString());
+        } else {
+            throw new DomainException("Not connected to domain");
+        }
     }
       
-    public void startComposite(QName qname) throws DomainException {
-        try {
-            nodeImpl.addToDomainLevelComposite(qname);
-        } catch(Exception ex) {
-            new DomainException(ex);
-        }        
+    public void startComposite(QName compositeQName) throws DomainException {
+        if ((domainModel.getDomainURL() != null) && (domainAPIService != null)){
+            domainAPIService.startComposite(compositeQName.toString());
+        } else {
+            logger.log(Level.INFO,"Not connected to domain");
+        }       
     }
       
-    public void stopComposite(QName qname) throws DomainException {
-        try {
-            //nodeImpl.stopComposite();
-        } catch(Exception ex) {
-            new DomainException(ex);
-        }         
+    public void stopComposite(QName compositeQName) throws DomainException {
+        if ((domainModel.getDomainURL() != null) && (domainAPIService != null)){
+            domainAPIService.stopComposite(compositeQName.toString());
+        } else {
+            logger.log(Level.INFO,"Not connected to domain");
+        }       
     } 
        
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {

@@ -95,6 +95,10 @@ public class SCANodeManagerServiceImpl implements SCANodeManagerService, SCANode
     public void destroyNode() throws NodeException {
         node.destroy();
     }    
+    
+    public void setReferenceEndpoint(String refererenceName, String bindingName, String serviceURI) throws NodeException {
+        node.setReferenceEndpoint(refererenceName, bindingName, serviceURI);
+    }
 
     // ComponentManagerService
     

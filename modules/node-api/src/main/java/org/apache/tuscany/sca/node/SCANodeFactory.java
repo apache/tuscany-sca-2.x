@@ -108,7 +108,7 @@ public abstract class SCANodeFactory {
      * group of nodes. For example, in load balancing scnearios this will be the loaded balancer itself
      * @return a new SCA node.
      */
-    public abstract SCANode createSCANode(String nodeURI, String domainURI, String nodeGroupURI) throws NodeException;
+    public abstract SCANode createSCANode(String physicalNodeURI, String domainURI, String logicalNodeURI) throws NodeException;
     
     /**
      * Convenience method to create and start a node and embedded domain

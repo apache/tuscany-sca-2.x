@@ -19,31 +19,12 @@
 
 package org.apache.tuscany.sca.node;
 
-import org.apache.tuscany.sca.domain.DomainException;
-import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.domain.SCADomainSPI;
-
 /**
- * The SPI for a domain proxy
+ * The SPI for a node
  * 
  * @version $Rev: 580520 $ $Date: 2007-09-29 00:50:25 +0100 (Sat, 29 Sep 2007) $
  */
-public interface SCADomainProxySPI  {
+public interface SCANodeSPI {
 
-    /**
-     * Add a node implementation with the domain proxy
-     * 
-     * @param nodeImpl
-     * @throws DomainException
-     */
-    public void addNode(SCANode nodeImpl) throws DomainException;
-        
-    /** 
-     * Remove a node implementation from the domain proxy
-     * 
-     * @param nodeImpl
-     * @throws DomainException
-     */
-    public void removeNode(SCANode nodeImpl) throws DomainException;
-    
+    public Object getNodeRuntime();
 }

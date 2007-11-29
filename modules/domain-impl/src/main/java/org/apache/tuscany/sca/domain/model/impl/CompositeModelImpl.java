@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.domain.model.impl;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.domain.model.CompositeModel;
 
 
@@ -33,6 +34,7 @@ import org.apache.tuscany.sca.domain.model.CompositeModel;
 public class CompositeModelImpl implements CompositeModel {
     
     private QName compositeQName;
+    private Composite composite;
     
     /**
      * Retrieve the composite qname
@@ -51,4 +53,23 @@ public class CompositeModelImpl implements CompositeModel {
     public void setCompositeQName(QName compositeQName) {
         this.compositeQName = compositeQName;
     }
+    
+    /**
+     * Retrieve the assembly composite object
+     * 
+     * @return composite
+     */
+    public Composite getComposite(){
+        return composite;
+    }
+    
+    /** 
+     * Set the assembly composite object
+     * 
+     * @param composite
+     */
+    public void setComposite(Composite composite){    
+        this.composite = composite;
+    }
 }
+

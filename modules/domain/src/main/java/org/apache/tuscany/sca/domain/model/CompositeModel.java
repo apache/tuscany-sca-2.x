@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.domain.model;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Composite;
+
 
 /**
  * A composite. 
@@ -42,5 +44,20 @@ public interface CompositeModel {
      * 
      * @param compositeQName
      */    
-    public void setCompositeQName(QName compositeQName);    
+    public void setCompositeQName(QName compositeQName);  
+    
+    /**
+     * Retrieve the assembly composite object
+     * 
+     * @return composite
+     */
+    public Composite getComposite();
+    
+    /** 
+     * Set the assembly composite object
+     * 
+     * @param composite
+     */
+    public void setComposite(Composite composite);
+ 
 }

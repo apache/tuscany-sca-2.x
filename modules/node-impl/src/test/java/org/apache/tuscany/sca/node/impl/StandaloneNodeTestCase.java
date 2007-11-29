@@ -77,7 +77,7 @@ public class StandaloneNodeTestCase {
 
     @Test
     public void testAddContributionAndStartNode() throws Exception {       
-        node = nodeFactory.createSCANode("http://localhost:8200/node", null);
+        node = nodeFactory.createSCANode("http://localhost:8100/node", null);
         node.addContribution("nodeC", cl.getResource("nodeC/"));
         node.addToDomainLevelComposite(new QName("http://sample", "CalculatorC"));
         node.start();

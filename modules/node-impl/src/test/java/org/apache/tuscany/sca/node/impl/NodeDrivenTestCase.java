@@ -49,7 +49,9 @@ public class NodeDrivenTestCase {
     private static SCADomain domainProxy;
     private static CalculatorService calculatorServiceA;
     private static CalculatorService calculatorServiceB;
-    private static AddService addServiceB;
+    private static AddService addServiceBDomainFinder;
+    private static AddService addServiceBDomainProxy;
+    private static AddService addServiceBDomain;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -84,16 +86,6 @@ public class NodeDrivenTestCase {
             nodeC.addToDomainLevelComposite(new QName("http://sample", "CalculatorC")); 
             nodeC.addToDomainLevelComposite(new QName("http://sample", "CalculatorC"));
             nodeC.start();
-
-            SCADomainFinder domainFinder = SCADomainFinder.newInstance();
-            domainProxy = domainFinder.getSCADomain("http://localhost:9999");
-            
-            // get a reference to various services in the domain
-            calculatorServiceA = nodeA.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentA");
-            calculatorServiceB = nodeB.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentB");
-            
-            //addServiceB = domainProxy.getService(AddService.class, "AddServiceComponentB");
-            addServiceB = nodeA.getDomain().getService(AddService.class, "AddServiceComponentB");
             
         } catch(Exception ex){
             ex.printStackTrace();
@@ -116,7 +108,10 @@ public class NodeDrivenTestCase {
     }    
 
     @Test
-    public void testCalculator() throws Exception {       
+    public void testDomainProxyNode() throws Exception {   
+        // the domain proxy associated with each node used to get local services
+        calculatorServiceA = nodeA.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentA");
+        calculatorServiceB = nodeB.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentB");
         
         // Calculate
         Assert.assertEquals(calculatorServiceA.add(3, 2), 5.0);
@@ -127,7 +122,31 @@ public class NodeDrivenTestCase {
         Assert.assertEquals(calculatorServiceB.subtract(3, 2), 1.0);
         Assert.assertEquals(calculatorServiceB.multiply(3, 2), 6.0);
         Assert.assertEquals(calculatorServiceB.divide(3, 2), 1.5);
-        Assert.assertEquals(addServiceB.add(3, 2), 5.0);
         
+        // the domain proxy associate with each node used to get remote services
+        addServiceBDomainProxy = nodeA.getDomain().getService(AddService.class, "AddServiceComponentB");
+        
+        Assert.assertEquals(addServiceBDomainProxy.add(3, 2), 5.0);        
     }
+    
+    @Test
+    public void testDomain() throws Exception {
+        // the domain itself 
+        addServiceBDomain = domain.getService(AddService.class, "AddServiceComponentB");
+
+        Assert.assertEquals(addServiceBDomain.add(3, 2), 5.0);
+    }    
+    
+    @Test
+    public void testDomainProxyFinder() throws Exception {
+        // the domain proxy retrieved via the domain finder
+        SCADomainFinder domainFinder = SCADomainFinder.newInstance();
+        domainProxy = domainFinder.getSCADomain("http://localhost:9999");
+        addServiceBDomainFinder = domainProxy.getService(AddService.class, "AddServiceComponentB");
+  
+        Assert.assertEquals(addServiceBDomainFinder.add(3, 2), 5.0);
+        
+        System.out.println(domainProxy.getDomainLevelComposite());
+    }
+      
 }
