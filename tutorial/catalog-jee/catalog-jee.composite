@@ -19,10 +19,10 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
    targetNamespace="http://store"
-   name="catalog-ejb">
+   name="catalog-jee">
 
-    <component name="VegetablesCatalog">
-        <implementation.ejb ejb-link="veggie-ejb.jar#CatalogEJB"/> 
+    <component name="JEEVegetablesCatalog">
+        <implementation.ejb ejb-link="catalog-ejb.jar#CatalogEJB"/> 
         <service name="Catalog">
             <binding.ejb uri="CatalogEJB"/>
         </service>

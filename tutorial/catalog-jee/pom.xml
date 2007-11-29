@@ -25,8 +25,8 @@
         <version>1.1-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tutorial-catalog-ejb</artifactId>
-    <name>Apache Tuscany SCA Tutorial Online Store Catalog EJB</name>
+    <artifactId>tutorial-catalog-jee</artifactId>
+    <name>Apache Tuscany SCA Tutorial Catalog EJB Service</name>
 
     <repositories>
        <repository>
