@@ -216,6 +216,14 @@ public class DirectedGraph<V, E> {
     }
 
     public Edge getEdge(V source, V target) {
+        Vertex sv = getVertex(source);
+        if (sv == null) {
+            return null;
+        }
+        Vertex tv = getVertex(target);
+        if (tv == null) {
+            return null;
+        }
         return getEdge(getVertex(source), getVertex(target));
     }
 
