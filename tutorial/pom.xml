@@ -38,6 +38,7 @@
             <modules>
                 <module>assets</module>
                 <module>cloud</module>
+                <module>catalog-jee</module>
                 <module>store</module>
                 <module>store-eu</module>
                 <module>www-cloud</module>
