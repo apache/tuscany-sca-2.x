@@ -19,28 +19,21 @@
 
 package org.apache.tuscany.sca.runtime.tomcat;
 
-import org.apache.catalina.Context;
-import org.apache.catalina.Lifecycle;
-import org.apache.catalina.LifecycleEvent;
-import org.apache.catalina.LifecycleListener;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 
 /**
+ * Activates the Tomcat ServletHost by registering the Tomcat ServletHost impl
  */
-public class TuscanyContextListener implements LifecycleListener {
+public class TomcatModuleActivator implements ModuleActivator {
 
-    public void lifecycleEvent(LifecycleEvent event) {
-        String type = event.getType();
-        if (Lifecycle.AFTER_START_EVENT.equals(type)) {
-            startContext((Context) event.getLifecycle());
-        } else if (Lifecycle.STOP_EVENT.equals(type)) {
-            stopContext((Context) event.getLifecycle());
-        }
+    public void start(ExtensionPointRegistry epr) {
+        ServletHostExtensionPoint servletHosts = epr.getExtensionPoint(ServletHostExtensionPoint.class);
+        servletHosts.addServletHost(TomcatServletHost.getInstance());
     }
 
-    protected void startContext(Context context) {
-    }
-
-    protected void stopContext(Context context) {
+    public void stop(ExtensionPointRegistry registry) {
     }
 
 }

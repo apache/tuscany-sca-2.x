@@ -19,28 +19,27 @@
 
 package org.apache.tuscany.sca.runtime.tomcat;
 
-import org.apache.catalina.Context;
-import org.apache.catalina.Lifecycle;
-import org.apache.catalina.LifecycleEvent;
-import org.apache.catalina.LifecycleListener;
+import javax.servlet.Servlet;
+
+import org.apache.catalina.core.StandardWrapper;
 
 /**
  */
-public class TuscanyContextListener implements LifecycleListener {
+public class TuscanyWrapper extends StandardWrapper {
+    private static final long serialVersionUID = 1L;
 
-    public void lifecycleEvent(LifecycleEvent event) {
-        String type = event.getType();
-        if (Lifecycle.AFTER_START_EVENT.equals(type)) {
-            startContext((Context) event.getLifecycle());
-        } else if (Lifecycle.STOP_EVENT.equals(type)) {
-            stopContext((Context) event.getLifecycle());
-        }
+    private final Servlet servlet;
+
+    public TuscanyWrapper(Servlet servlet) {
+        super();
+        this.servlet = servlet;
     }
 
-    protected void startContext(Context context) {
+    public synchronized Servlet loadServlet() {
+        return servlet;
     }
 
-    protected void stopContext(Context context) {
+    public Servlet getServlet() {
+        return servlet;
     }
-
 }
