@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.domain.impl;
 import java.io.Externalizable;
 import java.net.URL;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.domain.SCADomainFactory;
@@ -44,7 +46,7 @@ import calculator.CalculatorService;
 public class DomainImplTestCase {
 
     private static SCADomain domain;
-    private static SCADomainEventService domainSPI;
+    private static SCADomainEventService domainEventService;
     private static ClassLoader cl;
 
     @BeforeClass
@@ -54,7 +56,7 @@ public class DomainImplTestCase {
             cl = DomainImplTestCase.class.getClassLoader();
             SCADomainFactory domainFactory = SCADomainFactory.newInstance();
             domain = domainFactory.createSCADomain("http://localhost:9999"); 
-            domainSPI = (SCADomainEventService)domain;
+            domainEventService = (SCADomainEventService)domain;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -71,12 +73,12 @@ public class DomainImplTestCase {
     }  
     
     @Test
-    public void testAddNode() throws Exception { 
+    public void testRegisterNodes() throws Exception { 
         CallableReference<SCANodeManagerService> node1Ref = new TestCallableReferenceImpl<SCANodeManagerService>();
-        domainSPI.registerNode("http://localhost:8100/mynode1", "http://localhost:9999", (Externalizable)node1Ref);
+        domainEventService.registerNode("http://localhost:8100/mynode1", "http://localhost:9999", (Externalizable)node1Ref);
         
         CallableReference<SCANodeManagerService> node2Ref = new TestCallableReferenceImpl<SCANodeManagerService>();
-        domainSPI.registerNode("http://localhost:8200/mynode2", "http://localhost:9999", (Externalizable)node2Ref);
+        domainEventService.registerNode("http://localhost:8200/mynode2", "http://localhost:9999", (Externalizable)node2Ref);
     }
     
     @Test
@@ -87,7 +89,18 @@ public class DomainImplTestCase {
     @Test
     public void testAddContributionWithoutMetaData() throws Exception {    
         domain.addContribution("contributionNodeB", cl.getResource("nodeB/"));
-    }    
+    }  
+    
+    @Test
+    public void testAddToDomainLevelComposite() throws Exception {    
+        domain.addToDomainLevelComposite(new QName("http://sample", "CalculatorA"));
+    } 
+    
+    @Test
+    public void testStartComposite() throws Exception {   
+        domain.startComposite(new QName("http://sample", "CalculatorA"));
+    }
+    
     
     @Test
     public void testRemoveContributions() throws Exception { 
@@ -96,9 +109,9 @@ public class DomainImplTestCase {
     }   
     
     @Test
-    public void testRemoveNodes() throws Exception { 
-        domainSPI.unregisterNode("http://localhost:8100/mynode1");
-        domainSPI.unregisterNode("http://localhost:8200/mynode2");
+    public void testUnregisterNodes() throws Exception { 
+        domainEventService.unregisterNode("http://localhost:8100/mynode1");
+        domainEventService.unregisterNode("http://localhost:8200/mynode2");
     }     
     
     //@Test

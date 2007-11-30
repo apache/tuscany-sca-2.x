@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.domain.model.NodeModel;
 import org.apache.tuscany.sca.domain.model.ServiceModel;
 
 /**
- * A node. Runs SCA composites
+ * The factory used to create model elements
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */

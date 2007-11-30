@@ -75,8 +75,9 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
     // identity and endpoints for the node and the domain it belongs to
     private String nodeURI;
     private URL nodeURL;
+    private String logicalNodeURI;
     private String domainURI; 
-    private String nodeGroupURI;
+
 
     // The tuscany runtime that does the hard work
     private ReallySmallRuntime nodeRuntime;
@@ -113,10 +114,10 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
      * group of nodes. For example, in load balancing scenarios this will be the loaded balancer itself 
      * @throws ActivationException
      */
-    public SCANodeImpl(String nodeURI, String domainURI, String nodeGroupURI) throws NodeException {
+    public SCANodeImpl(String physicalNodeURI, String domainURI, String logicalNodeURI) throws NodeException {
         this.domainURI = domainURI;
-        this.nodeURI = nodeURI;
-        this.nodeGroupURI = nodeGroupURI;
+        this.nodeURI = physicalNodeURI;
+        this.logicalNodeURI = logicalNodeURI;
         this.nodeClassLoader = Thread.currentThread().getContextClassLoader();        
         init();
     }    
@@ -132,10 +133,10 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
      * @param cl - the ClassLoader to use for loading system resources for the node
      * @throws ActivationException
      */
-    public SCANodeImpl(String nodeURI, String domainURI, String nodeGroupURI, ClassLoader cl) throws NodeException {
+    public SCANodeImpl(String physicalNodeURI, String domainURI, String logicalNodeURI, ClassLoader cl) throws NodeException {
         this.domainURI = domainURI;
         this.nodeURI = nodeURI;
-        this.nodeGroupURI = nodeGroupURI;
+        this.logicalNodeURI = logicalNodeURI;
         this.nodeClassLoader = cl;
         init();
     }    
@@ -450,40 +451,40 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
         return deployable;
     }
     
-    public void addToDomainLevelComposite(QName compositeName) throws NodeException {
+    public void addToDomainLevelComposite(QName compositeQName) throws NodeException {
         
         if (nodeStarted){
-            throw new NodeException("Can't add composite " + compositeName.toString() + " when the node is running. Call stop() on the node first");
+            throw new NodeException("Can't add composite " + compositeQName.toString() + " when the node is running. Call stop() on the node first");
         }
        
         // if no composite name is specified add all deployable composites
         // to the domain
-        if (compositeName == null){
-            for (Contribution contribution : contributions.values()){
-                for (Composite composite : contribution.getDeployables()) {
-                    if (!nodeComposite.getIncludes().contains(composite)) {
-                        nodeComposite.getIncludes().add(composite);
-                        
-                        try {
-                            // register the composite with the domain
-                            ((SCADomainProxyImpl)scaDomain).registerDomainLevelComposite(nodeURI, composite.getName().toString());                  
-                        
-                        } catch (Exception ex) {
-                            throw new NodeException(ex);
-                        }                        
-                    }
-                } 
-            }
+        if (compositeQName == null){
+            for (Composite composite : composites.values()) {
+                if (!nodeComposite.getIncludes().contains(composite)) {
+                    nodeComposite.getIncludes().add(composite);
+                    
+                    try {
+                        // register the composite with the domain
+                        ((SCADomainProxyImpl)scaDomain).registerDomainLevelComposite(nodeURI, composite.getName().toString());                  
+                    
+                    } catch (Exception ex) {
+                        throw new NodeException(ex);
+                    }                        
+                }
+            } 
         } else {          
-            Composite composite = composites.get(compositeName);
+            Composite composite = composites.get(compositeQName);
             
             if (composite == null) {
-                throw new NodeException("Composite " + compositeName.toString() + " not found" );
+                throw new NodeException("Composite " + compositeQName.toString() + " not found" );
             }
             
+            /* being marked as deployable is only an indicator and shouldn;t be enforced             
             if ( !isDeployable(composite)){
-                throw new NodeException("Composite " + compositeName.toString() + " is not deployable");
+                throw new NodeException("Composite " + compositeQName.toString() + " is not deployable");
             }
+            */
             
             // if the named composite is not already in the list then deploy it
             if (!nodeComposite.getIncludes().contains(composite)) {
@@ -498,15 +499,9 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
                 }                 
             }
         }  
-        
-        
     }
     
     public void addToDomainLevelComposite(String compositePath) throws NodeException {
-        
-        if (nodeStarted){
-            throw new NodeException("Can't add composite " + compositePath + " when the node is running. Call stop() on the node first");
-        }
        
         if (compositePath == null){
             throw new NodeException("Composite path cannot be null");
@@ -514,26 +509,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
                  
         Composite composite = compositeFiles.get(compositePath);
         
-        if (composite == null) {
-            throw new NodeException("Composite file " + compositePath + " not found");
-        }     
-      
-        if ( !isDeployable(composite)){
-            throw new NodeException("Composite " + compositePath + " is not deployable");
-        }            
-        
-        // if the named composite is not already in the list then deploy it
-        if (!nodeComposite.getIncludes().contains(composite)) {
-            nodeComposite.getIncludes().add(composite);
-            
-            try {
-                // register the composite with the domain
-                ((SCADomainProxyImpl)scaDomain).registerDomainLevelComposite(nodeURI, composite.getName().toString());                  
-            
-            } catch (Exception ex) {
-                throw new NodeException(ex);
-            }             
-        }
+        addToDomainLevelComposite(composite.getName());
     }
 
     /**
@@ -545,7 +521,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
      * without URIs 
      */    
     private void configureDefaultPort() {
-        Composite composite = composites.get(nodeComposite.getIncludes().get(0));
+        Composite composite = nodeComposite.getIncludes().get(1);
         if (composite == null) {
             return;
         }

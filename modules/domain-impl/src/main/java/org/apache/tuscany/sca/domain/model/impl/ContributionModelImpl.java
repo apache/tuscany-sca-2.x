@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.domain.model.CompositeModel;
 import org.apache.tuscany.sca.domain.model.ContributionModel;
 
 /**
- * A contribution.
+ * A wrapper for the contribution 
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
@@ -41,6 +41,7 @@ public class ContributionModelImpl implements ContributionModel {
     private String contributionURL;
     private Map<QName, CompositeModel> composites = new HashMap<QName, CompositeModel>();   
     private Map<QName, CompositeModel> deployableComposites = new HashMap<QName, CompositeModel>();
+    private Map<QName, CompositeModel> deployedComposites = new HashMap<QName, CompositeModel>();
     
     /**
      * Retrieve the contribution object
@@ -102,5 +103,9 @@ public class ContributionModelImpl implements ContributionModel {
     
     public Map<QName, CompositeModel> getDeployableComposites(){
         return deployableComposites;
-    }    
+    }
+    
+    public Map<QName, CompositeModel> getDeployedComposites(){
+        return deployedComposites;
+    }
 }

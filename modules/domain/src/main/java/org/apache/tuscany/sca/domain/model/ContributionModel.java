@@ -75,5 +75,6 @@ public interface ContributionModel {
     public void setContributionURL(String contributionURL);
     
     public Map<QName, CompositeModel> getComposites();       
-    public Map<QName, CompositeModel> getDeployableComposites();   
+    public Map<QName, CompositeModel> getDeployableComposites(); 
+    public Map<QName, CompositeModel> getDeployedComposites(); 
 }

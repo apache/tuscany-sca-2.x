@@ -31,7 +31,8 @@ import org.apache.tuscany.sca.domain.model.DomainModel;
 
 
 /**
- * A domain. Manages nodes
+ * A model of the domain and the artifacts that it managers. Acts as a holder for the 
+ * various other tuscany models involved
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
