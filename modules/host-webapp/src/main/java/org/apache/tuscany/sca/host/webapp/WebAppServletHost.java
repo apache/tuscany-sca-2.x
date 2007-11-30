@@ -176,7 +176,7 @@ public class WebAppServletHost implements ServletHost {
         return null;
     }
     
-    static WebAppServletHost getInstance() {
+    public static WebAppServletHost getInstance() {
         return instance;
     }
 
@@ -218,7 +218,7 @@ public class WebAppServletHost implements ServletHost {
      * containers use an init parameter.
      */
     @SuppressWarnings("unchecked")
-    protected void initContextPath(ServletConfig config) {
+    public void initContextPath(ServletConfig config) {
         if (Collections.list(config.getInitParameterNames()).contains("contextPath")) {
             contextPath = config.getInitParameter("contextPath");
         } else {
