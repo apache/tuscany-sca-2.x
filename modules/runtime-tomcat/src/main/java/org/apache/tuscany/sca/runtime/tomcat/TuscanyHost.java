@@ -20,17 +20,15 @@
 package org.apache.tuscany.sca.runtime.tomcat;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 
 import org.apache.catalina.Container;
-import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.StandardContext;
@@ -55,6 +53,8 @@ public class TuscanyHost extends StandardHost {
     private static final String REPO = "../sca-contributions";
 
     protected Launcher launcher;
+
+    private String contextPath = "/tuscany";
     
     public synchronized void start() throws LifecycleException {
         startRuntime();
@@ -69,8 +69,6 @@ public class TuscanyHost extends StandardHost {
     private void startRuntime() {
         System.out.println("XXXXXXXX TomcatHost.startRuntime");
         
-        TomcatServletHost.getInstance().setTuscanyHost(this);
-
         addTuscany();
         
         launcher = new Launcher(new File(REPO));
@@ -84,41 +82,18 @@ public class TuscanyHost extends StandardHost {
 
     private void addTuscany() {
         StandardContext tc = new TuscanyContext();
-        tc.setPath("/tuscany");
+        tc.setPath(contextPath);
         tc.setDocBase("tuscany");
         super.addChild(tc);
-    }
-
-    public void registerMapping(String mapping, Servlet servlet) {
-        Context ctx = map(mapping);
-        if (ctx == null) {
-            throw new UnsupportedOperationException("Cannot find context for mapping " + mapping);
-        }
-        String contextPath = ctx.getPath();
-
-        mapping = mapping.substring(contextPath.length());
-        Wrapper wrapper = new TuscanyWrapper(servlet);
-        wrapper.setName(mapping);
-        ctx.addChild(wrapper);
-        wrapper.addMapping(mapping);
-        ctx.getMapper().addWrapper(mapping, wrapper, false);
-    }
-
-    public Servlet unregisterMapping(String mapping) {
-        Context ctx = map(mapping);
-        if (ctx == null) {
-            throw new UnsupportedOperationException("Cannot find context for mapping " + mapping);
-        }
-        String contextPath = ctx.getPath();
-
-        mapping = mapping.substring(contextPath.length());
         
-        TuscanyWrapper wrapper = (TuscanyWrapper) ctx.findChild(mapping);
-        ctx.getMapper().removeWrapper(mapping);
-        ctx.removeChild(wrapper);
-
-        return wrapper.getServlet();
+        TuscanyServlet s = new TuscanyServlet();
+        s.init(new MockServletConfig(contextPath));
+        Wrapper wrapper = new TuscanyWrapper(s);
+        wrapper.setName("TuscanyServlet");
+        tc.addChild(wrapper);
+        tc.addServletMapping("/*", "TuscanyServlet", true);
     }
+
     private void stopRuntime() {
         System.out.println("XXXXXXXX TomcatHost.stopRuntime");
         if (launcher != null) {
@@ -138,12 +113,30 @@ public class TuscanyHost extends StandardHost {
 
 }
 
-class TestServlet extends HttpServlet {
-    public void doGet(HttpServletRequest request,
-                      HttpServletResponse response)
-        throws ServletException, IOException {
-      PrintWriter out = response.getWriter();
-      out.println("hi!");
+class MockServletConfig implements ServletConfig {
+
+    Map<String, String> initParams;
+    
+    public MockServletConfig(String contextPath) {
+        initParams = new HashMap<String, String>();
+        initParams.put("contextPath", contextPath);
+    }
+
+    public String getInitParameter(String initParam) {
+        return initParams.get(initParam);
+    }
+
+    @SuppressWarnings("unchecked")
+    public Enumeration getInitParameterNames() {
+        return Collections.enumeration(initParams.keySet());
+    }
+
+    public ServletContext getServletContext() {
+        return null;
+    }
+
+    public String getServletName() {
+        return null;
     }
     
 }
