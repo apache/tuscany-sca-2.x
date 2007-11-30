@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.tools.ant.generator.plugin;
+package org.apache.tuscany.sca.tools.ant.generator.plugin;
 
 import java.io.File;
 import java.io.FileNotFoundException;
