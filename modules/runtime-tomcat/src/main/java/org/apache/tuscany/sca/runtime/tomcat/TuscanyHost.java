@@ -83,7 +83,6 @@ public class TuscanyHost extends StandardHost {
     private void addTuscany() {
         StandardContext tc = new TuscanyContext();
         tc.setPath(contextPath);
-        tc.setDocBase("tuscany");
         super.addChild(tc);
         
         TuscanyServlet s = new TuscanyServlet();
