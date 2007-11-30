@@ -19,14 +19,28 @@
 
 package org.apache.tuscany.sca.runtime.tomcat;
 
+import java.io.File;
+import java.net.MalformedURLException;
+
+import javax.xml.namespace.QName;
+
 import org.apache.catalina.Context;
 import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleListener;
+import org.apache.catalina.core.StandardContext;
+import org.apache.tuscany.sca.node.NodeException;
+import org.apache.tuscany.sca.node.SCANode;
 
 /**
  */
 public class TuscanyContextListener implements LifecycleListener {
+
+    private SCANode node;
+
+    public TuscanyContextListener(SCANode node) {
+        this.node = node;
+    }
 
     public void lifecycleEvent(LifecycleEvent event) {
         String type = event.getType();
@@ -38,6 +52,23 @@ public class TuscanyContextListener implements LifecycleListener {
     }
 
     protected void startContext(Context context) {
+        StandardContext sc = (StandardContext) context;
+        String path = sc.getServletContext().getRealPath("/");
+        System.out.println(path);
+        try {
+            node.stop();
+            node.addContribution(path, new File(path).toURL());
+            node.addToDomainLevelComposite((QName)null);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (NodeException e) {
+            e.printStackTrace();
+        }
+        try {
+            node.start();
+        } catch (NodeException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void stopContext(Context context) {

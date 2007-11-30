@@ -106,7 +106,7 @@ public class TuscanyHost extends StandardHost {
             throw new IllegalArgumentException(sm.getString("tuscanyHost.notContext"));
         }
         StandardContext ctx = (StandardContext) child;
-        ctx.addLifecycleListener(new TuscanyContextListener());
+        ctx.addLifecycleListener(new TuscanyContextListener(launcher.getSCANode()));
         super.addChild(child);
     }
 
