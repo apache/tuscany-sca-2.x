@@ -33,6 +33,7 @@ import javax.xml.namespace.QName;
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
 public interface NodeModel {
+    public enum LifecyleState {AVAILABLE, DEPLOYED, RUNNING, UNAVAILABLE }; 
     
     /**
      * Retrieve the node uri

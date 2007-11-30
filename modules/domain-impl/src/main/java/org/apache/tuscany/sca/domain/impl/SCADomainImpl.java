@@ -100,7 +100,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
     protected Contribution domainManagementContribution;
     protected Composite domainManagementComposite;
     
-    // the logice for wiring up references and services at the domain level
+    // the logic for wiring up references and services at the domain level
     protected DomainWireBuilderImpl domainWireBuilder = new DomainWireBuilderImpl();
     
     // Used to pipe dummy node information into the domain management runtime
@@ -279,9 +279,6 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             if ( domainModel.getContributions().containsKey(contributionURI) == false ){
                 contributionModel = parseContribution(contributionURI, contributionURL);
 
-                // add contribution to the domain
-                domainModel.getContributions().put(contributionURI, contributionModel);
-
                 // assign the contribution to the referenced node
                 NodeModel node = domainModel.getNodes().get(nodeURI);
                 
@@ -305,7 +302,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                 ContributionModel contributionModel = domainModel.getContributions().get(contributionURI);
                 
                 // remove deployed composites
-                for (QName compositeQName : contributionModel.getDeployableComposites().keySet()){
+                for (QName compositeQName : contributionModel.getDeployedComposites().keySet()){
                     domainModel.getDeployedComposites().remove(compositeQName);
                 }
                     
@@ -313,10 +310,15 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                 domainModel.getContributions().remove(contributionURI);
 
                 // remove the contribution from the referenced node
-                NodeModel node = domainModel.getNodes().get(nodeURI);
+                NodeModel nodeModel = domainModel.getNodes().get(nodeURI);
                 
-                if ((node != null)) {
-                    node.getContributions().remove(contributionURI);
+                if ((nodeModel != null)) {
+                    nodeModel.getContributions().remove(contributionURI);
+                    
+                    // remove deployed composites
+                    for (QName compositeQName : contributionModel.getDeployedComposites().keySet()){
+                        nodeModel.getDeployedComposites().remove(compositeQName);
+                    }
                 } 
             }            
  
@@ -329,21 +331,24 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
     
     public void registerDomainLevelComposite(String nodeURI, String compositeQNameString) throws DomainException{
         try {
-            // get the composite from the node
-            NodeModel node = domainModel.getNodes().get(nodeURI);
-            
             QName compositeQName = QName.valueOf(compositeQNameString);
             
-            if (node != null) {
-                for (ContributionModel contributionModel : node.getContributions().values()){
-                    CompositeModel compositeModel = contributionModel.getComposites().get(compositeQName);
-                    
-                    if (compositeModel != null){
-                        node.getDeployedComposites().put(compositeQName, compositeModel);
-                        domainModel.getDeployedComposites().put(compositeQName, compositeModel);
+            if (!domainModel.getDeployedComposites().containsKey(compositeQName)){
+                // get the composite from the node
+                NodeModel node = domainModel.getNodes().get(nodeURI);
+                
+                if (node != null) {
+                    for (ContributionModel contributionModel : node.getContributions().values()){
+                        CompositeModel compositeModel = contributionModel.getComposites().get(compositeQName);
+                        
+                        if (compositeModel != null){
+                            contributionModel.getDeployedComposites().put(compositeQName, compositeModel);
+                            node.getDeployedComposites().put(compositeQName, compositeModel);
+                            domainModel.getDeployedComposites().put(compositeQName, compositeModel);
+                        }
                     }
-                }
-            }             
+                }   
+            }
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Exception when registering domain level composite " + 
                                      nodeURI +  " " +
@@ -401,7 +406,6 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         logger.log(Level.FINE, "Removed service: " +  serviceName );   
         
         notifyServiceChange(serviceName);
-        
     }
     
     private void notifyServiceChange(String serviceName) {
@@ -515,8 +519,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
     
     public void destroy() throws DomainException {
         try {
-            // Stop and destroy all nodes
-            // this should unregister all nodes
+            // Stop and destroy all nodes. This should unregister all nodes
             
             //Get all nodes out of the domain. Destroying them will cause them to 
             //call back to the domain to unregister so we need to avoid concurrent updates
@@ -557,7 +560,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             factories.removeFactory(nodeFactory); 
             nodeFactory.setNode(null);
             
-            // Stop the node
+            // Stop the SCA runtime that the domain is using
             domainManagementRuntime.stop();
                         
         } catch(ActivationException ex) {
@@ -603,11 +606,18 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             //        are working quite right
             addContribution(contributionURI, contributionURL);
             
-            // automatically add the domain level composites back into the domain
-            // from the updated composite
-            ContributionModel contributionModel = domainModel.getContributions().get(contributionURI);
-            for (CompositeModel compositeModel : contributionModel.getDeployableComposites().values()){
-                addToDomainLevelComposite(compositeModel.getCompositeQName());
+            // add the deployed composites back into the domain if they still exist
+            // if they don't then the user will have to add and start any new composites manually
+            for (QName compositeQName : deployedCompositeNames) {
+                // make sure the composite still exists
+                CompositeModel compositeModel = findComposite(compositeQName);
+           
+                if (compositeModel != null){
+                    addToDomainLevelComposite(compositeModel.getCompositeQName());
+                } else {
+                    // the composite has been removed from the contribution 
+                    // by the update
+                }
             }
             
             // automatically start all the composites
@@ -623,7 +633,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             // get the contribution model
             ContributionModel contributionModel = domainModel.getContributions().get(contributionURI);
             
-            // remove deployed composites
+            // remove potentially deployed composites
             for (QName compositeQName : contributionModel.getDeployableComposites().keySet()){
                 domainModel.getDeployedComposites().remove(compositeQName);
             }
@@ -654,6 +664,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                         }
                         
                         node.getContributions().clear();
+                        node.getDeployedComposites().clear();
                     } catch (Exception ex) {
                         // TODO - collate errors and report
                         ex.printStackTrace();
@@ -675,19 +686,22 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         // find this composite and add the composite as a deployed composite
         
         for (ContributionModel contribution : domainModel.getContributions().values()){
-            CompositeModel composite = contribution.getDeployableComposites().get(compositeName);
+            CompositeModel composite = contribution.getComposites().get(compositeName);
             if (composite != null) {
                 domainModel.getDeployedComposites().put(compositeName, composite);
             }
         }
     }
       
-    public void removeFromDomainLevelComposite(QName compositeName) throws DomainException {
+    public void removeFromDomainLevelComposite(QName compositeQName) throws DomainException {
 
-        domainModel.getDeployedComposites().remove(compositeName);
+        domainModel.getDeployedComposites().remove(compositeQName);
+        
+        ContributionModel contributionModel = findContributionFromComposite(compositeQName);
+        contributionModel.getDeployedComposites().remove(compositeQName);
         
         for(NodeModel node : domainModel.getNodes().values()) {
-            if ( node.getDeployedComposites().containsValue(compositeName)){
+            if ( node.getDeployedComposites().containsValue(compositeQName)){
                 try {
                     if (node.getIsRunning()) {
                         ((NodeModelImpl)node).getSCANodeManagerService().stop();
@@ -695,7 +709,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                     }
                     // TODO - how to remove it from the node???
                     
-                    node.getDeployedComposites().remove(compositeName);
+                    node.getDeployedComposites().remove(compositeQName);
                 } catch (Exception ex) {
                     // TODO - collate errors and report
                     ex.printStackTrace();
@@ -750,27 +764,21 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         return artifactString;
     }
       
-    public void startComposite(QName compositeName) throws DomainException {
+    public void startComposite(QName compositeQName) throws DomainException {
         
         // find the composite object from the list of deployed composites
-        CompositeModel compositeModel = domainModel.getDeployedComposites().get(compositeName);
+        CompositeModel compositeModel = domainModel.getDeployedComposites().get(compositeQName);
         
         if (compositeModel == null){
-            throw new DomainException("Can't start composite " + compositeName.toString() +
+            throw new DomainException("Can't start composite " + compositeQName.toString() +
                                       " as it hasn't been added to the domain level composite");
         }
         
-        ContributionModel contributionModel = null;
-        
         // find the contribution that has this composite
-        for (ContributionModel tmpContributionModel : domainModel.getContributions().values()){
-            if (tmpContributionModel.getDeployableComposites().containsKey(compositeName)){
-                contributionModel = tmpContributionModel;
-            }
-        }
+        ContributionModel contributionModel = findContributionFromComposite(compositeQName);
         
         if (contributionModel == null){
-            throw new DomainException("Can't find contribution for composite " + compositeName.toString());
+            throw new DomainException("Can't find contribution for composite " + compositeQName.toString());
         }
          
         List<Contribution> dependentContributions = new ArrayList<Contribution>();
@@ -788,13 +796,13 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                                                 domainModel.getContributions().get(tmpContribution.getURI()));
                 }
                 
-                node.getDeployedComposites().put(compositeName, compositeModel);
+                node.getDeployedComposites().put(compositeQName, compositeModel);
                 break;
             }
         }      
         
         if (node == null){
-            throw new DomainException("No free node available to run composite "  + compositeName.toString());
+            throw new DomainException("No free node available to run composite "  + compositeQName.toString());
         }        
         
         try {
@@ -808,15 +816,12 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             }
     
             // deploy composite
-            ((NodeModelImpl)node).getSCANodeManagerService().addToDomainLevelComposite(compositeName.toString());
+            ((NodeModelImpl)node).getSCANodeManagerService().addToDomainLevelComposite(compositeQName.toString());
             
             // start node
             ((NodeModelImpl)node).getSCANodeManagerService().start();
             node.setIsRunning(true);
-            
-            // TODO
-            // somewhere we need to add the deployed composites into the node model 
-            
+                        
         } catch (Exception ex) {
             throw new DomainException(ex);
         }
@@ -845,6 +850,32 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                 }                
             }
         }     
+    }
+    
+    private ContributionModel findContributionFromComposite(QName compositeQName){
+        ContributionModel returnContributionModel = null;
+        
+        for(ContributionModel contributionModel : domainModel.getContributions().values()){            
+            if (contributionModel.getComposites().containsKey(compositeQName)){
+                returnContributionModel = contributionModel;
+            }
+        }
+        
+        return returnContributionModel;
+    }
+    
+    private CompositeModel findComposite(QName compositeQName){
+        CompositeModel returnCompositeModel = null;
+        
+        for(ContributionModel contributionModel : domainModel.getContributions().values()){
+            returnCompositeModel = contributionModel.getComposites().get(compositeQName);
+            
+            if (returnCompositeModel != null){
+                break;
+            }
+        }
+        
+        return returnCompositeModel;
     }
     
     // Recursively look for contributions that contain included artifacts. Deepest dependencies
@@ -900,12 +931,21 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             // add the deployable composite info to the domain model 
             for (Composite composite : contribution.getDeployables()) {
                 CompositeModel compositeModel = contributionModel.getComposites().get(composite.getName());
-                contributionModel.getDeployableComposites().put(compositeModel.getCompositeQName(), compositeModel);
+                
+                if (compositeModel != null){
+                    contributionModel.getDeployableComposites().put(compositeModel.getCompositeQName(), compositeModel);
+                } else {
+                    throw new DomainException("Deployable composite name " + 
+                                              composite.getName() + 
+                                              " doesn't match a composite in the contribution " +
+                                              contributionURI );
+                }
                 
                 // build the contribution to create the services and references
                 domainManagementRuntime.getCompositeBuilder().build(composite);
             }
-            
+        } catch(DomainException ex) {   
+            throw ex;
         } catch(Exception ex) {
             throw new DomainException(ex);
         } 

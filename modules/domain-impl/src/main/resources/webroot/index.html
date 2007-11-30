@@ -24,7 +24,7 @@
 	
     <script language="JavaScript">
     
-       domainManager = new JSONRpcClient("../DomainManagerComponent/DomainManagementService").Service;
+       domainManager = new JSONRpcClient("../SCADomainManagerComponent/SCADomainManagerService").Service;
        var domainInfo;
 
        function getDomainInfo() {
@@ -39,8 +39,8 @@
           
           text = text + "<H2>Nodes</H2>";
           
-          for (var i in domainInfo.nodes.list){
-              var nodeURI = domainInfo.nodes.list[i];
+          for (var i in domainInfo.nodes){
+              var nodeURI = domainInfo.nodes[i];
              
               text = text + "<table>";
               text = text + "<TR CLASS='source_1' >";           
@@ -55,8 +55,8 @@
           
          text = text + "<H2>Domain Contributions</H2>";
             
-         for (var i in domainInfo.contributions.list){
-              var contributionURI = domainInfo.contributions.list[i];
+         for (var i in domainInfo.contributions){
+              var contributionURI = domainInfo.contributions[i];
               text = text + "<table>";
               text = text + "<TR CLASS='source_1' >";
               text = text + "  <TD>";
@@ -68,8 +68,8 @@
 
          text = text + "<H2>Deployable Composites</H2>";
  
-         for (var i in domainInfo.deployedComposites.list){
-              var compositeQName = domainInfo.deployedComposites.list[i];
+         for (var i in domainInfo.deployedComposites){
+              var compositeQName = domainInfo.deployedComposites[i];
               text = text + "<table>";
               text = text + "<TR CLASS='source_1' >";
               text = text + "  <TD>";
@@ -92,8 +92,8 @@
           var text = "";
           
           
-          for (var i in nodeInfo.contributions.list){
-              var contributionURI = nodeInfo.contributions.list[i];
+          for (var i in nodeInfo.contributions){
+              var contributionURI = nodeInfo.contributions[i];
               
               text = text + "<TR CLASS='source_2' >";
               text = text + "  <TD/>";

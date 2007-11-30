@@ -40,12 +40,13 @@ import org.osoa.sca.CallableReference;
  */
 public class NodeModelImpl implements NodeModel {
     
+    private LifecyleState state = LifecyleState.AVAILABLE;
     private String nodeURI;
     private String nodeURL;
     private boolean isRunning = false;
     private Externalizable nodeManagerReference;
     private Map<String, ContributionModel> contributions = new HashMap<String, ContributionModel>();
-    private Map<QName, CompositeModel> composites = new HashMap<QName, CompositeModel>();
+    private Map<QName, CompositeModel> deployedComposites = new HashMap<QName, CompositeModel>();
     private Map<String, ServiceModel> services = new HashMap<String, ServiceModel>();
     
     /**
@@ -134,7 +135,7 @@ public class NodeModelImpl implements NodeModel {
     }
     
     public Map<QName, CompositeModel> getDeployedComposites(){
-        return composites;
+        return deployedComposites;
     }
     
     public Map<String, ServiceModel> getServices(){

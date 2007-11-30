@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.domain.model.CompositeModel;
 
 
 /**
- * A composite. 
+ * A wrapper for the assembly model composite 
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
