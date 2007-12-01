@@ -332,4 +332,8 @@ public class Launcher {
             }
         }
     }
+    
+    public SCANode getSCANode() {
+        return node;
+    }
 }
