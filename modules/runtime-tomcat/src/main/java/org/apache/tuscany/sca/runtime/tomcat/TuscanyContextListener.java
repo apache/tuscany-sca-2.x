@@ -56,19 +56,18 @@ public class TuscanyContextListener implements LifecycleListener {
         String path = sc.getServletContext().getRealPath("/");
         System.out.println(path);
         try {
-            node.stop();
-            node.addContribution(path, new File(path).toURL());
-            node.addToDomainLevelComposite((QName)null);
+//            node.stop();
+            node.addContribution(path, new File(path + "WEB-INF/classes").toURL());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (NodeException e) {
             e.printStackTrace();
         }
-        try {
-            node.start();
-        } catch (NodeException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            node.start();
+//        } catch (NodeException e) {
+//            e.printStackTrace();
+//        }
     }
 
     protected void stopContext(Context context) {

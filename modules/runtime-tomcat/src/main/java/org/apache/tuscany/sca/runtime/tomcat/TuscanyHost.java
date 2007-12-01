@@ -27,12 +27,14 @@ import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.xml.namespace.QName;
 
 import org.apache.catalina.Container;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardHost;
+import org.apache.tuscany.sca.node.NodeException;
 import org.apache.tuscany.sca.runtime.Launcher;
 
 /**
@@ -58,7 +60,16 @@ public class TuscanyHost extends StandardHost {
     
     public synchronized void start() throws LifecycleException {
         startRuntime();
-        super.start();
+        try {
+
+            launcher.getSCANode().stop();
+            super.start();
+            launcher.getSCANode().addToDomainLevelComposite((QName)null);
+            launcher.getSCANode().start();
+
+        } catch (NodeException e) {
+            e.printStackTrace();
+        }
     }
 
     public synchronized void stop() throws LifecycleException {
