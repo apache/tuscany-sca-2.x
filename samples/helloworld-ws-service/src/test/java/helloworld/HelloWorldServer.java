@@ -30,7 +30,7 @@ public class HelloWorldServer {
 
     public static void main(String[] args) {
 
-        SCADomain scaDomain = SCADomain.newInstance("helloworldws.composite");
+        SCADomain scaDomain = SCADomain.newInstance("META-INF/sca-deployables/helloworldws.composite");
 
         try {
             System.out.println("HelloWorld server started (press enter to shutdown)");

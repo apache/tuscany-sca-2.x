@@ -38,7 +38,7 @@ public class HelloWorldServerTestCase{
 
         @Before
 	public void startServer() throws Exception {
-            scaDomain = SCADomain.newInstance("helloworldws.composite");
+            scaDomain = SCADomain.newInstance("META-INF/sca-deployables/helloworldws.composite");
 	}
 
 	@Test
