@@ -25,7 +25,7 @@
     <component name="StockQuoteServiceComponent">
         <implementation.java class="stockquote.StockQuoteImpl" />
 	    <service name="StockQuoteService" requires="integrity">
-	        <binding.ws uri="http://localhost:8085/services/StockQuoteWebService"/>
+	        <binding.ws uri="http://localhost:8081/services/StockQuoteWebService"/>
 	    </service>
     </component>
 
