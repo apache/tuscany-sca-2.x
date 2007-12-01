@@ -1,0 +1,72 @@
+BigBank Demo
+============
+
+This application is made of 3 modules that represent the different aspects 
+of a fictitious banking application. Please see bigbank.png in the bigbank-account directory for a diagram of this demo.
+
+To run the bigbank-account demo you need to first run bigbank-calculator and bigbank-stockquote composites. This will bring up Tuscany runtime and load the two applications and make them available as services. Bigbank-account is dependent on these services.
+
+This demo uses ant. This is just one way of running this demo. 
+
+Start Bigbank-calculator composite
+----------------------------------
+
+Bigbank-calculator is a calculator application which handles add, subtract, multiply and divide operations. Each of these operations is implemented in a different language, including JavaScript, groovy, Ruby and Python.
+
+To run the bigbank-calculator composite and make it available as a service for this demo do the following:
+
+cd bigbank-calculator
+ant compile  
+ant run
+
+.. Leave the server running
+
+Note that 'ant compile' needs to be done the first time you run this demo out of the binary distribution. No need to do 'ant compile' from there on.
+
+Start Bigbank-stockquote
+------------------------
+
+A very simple web services based stock quote application which returns random 
+stock quotes on request. Please note that the stockquote service is not live and is implemented instead to allow for this application to always run without dependency on the availability of a webservice.
+
+cd bigbank-stockquote
+ant compile  
+ant run
+
+.. Leave the server running
+
+Note that 'ant compile' needs to be done the first time you run this demo out of the binary distribution. No need to do 'ant compile' from there on.
+
+Start Bigbank-account 
+---------------------
+  
+Bigbank-account is entry point to this application running on Tuscany. Bigbank-account composite calls into bigbank-stockquote and bigbank-calculator services. Start bigbank-account in the following way:
+
+cd bigbank-account
+ant compile 
+ant run
+
+.. Leave the server running
+
+Note that 'ant compile' needs to be done the first time you run this demo out ofthe  binary distribution. No need to do 'ant compile' from there on.
+
+Run the demo
+------------- 
+The front end of this demo application is a web app which users Json/RPC to communicate with the backend for retrieving account information. 
+
+To try the app out point you browser at:
+
+http://localhost:8080/AccountJSON.html
+
+This should display an interface with a single button that goes and retrieves 
+a single set of account details exercising services across the three running 
+SCA applications. 
+
+If you press on getAccountReport, you'll see a response posted, but the detail of the data will be displayed in the screen where you started bigbank-account.
+
+
+Stop the demo
+-------------
+Go to each of the corresponding command line screens and hit 'enter'. This will stop each of the applications.
+ 
+
