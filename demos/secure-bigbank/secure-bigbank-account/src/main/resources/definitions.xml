@@ -51,8 +51,22 @@
  			 </description>
  </sca:intent>
  
+ <sca:intent name="authentication" 
+ 			 constrains="sca:binding.ws">
+ 			 <description>
+ 			 Communitcation thro this binding required Authentication.
+ 			 </description>
+ </sca:intent>
+ 
+ <sca:intent name="tuscany:wsAuthentication" 
+ 			 constrains="sca:binding.ws">
+ 			 <description>
+ 			 Communitcation thro this binding required Authentication.
+ 			 </description>
+ </sca:intent>
+ 
  <!-- WS Security POLICY SETS -->
- <sca:policySet name="wsIntegrityPolicy"
+ <sca:policySet name="tuscany:wsIntegrityPolicy"
  	provides="integrity"
  	appliesTo="sca:binding.ws">
  	<tuscany:wsConfigParam>
@@ -67,10 +81,39 @@
         		<items>Timestamp Signature</items>
         		<user>bbservice</user>
         		<signaturePropFile>security.properties</signaturePropFile>
-        		<passwordCallbackClass>bigbank.account.PasswordCallbackHandler</passwordCallbackClass>
+        		<passwordCallbackClass>bigbank.security.BigbankPasswordCallbackHandler</passwordCallbackClass>
         		<signatureKeyIdentifier>DirectReference</signatureKeyIdentifier>
       		</action>
     	</parameter>
  	</tuscany:wsConfigParam>
  </sca:policySet>
- </sca:definitions>
+ 
+ <sca:policySet name="tuscany:wsAuthenticationPolicy"
+ 	provides="authentication"
+ 	appliesTo="sca:binding.ws">
+ 	<tuscany:wsConfigParam>
+ 		<parameter name="InflowSecurity">
+ 			<action>
+ 				<items>UsernameToken</items>
+ 				<passwordCallbackClass>bigbank.security.AccountsDataPasswordCallbackHandler</passwordCallbackClass>
+       		</action>
+      	</parameter>
+ 	</tuscany:wsConfigParam>
+ </sca:policySet>
+ 
+ <sca:policySet name="tuscany:wsClientAuthenticationPolicy"
+ 	provides="tuscany:wsAuthentication"
+ 	appliesTo="sca:binding.ws">
+ 	<tuscany:wsConfigParam>
+ 		<parameter name="OutflowSecurity">
+ 			<action>
+ 				<items>UsernameToken</items>
+ 				<user>bbaservice</user>
+				<passwordCallbackClass>bigbank.security.BigbankPasswordCallbackHandler</passwordCallbackClass>
+                <passwordType>PasswordText</passwordType>
+               </action>
+    	</parameter>
+ 	</tuscany:wsConfigParam>
+ </sca:policySet>
+ 
+</sca:definitions>

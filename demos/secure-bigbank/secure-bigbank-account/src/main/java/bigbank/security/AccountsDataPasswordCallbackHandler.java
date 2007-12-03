@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package bigbank.account;
+package bigbank.security;
 
 import java.io.IOException;
 
@@ -29,17 +29,24 @@ import org.apache.ws.security.WSPasswordCallback;
 /**
  * Sample userid passwd generation class 
  */
-public class PasswordCallbackHandler implements CallbackHandler {
+public class AccountsDataPasswordCallbackHandler implements CallbackHandler {
 
     public void handle(Callback[] callbacks) throws IOException,
             UnsupportedCallbackException {
     	for (int i = 0; i < callbacks.length; i++) {
-            System.out.println("*** Calling Server User/Passwd Handler...." );
             WSPasswordCallback pwcb = (WSPasswordCallback)callbacks[i];
-            System.out.println("*** Getting password for user ...."  + pwcb.getIdentifer() + " & " + pwcb.getKey());
             if ( pwcb.getUsage() == WSPasswordCallback.SIGNATURE ) {
                 System.out.println(" Usage is SIGNATURE ... ");
                 pwcb.setPassword("bbservice");
+            } else if ( pwcb.getUsage() == WSPasswordCallback.USERNAME_TOKEN_UNKNOWN ) {
+                System.out.println("*** Calling ACCOUNTS-DATA Passwd Handler for AUTHENTICATING userID = " 
+                                   + pwcb.getIdentifer() + " and password = " + pwcb.getPassword() );
+                if ( pwcb.getIdentifer().equals("bbaservice") && pwcb.getPassword().equals("bbaservice")) {
+                    System.out.println("AUTHENTICATION SUCCESSFUL!");
+                } else {
+                    System.out.println("AUTHENTICATION FAILED!");
+                    throw new UnsupportedCallbackException(pwcb, "UserId - Password Authentication Failed!");
+                }
             }
         }
     }

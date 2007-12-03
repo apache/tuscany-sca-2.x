@@ -24,6 +24,7 @@
 
     <service name="AccountDataService" promote="AccountDataServiceComponent">
         <interface.java interface="bigbank.accountdata.AccountDataService"/>
+        <binding.ws uri="http://localhost:8085/services/AccountDataWebService" requires="authentication"/>
     </service>
 
     <component name="AccountDataServiceComponent">

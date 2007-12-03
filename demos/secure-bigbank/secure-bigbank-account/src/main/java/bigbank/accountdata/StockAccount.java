@@ -36,7 +36,7 @@ public class StockAccount {
         this.accountNumber = n;
     }
 
-    public double getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
