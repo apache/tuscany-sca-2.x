@@ -22,8 +22,6 @@ package org.apache.tuscany.sca.runtime.tomcat;
 import java.io.File;
 import java.net.MalformedURLException;
 
-import javax.xml.namespace.QName;
-
 import org.apache.catalina.Context;
 import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleEvent;
@@ -57,7 +55,10 @@ public class TuscanyContextListener implements LifecycleListener {
         System.out.println(path);
         try {
 //            node.stop();
-            node.addContribution(path, new File(path + "WEB-INF/classes").toURL());
+            File f = new File(path + "WEB-INF/classes");
+            if (f.exists()) {
+                node.addContribution(path, f.toURL());
+            }
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (NodeException e) {
