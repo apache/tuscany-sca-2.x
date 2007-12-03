@@ -44,7 +44,7 @@ import org.apache.tuscany.sca.runtime.Launcher;
  * For example: 
  * 
  * <Host name="localhost"  appBase="webapps"
- *       className="org.apache.tuscany.sca.runtime.tomcat.TomcatHost"
+ *       className="org.apache.tuscany.sca.runtime.tomcat.TuscanyHost"
  *       unpackWARs="true" autoDeploy="true"
  *       xmlValidation="false" xmlNamespaceAware="false">
  *       
