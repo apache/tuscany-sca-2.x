@@ -521,7 +521,12 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
      * without URIs 
      */    
     private void configureDefaultPort() {
+        if (composites.size() == 0){
+            return;
+        }
+        
         Composite composite = nodeComposite.getIncludes().get(1);
+        
         if (composite == null) {
             return;
         }
