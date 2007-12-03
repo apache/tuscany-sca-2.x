@@ -80,6 +80,10 @@ public class WebAppServletHost implements ServletHost {
             suri = '/' + suri;
         }
         
+        if (!suri.startsWith(contextPath)) {
+            suri = contextPath + suri;
+        } 
+                
         // In a webapp just use the given path and ignore the host and port
         // as they are fixed by the Web container
         servlets.put(suri, servlet);
@@ -95,6 +99,10 @@ public class WebAppServletHost implements ServletHost {
         if (!suri.startsWith("/")) {
             suri = '/' + suri;
         }
+        
+        if (!suri.startsWith(contextPath)) {
+            suri = contextPath + suri;
+        }
 
         // In a webapp just use the given path and ignore the host and port
         // as they are fixed by the Web container
@@ -105,6 +113,10 @@ public class WebAppServletHost implements ServletHost {
         if (!suri.startsWith("/")) {
             suri = '/' + suri;
         }
+        
+        if (!suri.startsWith(contextPath)) {
+            suri = contextPath + suri;
+        } 
         
         // Get the servlet mapped to the given path
         Servlet servlet = servlets.get(suri);
@@ -137,6 +149,11 @@ public class WebAppServletHost implements ServletHost {
         if (!path.startsWith("/")) {
             path = '/' + path;
         }
+        
+        if (!path.startsWith(contextPath)) {
+            path = contextPath + path;
+        }
+        
         URL url;
         try {
             url = new URL(scheme, host, portNumber, path);
@@ -153,11 +170,14 @@ public class WebAppServletHost implements ServletHost {
             suri = '/' + suri;
         }
         
+        suri = contextPath + suri;
+        
         // Get the servlet mapped to the given path
         Servlet servlet = servlets.get(suri);
         if (servlet != null) {
             return new WebAppRequestDispatcher(suri, servlet);
         }
+        
         for (Map.Entry<String, Servlet> entry : servlets.entrySet()) {
             String servletPath = entry.getKey();
             if (servletPath.endsWith("*")) {
