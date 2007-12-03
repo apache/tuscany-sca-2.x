@@ -22,13 +22,11 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.net.Socket;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.apache.activemq.broker.BrokerService;
 
 /**
  * Tests that the helloworld server is available
@@ -36,12 +34,9 @@ import org.apache.activemq.broker.BrokerService;
 public class HelloWorldJmsPolicyServerTestCase{
 
     private SCADomain scaDomain;
-    private BrokerService broker = new BrokerService();
 
     @Before
     public void startServer() throws Exception {
-        broker.addConnector("tcp://localhost:61616");
-        broker.start();            
         scaDomain = SCADomain.newInstance("helloworldwsjmspolicy.composite");
     }
 
@@ -56,6 +51,5 @@ public class HelloWorldJmsPolicyServerTestCase{
     @After
     public void stopServer() throws Exception {
         scaDomain.close();
-        broker.stop();
     }
 }
