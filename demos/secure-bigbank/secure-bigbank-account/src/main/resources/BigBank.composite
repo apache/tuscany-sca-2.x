@@ -32,7 +32,12 @@
 			<binding.sca/>
 	    </service>
 
-        <reference name="accountDataService" target="AccountDataServiceComponent"/>
+        <!-- reference name="accountDataService" target="AccountDataServiceComponent"/-->
+        
+        <reference name="accountDataService">
+	        <binding.ws uri="http://localhost:8084/services/AccountDataWebService" requires="tuscany:wsAuthentication"/>
+        </reference>
+        
 	    <reference name="calculatorService">
 	    	<tuscany:binding.rmi host="localhost" port="8099" serviceName="CalculatorRMIService"/>
 	   	</reference>

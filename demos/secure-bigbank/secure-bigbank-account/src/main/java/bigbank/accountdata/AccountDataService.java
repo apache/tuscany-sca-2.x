@@ -18,10 +18,12 @@
  */
 package bigbank.accountdata;
 
+import org.osoa.sca.annotations.Remotable;
+
 /**
  * @version $$Rev: 540764 $$ $$Date: 2007-05-23 03:17:57 +0530 (Wed, 23 May 2007) $$
  */
-
+@Remotable
 public interface AccountDataService {
     
     public CheckingAccount getCheckingAccount(String customerID);

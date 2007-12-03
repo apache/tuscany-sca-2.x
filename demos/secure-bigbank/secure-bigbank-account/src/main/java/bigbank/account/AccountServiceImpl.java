@@ -52,7 +52,10 @@ public class AccountServiceImpl implements AccountService {
 
         // Get the checking, savings and stock accounts from the AccountData
         // service component
-        CheckingAccount checking = accountDataService.getCheckingAccount(customerID);
+        CheckingAccount checking = null;
+        try {
+            checking = accountDataService.getCheckingAccount(customerID);
+        
         System.out.println("Checking account: " + checking);
 
         SavingsAccount savings = accountDataService.getSavingsAccount(customerID);
@@ -64,7 +67,7 @@ public class AccountServiceImpl implements AccountService {
         // Get the stock price in USD
         double price = stockQuoteService.getQuote(stock.getSymbol());
         System.out.println("Stock price for " + stock.getSymbol() + ": " + price);
-
+        
         // Convert to the configured currency
         if (currency.equals("EURO")) {
             
@@ -81,5 +84,9 @@ public class AccountServiceImpl implements AccountService {
         double balance = checking.getBalance() + savings.getBalance() + stockValue;
         
         return balance;
+        } catch ( Throwable e ) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 }
