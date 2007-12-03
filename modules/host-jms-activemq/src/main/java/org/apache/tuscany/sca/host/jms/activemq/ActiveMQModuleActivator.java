@@ -22,12 +22,19 @@ package org.apache.tuscany.sca.host.jms.activemq;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 
-public class ActiveModuleActivator implements ModuleActivator {
+public class ActiveMQModuleActivator implements ModuleActivator {
+
+    private ActiveMQHost activeMQHost;
 
     public void start(ExtensionPointRegistry registry) {
+        activeMQHost = new ActiveMQHost();
+        activeMQHost.start();
     }
 
     public void stop(ExtensionPointRegistry registry) {
+        if (activeMQHost != null) {
+            activeMQHost.stop();
+        }
     }
 
 }
