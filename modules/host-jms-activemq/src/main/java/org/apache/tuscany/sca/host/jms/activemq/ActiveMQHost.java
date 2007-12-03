@@ -26,6 +26,9 @@ public class ActiveMQHost {
 
     private BrokerService broker;
 
+    public ActiveMQHost() {
+    }
+
     public void start() {
         broker = new BrokerService();
         try {
@@ -45,6 +48,7 @@ public class ActiveMQHost {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
+            broker = null; 
         }
     }
 
