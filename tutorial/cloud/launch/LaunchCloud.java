@@ -36,17 +36,17 @@ public class LaunchCloud {
         System.out.println("Starting ...");
         SCADomainFactory domainFactory = SCADomainFactory.newInstance();
         SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-        SCADomain domain = domainFactory.createSCADomain("http://localhost:9999");
+        SCADomain domain = domainFactory.createSCADomain("http://localhost:9998");
         System.out.println("Domain controller ready for big business !!!");
         
-        SCANode catalogsNode = nodeFactory.createSCANode("http://localhost:8200/cloud", "http://localhost:9999");
+        SCANode catalogsNode = nodeFactory.createSCANode("http://localhost:8200/cloud", "http://localhost:9998");
         URL catalogsContribution = SCAContributionUtil.findContributionFromClass(LaunchCloud.class);
         catalogsNode.addContribution("http://cloud", catalogsContribution);
         catalogsNode.addToDomainLevelComposite(new QName("http://cloud", "catalogs"));
         catalogsNode.start();
         System.out.println("catalogs.composite ready for big business !!!");
         
-        SCANode currencyNode = nodeFactory.createSCANode("http://localhost:8300/cloud", "http://localhost:9999");
+        SCANode currencyNode = nodeFactory.createSCANode("http://localhost:8300/cloud", "http://localhost:9998");
         URL currencyContribution = SCAContributionUtil.findContributionFromClass(LaunchCloud.class);
         currencyNode.addContribution("http://cloud", currencyContribution);
         currencyNode.addToDomainLevelComposite(new QName("http://cloud", "currency"));

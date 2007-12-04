@@ -29,9 +29,13 @@ import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 
 public class LaunchStoreDistributed {
     public static void main(String[] args) throws Exception {
+        System.setProperty("java.naming.factory.initial", "org.apache.openejb.client.RemoteInitialContextFactory");
+        System.setProperty("java.naming.provider.url", "ejbd://localhost:4201");
+        System.setProperty("managed", "false");
+        
         System.out.println("Starting ...");
         SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-        SCANode node = nodeFactory.createSCANode("http://localhost:8101", "http://localhost:9999");
+        SCANode node = nodeFactory.createSCANode("http://localhost:8101", "http://localhost:9998");
         
         URL contribution = SCAContributionUtil.findContributionFromClass(LaunchStoreDistributed.class);
         node.addContribution("http://store", contribution);
