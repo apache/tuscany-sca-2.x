@@ -27,8 +27,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.apache.activemq.broker.BrokerService;
-
 
 /**
  * Test case for helloworld web service client 
@@ -40,20 +38,14 @@ public class HelloWorldJmsClientTestCase {
     private SCADomain scaDomain;
     
     private SCATestCaseRunner server;
-    private BrokerService broker = new BrokerService();
 
     @Before
     public void startClient() throws Exception {
         try {
-            broker.addConnector("tcp://localhost:61616");
-            broker.start();            
             scaDomain = SCADomain.newInstance("helloworldwsjmsclient.composite");
             helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
             helloTuscanyService = scaDomain.getService(HelloWorldService.class, "HelloTuscanyServiceComponent");
     
-            server =  new SCATestCaseRunner(HelloWorldJmsTestServer.class);
-            server.before();
-
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -70,7 +62,6 @@ public class HelloWorldJmsClientTestCase {
     public void stopClient() throws Exception {
     	server.after();
         scaDomain.close();
-	broker.stop();
     }
 
 }
