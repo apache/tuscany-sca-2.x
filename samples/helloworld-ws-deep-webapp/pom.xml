@@ -24,38 +24,18 @@
         <artifactId>tuscany-sca</artifactId>
         <version>1.1-incubating-SNAPSHOT</version>
     </parent>
+
     <artifactId>sample-helloworld-ws-service-webapp</artifactId>
     <name>Apache Tuscany SCA HelloWorld Web Service Sample Webapp</name>
     <packaging>war</packaging>
 
-    <repositories>
-       <repository>
-          <id>apache.incubator</id>
-          <url>http://people.apache.org/repo/m2-incubating-repository</url>
-       </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-webapp</artifactId>
+            <artifactId>tuscany-sca-api</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-ws-axis2</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
     </dependencies>
     
     <build>
