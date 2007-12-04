@@ -40,6 +40,7 @@
                 <module>maven-java2wsdl</module>
                 <module>maven-wsdl2java</module>
                 <module>maven-ant-generator</module>
+                <module>maven-incremental-build</module>
             </modules>
         </profile>
     </profiles>
