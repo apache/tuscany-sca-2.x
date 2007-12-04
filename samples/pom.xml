@@ -62,7 +62,7 @@
                 <module>helloworld-ws-service</module>
                 <module>helloworld-ws-service-secure</module>
                 <module>helloworld-ws-reference</module>
-                <module>helloworld-ws-reference-jms</module>
+                <!-- module>helloworld-ws-reference-jms</module -->
                 <module>helloworld-ws-reference-secure</module>
                 <module>helloworld-ws-sdo</module>
                 <module>helloworld-ws-sdo-webapp</module>
