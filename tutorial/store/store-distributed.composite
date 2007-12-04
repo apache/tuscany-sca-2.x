@@ -45,8 +45,12 @@
 			<t:binding.jsonrpc/>
 			<binding.ws uri="/CatalogWebService"/>
    		</service>
-		<reference name="fruitsCatalog" target="JSEFruitsCatalog"/>	
-		<reference name="vegetablesCatalog" target="CloudVegetablesCatalog"/>	
+        <reference name="fruitsCatalog" target="CloudFruitsCatalog"/>   		
+		<!--reference name="fruitsCatalog" target="JSEFruitsCatalog"/-->	
+		<!--reference name="vegetablesCatalog" target="CloudVegetablesCatalog"-->
+		<reference name="vegetablesCatalog">
+		    <binding.ejb uri="VegetablesCatalogImplRemote"/>
+		</reference>
 		<reference name="currencyConverter" target="CurrencyConverter"/>	
 	</component>
  	 	

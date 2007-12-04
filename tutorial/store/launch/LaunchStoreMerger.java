@@ -31,7 +31,7 @@ public class LaunchStoreMerger {
     public static void main(String[] args) throws Exception {
         System.out.println("Starting ...");
         SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-        SCANode node = nodeFactory.createSCANode(null, "http://localhost:9999");
+        SCANode node = nodeFactory.createSCANode("http://localhost:8101", "http://localhost:9998");
         
         URL contribution = SCAContributionUtil.findContributionFromClass(LaunchStoreMerger.class);
         node.addContribution("http://store", contribution);
