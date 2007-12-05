@@ -240,8 +240,8 @@ public class WSDLOperationIntrospectorImpl {
         XmlSchemaType type = wsdlDefinition.getXmlSchemaType(typeName);
         if (type == null) {
             XSDefinition definition = wsdlFactory.createXSDefinition();
-            definition.setNamespace(typeName.getNamespaceURI());
             definition.setUnresolved(true);
+            definition.setNamespace(typeName.getNamespaceURI());
             definition = resolver.resolveModel(XSDefinition.class, definition);
             if (definition.getSchema() != null) {
                 type = definition.getSchema().getTypeByName(typeName);

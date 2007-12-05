@@ -93,6 +93,12 @@ public class XSDModelResolver implements ModelResolver {
                 list.get(index).setDocument(definition.getDocument());
             }
         }
+        if (list == null && definition.getDocument() != null) {
+            // Hit for the 1st time
+            list = new ArrayList<XSDefinition>();
+            list.add(definition);
+            map.put(namespace, list);
+        }
         XSDefinition resolved = null;
         try {
             resolved = aggregate(list);
@@ -133,6 +139,7 @@ public class XSDModelResolver implements ModelResolver {
             XmlSchema schema = schemaCollection.read(definition.getDocument(), uri, null);
             definition.setSchemaCollection(schemaCollection);
             definition.setSchema(schema);
+            definition.setUnresolved(false);
         } else if (definition.getLocation() != null) {
             if (definition.getLocation().getFragment() != null) {
                 // It's an inline schema

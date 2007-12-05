@@ -50,6 +50,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinition> {
 
     public static final QName WSDL11 = new QName("http://schemas.xmlsoap.org/wsdl/", "definitions");
+    public static final QName WSDL11_IMPORT = new QName("http://schemas.xmlsoap.org/wsdl/", "import");
     public static final QName XSD = new QName("http://www.w3.org/2001/XMLSchema", "schema");
 
     private final static XMLInputFactory inputFactory = XMLInputFactory.newInstance();

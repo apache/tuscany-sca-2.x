@@ -382,7 +382,13 @@ public class WSDLModelResolver implements ModelResolver {
                     xsDefinition.setNamespace(element.getAttribute("targetNamespace"));
                     xsDefinition.setDocument(doc);
                     xsDefinition.setLocation(URI.create(doc.getDocumentURI() + "#" + index));
-                    contribution.getModelResolver().resolveModel(XSDefinition.class, xsDefinition);
+                    XSDefinition resolved =
+                        contribution.getModelResolver().resolveModel(XSDefinition.class, xsDefinition);
+                    if (resolved != null && !resolved.isUnresolved()) {
+                        if (!wsdlDefinition.getXmlSchemas().contains(resolved)) {
+                            wsdlDefinition.getXmlSchemas().add(xsDefinition);
+                        }
+                    }
                     index++;
                 }
             }
