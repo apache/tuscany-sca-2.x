@@ -304,7 +304,11 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         if (isTargetRemote()) {
             return getDistributedProvider().getBindingInterfaceContract();
         } else {
-            return reference.getInterfaceContract();
+            if (reference.getReference() != null) {
+                return reference.getReference().getInterfaceContract();
+            } else {
+                return reference.getInterfaceContract();
+            }
         }
     }
 
