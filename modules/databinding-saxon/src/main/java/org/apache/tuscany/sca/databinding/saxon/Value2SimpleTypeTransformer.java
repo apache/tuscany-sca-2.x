@@ -36,7 +36,7 @@ public class Value2SimpleTypeTransformer extends BaseTransformer<Value, Object> 
     public Object transform(Value source, TransformationContext context) {
         Object object;
         try {
-            object = Value.convert(Value.asItem(source));
+            object = Value.convertToJava(Value.asItem(source));
         } catch (XPathException e) {
             throw new TransformationException(e);
         }

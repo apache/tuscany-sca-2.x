@@ -33,16 +33,23 @@ public class DirectedGraphTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         graph = new DirectedGraph<String, Object>();
-        graph.addEdge("a", "b", null, 3);
-        graph.addEdge("b", "c", null, 1);
-        graph.addEdge("a", "c", null, 8);
-        graph.addEdge("a", "d", null, 3);
-        graph.addEdge("b", "d", null, 2);
-        graph.addEdge("c", "b", null, 1);
-        graph.addEdge("c", "d", null, 2);
-        graph.addEdge("d", "b", null, 1);
-        graph.addEdge("a", "e", null, 8);
-        graph.addEdge("c", "c", null, 2);
+        graph.addEdge("a", "b", null, 3, true);
+        graph.addEdge("b", "c", null, 1, true);
+        // graph.addEdge("a", "c", null, 8, true);
+        graph.addEdge("a", "d", null, 3, true);
+        graph.addEdge("b", "d", null, 2, true);
+        graph.addEdge("d", "c", null, 3, true);
+        graph.addEdge("c", "b", null, 1, true);
+        graph.addEdge("c", "d", null, 2, true);
+        graph.addEdge("d", "b", null, 1, true);
+        graph.addEdge("a", "e", null, 8, true);
+        graph.addEdge("c", "c", null, 2, true);
+        graph.addEdge("f", "g", null, 2, false);
+        graph.addEdge("f", "h", null, 8, true);
+        graph.addEdge("g", "j", null, 2, false);
+        graph.addEdge("j", "i", null, 2, true);
+        graph.addEdge("h", "i", null, 8, true);
+
     }
 
     public void testGraph() {
@@ -79,7 +86,8 @@ public class DirectedGraphTestCase extends TestCase {
         DirectedGraph<String, Object>.Path path4 = graph.getShortestPath("c", "c");
         Assert.assertTrue(path4.getWeight() == 2 && path4.getEdges().size() == 1);
 
-        // System.out.println(path);
+        DirectedGraph<String, Object>.Path path5 = graph.getShortestPath("f", "i");
+        Assert.assertTrue(path5.getWeight() == 16 && path5.getEdges().size() == 2);
 
     }
 

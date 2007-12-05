@@ -24,7 +24,10 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.codehaus.jettison.json.JSONObject;
+import org.apache.tuscany.sca.databinding.TransformationContext;
+import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.json.JSONObject;
 import org.junit.Test;
 
 /**
@@ -32,7 +35,7 @@ import org.junit.Test;
  */
 public class JavaBean2JSONTestCase {
 
-    private static class MyBean {
+    public static class MyBean {
         private String name;
         private int age;
         private boolean vip;
@@ -90,7 +93,7 @@ public class JavaBean2JSONTestCase {
 
     }
 
-    private static class YourBean {
+    public static class YourBean {
         private int id;
         private String name;
 
@@ -110,10 +113,9 @@ public class JavaBean2JSONTestCase {
             this.name = name;
         }
     }
-    
+
     @Test
     public void testBean2JSON() throws Exception {
-        JavaBean2JSON converter = new JavaBean2JSON();
         MyBean me = new MyBean();
         me.setAge(30);
         me.setBooks(new ArrayList<String>());
@@ -124,11 +126,45 @@ public class JavaBean2JSONTestCase {
         you.setId(123);
         you.setName(null);
         me.setYou(you);
-        Object result = converter.transform(me, null);
-        Assert.assertTrue(result instanceof JSONObject);
+        JavaBean2JSON t1 = new JavaBean2JSON();
+        Object result = t1.transform(me, null);
         System.out.println(result);
-        String json =
-            "{\"age\":30,\"books\":[],\"friends\":[\"John\",\"Mike\"],\"name\":\"Me\",\"vip\":true,\"you\":{\"id\":123,\"name\":null}}";
-        Assert.assertEquals(json, result.toString());
+        JSON2JavaBean t2 = new JSON2JavaBean();
+        TransformationContext context = new TransformationContextImpl();
+        context.setTargetDataType(new DataTypeImpl(MyBean.class, null));
+        Object v = t2.transform(new JSONObject(result.toString()), context);
+        Assert.assertTrue(v instanceof MyBean);
+        //        String json =
+        //            "{\"age\":30,\"books\":[],\"friends\":[\"John\",\"Mike\"],\"name\":\"Me\",\"vip\":true,\"you\":{\"id\":123,\"name\":null}}";
+        //        Assert.assertEquals(json, result.toString());
     }
+
+    @Test
+    public void testString2JSON() throws Exception {
+        JavaBean2JSONObject t1 = new JavaBean2JSONObject();
+        Object result = t1.transform("ABC", null);
+        System.out.println(result);
+        JSON2JavaBean t2 = new JSON2JavaBean();
+        TransformationContext context = new TransformationContextImpl();
+        context.setTargetDataType(new DataTypeImpl(String.class, null));
+        Object v = t2.transform(result, context);
+        Assert.assertTrue(v instanceof String);
+        Assert.assertEquals("ABC", v);
+    }
+
+    @Test
+    public void testStringArray2JSON() throws Exception {
+        JavaBean2JSON t1 = new JavaBean2JSON();
+        Object result = t1.transform(new String[] {"ABC", "DF"}, null);
+        System.out.println(result);
+        JSON2JavaBean t2 = new JSON2JavaBean();
+        TransformationContext context = new TransformationContextImpl();
+        context.setTargetDataType(new DataTypeImpl(String[].class, null));
+        Object v = t2.transform(result, context);
+        Assert.assertTrue(v instanceof String[]);
+        String[] strs = (String[])v;
+        Assert.assertEquals("ABC", strs[0]);
+        Assert.assertEquals("DF", strs[1]);
+    }
+
 }

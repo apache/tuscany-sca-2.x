@@ -45,7 +45,7 @@ public class MyServiceImpl implements MyService {
         System.out.println("someMethod on thread " + Thread.currentThread());
         // invoke the callback
         try {
-            myServiceCallback.receiveResult(arg + " -> receiveResult ");
+            myServiceCallback.receiveResult(arg + " -> receiveResult");
         } catch(RuntimeException e) {
             System.out.println("RuntimeException invoking receiveResult: " + e.toString());
             e.printStackTrace();

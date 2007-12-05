@@ -16,54 +16,67 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.databinding.jaxb;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
+package org.apache.tuscany.sca.databinding.json;
 
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
-import org.w3c.dom.Node;
+import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 
-public class Node2JAXB extends BaseTransformer<Node, Object> implements PullTransformer<Node, Object> {
+import com.metaparadigm.jsonrpc.JSONSerializer;
+import com.metaparadigm.jsonrpc.SerializerState;
 
-    public Node2JAXB() {
+/**
+ * @version $Rev$ $Date$
+ */
+public class JSON2JavaBean extends BaseTransformer<Object, Object> implements PullTransformer<Object, Object> {
+    private JSONSerializer serializer;
+
+    public JSON2JavaBean() {
         super();
-    }
-
-    public Object transform(Node source, TransformationContext context) {
-        if (source == null)
-            return null;
+        serializer = new JSONSerializer();
         try {
-            JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            Object result = unmarshaller.unmarshal(source, JAXBContextHelper.getJavaType(context.getTargetDataType()));
-            return JAXBContextHelper.createReturnValue(context.getTargetDataType(), result);
+            serializer.registerDefaultSerializers();
         } catch (Exception e) {
             throw new TransformationException(e);
         }
+        serializer.setMarshallClassHints(true);
+        serializer.setMarshallNullAttributes(true);
+    }
+
+    public Object transform(Object source, TransformationContext context) {
+        if (source == null) {
+            return null;
+        }
+
+        try {
+            SerializerState state = new SerializerState();
+            return serializer.unmarshall(state, context.getTargetDataType().getPhysical(), source);
+        } catch (Exception e) {
+            throw new TransformationException(e);
+        }
+
     }
 
     @Override
-    public Class getSourceType() {
-        return Node.class;
-    }
-
-    @Override
-    public Class getTargetType() {
+    protected Class getSourceType() {
         return Object.class;
     }
 
     @Override
-    public int getWeight() {
-        return 30;
+    protected Class getTargetType() {
+        return Object.class;
+    }
+
+    @Override
+    public String getSourceDataBinding() {
+        return JSONDataBinding.NAME;
     }
 
     @Override
     public String getTargetDataBinding() {
-        return JAXBDataBinding.NAME;
+        return JavaBeansDataBinding.NAME;
     }
-
 }

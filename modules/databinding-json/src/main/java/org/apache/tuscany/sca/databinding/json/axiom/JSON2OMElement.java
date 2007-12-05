@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.databinding.json.axiom;
 
+
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
@@ -29,6 +30,7 @@ import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.Transformer;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
+import org.apache.tuscany.sca.databinding.json.JSONHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.codehaus.jettison.json.JSONObject;
@@ -38,14 +40,13 @@ import org.osoa.sca.annotations.Service;
  * @version $Rev$ $Date$
  */
 @Service(Transformer.class)
-public class JSON2OMElement extends BaseTransformer<JSONObject, OMElement> implements
-    PullTransformer<JSONObject, OMElement> {
+public class JSON2OMElement extends BaseTransformer<Object, OMElement> implements PullTransformer<Object, OMElement> {
 
     private OMFactory factory = OMAbstractFactory.getOMFactory();
 
     @Override
     protected Class getSourceType() {
-        return JSONObject.class;
+        return Object.class;
     }
 
     @Override
@@ -53,8 +54,12 @@ public class JSON2OMElement extends BaseTransformer<JSONObject, OMElement> imple
         return OMElement.class;
     }
 
-    public OMElement transform(JSONObject source, TransformationContext context) {
+    public OMElement transform(Object source, TransformationContext context) {
         try {
+            JSONObject json = JSONHelper.toJettison(source);
+            if (json == null) {
+                return null;
+            }
             String ns = JSONDataBinding.ROOT_ELEMENT.getNamespaceURI();
             String name = JSONDataBinding.ROOT_ELEMENT.getLocalPart();
             if (context != null) {
@@ -68,7 +73,7 @@ public class JSON2OMElement extends BaseTransformer<JSONObject, OMElement> imple
                     }
                 }
             }
-            JSONBadgerfishDataSource ds = new JSONBadgerfishDataSource(source);
+            JSONBadgerfishDataSource ds = new JSONBadgerfishDataSource(json);
             OMNamespace namespace = factory.createOMNamespace(ns, "");
             return factory.createOMElement(ds, name, namespace);
         } catch (Exception e) {
@@ -79,6 +84,11 @@ public class JSON2OMElement extends BaseTransformer<JSONObject, OMElement> imple
     @Override
     public int getWeight() {
         return 500;
+    }
+
+    @Override
+    public String getSourceDataBinding() {
+        return JSONDataBinding.NAME;
     }
 
 }

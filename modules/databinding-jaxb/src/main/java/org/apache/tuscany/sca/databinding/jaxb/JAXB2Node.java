@@ -33,9 +33,9 @@ import org.w3c.dom.Node;
 public class JAXB2Node extends BaseTransformer<Object, Node> implements PullTransformer<Object, Node> {
 
     public Node transform(Object source, TransformationContext tContext) {
-        if (source == null) {
-            return null;
-        }
+//        if (source == null) {
+//            return null;
+//        }
         try {
             JAXBContext context = JAXBContextHelper.createJAXBContext(tContext, true);
             Marshaller marshaller = context.createMarshaller();
@@ -44,7 +44,7 @@ public class JAXB2Node extends BaseTransformer<Object, Node> implements PullTran
             Document document = DOMHelper.newDocument();
             JAXBElement<?> jaxbElement = JAXBContextHelper.createJAXBElement(tContext.getSourceDataType(), source);
             marshaller.marshal(jaxbElement, document);
-            return document;
+            return DOMHelper.adjustElementName(tContext, document.getDocumentElement());
         } catch (Exception e) {
             throw new TransformationException(e);
         }

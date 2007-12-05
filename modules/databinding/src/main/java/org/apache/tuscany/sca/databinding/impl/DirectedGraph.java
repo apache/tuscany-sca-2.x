@@ -114,11 +114,14 @@ public class DirectedGraph<V, E> {
 
         private int weight;
 
-        public Edge(Vertex source, Vertex target, E value, int weight) {
+        private boolean pub = true;
+
+        public Edge(Vertex source, Vertex target, E value, int weight, boolean pub) {
             this.sourceVertex = source;
             this.targetVertex = target;
             this.value = value;
             this.weight = weight;
+            this.pub = pub;
         }
 
         @Override
@@ -157,6 +160,14 @@ public class DirectedGraph<V, E> {
         public void setSourceVertex(Vertex sourceVertex) {
             this.sourceVertex = sourceVertex;
         }
+
+        public boolean isPublic() {
+            return pub;
+        }
+
+        public void setPublic(boolean pub) {
+            this.pub = pub;
+        }
     }
 
     private final class Node implements Comparable<Node> {
@@ -176,7 +187,7 @@ public class DirectedGraph<V, E> {
         }
     }
 
-    public void addEdge(V source, V target, E edgeValue, int weight) {
+    public void addEdge(V source, V target, E edgeValue, int weight, boolean publicEdge) {
         Vertex s = getVertex(source);
         if (s == null) {
             s = new Vertex(source);
@@ -187,7 +198,7 @@ public class DirectedGraph<V, E> {
             t = new Vertex(target);
             vertices.put(target, t);
         }
-        Edge edge = new Edge(s, t, edgeValue, weight);
+        Edge edge = new Edge(s, t, edgeValue, weight, publicEdge);
         s.outEdges.put(t, edge);
     }
 
@@ -252,13 +263,11 @@ public class DirectedGraph<V, E> {
             return paths.get(pair);
         }
 
-        // HACK: To support same vertex
-        if (source == target) {
-            Path path = new Path();
-            Edge edge = getEdge(source, target);
-            if (edge != null) {
-                path.addEdge(edge);
-            }
+        // Check if there is a direct link, if yes, use it instead
+        Edge direct = getEdge(source, target);
+        Path path = new Path();
+        if (direct != null) {
+            path.addEdge(direct);
             paths.put(pair, path);
             return path;
         }
@@ -274,19 +283,23 @@ public class DirectedGraph<V, E> {
 
         Set<Node> otherNodes = new HashSet<Node>(nodes.values());
         Set<Node> nodesOnPath = new HashSet<Node>();
+        Node nextNode = null;
         while (!otherNodes.isEmpty()) {
-            Node nextNode = extractMin(otherNodes);
+            nextNode = extractMin(otherNodes);
             if (nextNode.vertex == target) {
-                Path path = getPath(nextNode);
+                path = getPath(nextNode);
                 paths.put(pair, path); // Cache it
                 return path;
             }
             nodesOnPath.add(nextNode);
             for (Edge edge : nextNode.vertex.outEdges.values()) {
                 Node adjacentNode = nodes.get(edge.targetVertex);
-                if (nextNode.distance + edge.weight < adjacentNode.distance) {
-                    adjacentNode.distance = nextNode.distance + edge.weight;
-                    adjacentNode.previous = nextNode;
+                // Only look for public edge
+                if (edge.isPublic()) {
+                    if (nextNode.distance + edge.weight < adjacentNode.distance) {
+                        adjacentNode.distance = nextNode.distance + edge.weight;
+                        adjacentNode.previous = nextNode;
+                    }
                 }
             }
         }
@@ -364,7 +377,7 @@ public class DirectedGraph<V, E> {
     public void addGraph(DirectedGraph<V, E> otherGraph) {
         for (Vertex v : otherGraph.vertices.values()) {
             for (Edge e : v.outEdges.values()) {
-                addEdge(e.sourceVertex.value, e.targetVertex.value, e.value, e.weight);
+                addEdge(e.sourceVertex.value, e.targetVertex.value, e.value, e.weight, true);
             }
         }
     }

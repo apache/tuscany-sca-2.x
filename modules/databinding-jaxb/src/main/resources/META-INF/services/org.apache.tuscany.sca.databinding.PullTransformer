@@ -20,3 +20,13 @@ org.apache.tuscany.sca.databinding.jaxb.JAXB2Node;source=javax.xml.bind.JAXBElem
 org.apache.tuscany.sca.databinding.jaxb.Node2JAXB;source=org.w3c.dom.Node,target=javax.xml.bind.JAXBElement,weight=500
 org.apache.tuscany.sca.databinding.jaxb.Reader2JAXB;source=java.io.Reader,target=javax.xml.bind.JAXBElement,weight=510
 org.apache.tuscany.sca.databinding.jaxb.XMLStreamReader2JAXB;source=javax.xml.stream.XMLStreamReader,target=javax.xml.bind.JAXBElement,weight=490
+
+org.apache.tuscany.sca.databinding.jaxb.JAXB2Node;source=java:complexType,target=org.w3c.dom.Node,weight=90000
+org.apache.tuscany.sca.databinding.jaxb.Node2JAXB;source=org.w3c.dom.Node,target=java:complexType,weight=90000
+
+org.apache.tuscany.sca.databinding.jaxb.Node2JAXB;source=org.w3c.dom.Node,target=java:simpleType,weight=90000
+org.apache.tuscany.sca.databinding.jaxb.JAXB2Node;source=java:simpleType,target=org.w3c.dom.Node,weight=90000
+
+org.apache.tuscany.sca.databinding.jaxb.XMLStreamReader2JAXB;source=javax.xml.stream.XMLStreamReader,target=java:complexType,weight=90000
+org.apache.tuscany.sca.databinding.jaxb.XMLStreamReader2JAXB;source=javax.xml.stream.XMLStreamReader,target=java:simpleType,weight=90000
+

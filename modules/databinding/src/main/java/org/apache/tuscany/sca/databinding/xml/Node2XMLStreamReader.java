@@ -33,6 +33,9 @@ public class Node2XMLStreamReader extends BaseTransformer<Node, XMLStreamReader>
     PullTransformer<Node, XMLStreamReader> {
 
     public XMLStreamReader transform(Node source, TransformationContext context) {
+        if (source == null) {
+            return null;
+        }
         try {
             DOMXMLStreamReader reader = new DOMXMLStreamReader(source);
             return reader;

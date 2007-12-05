@@ -19,8 +19,6 @@
 package org.apache.tuscany.sca.databinding.jaxb;
 
 import java.beans.Introspector;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -33,6 +31,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
+import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
@@ -49,17 +48,16 @@ public class JAXBContextHelper {
         if (tContext == null)
             throw new TransformationException("JAXB context is not set for the transformation.");
 
-        DataType<?> bindingContext = source ? tContext.getSourceDataType() : tContext.getTargetDataType();
+        DataType<?> dataType = source ? tContext.getSourceDataType() : tContext.getTargetDataType();
         // FIXME: We should check the context path or classes
         // FIXME: What should we do if JAXB is an intermediate node?
 
-        String contextPath = null;
+        // String contextPath = null;
         JAXBContext context = null;
-        Class cls = bindingContext.getPhysical();
-        if (cls.getPackage() != null) {
-            contextPath = cls.getPackage().getName();
-            context = JAXBContext.newInstance(contextPath);
-        }
+        Class<?> cls = getJavaType(dataType);
+
+        context = JAXBContext.newInstance(cls);
+
         if (context == null) {
             throw new TransformationException("JAXB context is not set for the transformation.");
         }
@@ -111,19 +109,18 @@ public class JAXBContextHelper {
         if (dataType == null) {
             return null;
         }
-        Type type = dataType.getPhysical();
-        if (type instanceof Class) {
-            Class cls = (Class)type;
-            if (JAXBElement.class.isAssignableFrom(cls)) {
-                return null;
-            } else {
-                return cls;
+        Class type = dataType.getPhysical();
+        if (JAXBElement.class.isAssignableFrom(type)) {
+            type = Object.class;
+        } 
+        if (type == Object.class && dataType.getLogical() instanceof XMLType) {
+            XMLType xType = (XMLType)dataType.getLogical();
+            Class javaType = SimpleTypeMapperImpl.getJavaType(xType.getTypeName());
+            if (javaType != null) {
+                type = javaType;
             }
-        } else if (type instanceof ParameterizedType) {
-            ParameterizedType pType = (ParameterizedType)type;
-            return (Class)pType.getRawType();
         }
-        return null;
+        return type;
     }
 
     public static XMLType getXmlTypeName(Class<?> javaType) {

@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.core.invocation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
@@ -31,8 +34,7 @@ import org.apache.tuscany.sca.invocation.Invoker;
 public class InvocationChainImpl implements InvocationChain {
     private Operation sourceOperation;
     private Operation targetOperation;
-    private Invoker invokerChainHead;
-    private Invoker invokerChainTail;
+    private List<Invoker> invokers = new ArrayList<Invoker>();
 
     public InvocationChainImpl(Operation operation) {
         assert operation != null;
@@ -56,35 +58,35 @@ public class InvocationChainImpl implements InvocationChain {
     }
 
     public void addInterceptor(Interceptor interceptor) {
-        if (invokerChainHead == null) {
-            invokerChainHead = interceptor;
-        } else {
-            if (invokerChainHead instanceof Interceptor) {
-                ((Interceptor)invokerChainTail).setNext(interceptor);
+        invokers.add(interceptor);
+        int index = invokers.size() - 1;
+        if (index - 1 >= 0) {
+            Invoker before = invokers.get(index - 1);
+            if (before instanceof Interceptor) {
+                ((Interceptor)before).setNext(interceptor);
             }
         }
-        invokerChainTail = interceptor;
     }
 
     public void addInvoker(Invoker invoker) {
-        if (invokerChainHead == null) {
-            invokerChainHead = invoker;
-        } else {
-            if (invokerChainTail instanceof Interceptor) {
-                ((Interceptor)invokerChainTail).setNext(invoker);
+        invokers.add(invoker);
+        int index = invokers.size() - 1;
+        if (index - 1 >= 0) {
+            Invoker before = invokers.get(index - 1);
+            if (before instanceof Interceptor) {
+                ((Interceptor)before).setNext(invoker);
             }
         }
-        invokerChainTail = invoker;
     }
 
     public Invoker getHeadInvoker() {
-        return invokerChainHead;
+        return invokers.isEmpty() ? null : invokers.get(0);
     }
 
     public Invoker getTailInvoker() {
-        return invokerChainTail;
+        return invokers.isEmpty() ? null : invokers.get(invokers.size() - 1);
     }
-    
+
     /**
      * @return the sourceOperation
      */
@@ -100,30 +102,16 @@ public class InvocationChainImpl implements InvocationChain {
     }
 
     public void addInterceptor(int index, Interceptor interceptor) {
-        int i = 0;
-        Invoker next = invokerChainHead;
-        Invoker prev = null;
-        while (next != null && i < index) {
-            prev = next;
-            if (next instanceof Interceptor) {
-                next = ((Interceptor)next).getNext();
-                i++;
-            } else {
-                throw new ArrayIndexOutOfBoundsException(index);
+        invokers.add(index, interceptor);
+        if (index - 1 >= 0) {
+            Invoker before = invokers.get(index - 1);
+            if (before instanceof Interceptor) {
+                ((Interceptor)before).setNext(interceptor);
             }
         }
-        if (i == index) {
-            if (prev != null) {
-                ((Interceptor)prev).setNext(interceptor);
-            } else {
-                invokerChainHead = interceptor;
-            }
-            interceptor.setNext(next);
-            if (next == null) {
-                invokerChainTail = interceptor;
-            }
-        } else {
-            throw new ArrayIndexOutOfBoundsException(index);
+        if (index + 1 < invokers.size()) {
+            Invoker after = invokers.get(index + 1);
+            interceptor.setNext(after);
         }
     }
 

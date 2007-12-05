@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
+import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
@@ -41,6 +42,7 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
     private Mediator mediator = null;
@@ -163,9 +165,10 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
     private List<Node> getComplexPropertyValues(Document document) {
         Element rootElement = document.getDocumentElement();
         List<Node> propValues = new ArrayList<Node>();
-        for (int count = 0; count < rootElement.getChildNodes().getLength(); ++count) {
-            if (rootElement.getChildNodes().item(count).getNodeType() == Document.ELEMENT_NODE) {
-                propValues.add(rootElement.getChildNodes().item(count));
+        NodeList nodes = rootElement.getChildNodes();
+        for (int count = 0; count < nodes.getLength(); ++count) {
+            if (nodes.item(count).getNodeType() == Document.ELEMENT_NODE) {
+                propValues.add(DOMHelper.promote(nodes.item(count)));
             }
         }
         return propValues;

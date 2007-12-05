@@ -39,7 +39,7 @@ public class MyClientImpl implements MyClient, MyServiceCallback {
 
     public void aClientMethod() {
         System.out.println("aClientMethod on thread " + Thread.currentThread());
-        myService.someMethod(" -> someMethod ");
+        myService.someMethod("-> someMethod");
         System.out.println("aClientMethod return from someMethod on thread " + Thread.currentThread());
     }
 

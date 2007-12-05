@@ -160,8 +160,7 @@ public class XQueryIntrospector {
      */
     private void introspectServicesAndReferences(XQueryImplementation xqueryImplementation, XQueryExpression exp, ModelResolver resolver)
         throws ClassNotFoundException, InvalidInterfaceException {
-        StaticQueryContext compiledSqc = exp.getStaticContext();
-        NamespaceResolver namespaceResolver = compiledSqc.getNamespaceResolver();
+        NamespaceResolver namespaceResolver = exp.getStaticContext().getNamespaceResolver();
         Iterator declaredPrefixesIterator = namespaceResolver.iteratePrefixes();
         while (declaredPrefixesIterator.hasNext()) {
             String prefix = (String)declaredPrefixesIterator.next();

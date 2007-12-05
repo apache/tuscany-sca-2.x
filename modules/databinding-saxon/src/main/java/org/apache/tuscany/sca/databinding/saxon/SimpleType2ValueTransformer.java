@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 import net.sf.saxon.value.DecimalValue;
 import net.sf.saxon.value.DoubleValue;
 import net.sf.saxon.value.FloatValue;
-import net.sf.saxon.value.IntegerValue;
+import net.sf.saxon.value.Int64Value;
 import net.sf.saxon.value.ObjectValue;
 import net.sf.saxon.value.StringValue;
 import net.sf.saxon.value.Value;
@@ -63,13 +63,13 @@ public class SimpleType2ValueTransformer extends BaseTransformer<Object, Value> 
     public Value transform(Object source, TransformationContext context) {
         Value result = null;
         if (source instanceof Integer) {
-            result = new IntegerValue((Integer)source);
+            result = new Int64Value((Integer)source);
         } else if (source instanceof Long) {
-            result = new IntegerValue((Long)source);
+            result = new Int64Value((Long)source);
         } else if (source instanceof Short) {
-            result = new IntegerValue((Short)source);
+            result = new Int64Value((Short)source);
         } else if (source instanceof Byte) {
-            result = new IntegerValue((Byte)source);
+            result = new Int64Value((Byte)source);
         } else if (source instanceof Double) {
             result = new DoubleValue((Double)source);
         } else if (source instanceof Float) {

@@ -73,6 +73,11 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
     }
 
     private void addChild(OMElement wrapper, ElementInfo childElement, OMElement element) {
+        if (element == null) {
+            OMElement e = wrapper.getOMFactory().createOMElement(childElement.getQName(), wrapper);
+            attachXSINil(e);
+            return;
+        }
         QName elementName = childElement.getQName();
         // Make it a bit tolerating of element QName 
         if (!elementName.equals(element.getQName())) {
@@ -212,5 +217,13 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
             }
         }
         return element;
+    }
+
+    private void attachXSINil(OMElement element) {
+        OMNamespace xsiNS =
+            element.getOMFactory().createOMNamespace(XSI_TYPE_QNAME.getNamespaceURI(), XSI_TYPE_QNAME.getPrefix());
+        element.declareNamespace(xsiNS);
+        OMAttribute attr = element.getOMFactory().createOMAttribute("nil", xsiNS, "true");
+        element.addAttribute(attr);
     }
 }

@@ -22,14 +22,14 @@ package org.apache.tuscany.sca.itest;
 public class ComplexPropertyBean {
 
     protected int integerNumber = 25;
-    public float floatNumber = 50;
-    public double doubleNumber = 75;
-    public int[] intArray = null;
-    public double[] doubleArray = null;
+    protected float floatNumber = 50;
+    protected double doubleNumber = 75;
+    protected int[] intArray = null;
+    protected double[] doubleArray = null;
     protected String[] stringArray = null;
     
     ComplexPropertyBean numberSet;
-    public ComplexPropertyBean[] numberSetArray = null;
+    protected ComplexPropertyBean[] numberSetArray = null;
     
     public ComplexPropertyBean() {
         
@@ -85,5 +85,29 @@ public class ComplexPropertyBean {
 
     public void setStringArray(String[] stringArray) {
         this.stringArray = stringArray;
+    }
+
+    public int[] getIntArray() {
+        return intArray;
+    }
+
+    public void setIntArray(int[] intArray) {
+        this.intArray = intArray;
+    }
+
+    public double[] getDoubleArray() {
+        return doubleArray;
+    }
+
+    public void setDoubleArray(double[] doubleArray) {
+        this.doubleArray = doubleArray;
+    }
+
+    public ComplexPropertyBean[] getNumberSetArray() {
+        return numberSetArray;
+    }
+
+    public void setNumberSetArray(ComplexPropertyBean[] numberSetArray) {
+        this.numberSetArray = numberSetArray;
     }
 }

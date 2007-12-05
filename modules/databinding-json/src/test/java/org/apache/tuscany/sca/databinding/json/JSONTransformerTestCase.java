@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.databinding.xml.XMLStreamSerializer;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
-import org.codehaus.jettison.json.JSONObject;
+import org.json.JSONObject;
 
 public class JSONTransformerTestCase extends TestCase {
     private static final String IPO_XML = "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
@@ -76,7 +76,7 @@ public class JSONTransformerTestCase extends TestCase {
     public void testXML2JSON() throws Exception {
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(IPO_XML));
         XMLStreamReader2JSON t1 = new XMLStreamReader2JSON();
-        JSONObject json = t1.transform(reader, null);
+        JSONObject json = (JSONObject) t1.transform(reader, null);
         Assert.assertNotNull(json);
 
         // Cannot round-trip as we hit a bug in Jettison
@@ -117,11 +117,12 @@ public class JSONTransformerTestCase extends TestCase {
     public void testString2JSON() throws Exception {
         String json = "{\"name\":\"John\",\"age\":25}";
         String2JSON t1 = new String2JSON();
-        JSONObject jsonObject = t1.transform(json, null);
+        JSONObject jsonObject = (JSONObject) t1.transform(json, null);
         assertEquals(jsonObject.getString("name"), "John");
         assertEquals(jsonObject.getInt("age"), 25);
         JSON2String t2 = new JSON2String();
         String str = t2.transform(jsonObject, null);
-        assertEquals(json, str);
+        assertTrue(str.contains("\"name\":\"John\""));
+        assertTrue(str.contains("\"age\":25"));
     }
 }

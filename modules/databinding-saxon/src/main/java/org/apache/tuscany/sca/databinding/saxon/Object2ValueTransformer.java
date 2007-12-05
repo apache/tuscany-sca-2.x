@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.databinding.saxon;
 
+import net.sf.saxon.value.FloatValue;
 import net.sf.saxon.value.ObjectValue;
 import net.sf.saxon.value.Value;
 
@@ -41,7 +42,7 @@ public class Object2ValueTransformer extends BaseTransformer<Object, Value> impl
     protected Class getTargetType() {
         return Value.class;
     }
-    
+
     @Override
     public String getSourceDataBinding() {
         return JavaBeansDataBinding.NAME;
@@ -53,6 +54,10 @@ public class Object2ValueTransformer extends BaseTransformer<Object, Value> impl
     }
 
     public Value transform(Object source, TransformationContext context) {
+        // WORKAROUND for ClassCastException in ObjectValue.toJavaObject(float)
+        if (source instanceof Float) {
+            return new FloatValue(((Float)source).floatValue());
+        }
         return new ObjectValue(source);
     }
 

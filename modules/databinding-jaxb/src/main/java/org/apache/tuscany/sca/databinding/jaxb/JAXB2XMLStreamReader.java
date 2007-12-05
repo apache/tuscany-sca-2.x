@@ -18,29 +18,34 @@
  */
 package org.apache.tuscany.sca.databinding.jaxb;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
-import org.w3c.dom.Node;
 
-public class Node2JAXB extends BaseTransformer<Node, Object> implements PullTransformer<Node, Object> {
+public class JAXB2XMLStreamReader extends BaseTransformer<Object, XMLStreamReader> implements
+    PullTransformer<Object, XMLStreamReader> {
 
-    public Node2JAXB() {
+    public JAXB2XMLStreamReader() {
         super();
     }
 
-    public Object transform(Node source, TransformationContext context) {
-        if (source == null)
+    public XMLStreamReader transform(Object source, TransformationContext context) {
+        if (source == null) {
             return null;
+        }
         try {
-            JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            Object result = unmarshaller.unmarshal(source, JAXBContextHelper.getJavaType(context.getTargetDataType()));
-            return JAXBContextHelper.createReturnValue(context.getTargetDataType(), result);
+            QName name = null;
+            Object bean = source;
+            JAXBElement<?> element = JAXBContextHelper.createJAXBElement(context.getSourceDataType(), source);
+            name = element.getName();
+            bean = element.getValue();
+            BeanXMLStreamReaderImpl reader = new BeanXMLStreamReaderImpl(name, bean);
+            return reader;
         } catch (Exception e) {
             throw new TransformationException(e);
         }
@@ -48,22 +53,21 @@ public class Node2JAXB extends BaseTransformer<Node, Object> implements PullTran
 
     @Override
     public Class getSourceType() {
-        return Node.class;
-    }
-
-    @Override
-    public Class getTargetType() {
         return Object.class;
     }
 
     @Override
+    public Class getTargetType() {
+        return XMLStreamReader.class;
+    }
+
+    @Override
     public int getWeight() {
-        return 30;
+        return 10;
     }
 
     @Override
     public String getTargetDataBinding() {
         return JAXBDataBinding.NAME;
     }
-
 }

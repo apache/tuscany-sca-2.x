@@ -23,14 +23,12 @@ import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
-import org.codehaus.jettison.json.JSONObject;
 
 /**
  * @version $Rev$ $Date$
  */
-public class String2JSON extends BaseTransformer<String, JSONObject> implements
-    PullTransformer<String, JSONObject> {
-    
+public class String2JSON extends BaseTransformer<String, Object> implements PullTransformer<String, Object> {
+
     @Override
     protected Class getSourceType() {
         return String.class;
@@ -38,20 +36,29 @@ public class String2JSON extends BaseTransformer<String, JSONObject> implements
 
     @Override
     protected Class getTargetType() {
-        return JSONObject.class;
+        return Object.class;
     }
 
-    public JSONObject transform(String source, TransformationContext context) {
+    public Object transform(String source, TransformationContext context) {
         try {
-            return new JSONObject(source);
+            Class type = null;
+            if (context != null && context.getTargetDataType() != null) {
+                type = context.getTargetDataType().getPhysical();
+            }
+            return JSONHelper.toJSON(source, type);
         } catch (Exception e) {
             throw new TransformationException(e);
-        } 
+        }
     }
 
     @Override
     public int getWeight() {
         return 500;
+    }
+
+    @Override
+    public String getTargetDataBinding() {
+        return JSONDataBinding.NAME;
     }
 
 }

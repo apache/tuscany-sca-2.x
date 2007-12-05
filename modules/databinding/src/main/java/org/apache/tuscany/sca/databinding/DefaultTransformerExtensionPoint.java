@@ -43,19 +43,19 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
     public DefaultTransformerExtensionPoint() {
     }
 
-    public void addTransformer(String sourceType, String resultType, int weight, Transformer transformer) {
-    	if (logger.isLoggable(Level.FINE)) {
-			String className = transformer.getClass().getName();
-			boolean lazy = false;
-			boolean pull = (transformer instanceof PullTransformer);
-			if (transformer instanceof LazyPullTransformer) {
-				className = ((LazyPullTransformer) transformer).transformerDeclaration.getClassName();
-				lazy = true;
-			}
-			if (transformer instanceof LazyPushTransformer) {
-				className = ((LazyPushTransformer) transformer).transformerDeclaration.getClassName();
-				lazy = true;
-			}
+    public void addTransformer(String sourceType, String resultType, int weight, Transformer transformer, boolean publicTransformer) {
+        if (logger.isLoggable(Level.FINE)) {
+            String className = transformer.getClass().getName();
+            boolean lazy = false;
+            boolean pull = (transformer instanceof PullTransformer);
+            if (transformer instanceof LazyPullTransformer) {
+                className = ((LazyPullTransformer)transformer).transformerDeclaration.getClassName();
+                lazy = true;
+            }
+            if (transformer instanceof LazyPushTransformer) {
+                className = ((LazyPushTransformer)transformer).transformerDeclaration.getClassName();
+                lazy = true;
+            }
 
             logger.fine("Adding transformer: " + className
                 + ";source="
@@ -69,14 +69,14 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
                 + ",lazy="
                 + lazy);
         }
-        graph.addEdge(sourceType, resultType, transformer, weight);
+        graph.addEdge(sourceType, resultType, transformer, weight, publicTransformer);
     }
 
-    public void addTransformer(Transformer transformer) {
+    public void addTransformer(Transformer transformer, boolean publicTransformer) {
         addTransformer(transformer.getSourceDataBinding(),
                        transformer.getTargetDataBinding(),
                        transformer.getWeight(),
-                       transformer);
+                       transformer, publicTransformer);
     }
 
     public boolean removeTransformer(String sourceType, String resultType) {
@@ -111,7 +111,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
     private void loadTransformers(Class<?> transformerClass) {
 
         // Get the transformer service declarations
-        Set<ServiceDeclaration> transformerDeclarations; 
+        Set<ServiceDeclaration> transformerDeclarations;
 
         try {
             transformerDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(transformerClass);
@@ -121,12 +121,17 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
         }
 
         // Load transformers
-        for (ServiceDeclaration transformerDeclaration: transformerDeclarations) {
+        for (ServiceDeclaration transformerDeclaration : transformerDeclarations) {
             Map<String, String> attributes = transformerDeclaration.getAttributes();
 
             String source = attributes.get("source");
             String target = attributes.get("target");
             int weight = Integer.valueOf(attributes.get("weight"));
+            String b = attributes.get("public");
+            boolean pub = true;
+            if (b != null) {
+                pub = Boolean.valueOf(b);
+            }
 
             // Create a transformer wrapper and register it
             Transformer transformer;
@@ -135,7 +140,7 @@ public class DefaultTransformerExtensionPoint implements TransformerExtensionPoi
             } else {
                 transformer = new LazyPushTransformer(source, target, weight, transformerDeclaration);
             }
-            addTransformer(transformer);
+            addTransformer(transformer, pub);
         }
     }
 

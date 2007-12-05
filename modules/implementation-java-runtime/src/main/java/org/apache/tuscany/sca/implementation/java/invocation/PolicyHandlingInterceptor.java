@@ -35,16 +35,18 @@ public class PolicyHandlingInterceptor implements Interceptor {
     private List<PolicyHandler> policyHandlers = null;
     private Operation targetOperation = null;
 
-    public PolicyHandlingInterceptor(Operation targetOperation,
-                                     List<PolicyHandler> policyHandlers) {
+    public PolicyHandlingInterceptor(Operation targetOperation, List<PolicyHandler> policyHandlers) {
         this.policyHandlers = policyHandlers;
         this.targetOperation = targetOperation;
     }
 
     public Message invoke(Message msg) {
-        applyPreInvocationPolicies(targetOperation, msg);
-        msg = next.invoke(msg);
-        applyPostInvocationPolices(targetOperation, msg);
+        try {
+            applyPreInvocationPolicies(targetOperation, msg);
+            msg = next.invoke(msg);
+        } finally {
+            applyPostInvocationPolices(targetOperation, msg);
+        }
         return msg;
     }
 
@@ -55,15 +57,15 @@ public class PolicyHandlingInterceptor implements Interceptor {
     public Invoker getNext() {
         return next;
     }
-    
+
     private void applyPreInvocationPolicies(Object... context) {
-        for ( PolicyHandler policyHandler : policyHandlers ) {
+        for (PolicyHandler policyHandler : policyHandlers) {
             policyHandler.beforeInvoke(context);
         }
     }
-    
-    private void applyPostInvocationPolices(Object...  context) {
-        for ( PolicyHandler policyHandler : policyHandlers ) {
+
+    private void applyPostInvocationPolices(Object... context) {
+        for (PolicyHandler policyHandler : policyHandlers) {
             policyHandler.afterInvoke(context);
         }
     }

@@ -47,23 +47,23 @@ public class DataBindingModuleActivator implements ModuleActivator {
         MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
         Input2InputTransformer input2InputTransformer = new Input2InputTransformer();
         input2InputTransformer.setMediator(mediator);
-        transformers.addTransformer(input2InputTransformer);
+        transformers.addTransformer(input2InputTransformer, true);
 
         Output2OutputTransformer output2OutputTransformer = new Output2OutputTransformer();
         output2OutputTransformer.setMediator(mediator);
-        transformers.addTransformer(output2OutputTransformer);
+        transformers.addTransformer(output2OutputTransformer, true);
 
         Exception2ExceptionTransformer exception2ExceptionTransformer = new Exception2ExceptionTransformer();
         exception2ExceptionTransformer.setMediator(mediator);
-        transformers.addTransformer(exception2ExceptionTransformer);
+        transformers.addTransformer(exception2ExceptionTransformer, true);
         
         Array2ArrayTransformer array2ArrayTransformer = new Array2ArrayTransformer();
         array2ArrayTransformer.setMediator(mediator);
-        transformers.addTransformer(array2ArrayTransformer);
+        transformers.addTransformer(array2ArrayTransformer, true);
 
         Group2GroupTransformer group2GroupTransformer = new Group2GroupTransformer();
         group2GroupTransformer.setMediator(mediator);
-        transformers.addTransformer(group2GroupTransformer);
+        transformers.addTransformer(group2GroupTransformer, true);
 
         ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);

@@ -17,14 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.databinding.xml;
+package org.apache.tuscany.sca.databinding.jaxb;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,11 +31,24 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
+import org.apache.tuscany.sca.databinding.xml.SimpleXmlNodeImpl;
+import org.apache.tuscany.sca.databinding.xml.XmlNode;
+import org.apache.tuscany.sca.databinding.xml.XmlTreeStreamReaderImpl;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
+
+import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
+import com.sun.xml.bind.v2.model.core.Ref;
+import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
+import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
+import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
+import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfoSet;
+import com.sun.xml.bind.v2.runtime.IllegalAnnotationsException;
+import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -49,6 +59,41 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
             return o1.getName().compareTo(o2.getName());
         }
     };
+
+    private final static String XSI_PREFIX = "xsi";
+    private final static String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
+
+    private final static XmlNode getXSIType(QName realType) {
+        QName xsiType = new QName(XSI_NS, "type", XSI_PREFIX);
+        String prefix = realType.getPrefix();
+        String typeName = realType.getLocalPart();
+        if (prefix != null && !prefix.equals("")) {
+            typeName = prefix + ":" + realType.getLocalPart();
+        }
+        return new SimpleXmlNodeImpl(xsiType, XmlNode.Type.ATTRIBUTE);
+    }
+
+    /**
+     * Represent a Map.Entry XML node
+     * @version $Rev$ $Date$
+     */
+    public static class MapEntryXmlNodeImpl extends SimpleXmlNodeImpl implements XmlNode {
+        private Map.Entry entry;
+
+        public MapEntryXmlNodeImpl(Entry entry) {
+            super(new QName("", "entry"), entry);
+            this.entry = entry;
+        }
+
+        public Iterator<XmlNode> children() {
+            List<XmlNode> nodes = new ArrayList<XmlNode>();
+            XmlNode key = new BeanXmlNodeImpl(new QName("", "key"), entry.getKey());
+            XmlNode value = new BeanXmlNodeImpl(new QName("", "value"), entry.getValue());
+            nodes.add(key);
+            nodes.add(value);
+            return nodes.iterator();
+        }
+    }
 
     public static class BeanXmlNodeImpl extends SimpleXmlNodeImpl implements XmlNode {
         private static final Object[] NULL = null;
@@ -91,12 +136,11 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
             }
             if (Map.class.isAssignableFrom(value.getClass())) {
                 List<XmlNode> entries = new ArrayList<XmlNode>();
-                QName entryName = new QName(name.getNamespaceURI(), "entry");
                 Map map = (Map)value;
                 if (map != null) {
                     for (Object e : map.entrySet()) {
                         Map.Entry entry = (Map.Entry)e;
-                        entries.add(new BeanXmlNodeImpl(entryName, entry));
+                        entries.add(new MapEntryXmlNodeImpl(entry));
                     }
                 }
                 return entries.iterator();
@@ -197,69 +241,56 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
         void setValue(Object value) throws Exception;
     }
 
-    private static class FieldAccessor implements Accessor {
-        private Object target;
-        private Field field;
+    private static RuntimeTypeInfoSet create(Class... classes) throws Exception {
+        IllegalAnnotationsException.Builder errorListener = new IllegalAnnotationsException.Builder();
+        RuntimeInlineAnnotationReader reader = new RuntimeInlineAnnotationReader();
+        JAXBContextImpl context =
+            new JAXBContextImpl(classes, null, Collections.<Class, Class> emptyMap(), null, false, reader, false, false);
+        RuntimeModelBuilder builder =
+            new RuntimeModelBuilder(context, reader, Collections.<Class, Class> emptyMap(), null);
+        builder.setErrorHandler(errorListener);
+        for (Class c : classes)
+            builder.getTypeInfo(new Ref<Type, Class>(c));
 
-        public FieldAccessor(Object target, Field field) {
-            super();
-            this.target = target;
-            this.field = field;
-            this.field.setAccessible(true);
-        }
-
-        public String getName() {
-            return field.getName();
-        }
-
-        public Object getValue() throws Exception {
-            return field.get(target);
-        }
-
-        public void setValue(Object value) throws Exception {
-            field.set(target, value);
-        }
-
-        public Class<?> getType() {
-            return field.getType();
-        }
-
+        RuntimeTypeInfoSet r = builder.link();
+        errorListener.check();
+        return r;
     }
 
-    private static class PropertyAccessor implements Accessor {
+    private static class JAXBAccessor implements Accessor {
         private Object target;
-        private PropertyDescriptor prop;
+        private RuntimePropertyInfo prop;
 
-        public PropertyAccessor(Object target, PropertyDescriptor prop) {
+        public JAXBAccessor(Object target, RuntimePropertyInfo field) {
             super();
             this.target = target;
-            this.prop = prop;
+            this.prop = field;
         }
 
         public String getName() {
             return prop.getName();
         }
 
-        public Class<?> getType() {
-            return prop.getPropertyType();
-        }
-
         public Object getValue() throws Exception {
-            Method getter = prop.getReadMethod();
-            if (getter != null) {
-                getter.setAccessible(true);
-                return getter.invoke(target);
-            }
-            throw new IllegalAccessException("The property cannot be read: " + getName());
+            return prop.getAccessor().get(target);
         }
 
         public void setValue(Object value) throws Exception {
-            Method setter = prop.getWriteMethod();
-            if (setter != null) {
-                setter.setAccessible(true);
-                setter.invoke(target);
+            prop.getAccessor().set(target, value);
+        }
+
+        public Class<?> getType() {
+            Type type = prop.getRawType();
+            if (type instanceof Class) {
+                return (Class<?>)type;
+            } else if (type instanceof ParameterizedType) {
+                ParameterizedType pType = (ParameterizedType)type;
+                type = pType.getRawType();
+                if (type instanceof Class) {
+                    return (Class<?>)type;
+                }
             }
-            throw new IllegalAccessException("The property cannot be written: " + getName());
+            return Object.class;
         }
 
     }
@@ -270,14 +301,10 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
         }
         Map<String, Accessor> map = new HashMap<String, Accessor>();
         Class<?> type = target.getClass();
-        for (Field f : type.getFields()) {
-            map.put(f.getName(), new FieldAccessor(target, f));
-        }
-        BeanInfo info = Introspector.getBeanInfo(type, Object.class);
-        for (PropertyDescriptor p : info.getPropertyDescriptors()) {
-            // if (p.getReadMethod() != null && p.getWriteMethod() != null) {
-                map.put(p.getName(), new PropertyAccessor(target, p));
-            // }
+        RuntimeTypeInfoSet set = create(type);
+        RuntimeClassInfo clsInfo = (RuntimeClassInfo)set.getTypeInfo(type);
+        for (RuntimePropertyInfo f : clsInfo.getProperties()) {
+            map.put(f.getName(), new JAXBAccessor(target, f));
         }
         return map;
     }

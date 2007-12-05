@@ -43,9 +43,8 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class DefaultStAXArtifactProcessorExtensionPoint
-    extends DefaultArtifactProcessorExtensionPoint<StAXArtifactProcessor>
-    implements StAXArtifactProcessorExtensionPoint {
+public class DefaultStAXArtifactProcessorExtensionPoint extends
+    DefaultArtifactProcessorExtensionPoint<StAXArtifactProcessor> implements StAXArtifactProcessorExtensionPoint {
 
     private ModelFactoryExtensionPoint modelFactories;
     private boolean loaded;
@@ -61,22 +60,41 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         processorsByArtifactType.put((Object)artifactProcessor.getArtifactType(), artifactProcessor);
         processorsByModelType.put(artifactProcessor.getModelType(), artifactProcessor);
     }
-    
+
     public void removeArtifactProcessor(StAXArtifactProcessor artifactProcessor) {
         processorsByArtifactType.remove((Object)artifactProcessor.getArtifactType());
-        processorsByModelType.remove(artifactProcessor.getModelType());        
+        processorsByModelType.remove(artifactProcessor.getModelType());
     }
-    
+
     @Override
     public StAXArtifactProcessor getProcessor(Class<?> modelType) {
         loadArtifactProcessors();
         return super.getProcessor(modelType);
     }
-    
+
     @Override
     public StAXArtifactProcessor getProcessor(Object artifactType) {
         loadArtifactProcessors();
         return super.getProcessor(artifactType);
+    }
+
+    private static QName getQName(String qname) {
+        if (qname == null) {
+            return null;
+        }
+        qname = qname.trim();
+        if (qname.startsWith("{")) {
+            int h = qname.indexOf('}');
+            if (h != -1) {
+                return new QName(qname.substring(1, h), qname.substring(h + 1));
+            }
+        } else {
+            int h = qname.indexOf('#');
+            if (h != -1) {
+                return new QName(qname.substring(0, h), qname.substring(h + 1));
+            }
+        }
+        throw new IllegalArgumentException("Invalid qname: "+qname);
     }
 
     private void loadArtifactProcessors() {
@@ -84,37 +102,34 @@ public class DefaultStAXArtifactProcessorExtensionPoint
             return;
 
         // Get the processor service declarations
-        Set<ServiceDeclaration> processorDeclarations; 
+        Set<ServiceDeclaration> processorDeclarations;
         try {
             processorDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(StAXArtifactProcessor.class);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-        
-        for (ServiceDeclaration processorDeclaration: processorDeclarations) {
+
+        for (ServiceDeclaration processorDeclaration : processorDeclarations) {
             Map<String, String> attributes = processorDeclaration.getAttributes();
-            
+
             // Load a StAX artifact processor
-            
+
             // Get the model qname
-            QName artifactType = null;
-            String qname = attributes.get("qname");
-            if (qname != null) {
-                int h = qname.indexOf('#');
-                artifactType = new QName(qname.substring(0, h), qname.substring(h+1));
-            }
-            
+            QName artifactType = getQName(attributes.get("qname"));
+
             // Get the model class name
             String modelTypeName = attributes.get("model");
-            
+
             // Get the model factory class name 
             String factoryName = attributes.get("factory");
-            
+
             // Create a processor wrapper and register it
-            StAXArtifactProcessor processor = new LazyStAXArtifactProcessor(modelFactories, artifactType, modelTypeName, factoryName, processorDeclaration);
+            StAXArtifactProcessor processor =
+                new LazyStAXArtifactProcessor(modelFactories, artifactType, modelTypeName, factoryName,
+                                              processorDeclaration);
             addArtifactProcessor(processor);
         }
-        
+
         loaded = true;
     }
 
@@ -131,13 +146,13 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         private ServiceDeclaration processorDeclaration;
         private StAXArtifactProcessor processor;
         private Class modelType;
-        
-        LazyStAXArtifactProcessor(ModelFactoryExtensionPoint modelFactories, 
-        		QName artifactType, 
-        		String modelTypeName, 
-        		String factoryName, 
-        		ServiceDeclaration processorDeclaration) {
-        	
+
+        LazyStAXArtifactProcessor(ModelFactoryExtensionPoint modelFactories,
+                                  QName artifactType,
+                                  String modelTypeName,
+                                  String factoryName,
+                                  ServiceDeclaration processorDeclaration) {
+
             this.modelFactories = modelFactories;
             this.artifactType = artifactType;
             this.modelTypeName = modelTypeName;
@@ -148,18 +163,20 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         public QName getArtifactType() {
             return artifactType;
         }
-        
+
         @SuppressWarnings("unchecked")
         private StAXArtifactProcessor getProcessor() {
             if (processor == null) {
 
-                if (processorDeclaration.getClassName().equals("org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor")) {
-                    
+                if (processorDeclaration.getClassName()
+                    .equals("org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor")) {
+
                     // Specific initialization for the DefaultBeanModelProcessor
                     AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
                     PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
                     try {
-                        Class<StAXArtifactProcessor> processorClass = (Class<StAXArtifactProcessor>)processorDeclaration.loadClass();
+                        Class<StAXArtifactProcessor> processorClass =
+                            (Class<StAXArtifactProcessor>)processorDeclaration.loadClass();
                         Object modelFactory;
                         if (factoryName != null) {
                             Class<?> factoryClass = (Class<?>)processorDeclaration.loadClass(factoryName);
@@ -167,17 +184,29 @@ public class DefaultStAXArtifactProcessorExtensionPoint
                         } else {
                             modelFactory = null;
                         }
-                        Constructor<StAXArtifactProcessor> constructor = processorClass.getConstructor(AssemblyFactory.class, PolicyFactory.class, QName.class, Class.class, Object.class);
-                        processor = constructor.newInstance(assemblyFactory, policyFactory, artifactType, getModelType(), modelFactory);
+                        Constructor<StAXArtifactProcessor> constructor =
+                            processorClass.getConstructor(AssemblyFactory.class,
+                                                          PolicyFactory.class,
+                                                          QName.class,
+                                                          Class.class,
+                                                          Object.class);
+                        processor =
+                            constructor.newInstance(assemblyFactory,
+                                                    policyFactory,
+                                                    artifactType,
+                                                    getModelType(),
+                                                    modelFactory);
                     } catch (Exception e) {
                         throw new IllegalStateException(e);
                     }
                 } else {
-                    
+
                     // Load and instanciate the processor class
                     try {
-                        Class<StAXArtifactProcessor> processorClass = (Class<StAXArtifactProcessor>)processorDeclaration.loadClass();
-                        Constructor<StAXArtifactProcessor> constructor = processorClass.getConstructor(ModelFactoryExtensionPoint.class);
+                        Class<StAXArtifactProcessor> processorClass =
+                            (Class<StAXArtifactProcessor>)processorDeclaration.loadClass();
+                        Constructor<StAXArtifactProcessor> constructor =
+                            processorClass.getConstructor(ModelFactoryExtensionPoint.class);
                         processor = constructor.newInstance(modelFactories);
                     } catch (Exception e) {
                         throw new IllegalStateException(e);
@@ -192,7 +221,8 @@ public class DefaultStAXArtifactProcessorExtensionPoint
         }
 
         @SuppressWarnings("unchecked")
-        public void write(Object model, XMLStreamWriter outputSource) throws ContributionWriteException, XMLStreamException {
+        public void write(Object model, XMLStreamWriter outputSource) throws ContributionWriteException,
+            XMLStreamException {
             getProcessor().write(model, outputSource);
         }
 

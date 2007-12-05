@@ -48,12 +48,12 @@ public class TransformerExtensionTestCase extends TestCase {
         assertEquals(XMLStreamReader.class.getName(), transformer.getTargetDataBinding());
         assertEquals(50, transformer.getWeight());
         TransformerExtensionPoint registry = EasyMock.createMock(TransformerExtensionPoint.class);
-        registry.addTransformer(EasyMock.isA(Transformer.class));
+        registry.addTransformer(EasyMock.isA(Transformer.class), EasyMock.eq(true));
         EasyMock
                 .expect(registry.getTransformer(transformer.getSourceDataBinding(), transformer.getTargetDataBinding()))
                 .andReturn(transformer);
         EasyMock.replay(registry);
-        registry.addTransformer(transformer);
+        registry.addTransformer(transformer, true);
         assertSame(transformer, registry.getTransformer(transformer.getSourceDataBinding(), transformer
                 .getTargetDataBinding()));
     }
