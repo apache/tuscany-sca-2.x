@@ -26,7 +26,6 @@ import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.node.NodeFactory;
-import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -113,10 +112,14 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
     }
 
     public InterfaceContract getBindingInterfaceContract() {
-        if (distributedProvider != null){
+        if (distributedProvider != null) {
             return distributedProvider.getBindingInterfaceContract();
         } else {
-            return service.getInterfaceContract();
+            if (service.getService() != null) {
+                return service.getService().getInterfaceContract();
+            } else {
+                return service.getInterfaceContract();
+            }
         }
     }
 
