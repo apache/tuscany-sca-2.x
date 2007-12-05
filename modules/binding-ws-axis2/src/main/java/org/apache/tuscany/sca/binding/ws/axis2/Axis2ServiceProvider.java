@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.extensions.soap.SOAPAddress;
+import javax.wsdl.extensions.soap12.SOAP12Address;
 import javax.xml.namespace.QName;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -377,6 +378,10 @@ public class Axis2ServiceProvider {
             for (Object extension : wsdlPortExtensions) {
                 if (extension instanceof SOAPAddress) {
                     return URI.create(((SOAPAddress)extension).getLocationURI());
+                }
+                if (extension instanceof SOAP12Address) {
+                    SOAP12Address address = (SOAP12Address)extension;
+                    return URI.create((address.getLocationURI()));
                 }
             }
         }

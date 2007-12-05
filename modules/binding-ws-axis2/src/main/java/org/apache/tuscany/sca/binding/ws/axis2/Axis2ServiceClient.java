@@ -25,6 +25,7 @@ import java.util.List;
 import javax.wsdl.Binding;
 import javax.wsdl.BindingOperation;
 import javax.wsdl.Definition;
+import javax.wsdl.Import;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.wsdl.extensions.soap.SOAPAddress;
@@ -159,6 +160,32 @@ public class Axis2ServiceClient {
     }
     
     /**
+     * Workaround for https://issues.apache.org/jira/browse/AXIS2-3205
+     * @param definition
+     * @param serviceName
+     * @return
+     */
+    private static Definition getDefinition(Definition definition, QName serviceName) {
+        if (definition == null) {
+            return null;
+        }
+        Object service = definition.getServices().get(serviceName);
+        if (service != null) {
+            return definition;
+        }
+        for (Object i : definition.getImports().values()) {
+            List<Import> imports = (List<Import>)i;
+            for (Import imp : imports) {
+                Definition d = getDefinition(imp.getDefinition(), serviceName);
+                if (d != null) {
+                    return d;
+                }
+            }
+        }
+        return definition;
+    }
+    
+    /**
      * This method is copied from AxisService.createClientSideAxisService to
      * work around http://issues.apache.org/jira/browse/WSCOMMONS-228
      * 
@@ -174,12 +201,13 @@ public class Axis2ServiceClient {
                                                           QName wsdlServiceName,
                                                           String portName,
                                                           Options options) throws AxisFault {
+        Definition def = getDefinition(wsdlDefinition, wsdlServiceName);
         WSDL11ToAxisServiceBuilder serviceBuilder =
-                new WSDL11ToAxisServiceBuilder(wsdlDefinition, wsdlServiceName, portName);
+                new WSDL11ToAxisServiceBuilder(def, wsdlServiceName, portName);
         serviceBuilder.setServerSide(false);
         // [rfeng] Add a custom resolver to work around WSCOMMONS-228
-        serviceBuilder.setCustomResolver(new URIResolverImpl(wsdlDefinition));
-        serviceBuilder.setBaseUri(wsdlDefinition.getDocumentBaseURI());
+        serviceBuilder.setCustomResolver(new URIResolverImpl(def));
+        serviceBuilder.setBaseUri(def.getDocumentBaseURI());
         // [rfeng]
         AxisService axisService = serviceBuilder.populateService();
         AxisEndpoint axisEndpoint = (AxisEndpoint) axisService.getEndpoints()
