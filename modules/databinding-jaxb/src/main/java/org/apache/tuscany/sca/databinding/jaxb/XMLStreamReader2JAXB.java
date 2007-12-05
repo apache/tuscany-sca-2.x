@@ -41,7 +41,9 @@ public class XMLStreamReader2JAXB extends BaseTransformer<XMLStreamReader, Objec
         try {
             JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            Object result = unmarshaller.unmarshal(source);
+            // FIXME: [rfeng] If the java type is Object.class, the unmarshalled result will be
+            // a DOM Node
+            Object result = unmarshaller.unmarshal(source, JAXBContextHelper.getJavaType(context.getTargetDataType()));
             source.close();
             return JAXBContextHelper.createReturnValue(context.getTargetDataType(), result);
         } catch (Exception e) {

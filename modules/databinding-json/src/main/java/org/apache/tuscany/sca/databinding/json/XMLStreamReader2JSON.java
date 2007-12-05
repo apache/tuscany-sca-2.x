@@ -30,13 +30,12 @@ import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.databinding.xml.XMLStreamSerializer;
 import org.codehaus.jettison.badgerfish.BadgerFishXMLStreamWriter;
-import org.codehaus.jettison.json.JSONObject;
 
 /**
  * @version $Rev$ $Date$
  */
-public class XMLStreamReader2JSON extends BaseTransformer<XMLStreamReader, JSONObject> implements
-    PullTransformer<XMLStreamReader, JSONObject> {
+public class XMLStreamReader2JSON extends BaseTransformer<XMLStreamReader, Object> implements
+    PullTransformer<XMLStreamReader, Object> {
     
     @Override
     protected Class getSourceType() {
@@ -45,17 +44,21 @@ public class XMLStreamReader2JSON extends BaseTransformer<XMLStreamReader, JSONO
 
     @Override
     protected Class getTargetType() {
-        return JSONObject.class;
+        return Object.class;
     }
 
-    public JSONObject transform(XMLStreamReader source, TransformationContext context) {
+    public Object transform(XMLStreamReader source, TransformationContext context) {
         try {
             StringWriter writer = new StringWriter();
             XMLStreamWriter jsonWriter = new BadgerFishXMLStreamWriter(writer);
             XMLStreamSerializer serializer = new XMLStreamSerializer();
             serializer.serialize(source, jsonWriter);
             source.close();
-            return new JSONObject(writer.toString());
+            Class type = null;
+            if (context != null && context.getTargetDataType() != null) {
+                type = context.getTargetDataType().getPhysical();
+            }
+            return JSONHelper.toJSON(writer.toString(), type);
         } catch (Exception e) {
             throw new TransformationException(e);
         } 
@@ -64,6 +67,11 @@ public class XMLStreamReader2JSON extends BaseTransformer<XMLStreamReader, JSONO
     @Override
     public int getWeight() {
         return 500;
+    }
+
+    @Override
+    public String getTargetDataBinding() {
+        return JSONDataBinding.NAME;
     }
 
 }

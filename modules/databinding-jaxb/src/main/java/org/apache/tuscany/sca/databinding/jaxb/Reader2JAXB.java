@@ -40,7 +40,7 @@ public class Reader2JAXB extends BaseTransformer<Reader, Object> implements
             JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             StreamSource streamSource = new StreamSource(source);
-            Object result = unmarshaller.unmarshal(streamSource);
+            Object result = unmarshaller.unmarshal(streamSource, JAXBContextHelper.getJavaType(context.getTargetDataType()));
             return JAXBContextHelper.createReturnValue(context.getTargetDataType(), result);
         } catch (Exception e) {
             throw new TransformationException(e);

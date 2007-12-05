@@ -36,7 +36,7 @@ public class TestClientImpl implements TestClient {
     }
 
     public void runTest() {
-        assertEquals("Hello Smith", helloService.getGreetings(" Smith"));
+        assertEquals("Hello  Smith", helloService.getGreetings(" Smith"));
         helloService.giveGreetings("Jones");
         helloService.giveGreetingsOneWay("Brown");
         assertEquals("Hello Stranger", helloService.takeGreetings());

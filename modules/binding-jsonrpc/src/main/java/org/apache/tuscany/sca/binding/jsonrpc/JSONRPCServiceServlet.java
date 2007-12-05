@@ -37,8 +37,8 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.osoa.sca.ServiceRuntimeException;
 
 import com.metaparadigm.jsonrpc.JSONRPCBridge;
@@ -125,12 +125,12 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
             data.write(buf, 0, ret);
         }
 
-        org.codehaus.jettison.json.JSONObject jsonReq = null;
+        JSONObject jsonReq = null;
         String method = null;
         try {
-            jsonReq = new org.codehaus.jettison.json.JSONObject(data.toString());
+            jsonReq = new JSONObject(data.toString());
             method = jsonReq.getString("method");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Unable to parse request", e);
         }
 
@@ -198,7 +198,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         return jsonResp.toString().getBytes("UTF-8");
     }
     
-    protected byte[] handleJSONRPCMethodInvocation(HttpServletRequest request, HttpServletResponse response, org.codehaus.jettison.json.JSONObject jsonReq) throws IOException,
+    protected byte[] handleJSONRPCMethodInvocation(HttpServletRequest request, HttpServletResponse response, JSONObject jsonReq) throws IOException,
     UnsupportedEncodingException {
 
         String method = null;
@@ -219,7 +219,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
             }
             id = jsonReq.get("id");
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Unable to find json method name", e);
         }
 
@@ -227,20 +227,20 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
         RuntimeWire wire = componentService.getRuntimeWire(binding, serviceContract);
         Operation jsonOperation = findOperation(method);
         Object result = null;
-        org.codehaus.jettison.json.JSONObject jsonResponse = new org.codehaus.jettison.json.JSONObject();
+        JSONObject jsonResponse = new JSONObject();
         try {
             result = wire.invoke(jsonOperation, args);
             try {
                 jsonResponse.put("result", result);
                 jsonResponse.putOpt("id", id);
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 throw new ServiceRuntimeException(e);
             }
         } catch (InvocationTargetException e) {
             try {
                 jsonResponse.put("error", e.getCause());
                 jsonResponse.putOpt("id", id);
-            } catch (JSONException e1) {
+            } catch (Exception e1) {
                 throw new ServiceRuntimeException(e);
             }
         } catch(RuntimeException e) {

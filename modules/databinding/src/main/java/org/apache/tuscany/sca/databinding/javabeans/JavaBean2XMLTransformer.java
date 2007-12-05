@@ -122,7 +122,7 @@ public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object,
                     }
                 }
 
-                Method[] methods = javaType.getDeclaredMethods();
+                Method[] methods = javaType.getMethods();
                 String fieldName = null;
                 for (Method aMethod : methods) {
                     try {
