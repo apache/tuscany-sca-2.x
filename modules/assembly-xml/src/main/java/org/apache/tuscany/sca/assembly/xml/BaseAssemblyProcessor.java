@@ -156,7 +156,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
             }
         }
     }
-    
+
     /**
      * Write a list of targets into an attribute
      * @param reference
@@ -164,7 +164,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
      */
     protected XAttr writeTargets(Reference reference) {
         List<String> targets = new ArrayList<String>();
-        for (Service target: reference.getTargets()) {
+        for (Service target : reference.getTargets()) {
             targets.add(target.getName());
         }
         return new XAttr(TARGET, targets);
@@ -210,9 +210,9 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
      * @throws XMLStreamException
      * @throws ContributionReadException
      */
-    protected void readAbstractProperty(AbstractProperty property, XMLStreamReader reader)
-        throws XMLStreamException, ContributionReadException {
-        
+    protected void readAbstractProperty(AbstractProperty property, XMLStreamReader reader) throws XMLStreamException,
+        ContributionReadException {
+
         property.setName(getString(reader, NAME));
         property.setMany(getBoolean(reader, MANY));
         property.setMustSupply(getBoolean(reader, MUST_SUPPLY));
@@ -273,7 +273,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                 }
                 if (binding instanceof OperationsConfigurator) {
                     OperationsConfigurator opConfigurator = (OperationsConfigurator)binding;
-                    for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
+                    for (ConfiguredOperation confOp : opConfigurator.getConfiguredOperations()) {
                         resolveIntents(confOp.getRequiredIntents(), resolver);
                         resolvePolicySets(confOp.getPolicySets(), resolver);
                     }
@@ -298,7 +298,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                     }
                     if (binding instanceof OperationsConfigurator) {
                         OperationsConfigurator opConfigurator = (OperationsConfigurator)binding;
-                        for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
+                        for (ConfiguredOperation confOp : opConfigurator.getConfiguredOperations()) {
                             resolveIntents(confOp.getRequiredIntents(), resolver);
                             resolvePolicySets(confOp.getPolicySets(), resolver);
                         }
@@ -308,7 +308,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
 
             resolveIntents(contract.getRequiredIntents(), resolver);
             resolvePolicySets(contract.getPolicySets(), resolver);
-            for ( ConfiguredOperation confOp : contract.getConfiguredOperations() ) {
+            for (ConfiguredOperation confOp : contract.getConfiguredOperations()) {
                 resolveIntents(confOp.getRequiredIntents(), resolver);
                 resolvePolicySets(confOp.getPolicySets(), resolver);
             }
@@ -355,8 +355,8 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
      * @throws ContributionReadException
      * @throws ParserConfigurationException 
      */
-    protected Document readPropertyValue(QName element, QName type, XMLStreamReader reader)
-        throws XMLStreamException, ContributionReadException {
+    protected Document readPropertyValue(QName element, QName type, XMLStreamReader reader) throws XMLStreamException,
+        ContributionReadException {
 
         Document document;
         try {
@@ -475,8 +475,9 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                         declareNamespace(child, prefix, ns);
                     }
 
-                    if(!"".equals(name.getNamespaceURI()))
-                    declareNamespace(child, name.getPrefix(), name.getNamespaceURI());
+                    if (!"".equals(name.getNamespaceURI())) {
+                        declareNamespace(child, name.getPrefix(), name.getNamespaceURI());
+                    }
 
                     // add the attributes for this element
                     count = reader.getAttributeCount();
@@ -544,7 +545,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
         policySets.clear();
         policySets.addAll(resolvedPolicySets);
     }
-    
+
     /**
      * Write the value of a property 
      * @param document
@@ -553,8 +554,9 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
      * @param writer
      * @throws XMLStreamException
      */
-    protected void writePropertyValue(Object propertyValue, QName element, QName type, XMLStreamWriter writer) throws XMLStreamException {
-        
+    protected void writePropertyValue(Object propertyValue, QName element, QName type, XMLStreamWriter writer)
+        throws XMLStreamException {
+
         if (propertyValue instanceof Document) {
             Document document = (Document)propertyValue;
             NodeList nodeList = document.getDocumentElement().getChildNodes();

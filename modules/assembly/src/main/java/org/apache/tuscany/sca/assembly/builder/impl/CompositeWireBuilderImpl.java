@@ -1172,13 +1172,21 @@ public class CompositeWireBuilderImpl {
                                           IntentAttachPointType attachPointType) {
         
         //FIXME: For now do a simple check and later implement whatever is mentioned in the next comment
-       if ( xpath != null && attachPointType != null && xpath.indexOf(attachPointType.getName().getLocalPart()) != -1) {
-           return true;
-       } else {
-           return false;
-       }
-        
-        
+        if (xpath != null && attachPointType != null) {
+            if (xpath.indexOf(attachPointType.getName().getLocalPart()) != -1) {
+                return true;
+            }
+            // FIXME: [rfeng] Need to handle xml inheritance
+            if(attachPointType.getName().getLocalPart().startsWith("binding.")) {
+                return xpath.endsWith("binding");
+            }
+            if(attachPointType.getName().getLocalPart().startsWith("implementation.")) {
+                return xpath.endsWith("implementation");
+            }
+        }
+
+        return false;
+         
         //create a xml node out of the parent object.. i.e. write the parent object as scdl fragment
         //invoke PropertyUtil.evaluate(null, node, xpath)
         //verify the result Node's QName against the bindingType's name
