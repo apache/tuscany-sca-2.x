@@ -71,6 +71,7 @@ public class EJBBindingImpl implements EJBBinding {
      */
     public EJBBindingImpl() {
         super();
+        unresolved = true;
     }
 
     /**

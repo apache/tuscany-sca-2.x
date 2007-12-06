@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.domain.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.net.URI;
 import java.net.URL;
@@ -29,6 +30,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -48,7 +51,12 @@ import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.domain.DomainException;
@@ -79,6 +87,8 @@ import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
 
+import com.ibm.xslt4j.bcel.generic.DMUL;
+
 /**
  * The SCA domain implementation. In Tuscany we currently have a model of the 
  * SCA Domain that relies on a central domain manager this class provides that 
@@ -90,7 +100,8 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
 	
     private final static Logger logger = Logger.getLogger(SCADomainImpl.class.getName());
     
-	     
+    public static final String IMPORTED = "IMPORTED";
+    
     // class loader used to get the runtime going
     protected ClassLoader domainClassLoader;
     
@@ -226,24 +237,100 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         } catch(Exception ex) {
             throw new DomainException(ex);
         }
-    }   
-    
-    public Component getComponent(String componentName) {
-        for (Composite composite: domainManagementComposite.getIncludes()) {
-            for (Component component: composite.getComponents()) {
-                if (component.getName().equals(componentName)) {
-                    return component;
-                }
-            }
-        }
-        return null;
-    }       
+    }          
     
     // SCADomainSPI methods 
     
     public DomainModel getDomainModel(){        
         return domainModel;
     } 
+    
+    public String getComposite(QName compositeQName){
+        CompositeModel compositeModel = domainModel.getDeployedComposites().get(compositeQName);
+        Composite composite = compositeModel.getComposite();
+        
+        ExtensionPointRegistry registry = domainManagementRuntime.getExtensionPointRegistry();
+        
+        StAXArtifactProcessorExtensionPoint staxProcessors =
+            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        
+        StAXArtifactProcessor<Composite> processor = staxProcessors.getProcessor(Composite.class);
+        
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+        XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+        XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
+        processor.write(composite, writer);
+        writer.flush();
+        writer.close();
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+        }
+        
+        String compositeString = bos.toString();
+        
+        return compositeString;
+    }
+    
+    public String getComponent(QName compositeQName, String componentName){
+        
+        String componentString = null;
+        
+        return componentString;
+        
+    }
+    
+    private void registerRemoteServices(Composite composite){
+        // Loop through all service binding URIs registering them with the domain 
+        for (Service service: composite.getServices()) {
+            for (Binding binding: service.getBindings()) {
+                registerRemoteServiceBinding(null, service, binding);
+            }
+        }
+        
+        for (Component component: composite.getComponents()) {
+            for (ComponentService service: component.getServices()) {
+                for (Binding binding: service.getBindings()) {
+                    registerRemoteServiceBinding(component, service, binding);
+                }
+            }
+        }
+    }
+    
+    private void registerRemoteServiceBinding(Component component, Service service, Binding binding ){
+        if (service.getInterfaceContract().getInterface().isRemotable()) {
+            String uriString = binding.getURI();
+            if (uriString != null) {
+                 
+                String serviceName = component.getURI() + '/' + binding.getName(); 
+                /*
+                if (component != null) {
+                    serviceName = component.getURI();
+                    if (component.getServices().size() > 1){
+                        serviceName = serviceName + '/' + binding.getName();
+                    }
+                } else {
+                    serviceName = service.getName();
+                }
+                */  
+                try {
+                    registerServiceEndpoint(domainModel.getDomainURI(), 
+                                            IMPORTED, 
+                                            serviceName, 
+                                            binding.getClass().getName(), 
+                                            uriString);
+                } catch(Exception ex) {
+                    logger.log(Level.WARNING, 
+                               "Unable to  register service: "  +
+                               domainModel.getDomainURI() + " " +
+                               IMPORTED + " " +
+                               service.getName()+ " " +
+                               binding.getClass().getName() + " " +
+                               uriString);
+                }
+            }
+        }
+    }    
     
     // SCADomainEventService methods 
     
@@ -358,22 +445,34 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
     }    
     
     public void registerServiceEndpoint(String domainURI, String nodeURI, String serviceName, String bindingName, String URL)throws DomainException {
+       
+        // the component/service name
+        String longServiceName = null;
+        
+        // the component name
+        String shortServiceName = null;
+        
         // if the service name ends in a "/" remove it
-        String modifiedServiceName = null;
-        if ( serviceName.endsWith("/") ) {
-            modifiedServiceName = serviceName.substring(0, serviceName.length() - 1);
+        if (serviceName.endsWith("/")) {
+            longServiceName = serviceName.substring(0, serviceName.length() - 1);
         } else {
-            modifiedServiceName = serviceName;
+            longServiceName = serviceName;
         }
         
         // if the service name starts with a "/" remove it
-        if ( modifiedServiceName.startsWith("/") ) {
-            modifiedServiceName = modifiedServiceName.substring(1, serviceName.length());
+        if (longServiceName.startsWith("/")) {
+            longServiceName = longServiceName.substring(1, serviceName.length());
+        } 
+        
+        // extract the short name from the long name 
+        if (longServiceName.indexOf("/") >= 0 ) {
+            //TODO - only set this if multiplicity is 1
+            shortServiceName = longServiceName.substring(0, longServiceName.indexOf("/"));
         } 
         
         // collect the service info
         ServiceModel service = domainModelFactory.createService();
-        service.setServiceURI(modifiedServiceName);
+        service.setServiceURI(longServiceName);
         service.setServiceURL(URL);
         service.setServiceBinding(bindingName);
         
@@ -383,26 +482,39 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         
         if (node != null){
             //store the service
-            node.getServices().put(modifiedServiceName+bindingName, service);
+            node.getServices().put(longServiceName+bindingName, service);
+            
+            if (shortServiceName != null){
+                node.getServices().put(shortServiceName+bindingName, service);
+            }
             logger.log(Level.INFO, "Registering service: [" + 
                                    domainURI + " " +
-                                   modifiedServiceName + " " +
+                                   longServiceName + " " +
                                    URL + " " +
                                    bindingName + "]");         
         } else {
             logger.log(Level.WARNING, "Trying to register service: " + 
-                                      modifiedServiceName + 
+                                      longServiceName + 
                                       " for a node " + 
                                       nodeURI + 
                                       "that isn't registered");
         }
 
-        notifyServiceChange(modifiedServiceName);
+        notifyServiceChange(longServiceName);
     }    
      
     public void unregisterServiceEndpoint(String domainURI, String nodeURI, String serviceName, String bindingName) throws DomainException{
         NodeModel node = domainModel.getNodes().get(nodeURI);
         node.getServices().remove(serviceName + bindingName);
+        
+        // extract the short name from the long name 
+        String shortServiceName = null;
+        if (serviceName.indexOf("/") >= 0 ) {
+            shortServiceName = serviceName.substring(0, serviceName.indexOf("/"));
+        } 
+        
+        node.getServices().remove(shortServiceName + bindingName);
+        
         logger.log(Level.FINE, "Removed service: " +  serviceName );   
         
         notifyServiceChange(serviceName);
@@ -450,16 +562,16 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                 url = service.getServiceURL();
                 // uncomment for debugging
                 //url = url.replace("8085", "8086");
-                logger.log(Level.FINE, "Found service " + serviceName + " url: " + url); 
+                logger.log(Level.INFO, "Found service " + serviceName + " url: " + url); 
                 break;
-            }
+            } 
         }
                
         return url;
     }
     
     public String findServiceNode(String domainURI, String serviceName, String bindingName) throws DomainException{
-        logger.log(Level.INFO, "Finding service: [" + 
+        logger.log(Level.INFO, "Finding service node: [" + 
                                domainURI + " " +
                                serviceName + " " +
                                bindingName +
@@ -530,7 +642,9 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             
             for(NodeModel node : nodes) {
                 try {
-                    ((NodeModelImpl)node).getSCANodeManagerService().destroyNode();
+                    if ( ((NodeModelImpl)node).getSCANodeManagerService() != null){
+                        ((NodeModelImpl)node).getSCANodeManagerService().destroyNode();
+                    }
                 } catch (Exception ex) {
                     // TODO - collate errors and report
                     ex.printStackTrace();
@@ -572,6 +686,38 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         return domainModel.getDomainURI();
     }
     
+    public void importContribution(String contributionURI, URL contributionURL) throws DomainException {
+        // check that there is a virutal IMPORTED node that represents all imported components
+        // running outside the sca domain
+        NodeModel nodeModel = domainModel.getNodes().get(IMPORTED);
+        
+        if (nodeModel == null){
+            registerNode(IMPORTED, IMPORTED, null);
+            nodeModel = domainModel.getNodes().get(IMPORTED);
+        }
+        
+        // add the contribution information to the domain model
+        org.apache.tuscany.sca.domain.model.ContributionModel contributionModel = 
+            parseContribution(contributionURI, contributionURL.toExternalForm());
+        
+        // add the contribution to the IMPORTED node
+        nodeModel.getContributions().put(contributionURI, contributionModel);
+        
+       // this contribution will not be deployed as it represents a component running elsewhere
+       for ( CompositeModel compositeModel : contributionModel.getComposites().values()) {
+           // build the model
+           try {
+               domainManagementRuntime.getCompositeBuilder().build(compositeModel.getComposite()); 
+           } catch (Exception ex) {
+               throw new DomainException(ex);
+           }
+           
+           // add all the services that are exposed to the service list for other, deployed, 
+           // components to find.           
+           registerRemoteServices(compositeModel.getComposite());           
+       }
+            
+    }    
     
     public void addContribution(String contributionURI, URL contributionURL) throws DomainException {
         // add the contribution information to the domain model
@@ -788,7 +934,8 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         NodeModel node = null;
         
         for(NodeModel tmpNode : domainModel.getNodes().values()) {
-            if ( tmpNode.getContributions().isEmpty()){
+            if ((tmpNode.getContributions().isEmpty()) &&
+                (!tmpNode.getNodeURI().equals(IMPORTED))){
                 node = tmpNode;
                 
                 for (Contribution tmpContribution : dependentContributions){

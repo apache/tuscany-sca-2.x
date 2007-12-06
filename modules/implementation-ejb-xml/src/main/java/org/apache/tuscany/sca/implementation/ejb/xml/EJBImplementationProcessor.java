@@ -75,7 +75,13 @@ public class EJBImplementationProcessor extends BaseStAXArtifactProcessor implem
             implementation.setEJBLink(ejbLink);
             
             // Set the URI of the component type 
-            implementation.setURI(ejbLink.replace('#', '/'));
+            //implementation.setURI(ejbLink.replace('#', '/'));
+            int hashPosition = ejbLink.indexOf('#');
+            if ( hashPosition >= 0) {
+                implementation.setURI(ejbLink.substring(hashPosition + 1));
+            } else {
+                implementation.setURI(ejbLink);
+            }
         }
 
         // Skip to end element

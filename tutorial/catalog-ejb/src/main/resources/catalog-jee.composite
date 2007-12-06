@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,32 +16,16 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
- */
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+   targetNamespace="http://store"
+   name="catalog-jee">
 
-package services;
+    <component name="JEEVegetablesCatalog">
+        <implementation.ejb ejb-link="catalog-ejb.jar#CatalogEJB"/> 
+        <service name="Catalog">
+            <binding.ejb uri="java:VegetablesCatalogImplRemote"/>
+        </service>
+    </component> 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.ejb.Init;
-import javax.ejb.Stateless;
-
-@Stateless(name="VegetablesCatalogImpl")
-//@Stateless
-public class VegetablesCatalogImpl implements Catalog {
-    private List<Item> catalog = new ArrayList<Item>();
- 
-    @Init
-    public void init() {
-        catalog.add(new Item("Broccoli", "$2.99"));
-        catalog.add(new Item("Asparagus", "$3.55"));
-        catalog.add(new Item("Cauliflower", "$1.55"));
-    }
-
-    public Item[] get() {   
-        init();
-        Item[] catalogArray = new Item[catalog.size()];
-        catalog.toArray(catalogArray);
-        return catalogArray;
-    }
-}
+</composite>

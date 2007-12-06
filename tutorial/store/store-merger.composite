@@ -25,7 +25,7 @@
     <component name="Store">
         <t:implementation.widget location="uiservices/store.html"/>
         <service name="Widget">
-        	<t:binding.http uri="http://localhost:8101/ui"/> 
+        	<t:binding.http uri="/ui"/> 
         </service>
 		<reference name="catalog" target="Catalog">
 		 	<t:binding.jsonrpc/>

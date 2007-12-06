@@ -69,11 +69,11 @@
         </service>
     </component>           
 
-    <component name="node">
+    <!--component name="node">
        <t:implementation.resource location="webroot"/>
         <service name="Resource">
             <t:binding.http/>
         </service>
-    </component>    
+    </component-->    
 
 </composite>

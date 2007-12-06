@@ -202,7 +202,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             nodeRuntime.getCompositeActivator().setDomainComposite(nodeComposite);             
             
             // create a link to the domain 
-            scaDomain = new SCADomainProxyImpl(domainURI);
+            scaDomain = new SCADomainProxyImpl(domainURI, nodeClassLoader);
             
             // add the node URI to the domain
             ((SCADomainProxyImpl)scaDomain).addNode(this);  
@@ -504,12 +504,17 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
     public void addToDomainLevelComposite(String compositePath) throws NodeException {
        
         if (compositePath == null){
-            throw new NodeException("Composite path cannot be null");
+            addToDomainLevelComposite((QName)null);
+        } else {          
+            Composite composite = compositeFiles.get(compositePath);
+            
+            if (composite != null){
+                addToDomainLevelComposite(composite.getName());
+            } else {
+                throw new NodeException("Composite " + compositePath + " not found" );
+            }
+                
         }
-                 
-        Composite composite = compositeFiles.get(compositePath);
-        
-        addToDomainLevelComposite(composite.getName());
     }
 
     /**
@@ -670,8 +675,9 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             String uriString = binding.getURI();
             if (uriString != null) {
                  
-                String serviceName = null; 
+                String serviceName = component.getURI() + '/' + binding.getName(); 
                 
+                /*
                 if (component != null) {
                     serviceName = component.getURI();
                     if (component.getServices().size() > 1){
@@ -680,7 +686,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
                 } else {
                     serviceName = service.getName();
                 }
-                    
+                */   
                 try {
                     ((SCADomainEventService)scaDomain).registerServiceEndpoint(domainURI, 
                                                                                nodeURI, 
@@ -703,22 +709,31 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
     private void resolveRemoteReferences(Composite composite){
         // Loop through all reference binding URIs. Any that are not resolved
         // should be looked up in the domain
+/*        
         for (Reference reference: composite.getReferences()) {
             for (Binding binding: reference.getBindings()) {
                 resolveRemoteReferenceBinding(reference, binding);
             }
         }
+*/        
         
         for (Component component: composite.getComponents()) {
             for (ComponentReference reference: component.getReferences()) {
+                for ( ComponentService service : reference.getTargets()){
+                    for (Binding binding: service.getBindings()) {
+                        resolveRemoteReferenceBinding(reference, service, binding);
+                    }
+                }
+/*                
                 for (Binding binding: reference.getBindings()) {
                     resolveRemoteReferenceBinding(reference, binding);
                 }
+*/                
             }
         }         
     }
     
-    private void resolveRemoteReferenceBinding(Reference reference, Binding binding){
+    private void resolveRemoteReferenceBinding(Reference reference, Service service,  Binding binding){
         if (binding.isUnresolved()) {
             // find the right endpoint for this reference/binding. This relies on looking
             // up every binding URI. If a response is returned then it's set back into the
@@ -727,7 +742,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             
             try {
                 uri = ((SCADomainEventService)scaDomain).findServiceEndpoint(domainURI, 
-                                                                             binding.getURI(), 
+                                                                             service.getName(), 
                                                                              binding.getClass().getName());
             } catch(Exception ex) {
                 logger.log(Level.WARNING, 

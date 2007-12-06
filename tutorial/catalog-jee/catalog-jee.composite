@@ -24,7 +24,7 @@
     <component name="JEEVegetablesCatalog">
         <implementation.ejb ejb-link="catalog-ejb.jar#CatalogEJB"/> 
         <service name="Catalog">
-            <binding.ejb uri="CatalogEJB"/>
+            <binding.ejb uri="VegetablesCatalogImplRemote"/>
         </service>
     </component> 
 

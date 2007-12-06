@@ -40,7 +40,6 @@ public class SCANodeFactoryImpl extends SCANodeFactory {
 
     }
     
-
     /**
      * Creates a new SCA node.
      * 
@@ -51,26 +50,52 @@ public class SCANodeFactoryImpl extends SCANodeFactory {
      *        used to locate the domain manager on the network
      * @return a new SCA node.
      */
-    public SCANode createSCANode(String nodeURI, String domainURI) throws NodeException {
-        return new SCANodeImpl(nodeURI, domainURI, null);
+    public SCANode createSCANode(String physicalNodeURI, String domainURI) throws NodeException {
+        return new SCANodeImpl(physicalNodeURI, domainURI, null);
     }
     
     /**
-     * Creates a new SCA node as part of a node group. Groups of nodes are used in load balancing
+     * Creates a new SCA node. Many physical nodes may share the same logical URL in load balancing
      *  and failover scenarios where each node in the group runs the same contribution and 
      *  active composites 
      * 
-     * @param nodeURI the URI of the node, this URI is used to provide the default 
+     * @param physicalNodeURI the URI of the node, this URI is used to provide the default 
      *        host and port information for the runtime for situations when bindings
-     *        do provide this information
+     *        don't provide this information
      * @param domainURI the URI of the domain that the node belongs to. This URI is 
      *        used to locate the domain manager on the network
-     * @param nodeGroupURI the uri of the node group. This is the enpoint URI of the head of the
-     * group of nodes. For example, in load balancing scnearios this will be the loaded balancer itself
+     * @param logicalNodeURI the uri of the node to be used in situations where more than one node 
+     *        are grouped together for failover or load balancing scenarios. The logicalNodeURI
+     *        will typically identify the logical node where requests are sent
      * @return a new SCA node.
      */
-    public SCANode createSCANode(String nodeURI, String domainURI, String nodeGroupURI) throws NodeException {
-        return new SCANodeImpl(nodeURI, domainURI, nodeGroupURI);       
+    public SCANode createSCANode(String physicalNodeURI, String domainURI, String logicalNodeURI) throws NodeException {
+        return new SCANodeImpl(physicalNodeURI, domainURI, logicalNodeURI);       
     }
-       
+    
+    /**
+     *  Creates a new SCA node. Many physical nodes may share the same logical URL in load balancing
+     *  and failover scenarios where each node in the group runs the same contribution and 
+     *  active composites. Also allows a class loaded to b specified. This is the 
+     *  classloader that will be used to load the management application used by the 
+     *  node to talk to the domain
+     * 
+     * @param physicalNodeURI the URI of the node, this URI is used to provide the default 
+     *        host and port information for the runtime for situations when bindings
+     *        don't provide this information
+     * @param domainURI the URI of the domain that the node belongs to. This URI is 
+     *        used to locate the domain manager on the network
+     * @param logicalNodeURI the uri of the node to be used in situations where more than one node 
+     *        are grouped together for failover or load balancing scenarios. The logicalNodeURI
+     *        will typically identify the logical node where requests are sent. If null is provided
+     *        no logicalNodeURI is set.
+     * @param classLoader the class loader to use by default when loading contributions. If null is provided
+     *        the classloader the dervied automatically. 
+     * @return a new SCA node.
+     */
+    public SCANode createSCANode(String physicalNodeURI, String domainURI, String logicalNodeURI, ClassLoader classLoader) throws NodeException {
+        return new SCANodeImpl(physicalNodeURI, domainURI, logicalNodeURI, classLoader);               
+    }
+    
+
 }
