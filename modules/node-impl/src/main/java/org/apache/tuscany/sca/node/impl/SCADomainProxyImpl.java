@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.domain.DomainException;
@@ -85,6 +86,17 @@ public class SCADomainProxyImpl extends SCADomainImpl {
     public SCADomainProxyImpl(String domainURI) throws DomainException {
         super(domainURI);
     }    
+    
+    /** 
+     * Creates a domain proxy connected to a wider domain.  
+     * 
+     * @param domainUri - identifies what host and port the domain service is running on, e.g. http://localhost:8081
+     * @throws ActivationException
+     */
+    public SCADomainProxyImpl(String domainURI, ClassLoader cl) throws DomainException {
+        super(domainURI);
+        domainClassLoader = cl;
+    }
     
     /**
      * Start the composite that connects to the domain manager
@@ -178,10 +190,14 @@ public class SCADomainProxyImpl extends SCADomainImpl {
             if ( contributionURL != null ){ 
                 logger.log(Level.INFO, "Domain management configured from " + contributionURL);
                            
+                // set up a model resolver with the classloader for this domain/node
+                ModelResolverImpl modelResolver = new ModelResolverImpl(domainClassLoader);
+                
                 // add node composite to the management domain
                 domainManagementContributionService = domainManagementRuntime.getContributionService();
                 domainManagementContribution = domainManagementContributionService.contribute("nodedomain", 
                                                                                               contributionURL, 
+                                                                                              modelResolver,
                                                                                               false);
                 
                 Composite composite = null;

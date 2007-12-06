@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainFactory;
+import org.apache.tuscany.sca.domain.impl.SCADomainImpl;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.apache.tuscany.sca.node.util.SCAContributionUtil;
@@ -52,6 +53,16 @@ public class LaunchCloud {
         currencyNode.addToDomainLevelComposite(new QName("http://cloud", "currency"));
         currencyNode.start();
         System.out.println("currency.composite ready for big business !!!");
+        
+        
+        // a hack to find out where the jar is
+        URL contribution = SCAContributionUtil.findContributionFromResource(LaunchCloud.class.getClassLoader(), "tutorial-catalog-ejb-1.1-incubating-SNAPSHOT.jar" );
+
+        if (contribution != null) {
+            contribution = new URL(contribution.toString() + "tutorial-catalog-ejb-1.1-incubating-SNAPSHOT.jar" );
+            ((SCADomainImpl)domain).importContribution("vegetablescatalog", contribution);
+        }
+
         
         System.in.read();
         System.out.println("Stopping ...");

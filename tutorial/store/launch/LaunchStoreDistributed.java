@@ -23,6 +23,8 @@ import java.net.URL;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.domain.SCADomain;
+import org.apache.tuscany.sca.node.SCADomainFinder;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.apache.tuscany.sca.node.util.SCAContributionUtil;
@@ -33,13 +35,13 @@ public class LaunchStoreDistributed {
         System.setProperty("java.naming.provider.url", "ejbd://localhost:4201");
         System.setProperty("managed", "false");
         
-        System.out.println("Starting ...");
+        System.out.println("Starting ...");     
+        
         SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         SCANode node = nodeFactory.createSCANode("http://localhost:8101", "http://localhost:9998");
         
         URL contribution = SCAContributionUtil.findContributionFromClass(LaunchStoreDistributed.class);
         node.addContribution("http://store", contribution);
-        
         node.addToDomainLevelComposite(new QName("http://store", "store-distributed"));
         node.start();
 

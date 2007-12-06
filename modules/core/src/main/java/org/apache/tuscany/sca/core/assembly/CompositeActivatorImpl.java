@@ -200,10 +200,14 @@ public class CompositeActivatorImpl implements CompositeActivator {
         for (ComponentService service : reference.getTargets()) {
             if (service.isUnresolved()) {
                 for (Binding binding : service.getBindings()) {
+                    
+
+                    //binding.setURI(service.getName());
+                    
                     // TODO - we should look at all the bindings now associated with the 
                     //        unresolved target but we assume the SCA binding here as
                     //        its currently the only wireable one
-                    if (binding instanceof OptimizableBinding) {
+                    if (binding instanceof SCABinding) {
                         OptimizableBinding scaBinding = (OptimizableBinding)binding;
 
                         // clone the SCA binding and fill in service details 
@@ -228,11 +232,15 @@ public class CompositeActivatorImpl implements CompositeActivator {
                             // warning("The binding doesn't support clone: " + binding.getClass().getSimpleName(), binding);
                         }
                     } else {
+                        /*
+                         * Just leave the binding as it. It will be filled in later 
+                         * when the node resolves the targets
                         throw new IllegalStateException(
                                                         "Unable to create a distributed SCA binding provider for reference: " + reference
                                                             .getName()
                                                             + " and target: "
                                                             + service.getName());
+                        */
                     }
                 }
             }

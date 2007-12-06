@@ -1,5 +1,6 @@
 package client;
 
+import java.net.URI;
 import java.util.Hashtable;
 import java.util.Properties;
 
@@ -19,11 +20,15 @@ public class Client {
         try {
             Properties properties = new Properties();
             properties.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.RemoteInitialContextFactory");
-            //properties.setProperty(Context.PROVIDER_URL, "ejbd://localhost:4201");
             properties.setProperty(Context.PROVIDER_URL, "ejbd://localhost:4201");
             InitialContext context = new InitialContext(properties);
-            //Catalog catalog = (Catalog)context.lookup("EJBModule/org.apache.tuscany.sca/tutorial-catalog-ejb/1.1-incubating-SNAPSHOT/jar/SessionBeans/VegetablesCatalogImpl");
-            Catalog catalog = (Catalog)context.lookup("VegetablesCatalogImplRemote");
+            
+            URI uri = URI.create("JEEVegetablesCatalog/").resolve("java:VegetablesCatalogImplRemote");
+            System.out.println(uri.toString());
+            
+            Catalog catalog = (Catalog)context.lookup("java:VegetablesCatalogImplRemote");
+            //Catalog catalog = (Catalog)context.lookup("java:JEEVegetablesCatalog/VegetablesCatalogImplRemote");
+        
             Item items[] = catalog.get();
             System.out.println(items[0].getName());
         
