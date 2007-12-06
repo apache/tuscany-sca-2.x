@@ -38,7 +38,9 @@
             <modules>
                 <module>assets</module>
                 <module>cloud</module>
+                <module>catalog-ejb</module>
                 <module>catalog-jee</module>
+                <module>catalog-jse</module>
                 <module>store</module>
                 <module>store-eu</module>
                 <module>www-cloud</module>
