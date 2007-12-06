@@ -17,9 +17,8 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -34,7 +33,7 @@
     <packaging>war</packaging>
     <version>1.1-incubating-SNAPSHOT</version>
     <name>Apache Tuscany SCA Alert Aggregator Demo</name>
-    <url>http://cwiki.apache.org/TUSCANY</url>  
+    <url>http://cwiki.apache.org/TUSCANY</url>
 
     <dependencies>
         <dependency>
@@ -44,22 +43,22 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-	    <groupId>httpunit</groupId>
-	    <artifactId>httpunit</artifactId>
-	    <version>1.6.1</version>
-	    <scope>test</scope>
-        </dependency>        
+            <groupId>httpunit</groupId>
+            <artifactId>httpunit</artifactId>
+            <version>1.6.1</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-axis2</artifactId>
             <version>${pom.version}</version>
             <scope>runtime</scope>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-core-databinding</artifactId>
@@ -89,25 +88,27 @@
             <artifactId>tuscany-host-embedded</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
-        </dependency> 
+        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
-        </dependency> 
+        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-interface-java-xml</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
-        </dependency> 
-        <dependency>
+        </dependency>
+        <!-- 
+            <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-jetty</artifactId>
             <version>${pom.version}</version>
             <scope>test</scope>
-        </dependency>   
+            </dependency>
+        -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-webapp</artifactId>
@@ -118,23 +119,23 @@
             <artifactId>tuscany-binding-jsonrpc</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-feed</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
             <scope>compile</scope>
-        </dependency>              
+        </dependency>
         <dependency>
             <groupId>rome</groupId>
             <artifactId>rome</artifactId>
             <version>0.9</version>
-        </dependency>                       
+        </dependency>
     </dependencies>
-    
+
     <build>
         <finalName>demo-alert-aggregator-webapp</finalName>
-        <plugins>  
+        <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -167,16 +168,16 @@
                                 <configuration>
                                     <fileName>${project.build.directory}/classes/Alerts.wsdl</fileName>
                                     <javaPackage>org.apache.tuscany.sca.demos.aggregator.service</javaPackage>
-                                </configuration> 
+                                </configuration>
                                 <configuration>
                                     <fileName>${project.build.directory}/classes/AlertsSources.wsdl</fileName>
                                     <javaPackage>org.apache.tuscany.sca.demos.aggregator.sources</javaPackage>
-                                </configuration>                                 
+                                </configuration>
                                 <configuration>
                                     <fileName>${project.build.directory}/classes/Alerts.xsd</fileName>
                                     <javaPackage>org.apache.tuscany.sca.demos.aggregator.types</javaPackage>
-                                </configuration>                                                           
-                             </schemaFiles>
+                                </configuration>
+                            </schemaFiles>
                             <noNotification>true</noNotification>
                             <noContainment>true</noContainment>
                             <noUnsettable>true</noUnsettable>
@@ -191,7 +192,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.1</version>
-                
+
                 <dependencies>
                     <dependency>
                         <groupId>ant</groupId>
@@ -199,10 +200,10 @@
                         <version>1.6.5</version>
                     </dependency>
                 </dependencies>
-                
+
                 <executions>
-                    <execution> 
-                        <id>install-dojo</id>                       
+                    <execution>
+                        <id>install-dojo</id>
                         <phase>validate</phase>
                         <goals>
                             <goal>run</goal>
@@ -210,13 +211,13 @@
                         <configuration>
                             <tasks>
                                 <ant antfile="./build-dojo.xml" target="install-dojo">
-                                    <property name="localRepository" value="${settings.localRepository}"/>
+                                    <property name="localRepository" value="${settings.localRepository}" />
                                 </ant>
                             </tasks>
                         </configuration>
                     </execution>
-                    <execution> 
-                        <id>copy-dojo-files</id>                       
+                    <execution>
+                        <id>copy-dojo-files</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>run</goal>
@@ -224,14 +225,14 @@
                         <configuration>
                             <tasks>
                                 <ant antfile="./build-dojo.xml" target="unpack-dojo-files">
-                                    <property name="localRepository" value="${settings.localRepository}"/>
-                                    <property name="artifactId" value="${artifactId}"/>
+                                    <property name="localRepository" value="${settings.localRepository}" />
+                                    <property name="artifactId" value="${artifactId}" />
                                 </ant>
                             </tasks>
                         </configuration>
                     </execution>
-                    <execution> 
-                        <id>clean-dojo-files</id>                       
+                    <execution>
+                        <id>clean-dojo-files</id>
                         <phase>clean</phase>
                         <goals>
                             <goal>run</goal>
@@ -239,15 +240,83 @@
                         <configuration>
                             <tasks>
                                 <ant antfile="./build-dojo.xml" target="clean-dojo-files">
-                                    <property name="localRepository" value="${settings.localRepository}"/>
-                                    <property name="artifactId" value="${artifactId}"/>
+                                    <property name="localRepository" value="${settings.localRepository}" />
+                                    <property name="artifactId" value="${artifactId}" />
                                 </ant>
                             </tasks>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>                       
-     </plugins>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <!-- 
+                <configuration>
+                    <excludes>
+                        <exclude>**/AlertsTestCase.java</exclude>
+                    </excludes>
+                </configuration>
+                 -->
+                <executions>
+                    <execution>
+                        <id>surefire-it</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>**/*AlertsIntegrationTest.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.codehaus.cargo</groupId>
+                <artifactId>cargo-maven2-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>start-container</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop-container</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <container>
+                        <containerId>jetty6x</containerId>
+                        <type>embedded</type>
+                    </container>
+                    <wait>false</wait>
+                    <configuration>
+                        <properties>
+                            <cargo.servlet.port>8080</cargo.servlet.port>
+                        </properties>
+                        <deployables>
+                            <deployable>
+                                <location>
+                                    ${project.build.directory}/${project.build.finalName}.${project.packaging}
+                                </location>
+                                <pingURL>http://localhost:8080/AlertsSourcesServiceJSONRPC</pingURL>
+                            </deployable>
+                        </deployables>
+                    </configuration>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
-    
+
 </project>
