@@ -27,5 +27,6 @@
 
     <include schemaLocation="sca-implementation-bpel.xsd"/>
     <include schemaLocation="sca-implementation-spring.xsd"/>
+    <include schemaLocation="sca-implementation-ejb.xsd"/>
 
 </schema>
