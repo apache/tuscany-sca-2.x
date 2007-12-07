@@ -19,21 +19,13 @@
 
 package org.apache.tuscany.sca.domain.impl;
 
-import java.io.Externalizable;
 import java.net.URL;
-import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.domain.SCADomainEventService;
-import org.apache.tuscany.sca.domain.SCADomainSPI;
-import org.apache.tuscany.sca.domain.model.DomainModel;
 import org.apache.tuscany.sca.node.NodeException;
 import org.apache.tuscany.sca.node.SCANode;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ServiceReference;
 
 /**
  * A dummy representation of and SCA Node used simply to allow

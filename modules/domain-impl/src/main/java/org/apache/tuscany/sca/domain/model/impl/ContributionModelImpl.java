@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.domain.model.impl;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 

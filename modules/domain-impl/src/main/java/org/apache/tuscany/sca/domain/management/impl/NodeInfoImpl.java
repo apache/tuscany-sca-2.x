@@ -20,18 +20,12 @@
 package org.apache.tuscany.sca.domain.management.impl;
 
 import java.io.Serializable;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.domain.management.NodeInfo;
-import org.apache.tuscany.sca.domain.model.CompositeModel;
-import org.apache.tuscany.sca.domain.model.ContributionModel;
-import org.apache.tuscany.sca.domain.model.ServiceModel;
 
 /**
  * Information relating to an exposed service
