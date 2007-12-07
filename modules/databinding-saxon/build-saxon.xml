@@ -17,13 +17,12 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<project name="DojoZipInstaller">
+<project name="SaxonZipInstaller" default="install-saxon-nomaven">
 
-
-	<property name="saxon.version" value="9.0.0.2" />
-	<property name="saxon.dir" value="${basedir}/target/saxon-download" />
-	<property name="saxon.url" value="http://prdownloads.sourceforge.net/saxon/saxonb9-0-0-2j.zip" />
-
+    <property name="saxon.version" value="9.0.0.2" />
+    <property name="saxon.dir" value="${basedir}/target/saxon-download" />
+    <property name="saxon.url" value="http://prdownloads.sourceforge.net/saxon/saxonb9-0-0-2j.zip" />
+    <property name="localRepository" value="${user.home}/.m2/repository"/>
 
 	<target name="check-saxon-installed">
 		<condition property="already.installed">
