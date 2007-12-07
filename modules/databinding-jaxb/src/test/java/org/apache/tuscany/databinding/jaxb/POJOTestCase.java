@@ -35,7 +35,6 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.sca.databinding.jaxb.JAXB2XMLStreamReader;
-import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;
 
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Ref;
@@ -71,7 +70,7 @@ public class POJOTestCase extends TestCase {
         MyBean newBean = (MyBean)e2.getValue();
         assertEquals(bean, newBean);
     }
-    
+
     public void testXMLStreamReader() throws Exception {
         JAXBContext context = JAXBContext.newInstance(MyBean.class, MyInterfaceImpl.class);
 
@@ -86,20 +85,19 @@ public class POJOTestCase extends TestCase {
         bean.setService(service);
         bean.setOtherService(service);
         JAXBElement<Object> element = new JAXBElement<Object>(new QName("http://ns1", "bean"), Object.class, bean);
-        TransformationContext tContext  = new TransformationContextImpl();
+        TransformationContext tContext = new TransformationContextImpl();
         XMLStreamReader reader = new JAXB2XMLStreamReader().transform(element, tContext);
 
-        XMLStreamReader2String t2 = new XMLStreamReader2String();
-        String xml = t2.transform(reader, null);
-        System.out.println(xml);
-        /*
+//        XMLStreamReader2String t2 = new XMLStreamReader2String();
+//        String xml = t2.transform(reader, null);
+        // System.out.println(xml);
         Object result = context.createUnmarshaller().unmarshal(reader, MyBean.class);
         assertTrue(result instanceof JAXBElement);
         JAXBElement e2 = (JAXBElement)result;
         assertTrue(e2.getValue() instanceof MyBean);
         MyBean newBean = (MyBean)e2.getValue();
-        assertEquals(bean, newBean);
-        */
+        // FIXME :To be implemented
+        // assertEquals(bean, newBean);
     }
 
     public void testString() throws Exception {
@@ -141,6 +139,22 @@ public class POJOTestCase extends TestCase {
         assertTrue(result instanceof JAXBElement);
         JAXBElement e2 = (JAXBElement)result;
         assertTrue(e2.getValue() instanceof String[]);
+    }
+
+    public void testByteArray() throws Exception {
+        JAXBContext context = JAXBContext.newInstance(byte[].class);
+        StringWriter writer = new StringWriter();
+        JAXBElement<Object> element =
+            new JAXBElement<Object>(new QName("http://ns1", "bean"), Object.class, "ABC".getBytes());
+        context.createMarshaller().marshal(element, writer);
+        String xml = writer.toString();
+        assertTrue(xml.contains("QUJD"));
+        assertTrue(xml.contains("base64Binary"));
+
+        Object result = context.createUnmarshaller().unmarshal(new StringReader(xml));
+        assertTrue(result instanceof JAXBElement);
+        JAXBElement e2 = (JAXBElement)result;
+        assertTrue(e2.getValue() instanceof byte[]);
     }
 
     public void testPrimitive() throws Exception {
@@ -193,10 +207,10 @@ public class POJOTestCase extends TestCase {
         RuntimeTypeInfoSet model = create(MyBean.class);
         RuntimeClassInfo clsInfo = (RuntimeClassInfo)model.getTypeInfo(MyBean.class);
         for (RuntimePropertyInfo p : clsInfo.getProperties()) {
-            System.out.print(p.getName());
-            System.out.println(" " + p.isCollection());
+            // System.out.print(p.getName());
+            // System.out.println(" " + p.isCollection());
             if (p.getName().equals("notes")) {
-                Collection c = (Collection) p.getAccessor().get(bean);
+                Collection c = (Collection)p.getAccessor().get(bean);
                 c.add("123");
             }
         }
