@@ -45,7 +45,8 @@ public class EJBBindingProviderFactory implements BindingProviderFactory<EJBBind
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
                                                                RuntimeComponentService service,
                                                                EJBBinding binding) {
-        throw new EJBBindingException("Service Binding not supported for EJB Binding");
+        return null;
+        //throw new EJBBindingException("Service Binding not supported for EJB Binding");
     }
 
     public Class<EJBBinding> getModelType() {

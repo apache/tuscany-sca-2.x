@@ -44,6 +44,9 @@ public class LaunchCloud {
         URL catalogsContribution = SCAContributionUtil.findContributionFromClass(LaunchCloud.class);
         catalogsNode.addContribution("http://cloud", catalogsContribution);
         catalogsNode.addToDomainLevelComposite(new QName("http://cloud", "catalogs"));
+        // the ejb component simply provides the meta data required to locate the 
+        // EJB running in Geronimo
+        catalogsNode.addToDomainLevelComposite(new QName("http://store", "catalog-jee"));
         catalogsNode.start();
         System.out.println("catalogs.composite ready for big business !!!");
         
@@ -52,18 +55,8 @@ public class LaunchCloud {
         currencyNode.addContribution("http://cloud", currencyContribution);
         currencyNode.addToDomainLevelComposite(new QName("http://cloud", "currency"));
         currencyNode.start();
-        System.out.println("currency.composite ready for big business !!!");
-        
-        
-        // a hack to find out where the jar is
-        URL contribution = SCAContributionUtil.findContributionFromResource(LaunchCloud.class.getClassLoader(), "tutorial-catalog-ejb-1.1-incubating-SNAPSHOT.jar" );
-
-        if (contribution != null) {
-            contribution = new URL(contribution.toString() + "tutorial-catalog-ejb-1.1-incubating-SNAPSHOT.jar" );
-            ((SCADomainImpl)domain).importContribution("vegetablescatalog", contribution);
-        }
-
-        
+        System.out.println("currency.composite ready for big business !!!");    
+     
         System.in.read();
         System.out.println("Stopping ...");
         currencyNode.destroy();
