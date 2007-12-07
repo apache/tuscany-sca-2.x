@@ -25,64 +25,10 @@
         <version>1.1-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-databinding-saxon</artifactId>
-    <name>Apache Tuscany SCA Data Binding for Saxon</name>
+    <artifactId>tuscany-saxon</artifactId>
+    <name>Installer for Saxon</name>
 
     <dependencies>
-            <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-saxon</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-core-spi</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-databinding</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon</artifactId>
-            <version>9.0.0.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon-api</artifactId>
-            <version>9.0.0.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon-dom</artifactId>
-            <version>9.0.0.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sdo</groupId>
-            <artifactId>tuscany-sdo-lib</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sdo</groupId>
-            <artifactId>tuscany-sdo-impl</artifactId>
-            <version>1.0-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.1</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
