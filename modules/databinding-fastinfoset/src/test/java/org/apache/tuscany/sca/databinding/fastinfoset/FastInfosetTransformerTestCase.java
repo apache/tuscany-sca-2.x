@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.databinding.fastinfoset;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.StringReader;
 
 import javax.xml.stream.XMLInputFactory;
@@ -28,6 +29,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.databinding.xml.InputStream2Node;
+import org.apache.tuscany.sca.databinding.xml.Node2OutputStream;
 import org.apache.tuscany.sca.databinding.xml.Node2String;
 import org.w3c.dom.Node;
 
@@ -75,8 +78,46 @@ public class FastInfosetTransformerTestCase extends TestCase {
         Node node = t2.transform(bis, null);
         String xml = new Node2String().transform(node, null);
 
-        System.out.println(xml);
+        // System.out.println(xml);
 
+    }
+
+    public void testPerf() throws Exception {
+        byte[] str = IPO_XML.getBytes();
+        ByteArrayInputStream bis = new ByteArrayInputStream(str);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        XMLInputStream2FastInfoset t = new XMLInputStream2FastInfoset();
+        t.transform(bis, bos, null);
+        byte[] fast = bos.toByteArray();
+        System.out.println(str.length + ".vs." + fast.length);
+
+        long d1 = 0L;
+        long d2 = 0L;
+        for (int i = 0; i < 100; i++) {
+            InputStream2Node t1 = new InputStream2Node();
+            FastInfoset2Node t2 = new FastInfoset2Node();
+            InputStream is1 = new ByteArrayInputStream(str);
+            InputStream is2 = new ByteArrayInputStream(fast);
+            long s1 = System.currentTimeMillis();
+            Node n1 = t1.transform(is1, null);
+            long s2 = System.currentTimeMillis();
+            Node n2 = t2.transform(is2, null);
+            long s3 = System.currentTimeMillis();
+            d1 += s2 - s1; // from plain xml
+            d2 += s3 - s2; // from fastinfoset
+            Node2OutputStream t3 = new Node2OutputStream();
+            Node2FastInfoset t4 = new Node2FastInfoset();
+            ByteArrayOutputStream os1 = new ByteArrayOutputStream();
+            ByteArrayOutputStream os2 = new ByteArrayOutputStream();
+            long s4 = System.currentTimeMillis();
+            t3.transform(n1, os1, null);
+            long s5 = System.currentTimeMillis();
+            t4.transform(n2, os2, null);
+            long s6 = System.currentTimeMillis();
+            d1 += s5 - s4; // to plain xml
+            d2 += s6 - s5; // to fastinfoset
+        }
+        System.out.println("POX " + d1 + ".vs. FIS " + d2);
     }
 
 }
