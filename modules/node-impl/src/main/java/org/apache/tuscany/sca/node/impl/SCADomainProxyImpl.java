@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.node.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URI;
@@ -27,6 +28,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -36,7 +39,10 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.domain.DomainException;
@@ -44,6 +50,7 @@ import org.apache.tuscany.sca.domain.SCADomainAPIService;
 import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.domain.impl.SCADomainImpl;
 import org.apache.tuscany.sca.domain.impl.SCADummyNodeImpl;
+import org.apache.tuscany.sca.domain.model.CompositeModel;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
@@ -287,6 +294,43 @@ public class SCADomainProxyImpl extends SCADomainImpl {
         } catch(Exception ex) {
             throw new DomainException(ex);
         }
+    }    
+    
+    
+    public String getComposite(QName compositeQName){
+        
+        Composite composite = null;
+        for(Composite tmpComposite : domainManagementComposite.getIncludes()){
+            if (tmpComposite.getName().equals(compositeQName)){
+                composite = tmpComposite;
+            }
+        }
+        
+        String compositeString = null;
+            
+        if (composite != null){     
+            ExtensionPointRegistry registry = domainManagementRuntime.getExtensionPointRegistry();
+            
+            StAXArtifactProcessorExtensionPoint staxProcessors =
+                registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+            
+            StAXArtifactProcessor<Composite> processor = staxProcessors.getProcessor(Composite.class);
+            
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            try {
+                XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+                XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
+                processor.write(composite, writer);
+                writer.flush();
+                writer.close();
+            } catch (Exception ex) {
+                System.out.println(ex.toString());
+            }
+            
+            compositeString = bos.toString();
+        }
+        
+        return compositeString;
     }    
     
     // SCADomainEventService methods 

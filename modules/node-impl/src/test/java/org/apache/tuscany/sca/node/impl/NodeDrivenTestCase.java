@@ -26,6 +26,7 @@ import junit.framework.Assert;
 
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainFactory;
+import org.apache.tuscany.sca.domain.impl.SCADomainImpl;
 import org.apache.tuscany.sca.node.SCADomainFinder;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
@@ -133,6 +134,8 @@ public class NodeDrivenTestCase {
     public void testDomain() throws Exception {
         // the domain itself 
         addServiceBDomain = domain.getService(AddService.class, "AddServiceComponentB");
+        
+        System.out.println(((SCADomainProxyImpl)nodeA.getDomain()).getComposite(new QName("http://sample", "CalculatorA")));
 
         Assert.assertEquals(addServiceBDomain.add(3, 2), 5.0);
     }    

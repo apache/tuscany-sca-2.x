@@ -78,7 +78,6 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
     private String logicalNodeURI;
     private String domainURI; 
 
-
     // The tuscany runtime that does the hard work
     private ReallySmallRuntime nodeRuntime;
     
@@ -86,7 +85,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
     private Composite nodeComposite; 
     
     // the domain that the node belongs to. This object acts as a proxy to the domain
-    private SCADomain scaDomain;
+    private SCADomainProxyImpl scaDomain;
     
     // the started status of the node
     private boolean nodeStarted = false;
@@ -205,7 +204,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             scaDomain = new SCADomainProxyImpl(domainURI, nodeClassLoader);
             
             // add the node URI to the domain
-            ((SCADomainProxyImpl)scaDomain).addNode(this);  
+            scaDomain.addNode(this);  
             
         } catch(NodeException ex) {
             throw ex;
@@ -286,8 +285,8 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             factories.removeFactory(nodeFactory); 
             nodeFactory.setNode(null);
             
-            ((SCADomainProxyImpl)scaDomain).removeNode(this);  
-            ((SCADomainProxyImpl)scaDomain).destroy();
+            scaDomain.removeNode(this);  
+            scaDomain.destroy();
             
             // node runtime is stopped by the domain proxy once it has
             // removed the management components
@@ -365,7 +364,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             
             // add the contribution to the domain. It will generally already be there
             // unless the contribution has been added to the node itself. 
-            ((SCADomainProxyImpl)scaDomain).registerContribution(nodeURI, contributionURI, contributionURL.toExternalForm());                  
+            scaDomain.registerContribution(nodeURI, contributionURI, contributionURL.toExternalForm());                  
         
         } catch (Exception ex) {
             throw new NodeException(ex);
@@ -412,7 +411,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             
             // remove the contribution from the domain. It will generally already be removed
             // unless the contribution has been removed from the node itself. 
-            ((SCADomainEventService)scaDomain).unregisterContribution(nodeURI, contributionURI);                  
+            scaDomain.unregisterContribution(nodeURI, contributionURI);                  
             
         } catch (Exception ex) {
             throw new NodeException(ex);
@@ -466,7 +465,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
                     
                     try {
                         // register the composite with the domain
-                        ((SCADomainProxyImpl)scaDomain).registerDomainLevelComposite(nodeURI, composite.getName().toString());                  
+                        scaDomain.registerDomainLevelComposite(nodeURI, composite.getName().toString());                  
                     
                     } catch (Exception ex) {
                         throw new NodeException(ex);
@@ -492,7 +491,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
                 
                 try {
                     // register the composite with the domain
-                    ((SCADomainProxyImpl)scaDomain).registerDomainLevelComposite(nodeURI, composite.getName().toString());                  
+                    scaDomain.registerDomainLevelComposite(nodeURI, composite.getName().toString());                  
                 
                 } catch (Exception ex) {
                     throw new NodeException(ex);
@@ -619,7 +618,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
         nodeRuntime.getCompositeActivator().activate(composite); 
         
         // tell the domain where all the service endpoints are
-        registerRemoteServices(composite);
+        scaDomain.registerRemoteServices(nodeURI, composite);
         
         // get up to date with where all services we depend on are
         resolveRemoteReferences(composite);
@@ -653,69 +652,18 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
         nodeRuntime.getCompositeActivator().deactivate(composite);
     }
         
-    private void registerRemoteServices(Composite composite){
-        // Loop through all service binding URIs registering them with the domain 
-        for (Service service: composite.getServices()) {
-            for (Binding binding: service.getBindings()) {
-                registerRemoteServiceBinding(null, service, binding);
-            }
-        }
-        
-        for (Component component: composite.getComponents()) {
-            for (ComponentService service: component.getServices()) {
-                for (Binding binding: service.getBindings()) {
-                    registerRemoteServiceBinding(component, service, binding);
-                }
-            }
-        }
-    }
-    
-    private void registerRemoteServiceBinding(Component component, Service service, Binding binding ){
-        if (service.getInterfaceContract().getInterface().isRemotable()) {
-            String uriString = binding.getURI();
-            if (uriString != null) {
-                 
-                String serviceName = component.getURI() + '/' + binding.getName(); 
-                
-                /*
-                if (component != null) {
-                    serviceName = component.getURI();
-                    if (component.getServices().size() > 1){
-                        serviceName = serviceName + '/' + binding.getName();
-                    }
-                } else {
-                    serviceName = service.getName();
-                }
-                */   
-                try {
-                    ((SCADomainEventService)scaDomain).registerServiceEndpoint(domainURI, 
-                                                                               nodeURI, 
-                                                                               serviceName, 
-                                                                               binding.getClass().getName(), 
-                                                                               uriString);
-                } catch(Exception ex) {
-                    logger.log(Level.WARNING, 
-                               "Unable to  register service: "  +
-                               domainURI + " " +
-                               nodeURI + " " +
-                               service.getName()+ " " +
-                               binding.getClass().getName() + " " +
-                               uriString);
-                }
-            }
-        }
-    }
     
     private void resolveRemoteReferences(Composite composite){
         // Loop through all reference binding URIs. Any that are not resolved
         // should be looked up in the domain
-/*        
+        
         for (Reference reference: composite.getReferences()) {
-            for (Binding binding: reference.getBindings()) {
-                resolveRemoteReferenceBinding(reference, binding);
-            }
-        }
-*/        
+            for ( ComponentService service : reference.getTargets()){
+                for (Binding binding: service.getBindings()) {
+                    resolveRemoteReferenceBinding(reference, service, binding);
+                }
+            } 
+        }        
         
         for (Component component: composite.getComponents()) {
             for (ComponentReference reference: component.getReferences()) {
@@ -723,12 +671,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
                     for (Binding binding: service.getBindings()) {
                         resolveRemoteReferenceBinding(reference, service, binding);
                     }
-                }
-/*                
-                for (Binding binding: reference.getBindings()) {
-                    resolveRemoteReferenceBinding(reference, binding);
-                }
-*/                
+                }             
             }
         }         
     }
@@ -759,7 +702,6 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             }
         }          
     }    
-    
 
     public void setReferenceEndpoint(String referenceName, String bindingClassName, String serviceURI) throws NodeException {
         // find the named reference and binding and update the uri from this message
@@ -773,7 +715,6 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
                 }
             }
         }
-        
     }
     
     private Reference findReference(String referenceName){

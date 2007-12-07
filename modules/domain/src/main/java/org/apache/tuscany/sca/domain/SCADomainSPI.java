@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.domain;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.model.DomainModel;
@@ -40,6 +41,13 @@ public interface SCADomainSPI {
      * @return
      */
     public DomainModel getDomainModel();
+    
+    /**
+     * Registers all of the services in the composite with the domain
+     * 
+     * @param composite
+     */
+    public void registerRemoteServices(String nodeURI, Composite composite);
   
     
 }

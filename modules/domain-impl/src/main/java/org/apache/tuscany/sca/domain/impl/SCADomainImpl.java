@@ -258,11 +258,11 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
-        XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
-        XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
-        processor.write(composite, writer);
-        writer.flush();
-        writer.close();
+            XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
+            processor.write(composite, writer);
+            writer.flush();
+            writer.close();
         } catch (Exception ex) {
             System.out.println(ex.toString());
         }
@@ -280,42 +280,33 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         
     }
     
-    private void registerRemoteServices(Composite composite){
+    public void registerRemoteServices(String nodeURI, Composite composite){
         // Loop through all service binding URIs registering them with the domain 
         for (Service service: composite.getServices()) {
             for (Binding binding: service.getBindings()) {
-                registerRemoteServiceBinding(null, service, binding);
+                registerRemoteServiceBinding(nodeURI, null, service, binding);
             }
         }
         
         for (Component component: composite.getComponents()) {
             for (ComponentService service: component.getServices()) {
                 for (Binding binding: service.getBindings()) {
-                    registerRemoteServiceBinding(component, service, binding);
+                    registerRemoteServiceBinding(nodeURI, component, service, binding);
                 }
             }
         }
     }
     
-    private void registerRemoteServiceBinding(Component component, Service service, Binding binding ){
+    private void registerRemoteServiceBinding(String nodeURI, Component component, Service service, Binding binding ){
         if (service.getInterfaceContract().getInterface().isRemotable()) {
             String uriString = binding.getURI();
             if (uriString != null) {
                  
                 String serviceName = component.getURI() + '/' + binding.getName(); 
-                /*
-                if (component != null) {
-                    serviceName = component.getURI();
-                    if (component.getServices().size() > 1){
-                        serviceName = serviceName + '/' + binding.getName();
-                    }
-                } else {
-                    serviceName = service.getName();
-                }
-                */  
+
                 try {
                     registerServiceEndpoint(domainModel.getDomainURI(), 
-                                            IMPORTED, 
+                                            nodeURI, 
                                             serviceName, 
                                             binding.getClass().getName(), 
                                             uriString);
@@ -323,7 +314,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                     logger.log(Level.WARNING, 
                                "Unable to  register service: "  +
                                domainModel.getDomainURI() + " " +
-                               IMPORTED + " " +
+                               nodeURI + " " +
                                service.getName()+ " " +
                                binding.getClass().getName() + " " +
                                uriString);
@@ -684,40 +675,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
  
     public String getURI(){
         return domainModel.getDomainURI();
-    }
-    
-    public void importContribution(String contributionURI, URL contributionURL) throws DomainException {
-        // check that there is a virutal IMPORTED node that represents all imported components
-        // running outside the sca domain
-        NodeModel nodeModel = domainModel.getNodes().get(IMPORTED);
-        
-        if (nodeModel == null){
-            registerNode(IMPORTED, IMPORTED, null);
-            nodeModel = domainModel.getNodes().get(IMPORTED);
-        }
-        
-        // add the contribution information to the domain model
-        org.apache.tuscany.sca.domain.model.ContributionModel contributionModel = 
-            parseContribution(contributionURI, contributionURL.toExternalForm());
-        
-        // add the contribution to the IMPORTED node
-        nodeModel.getContributions().put(contributionURI, contributionModel);
-        
-       // this contribution will not be deployed as it represents a component running elsewhere
-       for ( CompositeModel compositeModel : contributionModel.getComposites().values()) {
-           // build the model
-           try {
-               domainManagementRuntime.getCompositeBuilder().build(compositeModel.getComposite()); 
-           } catch (Exception ex) {
-               throw new DomainException(ex);
-           }
-           
-           // add all the services that are exposed to the service list for other, deployed, 
-           // components to find.           
-           registerRemoteServices(compositeModel.getComposite());           
-       }
-            
-    }    
+    }   
     
     public void addContribution(String contributionURI, URL contributionURL) throws DomainException {
         // add the contribution information to the domain model
