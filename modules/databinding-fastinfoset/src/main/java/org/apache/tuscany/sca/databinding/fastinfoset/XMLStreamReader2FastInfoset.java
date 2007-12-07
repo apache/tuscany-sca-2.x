@@ -57,6 +57,8 @@ public class XMLStreamReader2FastInfoset extends BaseTransformer<XMLStreamReader
             StAXDocumentSerializer serializer = new StAXDocumentSerializer(target);
             XMLStreamSerializer streamSerializer = new XMLStreamSerializer();
             streamSerializer.serialize(source, serializer);
+            serializer.flush();
+            source.close();
         } catch (Exception e) {
             throw new TransformationException(e);
         } 
