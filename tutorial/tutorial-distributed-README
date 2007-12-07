@@ -1,0 +1,78 @@
+Running the Store Tutorial in Distributed Configuration
+=======================================================
+
+The intention of the distributed scenario is to show the SCA domain including 
+services provided by platforms other than the stand alone SCA runtime. In this
+case we host the Fruits catalog on the Tomcat server with Tuscany integration and 
+we host the Vegetables Catalog  as an EJB running on a Geronimo Server with no 
+Tuscany integration. In the Geronimo case a component is contributed to the domain that simply 
+describes the EJB running elsewhere and, because we have limited EJB support currently, doesn't
+cause the EJB to be actually run. 
+
+Here's how you set up (This assumes you are using the latest code from the Tuscany SVN Trunk)
+
+
+First compile up the tutorial
+-----------------------------
+cd sca/tutorial
+mvn clean install
+
+
+Install Tomcat
+--------------
+Install a copy of tomcat, e.g 6.0.13
+
+Run the Cloud
+-------------
+Run sca/tutorial/cloud/launch/LanuchCloud.java
+
+This will start the domain and two nodes. Alongside the original Curreny and Catalogs composites 
+the catalog-jee composite is run here. This simply provides the meta data to the domain required
+to contact the EJB running in Geronimo that we will start shortly. The EJB based component is not actually
+run by Tuscany.
+
+Build the Tuscany Deep Tomcat Integration
+-----------------------------------------
+cd sca/distribution/tomcat
+mvn clean install
+unzip apache-tuscany-tomcat-overlay-1.1-incubating-SNAPSHOT-bin.zip over the tomcat installation
+  This installs Tuscany in the tomcat installation
+edit tomcat/sca-contributions/tuscany.properties to set the correct values as follows.
+
+nodeName=http://localhost:8081/tuscany/
+domainName=http://localhost:9998
+hotDeployInterval=10000
+
+Run the Fruits Catalog on Tomcat
+--------------------------------
+Copy sca/tutorials/catalog-jse/target/tutorial-catalog-jse.war to tomcat/webapps
+run tomcat
+
+This should start the SCA application in the war and register its services with the domain
+
+Install Geronimo
+----------------
+
+Install a copy of geronimo. Try geronimo-tomcat6-jee5-2.0.2-bin.zip
+
+Install The Vegetable Catalog EAR JAR in Geronimo
+-------------------------------------------------
+
+Using the Geronimo management application choose Applications/deploy new
+Select tutorial/catalog-ejb/target/tutorial-catalog-ejb-1.1-incubating-SNAPSHOT.jar
+
+This will have no effect on the Domain as it alread knows where this EJB will be based on the 
+the information in the composite contributed when the cloud was started
+
+Start the Store
+---------------
+
+Run tutorial/store/launch/LaunchStoreDistributed
+
+Used the Store
+--------------
+
+Point your browser at http://l3aw203:8101/ui/store.html
+If you see catalog items displayed the Fruits Catalog running in Tomcat and the Vegetables Catalog running in Geronimo
+have successfully been contacted
+
