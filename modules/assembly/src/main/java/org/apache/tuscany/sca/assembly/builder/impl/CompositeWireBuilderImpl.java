@@ -63,7 +63,9 @@ public class CompositeWireBuilderImpl {
     private CompositeBuilderMonitor monitor;
     private AssemblyFactory assemblyFactory;
     private InterfaceContractMapper interfaceContractMapper;
-    private List<PolicySet> domainPolicySets; 
+    
+    private BindingPolicyComputer bindingPolicyComputer = null;
+    private ImplementationPolicyComputer implPolicyComputer = null;
     
     //Represents a target component and service
     private class Target {
@@ -88,7 +90,9 @@ public class CompositeWireBuilderImpl {
         this.assemblyFactory = assemblyFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.monitor = monitor;
-        this.domainPolicySets = domainPolicySets;
+        
+        this.bindingPolicyComputer = new BindingPolicyComputer(domainPolicySets);
+        this.implPolicyComputer = new ImplementationPolicyComputer(domainPolicySets);
     }
 
     /**
@@ -491,7 +495,12 @@ public class CompositeWireBuilderImpl {
                     targetComponentService = CompositeConfigurationBuilderImpl.getPromotedComponentService(compositeService);
                 }
                 
-                determineApplicableBindingPolicySets(componentReference, targetComponentService);
+                try  {
+                    bindingPolicyComputer.determineApplicableBindingPolicySets(componentReference, targetComponentService);
+                } catch ( Exception e ) {
+                    warning("Theres been an exception relation to policies... " + e, e);
+                    //throw new RuntimeException(e);
+                }
 
                 // Match the binding against the bindings of the target service
                 Binding selected = BindingUtil.resolveBindings(componentReference, targetComponent, targetComponentService);
@@ -793,88 +802,85 @@ public class CompositeWireBuilderImpl {
         }
     }
     
-    public void computePolicies(Composite composite) {
-        List<Intent> compositeIntents = null;
-        List<PolicySet> compositePolicySets = null;
-        if (composite instanceof PolicySetAttachPoint) {
-            compositeIntents = ((PolicySetAttachPoint)composite).getRequiredIntents();
-            compositePolicySets = ((PolicySetAttachPoint)composite).getPolicySets();
+    private void addPoliciesFromPromotedService(CompositeService compositeService) {
+        //inherit intents and policies from promoted service
+        addInheritedIntents(compositeService.getPromotedService().getRequiredIntents(), 
+                            compositeService.getRequiredIntents());
+        addInheritedPolicySets(compositeService.getPromotedService().getPolicySets(), 
+                               compositeService.getPolicySets(), true);
+        addInheritedOperationConfigurations(compositeService.getPromotedService(), compositeService);
+    }
+    
+    private void addPoliciesFromPromotedReference(CompositeReference compositeReference) {
+        for ( Reference promotedReference : compositeReference.getPromotedReferences() ) {
+           addInheritedIntents(promotedReference.getRequiredIntents(), 
+                               compositeReference.getRequiredIntents());
+       
+           addInheritedPolicySets(promotedReference.getPolicySets(), 
+                                  compositeReference.getPolicySets(), true);
+           addInheritedOperationConfigurations(promotedReference, compositeReference);
         }
+    }
+
+    
+    public void computePolicies(Composite composite) {
         
         //compute policies for composite service bindings
         for (Service service : composite.getServices()) {
-            CompositeService compositeService = (CompositeService)service;
-            
-            //inherit intents and policysets defined at composite level
-            addInheritedIntents(compositeIntents, service.getRequiredIntents());
-            addInheritedPolicySets(compositePolicySets, service.getPolicySets(), false);
-            
-            //inherit intents and policies from promoted service
-            addInheritedIntents(compositeService.getPromotedService().getRequiredIntents(), 
-                                compositeService.getRequiredIntents());
-            addInheritedPolicySets(compositeService.getPromotedService().getPolicySets(), 
-                                   compositeService.getPolicySets(), true);
-            addInheritedOperationConfigurations(compositeService.getPromotedService(), compositeService);
-            
-            if (compositeService.getCallback() != null) {
-                addInheritedIntents(compositeService.getRequiredIntents(), 
-                                    compositeService.getCallback().getRequiredIntents());
-                addInheritedPolicySets(compositeService.getPolicySets(), 
-                                       compositeService.getCallback().getPolicySets(), 
-                                       false);
+            addPoliciesFromPromotedService((CompositeService)service);
+            try {
+                //compute the intents for operations under service element
+                bindingPolicyComputer.computeIntentsForOperations(service);
+                //add or merge service operations to the binding
+                addInheritedOpConfOnBindings(service);
+                bindingPolicyComputer.computeBindingIntentsAndPolicySets(service);
+                bindingPolicyComputer.determineApplicableBindingPolicySets(service, null);
+            } catch ( Exception e ) {
+                warning("Theres been an exception relation to policies... " + e, e);
+                //throw new RuntimeException(e);
             }
-            
-            computeBindingIntentsAndPolicySets(service);
-            determineApplicableBindingPolicySets(service, null);
-        }
-        
-        for (Reference reference : composite.getReferences()) {
-            addInheritedIntents(compositeIntents, reference.getRequiredIntents());
-            addInheritedPolicySets(compositePolicySets, reference.getPolicySets(), false);
-            
-            CompositeReference compReference = (CompositeReference)reference;
-            for ( Reference promotedReference : compReference.getPromotedReferences() ) {
-                addInheritedIntents(promotedReference.getRequiredIntents(), 
-                                     reference.getRequiredIntents());
-            
-                addInheritedPolicySets(promotedReference.getPolicySets(), 
-                                     reference.getPolicySets(), true);
-                addInheritedOperationConfigurations(promotedReference, compReference);
                 
-            }
-            
-            if (compReference.getCallback() != null) {
-                addInheritedIntents(compReference.getRequiredIntents(), 
-                                    compReference.getCallback().getRequiredIntents());
-                addInheritedPolicySets(compReference.getPolicySets(), 
-                                       compReference.getCallback().getPolicySets(), 
-                                       false);
-            }
-            
-            computeBindingIntentsAndPolicySets(reference);
-            determineApplicableBindingPolicySets(reference, null);
         }
-        
+    
+        for (Reference reference : composite.getReferences()) {
+            CompositeReference compReference = (CompositeReference)reference;
+            addPoliciesFromPromotedReference(compReference);
+            try {
+                //compute the intents for operations under service element
+                bindingPolicyComputer.computeIntentsForOperations(reference);
+                addInheritedOpConfOnBindings(reference);
+                
+                if (compReference.getCallback() != null) {
+                    addInheritedIntents(compReference.getRequiredIntents(), 
+                                        compReference.getCallback().getRequiredIntents());
+                    addInheritedPolicySets(compReference.getPolicySets(), 
+                                           compReference.getCallback().getPolicySets(), 
+                                           false);
+                }
+                
+                bindingPolicyComputer.computeBindingIntentsAndPolicySets(reference);
+                bindingPolicyComputer.determineApplicableBindingPolicySets(reference, null);
+            } catch ( Exception e ) {
+                warning("Theres been an exception relation to policies... " + e, e);
+                //throw new RuntimeException(e);
+            }
+        }
+    
         for (Component component : composite.getComponents()) {
-            //Inherit intents defined at the composite level
-            addInheritedIntents(compositeIntents, component.getRequiredIntents());
-            
-            // Inherit policysets defined at the composite level
-            addInheritedPolicySets(compositePolicySets, component.getPolicySets(), false);
-            
-            Implementation implemenation = component.getImplementation();
-            computeImplementationIntentsAndPolicySets(implemenation, component);
-            
-            for (ComponentService componentService : component.getServices()) {
-                //inherit intents and policysets from component
-                addInheritedIntents(component.getRequiredIntents(), componentService.getRequiredIntents());
-                addInheritedPolicySets(component.getPolicySets(), componentService.getPolicySets(), false);
+            Implementation implemenation = component.getImplementation(); 
+            try {
+                implPolicyComputer.computeImplementationIntentsAndPolicySets(implemenation, component);
+            } catch ( Exception e ) {
+                warning("Theres been an exception relation to policies... " + e, e);
+                //throw new RuntimeException(e);
+            }
 
+            for (ComponentService componentService : component.getServices()) {
                 Service service = componentService.getService();
                 if (service != null) {
                     // reconcile intents and policysets
-                    addInheritedIntents(service.getRequiredIntents(), componentService.getRequiredIntents());
-                    addInheritedPolicySets(service.getPolicySets(), componentService.getPolicySets(), true);
+                     addInheritedIntents(service.getRequiredIntents(), componentService.getRequiredIntents());
+                     addInheritedPolicySets(service.getPolicySets(), componentService.getPolicySets(), true);
                 }
                 
                 if ( componentService.getCallback() != null ) {
@@ -885,16 +891,28 @@ public class CompositeWireBuilderImpl {
                                            false);
                 }
                 
-                //compute intents and policyset for each binding
-                computeBindingIntentsAndPolicySets(componentService);
-                determineApplicableBindingPolicySets(componentService, null);
+                try {
+                    //compute the intents for operations under service element
+                    bindingPolicyComputer.computeIntentsForOperations(componentService);
+                    //compute intents and policyset for each binding
+                    addInheritedOpConfOnBindings(componentService);
+                    bindingPolicyComputer.computeBindingIntentsAndPolicySets(componentService);
+                    bindingPolicyComputer.determineApplicableBindingPolicySets(componentService, null);
+    
+                    if ( componentService.getCallback() != null ) {
+                        addInheritedIntents(componentService.getRequiredIntents(), 
+                                        componentService.getCallback().getRequiredIntents());
+                        addInheritedPolicySets(componentService.getPolicySets(), 
+                                           componentService.getCallback().getPolicySets(), 
+                                           false);
+                    }
+                } catch ( Exception e ) {
+                    warning("Theres been an exception relation to policies... " + e, e);
+                    //throw new RuntimeException(e);
+                }
             }
-            
+        
             for (ComponentReference componentReference : component.getReferences()) {
-                //inherit intents and policysets from component
-                addInheritedIntents(component.getRequiredIntents(), componentReference.getRequiredIntents());
-                addInheritedPolicySets(component.getPolicySets(), componentReference.getPolicySets(), false);
-
                 Reference reference = componentReference.getReference();
                 if (reference != null) {
                     // reconcile intents and policysets
@@ -910,11 +928,28 @@ public class CompositeWireBuilderImpl {
                                            false);
                 }
                 
-                //compute intents and policyset for each binding
-                computeBindingIntentsAndPolicySets(componentReference);
-                determineApplicableBindingPolicySets(componentReference, null);
+                try {
+                    //compute the intents for operations under service element
+                    bindingPolicyComputer.computeIntentsForOperations(componentReference);
+                    //compute intents and policyset for each binding
+                    addInheritedOpConfOnBindings(componentReference);
+                    bindingPolicyComputer.computeBindingIntentsAndPolicySets(componentReference);
+                    bindingPolicyComputer.determineApplicableBindingPolicySets(componentReference, null);
+    
+                
+                    if ( componentReference.getCallback() != null ) {
+                        addInheritedIntents(componentReference.getRequiredIntents(), 
+                                            componentReference.getCallback().getRequiredIntents());
+                        addInheritedPolicySets(componentReference.getPolicySets(), 
+                                               componentReference.getCallback().getPolicySets(), 
+                                               false);
+                    }
+                } catch ( Exception e ) {
+                    warning("Theres been an exception relation to policies... " + e, e);
+                    //throw new RuntimeException(e);
+                }
             }
-        }
+        } 
         
     }
     
@@ -925,29 +960,6 @@ public class CompositeWireBuilderImpl {
         if (sourceList != null) {
             targetList.addAll(sourceList);
         }
-    }
-    
-    private void addInheritedOperationConfigurations(OperationsConfigurator source, OperationsConfigurator target) {
-        boolean found = false;
-        List<ConfiguredOperation> additionalOperations = new ArrayList<ConfiguredOperation>();
-        for ( ConfiguredOperation sourceConfOp : source.getConfiguredOperations() ) {
-            for ( ConfiguredOperation targetConfOp : target.getConfiguredOperations() ) {
-                if ( sourceConfOp.getName().equals(targetConfOp.getName())) {
-                    addInheritedIntents(sourceConfOp.getRequiredIntents(), targetConfOp.getRequiredIntents());
-                    addInheritedPolicySets(sourceConfOp.getPolicySets(), targetConfOp.getPolicySets(), true);
-                    found = true;
-                    break;
-                }
-            }
-            if ( !found ) {
-                additionalOperations.add(sourceConfOp);
-            }
-        }
-        
-        if ( !additionalOperations.isEmpty() ) {
-            target.getConfiguredOperations().addAll(additionalOperations);
-        }
-        
     }
     
     private  void addInheritedPolicySets(List<PolicySet> sourceList, List<PolicySet> targetList, boolean checkOverrides) {
@@ -973,573 +985,34 @@ public class CompositeWireBuilderImpl {
         }
     }
 
-    private void computeIntentsForIntentAttachPoint(IntentAttachPoint intentAttachPoint, List<Intent> inheritedIntents) {
+    private void addInheritedOperationConfigurations(OperationsConfigurator source, OperationsConfigurator target) {
         boolean found = false;
-        List<Intent> expandedIntents = null;
         
-        IntentAttachPointType attachPointType = intentAttachPoint.getType();
-
-        //expand profile intents specified in the attachpoint (binding / implementation)
-        if ( intentAttachPoint.getRequiredIntents().size() > 0 ) {
-            expandedIntents = expandProfileIntents(intentAttachPoint.getRequiredIntents());
-            intentAttachPoint.getRequiredIntents().clear();
-            intentAttachPoint.getRequiredIntents().addAll(expandedIntents);
-        }
-        
-        //validate intents specified for the attachpoint (binding / implementation)
-        for (Intent intent : intentAttachPoint.getRequiredIntents()) {
-            if ( !intent.isUnresolved() ) {
-                for (QName constrained : intent.getConstrains()) {
-                    if (attachPointType != null && attachPointType.getName().getNamespaceURI().equals(constrained
-                        .getNamespaceURI()) && attachPointType.getName().getLocalPart()
-                        .startsWith(constrained.getLocalPart())) {
-                        found = true;
-                        break;
-                    }
-                }
-    
-                if (!found) {
-                    warning("Policy Intent '" + intent.getName()
-                        + "' does not constrain extension type  "
-                        + attachPointType.getName(), intentAttachPoint);
-                }
-            } else {
-                warning("Policy Intent '" + intent.getName() + "' is not defined in this domain", intent);
-            }
-        }
-        
-        //expand profile intents in inherited intents
-        expandedIntents = expandProfileIntents(inheritedIntents);
-        inheritedIntents.clear();
-        inheritedIntents.addAll(expandedIntents);
-
-        //validate if inherited intent applies to the attachpoint (binding / implementation) and 
-        //only add such intents to the attachpoint (binding / implementation)
-        for (Intent intent : inheritedIntents) {
-            if ( !intent.isUnresolved() ) { 
-                for (QName constrained : intent.getConstrains()) {
-                    if (attachPointType != null && attachPointType.getName().getNamespaceURI().equals(constrained
-                        .getNamespaceURI()) && attachPointType.getName().getLocalPart()
-                        .startsWith(constrained.getLocalPart())) {
-                        intentAttachPoint.getRequiredIntents().add(intent);
-                        break;
-                    }
-                }
-            } else {
-                warning("Policy Intent '" + intent.getName() + "' is not defined in this domain", intent);
-            }
-        }
-        
-        //remove duplicates
-        Map<QName, Intent> intentsTable = new HashMap<QName, Intent>();
-        for ( Intent intent : intentAttachPoint.getRequiredIntents() ) {
-            intentsTable.put(intent.getName(), intent);
-        }
-        
-        //where qualified form of intent exists retain it and remove the qualifiable intent
-        Map<QName, Intent> intentsTableCopy = new HashMap<QName, Intent>(intentsTable);
-        //if qualified form of intent exists remove the unqualified form
-        for ( Intent intent : intentsTableCopy.values() ) {
-            if ( intent instanceof QualifiedIntent ) {
-                QualifiedIntent qualifiedIntent = (QualifiedIntent)intent;
-                if ( intentsTable.get(qualifiedIntent.getQualifiableIntent().getName()) != null ) {
-                    intentsTable.remove(qualifiedIntent.getQualifiableIntent().getName());
+        List<ConfiguredOperation> additionalOperations = new ArrayList<ConfiguredOperation>();
+        for ( ConfiguredOperation sourceConfOp : source.getConfiguredOperations() ) {
+            for ( ConfiguredOperation targetConfOp : target.getConfiguredOperations() ) {
+                if ( sourceConfOp.getName().equals(targetConfOp.getName())) {
+                    addInheritedIntents(sourceConfOp.getRequiredIntents(), targetConfOp.getRequiredIntents());
+                    addInheritedPolicySets(sourceConfOp.getPolicySets(), targetConfOp.getPolicySets(), true);
+                    found = true;
+                    break;
                 }
             }
-        }
-        intentAttachPoint.getRequiredIntents().clear();
-        intentAttachPoint.getRequiredIntents().addAll(intentsTable.values());
-        
-        //exclude intents that are inherently supported by the 
-        //attachpoint-type (binding-type  / implementation-type)
-        List<Intent> requiredIntents = new ArrayList<Intent>(intentAttachPoint.getRequiredIntents());
-        for ( Intent intent : requiredIntents ) {
-            if ( isProvidedInherently(attachPointType, intent) ) {
-                intentAttachPoint.getRequiredIntents().remove(intent);
+            
+            if ( !found ) {
+                additionalOperations.add(sourceConfOp);
             }
         }
         
-    }
-    
-    private void computePolicySetsForPolicySetAttachPoint(Base parent,
-                                                          PolicySetAttachPoint policySetAttachPoint,
-                                                          List<PolicySet> inheritedPolicySets) {
-       String appliesTo = null;
-       HashMap<QName, PolicySet> policySetTable = new HashMap<QName, PolicySet>();
-       IntentAttachPointType attachPointType = policySetAttachPoint.getType();
-
-       //validate policysets specified for the attachPoint
-       for (PolicySet policySet : policySetAttachPoint.getPolicySets()) {
-           appliesTo = policySet.getAppliesTo();
-           if ( !policySet.isUnresolved() ) {
-               if (!isPolicySetApplicable(parent, appliesTo, attachPointType)) {
-                   warning("Policy Set '" + policySet.getName()
-                       + "' does not apply to binding type  "
-                       + attachPointType, policySetAttachPoint);
-    
-               } }
-           else {
-               warning("Policy Set '" + policySet.getName()
-                      + "' is not defined in this domain  ", policySet);
-           }
-       }
-           
-       //from the inherited set of policysets add only what applies to the attach point
-       for (PolicySet policySet : inheritedPolicySets) {
-           if ( !policySet.isUnresolved() ) { 
-               appliesTo = policySet.getAppliesTo();
-               if (isPolicySetApplicable(parent, appliesTo, attachPointType)) {
-                   policySetAttachPoint.getPolicySets().add(policySet);
-               }
-           } else {
-               warning("Policy Set '" + policySet.getName()
-                       + "' is not defined in this domain  ", policySet);
-           }
-               
-       }
-           
-       //get rid of duplicate entries
-       for ( PolicySet policySet : policySetAttachPoint.getPolicySets() ) {
-           policySetTable.put(policySet.getName(), policySet);
-       }
-       
-       policySetAttachPoint.getPolicySets().clear();
-       policySetAttachPoint.getPolicySets().addAll(policySetTable.values());
-           
-       //expand profile intents
-       List<Intent> expandedIntents = null;
-       for ( PolicySet policySet : policySetAttachPoint.getPolicySets() ) {
-           expandedIntents = expandProfileIntents(policySet.getProvidedIntents());
-           policySet.getProvidedIntents().clear();
-           policySet.getProvidedIntents().addAll(expandedIntents);
-       }
-   }
-    
-    private void determineApplicableDomainPolicySets(Base parentElement,
-                                                     PolicySetAttachPoint policySetAttachPoint,
-                                                     IntentAttachPointType intentAttachPointType) {
-        if (policySetAttachPoint.getRequiredIntents().size() > 0) {
-            for (PolicySet policySet : domainPolicySets) {
-                if (isPolicySetApplicable(parentElement, policySet.getAppliesTo(), intentAttachPointType)) {
-                    int prevSize = policySetAttachPoint.getRequiredIntents().size();
-                    trimProvidedIntents(policySetAttachPoint.getRequiredIntents(), policySet);
-                    // if any intent was trimmed off, then this policyset must
-                    // be attached to the intent attachpoint's policyset
-                    if (prevSize != policySetAttachPoint.getRequiredIntents().size()) {
-                        policySetAttachPoint.getPolicySets().add(policySet);
-                    }
-                }
-            }
+        if ( !additionalOperations.isEmpty() ) {
+            target.getConfiguredOperations().addAll(additionalOperations);
         }
     }
     
-    private void trimProvidedIntents(List<Intent> requiredIntents, PolicySet policySet) {
-        for ( Intent providedIntent : policySet.getProvidedIntents() ) {
-            if ( requiredIntents.contains(providedIntent) ) {
-                requiredIntents.remove(providedIntent);
-            } 
-        }
-        
-        for ( Intent mappedIntent : policySet.getMappedPolicies().keySet() ) {
-            if ( requiredIntents.contains(mappedIntent) ) {
-                requiredIntents.remove(mappedIntent);
-            } 
-        }
-    }
-    
-    private void trimProvidedIntents(List<Intent> requiredIntents, List<PolicySet> policySets) {
-        for ( PolicySet policySet : policySets ) {
-            trimProvidedIntents(requiredIntents, policySet);
-        }
-    }
-    
-    private List<Intent> expandProfileIntents(List<Intent> intents) {
-        List<Intent> expandedIntents = new ArrayList<Intent>();
-        for ( Intent intent : intents ) {
-            if ( intent instanceof ProfileIntent ) {
-                ProfileIntent profileIntent = (ProfileIntent)intent;
-                List<Intent> requiredIntents = profileIntent.getRequiredIntents();
-                expandedIntents.addAll(expandProfileIntents(requiredIntents));
-            } else {
-                expandedIntents.add(intent);
-            }
-        }
-        return expandedIntents;
-    }
-    
-    private boolean isPolicySetApplicable(Base parent,
-                                          String xpath,
-                                          IntentAttachPointType attachPointType) {
-        
-        //FIXME: For now do a simple check and later implement whatever is mentioned in the next comment
-        if (xpath != null && attachPointType != null) {
-            if (xpath.indexOf(attachPointType.getName().getLocalPart()) != -1) {
-                return true;
-            }
-            // FIXME: [rfeng] Need to handle xml inheritance
-            if(attachPointType.getName().getLocalPart().startsWith("binding.")) {
-                return xpath.endsWith("binding");
-            }
-            if(attachPointType.getName().getLocalPart().startsWith("implementation.")) {
-                return xpath.endsWith("implementation");
-            }
-        }
-
-        return false;
-         
-        //create a xml node out of the parent object.. i.e. write the parent object as scdl fragment
-        //invoke PropertyUtil.evaluate(null, node, xpath)
-        //verify the result Node's QName against the bindingType's name
-        
-        /*if (parent instanceof ComponentReference) {
-        } else if (parent instanceof ComponentReference) {
-        } else if (parent instanceof Component) {
-        } else if (parent instanceof CompositeService) {
-        } else if (parent instanceof CompositeReference) {
-
-        }
-        return true;*/
-    }
-    
-
-    private boolean isProvidedInherently(IntentAttachPointType attachPointType, Intent intent) {
-        return ( attachPointType != null && 
-                 (( attachPointType.getAlwaysProvidedIntents() != null &&
-                     attachPointType.getAlwaysProvidedIntents().contains(intent) ) || 
-                  ( attachPointType.getMayProvideIntents() != null &&
-                     attachPointType.getMayProvideIntents().contains(intent) )
-                 ) );
-     }
-    
-    /******************************************************************************************************/
-    /*policy computation methods applicable to binding types */
-    /*****************************************************************************************************/
-    private void computeBindingIntentsAndPolicySets(Contract contract) {
-        computeIntents(contract.getBindings(), contract.getRequiredIntents());
-        computePolicySets(contract, contract.getBindings(), contract.getPolicySets());
-        
+    private void addInheritedOpConfOnBindings(Contract contract) {      
         for ( Binding binding : contract.getBindings() ) {
             if ( binding instanceof OperationsConfigurator ) {
                 addInheritedOperationConfigurations(contract, (OperationsConfigurator)binding);
-            }
-            
-            if ( binding instanceof IntentAttachPoint ) {
-                computeIntentsForOperations((IntentAttachPoint)binding);
-            }
-            
-            if ( binding instanceof PolicySetAttachPoint ) {
-                computePolicySetsForOperations(contract, (PolicySetAttachPoint)binding);
-            }
-        }
-        
-        if ( contract.getCallback() != null ) {
-            computeIntents(contract.getCallback().getBindings(), 
-                           contract.getCallback().getRequiredIntents());
-            computePolicySets(contract, 
-                              contract.getCallback().getBindings(), 
-                              contract.getCallback().getPolicySets());
-        }
-    }
-    
-    private void computeIntents(List<Binding> bindings, List<Intent> inheritedIntents) {
-        for (Binding binding : bindings) {
-            if (binding instanceof IntentAttachPoint) {
-                computeIntentsForIntentAttachPoint((IntentAttachPoint)binding, inheritedIntents);
-            }
-        }
-    }
-    
-    
-    private void computePolicySets(Base parent,
-                                   List<Binding> bindings,
-                                   List<PolicySet> inheritedPolicySets) {
-        for (Binding binding : bindings) {
-            if ( binding instanceof PolicySetAttachPoint ) {
-                computePolicySetsForPolicySetAttachPoint(parent, (PolicySetAttachPoint)binding, inheritedPolicySets);
-            }
-        }
-    }
-    
-    private void determineApplicableDomainPolicySets(Contract contract, PolicySetAttachPoint policiedBinding) {
-        if ( domainPolicySets != null) {
-            determineApplicableDomainPolicySets(contract, 
-                                                policiedBinding,
-                                                policiedBinding.getType());
-            
-            if ( policiedBinding.getRequiredIntents().size() > 0 ) {
-                if ( contract instanceof Service ) {
-                    warning("There are unfulfilled intents for binding in service - " + contract.getName(), contract);
-                } else {
-                    warning("There are unfulfilled intents for binding in reference - " + contract.getName(), contract);
-                }
-            }
-        }
-    }
-    
-    
-    private void determineApplicableBindingPolicySets(Contract source, Contract target) {
-        for (Binding aBinding : source.getBindings()) {
-            if (aBinding instanceof PolicySetAttachPoint) {
-                PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)aBinding;
-                IntentAttachPointType bindingType = policiedBinding.getType();
-
-                // add the target component's intents to the reference binding
-                if (target != null) {
-                    for (Intent intent : target.getRequiredIntents()) {
-                        if (!policiedBinding.getRequiredIntents().contains(intent)) {
-                            for (QName constrained : intent.getConstrains()) {
-                                if (bindingType != null && bindingType.getName().getNamespaceURI()
-                                    .equals(constrained.getNamespaceURI())
-                                    && bindingType.getName().getLocalPart().startsWith(constrained
-                                        .getLocalPart())) {
-                                    policiedBinding.getRequiredIntents().add(intent);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                //trim intents specified in operations.  First check for policysets specified on the operation
-                //and then in the parent implementation
-                if ( aBinding instanceof OperationsConfigurator ) {
-                    OperationsConfigurator opConfigurator = (OperationsConfigurator)aBinding;
-                    
-                    for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
-                        trimProvidedIntents(confOp.getRequiredIntents(), confOp.getPolicySets());
-                        trimProvidedIntents(confOp.getRequiredIntents(), policiedBinding.getPolicySets());
-                    }
-                }
-
-                trimProvidedIntents(policiedBinding.getRequiredIntents(), policiedBinding
-                    .getPolicySets());
-
-                // determine additional policysets that match remaining intents
-                // TODO: resolved to domain policy registry and attach suitable
-                // policy sets to the binding
-                // for now using the SCA Definitions instead of registry
-                // if there are intents that are not provided by any policy set
-                // throw a warning
-                determineApplicableDomainPolicySets(source, policiedBinding);
-            }
-        }
-    }
-    
-    /******************************************************************************************************/
-    /*policy computation methods applicable to implementation types */
-    /*****************************************************************************************************/
-    private void computeImplementationIntentsAndPolicySets(Implementation implementation, Component parent) {
-        if ( implementation instanceof PolicySetAttachPoint ) {
-            computeIntentsForIntentAttachPoint((IntentAttachPoint)implementation, parent.getRequiredIntents());
-            computeIntentsForOperations((IntentAttachPoint)implementation);
-            computePolicySetsForPolicySetAttachPoint(parent, (PolicySetAttachPoint)implementation, parent.getPolicySets());
-            computePolicySetsForOperations(parent,(PolicySetAttachPoint)implementation);
-            determineApplicableImplementationPolicySets(parent);
-        }
-    }
-    
-    private void computeIntentsForOperations(IntentAttachPoint intentAttachPoint) {
-        if ( intentAttachPoint instanceof OperationsConfigurator ) {
-            IntentAttachPointType attachPointType = intentAttachPoint.getType();
-            
-            boolean found = false;
-            
-            OperationsConfigurator opConfigurator = (OperationsConfigurator)intentAttachPoint;
-            List<Intent> expandedIntents = null;
-            for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
-                //expand profile intents specified on operations
-                if ( confOp.getRequiredIntents().size() > 0 ) {
-                    expandedIntents = expandProfileIntents(confOp.getRequiredIntents());
-                    confOp.getRequiredIntents().clear();
-                    confOp.getRequiredIntents().addAll(expandedIntents);
-                }
-                
-                //validate intents specified against the parent (binding / implementation)
-                found = false;
-                for (Intent intent : confOp.getRequiredIntents()) {
-                    if ( !intent.isUnresolved() ) {
-                        for (QName constrained : intent.getConstrains()) {
-                            if (attachPointType != null && attachPointType.getName().getNamespaceURI().equals(constrained
-                                .getNamespaceURI()) && attachPointType.getName().getLocalPart()
-                                .startsWith(constrained.getLocalPart())) {
-                                found = true;
-                                break;
-                            }
-                        }
-        
-                        if (!found) {
-                            warning("Policy Intent '" + intent.getName() 
-                                    + " specified for operation " + confOp.getName()  
-                                + "' does not constrain extension type  "
-                                + attachPointType.getName(), intentAttachPoint);
-                        }
-                    } else {
-                        warning("Policy Intent '" + intent.getName() 
-                                + " specified for operation " + confOp.getName()  
-                            + "' is not defined in this domain  ", intent);
-                    }
-                }
-                        
-                //add intents specified for parent intent attach point (binding / implementation)
-                //wherever its not overriden in the operation
-                Intent tempIntent = null;
-                List<Intent> attachPointOpIntents = new ArrayList<Intent>();
-                for (Intent parentIntent : intentAttachPoint.getRequiredIntents()) {
-                    found = false;
-                
-                    tempIntent = parentIntent;
-                    while ( tempIntent instanceof QualifiedIntent ) {
-                        tempIntent = ((QualifiedIntent)tempIntent).getQualifiableIntent();
-                    }
-                    
-                    for ( Intent opIntent : confOp.getRequiredIntents() ) {
-                        if ( opIntent.getName().getLocalPart().startsWith(tempIntent.getName().getLocalPart())) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    
-                    if ( !found ) {
-                        attachPointOpIntents.add(parentIntent);
-                    }
-                }
-                
-                confOp.getRequiredIntents().addAll(attachPointOpIntents);
-                
-                //remove duplicates
-                Map<QName, Intent> intentsTable = new HashMap<QName, Intent>();
-                for ( Intent intent : confOp.getRequiredIntents() ) {
-                    intentsTable.put(intent.getName(), intent);
-                }
-                
-                //where qualified form of intent exists retain it and remove the qualifiable intent
-                Map<QName, Intent> intentsTableCopy = new HashMap<QName, Intent>(intentsTable);
-                //if qualified form of intent exists remove the unqualified form
-                for ( Intent intent : intentsTableCopy.values() ) {
-                    if ( intent instanceof QualifiedIntent ) {
-                        QualifiedIntent qualifiedIntent = (QualifiedIntent)intent;
-                        if ( intentsTable.get(qualifiedIntent.getQualifiableIntent().getName()) != null ) {
-                            intentsTable.remove(qualifiedIntent.getQualifiableIntent().getName());
-                        }
-                    }
-                }
-                confOp.getRequiredIntents().clear();
-                confOp.getRequiredIntents().addAll(intentsTable.values());
-                
-                //exclude intents that are inherently supported by the parent
-                //attachpoint-type (binding-type  / implementation-type)
-                List<Intent> requiredIntents = new ArrayList<Intent>(confOp.getRequiredIntents());
-                for ( Intent intent : requiredIntents ) {
-                    if ( isProvidedInherently(attachPointType, intent) ) {
-                        confOp.getRequiredIntents().remove(intent);
-                    }
-                }
-            }
-        }
-    }
-    
-    private void computePolicySetsForOperations(Base parent, PolicySetAttachPoint policySetAttachPoint) {
-        String appliesTo = null;
-        HashMap<QName, PolicySet> policySetTable = new HashMap<QName, PolicySet>();
-        IntentAttachPointType attachPointType = policySetAttachPoint.getType();
-        
-        if ( policySetAttachPoint instanceof OperationsConfigurator ) {
-            OperationsConfigurator opConfigurator = (OperationsConfigurator)policySetAttachPoint;
-            
-            for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
-                //validate policysets specified for the attachPoint
-                for (PolicySet policySet : confOp.getPolicySets()) {
-                    if ( !policySet.isUnresolved() ) {
-                        appliesTo = policySet.getAppliesTo();
-            
-                        if (!isPolicySetApplicable(parent, appliesTo, attachPointType)) {
-                            warning("Policy Set '" + policySet.getName() 
-                                    + " specified for operation " + confOp.getName()  
-                                + "' does not constrain extension type  "
-                                + attachPointType.getName(), policySetAttachPoint);
-            
-                        }
-                    } else {
-                        warning("Policy Set '" + policySet.getName() 
-                                + " specified for operation " + confOp.getName()  
-                            + "' is not defined in this domain  ", policySet);
-                    }
-                }
-                
-                //get rid of duplicate entries
-                for ( PolicySet policySet : confOp.getPolicySets() ) {
-                    policySetTable.put(policySet.getName(), policySet);
-                }
-            
-                confOp.getPolicySets().clear();
-                confOp.getPolicySets().addAll(policySetTable.values());
-                
-                //expand profile intents
-                List<Intent> expandedIntents = null;
-                for ( PolicySet policySet : confOp.getPolicySets() ) {
-                    expandedIntents = expandProfileIntents(policySet.getProvidedIntents());
-                    policySet.getProvidedIntents().clear();
-                    policySet.getProvidedIntents().addAll(expandedIntents);
-                }
-            }
-        }
-    }
-    
-    
-    private void determineApplicableImplementationPolicySets(Component component) {
-        if ( component.getImplementation() instanceof PolicySetAttachPoint ) {
-            PolicySetAttachPoint policiedImplementation = (PolicySetAttachPoint)component.getImplementation();
-           
-            //trim intents specified in operations.  First check for policysets specified on the operation
-            //and then in the parent implementation
-            if ( component.getImplementation() instanceof OperationsConfigurator ) {
-                OperationsConfigurator opConfigurator = (OperationsConfigurator)component.getImplementation();
-                
-                for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
-                    trimProvidedIntents(confOp.getRequiredIntents(), confOp.getPolicySets());
-                    trimProvidedIntents(confOp.getRequiredIntents(), policiedImplementation.getPolicySets());
-                }
-            }
-                
-            trimProvidedIntents(policiedImplementation.getRequiredIntents(), policiedImplementation.getPolicySets());
-                
-            //determine additional policysets that match remaining intents
-            //if there are intents that are not provided by any policy set throw a warning
-            //TODO: resolved to domain policy registry and attach suitable policy sets to the implementation
-            //...for now using the SCA Definitions instead of registry
-            determineApplicableDomainPolicySets(component);
-        }
-    }
-    
-    private void determineApplicableDomainPolicySets(Component component) {
-        if ( component.getImplementation() instanceof PolicySetAttachPoint && domainPolicySets != null ) {
-            PolicySetAttachPoint policiedImplementation = (PolicySetAttachPoint)component.getImplementation();
-            
-            //determine for operations configured under implemenatation element
-            if ( component.getImplementation() instanceof OperationsConfigurator ) {
-                OperationsConfigurator opConfigurator = (OperationsConfigurator)component.getImplementation();
-                if ( opConfigurator.getConfiguredOperations() != null ) {
-                    for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
-                        determineApplicableDomainPolicySets(component.getImplementation(), 
-                                                            confOp,
-                                                            policiedImplementation.getType());
-    
-                        if (confOp.getRequiredIntents().size() > 0) {
-                            warning("There are unfulfilled intents for operations configured in "
-                                    + "component implementation - " + component.getName(), component);
-                        }
-                    }
-                }
-            }
-            
-            
-            determineApplicableDomainPolicySets(component, 
-                                                policiedImplementation,
-                                                policiedImplementation.getType());
-                                                
-            if (policiedImplementation.getRequiredIntents().size() > 0) {
-                warning("There are unfulfilled intents for component implementation - " + component
-                    .getName(), component);
             }
         }
     }

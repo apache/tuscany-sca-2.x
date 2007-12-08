@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.assembly.xml;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
@@ -40,6 +42,8 @@ import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.xml.SCADefinitionsDocumentProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
@@ -60,6 +64,7 @@ public class WriteAllTestCase extends TestCase {
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
     private CompositeBuilderImpl compositeUtil;
+    private SCADefinitionsDocumentProcessor scaDefnDocProcessor;
 
 
     @Override
@@ -75,6 +80,7 @@ public class WriteAllTestCase extends TestCase {
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
         resolver = new TestModelResolver();
+        scaDefnDocProcessor = new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, XMLInputFactory.newInstance(), policyFactory);
     }
 
     @Override
@@ -101,6 +107,13 @@ public class WriteAllTestCase extends TestCase {
     public void testReadWireWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
         Composite composite = staxProcessor.read(is, Composite.class);
+        
+        URL url = getClass().getResource("definitions.xml");
+        URI uri = URI.create("definitions.xml");
+        SCADefinitions scaDefns = (SCADefinitions)scaDefnDocProcessor.read(null, uri, url);
+        assertNotNull(scaDefns);
+        scaDefnDocProcessor.resolve(scaDefns, resolver);
+        
         staxProcessor.resolve(composite, resolver);
         compositeUtil.build(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

@@ -62,10 +62,17 @@ public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProces
                 PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)javaImpl;
                 
                 try {
-                    for ( PolicySet policySet : policiedImpl.getPolicySets() ) {
+                    //for ( PolicySet policySet : policiedImpl.getPolicySets() ) {
+                    for ( PolicySet policySet : component.getPolicySets() ) {
                         policyHandler = getPolicyHandler(policySet, javaImpl.getPolicyHandlerClassNames());
-                        policyHandler.setUp(javaImpl);
-                        implPolicyHandlers.add(policyHandler);
+                        if ( policyHandler != null ) {
+                            policyHandler.setUp(javaImpl);
+                            implPolicyHandlers.add(policyHandler);
+                        } else {
+                            //FIXME: to be removed after the PolicyHandler story has crystalized..
+                            //maybe replace with exception then...
+                            System.out.println("No PolicyHandler registered for PolicySet - " + policySet.getName());
+                        }
                     }    
                     
                     List<PolicyHandler> applicablePolicyHandlers = null;

@@ -60,13 +60,14 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.w3c.dom.Document;
 
 /**
- * A composite processor.
+ * A composite processor. 
  * 
  * @version $Rev$ $Date$
  */
@@ -731,6 +732,24 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                 extensionProcessor.resolve(extension, resolver);
             }
         }
+        
+        //resolve intents and policysets first as they are going to be copied over
+        //to child elements as and when the child elements are being resolved
+        List<Intent> compositeIntents = null;
+        List<PolicySet> compositePolicySets = null;
+        if (composite instanceof PolicySetAttachPoint) { 
+            resolveIntents(((PolicySetAttachPoint)composite).getRequiredIntents(), resolver);
+            resolvePolicySets(((PolicySetAttachPoint)composite).getPolicySets(), resolver);
+            compositeIntents = ((PolicySetAttachPoint)composite).getRequiredIntents();
+            compositePolicySets = ((PolicySetAttachPoint)composite).getPolicySets();
+        } else {
+            compositeIntents = new ArrayList<Intent>();
+            compositePolicySets = new ArrayList<PolicySet>();
+        }
+        
+        //Resolve composite services and references
+        resolveContracts(composite, composite.getServices(), resolver);
+        resolveContracts(composite, composite.getReferences(), resolver);
 
         // Resolve component implementations, services and references
         for (Component component : composite.getComponents()) {
@@ -739,29 +758,20 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                 constrainingType = resolver.resolveModel(ConstrainingType.class, constrainingType);
                 component.setConstrainingType(constrainingType);
             }
+            
+            //resolve intents and policysets first as they are going to be copied over
+            //to child elements as and when the child elements are being resolved
+            resolveIntents(component.getRequiredIntents(), resolver);
+            resolvePolicySets(component.getPolicySets(), resolver);
+            
+            //inherit composite intents and policysets
+            addInheritedIntents(compositeIntents, component.getRequiredIntents());
+            addInheritedPolicySets(compositePolicySets, component.getPolicySets());
 
-            Implementation implementation = component.getImplementation();
-            if (implementation != null) {
-                implementation = resolveImplementation(implementation, resolver);
-                component.setImplementation(implementation);
-                
-                //do a getImplementation to resolve policy intents and policysets
-                //that the implementation is configured with under this component
-                implementation = component.getImplementation();
-                if (implementation instanceof PolicySetAttachPoint) {
-                    resolveIntents(((PolicySetAttachPoint)implementation).getRequiredIntents(), resolver);
-                    resolvePolicySets(((PolicySetAttachPoint)implementation).getPolicySets(), resolver);
-                }
-                
-                if ( implementation instanceof OperationsConfigurator ) {
-                    OperationsConfigurator opConfigurator = (OperationsConfigurator)implementation;
-                    for ( ConfiguredOperation op : opConfigurator.getConfiguredOperations() ) {
-                        resolveIntents(op.getRequiredIntents(), resolver);
-                        resolvePolicySets(op.getPolicySets(), resolver);
-                    }
-                }
-            }
-
+            //resolve component services and references 
+            resolveContracts(component, component.getServices(), resolver);
+            resolveContracts(component, component.getReferences(), resolver);
+            
             for (ComponentProperty componentProperty : component.getProperties()) {
                 if (componentProperty.getFile() != null) {
                     DeployedArtifact deployedArtifact = contributionFactory.createDeployedArtifact();
@@ -772,21 +782,37 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     }
                 }
             }
-            resolveIntents(component.getRequiredIntents(), resolver);
-            resolvePolicySets(component.getPolicySets(), resolver);
-            resolveContracts(component.getServices(), resolver);
-            resolveContracts(component.getReferences(), resolver);
-        }
-
-        // Resolve composite services and references
-        resolveContracts(composite.getServices(), resolver);
-        resolveContracts(composite.getReferences(), resolver);
-        if (composite instanceof PolicySetAttachPoint) {
-            resolveIntents(((PolicySetAttachPoint)composite).getRequiredIntents(), resolver);
-            resolvePolicySets(((PolicySetAttachPoint)composite).getPolicySets(), resolver);
+            
+            //resolve component implemenation
+            Implementation implementation = component.getImplementation();
+            if (implementation != null) {
+                if (implementation instanceof PolicySetAttachPoint) {
+                    resolveIntents(((PolicySetAttachPoint)implementation).getRequiredIntents(), resolver);
+                    resolvePolicySets(((PolicySetAttachPoint)implementation).getPolicySets(), resolver);
+                    validatePolicySets(component, (PolicySetAttachPoint)implementation);
+                    //add implementation policies into component... since implementation instance are 
+                    //reused and its likely that this implementation instance will not hold after its resolution
+                    component.getRequiredIntents().addAll(((PolicySetAttachPoint)implementation).getRequiredIntents());
+                    component.getPolicySets().addAll(((PolicySetAttachPoint)implementation).getPolicySets());
+                }
+                
+                implementation = resolveImplementation(implementation, resolver);
+                component.setImplementation(implementation);
+                
+                //need to do this so that component can set the configured 
+                //operations to the implementation instance
+                implementation = component.getImplementation();
+                if ( implementation instanceof OperationsConfigurator ) {
+                    OperationsConfigurator opConfigurator = (OperationsConfigurator)implementation;
+                    for ( ConfiguredOperation op : opConfigurator.getConfiguredOperations() ) {
+                        resolveIntents(op.getRequiredIntents(), resolver);
+                        resolvePolicySets(op.getPolicySets(), resolver);
+                    }
+                }
+            }
         }
     }
-
+    
     public QName getArtifactType() {
         return COMPOSITE_QNAME;
     }

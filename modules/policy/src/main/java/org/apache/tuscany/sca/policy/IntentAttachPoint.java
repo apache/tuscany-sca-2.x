@@ -34,8 +34,7 @@ public interface IntentAttachPoint {
      */
     List<Intent> getRequiredIntents();
     
-    void setRequiredIntents(List<Intent> intents);
-    
+   
     /**
      * Returns the type of the attach point such as a BindingType or an ImplementationType and so on
      * @return
