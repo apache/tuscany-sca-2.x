@@ -30,7 +30,7 @@
  <!-- POLICY SETS -->
   <sca:policySet name="SecureReliablePolicy"
  	provides="confidentiality.transport integrity"
- 	appliesTo="sca:binding.ws"
+ 	appliesTo="sca:binding.ws sca:binding.sca"
  	xmlns="http://test"
  	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
  		<wsp:PolicyAttachment>
@@ -50,15 +50,15 @@
  	 xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
      <sca:intentMap provides="confidentiality" default="transport">
         <sca:qualifier name="transport">
-            <wsp:PolicyAttachment>
+            <wsp:Policy>
                 <!-- policy expression and policy subject for "transport" alternative -->
-                </wsp:PolicyAttachment>
-            <wsp:PolicyAttachment>...</wsp:PolicyAttachment>
+                </wsp:Policy>
+            <wsp:Policy>...</wsp:Policy>
         </sca:qualifier>
         <sca:qualifier name="message">
-            <wsp:PolicyAttachment>
+            <wsp:Policy>
                 <!-- policy expression and policy subject for "message" alternative" -->
-            </wsp:PolicyAttachment>
+            </wsp:Policy>
         </sca:qualifier>
     </sca:intentMap>
 </sca:policySet>
@@ -70,21 +70,21 @@
         <sca:qualifier name="message">
             <sca:intentMap provides="message" default="whole">
                 <sca:qualifier name="body">
-                	<wsp:PolicyAttachment>
+                	<wsp:Policy>
                 		<!-- policy attachment for body encryption --> 
-               		</wsp:PolicyAttachment>
+               		</wsp:Policy>
            		</sca:qualifier>
                 <sca:qualifier name="whole">
-                	<wsp:PolicyAttachment>
+                	<wsp:Policy>
                 		<!-- policy attachment for whole message encryption --> 
-               		</wsp:PolicyAttachment>
+               		</wsp:Policy>
              	</sca:qualifier>
             </sca:intentMap>
         </sca:qualifier>
         <sca:qualifier name="transport">
-        	<wsp:PolicyAttachment>
+        	<wsp:Policy>
         		<!-- policy attachment for transport encryption --> 
-       		</wsp:PolicyAttachment>
+       		</wsp:Policy>
         </sca:qualifier>
     </sca:intentMap>
 </sca:policySet>
@@ -115,17 +115,17 @@
     xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
     <sca:intentMap provides="confidentiality"  default="transport">
         <sca:qualifier name="transport">
-            <wsp:PolicyAttachment>
+            <wsp:Policy>
                 <!-- policy expression and policy subject for "transport"
                 alternative -->
-            </wsp:PolicyAttachment>
-            <wsp:PolicyAttachment>...</wsp:PolicyAttachment>
+            </wsp:Policy>
+            <wsp:Policy>...</wsp:Policy>
         </sca:qualifier>
         <sca:qualifier name="message">
-            <wsp:PolicyAttachment>
+            <wsp:Policy>
                 <!-- policy expression and policy subject for "message"
                 alternative" -->...
-            </wsp:PolicyAttachment>
+            </wsp:Policy>
         </sca:qualifier>
     </sca:intentMap>
 </sca:policySet>

@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.AbstractProperty;
 import org.apache.tuscany.sca.assembly.AbstractReference;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.ComponentType;
@@ -60,9 +61,11 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.util.PolicyValidationUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -244,15 +247,43 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
         }
         return implementation;
     }
-
+    
     /**
      * Resolve interface, callback interface and bindings on a list of contracts.
      * @param contracts the list of contracts
      * @param resolver the resolver to use to resolve models
      */
     protected <C extends Contract> void resolveContracts(List<C> contracts, ModelResolver resolver)
+    throws ContributionResolveException {
+        resolveContracts(null, contracts, resolver);
+    }
+
+
+    /**
+     * Resolve interface, callback interface and bindings on a list of contracts.
+     * @param parent element for the contracts
+     * @param contracts the list of contracts
+     * @param resolver the resolver to use to resolve models
+     */
+    protected <C extends Contract> void resolveContracts(Base parent, List<C> contracts, ModelResolver resolver)
         throws ContributionResolveException {
         for (Contract contract : contracts) {
+            //resolve the intents and policysets as they need to be copied over into the
+            //child binding elements
+            resolveIntents(contract.getRequiredIntents(), resolver);
+            resolvePolicySets(contract.getPolicySets(), resolver);
+            
+            //inherit the composite / component level policy intents and policysets
+            if ( parent != null && parent instanceof PolicySetAttachPoint )  {
+                addInheritedIntents(((PolicySetAttachPoint)parent).getRequiredIntents(), contract.getRequiredIntents());
+                addInheritedPolicySets(((PolicySetAttachPoint)parent).getPolicySets(), contract.getPolicySets());
+            }
+            
+            for ( ConfiguredOperation confOp : contract.getConfiguredOperations() ) {
+                resolveIntents(confOp.getRequiredIntents(), resolver);
+                resolvePolicySets(confOp.getPolicySets(), resolver);
+            }
+                            
             // Resolve the interface contract
             InterfaceContract interfaceContract = contract.getInterfaceContract();
             if (interfaceContract != null) {
@@ -270,6 +301,8 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                 if (binding instanceof PolicySetAttachPoint) {
                     PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
                     resolvePolicySets(policiedBinding.getPolicySets(), resolver);
+                    //validate if attached policysets apply to the binding
+                    validatePolicySets(contract, policiedBinding);
                 }
                 if (binding instanceof OperationsConfigurator) {
                     OperationsConfigurator opConfigurator = (OperationsConfigurator)binding;
@@ -284,6 +317,10 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
             if (contract.getCallback() != null) {
                 resolveIntents(contract.getCallback().getRequiredIntents(), resolver);
                 resolvePolicySets(contract.getCallback().getPolicySets(), resolver);
+                //inherit the contract's policy intents and policysets
+                addInheritedIntents(contract.getRequiredIntents(), contract.getCallback().getRequiredIntents());
+                addInheritedPolicySets(contract.getPolicySets(), contract.getCallback().getPolicySets());
+                
                 for (int i = 0, n = contract.getCallback().getBindings().size(); i < n; i++) {
                     Binding binding = contract.getCallback().getBindings().get(i);
                     extensionProcessor.resolve(binding, resolver);
@@ -295,6 +332,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                     if (binding instanceof PolicySetAttachPoint) {
                         PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
                         resolvePolicySets(policiedBinding.getPolicySets(), resolver);
+                        validatePolicySets(contract.getCallback(), policiedBinding);
                     }
                     if (binding instanceof OperationsConfigurator) {
                         OperationsConfigurator opConfigurator = (OperationsConfigurator)binding;
@@ -304,13 +342,6 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                         }
                     }
                 }
-            }
-
-            resolveIntents(contract.getRequiredIntents(), resolver);
-            resolvePolicySets(contract.getPolicySets(), resolver);
-            for (ConfiguredOperation confOp : contract.getConfiguredOperations()) {
-                resolveIntents(confOp.getRequiredIntents(), resolver);
-                resolvePolicySets(confOp.getPolicySets(), resolver);
             }
         }
     }
@@ -610,5 +641,41 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
             }
         }
     }
+    
+    protected void addInheritedIntents(List<Intent> sourceList, List<Intent> targetList) {
+        if (sourceList != null) {
+            targetList.addAll(sourceList);
+        }
+    }
+    
+    protected  void addInheritedPolicySets(List<PolicySet> sourceList, List<PolicySet> targetList) {
+        if (sourceList != null) {
+            targetList.addAll(sourceList);
+        }
+    }
+    
+    protected void validatePolicySets(Base parent, PolicySetAttachPoint policySetAttachPoint) throws ContributionResolveException {
+        String appliesTo = null;
+        IntentAttachPointType attachPointType = policySetAttachPoint.getType();
+        String scdlFragment = ""; //need to write the 'parent' as scdl xml string
+        
+        //validate policysets specified for the attachPoint
+        for (PolicySet policySet : policySetAttachPoint.getPolicySets()) {
+            appliesTo = policySet.getAppliesTo();
+            if ( !policySet.isUnresolved() ) {
+                if (!PolicyValidationUtils.isPolicySetApplicable(scdlFragment, appliesTo, attachPointType)) {
+                    throw new ContributionResolveException("Policy Set '" + policySet.getName()
+                        + "' does not apply to binding type  "
+                        + attachPointType.getName());
+     
+                } }
+            else {
+                throw new ContributionResolveException("Policy Set '" + policySet.getName()
+                       + "' is not defined in this domain  ");
+                
+            }
+        }
+    }
+
 
 }

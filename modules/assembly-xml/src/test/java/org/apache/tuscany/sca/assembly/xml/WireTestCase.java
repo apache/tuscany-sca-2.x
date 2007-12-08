@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.assembly.xml;
 
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -37,6 +39,8 @@ import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.xml.SCADefinitionsDocumentProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
@@ -58,6 +62,7 @@ public class WireTestCase extends TestCase {
     private SCABindingFactory scaBindingFactory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
+    private SCADefinitionsDocumentProcessor scaDefnDocProcessor;
 
     @Override
     public void setUp() throws Exception {
@@ -69,6 +74,9 @@ public class WireTestCase extends TestCase {
         scaBindingFactory = new TestSCABindingFactoryImpl();
         policyFactory = new DefaultPolicyFactory();
         mapper = new InterfaceContractMapperImpl();
+        
+        scaDefnDocProcessor = new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, inputFactory, policyFactory);
+        
     }
 
     @Override
@@ -90,6 +98,13 @@ public class WireTestCase extends TestCase {
         Composite composite = compositeReader.read(reader);
         is.close();
         assertNotNull(composite);
+        
+        URL url = getClass().getResource("definitions.xml");
+        URI uri = URI.create("definitions.xml");
+        SCADefinitions scaDefns = (SCADefinitions)scaDefnDocProcessor.read(null, uri, url);
+        assertNotNull(scaDefns);
+        
+        scaDefnDocProcessor.resolve(scaDefns, resolver);
         
         compositeReader.resolve(composite, resolver);
         CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null, null);
@@ -113,6 +128,13 @@ public class WireTestCase extends TestCase {
         reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeReader.read(reader);
         is.close();
+        
+        URL url = getClass().getResource("definitions.xml");
+        URI uri = URI.create("definitions.xml");
+        SCADefinitions scaDefns = (SCADefinitions)scaDefnDocProcessor.read(null, uri, url);
+        assertNotNull(scaDefns);
+        
+        scaDefnDocProcessor.resolve(scaDefns, resolver);
         
         compositeReader.resolve(composite, resolver);
         CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null, null);

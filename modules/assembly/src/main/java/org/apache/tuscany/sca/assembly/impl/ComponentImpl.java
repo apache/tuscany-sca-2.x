@@ -100,8 +100,8 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
         if ( implementation instanceof PolicySetAttachPoint ) {
             PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
             
-            policiedImpl.setRequiredIntents(implPolicyConf.getRequiredIntents());
-            policiedImpl.setPolicySets(implPolicyConf.getPolicySets());
+            /*policiedImpl.setRequiredIntents(implPolicyConf.getRequiredIntents());
+            policiedImpl.setPolicySets(implPolicyConf.getPolicySets());*/
             
             if ( implementation instanceof OperationsConfigurator ) {
                 ((OperationsConfigurator)implementation).setConfiguredOperations(configuredImplOps);
@@ -134,10 +134,10 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
         this.implementation = implementation;
         if ( implementation instanceof PolicySetAttachPoint 
             && implementation.isUnresolved() )  {
-            PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
+            /*PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
             implPolicyConf.getRequiredIntents().addAll(policiedImpl.getRequiredIntents());
             implPolicyConf.getPolicySets().addAll(policiedImpl.getPolicySets());
-            
+            */
             if ( implementation instanceof OperationsConfigurator ) {
                 OperationsConfigurator operationConfig = (OperationsConfigurator)implementation;
             
