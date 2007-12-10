@@ -1,0 +1,388 @@
+package org.apache.tuscany.sca.tools.incremental.build.plugin;
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.scm.ScmBranch;
+import org.apache.maven.scm.ScmException;
+import org.apache.maven.scm.ScmFileSet;
+import org.apache.maven.scm.ScmResult;
+import org.apache.maven.scm.ScmRevision;
+import org.apache.maven.scm.ScmTag;
+import org.apache.maven.scm.ScmVersion;
+import org.apache.maven.scm.manager.ScmManager;
+import org.apache.maven.scm.provider.ScmProviderRepository;
+import org.apache.maven.scm.provider.ScmProviderRepositoryWithHost;
+import org.apache.maven.scm.provider.svn.repository.SvnScmProviderRepository;
+import org.apache.maven.scm.repository.ScmRepository;
+import org.apache.maven.scm.repository.ScmRepositoryException;
+import org.apache.maven.settings.Server;
+import org.apache.maven.settings.Settings;
+import org.codehaus.plexus.util.StringUtils;
+
+/**
+ * @version $Id: AbstractScmMojo.java 540597 2007-05-22 14:32:28Z evenisse $
+ */
+public abstract class AbstractScmMojo extends AbstractMojo {
+    /**
+     * The SCM connection URL.
+     *
+     * @parameter expression="${connectionUrl}" default-value="${project.scm.connection}"
+     */
+    private String connectionUrl;
+
+    /**
+     * The SCM connection URL for developers.
+     *
+     * @parameter expression="${connectionUrl}" default-value="${project.scm.developerConnection}"
+     */
+    private String developerConnectionUrl;
+
+    /**
+     * The type of connection to use (connection or developerConnection).
+     *
+     * @parameter expression="${connectionType}" default-value="connection"
+     */
+    private String connectionType;
+
+    /**
+     * The working directory.
+     *
+     * @parameter expression="${workingDirectory}"
+     */
+    private File workingDirectory;
+
+    /**
+     * The user name (used by svn and starteam protocol).
+     *
+     * @parameter expression="${username}"
+     */
+    private String username;
+
+    /**
+     * The user password (used by svn and starteam protocol).
+     *
+     * @parameter expression="${password}"
+     */
+    private String password;
+
+    /**
+     * The private key (used by java svn).
+     *
+     * @parameter expression="${privateKey}"
+     */
+    private String privateKey;
+
+    /**
+     * The passphrase (used by java svn).
+     *
+     * @parameter expression="${passphrase}"
+     */
+    private String passphrase;
+
+    /**
+     * The url of tags base directory (used by svn protocol). It is not
+     * necessary to set it if you use the standard svn layout
+     * (branches/tags/trunk).
+     *
+     * @parameter expression="${tagBase}"
+     */
+    private String tagBase;
+
+    /**
+     * Comma separated list of includes file pattern.
+     *
+     * @parameter expression="${includes}"
+     */
+    private String includes;
+
+    /**
+     * Comma separated list of excludes file pattern.
+     *
+     * @parameter expression="${excludes}"
+     */
+    private String excludes;
+
+    /**
+     * @parameter expression="${component.org.apache.maven.scm.manager.ScmManager}"
+     * @required
+     * @readonly
+     */
+    private ScmManager manager;
+
+    /**
+     * The base directory.
+     *
+     * @parameter expression="${basedir}"
+     * @required
+     */
+    private File basedir;
+
+    /**
+     * @parameter expression="${settings}"
+     * @required
+     * @readonly
+     */
+    protected Settings settings;
+
+    /**
+     * List of System properties to pass to the JUnit tests.
+     *
+     * @parameter
+     */
+    private Properties systemProperties;
+
+    /**
+     * List of provider implementations.
+     *
+     * @parameter
+     */
+    private Map providerImplementations;
+
+    public void execute() throws MojoExecutionException {
+        if (systemProperties != null) {
+            // Add all system properties configured by the user
+            Iterator iter = systemProperties.keySet().iterator();
+
+            while (iter.hasNext()) {
+                String key = (String)iter.next();
+
+                String value = systemProperties.getProperty(key);
+
+                System.setProperty(key, value);
+            }
+        }
+
+        if (providerImplementations != null) {
+            for (Iterator i = providerImplementations.keySet().iterator(); i.hasNext();) {
+                String providerType = (String)i.next();
+                String providerImplementation = (String)providerImplementations.get(providerType);
+                getLog().info("Change the default '" + providerType
+                    + "' provider implementation to '"
+                    + providerImplementation
+                    + "'.");
+                getScmManager().setScmProviderImplementation(providerType, providerImplementation);
+            }
+        }
+    }
+
+    protected void setConnectionType(String connectionType) {
+        this.connectionType = connectionType;
+    }
+
+    public String getConnectionUrl() {
+        boolean requireDeveloperConnection = !"connection".equals(connectionType.toLowerCase());
+        if (StringUtils.isNotEmpty(connectionUrl) && !requireDeveloperConnection) {
+            return connectionUrl;
+        } else if (StringUtils.isNotEmpty(developerConnectionUrl)) {
+            return developerConnectionUrl;
+        }
+        if (requireDeveloperConnection) {
+            throw new NullPointerException("You need to define a developerConnectionUrl parameter");
+        } else {
+            throw new NullPointerException("You need to define a connectionUrl parameter");
+        }
+    }
+
+    public void setConnectionUrl(String connectionUrl) {
+        this.connectionUrl = connectionUrl;
+    }
+
+    public File getWorkingDirectory() {
+        if (workingDirectory == null) {
+            return basedir;
+        }
+
+        return workingDirectory;
+    }
+
+    public void setWorkingDirectory(File workingDirectory) {
+        this.workingDirectory = workingDirectory;
+    }
+
+    public ScmManager getScmManager() {
+        return manager;
+    }
+
+    public ScmFileSet getFileSet() throws IOException {
+        if (includes != null || excludes != null) {
+            return new ScmFileSet(getWorkingDirectory(), includes, excludes);
+        } else {
+            return new ScmFileSet(getWorkingDirectory());
+        }
+    }
+
+    public ScmRepository getScmRepository() throws ScmException {
+        ScmRepository repository;
+
+        try {
+            repository = getScmManager().makeScmRepository(getConnectionUrl());
+
+            ScmProviderRepository providerRepo = repository.getProviderRepository();
+
+            if (!StringUtils.isEmpty(username)) {
+                providerRepo.setUser(username);
+            }
+
+            if (!StringUtils.isEmpty(password)) {
+                providerRepo.setPassword(password);
+            }
+
+            if (repository.getProviderRepository() instanceof ScmProviderRepositoryWithHost) {
+                ScmProviderRepositoryWithHost repo = (ScmProviderRepositoryWithHost)repository.getProviderRepository();
+
+                loadInfosFromSettings(repo);
+
+                if (!StringUtils.isEmpty(username)) {
+                    repo.setUser(username);
+                }
+
+                if (!StringUtils.isEmpty(password)) {
+                    repo.setPassword(password);
+                }
+
+                if (!StringUtils.isEmpty(privateKey)) {
+                    repo.setPrivateKey(privateKey);
+                }
+
+                if (!StringUtils.isEmpty(passphrase)) {
+                    repo.setPassphrase(passphrase);
+                }
+            }
+
+            if (!StringUtils.isEmpty(tagBase) && repository.getProvider().equals("svn")) {
+                SvnScmProviderRepository svnRepo = (SvnScmProviderRepository)repository.getProviderRepository();
+
+                svnRepo.setTagBase(tagBase);
+            }
+        } catch (ScmRepositoryException e) {
+            if (!e.getValidationMessages().isEmpty()) {
+                for (Iterator i = e.getValidationMessages().iterator(); i.hasNext();) {
+                    String message = (String)i.next();
+                    getLog().error(message);
+                }
+            }
+
+            throw new ScmException("Can't load the scm provider.", e);
+        } catch (Exception e) {
+            throw new ScmException("Can't load the scm provider.", e);
+        }
+
+        return repository;
+    }
+
+    /**
+     * Load username password from settings if user has not set them in JVM properties
+     *
+     * @param repo
+     */
+    private void loadInfosFromSettings(ScmProviderRepositoryWithHost repo) {
+        if (username == null || password == null) {
+            String host = repo.getHost();
+
+            int port = repo.getPort();
+
+            if (port > 0) {
+                host += ":" + port;
+            }
+
+            Server server = this.settings.getServer(host);
+
+            if (server != null) {
+                if (username == null) {
+                    username = this.settings.getServer(host).getUsername();
+                }
+
+                if (password == null) {
+                    password = this.settings.getServer(host).getPassword();
+                }
+
+                if (privateKey == null) {
+                    privateKey = this.settings.getServer(host).getPrivateKey();
+                }
+
+                if (passphrase == null) {
+                    passphrase = this.settings.getServer(host).getPassphrase();
+                }
+            }
+        }
+    }
+
+    public void checkResult(ScmResult result) throws MojoExecutionException {
+        if (!result.isSuccess()) {
+            getLog().error("Provider message:");
+
+            getLog().error(result.getProviderMessage() == null ? "" : result.getProviderMessage());
+
+            getLog().error("Command output:");
+
+            getLog().error(result.getCommandOutput() == null ? "" : result.getCommandOutput());
+
+            throw new MojoExecutionException("Command failed." + StringUtils.defaultString(result.getProviderMessage()));
+        }
+    }
+
+    public String getIncludes() {
+        return includes;
+    }
+
+    public void setIncludes(String includes) {
+        this.includes = includes;
+    }
+
+    public String getExcludes() {
+        return excludes;
+    }
+
+    public void setExcludes(String excludes) {
+        this.excludes = excludes;
+    }
+
+    public ScmVersion getScmVersion(String versionType, String version) throws MojoExecutionException {
+        if (StringUtils.isEmpty(versionType) && StringUtils.isNotEmpty(version)) {
+            throw new MojoExecutionException("You must specify the version type.");
+        }
+
+        if (StringUtils.isEmpty(version)) {
+            return null;
+        }
+
+        if ("branch".equals(versionType)) {
+            return new ScmBranch(version);
+        }
+
+        if ("tag".equals(versionType)) {
+            return new ScmTag(version);
+        }
+
+        if ("revision".equals(versionType)) {
+            return new ScmRevision(version);
+        }
+
+        throw new MojoExecutionException("Unknown '" + versionType + "' version type.");
+    }
+}
