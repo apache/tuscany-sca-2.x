@@ -794,21 +794,21 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     //reused and its likely that this implementation instance will not hold after its resolution
                     component.getRequiredIntents().addAll(((PolicySetAttachPoint)implementation).getRequiredIntents());
                     component.getPolicySets().addAll(((PolicySetAttachPoint)implementation).getPolicySets());
+                    if ( implementation instanceof OperationsConfigurator ) {
+                        ((OperationsConfigurator)component).getConfiguredOperations().
+                            addAll(((OperationsConfigurator)implementation).getConfiguredOperations());
+                        
+                        for ( ConfiguredOperation op : ((OperationsConfigurator)component).
+                                                                    getConfiguredOperations() ) {
+                            resolveIntents(op.getRequiredIntents(), resolver);
+                            resolvePolicySets(op.getPolicySets(), resolver);
+                        }
+                        
+                    }
                 }
                 
                 implementation = resolveImplementation(implementation, resolver);
                 component.setImplementation(implementation);
-                
-                //need to do this so that component can set the configured 
-                //operations to the implementation instance
-                implementation = component.getImplementation();
-                if ( implementation instanceof OperationsConfigurator ) {
-                    OperationsConfigurator opConfigurator = (OperationsConfigurator)implementation;
-                    for ( ConfiguredOperation op : opConfigurator.getConfiguredOperations() ) {
-                        resolveIntents(op.getRequiredIntents(), resolver);
-                        resolvePolicySets(op.getPolicySets(), resolver);
-                    }
-                }
             }
         }
     }

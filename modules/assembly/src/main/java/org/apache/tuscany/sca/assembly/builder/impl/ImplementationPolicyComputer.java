@@ -54,7 +54,9 @@ public class ImplementationPolicyComputer extends PolicyComputer {
             trimInherentlyProvidedIntents(policiedImplementation.getType(), 
                                           parent.getRequiredIntents());
             
-            computeIntentsForOperations((IntentAttachPoint)implementation, parent.getRequiredIntents());
+            computeIntentsForOperations((OperationsConfigurator)parent,
+                                        (IntentAttachPoint)implementation,
+                                        parent.getRequiredIntents());
             
             
             List<PolicySet> prunedPolicySets = computeInheritablePolicySets(parent, 
@@ -63,7 +65,9 @@ public class ImplementationPolicyComputer extends PolicyComputer {
             parent.getPolicySets().clear();
             parent.getPolicySets().addAll(prunedPolicySets);
             computePolicySets(parent);
-            computePolicySetsForOperations(parent, (PolicySetAttachPoint)implementation);
+            computePolicySetsForOperations(parent, 
+                                           (OperationsConfigurator)parent, 
+                                           (PolicySetAttachPoint)implementation);
             
             determineApplicableImplementationPolicySets(parent);
         }
@@ -75,8 +79,8 @@ public class ImplementationPolicyComputer extends PolicyComputer {
            
             //trim intents specified in operations.  First check for policysets specified on the operation
             //and then in the parent implementation
-            if ( component.getImplementation() instanceof OperationsConfigurator ) {
-                OperationsConfigurator opConfigurator = (OperationsConfigurator)component.getImplementation();
+            if ( component instanceof OperationsConfigurator ) {
+                OperationsConfigurator opConfigurator = (OperationsConfigurator)component;
                 
                 for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
                     trimProvidedIntents(confOp.getRequiredIntents(), confOp.getPolicySets());

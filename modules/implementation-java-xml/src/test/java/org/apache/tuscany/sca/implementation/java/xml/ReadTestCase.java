@@ -170,7 +170,7 @@ public class ReadTestCase extends TestCase {
         }
 
         //test for proper aggregation of policy intents and policysets on operations of implementation
-        OperationsConfigurator opConf = (OperationsConfigurator)composite.getComponents().get(5).getImplementation();
+        OperationsConfigurator opConf = (OperationsConfigurator)composite.getComponents().get(5);
         assertEquals(opConf.getConfiguredOperations().get(0).getRequiredIntents().size(), 4);
         for ( Intent intent :  opConf.getConfiguredOperations().get(0).getRequiredIntents()) {
             String intentName = intent.getName().getLocalPart();
@@ -180,7 +180,7 @@ public class ReadTestCase extends TestCase {
             }
         }
         
-        opConf = (OperationsConfigurator)composite.getComponents().get(6).getImplementation();
+        opConf = (OperationsConfigurator)composite.getComponents().get(6);
         assertEquals(opConf.getConfiguredOperations().get(0).getRequiredIntents().size(), 3);
         for ( Intent intent :  opConf.getConfiguredOperations().get(0).getRequiredIntents()) {
             String intentName = intent.getName().getLocalPart();
@@ -238,7 +238,7 @@ public class ReadTestCase extends TestCase {
         }
 
         //test for computation of policysets on operations of implementation
-        OperationsConfigurator opConf = (OperationsConfigurator)composite.getComponents().get(5).getImplementation();
+        OperationsConfigurator opConf = (OperationsConfigurator)composite.getComponents().get(5);
         assertEquals(opConf.getConfiguredOperations().get(0).getPolicySets().size(), 3);
         for ( PolicySet policySet : opConf.getConfiguredOperations().get(0).getPolicySets() ) {
             String policySetName = policySet.getName().getLocalPart();
@@ -248,7 +248,7 @@ public class ReadTestCase extends TestCase {
             }
         }
         
-        opConf = (OperationsConfigurator)composite.getComponents().get(6).getImplementation();
+        opConf = (OperationsConfigurator)composite.getComponents().get(6);
         assertEquals(opConf.getConfiguredOperations().get(0).getPolicySets().size(), 3);
         for ( PolicySet policySet : opConf.getConfiguredOperations().get(0).getPolicySets() ) {
             String policySetName = policySet.getName().getLocalPart();

@@ -836,7 +836,7 @@ public class CompositeWireBuilderImpl {
                 bindingPolicyComputer.computeBindingIntentsAndPolicySets(service);
                 bindingPolicyComputer.determineApplicableBindingPolicySets(service, null);
             } catch ( Exception e ) {
-                warning("Theres been an exception relation to policies... " + e, e);
+                warning("Theres been an exception related to policies... " + e, e);
                 //throw new RuntimeException(e);
             }
                 
@@ -861,7 +861,7 @@ public class CompositeWireBuilderImpl {
                 bindingPolicyComputer.computeBindingIntentsAndPolicySets(reference);
                 bindingPolicyComputer.determineApplicableBindingPolicySets(reference, null);
             } catch ( Exception e ) {
-                warning("Theres been an exception relation to policies... " + e, e);
+                warning("Theres been an exception related to policies... " + e, e);
                 //throw new RuntimeException(e);
             }
         }
@@ -871,7 +871,7 @@ public class CompositeWireBuilderImpl {
             try {
                 implPolicyComputer.computeImplementationIntentsAndPolicySets(implemenation, component);
             } catch ( Exception e ) {
-                warning("Theres been an exception relation to policies... " + e, e);
+                warning("Theres been an exception related to policies... " + e, e);
                 //throw new RuntimeException(e);
             }
 
@@ -907,7 +907,7 @@ public class CompositeWireBuilderImpl {
                                            false);
                     }
                 } catch ( Exception e ) {
-                    warning("Theres been an exception relation to policies... " + e, e);
+                    warning("Theres been an exception related to policies... " + e, e);
                     //throw new RuntimeException(e);
                 }
             }
@@ -945,7 +945,7 @@ public class CompositeWireBuilderImpl {
                                                false);
                     }
                 } catch ( Exception e ) {
-                    warning("Theres been an exception relation to policies... " + e, e);
+                    warning("Theres been an exception related to policies... " + e, e);
                     //throw new RuntimeException(e);
                 }
             }
