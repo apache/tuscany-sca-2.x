@@ -402,9 +402,12 @@ public class CompositeWireBuilderImpl {
                                 composite);
                     }
                 } else {
-                    // clone all the reference bindings into the target so that they
+                    // add all the reference bindings into the target so that they
                     // can be used for comparison when the target is resolved at runtime
                     componentService.getBindings().addAll(componentReference.getBindings());
+                    
+                    // The bindings will be cloned back into the reference when the 
+                    // target is finally resolved. 
                     
                     warning("Component reference target not found, it might be a remote service: " + componentService.getName(), composite);
                 }
@@ -448,7 +451,14 @@ public class CompositeWireBuilderImpl {
                                 composite);
                     }
                 } else {
-                    warning("Reference target not found: " + componentService.getName(), composite);
+                    // add all the reference bindings into the target so that they
+                    // can be used for comparison when the target is resolved at runtime
+                    componentService.getBindings().addAll(componentReference.getBindings());
+                    
+                    // The bindings will be cloned back into the reference when the 
+                    // target is finally resolved. 
+                    
+                    warning("Component reference target from component type not found, it might be a remote service: " + componentService.getName(), composite);
                 }
             }
         }
@@ -516,7 +526,7 @@ public class CompositeWireBuilderImpl {
                     }
                 }
             }
-            
+                       
             if (!targets.isEmpty()) {
 
                 // Add all the effective bindings
@@ -526,6 +536,27 @@ public class CompositeWireBuilderImpl {
                     componentReference.getCallback().getBindings().clear();
                     componentReference.getCallback().getBindings().addAll(selectedCallbackBindings);
                 }
+            }
+            
+            // Need to tidy up the reference binding list. The situation so far...
+            //    Wired reference (1 or more targets are specified)
+            //       Binding.uri = null  - remove as its left over from target resolution
+            //                             the binding will have been moved to the target from where 
+            //                             it will be resolved later
+            //       Binding.uri != null - the reference was resolved
+            //    Unwired reference (0 targets)
+            //       Binding.uri = null  - Either a callback reference or the reference is yet to be wired
+            //                             either manually or via autowire so leave the binding where it is
+            //       Binding.uri != null - from the composite file so leave it 
+            if (componentReference.getTargets().size() > 0){
+                List<Binding> bindingsToRemove = new ArrayList<Binding>();
+                for(Binding binding : componentReference.getBindings()){
+                    if(binding.getURI() == null){
+                        bindingsToRemove.add(binding);
+                    }
+                }
+                
+                componentReference.getBindings().removeAll(bindingsToRemove);
             }
         }
     }
