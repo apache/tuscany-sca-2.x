@@ -52,6 +52,8 @@ public class SCADomainEventServiceProxyImpl implements SCADomainEventService{
 
     public void registerNode(String nodeURI, String nodeURL, Externalizable nodeManagerService) throws DomainException {
               
+        // a rety loop is included on node registration in case the node
+        // comes up before the domain it is registering with
         for (int i =0; i < retryCount; i++){
             try {        
                 domainManager.registerNode(nodeURI, nodeURL, nodeManagerService);
@@ -70,11 +72,18 @@ public class SCADomainEventServiceProxyImpl implements SCADomainEventService{
             } catch(InterruptedException ex) {
             }
          }
-
     }
 
     public void unregisterNode(String nodeURI) throws DomainException {
         domainManager.unregisterNode(nodeURI);
+    }
+    
+    public void registerNodeStart(String nodeURI) throws DomainException {
+        domainManager.registerNodeStart(nodeURI);
+    }
+
+    public void registerNodeStop(String nodeURI) throws DomainException {
+        domainManager.registerNodeStop(nodeURI);
     }
     
     public void registerContribution(String nodeURI, String contributionURI, String contributionURL) throws DomainException {
@@ -90,96 +99,19 @@ public class SCADomainEventServiceProxyImpl implements SCADomainEventService{
     }
     
     public void registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL) throws DomainException {
-        
-        for (int i =0; i < retryCount; i++){
-            try {
-                domainManager.registerServiceEndpoint(domainUri, nodeUri, serviceName, bindingName, URL);
-                break;
-            } catch(UndeclaredThrowableException ex) {
-                logger.log(Level.INFO, "Trying to connect to domain " + 
-                                       domainUri + 
-                                       " to register service " +
-                                       serviceName);
-          
-            }
-            
-            try {
-                Thread.sleep(retryInterval);
-            } catch(InterruptedException ex) {
-            }
-         }
-
+        domainManager.registerServiceEndpoint(domainUri, nodeUri, serviceName, bindingName, URL);
     }
     
     public void unregisterServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName) throws DomainException {
-        
-        for (int i =0; i < retryCount; i++){
-            try {
-                domainManager.unregisterServiceEndpoint(domainUri, nodeUri, serviceName, bindingName);
-                break;
-            } catch(UndeclaredThrowableException ex) {
-                logger.log(Level.INFO, "Trying to connect to domain " + 
-                                       domainUri + 
-                                       " to remove service " +
-                                       serviceName);
-          
-            }
-            
-            try {
-                Thread.sleep(retryInterval);
-            } catch(InterruptedException ex) {
-            }
-         }
+        domainManager.unregisterServiceEndpoint(domainUri, nodeUri, serviceName, bindingName);
     }    
    
     public String findServiceEndpoint(String domainUri, String serviceName, String bindingName) throws DomainException {
-
-        String url = null;
-        
-        for (int i =0; i < retryCount; i++){
-            try {
-                url =  domainManager.findServiceEndpoint(domainUri, serviceName, bindingName);
-                break;
-            } catch(UndeclaredThrowableException ex) {
-                logger.log(Level.INFO, "Trying to connect to domain " + 
-                                       domainUri + 
-                                       " to find service " +
-                                       serviceName);
-          
-            }
-            
-            try {
-                Thread.sleep(retryInterval);
-            } catch(InterruptedException ex) {
-            }
-         }
-        
-        return url;
+        return domainManager.findServiceEndpoint(domainUri, serviceName, bindingName);
     }
     
     public String findServiceNode(String domainUri, String serviceName, String bindingName) throws DomainException {
-
-        String nodeName = null;
-        
-        for (int i =0; i < retryCount; i++){
-            try {
-                nodeName =  domainManager.findServiceNode(domainUri, serviceName, bindingName);
-                break;
-            } catch(UndeclaredThrowableException ex) {
-                logger.log(Level.INFO, "Trying to connect to domain " + 
-                                       domainUri + 
-                                       " to find service " +
-                                       serviceName);
-          
-            }
-            
-            try {
-                Thread.sleep(retryInterval);
-            } catch(InterruptedException ex) {
-            }
-         }
-        
-        return nodeName;
+        return domainManager.findServiceNode(domainUri, serviceName, bindingName);
     }    
  
 }

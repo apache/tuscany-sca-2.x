@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.domain.model.CompositeModel;
 import org.apache.tuscany.sca.domain.model.ContributionModel;
 import org.apache.tuscany.sca.domain.model.NodeModel;
 import org.apache.tuscany.sca.domain.model.ServiceModel;
+import org.apache.tuscany.sca.domain.model.NodeModel.LifecyleState;
 import org.apache.tuscany.sca.node.management.SCANodeManagerService;
 import org.osoa.sca.CallableReference;
 
@@ -43,7 +44,6 @@ public class NodeModelImpl implements NodeModel {
     private LifecyleState state = LifecyleState.AVAILABLE;
     private String nodeURI;
     private String nodeURL;
-    private boolean isRunning = false;
     private Externalizable nodeManagerReference;
     private Map<String, ContributionModel> contributions = new HashMap<String, ContributionModel>();
     private Map<QName, CompositeModel> deployedComposites = new HashMap<QName, CompositeModel>();
@@ -86,21 +86,21 @@ public class NodeModelImpl implements NodeModel {
     }
     
     /**
-     * Returns true if the node has been started
+     * Returns the state of the node
      *
-     * @return tru if the node is running
+     * @return state
      */    
-    public boolean getIsRunning() {
-        return isRunning;
+    public LifecyleState getLifecycleState(){
+        return state;
     }
    
     /**
-     * Set the running status of the node
+     * Set the state of the node
      * 
-     * @param isRunning
+     * @param state
      */    
-    public void setIsRunning(boolean isRunning) {
-        this.isRunning = isRunning;
+    public void setLifecycleState(LifecyleState state){
+        this.state = state;
     }
     
     /**

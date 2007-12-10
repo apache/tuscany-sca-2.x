@@ -215,6 +215,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
                         SCABinding clonedSCABinding = null;
                         try {
                             clonedSCABinding = (SCABinding)((OptimizableBinding)scaBinding).clone();
+                            // TODO - Reusing the name here to store the target name so the 
+                            //        binding can be found again once the URI is set to the real endpoint
+                            clonedSCABinding.setName(service.getName());
                             clonedSCABinding.setURI(service.getName());
                             // wireable binding stuff needs to go. SCA binding uses it
                             // currently to get to the service to work out if the service

@@ -30,6 +30,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.core.assembly.RuntimeComponentImpl;
+import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter.Base64Binary;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.node.ComponentInfo;
 import org.apache.tuscany.sca.node.ComponentManagerService;
@@ -79,10 +80,7 @@ public class TestNodeManagerServiceImpl implements SCANodeManagerService {
         System.out.println("destroy");
     } 
     
-    public void setReferenceEndpoint(String referenceName, String bindingClassName, String serviceURI) throws NodeException {
-        System.out.println("setReferenceEndpoint "  + referenceName + " " + bindingClassName + " " + serviceURI);
+    public void updateComposite(String compositeQName, String compositeXMLBase64) throws NodeException {
+        System.out.println("updateComposite " + compositeQName + " " + Base64Binary.decode(compositeXMLBase64).toString());
     }
-    
-
-
 }

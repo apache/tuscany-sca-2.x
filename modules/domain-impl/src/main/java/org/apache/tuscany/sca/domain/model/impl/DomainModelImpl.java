@@ -24,6 +24,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.domain.model.CompositeModel;
 import org.apache.tuscany.sca.domain.model.ContributionModel;
 import org.apache.tuscany.sca.domain.model.NodeModel;
@@ -43,6 +44,7 @@ public class DomainModelImpl implements DomainModel {
     private Map<String, NodeModel> nodes = new HashMap<String, NodeModel>();
     private Map<String, ContributionModel> contributions = new HashMap<String, ContributionModel>();    
     private Map<QName, CompositeModel> deployedComposites = new HashMap<QName, CompositeModel>();
+    private Composite domainLevelComposite;
        
     
     /**
@@ -70,6 +72,24 @@ public class DomainModelImpl implements DomainModel {
      */    
     public String getDomainURL(){
         return domainURL;
+    }
+    
+    /**
+     * Set the domain level composite
+     * 
+     * @param domainLevelComposite
+     */    
+    public void setDomainLeveComposite(Composite domainLevelComposite){
+        this.domainLevelComposite = domainLevelComposite;
+    }
+    
+    /**
+     * Retrieve the domain level composite
+     * 
+     * @return domainLevelComposite 
+     */    
+    public Composite getDomainLevelComposite(){
+        return domainLevelComposite;
     }
    
     /**
