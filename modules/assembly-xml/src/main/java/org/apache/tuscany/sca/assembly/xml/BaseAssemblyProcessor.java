@@ -659,20 +659,22 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
         IntentAttachPointType attachPointType = policySetAttachPoint.getType();
         String scdlFragment = ""; //need to write the 'parent' as scdl xml string
         
-        //validate policysets specified for the attachPoint
-        for (PolicySet policySet : policySetAttachPoint.getPolicySets()) {
-            appliesTo = policySet.getAppliesTo();
-            if ( !policySet.isUnresolved() ) {
-                if (!PolicyValidationUtils.isPolicySetApplicable(scdlFragment, appliesTo, attachPointType)) {
+        if ( attachPointType != null ) {
+            //validate policysets specified for the attachPoint
+            for (PolicySet policySet : policySetAttachPoint.getPolicySets()) {
+                appliesTo = policySet.getAppliesTo();
+                if ( !policySet.isUnresolved() ) {
+                    if (!PolicyValidationUtils.isPolicySetApplicable(scdlFragment, appliesTo, attachPointType)) {
+                        throw new ContributionResolveException("Policy Set '" + policySet.getName()
+                            + "' does not apply to binding type  "
+                            + attachPointType.getName());
+         
+                    } }
+                else {
                     throw new ContributionResolveException("Policy Set '" + policySet.getName()
-                        + "' does not apply to binding type  "
-                        + attachPointType.getName());
-     
-                } }
-            else {
-                throw new ContributionResolveException("Policy Set '" + policySet.getName()
-                       + "' is not defined in this domain  ");
-                
+                           + "' is not defined in this domain  ");
+                    
+                }
             }
         }
     }
