@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
+import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
@@ -56,7 +57,7 @@ class BindingUtil {
     }
     
     
-    private static Binding matchBinding(Component component, ComponentService service, List<Binding> source, List<Binding> target) {
+    public static Binding matchBinding(Component component, ComponentService service, List<Binding> source, List<Binding> target) {
         List<Binding> matched = new ArrayList<Binding>();
         // Find the corresponding bindings from the service side
         for (Binding binding : source) {
@@ -117,6 +118,7 @@ class BindingUtil {
         return matchBinding(component, service, source, target);
     
     }
+    
 
     /**
      * @param reference
