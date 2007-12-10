@@ -86,12 +86,11 @@ public interface SCANodeManagerService {
     public void destroyNode() throws NodeException;     
     
     /**
-     * Set a reference endpoint based on information registered with the domain
-     * 
-     * @param refererenceName the name of the reference in question
-     * @param bindingClassName the class name of the binding on the reference
-     * @param serviceURI the uri to set
+     * Pass in an updated version of a composite in base64 encoded XML form. The node will compare
+     * this against the version of the composite it has and apply and changes found
+     * @param compositeQName
+     * @param compositeXMLBase64
      * @throws NodeException
      */
-    public void setReferenceEndpoint(String refererenceName, String bindingClassName, String serviceURI) throws NodeException; 
+    public void updateComposite(String compositeQName, String compositeXMLBase64 ) throws NodeException;
 }

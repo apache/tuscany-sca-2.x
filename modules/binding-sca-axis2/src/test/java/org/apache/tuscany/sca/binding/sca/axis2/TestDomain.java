@@ -146,6 +146,15 @@ public class TestDomain implements SCADomain, SCADomainEventService {
     
     public void unregisterServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName){  
     }
+    
+    public void registerNodeStart(String nodeURI) throws DomainException{
+        
+    }
+    
+    public void registerNodeStop(String nodeURI) throws DomainException {
+        
+    }
+    
     /**
      * Locates information about a service endpoint 
      * 

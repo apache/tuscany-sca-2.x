@@ -64,18 +64,18 @@ public interface NodeModel {
     public void setNodeURL(String nodeURL);
     
     /**
-     * Returns true if the node has been started
+     * Returns the state of the node
      *
-     * @return tru if the node is running
+     * @return state
      */    
-    public boolean getIsRunning();
+    public LifecyleState getLifecycleState();
    
     /**
-     * Set the running status of the node
+     * Set the state of the node
      * 
-     * @param isRunning
+     * @param state
      */    
-    public void setIsRunning(boolean isRunning);    
+    public void setLifecycleState(LifecyleState state);    
     
     /**
      * Retrieve the node manager reference

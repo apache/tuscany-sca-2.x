@@ -96,8 +96,8 @@ public class SCANodeManagerServiceImpl implements SCANodeManagerService, SCANode
         node.destroy();
     }    
     
-    public void setReferenceEndpoint(String refererenceName, String bindingName, String serviceURI) throws NodeException {
-        node.setReferenceEndpoint(refererenceName, bindingName, serviceURI);
+    public void updateComposite(String compositeQName, String compositeXMLBase64 ) throws NodeException {
+        ((SCANodeImpl)node).updateComposite(QName.valueOf(compositeQName), compositeXMLBase64 );
     }
 
     // ComponentManagerService

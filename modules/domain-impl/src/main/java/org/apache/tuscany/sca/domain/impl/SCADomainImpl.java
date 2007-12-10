@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
@@ -54,6 +55,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
+import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter.Base64Binary;
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainEventService;
@@ -65,6 +67,7 @@ import org.apache.tuscany.sca.domain.model.DomainModel;
 import org.apache.tuscany.sca.domain.model.DomainModelFactory;
 import org.apache.tuscany.sca.domain.model.NodeModel;
 import org.apache.tuscany.sca.domain.model.ServiceModel;
+import org.apache.tuscany.sca.domain.model.NodeModel.LifecyleState;
 import org.apache.tuscany.sca.domain.model.impl.DomainModelFactoryImpl;
 import org.apache.tuscany.sca.domain.model.impl.NodeModelImpl;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
@@ -91,9 +94,7 @@ import org.osoa.sca.ServiceRuntimeException;
 public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomainSPI  {
 	
     private final static Logger logger = Logger.getLogger(SCADomainImpl.class.getName());
-    
-    public static final String IMPORTED = "IMPORTED";
-    
+       
     // class loader used to get the runtime going
     protected ClassLoader domainClassLoader;
     
@@ -102,6 +103,9 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
     protected ContributionService domainManagementContributionService;
     protected Contribution domainManagementContribution;
     protected Composite domainManagementComposite;
+    
+    // domain application runtime
+    protected Composite domainComposite;
     
     // the logic for wiring up references and services at the domain level
     protected DomainWireBuilderImpl domainWireBuilder = new DomainWireBuilderImpl();
@@ -115,7 +119,9 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
     protected DomainModel domainModel;
     
     // management services
-    private SCADomainManagerInitService domainManagerInitService;    
+    private SCADomainManagerInitService domainManagerInitService;   
+    
+    // Implementation methods
      
     /** 
      * Create a domain giving the URI for the domain. 
@@ -167,7 +173,14 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             AssemblyFactory assemblyFactory = domainManagementRuntime.getAssemblyFactory();
             domainManagementComposite = assemblyFactory.createComposite();
             domainManagementComposite.setName(new QName(Constants.SCA10_NS, "domainManagement"));
-            domainManagementComposite.setURI(domainModel.getDomainURI() + "/Management");            
+            domainManagementComposite.setURI(domainModel.getDomainURI() + "/management");   
+            
+            // Create an in-memory domain level composite
+            domainComposite = assemblyFactory.createComposite();
+            domainComposite.setName(new QName(Constants.SCA10_NS, "domain"));
+            domainComposite.setURI(domainModel.getDomainURI() + "/domain");  
+            
+            domainModel.setDomainLeveComposite(domainComposite);
             
             // Set up the domain so that local callable references can find 
             // service out there in the domain
@@ -231,722 +244,27 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         }
     }          
     
-    // SCADomainSPI methods 
-    
-    public DomainModel getDomainModel(){        
-        return domainModel;
-    } 
-    
-    public String getComposite(QName compositeQName){
-        CompositeModel compositeModel = domainModel.getDeployedComposites().get(compositeQName);
-        Composite composite = compositeModel.getComposite();
+    private void notifyDomainChange() throws DomainException {
+        List<Composite> changedComposites = domainWireBuilder.wireDomain(domainComposite);
         
-        ExtensionPointRegistry registry = domainManagementRuntime.getExtensionPointRegistry();
-        
-        StAXArtifactProcessorExtensionPoint staxProcessors =
-            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        
-        StAXArtifactProcessor<Composite> processor = staxProcessors.getProcessor(Composite.class);
-        
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try {
-            XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
-            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
-            processor.write(composite, writer);
-            writer.flush();
-            writer.close();
-        } catch (Exception ex) {
-            System.out.println(ex.toString());
-        }
-        
-        String compositeString = bos.toString();
-        
-        return compositeString;
-    }
-    
-    public String getComponent(QName compositeQName, String componentName){
-        
-        String componentString = null;
-        
-        return componentString;
-        
-    }
-    
-    public void registerRemoteServices(String nodeURI, Composite composite){
-        // Loop through all service binding URIs registering them with the domain 
-        for (Service service: composite.getServices()) {
-            for (Binding binding: service.getBindings()) {
-                registerRemoteServiceBinding(nodeURI, null, service, binding);
-            }
-        }
-        
-        for (Component component: composite.getComponents()) {
-            for (ComponentService service: component.getServices()) {
-                for (Binding binding: service.getBindings()) {
-                    registerRemoteServiceBinding(nodeURI, component, service, binding);
-                }
-            }
-        }
-    }
-    
-    private void registerRemoteServiceBinding(String nodeURI, Component component, Service service, Binding binding ){
-        if (service.getInterfaceContract().getInterface().isRemotable()) {
-            String uriString = binding.getURI();
-            if (uriString != null) {
-                 
-                String serviceName = component.getURI() + '/' + binding.getName(); 
-
-                try {
-                    registerServiceEndpoint(domainModel.getDomainURI(), 
-                                            nodeURI, 
-                                            serviceName, 
-                                            binding.getClass().getName(), 
-                                            uriString);
-                } catch(Exception ex) {
-                    logger.log(Level.WARNING, 
-                               "Unable to  register service: "  +
-                               domainModel.getDomainURI() + " " +
-                               nodeURI + " " +
-                               service.getName()+ " " +
-                               binding.getClass().getName() + " " +
-                               uriString);
-                }
-            }
-        }
-    }    
-    
-    // SCADomainEventService methods 
-    
-    public void registerNode(String nodeURI, String nodeURL, Externalizable nodeManagerReference) throws DomainException { 
-        // try and remove it first just in case it's already registered
-        unregisterNode(nodeURI);
-        
-        NodeModel node = domainModelFactory.createNode();
-        node.setNodeURI(nodeURI);
-        node.setNodeURL(nodeURL);
-        node.setNodeManagerReference(nodeManagerReference);
-        domainModel.getNodes().put(nodeURI, node);     
-        
-        logger.log(Level.INFO, "Registered node: " + 
-                               nodeURI + 
-                               " at endpoint " + 
-                               nodeURL);
-
-    }
-    
-    public void unregisterNode(String nodeURI) throws DomainException{ 
-        
-        domainModel.getNodes().remove(nodeURI);
-               
-        logger.log(Level.FINE, "Removed node: " + nodeURI);
-    }
-    
-
-    public void registerContribution(String nodeURI, String contributionURI, String contributionURL) throws DomainException{
-        try {
-            ContributionModel contributionModel = null;
+        // notify nodes that have composites that the composites have changed
+        for (Composite composite : changedComposites){
+            String compositeXML = getComposite(composite.getName());
             
-            if ( domainModel.getContributions().containsKey(contributionURI) == false ){
-                contributionModel = parseContribution(contributionURI, contributionURL);
-
-                // assign the contribution to the referenced node
-                NodeModel node = domainModel.getNodes().get(nodeURI);
-                
-                if ((node != null) && (contributionModel != null)) {
-                    node.getContributions().put(contributionURI, contributionModel);
-                } 
-            }
-            
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Exception when registering contribution " + 
-                                     contributionURI + 
-                                     ex.toString() );
-        }   
-    }
-
-    public void unregisterContribution(String nodeURI, String contributionURI) throws DomainException {
-        try {
-            
-            if ( domainModel.getContributions().containsKey(contributionURI) == true ){
-                // get the contribution model
-                ContributionModel contributionModel = domainModel.getContributions().get(contributionURI);
-                
-                // remove deployed composites
-                for (QName compositeQName : contributionModel.getDeployedComposites().keySet()){
-                    domainModel.getDeployedComposites().remove(compositeQName);
-                }
-                    
-                // remove contribution from the domain
-                domainModel.getContributions().remove(contributionURI);
-
-                // remove the contribution from the referenced node
-                NodeModel nodeModel = domainModel.getNodes().get(nodeURI);
-                
-                if ((nodeModel != null)) {
-                    nodeModel.getContributions().remove(contributionURI);
-                    
-                    // remove deployed composites
-                    for (QName compositeQName : contributionModel.getDeployedComposites().keySet()){
-                        nodeModel.getDeployedComposites().remove(compositeQName);
-                    }
-                } 
-            }            
- 
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Exception when removing contribution " + 
-                                     contributionURI + 
-                                     ex.toString() );
-        }
-    }
-    
-    public void registerDomainLevelComposite(String nodeURI, String compositeQNameString) throws DomainException{
-        try {
-            QName compositeQName = QName.valueOf(compositeQNameString);
-            
-            if (!domainModel.getDeployedComposites().containsKey(compositeQName)){
-                // get the composite from the node
-                NodeModel node = domainModel.getNodes().get(nodeURI);
-                
-                if (node != null) {
-                    for (ContributionModel contributionModel : node.getContributions().values()){
-                        CompositeModel compositeModel = contributionModel.getComposites().get(compositeQName);
-                        
-                        if (compositeModel != null){
-                            contributionModel.getDeployedComposites().put(compositeQName, compositeModel);
-                            node.getDeployedComposites().put(compositeQName, compositeModel);
-                            domainModel.getDeployedComposites().put(compositeQName, compositeModel);
+            for (NodeModel node : domainModel.getNodes().values()){
+                if (node.getDeployedComposites().containsKey(composite.getName())){
+                    try {
+                        if (((NodeModelImpl)node).getSCANodeManagerService() != null) {
+                            // notify node
+                            ((NodeModelImpl)node).getSCANodeManagerService().updateComposite(composite.getName().toString(), 
+                                                                                             Base64Binary.encode(compositeXML.getBytes()));
                         }
-                    }
-                }   
-            }
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Exception when registering domain level composite " + 
-                                     nodeURI +  " " +
-                                     compositeQNameString +
-                                     ex.toString() );
-        }   
-    }    
-    
-    public void registerServiceEndpoint(String domainURI, String nodeURI, String serviceName, String bindingName, String URL)throws DomainException {
-       
-        // the component/service name
-        String longServiceName = null;
-        
-        // the component name
-        String shortServiceName = null;
-        
-        // if the service name ends in a "/" remove it
-        if (serviceName.endsWith("/")) {
-            longServiceName = serviceName.substring(0, serviceName.length() - 1);
-        } else {
-            longServiceName = serviceName;
-        }
-        
-        // if the service name starts with a "/" remove it
-        if (longServiceName.startsWith("/")) {
-            longServiceName = longServiceName.substring(1, serviceName.length());
-        } 
-        
-        // extract the short name from the long name 
-        if (longServiceName.indexOf("/") >= 0 ) {
-            //TODO - only set this if multiplicity is 1
-            shortServiceName = longServiceName.substring(0, longServiceName.indexOf("/"));
-        } 
-        
-        // collect the service info
-        ServiceModel service = domainModelFactory.createService();
-        service.setServiceURI(longServiceName);
-        service.setServiceURL(URL);
-        service.setServiceBinding(bindingName);
-        
-        
-        // find the node
-        NodeModel node = domainModel.getNodes().get(nodeURI);
-        
-        if (node != null){
-            //store the service
-            node.getServices().put(longServiceName+bindingName, service);
-            
-            if (shortServiceName != null){
-                node.getServices().put(shortServiceName+bindingName, service);
-            }
-            logger.log(Level.INFO, "Registering service: [" + 
-                                   domainURI + " " +
-                                   longServiceName + " " +
-                                   URL + " " +
-                                   bindingName + "]");         
-        } else {
-            logger.log(Level.WARNING, "Trying to register service: " + 
-                                      longServiceName + 
-                                      " for a node " + 
-                                      nodeURI + 
-                                      "that isn't registered");
-        }
-
-        notifyServiceChange(longServiceName);
-    }    
-     
-    public void unregisterServiceEndpoint(String domainURI, String nodeURI, String serviceName, String bindingName) throws DomainException{
-        NodeModel node = domainModel.getNodes().get(nodeURI);
-        node.getServices().remove(serviceName + bindingName);
-        
-        // extract the short name from the long name 
-        String shortServiceName = null;
-        if (serviceName.indexOf("/") >= 0 ) {
-            shortServiceName = serviceName.substring(0, serviceName.indexOf("/"));
-        } 
-        
-        node.getServices().remove(shortServiceName + bindingName);
-        
-        logger.log(Level.FINE, "Removed service: " +  serviceName );   
-        
-        notifyServiceChange(serviceName);
-    }
-    
-    private void notifyServiceChange(String serviceName) {
-/*         
-        // notify each node that's interested that service registration has changed
-        // need to do this in a separate thread?
-        for(NodeModel tmpNode : domainModel.getNodes().values()){
-            if (tmpNode != node){
-                for(CompositeModel compositeModel : node.getDeployedComposites().values()) {
-                    Reference reference = findReferenceFromService(compositeModel.getComposite(), serviceName); 
-                     
-                     if (reference != null){
-                         try {
-                             // notify node
-                             ((NodeModelImpl)tmpNode).getSCANodeManagerService().setReferenceEndpoint(modifiedServiceName, bindingName, URL);
-                         } catch (Exception ex) {
-                             ex.printStackTrace();
-                             //  TODO 
-                         }
-                         break;
-                     }
-                } 
-            }
-        }
-*/
-    }
-   
-    public String findServiceEndpoint(String domainURI, String serviceName, String bindingName) throws DomainException{
-        logger.log(Level.INFO, "Finding service: [" + 
-                               domainURI + " " +
-                               serviceName + " " +
-                               bindingName +
-                               "]");
-        
-        String url = SERVICE_NOT_REGISTERED;
-        String serviceKey = serviceName + bindingName;
-        
-        for (NodeModel node : domainModel.getNodes().values()){
-            ServiceModel service = node.getServices().get(serviceKey);
-            
-            if (service != null){
-                url = service.getServiceURL();
-                // uncomment for debugging
-                //url = url.replace("8085", "8086");
-                logger.log(Level.INFO, "Found service " + serviceName + " url: " + url); 
-                break;
-            } 
-        }
-               
-        return url;
-    }
-    
-    public String findServiceNode(String domainURI, String serviceName, String bindingName) throws DomainException{
-        logger.log(Level.INFO, "Finding service node: [" + 
-                               domainURI + " " +
-                               serviceName + " " +
-                               bindingName +
-                               "]");
-        
-        String nodeURI = SERVICE_NOT_KNOWN;
-        
-        for (NodeModel node : domainModel.getNodes().values()){
-            Service service = null;
-            for (CompositeModel compositeModel : node.getDeployedComposites().values()){
-                service = domainWireBuilder.findService(compositeModel.getComposite(), serviceName);
-                if (service != null) {
-                    nodeURI = node.getNodeURI();
-                    break;
-                }
-            }
-        }
-               
-        return nodeURI;
-    }
-    
-            
-        
-    // SCADomain API methods 
-    
-    public void start() throws DomainException {
-        // call start on all nodes with deployed composites  
-        for(NodeModel node : domainModel.getNodes().values()) {
-            if ( !node.getDeployedComposites().isEmpty()){
-                try {
-                    if (!node.getIsRunning()) {
-                        ((NodeModelImpl)node).getSCANodeManagerService().start();
-                        node.setIsRunning(true);
-                    }
-                } catch (Exception ex) {
-                    // TODO - collate errors and report
-                    ex.printStackTrace();
-                }
-            }
-        }             
-    }
-    
-    public void stop() throws DomainException {
-        // call stop on all nodes
-        for(NodeModel node : domainModel.getNodes().values()) {
-            try {
-                if (node.getIsRunning()) {
-                    ((NodeModelImpl)node).getSCANodeManagerService().stop();
-                    node.setIsRunning(false);
-                }
-            } catch (Exception ex) {
-                // TODO - collate errors and report
-                ex.printStackTrace();
-            }
-        }         
-    }    
-    
-    public void destroy() throws DomainException {
-        try {
-            // Stop and destroy all nodes. This should unregister all nodes
-            
-            //Get all nodes out of the domain. Destroying them will cause them to 
-            //call back to the domain to unregister so we need to avoid concurrent updates
-            List<NodeModel> nodes = new ArrayList<NodeModel>();
-            for(NodeModel node : domainModel.getNodes().values()) {
-                nodes.add(node);
-            }
-            
-            for(NodeModel node : nodes) {
-                try {
-                    if ( ((NodeModelImpl)node).getSCANodeManagerService() != null){
-                        ((NodeModelImpl)node).getSCANodeManagerService().destroyNode();
-                    }
-                } catch (Exception ex) {
-                    // TODO - collate errors and report
-                    ex.printStackTrace();
-                }
-            } 
-            
-            // Wait for all the nodes to de-register themselves
-            int loopCount = 10;
-            while((!domainModel.getNodes().isEmpty()) && (loopCount > 0)){
-                logger.log(Level.INFO, "Waiting for nodes to close down");                                
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception ex){
-                    // Do nothing
-                }
-                loopCount--;
-            }
-
-            // remove all management components
-            Composite composite = domainManagementComposite.getIncludes().get(0);
-            
-            domainManagementRuntime.getCompositeActivator().stop(composite);
-            domainManagementRuntime.getCompositeActivator().deactivate(composite);
-            
-            // remove the node factory
-            ModelFactoryExtensionPoint factories = domainManagementRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
-            factories.removeFactory(nodeFactory); 
-            nodeFactory.setNode(null);
-            
-            // Stop the SCA runtime that the domain is using
-            domainManagementRuntime.stop();
-                        
-        } catch(ActivationException ex) {
-            throw new DomainException(ex); 
-        }         
-    }
- 
-    public String getURI(){
-        return domainModel.getDomainURI();
-    }   
-    
-    public void addContribution(String contributionURI, URL contributionURL) throws DomainException {
-        // add the contribution information to the domain model
-        org.apache.tuscany.sca.domain.model.ContributionModel contributionModel = 
-            parseContribution(contributionURI, contributionURL.toExternalForm());
-        
-        // contributions are not assigned to a node until a composite
-        // in the contribution is started. 
-    }
-     
-    public void updateContribution(String contributionURI, URL contributionURL) throws DomainException {
-        if ( domainModel.getContributions().containsKey(contributionURI) == true ){
-
-            List<QName> deployedCompositeNames = new ArrayList<QName>();
-            
-            // record the names of composites that must be restarted after the 
-            // contribution has been removed
-            for ( NodeModel node : domainModel.getNodes().values()){
-                if ((node.getIsRunning()) && (node.getContributions().containsKey(contributionURI))) {
-                    for (CompositeModel tmpCompositeModel : node.getDeployedComposites().values()){
-                        deployedCompositeNames.add(tmpCompositeModel.getCompositeQName());
-                    }
-                }
-            }
-            
-            // remove the old version of the contribution 
-            removeContribution(contributionURI);
-            
-            // Add the updated contribution back into the domain model
-            // TODO - there is a problem here with dependent contributions
-            //        as it doesn't look like the contribution listeners
-            //        are working quite right
-            addContribution(contributionURI, contributionURL);
-            
-            // add the deployed composites back into the domain if they still exist
-            // if they don't then the user will have to add and start any new composites manually
-            for (QName compositeQName : deployedCompositeNames) {
-                // make sure the composite still exists
-                CompositeModel compositeModel = findComposite(compositeQName);
-           
-                if (compositeModel != null){
-                    addToDomainLevelComposite(compositeModel.getCompositeQName());
-                } else {
-                    // the composite has been removed from the contribution 
-                    // by the update
-                }
-            }
-            
-            // automatically start all the composites
-            for (QName compositeName : deployedCompositeNames) {
-                startComposite(compositeName);
-            }
-        }
-    }
-
-    public void removeContribution(String contributionURI) throws DomainException {
-        if ( domainModel.getContributions().containsKey(contributionURI) == true ){
-            
-            // get the contribution model
-            ContributionModel contributionModel = domainModel.getContributions().get(contributionURI);
-            
-            // remove potentially deployed composites
-            for (QName compositeQName : contributionModel.getDeployableComposites().keySet()){
-                domainModel.getDeployedComposites().remove(compositeQName);
-            }
-            
-            // remove contribution from the domain model
-            domainModel.getContributions().remove(contributionURI);
-            
-            // remove contribution from the contribution processor
-            try {
-                domainManagementContributionService.remove(contributionURI);
-            } catch (Exception ex){
-                throw new DomainException(ex);
-            }
-            
-            // stop and tidy any nodes running this contribution
-            for ( NodeModel node : domainModel.getNodes().values()){
-                if (node.getContributions().containsKey(contributionURI)) {
-                    try {                
-                        if (node.getIsRunning()) {
-                            ((NodeModelImpl)node).getSCANodeManagerService().stop();
-                            node.setIsRunning(false);
-                        }
-                        
-                        // remove all contributions from this node including the
-                        // one that is specifically being removed.
-                        for (ContributionModel tmpContributionModel :  node.getContributions().values()){
-                            ((NodeModelImpl)node).getSCANodeManagerService().removeContribution(contributionURI);
-                        }
-                        
-                        node.getContributions().clear();
-                        node.getDeployedComposites().clear();
                     } catch (Exception ex) {
-                        // TODO - collate errors and report
-                        ex.printStackTrace();
-                    }
+                        throw new DomainException(ex);
+                    }                        
                 }
             }
         }
-    }
-    
-    public void addDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
-        // TODO
-    }
-    
-    public void updateDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
-        // TODO 
-    }
-    
-    public void addToDomainLevelComposite(QName compositeName) throws DomainException {
-        // find this composite and add the composite as a deployed composite
-        
-        for (ContributionModel contribution : domainModel.getContributions().values()){
-            CompositeModel composite = contribution.getComposites().get(compositeName);
-            if (composite != null) {
-                domainModel.getDeployedComposites().put(compositeName, composite);
-            }
-        }
-    }
-      
-    public void removeFromDomainLevelComposite(QName compositeQName) throws DomainException {
-
-        domainModel.getDeployedComposites().remove(compositeQName);
-        
-        ContributionModel contributionModel = findContributionFromComposite(compositeQName);
-        contributionModel.getDeployedComposites().remove(compositeQName);
-        
-        for(NodeModel node : domainModel.getNodes().values()) {
-            if ( node.getDeployedComposites().containsValue(compositeQName)){
-                try {
-                    if (node.getIsRunning()) {
-                        ((NodeModelImpl)node).getSCANodeManagerService().stop();
-                        node.setIsRunning(false);
-                    }
-                    // TODO - how to remove it from the node???
-                    
-                    node.getDeployedComposites().remove(compositeQName);
-                } catch (Exception ex) {
-                    // TODO - collate errors and report
-                    ex.printStackTrace();
-                }                
-            }
-        } 
-    }
-    
-    public String getDomainLevelComposite() throws DomainException {
-        
-        String domainLevelComposite = "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\"" + 
-                                      " targetNamespace=\"http://tuscany.apache.org/domain\"" + 
-                                      " xmlns:domain=\"http://tuscany.apache.org/domain\"";
-        
-        int includeCount = 0;
-        for (CompositeModel compositeModel : domainModel.getDeployedComposites().values()){
-            domainLevelComposite = domainLevelComposite + " xmlns:include" +
-                                                          includeCount +
-                                                          "=\"" + compositeModel.getCompositeQName().getNamespaceURI() + "\"";
-            includeCount++;
-        }
-        
-        domainLevelComposite = domainLevelComposite + " name=\"DomainLevelComposite\">";
-           
-        includeCount = 0;
-        for (CompositeModel compositeModel : domainModel.getDeployedComposites().values()){
-            domainLevelComposite = domainLevelComposite + "<include name=\"include" +
-                                                           includeCount + 
-                                                           ":" + 
-                                                           compositeModel.getCompositeQName().getLocalPart() +
-                                                           "\"/>";
-            includeCount++;
-        }
-        
-        domainLevelComposite = domainLevelComposite + "</composite>";
-     
-        return domainLevelComposite;
-    }
-
-    public String getQNameDefinition(QName artifact) throws DomainException {
-        // TODO - no absolutely sure what is intended here as I don't have 
-        //        an explicit scenario but here is some code to get me thinking about it
-        String artifactString = null;
-        
-        // find the composite that matches and return its XML
-        CompositeModel compositeModel = domainModel.getDeployedComposites().get(artifact);
-        
-        if (compositeModel != null){
-            // convert the composite to XML
-        }
-        
-        return artifactString;
-    }
-      
-    public void startComposite(QName compositeQName) throws DomainException {
-        
-        // find the composite object from the list of deployed composites
-        CompositeModel compositeModel = domainModel.getDeployedComposites().get(compositeQName);
-        
-        if (compositeModel == null){
-            throw new DomainException("Can't start composite " + compositeQName.toString() +
-                                      " as it hasn't been added to the domain level composite");
-        }
-        
-        // find the contribution that has this composite
-        ContributionModel contributionModel = findContributionFromComposite(compositeQName);
-        
-        if (contributionModel == null){
-            throw new DomainException("Can't find contribution for composite " + compositeQName.toString());
-        }
-         
-        List<Contribution> dependentContributions = new ArrayList<Contribution>();
-        findDependentContributions(contributionModel.getContribution(), dependentContributions);
-         
-        // assign the set of composites to a node
-        NodeModel node = null;
-        
-        for(NodeModel tmpNode : domainModel.getNodes().values()) {
-            if ((tmpNode.getContributions().isEmpty()) &&
-                (!tmpNode.getNodeURI().equals(IMPORTED))){
-                node = tmpNode;
-                
-                for (Contribution tmpContribution : dependentContributions){
-                    node.getContributions().put(tmpContribution.getURI(), 
-                                                domainModel.getContributions().get(tmpContribution.getURI()));
-                }
-                
-                node.getDeployedComposites().put(compositeQName, compositeModel);
-                break;
-            }
-        }      
-        
-        if (node == null){
-            throw new DomainException("No free node available to run composite "  + compositeQName.toString());
-        }        
-        
-        try {
-            
-            // add contributions. Use the dependent contribution list here rather than the 
-            // one build up in the mode to ensure that contributions are added in the correct order
-            // I.e. the top most in the dependency tree last. 
-            for (Contribution tmpContribution : dependentContributions){
-                ((NodeModelImpl)node).getSCANodeManagerService().addContribution(tmpContribution.getURI(),
-                         domainModel.getContributions().get(tmpContribution.getURI()).getContributionURL());
-            }
-    
-            // deploy composite
-            ((NodeModelImpl)node).getSCANodeManagerService().addToDomainLevelComposite(compositeQName.toString());
-            
-            // start node
-            ((NodeModelImpl)node).getSCANodeManagerService().start();
-            node.setIsRunning(true);
-                        
-        } catch (Exception ex) {
-            throw new DomainException(ex);
-        }
-            
-    }
-      
-    public void stopComposite(QName compositeName) throws DomainException {
-        // find the composite object from the list of deployed composites
-        CompositeModel composite = domainModel.getDeployedComposites().get(compositeName);
-        
-        if (composite == null){
-            throw new DomainException("Can't stop composite " + compositeName.toString() +
-                                      " as it hasn't been added to the domain level composite");
-        }
-                
-        // stop all the nodes running this composite
-        for(NodeModel node : domainModel.getNodes().values()) {
-            if ( node.getDeployedComposites().containsValue(compositeName)){
-                try {
-                    if (node.getIsRunning()) {
-                        ((NodeModelImpl)node).getSCANodeManagerService().stop();
-                        node.setIsRunning(false);
-                    }
-                } catch (Exception ex) {
-                    // TODO - how to report this?
-                }                
-            }
-        }     
     }
     
     private ContributionModel findContributionFromComposite(QName compositeQName){
@@ -1048,9 +366,701 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         } 
         
         return contributionModel;
+    }    
+    
+    
+    // SCADomainSPI methods 
+    
+    public DomainModel getDomainModel(){        
+        return domainModel;
+    } 
+    
+    public String getComposite(QName compositeQName){
+        CompositeModel compositeModel = domainModel.getDeployedComposites().get(compositeQName);
+        Composite composite = compositeModel.getComposite();
+        
+        ExtensionPointRegistry registry = domainManagementRuntime.getExtensionPointRegistry();
+        
+        StAXArtifactProcessorExtensionPoint staxProcessors =
+            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        
+        StAXArtifactProcessor<Composite> processor = staxProcessors.getProcessor(Composite.class);
+        
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
+            processor.write(composite, writer);
+            writer.flush();
+            writer.close();
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+        }
+        
+        String compositeString = bos.toString();
+        
+        return compositeString;
     }
     
-             
+    public String getComponent(QName compositeQName, String componentName){
+        
+        String componentString = null;
+        
+        return componentString;
+    }  
+    
+    
+    // SCADomainEventService methods 
+    
+    public void registerNode(String nodeURI, String nodeURL, Externalizable nodeManagerReference) throws DomainException { 
+        // try and remove it first just in case it's already registered
+        unregisterNode(nodeURI);
+        
+        NodeModel node = domainModelFactory.createNode();
+        node.setNodeURI(nodeURI);
+        node.setNodeURL(nodeURL);
+        node.setNodeManagerReference(nodeManagerReference);
+        node.setLifecycleState(LifecyleState.AVAILABLE);
+        domainModel.getNodes().put(nodeURI, node);     
+        
+        logger.log(Level.INFO, "Registered node: " + 
+                               nodeURI + 
+                               " at endpoint " + 
+                               nodeURL);
+    }
+    
+    public void unregisterNode(String nodeURI) throws DomainException{ 
+        
+        domainModel.getNodes().remove(nodeURI);
+               
+        logger.log(Level.FINE, "Removed node: " + nodeURI);
+    }
+    
+    public void registerNodeStart(String nodeURI) throws DomainException{
+        NodeModel node = domainModel.getNodes().get(nodeURI);
+        
+        if (node != null) {
+            // if the node was started by the domain we already know it's running
+            if (node.getLifecycleState() != LifecyleState.RUNNING){
+                node.setLifecycleState(LifecyleState.RUNNING);
+                notifyDomainChange();
+            }
+        } else {
+            logger.log(Level.WARNING, "trying to start node: " + 
+                                      nodeURI + 
+                                      " that isn't registered " );
+        }
+    }
+    
+    public void registerNodeStop(String nodeURI) throws DomainException{
+        NodeModel node = domainModel.getNodes().get(nodeURI);
+        
+        if (node != null) {
+            // if the node was stopped by the domain we already know it's running
+            if (node.getLifecycleState() == LifecyleState.RUNNING){
+                node.setLifecycleState(LifecyleState.DEPLOYED);
+                notifyDomainChange();
+            }                
+        } else {
+            logger.log(Level.WARNING, "trying to stop node: " + 
+                                      nodeURI + 
+                                      " that isn't registered " );
+        }        
+    }    
+
+    public void registerContribution(String nodeURI, String contributionURI, String contributionURL) throws DomainException{
+        try {
+            ContributionModel contributionModel = null;
+            
+            if ( domainModel.getContributions().containsKey(contributionURI) == false ){
+                contributionModel = parseContribution(contributionURI, contributionURL);
+
+                // assign the contribution to the referenced node
+                NodeModel node = domainModel.getNodes().get(nodeURI);
+                
+                if ((node != null) && (contributionModel != null)) {
+                    node.getContributions().put(contributionURI, contributionModel);
+                } 
+            }
+            
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Exception when registering contribution " + 
+                                     contributionURI + 
+                                     ex.toString() );
+        }   
+    }
+
+    public void unregisterContribution(String nodeURI, String contributionURI) throws DomainException {
+        try {
+            
+            if ( domainModel.getContributions().containsKey(contributionURI) == true ){
+                // get the contribution model
+                ContributionModel contributionModel = domainModel.getContributions().get(contributionURI);
+                
+                // remove deployed composites
+                for (QName compositeQName : contributionModel.getDeployedComposites().keySet()){
+                    domainModel.getDomainLevelComposite().getIncludes().remove(contributionModel.getDeployedComposites().get(compositeQName));
+                    domainModel.getDeployedComposites().remove(compositeQName);
+                }
+                    
+                // remove contribution from the domain
+                domainModel.getContributions().remove(contributionURI);
+
+                // remove the contribution from the referenced node
+                NodeModel nodeModel = domainModel.getNodes().get(nodeURI);
+                
+                if ((nodeModel != null)) {
+                    nodeModel.getContributions().remove(contributionURI);
+                    
+                    // remove deployed composites
+                    for (QName compositeQName : contributionModel.getDeployedComposites().keySet()){
+                        nodeModel.getDeployedComposites().remove(compositeQName);
+                    }
+                } 
+            }            
+ 
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Exception when removing contribution " + 
+                                     contributionURI + 
+                                     ex.toString() );
+        }
+    }
+    
+    public void registerDomainLevelComposite(String nodeURI, String compositeQNameString) throws DomainException{
+        try {
+            QName compositeQName = QName.valueOf(compositeQNameString);
+            
+            if (!domainModel.getDeployedComposites().containsKey(compositeQName)){
+                // get the composite from the node
+                NodeModel node = domainModel.getNodes().get(nodeURI);
+                
+                if (node != null) {
+                    for (ContributionModel contributionModel : node.getContributions().values()){
+                        CompositeModel compositeModel = contributionModel.getComposites().get(compositeQName);
+                        
+                        if (compositeModel != null){
+                            contributionModel.getDeployedComposites().put(compositeQName, compositeModel);
+                            node.getDeployedComposites().put(compositeQName, compositeModel);
+                            domainModel.getDeployedComposites().put(compositeQName, compositeModel);
+                            domainModel.getDomainLevelComposite().getIncludes().add(compositeModel.getComposite());
+                        }
+                        
+                        // TODO - resolve and unresolved references
+                    }
+                }   
+            }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Exception when registering domain level composite " + 
+                                     nodeURI +  " " +
+                                     compositeQNameString +
+                                     ex.toString() );
+        }   
+    }    
+    
+    public void registerServiceEndpoint(String domainURI, String nodeURI, String targetServiceName, String bindingClassName, String URL)throws DomainException {
+       
+        // the target service name is the component/service name combination
+        String componentName = null;
+        String serviceName = null;
+        
+        // if the service name ends in a "/" remove it
+        if (targetServiceName.endsWith("/")) {
+            targetServiceName = targetServiceName.substring(0, targetServiceName.length() - 1);
+        } 
+        
+        // if the service name starts with a "/" remove it
+        if (targetServiceName.startsWith("/")) {
+            targetServiceName = targetServiceName.substring(1, targetServiceName.length());
+        } 
+        
+        // TODO - only interested if multiplicity is <= 1
+        componentName = domainWireBuilder.getComponentNameFromReference(targetServiceName);
+        serviceName = domainWireBuilder.getServiceNameFromReference(targetServiceName);
+        
+        domainWireBuilder.updateDomainLevelServiceURI(domainComposite, targetServiceName, bindingClassName, URL);        
+        
+        // find the node with the service
+        NodeModel node = domainModel.getNodes().get(nodeURI);     
+        
+        if (node != null){
+            
+            // collect the service info
+            ServiceModel serviceModel = domainModelFactory.createService();
+            serviceModel.setServiceURI(targetServiceName);
+            serviceModel.setServiceURL(URL);
+            serviceModel.setServiceBinding(bindingClassName);
+            
+            //store the service
+            node.getServices().put(targetServiceName+bindingClassName, serviceModel);
+            
+            if (componentName != null){
+                node.getServices().put(componentName+bindingClassName, serviceModel);
+            }
+            logger.log(Level.INFO, "Registering service: [" + 
+                                   domainURI + " " +
+                                   targetServiceName + " " +
+                                   URL + " " +
+                                   bindingClassName + "]");         
+        } else {
+            logger.log(Level.WARNING, "Trying to register service: " + 
+                                      targetServiceName + 
+                                      " for a node " + 
+                                      nodeURI + 
+                                      "that isn't registered");
+        }
+
+        // TODO - create and even list for this to separate
+        //        the incoming call from the node notifications
+        //notifyServiceChange(targetServiceName, bindingClassName);
+        //notifyDomainChange();
+    }    
+     
+    public void unregisterServiceEndpoint(String domainURI, String nodeURI, String serviceName, String bindingClassName) throws DomainException{
+        NodeModel node = domainModel.getNodes().get(nodeURI);
+        node.getServices().remove(serviceName + bindingClassName);
+        
+        // extract the short name from the long name 
+        String shortServiceName = null;
+        if (serviceName.indexOf("/") >= 0 ) {
+            shortServiceName = serviceName.substring(0, serviceName.indexOf("/"));
+        } 
+        
+        node.getServices().remove(shortServiceName + bindingClassName);
+        
+        logger.log(Level.FINE, "Removed service: " +  serviceName );   
+        
+        //notifyServiceChange(serviceName, bindingClassName);
+        //notifyDomainChange();
+    }
+       
+    public String findServiceEndpoint(String domainURI, String serviceName, String bindingName) throws DomainException{
+        logger.log(Level.INFO, "Finding service: [" + 
+                               domainURI + " " +
+                               serviceName + " " +
+                               bindingName +
+                               "]");
+        
+        String url = SERVICE_NOT_REGISTERED;
+        String serviceKey = serviceName + bindingName;
+        
+        for (NodeModel node : domainModel.getNodes().values()){
+            ServiceModel service = node.getServices().get(serviceKey);
+            
+            if (service != null){
+                url = service.getServiceURL();
+                // uncomment for debugging
+                //url = url.replace("8085", "8086");
+                logger.log(Level.INFO, "Found service " + serviceName + " url: " + url); 
+                break;
+            } 
+        }
+               
+        return url;
+    }
+    
+    public String findServiceNode(String domainURI, String serviceName, String bindingName) throws DomainException{
+        logger.log(Level.FINE, "Finding service node: [" + 
+                               domainURI + " " +
+                               serviceName + " " +
+                               bindingName +
+                               "]");
+        
+        String nodeURI = SERVICE_NOT_KNOWN;
+        
+        for (NodeModel node : domainModel.getNodes().values()){
+            Service service = null;
+            for (CompositeModel compositeModel : node.getDeployedComposites().values()){
+                service = domainWireBuilder.findServiceForReference(compositeModel.getComposite(), serviceName);
+                if (service != null) {
+                    nodeURI = node.getNodeURI();
+                    break;
+                }
+            }
+        }
+               
+        return nodeURI;
+    }
+    
+            
+        
+    // SCADomain API methods 
+    
+    public void start() throws DomainException {
+        // call start on all nodes with deployed composites  
+        for(NodeModel node : domainModel.getNodes().values()) {
+            if ( !node.getDeployedComposites().isEmpty()){
+                try {
+                    if (node.getLifecycleState() != LifecyleState.RUNNING) {
+                        ((NodeModelImpl)node).getSCANodeManagerService().start();
+                        node.setLifecycleState(LifecyleState.RUNNING);
+                    }
+                } catch (Exception ex) {
+                    // TODO - collate errors and report
+                    ex.printStackTrace();
+                }
+            }
+        }             
+    }
+    
+    public void stop() throws DomainException {
+        // call stop on all nodes
+        for(NodeModel node : domainModel.getNodes().values()) {
+            try {
+                if (node.getLifecycleState() == LifecyleState.RUNNING) {
+                    ((NodeModelImpl)node).getSCANodeManagerService().stop();
+                    node.setLifecycleState(LifecyleState.DEPLOYED);
+                }
+            } catch (Exception ex) {
+                // TODO - collate errors and report
+                ex.printStackTrace();
+            }
+        }         
+    }    
+    
+    public void destroy() throws DomainException {
+        try {
+            // Stop and destroy all nodes. This should unregister all nodes
+            
+            //Get all nodes out of the domain. Destroying them will cause them to 
+            //call back to the domain to unregister so we need to avoid concurrent updates
+            List<NodeModel> nodes = new ArrayList<NodeModel>();
+            for(NodeModel node : domainModel.getNodes().values()) {
+                nodes.add(node);
+            }
+            
+            for(NodeModel node : nodes) {
+                try {
+                    if ( ((NodeModelImpl)node).getSCANodeManagerService() != null){
+                        ((NodeModelImpl)node).getSCANodeManagerService().destroyNode();
+                    }
+                } catch (Exception ex) {
+                    // TODO - collate errors and report
+                    ex.printStackTrace();
+                }
+            } 
+            
+            // Wait for all the nodes to de-register themselves
+            int loopCount = 10;
+            while((!domainModel.getNodes().isEmpty()) && (loopCount > 0)){
+                logger.log(Level.INFO, "Waiting for nodes to close down");                                
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception ex){
+                    // Do nothing
+                }
+                loopCount--;
+            }
+
+            // remove all management components
+            Composite composite = domainManagementComposite.getIncludes().get(0);
+            
+            domainManagementRuntime.getCompositeActivator().stop(composite);
+            domainManagementRuntime.getCompositeActivator().deactivate(composite);
+            
+            // remove the node factory
+            ModelFactoryExtensionPoint factories = domainManagementRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
+            factories.removeFactory(nodeFactory); 
+            nodeFactory.setNode(null);
+            
+            // Stop the SCA runtime that the domain is using
+            domainManagementRuntime.stop();
+                        
+        } catch(ActivationException ex) {
+            throw new DomainException(ex); 
+        }         
+    }
+ 
+    public String getURI(){
+        return domainModel.getDomainURI();
+    }   
+    
+    public void addContribution(String contributionURI, URL contributionURL) throws DomainException {
+        // add the contribution information to the domain model
+        org.apache.tuscany.sca.domain.model.ContributionModel contributionModel = 
+            parseContribution(contributionURI, contributionURL.toExternalForm());
+        
+        // contributions are not assigned to a node until a composite
+        // in the contribution is started. 
+    }
+     
+    public void updateContribution(String contributionURI, URL contributionURL) throws DomainException {
+        if ( domainModel.getContributions().containsKey(contributionURI) == true ){
+
+            List<QName> deployedCompositeNames = new ArrayList<QName>();
+            
+            // record the names of composites that must be restarted after the 
+            // contribution has been removed
+            for ( NodeModel node : domainModel.getNodes().values()){
+                if ((node.getLifecycleState() == LifecyleState.RUNNING) && (node.getContributions().containsKey(contributionURI))) {
+                    for (CompositeModel tmpCompositeModel : node.getDeployedComposites().values()){
+                        deployedCompositeNames.add(tmpCompositeModel.getCompositeQName());
+                    }
+                }
+            }
+            
+            // remove the old version of the contribution 
+            removeContribution(contributionURI);
+            
+            // Add the updated contribution back into the domain model
+            // TODO - there is a problem here with dependent contributions
+            //        as it doesn't look like the contribution listeners
+            //        are working quite right
+            addContribution(contributionURI, contributionURL);
+            
+            // add the deployed composites back into the domain if they still exist
+            // if they don't then the user will have to add and start any new composites manually
+            for (QName compositeQName : deployedCompositeNames) {
+                // make sure the composite still exists
+                CompositeModel compositeModel = findComposite(compositeQName);
+           
+                if (compositeModel != null){
+                    addToDomainLevelComposite(compositeModel.getCompositeQName());
+                } else {
+                    // the composite has been removed from the contribution 
+                    // by the update
+                }
+            }
+            
+            // automatically start all the composites
+            for (QName compositeName : deployedCompositeNames) {
+                startComposite(compositeName);
+            }
+        }
+    }
+
+    public void removeContribution(String contributionURI) throws DomainException {
+        if ( domainModel.getContributions().containsKey(contributionURI) == true ){
+            
+            // get the contribution model
+            ContributionModel contributionModel = domainModel.getContributions().get(contributionURI);
+            
+            // remove potentially deployed composites
+            for (QName compositeQName : contributionModel.getDeployableComposites().keySet()){
+                domainModel.getDeployedComposites().remove(compositeQName);
+                domainModel.getDomainLevelComposite().getIncludes().remove(contributionModel.getDeployableComposites().get(compositeQName));
+            }
+            
+            // remove contribution from the domain model
+            domainModel.getContributions().remove(contributionURI);
+            
+            // remove contribution from the contribution processor
+            try {
+                domainManagementContributionService.remove(contributionURI);
+            } catch (Exception ex){
+                throw new DomainException(ex);
+            }
+            
+            // stop and tidy any nodes running this contribution
+            for ( NodeModel node : domainModel.getNodes().values()){
+                if (node.getContributions().containsKey(contributionURI)) {
+                    try {                
+                        if (node.getLifecycleState() == LifecyleState.RUNNING) {
+                            ((NodeModelImpl)node).getSCANodeManagerService().stop();
+                            node.setLifecycleState(LifecyleState.DEPLOYED);
+                        }
+                        
+                        // remove all contributions from this node including the
+                        // one that is specifically being removed.
+                        for (ContributionModel tmpContributionModel :  node.getContributions().values()){
+                            ((NodeModelImpl)node).getSCANodeManagerService().removeContribution(contributionURI);
+                        }
+                        
+                        node.getContributions().clear();
+                        node.getDeployedComposites().clear();
+                        node.setLifecycleState(LifecyleState.AVAILABLE);
+                    } catch (Exception ex) {
+                        // TODO - collate errors and report
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+    
+    public void addDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
+        // TODO
+    }
+    
+    public void updateDeploymentComposite(String contributionURI, String compositeXML) throws DomainException {
+        // TODO 
+    }
+    
+    public void addToDomainLevelComposite(QName compositeName) throws DomainException {
+        // find this composite and add the composite as a deployed composite
+        
+        for (ContributionModel contribution : domainModel.getContributions().values()){
+            CompositeModel composite = contribution.getComposites().get(compositeName);
+            if (composite != null) {
+                domainModel.getDeployedComposites().put(compositeName, composite);
+                domainModel.getDomainLevelComposite().getIncludes().add(composite.getComposite());
+            }
+        }
+    }
+      
+    public void removeFromDomainLevelComposite(QName compositeQName) throws DomainException {
+
+        domainModel.getDomainLevelComposite().getIncludes().remove(domainModel.getDeployedComposites().get(compositeQName));
+        domainModel.getDeployedComposites().remove(compositeQName);
+        
+        ContributionModel contributionModel = findContributionFromComposite(compositeQName);
+        contributionModel.getDeployedComposites().remove(compositeQName);
+        
+        for(NodeModel node : domainModel.getNodes().values()) {
+            if ( node.getDeployedComposites().containsValue(compositeQName)){
+                try {
+                    if (node.getLifecycleState() == LifecyleState.RUNNING) {
+                        ((NodeModelImpl)node).getSCANodeManagerService().stop();
+                        node.setLifecycleState(LifecyleState.DEPLOYED);
+                    }
+                    // TODO - how to remove it from the node???
+                    
+                    node.getDeployedComposites().remove(compositeQName);
+                } catch (Exception ex) {
+                    // TODO - collate errors and report
+                    ex.printStackTrace();
+                }                
+            }
+        } 
+    }
+    
+    public String getDomainLevelComposite() throws DomainException {
+        
+        String domainLevelComposite = "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\"" + 
+                                      " targetNamespace=\"http://tuscany.apache.org/domain\"" + 
+                                      " xmlns:domain=\"http://tuscany.apache.org/domain\"";
+        
+        int includeCount = 0;
+        for (CompositeModel compositeModel : domainModel.getDeployedComposites().values()){
+            domainLevelComposite = domainLevelComposite + " xmlns:include" +
+                                                          includeCount +
+                                                          "=\"" + compositeModel.getCompositeQName().getNamespaceURI() + "\"";
+            includeCount++;
+        }
+        
+        domainLevelComposite = domainLevelComposite + " name=\"DomainLevelComposite\">";
+           
+        includeCount = 0;
+        for (CompositeModel compositeModel : domainModel.getDeployedComposites().values()){
+            domainLevelComposite = domainLevelComposite + "<include name=\"include" +
+                                                           includeCount + 
+                                                           ":" + 
+                                                           compositeModel.getCompositeQName().getLocalPart() +
+                                                           "\"/>";
+            includeCount++;
+        }
+        
+        domainLevelComposite = domainLevelComposite + "</composite>";
+     
+        return domainLevelComposite;
+    }
+
+    public String getQNameDefinition(QName artifact) throws DomainException {
+        // TODO - no absolutely sure what is intended here as I don't have 
+        //        an explicit scenario but here is some code to get me thinking about it
+        String artifactString = null;
+        
+        // find the composite that matches and return its XML
+        CompositeModel compositeModel = domainModel.getDeployedComposites().get(artifact);
+        
+        if (compositeModel != null){
+            // convert the composite to XML
+        }
+        
+        return artifactString;
+    }
+      
+    public void startComposite(QName compositeQName) throws DomainException {
+        
+        // find the composite object from the list of deployed composites
+        CompositeModel compositeModel = domainModel.getDeployedComposites().get(compositeQName);
+        
+        if (compositeModel == null){
+            throw new DomainException("Can't start composite " + compositeQName.toString() +
+                                      " as it hasn't been added to the domain level composite");
+        }
+        
+        // find the contribution that has this composite
+        ContributionModel contributionModel = findContributionFromComposite(compositeQName);
+        
+        if (contributionModel == null){
+            throw new DomainException("Can't find contribution for composite " + compositeQName.toString());
+        }
+         
+        List<Contribution> dependentContributions = new ArrayList<Contribution>();
+        findDependentContributions(contributionModel.getContribution(), dependentContributions);
+         
+        // assign the set of composites to a node
+        NodeModel node = null;
+        
+        for(NodeModel tmpNode : domainModel.getNodes().values()) {
+            if (tmpNode.getLifecycleState() == LifecyleState.AVAILABLE){
+                node = tmpNode;
+                
+                for (Contribution tmpContribution : dependentContributions){
+                    node.getContributions().put(tmpContribution.getURI(), 
+                                                domainModel.getContributions().get(tmpContribution.getURI()));
+                }
+                
+                node.getDeployedComposites().put(compositeQName, compositeModel);
+                break;
+            }
+        }      
+        
+        if (node == null){
+            throw new DomainException("No free node available to run composite "  + compositeQName.toString());
+        }        
+        
+        try {
+            
+            // add contributions. Use the dependent contribution list here rather than the 
+            // one build up in the node model to ensure that contributions are added in the correct order
+            // I.e. the top most in the dependency tree last. 
+            for (Contribution tmpContribution : dependentContributions){
+                ((NodeModelImpl)node).getSCANodeManagerService().addContribution(tmpContribution.getURI(),
+                         domainModel.getContributions().get(tmpContribution.getURI()).getContributionURL());
+            }
+    
+            // deploy composite
+            ((NodeModelImpl)node).getSCANodeManagerService().addToDomainLevelComposite(compositeQName.toString());
+            
+            // start node
+            node.setLifecycleState(LifecyleState.RUNNING);
+            ((NodeModelImpl)node).getSCANodeManagerService().start();
+            
+            // spray all of the service endpoints from this composite out to interested nodes
+            notifyDomainChange(); 
+        } catch (DomainException ex) {            
+            throw ex;  
+        } catch (Exception ex) {
+            throw new DomainException(ex);
+        }
+            
+    }
+      
+    public void stopComposite(QName compositeName) throws DomainException {
+        // find the composite object from the list of deployed composites
+        CompositeModel composite = domainModel.getDeployedComposites().get(compositeName);
+        
+        if (composite == null){
+            throw new DomainException("Can't stop composite " + compositeName.toString() +
+                                      " as it hasn't been added to the domain level composite");
+        }
+                
+        // stop all the nodes running this composite
+        for(NodeModel node : domainModel.getNodes().values()) {
+            if ( node.getDeployedComposites().containsValue(compositeName)){
+                try {
+                    if (node.getLifecycleState() == LifecyleState.RUNNING) {
+                        node.setLifecycleState(LifecyleState.DEPLOYED);
+                        ((NodeModelImpl)node).getSCANodeManagerService().stop();
+                    }
+                } catch (Exception ex) {
+                    // TODO - how to report this?
+                }                
+            }
+        }     
+    }
+                 
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
         return (R)cast(target, domainManagementRuntime);
     }

@@ -47,7 +47,7 @@ public interface SCADomainSPI {
      * 
      * @param composite
      */
-    public void registerRemoteServices(String nodeURI, Composite composite);
+ //   public void registerRemoteServices(String nodeURI, Composite composite);
   
     
 }

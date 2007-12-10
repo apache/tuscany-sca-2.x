@@ -86,7 +86,15 @@ public class SCADomainManagerServiceImpl implements SCADomainEventService, SCADo
     
     public void unregisterNode(String nodeURI) throws DomainException { 
         domainEventService.unregisterNode(nodeURI);
-    }  
+    } 
+    
+    public void registerNodeStart(String nodeURI) throws DomainException {
+        domainEventService.registerNodeStart(nodeURI);
+    }
+    
+    public void registerNodeStop(String nodeURI) throws DomainException {
+        domainEventService.registerNodeStop(nodeURI);
+    }
     
     public void registerContribution(String nodeURI, String contributionURI, String contributionURL) throws DomainException {
         domainEventService.registerContribution(nodeURI, contributionURI, contributionURL);

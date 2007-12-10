@@ -21,7 +21,10 @@ package org.apache.tuscany.sca.domain;
 
 import java.io.Externalizable;
 import java.util.List;
+import java.util.logging.Level;
 
+import org.apache.tuscany.sca.domain.model.NodeModel;
+import org.apache.tuscany.sca.domain.model.NodeModel.LifecyleState;
 import org.osoa.sca.annotations.Remotable;
 
 
@@ -57,6 +60,22 @@ public interface SCADomainEventService {
      */
     public void unregisterNode(String nodeURI) throws DomainException;
     
+    /**
+     * Tell the domain that a node has been started through the local API
+     * 
+     * @param nodeURI the URI of the node being started
+     * @throws DomainException
+     */
+    public void registerNodeStart(String nodeURI) throws DomainException;
+    
+    /**
+     * Tell the domain that a node has been stopped through the local API
+     * 
+     * @param nodeURI
+     * @throws DomainException
+     */
+    public void registerNodeStop(String nodeURI) throws DomainException;
+
     /**
      * In the case where a contribution is added at a node this method is used to 
      * record the relationship directly. This is different from adding a contribution

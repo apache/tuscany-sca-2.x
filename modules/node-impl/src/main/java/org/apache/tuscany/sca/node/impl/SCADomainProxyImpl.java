@@ -339,7 +339,7 @@ public class SCADomainProxyImpl extends SCADomainImpl {
         this.node = node; 
         
         // add the node into the local domain model 
-        super.registerNode(node.getURI(), node.getURI(), nodeManagerService);
+        super.registerNode(node.getURI(), node.getURI(), null);
         
         // the registration of the node with the domain is delayed until
         // after the runtime has been started
@@ -404,6 +404,18 @@ public class SCADomainProxyImpl extends SCADomainImpl {
         this.node = null;
     }  
     
+    public void registerNodeStart(String nodeURI) throws DomainException {
+        if ((domainModel.getDomainURL() != null) && (domainEventService != null)){
+            domainEventService.registerNodeStart(nodeURI);
+        }
+    }
+    
+    public void registerNodeStop(String nodeURI) throws DomainException {
+        if ((domainModel.getDomainURL() != null) && (domainEventService != null)){
+            domainEventService.registerNodeStop(nodeURI);
+        }
+    }
+    
     public void registerContribution(String nodeURI, String contributionURI, String contributionURL) throws DomainException {
         
         if ((domainModel.getDomainURL() != null) && (domainEventService != null)){
@@ -426,7 +438,7 @@ public class SCADomainProxyImpl extends SCADomainImpl {
 
     public void registerServiceEndpoint(String domainURI, String nodeURI, String serviceName, String bindingName, String URL) throws DomainException {
         
-        super.registerServiceEndpoint(domainURI, nodeURI, serviceName, bindingName, URL);
+        //super.registerServiceEndpoint(domainURI, nodeURI, serviceName, bindingName, URL);
         
         if ((domainModel.getDomainURL() != null) && (domainEventService != null)) {
             domainEventService.registerServiceEndpoint(domainURI, nodeURI, serviceName, bindingName, URL);
@@ -435,7 +447,7 @@ public class SCADomainProxyImpl extends SCADomainImpl {
    
     public void unregisterServiceEndpoint(String domainURI, String nodeURI, String serviceName, String bindingName) throws DomainException {
         
-        super.unregisterServiceEndpoint(domainURI, nodeURI, serviceName, bindingName);
+        //super.unregisterServiceEndpoint(domainURI, nodeURI, serviceName, bindingName);
         
         if ((domainModel.getDomainURL() != null) && (domainEventService != null)) {
             domainEventService.unregisterServiceEndpoint(domainURI, nodeURI, serviceName, bindingName);

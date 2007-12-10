@@ -26,6 +26,8 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Composite;
+
 
 /**
  * A domain. Manages nodes
@@ -62,6 +64,21 @@ public interface DomainModel {
      * @param domainURL
      */    
     public void setDomainURL(String domainURL);
+    
+    
+    /**
+     * Set the domain level composite
+     * 
+     * @param domainLevelComposite
+     */    
+    public void setDomainLeveComposite(Composite domainLevelComposite);
+    
+    /**
+     * Retrieve the domain level composite
+     * 
+     * @return domainLevelComposite 
+     */    
+    public Composite getDomainLevelComposite();   
    
     public Map<String, NodeModel> getNodes();
     public Map<String, ContributionModel> getContributions();
