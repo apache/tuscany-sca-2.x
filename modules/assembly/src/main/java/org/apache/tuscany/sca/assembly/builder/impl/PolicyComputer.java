@@ -28,7 +28,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
-import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
@@ -52,21 +51,17 @@ public abstract class PolicyComputer {
     
     protected List<Intent> computeInheritableIntents(IntentAttachPointType attachPointType, 
                                                    List<Intent> inheritableIntents) throws PolicyValidationException {
-        //expand profile intents in inherited intents
         List<Intent> validInheritableIntents = new ArrayList<Intent>();
-        List<Intent> expandedIntents = null;
-        expandedIntents = expandProfileIntents(inheritableIntents);
-        inheritableIntents.clear();
-        inheritableIntents.addAll(expandedIntents);
+        
+        //expand profile intents in inherited intents
+        expandProfileIntents(inheritableIntents);
 
         //validate if inherited intent applies to the attachpoint (binding / implementation) and 
         //only add such intents to the attachpoint (binding / implementation)
         for (Intent intent : inheritableIntents) {
             if ( !intent.isUnresolved() ) { 
                 for (QName constrained : intent.getConstrains()) {
-                    if (attachPointType != null && attachPointType.getName().getNamespaceURI().equals(constrained
-                        .getNamespaceURI()) && attachPointType.getName().getLocalPart()
-                        .startsWith(constrained.getLocalPart())) {
+                    if ( isConstrained(constrained, attachPointType)) {
                         validInheritableIntents.add(intent);
                         break;
                     }
@@ -79,49 +74,22 @@ public abstract class PolicyComputer {
         return validInheritableIntents;
     }
     
-    protected List<Intent> expandProfileIntents(List<Intent> intents) {
-        List<Intent> expandedIntents = new ArrayList<Intent>();
-        for ( Intent intent : intents ) {
-            if ( intent instanceof ProfileIntent ) {
-                ProfileIntent profileIntent = (ProfileIntent)intent;
-                List<Intent> requiredIntents = profileIntent.getRequiredIntents();
-                expandedIntents.addAll(expandProfileIntents(requiredIntents));
-            } else {
-                expandedIntents.add(intent);
-            }
+    protected void expandProfileIntents(List<Intent> intents) {
+        List<Intent> expandedIntents = null;
+        if ( intents.size() > 0 ) {
+            expandedIntents = findAndExpandProfileIntents(intents);
+            intents.clear();
+            intents.addAll(expandedIntents);
         }
-        return expandedIntents;
     }
     
     protected void computeIntents(IntentAttachPoint intentAttachPoint) {
-        List<Intent> expandedIntents = null;
-        
         //expand profile intents specified in the attachpoint (binding / implementation)
-        if ( intentAttachPoint.getRequiredIntents().size() > 0 ) {
-            expandedIntents = expandProfileIntents(intentAttachPoint.getRequiredIntents());
-            intentAttachPoint.getRequiredIntents().clear();
-            intentAttachPoint.getRequiredIntents().addAll(expandedIntents);
-        }
+        expandProfileIntents(intentAttachPoint.getRequiredIntents());
         
-        //remove duplicates
-        Map<QName, Intent> intentsTable = new HashMap<QName, Intent>();
-        for ( Intent intent : intentAttachPoint.getRequiredIntents() ) {
-            intentsTable.put(intent.getName(), intent);
-        }
-        
+        //remove duplicates and ...
         //where qualified form of intent exists retain it and remove the qualifiable intent
-        Map<QName, Intent> intentsTableCopy = new HashMap<QName, Intent>(intentsTable);
-        //if qualified form of intent exists remove the unqualified form
-        for ( Intent intent : intentsTableCopy.values() ) {
-            if ( intent instanceof QualifiedIntent ) {
-                QualifiedIntent qualifiedIntent = (QualifiedIntent)intent;
-                if ( intentsTable.get(qualifiedIntent.getQualifiableIntent().getName()) != null ) {
-                    intentsTable.remove(qualifiedIntent.getQualifiableIntent().getName());
-                }
-            }
-        }
-        intentAttachPoint.getRequiredIntents().clear();
-        intentAttachPoint.getRequiredIntents().addAll(intentsTable.values());
+        filterDuplicatesAndQualifiableIntents(intentAttachPoint);
     }
     
     protected void trimInherentlyProvidedIntents(IntentAttachPointType attachPointType, List<Intent>intents) {
@@ -135,117 +103,64 @@ public abstract class PolicyComputer {
         }
     }
     
-    protected boolean isProvidedInherently(IntentAttachPointType attachPointType, Intent intent) {
-        return ( attachPointType != null && 
-                 (( attachPointType.getAlwaysProvidedIntents() != null &&
-                     attachPointType.getAlwaysProvidedIntents().contains(intent) ) || 
-                  ( attachPointType.getMayProvideIntents() != null &&
-                     attachPointType.getMayProvideIntents().contains(intent) )
-                 ) );
-     }
     
     protected void computeIntentsForOperations(IntentAttachPoint intentAttachPoint) throws PolicyValidationException {
-        computeIntentsForOperations(intentAttachPoint, intentAttachPoint.getRequiredIntents());
+        if ( intentAttachPoint instanceof OperationsConfigurator ) {
+            computeIntentsForOperations((OperationsConfigurator)intentAttachPoint, 
+                                        intentAttachPoint, 
+                                        intentAttachPoint.getRequiredIntents());
+        }
     }
     
-    protected void computeIntentsForOperations(IntentAttachPoint intentAttachPoint, List<Intent> parentIntents) throws PolicyValidationException {
-        if ( intentAttachPoint instanceof OperationsConfigurator ) {
-            IntentAttachPointType attachPointType = intentAttachPoint.getType();
+    protected void computeIntentsForOperations(OperationsConfigurator opConfigurator, 
+                                               IntentAttachPoint intentAttachPoint, 
+                                               List<Intent> parentIntents) throws PolicyValidationException {
+        IntentAttachPointType attachPointType = intentAttachPoint.getType();
+        
+        boolean found = false;
+        for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
+            //expand profile intents specified on operations
+            expandProfileIntents(confOp.getRequiredIntents());
             
-            boolean found = false;
+            //validateIntents(confOp, attachPointType);
             
-            OperationsConfigurator opConfigurator = (OperationsConfigurator)intentAttachPoint;
-            List<Intent> expandedIntents = null;
-            for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
-                //expand profile intents specified on operations
-                if ( confOp.getRequiredIntents().size() > 0 ) {
-                    expandedIntents = expandProfileIntents(confOp.getRequiredIntents());
-                    confOp.getRequiredIntents().clear();
-                    confOp.getRequiredIntents().addAll(expandedIntents);
-                }
-                
-                if ( attachPointType != null ) {
-                    //validate intents specified against the parent (binding / implementation)
-                    found = false;
-                    for (Intent intent : confOp.getRequiredIntents()) {
-                        if ( !intent.isUnresolved() ) {
-                            for (QName constrained : intent.getConstrains()) {
-                                if (attachPointType != null && attachPointType.getName().getNamespaceURI().equals(constrained
-                                    .getNamespaceURI()) && attachPointType.getName().getLocalPart()
-                                    .startsWith(constrained.getLocalPart())) {
-                                    found = true;
-                                    break;
-                                }
-                            }
+            //add intents specified for parent intent attach point (binding / implementation)
+            //wherever its not overriden in the operation
+            Intent tempIntent = null;
+            List<Intent> attachPointOpIntents = new ArrayList<Intent>();
+            for (Intent anIntent : parentIntents) {
+                found = false;
             
-                            if (!found) {
-                                throw new PolicyValidationException("Policy Intent '" + intent.getName() 
-                                        + " specified for operation " + confOp.getName()  
-                                    + "' does not constrain extension type  "
-                                    + attachPointType.getName());
-                            }
-                        } else {
-                            throw new PolicyValidationException("Policy Intent '" + intent.getName() 
-                                    + " specified for operation " + confOp.getName()  
-                                + "' is not defined in this domain  ");
-                        }
+                tempIntent = anIntent;
+                while ( tempIntent instanceof QualifiedIntent ) {
+                    tempIntent = ((QualifiedIntent)tempIntent).getQualifiableIntent();
+                }
+                
+                for ( Intent opIntent : confOp.getRequiredIntents() ) {
+                    if ( opIntent.getName().getLocalPart().startsWith(tempIntent.getName().getLocalPart())) {
+                        found = true;
+                        break;
                     }
                 }
                 
-                //add intents specified for parent intent attach point (binding / implementation)
-                //wherever its not overriden in the operation
-                Intent tempIntent = null;
-                List<Intent> attachPointOpIntents = new ArrayList<Intent>();
-                for (Intent anIntent : parentIntents) {
-                    found = false;
-                
-                    tempIntent = anIntent;
-                    while ( tempIntent instanceof QualifiedIntent ) {
-                        tempIntent = ((QualifiedIntent)tempIntent).getQualifiableIntent();
-                    }
-                    
-                    for ( Intent opIntent : confOp.getRequiredIntents() ) {
-                        if ( opIntent.getName().getLocalPart().startsWith(tempIntent.getName().getLocalPart())) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    
-                    if ( !found ) {
-                        attachPointOpIntents.add(anIntent);
-                    }
+                if ( !found ) {
+                    attachPointOpIntents.add(anIntent);
                 }
-                
-                confOp.getRequiredIntents().addAll(attachPointOpIntents);
-                
-                //remove duplicates
-                Map<QName, Intent> intentsTable = new HashMap<QName, Intent>();
-                for ( Intent intent : confOp.getRequiredIntents() ) {
-                    intentsTable.put(intent.getName(), intent);
-                }
-                
-                //where qualified form of intent exists retain it and remove the qualifiable intent
-                Map<QName, Intent> intentsTableCopy = new HashMap<QName, Intent>(intentsTable);
-                //if qualified form of intent exists remove the unqualified form
-                for ( Intent intent : intentsTableCopy.values() ) {
-                    if ( intent instanceof QualifiedIntent ) {
-                        QualifiedIntent qualifiedIntent = (QualifiedIntent)intent;
-                        if ( intentsTable.get(qualifiedIntent.getQualifiableIntent().getName()) != null ) {
-                            intentsTable.remove(qualifiedIntent.getQualifiableIntent().getName());
-                        }
-                    }
-                }
-                confOp.getRequiredIntents().clear();
-                confOp.getRequiredIntents().addAll(intentsTable.values());
-                
-                //exclude intents that are inherently supported by the parent
-                //attachpoint-type (binding-type  / implementation-type)
-                if ( attachPointType != null ) {
-                    List<Intent> requiredIntents = new ArrayList<Intent>(confOp.getRequiredIntents());
-                    for ( Intent intent : requiredIntents ) {
-                        if ( isProvidedInherently(attachPointType, intent) ) {
-                            confOp.getRequiredIntents().remove(intent);
-                        }
+            }
+            
+            confOp.getRequiredIntents().addAll(attachPointOpIntents);
+            
+            //remove duplicates and ...
+            //where qualified form of intent exists retain it and remove the qualifiable intent
+            filterDuplicatesAndQualifiableIntents(confOp);
+            
+            //exclude intents that are inherently supported by the parent
+            //attachpoint-type (binding-type  / implementation-type)
+            if ( attachPointType != null ) {
+                List<Intent> requiredIntents = new ArrayList<Intent>(confOp.getRequiredIntents());
+                for ( Intent intent : requiredIntents ) {
+                    if ( isProvidedInherently(attachPointType, intent) ) {
+                        confOp.getRequiredIntents().remove(intent);
                     }
                 }
             }
@@ -286,15 +201,24 @@ public abstract class PolicyComputer {
         policySetAttachPoint.getPolicySets().addAll(policySetTable.values());
             
         //expand profile intents
-        List<Intent> expandedIntents = null;
         for ( PolicySet policySet : policySetAttachPoint.getPolicySets() ) {
-            expandedIntents = expandProfileIntents(policySet.getProvidedIntents());
-            policySet.getProvidedIntents().clear();
-            policySet.getProvidedIntents().addAll(expandedIntents);
+            expandProfileIntents(policySet.getProvidedIntents());
         }
     }
     
     protected void computePolicySetsForOperations(Base parent, 
+                                                  PolicySetAttachPoint policySetAttachPoint) 
+                                                                        throws PolicyValidationException {
+        if ( policySetAttachPoint instanceof OperationsConfigurator ) {
+            computePolicySetsForOperations(parent, 
+                                           (OperationsConfigurator)policySetAttachPoint, 
+                                           policySetAttachPoint);
+        }
+        
+    }
+    
+    protected void computePolicySetsForOperations(Base parent, 
+                                                  OperationsConfigurator opConfigurator,
                                                   PolicySetAttachPoint policySetAttachPoint) 
                                                                         throws PolicyValidationException {
         String appliesTo = null;
@@ -302,62 +226,42 @@ public abstract class PolicyComputer {
         HashMap<QName, PolicySet> policySetTable = new HashMap<QName, PolicySet>();
         IntentAttachPointType attachPointType = policySetAttachPoint.getType();
         
-        if ( policySetAttachPoint instanceof OperationsConfigurator ) {
-            OperationsConfigurator opConfigurator = (OperationsConfigurator)policySetAttachPoint;
-            
-            for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
-                //validate policysets specified for the attachPoint
-                for (PolicySet policySet : confOp.getPolicySets()) {
-                    if ( !policySet.isUnresolved() ) {
-                        appliesTo = policySet.getAppliesTo();
-            
-                        if (!PolicyValidationUtils.isPolicySetApplicable(scdlFragment, appliesTo, attachPointType)) {
-                            throw new PolicyValidationException("Policy Set '" + policySet.getName() 
-                                    + " specified for operation " + confOp.getName()  
-                                + "' does not constrain extension type  "
-                                + attachPointType.getName());
-            
-                        }
-                    } else {
+        for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
+            //validate policysets specified for the attachPoint
+            for (PolicySet policySet : confOp.getPolicySets()) {
+                if ( !policySet.isUnresolved() ) {
+                    appliesTo = policySet.getAppliesTo();
+        
+                    if (!PolicyValidationUtils.isPolicySetApplicable(scdlFragment, appliesTo, attachPointType)) {
                         throw new PolicyValidationException("Policy Set '" + policySet.getName() 
                                 + " specified for operation " + confOp.getName()  
-                            + "' is not defined in this domain  ");
+                            + "' does not constrain extension type  "
+                            + attachPointType.getName());
+        
                     }
+                } else {
+                    throw new PolicyValidationException("Policy Set '" + policySet.getName() 
+                            + " specified for operation " + confOp.getName()  
+                        + "' is not defined in this domain  ");
                 }
-                
-                //get rid of duplicate entries
-                for ( PolicySet policySet : confOp.getPolicySets() ) {
-                    policySetTable.put(policySet.getName(), policySet);
-                }
+            }
             
-                confOp.getPolicySets().clear();
-                confOp.getPolicySets().addAll(policySetTable.values());
-                
-                //expand profile intents
-                List<Intent> expandedIntents = null;
-                for ( PolicySet policySet : confOp.getPolicySets() ) {
-                    expandedIntents = expandProfileIntents(policySet.getProvidedIntents());
-                    policySet.getProvidedIntents().clear();
-                    policySet.getProvidedIntents().addAll(expandedIntents);
-                }
+            //get rid of duplicate entries
+            for ( PolicySet policySet : confOp.getPolicySets() ) {
+                policySetTable.put(policySet.getName(), policySet);
+            }
+        
+            confOp.getPolicySets().clear();
+            confOp.getPolicySets().addAll(policySetTable.values());
+            
+            //expand profile intents
+            for ( PolicySet policySet : confOp.getPolicySets() ) {
+                expandProfileIntents(policySet.getProvidedIntents());
             }
         }
     }
     
-    protected void trimProvidedIntents(List<Intent> requiredIntents, PolicySet policySet) {
-        for ( Intent providedIntent : policySet.getProvidedIntents() ) {
-            if ( requiredIntents.contains(providedIntent) ) {
-                requiredIntents.remove(providedIntent);
-            } 
-        }
         
-        for ( Intent mappedIntent : policySet.getMappedPolicies().keySet() ) {
-            if ( requiredIntents.contains(mappedIntent) ) {
-                requiredIntents.remove(mappedIntent);
-            } 
-        }
-    }
-    
     protected void trimProvidedIntents(List<Intent> requiredIntents, List<PolicySet> policySets) {
         for ( PolicySet policySet : policySets ) {
             trimProvidedIntents(requiredIntents, policySet);
@@ -378,6 +282,100 @@ public abstract class PolicyComputer {
                     if (prevSize != policySetAttachPoint.getRequiredIntents().size()) {
                         policySetAttachPoint.getPolicySets().add(policySet);
                     }
+                }
+            }
+        }
+    }
+    
+    private List<Intent> findAndExpandProfileIntents(List<Intent> intents) {
+        List<Intent> expandedIntents = new ArrayList<Intent>();
+        for ( Intent intent : intents ) {
+            if ( intent instanceof ProfileIntent ) {
+                ProfileIntent profileIntent = (ProfileIntent)intent;
+                List<Intent> requiredIntents = profileIntent.getRequiredIntents();
+                expandedIntents.addAll(findAndExpandProfileIntents(requiredIntents));
+            } else {
+                expandedIntents.add(intent);
+            }
+        }
+        return expandedIntents;
+    }
+    
+    private boolean isProvidedInherently(IntentAttachPointType attachPointType, Intent intent) {
+        return ( attachPointType != null && 
+                 (( attachPointType.getAlwaysProvidedIntents() != null &&
+                     attachPointType.getAlwaysProvidedIntents().contains(intent) ) || 
+                  ( attachPointType.getMayProvideIntents() != null &&
+                     attachPointType.getMayProvideIntents().contains(intent) )
+                 ) );
+     }
+    
+    private void trimProvidedIntents(List<Intent> requiredIntents, PolicySet policySet) {
+        for ( Intent providedIntent : policySet.getProvidedIntents() ) {
+            if ( requiredIntents.contains(providedIntent) ) {
+                requiredIntents.remove(providedIntent);
+            } 
+        }
+        
+        for ( Intent mappedIntent : policySet.getMappedPolicies().keySet() ) {
+            if ( requiredIntents.contains(mappedIntent) ) {
+                requiredIntents.remove(mappedIntent);
+            } 
+        }
+    }
+    
+    private boolean isConstrained(QName constrained, IntentAttachPointType attachPointType) {
+        return (attachPointType != null && attachPointType.getName().getNamespaceURI().equals(constrained
+                                                                                      .getNamespaceURI()) && attachPointType.getName().getLocalPart()
+                                                                                      .startsWith(constrained.getLocalPart()) );
+    }
+    
+    private void filterDuplicatesAndQualifiableIntents(IntentAttachPoint intentAttachPoint) {
+        //remove duplicates
+        Map<QName, Intent> intentsTable = new HashMap<QName, Intent>();
+        for ( Intent intent : intentAttachPoint.getRequiredIntents() ) {
+            intentsTable.put(intent.getName(), intent);
+        }
+        
+        //where qualified form of intent exists retain it and remove the qualifiable intent
+        Map<QName, Intent> intentsTableCopy = new HashMap<QName, Intent>(intentsTable);
+        //if qualified form of intent exists remove the unqualified form
+        for ( Intent intent : intentsTableCopy.values() ) {
+            if ( intent instanceof QualifiedIntent ) {
+                QualifiedIntent qualifiedIntent = (QualifiedIntent)intent;
+                if ( intentsTable.get(qualifiedIntent.getQualifiableIntent().getName()) != null ) {
+                    intentsTable.remove(qualifiedIntent.getQualifiableIntent().getName());
+                }
+            }
+        }
+        intentAttachPoint.getRequiredIntents().clear();
+        intentAttachPoint.getRequiredIntents().addAll(intentsTable.values());
+    }
+    
+    private void validateIntents(ConfiguredOperation confOp, IntentAttachPointType attachPointType) throws PolicyValidationException {
+        boolean found = false;
+        if ( attachPointType != null ) {
+            //validate intents specified against the parent (binding / implementation)
+            found = false;
+            for (Intent intent : confOp.getRequiredIntents()) {
+                if ( !intent.isUnresolved() ) {
+                    for (QName constrained : intent.getConstrains()) {
+                        if (isConstrained(constrained, attachPointType)) {
+                            found = true;
+                            break;
+                        }
+                    }
+        
+                    if (!found) {
+                        throw new PolicyValidationException("Policy Intent '" + intent.getName() 
+                                + " specified for operation " + confOp.getName()  
+                            + "' does not constrain extension type  "
+                            + attachPointType.getName());
+                    }
+                } else {
+                    throw new PolicyValidationException("Policy Intent '" + intent.getName() 
+                            + " specified for operation " + confOp.getName()  
+                        + "' is not defined in this domain  ");
                 }
             }
         }

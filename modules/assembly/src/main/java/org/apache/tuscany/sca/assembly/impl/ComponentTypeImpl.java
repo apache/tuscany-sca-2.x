@@ -126,14 +126,6 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
         this.requiredIntents = intents;
     }
     
-    public List<ConfiguredOperation> getConfiguredOperations() {
-        return configuredOperations;
-    }
-
-    public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
-        this.configuredOperations = configuredOperations;
-    }
-
     @Override
     public int hashCode() {
         return String.valueOf(getURI()).hashCode();
@@ -154,5 +146,13 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
                 return false;
             }
         }
+    }
+
+    public List<ConfiguredOperation> getConfiguredOperations() {
+        return configuredOperations;
+    }
+
+    public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
+        this.configuredOperations = configuredOperations;
     }
 }

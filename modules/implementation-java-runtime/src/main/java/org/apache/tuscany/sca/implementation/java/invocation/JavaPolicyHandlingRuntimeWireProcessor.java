@@ -80,7 +80,7 @@ public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProces
                         applicablePolicyHandlers = new ArrayList<PolicyHandler>();
                         if ( javaImpl instanceof OperationsConfigurator ) {
                             String operationName = chain.getTargetOperation().getName();
-                            OperationsConfigurator opConfigurator = (OperationsConfigurator)javaImpl;
+                            OperationsConfigurator opConfigurator = (OperationsConfigurator)component;
                             for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
                                 if ( confOp.getName().equals(operationName)) {
                                     for ( PolicySet policySet : confOp.getPolicySets() ) {

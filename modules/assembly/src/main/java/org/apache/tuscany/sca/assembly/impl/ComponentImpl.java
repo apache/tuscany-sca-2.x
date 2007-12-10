@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentImpl extends ExtensibleImpl implements Component, Cloneable {
+public class ComponentImpl extends ExtensibleImpl implements Component, Cloneable, OperationsConfigurator {
     private ConstrainingType constrainingType;
     private Implementation implementation;
     private String name;
@@ -51,13 +51,7 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private Boolean autowire;
     private IntentAttachPointType type;
-    
-    private PolicySetAttachPoint implPolicyConf = new PolicySetAttachPointImpl();
-    private List<ConfiguredOperation> configuredImplOps = new ArrayList<ConfiguredOperation>();
-    //private PolicyContext policyContext = new PolicyContextImpl();
-    //private Map<String, Object> policyContext = new Hashtable<String, Object>();
-    //String IMPL_POLICY_CONTEXT = "IMPL_POLICY_CONTEXT";
-    //String IMPL_OPERATIONS_POLICY_CONTEXT = "IMPL_OPERATIONS_POLICY_CONTEXT";
+    private List<ConfiguredOperation>  configuredImplOperations = new ArrayList<ConfiguredOperation>();
 
     /**
      * Constructs a new component.
@@ -97,16 +91,6 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
     }
 
     public Implementation getImplementation() {
-        if ( implementation instanceof PolicySetAttachPoint ) {
-            PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
-            
-            /*policiedImpl.setRequiredIntents(implPolicyConf.getRequiredIntents());
-            policiedImpl.setPolicySets(implPolicyConf.getPolicySets());*/
-            
-            if ( implementation instanceof OperationsConfigurator ) {
-                ((OperationsConfigurator)implementation).setConfiguredOperations(configuredImplOps);
-            }
-        }
         return implementation;
     }
 
@@ -132,21 +116,6 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
 
     public void setImplementation(Implementation implementation) {
         this.implementation = implementation;
-        if ( implementation instanceof PolicySetAttachPoint 
-            && implementation.isUnresolved() )  {
-            /*PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
-            implPolicyConf.getRequiredIntents().addAll(policiedImpl.getRequiredIntents());
-            implPolicyConf.getPolicySets().addAll(policiedImpl.getPolicySets());
-            */
-            if ( implementation instanceof OperationsConfigurator ) {
-                OperationsConfigurator operationConfig = (OperationsConfigurator)implementation;
-            
-                if ( operationConfig.getConfiguredOperations() != null &&
-                        !operationConfig.getConfiguredOperations().isEmpty() ) {
-                    configuredImplOps.addAll(operationConfig.getConfiguredOperations());
-                }
-            }
-        }
     }
 
     public void setName(String name) {
@@ -190,6 +159,15 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
         this.requiredIntents = intents;
         
     }
+    
+    public List<ConfiguredOperation> getConfiguredOperations() {
+        return configuredImplOperations;
+    }
+
+    public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
+        this.configuredImplOperations = configuredOperations;
+    }
+
     
     private class PolicySetAttachPointImpl implements PolicySetAttachPoint {
         private List<Intent> requiredIntents = new ArrayList<Intent>();
