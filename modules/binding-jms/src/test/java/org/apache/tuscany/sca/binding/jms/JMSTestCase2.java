@@ -18,26 +18,35 @@
  */
 package org.apache.tuscany.sca.binding.jms;
 
-import org.osoa.sca.annotations.Reference;
-import org.osoa.sca.annotations.Service;
+import static org.junit.Assert.assertEquals;
+
+import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * This class implements the HelloWorld service.
+ * This shows how to test the JMS binding using a simple HelloWorld application.
  */
-@Service(HelloWorldService.class)
-public class HelloWorldClientImpl implements HelloWorldService {
+public class JMSTestCase2 {
 
-    private HelloWorldService serviceA;
+    private static SCADomain scaDomain;
 
-    @Reference
-    public void setServiceA(HelloWorldService service) {
-        this.serviceA = service;
+    @Before
+    public void init() {
+        scaDomain = SCADomain.newInstance("simple/rpc.composite");
     }
-    
-    public String sayHello(String name) {
-        return serviceA.sayHello(name);
+
+    @Test
+    public void testHelloWorldCreate() throws Exception {
+        HelloWorldService helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldClient");
+        assertEquals("jmsHello Petra", helloWorldService.sayHello("Petra"));
     }
-    
-   
-    
+
+    @After
+    public void end() {
+        if (scaDomain != null) {
+            scaDomain.close();
+        }
+    }
 }

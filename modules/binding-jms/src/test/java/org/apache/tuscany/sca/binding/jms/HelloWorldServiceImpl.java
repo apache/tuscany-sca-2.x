@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.binding.jms;
 public class HelloWorldServiceImpl implements HelloWorldService {
 
     public String sayHello(String name) {
-        return "Hello " + name;
+        return "jmsHello " + name;
     }
 
 }
