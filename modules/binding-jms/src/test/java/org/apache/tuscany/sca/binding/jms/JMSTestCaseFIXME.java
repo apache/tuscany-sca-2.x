@@ -30,7 +30,7 @@ import org.junit.Test;
 /**
  * This shows how to test the JMS binding using a simple HelloWorld application.
  */
-public class JMSTestCase {
+public class JMSTestCaseFIXME {
 
     private static BrokerService        broker;
     private static HelloWorldService    helloWorldService;
