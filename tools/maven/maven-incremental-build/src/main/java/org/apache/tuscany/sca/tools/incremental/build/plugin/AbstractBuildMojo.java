@@ -173,7 +173,11 @@ public abstract class AbstractBuildMojo extends AbstractMojo {
             classifier = "-" + classifier;
         }
 
-        return new File(basedir, finalName + classifier + "." + project.getArtifact().getType());
+        String pkg = project.getPackaging();
+        if ("maven-plugin".equals(pkg)) {
+            pkg = "jar";
+        }
+        return new File(basedir, finalName + classifier + "." + pkg);
     }
 
     /**
@@ -288,7 +292,7 @@ public abstract class AbstractBuildMojo extends AbstractMojo {
         List compileSourceRoots = removeEmptyCompileSourceRoots(sourceRoots);
 
         if (compileSourceRoots.isEmpty()) {
-            getLog().info("No sources to compile");
+            // getLog().info("No sources to compile");
             return false;
         }
 
