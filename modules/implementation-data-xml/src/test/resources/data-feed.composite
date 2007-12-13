@@ -20,17 +20,31 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
     xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
 	targetNamespace="http://data"
-	name="data">
+	name="data-feed">
 
-    <component name="DataComponent">
-        <tuscany:implementation.data>
+     
+    <service name="CompanyFeed" promote="CompanyFeedComponent">
+   		<tuscany:binding.atom uri="http://localhost:8085/comnpanyfeed/*"/>
+   	</service>
+   	
+    <component name="CompanyFeedComponent">
+        <implementation.java class="org.apache.tuscany.sca.implementation.data.companyFeed.CompanyFeed"/>
+        <reference name="dataService" target="CompanyDataComponent"/>
+    </component>
+
+     <!-- service name="CompanyDataServiceComponent" promote="CompanyDataComponent">
+        <binding.atom uri="http://localhost:8085/comnpanyfeed/"/>
+     </service -->
+
+    <component name="CompanyDataComponent">
+        <tuscany:implementation.data.xml table="company">
            <tuscany:connectionInfo>
 		      <tuscany:connectionProperties 
 			   driverClass="org.apache.derby.jdbc.EmbeddedDriver" 
 			   databaseURL="jdbc:derby:target/test-classes/dastest; create = true" 
 			   loginTimeout="600000"/>
 	       </tuscany:connectionInfo>
-        </tuscany:implementation.data>
+        </tuscany:implementation.data.xml>
     </component>
 
 </composite>

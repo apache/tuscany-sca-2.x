@@ -50,7 +50,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  * @version $Rev$ $Date$
  */
 public class DATAImplementationProcessor implements StAXArtifactProcessor<DATAImplementation> {
-    protected static final QName IMPLEMENTATION_DATA = new QName(Constants.SCA10_TUSCANY_NS, "implementation.data");
+    protected static final QName IMPLEMENTATION_DATA_XML = new QName(Constants.SCA10_TUSCANY_NS, "implementation.data.xml");
     
     private DATAImplementationFactory dataFactory;
     
@@ -67,7 +67,7 @@ public class DATAImplementationProcessor implements StAXArtifactProcessor<DATAIm
 
     public QName getArtifactType() {
         // Returns the qname of the XML element processed by this processor
-        return IMPLEMENTATION_DATA;
+        return IMPLEMENTATION_DATA_XML;
     }
 
     public Class<DATAImplementation> getModelType() {
@@ -77,7 +77,7 @@ public class DATAImplementationProcessor implements StAXArtifactProcessor<DATAIm
 
     /*
      * <component name="CompanyDataComponent">
-     *   <implementation.data>
+     *   <implementation.data.xml>
      *      <connectionInfo>
      *         <connectionProperties 
      *          driverClass="org.apache.derby.jdbc.EmbeddedDriver" 
@@ -88,9 +88,9 @@ public class DATAImplementationProcessor implements StAXArtifactProcessor<DATAIm
      * </component>
      */
     public DATAImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        assert IMPLEMENTATION_DATA.equals(reader.getName());
+        assert IMPLEMENTATION_DATA_XML.equals(reader.getName());
 
-        // Read an <implementation.data> element
+        // Read an <implementation.data.xml> element
 
         // Create an initialize the DAS implementation model
         DATAImplementation implementation = dataFactory.createDASImplementation();
@@ -108,7 +108,7 @@ public class DATAImplementationProcessor implements StAXArtifactProcessor<DATAIm
                 }
                 break;
             case XMLStreamConstants.END_ELEMENT:
-                if (IMPLEMENTATION_DATA.equals(reader.getName())) {
+                if (IMPLEMENTATION_DATA_XML.equals(reader.getName())) {
                     return implementation;
                 }                    
                 break;
@@ -121,7 +121,7 @@ public class DATAImplementationProcessor implements StAXArtifactProcessor<DATAIm
     }
 
     public void write(DATAImplementation implementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
-        writer.writeStartElement(IMPLEMENTATION_DATA.getNamespaceURI(), IMPLEMENTATION_DATA.getLocalPart());
+        writer.writeStartElement(IMPLEMENTATION_DATA_XML.getNamespaceURI(), IMPLEMENTATION_DATA_XML.getLocalPart());
                 
         if (implementation.getConnectionInfo() != null) { 
             connectionInfoProcessor.write(implementation.getConnectionInfo(), writer);

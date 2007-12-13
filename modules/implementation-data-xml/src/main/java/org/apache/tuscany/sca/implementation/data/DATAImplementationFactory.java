@@ -22,19 +22,17 @@ package org.apache.tuscany.sca.implementation.data;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
-
 /**
  * A default factory for the DATA implementation model.
  * 
  * @version $Rev$ $Date$
  */
 public class DATAImplementationFactory {
-    
+
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
-    
-    public DATAImplementationFactory(AssemblyFactory assemblyFactory,
-                                            JavaInterfaceFactory javaFactory) {
+
+    public DATAImplementationFactory(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory) {
         this.assemblyFactory = assemblyFactory;
         this.javaFactory = javaFactory;
     }

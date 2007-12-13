@@ -43,30 +43,32 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  */
 public class DATAImplementationProcessorTestCase extends TestCase {
     
-    protected static final QName IMPLEMENTATION_DATA = new QName(Constants.SCA10_TUSCANY_NS, "implementation.data");
+    protected static final QName IMPLEMENTATION_DATA = new QName(Constants.SCA10_TUSCANY_NS, "implementation.data.xml");
 
     private static final String COMPOSITE_USING_DATASOURCE =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
             + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.0\" targetNamespace=\"http://data\" name=\"data\">"
             + " <component name=\"DataComponent\">"
-            + "   <tuscany:implementation.data>"
+            + "   <tuscany:implementation.data.xml>"
             + "      <tuscany:connectionInfo datasource=\"dataSource\"/>"
-            + "   </tuscany:implementation.data>"
-            + "</component>";
+            + "   </tuscany:implementation.data.xml>"
+            + " </component>"
+            + "</composite>";
 
     private static final String COMPOSITE_USING_CONNECTION_PROPERTIES =            
             "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
             + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:tuscany=\"http://tuscany.apache.org/xmlns/sca/1.0\" targetNamespace=\"http://data\" name=\"data\">"
             + " <component name=\"DataComponent\">"
-            + "   <tuscany:implementation.data>"
+            + "   <tuscany:implementation.data.xml>"
             + "      <tuscany:connectionInfo>"
             + "         <tuscany:connectionProperties"
             + "            driverClass=\"driverClass\""
             + "            databaseURL=\"databaseURL\""
             + "            loginTimeout=\"1\"/>"
             + "      </tuscany:connectionInfo>"
-            + "   </tuscany:implementation.data>"
-            + "</component>";
+            + "   </tuscany:implementation.data.xml>"
+            + " </component>"
+            + "</composite>";
 
     private XMLInputFactory xmlFactory;
     private ModelFactoryExtensionPoint modelFactories;
