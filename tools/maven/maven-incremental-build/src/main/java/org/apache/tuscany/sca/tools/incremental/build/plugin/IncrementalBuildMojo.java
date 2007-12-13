@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.tools.incremental.build.plugin;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -107,7 +106,7 @@ public class IncrementalBuildMojo extends AbstractBuildMojo {
         String projectID = id(project);
 
         Compiler compiler = getCompiler();
-        boolean changed = isSourceChanged(compiler) || isResourceChanged();
+        boolean changed = isSourceChanged(compiler) || isResourceChanged() || isPOMChanged();
         boolean testChanged = false;
         if (changed) {
             modifiedProjectIDs.add(projectID);
@@ -170,7 +169,7 @@ public class IncrementalBuildMojo extends AbstractBuildMojo {
             // request.setDebug(true);
             request.setOffline(settings.isOffline());
             request.setBaseDirectory(project.getBasedir());
-            request.setPomFile(new File(project.getBasedir().getPath() + "/pom.xml"));
+            request.setPomFile(project.getFile());
 
             try {
                 InvocationResult result = invoker.execute(request);

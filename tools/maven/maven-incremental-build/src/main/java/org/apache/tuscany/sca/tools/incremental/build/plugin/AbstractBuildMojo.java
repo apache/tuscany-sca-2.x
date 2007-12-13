@@ -157,6 +157,25 @@ public abstract class AbstractBuildMojo extends AbstractMojo {
         return new SimpleSourceInclusionScanner(includes, Collections.EMPTY_SET);
     }
 
+    protected boolean isPOMChanged() {
+        File pom = project.getFile();
+        File out = getOutputFile();
+        return pom.lastModified() > out.lastModified();
+    }
+
+    protected File getOutputFile() {
+        File basedir = buildDirectory;
+        String finalName = project.getBuild().getFinalName();
+        String classifier = project.getArtifact().getClassifier();
+        if (classifier == null) {
+            classifier = "";
+        } else if (classifier.trim().length() > 0 && !classifier.startsWith("-")) {
+            classifier = "-" + classifier;
+        }
+
+        return new File(basedir, finalName + classifier + "." + project.getArtifact().getType());
+    }
+
     /**
      * Test if the resources have been changed
      * @return
@@ -169,7 +188,7 @@ public abstract class AbstractBuildMojo extends AbstractMojo {
     protected boolean isTestResourceChanged() throws MojoExecutionException {
         return isChanged(project.getTestResources(), project.getBuild().getTestOutputDirectory());
     }
-    
+
     private static final String[] EMPTY_STRING_ARRAY = {};
 
     private static final String[] DEFAULT_INCLUDES = {"**/**"};
