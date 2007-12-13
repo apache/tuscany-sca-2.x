@@ -188,6 +188,8 @@ public class IncrementalBuildMojo extends AbstractBuildMojo {
                 e.printStackTrace();
                 throw new MojoExecutionException(e.getMessage(), e);
             }
+        } else {
+            getLog().info("The project is up-to-date. No build is required.");
         }
     }
 
