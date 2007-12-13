@@ -91,4 +91,18 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>LATEST</version>
+                <configuration>
+                    <goalPrefix>incremental</goalPrefix>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
