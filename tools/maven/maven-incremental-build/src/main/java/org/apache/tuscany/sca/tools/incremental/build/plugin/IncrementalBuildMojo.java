@@ -101,6 +101,7 @@ public class IncrementalBuildMojo extends AbstractBuildMojo {
         getLog().info("Building " + project.getName() + " [" + project.getId() + "]");
         String type = project.getArtifact().getType();
         if ("pom".equals(type)) {
+            // FIXME: We should try to run "mvn -N" but I cannot find a way to pass -N to the invoker
             return;
         }
         String projectID = id(project);
