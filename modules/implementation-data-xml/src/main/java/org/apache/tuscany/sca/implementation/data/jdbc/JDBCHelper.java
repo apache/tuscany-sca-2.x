@@ -24,6 +24,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -121,6 +122,9 @@ public class JDBCHelper {
         }
 
         try {
+            Properties p = System.getProperties();
+            p.put("derby.system.home", "target");
+            
             //initialize driver and register it with DriverManager
             Class.forName(connectionInfo.getConnectionProperties().getDriverClass());
 
