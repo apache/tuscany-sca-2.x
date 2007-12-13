@@ -210,7 +210,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
 
     private boolean introspectArray(DataType dataType, Annotation[] annotations) {
         Class physical = dataType.getPhysical();
-        if (!physical.isArray()) {
+        if (!physical.isArray() || physical == byte[].class) {
             return false;
         }
         Class componentType = physical.getComponentType();

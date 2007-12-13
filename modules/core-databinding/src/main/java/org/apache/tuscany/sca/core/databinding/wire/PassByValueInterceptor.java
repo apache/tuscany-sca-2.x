@@ -19,11 +19,14 @@
 
 package org.apache.tuscany.sca.core.databinding.wire;
 
+import java.io.Serializable;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
+import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -72,6 +75,10 @@ public class PassByValueInterceptor implements Interceptor {
                 } else {
                     String dataBindingId = operation.getInputType().getLogical().get(i).getDataBinding();
                     DataBinding dataBinding = dataBindings.getDataBinding(dataBindingId);
+                    // HACK: Use JAXB to copy non-Serializable beans
+                    if (JavaBeansDataBinding.NAME.equals(dataBinding.getName()) && !(args[i] instanceof Serializable)) {
+                        dataBinding = dataBindings.getDataBinding(JAXBDataBinding.NAME);
+                    }
                     copiedArg = copy(args[i], dataBinding);
                     map.put(args[i], copiedArg);
                     copiedArgs[i] = copiedArg;
