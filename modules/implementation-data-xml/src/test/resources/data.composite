@@ -27,7 +27,7 @@
            <tuscany:connectionInfo>
 		      <tuscany:connectionProperties 
 			   driverClass="org.apache.derby.jdbc.EmbeddedDriver" 
-			   databaseURL="jdbc:derby:target/test-classes/dastest; create = true" 
+			   databaseURL="jdbc:derby:target/test-classes/company; create = true" 
 			   loginTimeout="600000"/>
 	       </tuscany:connectionInfo>
         </tuscany:implementation.data.xml>
