@@ -43,7 +43,7 @@
     </component>
 
     <component name="MultiplyServiceComponent">
-        <implementation.java class="calculator.MultiplyServiceImpl"/>
+        <implementation.java class="calculator.MultiplyServiceImpl" requires="tuscany:jaasAuthentication"/>
     </component>
 
     <component name="DivideServiceComponent">

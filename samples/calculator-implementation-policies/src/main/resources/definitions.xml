@@ -31,13 +31,31 @@
 	</description>
 </intent>
 
+<intent name="tuscany:jaasAuthentication" 
+ 		constrains="sca:implementation.java">
+	<description>
+		All invocations to be authenticated
+	</description>
+</intent>
+
+<!-- PolicySets -->
+<policySet name="tuscany:JaasPolicy"
+ 	provides="tuscany:jaasAuthentication"
+ 	appliesTo="sca:implementation.java"
+ 	xmlns="http://www.osoa.org/xmlns/sca/1.0">
+ 	<tuscany:jaasAuthentication>
+ 		<tuscany:callbackHandler>calculator.security.CalculatorCallbackHandler</tuscany:callbackHandler>
+ 	</tuscany:jaasAuthentication>
+</policySet>
+
 <!-- PolicySets -->
 <policySet name="tuscany:JDKLoggingPolicy"
  	provides="tuscany:logging"
  	appliesTo="sca:implementation.java"
  	xmlns="http://www.osoa.org/xmlns/sca/1.0">
  	<tuscany:jdkLogger xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0" name="calculator">
-		<logLevel>INFO</logLevel>
+		<logLevel>FINER</logLevel>
 	</tuscany:jdkLogger>
 </policySet>
+
 </definitions>
