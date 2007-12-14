@@ -27,19 +27,19 @@ import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 
-public class LaunchStoreMerger {
+public class LaunchStoreSupplier {
     public static void main(String[] args) throws Exception {
         System.out.println("Starting ...");
         SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
-        SCANode node = nodeFactory.createSCANode("http://localhost:8101", "http://localhost:9998");
+        SCANode node = nodeFactory.createSCANode(null, "http://localhost:9998");
         
-        URL contribution = SCAContributionUtil.findContributionFromClass(LaunchStoreMerger.class);
+        URL contribution = SCAContributionUtil.findContributionFromClass(LaunchStoreSupplier.class);
         node.addContribution("http://store", contribution);
         
-        node.addToDomainLevelComposite(new QName("http://store", "store-merger"));
+        node.addToDomainLevelComposite(new QName("http://store", "store-supplier"));
         node.start();
 
-        System.out.println("store-merger.composite ready for big business !!!");
+        System.out.println("store-supplier.composite ready for big business !!!");
         System.in.read();
         
         System.out.println("Stopping ...");
