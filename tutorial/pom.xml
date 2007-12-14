@@ -36,15 +36,20 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <!--
+                <module>amazon</module>
+                -->
                 <module>assets</module>
-                <module>cloud</module>
                 <module>catalog-ejb</module>
                 <module>catalog-jee</module>
                 <module>catalog-jse</module>
+                <module>cloud</module>
                 <module>store</module>
+                <module>store-db</module>
                 <module>store-eu</module>
+                <module>store-merger</module>
+                <module>store-supplier</module>
                 <module>www-cloud</module>
-                <module>amazon</module>
             </modules>
         </profile>
 

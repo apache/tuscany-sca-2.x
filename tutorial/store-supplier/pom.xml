@@ -25,8 +25,8 @@
         <version>1.1-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tutorial-store-eu</artifactId>
-    <name>Apache Tuscany SCA Tutorial EU Online Store</name>
+    <artifactId>tutorial-store-supplier</artifactId>
+    <name>Apache Tuscany SCA Tutorial Supplier Online Store</name>
 
     <repositories>
        <repository>
@@ -80,6 +80,7 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-feed</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -88,6 +89,13 @@
             <version>1.1-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ejb</artifactId>
+            <version>1.1-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>        
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -127,7 +135,7 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <mainClass>launch.LaunchEUStore</mainClass>
+                            <mainClass>launch.LaunchStoreSupplier</mainClass>
                         </configuration>
                         <goals>
                             <goal>generate</goal>
@@ -158,7 +166,7 @@
 	                     </goals>
 	                     <configuration>
 	                         <driver>org.apache.derby.jdbc.EmbeddedDriver</driver>
-	                         <url>jdbc:derby:${basedir}/target/cart-eu-db;create=true</url>
+	                         <url>jdbc:derby:${basedir}/target/cart-db;create=true</url>
 	                         <autocommit>true</autocommit>
 	                         <onError>continue</onError>
 	                         <delimiter>;</delimiter>
