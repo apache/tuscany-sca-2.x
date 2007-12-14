@@ -14,5 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-# Implementation class for the ModuleActivator
-org.apache.tuscany.sca.policy.logging.jdk.JDKLoggingPolicyHandler;qname=http://tuscany.apache.org/xmlns/sca/1.0#JDKLoggingPolicy
+# 
+# PolicyHandlerClasses to interpret specific PolicyModels against specific QoS infrastructures
+# handler classname;qname=<policy intent addressed>;model=<policy model class>
+org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicyHandler;intent=http://tuscany.apache.org/xmlns/sca/1.0#jaasAuthentication,model=org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicy

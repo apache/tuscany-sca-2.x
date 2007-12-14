@@ -26,9 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 
 /**
  * A component type specialization for POJO implementations
@@ -51,7 +50,7 @@ public class JavaImplementationImpl extends BaseJavaImplementationImpl implement
     private long maxAge = -1;
     private long maxIdleTime = -1;
     private JavaScopeImpl scope = JavaScopeImpl.STATELESS;
-    private Map<ClassLoader, Map<QName, String>> policyHandlerClassNames = null;
+    private Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames = null;
     
     protected JavaImplementationImpl() {
         super();
@@ -157,11 +156,11 @@ public class JavaImplementationImpl extends BaseJavaImplementationImpl implement
         this.maxIdleTime = maxIdleTime;
     }
 
-    public Map<ClassLoader, Map<QName, String>> getPolicyHandlerClassNames() {
+    public Map<ClassLoader, List<PolicyHandlerTuple>> getPolicyHandlerClassNames() {
         return policyHandlerClassNames;
     }
 
-    public void setPolicyHandlerClassNames(Map<ClassLoader, Map<QName, String>> policyHandlerClassNames) {
+    public void setPolicyHandlerClassNames(Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames) {
         this.policyHandlerClassNames = policyHandlerClassNames;
     }
  

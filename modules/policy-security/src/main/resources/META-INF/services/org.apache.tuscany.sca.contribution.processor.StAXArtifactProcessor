@@ -17,3 +17,4 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#wsConfigParam,model=org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy
+org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#jaasAuthentication,model=org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicy

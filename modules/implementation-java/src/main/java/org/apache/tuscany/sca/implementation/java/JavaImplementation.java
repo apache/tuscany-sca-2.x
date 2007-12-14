@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.implementation.java.impl.JavaConstructorImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaResourceImpl;
 import org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 
 /**
  * Represents a Java implementation.
@@ -188,11 +189,11 @@ public interface JavaImplementation extends BaseJavaImplementation {
     /**
      * @return the map of a policy handler classnames
      */
-    public Map<ClassLoader, Map<QName, String>> getPolicyHandlerClassNames();
+    public Map<ClassLoader, List<PolicyHandlerTuple>> getPolicyHandlerClassNames();
     
     /**
      * @param map of policyhandler classnames
      */
-    public void setPolicyHandlerClassNames(Map<ClassLoader, Map<QName, String>> policyHandlerClassNames);
+    public void setPolicyHandlerClassNames(Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames);
         
 }

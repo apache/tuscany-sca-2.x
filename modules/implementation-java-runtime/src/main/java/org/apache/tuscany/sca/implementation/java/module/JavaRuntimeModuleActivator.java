@@ -20,7 +20,10 @@
 package org.apache.tuscany.sca.implementation.java.module;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -68,6 +71,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 
@@ -75,8 +79,6 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
  * @version $Rev$ $Date$
  */
 public class JavaRuntimeModuleActivator implements ModuleActivator {
-    private static final String POLICY_HANDLERS_STORE_FILE =
-        "org.apache.tuscany.sca.implementation.java.PolicySetHandlers";
 
     public JavaRuntimeModuleActivator() {
     }
@@ -122,7 +124,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         ComponentContextFactory componentContextFactory = contextFactories.getFactory(ComponentContextFactory.class);
         RequestContextFactory requestContextFactory = contextFactories.getFactory(RequestContextFactory.class);
 
-        Map<ClassLoader, Map<QName, String>> policyHandlerClassNames = null;
+        Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames = null;
         try {
             policyHandlerClassNames = loadPolicyHandlerClassnames();
         } catch (IOException e) {
@@ -169,7 +171,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         throw new IllegalArgumentException("Invalid qname: " + qname);
     }
 
-    private Map<ClassLoader, Map<QName, String>> loadPolicyHandlerClassnames() throws IOException {
+    private Map<ClassLoader, List<PolicyHandlerTuple>> loadPolicyHandlerClassnames() throws IOException {
         // Get the processor service declarations
         Set<ServiceDeclaration> sds;
         try {
@@ -177,8 +179,24 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+        
+        Map<ClassLoader, List<PolicyHandlerTuple>> handlerTuples = new Hashtable<ClassLoader, List<PolicyHandlerTuple>>();
+        for (ServiceDeclaration sd : sds) {
+            ClassLoader cl = sd.getClassLoader();
+            
+            List<PolicyHandlerTuple> handlerTupleList = handlerTuples.get(cl);
+            if ( handlerTupleList == null ) {
+                handlerTupleList = new ArrayList<PolicyHandlerTuple>();
+                handlerTuples.put(cl, handlerTupleList);
+            }
+            Map<String, String> attributes = sd.getAttributes();
+            String intentName = attributes.get("intent");
+            QName intentQName = getQName(intentName);
+            String policyModelClassName = attributes.get("model");
+            handlerTupleList.add(new PolicyHandlerTuple(sd.getClassName(), intentQName, policyModelClassName));
+        }
 
-        Map<ClassLoader, Map<QName, String>> policyHandlerClassNames = new HashMap<ClassLoader, Map<QName, String>>();
+        /*Map<ClassLoader, Map<QName, String>> policyHandlerClassNames = new HashMap<ClassLoader, Map<QName, String>>();
 
         for (ServiceDeclaration sd : sds) {
             Map<String, String> attributes = sd.getAttributes();
@@ -192,8 +210,8 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
             }
             map.put(name, sd.getClassName());
         }
-
-        return policyHandlerClassNames;
+        */
+        return handlerTuples;
     }
 
 }
