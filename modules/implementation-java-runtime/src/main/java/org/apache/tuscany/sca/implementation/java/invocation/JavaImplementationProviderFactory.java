@@ -19,9 +19,8 @@
 
 package org.apache.tuscany.sca.implementation.java.invocation;
 
+import java.util.List;
 import java.util.Map;
-
-import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.RequestContextFactory;
@@ -29,6 +28,7 @@ import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.injection.JavaPropertyValueObjectFactory;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -42,14 +42,14 @@ public class JavaImplementationProviderFactory implements ImplementationProvider
     private ProxyFactory proxyService;
     private ComponentContextFactory componentContextFactory;
     private RequestContextFactory requestContextFactory;
-    private Map<ClassLoader, Map<QName, String>> policyHandlerClassNames = null;
+    private Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames = null;
 
     public JavaImplementationProviderFactory(ProxyFactory proxyService,
                                              DataBindingExtensionPoint dataBindingRegistry,
                                              JavaPropertyValueObjectFactory propertyValueObjectFactory,
                                              ComponentContextFactory componentContextFactory,
                                              RequestContextFactory requestContextFactory,
-                                             Map<ClassLoader, Map<QName, String>> policyHandlerClassNames) {
+                                             Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames) {
         super();
         this.proxyService = proxyService;
         this.dataBindingRegistry = dataBindingRegistry;

@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.implementation.java.invocation;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -40,6 +41,7 @@ import org.apache.tuscany.sca.implementation.java.injection.ResourceHost;
 import org.apache.tuscany.sca.implementation.java.injection.ResourceObjectFactory;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.osoa.sca.ComponentContext;
@@ -60,7 +62,7 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
                                       JavaPropertyValueObjectFactory propertyValueObjectFactory,
                                       ComponentContextFactory componentContextFactory,
                                       RequestContextFactory requestContextFactory,
-                                      Map<ClassLoader, Map<QName, String>> policyHandlerClassNames) {
+                                      Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames) {
         super();
         this.implementation = implementation;
         this.requestContextFactory = requestContextFactory;

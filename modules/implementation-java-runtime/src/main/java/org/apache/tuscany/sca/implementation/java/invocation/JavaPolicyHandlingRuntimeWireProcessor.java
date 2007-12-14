@@ -23,16 +23,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -112,24 +112,31 @@ public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProces
     }
     
     private PolicyHandler getPolicyHandler(PolicySet policySet, 
-                                           Map<ClassLoader, Map<QName, String>> policyHandlerClassNames) throws IllegalAccessException, ClassNotFoundException, InstantiationException {
+                                           Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames) 
+                                throws IllegalAccessException, ClassNotFoundException, InstantiationException {
+        
         PolicyHandler handler = null;
-        String handlerClassName = null;
         
         for (ClassLoader classLoader : policyHandlerClassNames.keySet()) {
-            Map<QName, String> policyHandlerClassnamesMap = policyHandlerClassNames.get(classLoader);
-            for ( QName policySetName : policyHandlerClassnamesMap.keySet() ) {
-                if ( policySet.getName().equals(policySetName) ) {
-                    handlerClassName = policyHandlerClassnamesMap.get(policySet.getName());
-                    if ( handlerClassName != null ) {
-                        handler = 
-                            (PolicyHandler)Class.forName(handlerClassName, true, classLoader).newInstance();
-                        handler.setApplicablePolicySet(policySet);
-                        break;
+            for ( PolicyHandlerTuple handlerTuple : policyHandlerClassNames.get(classLoader) ) {
+                for ( Intent intent : policySet.getProvidedIntents() ) {
+                    if ( intent.getName().equals(handlerTuple.getProvidedIntentName())) {
+                        for ( Object policy : policySet.getPolicies() ) {
+                            if ( policy.getClass().getName().equals(handlerTuple.getPolicyModelClassName())) {
+                                handler = 
+                                    (PolicyHandler)Class.forName(handlerTuple.getPolicyHandlerClassName(), 
+                                                                 true, 
+                                                                 classLoader).newInstance();
+                                    handler.setApplicablePolicySet(policySet);
+                                    return handler;
+                            }
+                        }
                     }
                 }
             }
-        } 
+        }
+        
         return handler;
     }
+                            
 }
