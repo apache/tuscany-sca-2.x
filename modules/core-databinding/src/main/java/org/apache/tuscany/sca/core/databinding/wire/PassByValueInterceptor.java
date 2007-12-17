@@ -76,7 +76,9 @@ public class PassByValueInterceptor implements Interceptor {
                     String dataBindingId = operation.getInputType().getLogical().get(i).getDataBinding();
                     DataBinding dataBinding = dataBindings.getDataBinding(dataBindingId);
                     // HACK: Use JAXB to copy non-Serializable beans
-                    if (JavaBeansDataBinding.NAME.equals(dataBinding.getName()) && !(args[i] instanceof Serializable)) {
+                    if (dataBinding != null &&
+                        JavaBeansDataBinding.NAME.equals(dataBinding.getName()) &&
+                        !(args[i] instanceof Serializable)) {
                         dataBinding = dataBindings.getDataBinding(JAXBDataBinding.NAME);
                     }
                     copiedArg = copy(args[i], dataBinding);
