@@ -24,7 +24,7 @@ package org.apache.tuscany.sca.assembly;
  * 
  * @version $Rev$ $Date$
  */
-public interface Binding extends Base {
+public interface Binding extends Base, Cloneable {
 
     /**
      * Returns the binding URI.
@@ -53,4 +53,11 @@ public interface Binding extends Base {
      * @param name the binding name
      */
     void setName(String name);
+    
+    /**
+     * Clone the binding
+     * 
+     * @return
+     */
+    Object clone() throws CloneNotSupportedException;   
 }

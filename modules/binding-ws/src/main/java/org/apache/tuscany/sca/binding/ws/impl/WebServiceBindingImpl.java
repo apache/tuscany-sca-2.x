@@ -97,6 +97,10 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
         this.unresolved = unresolved;
     }
 
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    } 
+    
     public List<Object> getExtensions() {
         return extensions;
     }

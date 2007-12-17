@@ -35,6 +35,13 @@ import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
 
 public class JMSBinding implements Binding {
     
+    /**
+     * Clone the binding
+     */
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    } 
+    
     // properties required to implement the Tuscany 
     // binding extension SPI
     private String uri                   = null; 
