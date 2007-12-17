@@ -346,7 +346,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
             Binding callbackBinding = null;
             for (Binding binding : callbackService.getBindings()) {
                 // first look for a callback binding whose name matches the reference binding name
-                if (binding.getName().equals(refBinding.getName())) {
+            	if (refBinding.getName().startsWith(binding.getName())) {
                     callbackBinding = binding;
                     break;
                 }

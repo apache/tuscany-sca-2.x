@@ -54,5 +54,9 @@ class HTTPResourceBindingImpl implements HTTPResourceBinding {
     public void setUnresolved(boolean unresolved) {
         // The sample binding is always resolved
     }
+    
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }     
 
 }

@@ -48,4 +48,8 @@ public class TestBinding implements Binding {
     public boolean isUnresolved() {
         return false;
     }
+    
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }     
 }

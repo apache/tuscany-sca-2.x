@@ -53,6 +53,13 @@ public class EJBBindingImpl implements EJBBinding {
      * Whether the binding is unresolved
      */
     private boolean unresolved;
+    
+    /**
+     * Clone the binding
+     */
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }    
 
     /**
      * The type of session for this EJB Binding 

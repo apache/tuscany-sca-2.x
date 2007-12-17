@@ -105,5 +105,11 @@ public class DistributedSCABindingImpl implements DistributedSCABinding {
     public void setUnresolved(boolean unresolved){
     }
     
+    /**
+     * Clone the binding
+     */
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }     
 
 }

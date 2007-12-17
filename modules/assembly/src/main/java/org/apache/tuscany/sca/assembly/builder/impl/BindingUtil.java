@@ -64,7 +64,34 @@ class BindingUtil {
             for (Binding serviceBinding : target) {
                 if (binding.getClass() == serviceBinding.getClass() && 
                     hasCompatiblePolicySets(binding, serviceBinding)) {
-                    
+
+                    try {
+                        Binding cloned = (Binding)binding.clone();
+                        
+                        //Customise the binding name to make it unique 
+                        // regardless of how many bindings or targets there are
+                        cloned.setName(binding.getName() + "#" + serviceBinding.getName());
+                        
+                        // Set the binding URI to the URI of the target service
+                        // that has been matched
+                        if (binding.getURI() == null) {
+                            cloned.setURI(serviceBinding.getURI());
+                        }
+                        
+                        if (binding instanceof OptimizableBinding) {
+                            OptimizableBinding endpoint = ((OptimizableBinding)cloned);
+                            endpoint.setTargetComponent(component);
+                            endpoint.setTargetComponentService(service);
+                            endpoint.setTargetBinding(serviceBinding);
+                        } 
+                           
+                        matched.add(cloned);
+                        break;
+                    } catch (Exception ex) {
+                        // do nothing 
+                    }
+/*                    
+                   
                     Binding cloned = binding;
                     if (binding instanceof OptimizableBinding) {
                         // TODO: We need to clone the reference binding
@@ -85,6 +112,7 @@ class BindingUtil {
                     }
                     matched.add(cloned);
                     break;
+*/                    
                 }
             }
         }

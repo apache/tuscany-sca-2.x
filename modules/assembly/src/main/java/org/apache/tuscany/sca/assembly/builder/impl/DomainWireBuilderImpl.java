@@ -261,7 +261,8 @@ public class DomainWireBuilderImpl {
                                 Binding binding = null;
                                 
                                 for (Binding tmpBinding : reference.getBindings()){
-                                    if ((tmpBinding.getName().equals(targetName) || 
+                                    if ((tmpBinding.getName() != null) &&
+                                        (tmpBinding.getName().equals(targetName) || 
                                          tmpBinding.getName().equals(componentName))){
                                         binding = tmpBinding;
                                     }
@@ -276,7 +277,8 @@ public class DomainWireBuilderImpl {
                                 if (newBinding != null) {
                                     if (binding != null){
                                         // there is a binding already so see if the URI has changed
-                                        if (!binding.getURI().equals(newBinding.getURI())){
+                                        if ((binding.getURI() == null) ||
+                                            (!binding.getURI().equals(newBinding.getURI()))){
                                             binding.setURI(newBinding.getURI());
                                             compositeChanged = true;
                                         }

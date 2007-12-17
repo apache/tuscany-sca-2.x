@@ -86,4 +86,8 @@ class RSSBindingImpl implements RSSBinding, PolicySetAttachPoint {
     public void setRequiredIntents(List<Intent> intents) {
         this.requiredIntents = intents;
     }
+    
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }     
 }
