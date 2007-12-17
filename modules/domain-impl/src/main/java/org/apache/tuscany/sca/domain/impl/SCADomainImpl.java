@@ -862,7 +862,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                         // remove all contributions from this node including the
                         // one that is specifically being removed.
                         for (ContributionModel tmpContributionModel :  node.getContributions().values()){
-                            ((NodeModelImpl)node).getSCANodeManagerService().removeContribution(contributionURI);
+                            ((NodeModelImpl)node).getSCANodeManagerService().removeContribution(tmpContributionModel.getContributionURI());
                         }
                         
                         node.getContributions().clear();

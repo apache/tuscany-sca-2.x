@@ -70,26 +70,26 @@ public class SCANodeManagerServiceImpl implements SCANodeManagerService, SCANode
    
     public void addContribution(String contributionURI, String contributionURL) throws NodeException {
         try {
-            node.addContribution(contributionURI, new URL(contributionURL));
+            node.addContributionFromDomain(contributionURI, new URL(contributionURL), null);
         } catch (MalformedURLException ex){
             throw new NodeException(ex);
         }            
     }
    
     public void removeContribution(String contributionURI) throws NodeException {
-        node.removeContribution(contributionURI);
+        node.removeContributionFromDomain(contributionURI);
     }
 
     public void addToDomainLevelComposite(String compositeName) throws NodeException {
-        node.addToDomainLevelComposite(QName.valueOf(compositeName));       
+        node.addToDomainLevelCompositeFromDomain(QName.valueOf(compositeName));       
     }
     
     public void start() throws NodeException {
-        node.start();
+        node.startFromDomain();
     }
     
     public void stop() throws NodeException {
-        node.stop();
+        node.stopFromDomain();
     }
     
     public void destroyNode() throws NodeException {

@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.node;
 
+import java.net.URL;
+
+import javax.xml.namespace.QName;
+
 /**
  * The SPI for a node
  * 
@@ -27,4 +31,14 @@ package org.apache.tuscany.sca.node;
 public interface SCANodeSPI {
 
     public Object getNodeRuntime();
+    
+    public void startFromDomain() throws NodeException;
+    
+    public void stopFromDomain() throws NodeException;
+    
+    public void addContributionFromDomain(String contributionURI, URL contributionURL, ClassLoader contributionClassLoader ) throws NodeException;   
+    
+    public void removeContributionFromDomain(String contributionURI) throws NodeException;  
+    
+    public void addToDomainLevelCompositeFromDomain(QName compositeQName) throws NodeException;     
 }

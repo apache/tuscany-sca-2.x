@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.node.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.StringBufferInputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URI;
@@ -267,18 +266,153 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
         return null;
     } 
     
-    // SCANode SPI methods
+    // SCANode SPI methods 
     
     public Object getNodeRuntime() {
         return nodeRuntime;
     }
     
+    public void startFromDomain() throws NodeException {
+        if ((!nodeStarted) && (nodeComposite.getIncludes().size() > 0)){
+            startComposites();
+            nodeStarted = true;
+        }
+    }
+    
+    public void stopFromDomain() throws NodeException {
+        if (nodeStarted){
+            stopComposites();
+            nodeStarted = false;             
+        } 
+    }
+    
+    public void addContributionFromDomain(String contributionURI, URL contributionURL, ClassLoader contributionClassLoader ) throws NodeException {
+        
+        if (nodeStarted){
+            throw new NodeException("Can't add contribution " + contributionURI + " when the node is running. Call stop() on the node first");
+        }
+       
+        if (contributionURI == null){
+            throw new NodeException("Contribution URI cannot be null");
+        }
+        
+        if (contributionURL == null){
+            throw new NodeException("Contribution URL cannot be null");
+        }
+        
+        if (contributions.containsKey(contributionURI)) {
+            throw new NodeException("Contribution " + contributionURI + " has already been added");
+        }
+        
+        try {          
+            ModelResolver modelResolver = null;
+            
+            // if the contribution is to be resolved using a separate class loader
+            // then create a new model resolver
+            if (contributionClassLoader != null)  {
+                modelResolver = new ModelResolverImpl(contributionClassLoader);
+            }
+            
+            // Add the contribution to the node
+            ContributionService contributionService = nodeRuntime.getContributionService();
+            Contribution contribution = contributionService.contribute(contributionURI, 
+                                                                       contributionURL, 
+                                                                       modelResolver, 
+                                                                       false);
+            
+            // remember the contribution
+            contributions.put(contributionURI, contribution);
+                
+            // remember all the composites that have been found
+            for (DeployedArtifact artifact : contribution.getArtifacts()) {
+                if (artifact.getModel() instanceof Composite) {
+                    Composite composite = (Composite)artifact.getModel();
+                    composites.put(composite.getName(), composite);
+                    compositeFiles.put(composite.getURI(), composite);
+                }
+            } 
+                    
+        } catch (Exception ex) {
+            throw new NodeException(ex);
+        }        
+    }   
+    
+    public void removeContributionFromDomain(String contributionURI) throws NodeException {
+        
+        if (nodeStarted){
+            throw new NodeException("Can't remove contribution " + contributionURI + " when the node is running. Call stop() on the node first");
+        }
+       
+        if (contributionURI == null){
+            throw new NodeException("Contribution URI cannot be null");
+        }
+        
+        if (!contributions.containsKey(contributionURI)) {
+            throw new NodeException("Contribution " + contributionURI + " has not been added");
+        }        
+        
+        try { 
+
+            Contribution contribution = contributions.get(contributionURI);
+            
+            // remove the local record of composites associated with this contribution
+            for (DeployedArtifact artifact : contribution.getArtifacts()) {
+                if (artifact.getModel() instanceof Composite) {
+                    Composite composite = (Composite)artifact.getModel();
+                    composites.remove(composite.getName());
+                    compositeFiles.remove(composite.getURI());
+                }
+            }            
+        
+            // remove the contribution from the contribution service
+            nodeRuntime.getContributionService().remove(contributionURI);
+            
+            // remove any deployed composites from the node level composite
+            for (Composite composite : contribution.getDeployables()) {
+                nodeComposite.getIncludes().remove(composite);
+            }
+            
+            // remove the local record of the contribution
+            contributions.remove(contributionURI);                
+            
+        } catch (Exception ex) {
+            throw new NodeException(ex);
+        }  
+    }   
+     
+    public void addToDomainLevelCompositeFromDomain(QName compositeQName) throws NodeException {
+        
+        if (nodeStarted){
+            throw new NodeException("Can't add composite " + compositeQName.toString() + " when the node is running. Call stop() on the node first");
+        }
+       
+        // if no composite name is specified add all deployable composites
+        // to the domain
+        if (compositeQName == null){
+            for (Composite composite : composites.values()) {
+                if (!nodeComposite.getIncludes().contains(composite)) {
+                    nodeComposite.getIncludes().add(composite);                        
+                }
+            } 
+        } else {          
+            Composite composite = composites.get(compositeQName);
+            
+            if (composite == null) {
+                throw new NodeException("Composite " + compositeQName.toString() + " not found" );
+            }
+            
+            // if the named composite is not already in the list then deploy it
+            if (!nodeComposite.getIncludes().contains(composite)) {
+                nodeComposite.getIncludes().add(composite);              
+            }
+        }  
+    }
+
     // SCANode API methods 
     
     public void start() throws NodeException {
         if ((!nodeStarted) && (nodeComposite.getIncludes().size() > 0)){
-            startComposites();
-            nodeStarted = true;
+            startFromDomain();
             
             try {
                 scaDomain.registerNodeStart(nodeURI);
@@ -290,8 +424,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
     
     public void stop() throws NodeException {
         if (nodeStarted){
-            stopComposites();
-            nodeStarted = false;
+            stopFromDomain();
             
             try {
                 scaDomain.registerNodeStop(nodeURI);
@@ -344,52 +477,10 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
     
     public void addContribution(String contributionURI, URL contributionURL, ClassLoader contributionClassLoader ) throws NodeException {
         
-        if (nodeStarted){
-            throw new NodeException("Can't add contribution " + contributionURI + " when the node is running. Call stop() on the node first");
-        }
-       
-        if (contributionURI == null){
-            throw new NodeException("Contribution URI cannot be null");
-        }
-        
-        if (contributionURL == null){
-            throw new NodeException("Contribution URL cannot be null");
-        }
-        
-        if (contributions.containsKey(contributionURI)) {
-            throw new NodeException("Contribution " + contributionURI + " has already been added");
-        }
-        
         try {          
-            ModelResolver modelResolver = null;
+            addContributionFromDomain(contributionURI, contributionURL, contributionClassLoader);
             
-            // if the contribution is to be resolved using a separate class loader
-            // then create a new model resolver
-            if (contributionClassLoader != null)  {
-                modelResolver = new ModelResolverImpl(contributionClassLoader);
-            }
-            
-            // Add the contribution to the node
-            ContributionService contributionService = nodeRuntime.getContributionService();
-            Contribution contribution = contributionService.contribute(contributionURI, 
-                                                                       contributionURL, 
-                                                                       modelResolver, 
-                                                                       false);
-            
-            // remember the contribution
-            contributions.put(contributionURI, contribution);
-                
-            // remember all the composites that have been found
-            for (DeployedArtifact artifact : contribution.getArtifacts()) {
-                if (artifact.getModel() instanceof Composite) {
-                    Composite composite = (Composite)artifact.getModel();
-                    composites.put(composite.getName(), composite);
-                    compositeFiles.put(composite.getURI(), composite);
-                }
-            } 
-            
-            // add the contribution to the domain. It will generally already be there
-            // unless the contribution has been added to the node itself. 
+            // add the contribution to the domain. 
             scaDomain.registerContribution(nodeURI, contributionURI, contributionURL.toExternalForm());                  
         
         } catch (Exception ex) {
@@ -397,43 +488,10 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
         }        
     }
 
-    public void removeContribution(String contributionURI) throws NodeException {
-        
-        if (nodeStarted){
-            throw new NodeException("Can't remove contribution " + contributionURI + " when the node is running. Call stop() on the node first");
-        }
-       
-        if (contributionURI == null){
-            throw new NodeException("Contribution URI cannot be null");
-        }
-        
-        if (!contributions.containsKey(contributionURI)) {
-            throw new NodeException("Contribution " + contributionURI + " has not been added");
-        }        
+    public void removeContribution(String contributionURI) throws NodeException {       
         
         try { 
-
-            Contribution contribution = contributions.get(contributionURI);
-            
-            // remove the local record of composites associated with this contribution
-            for (DeployedArtifact artifact : contribution.getArtifacts()) {
-                if (artifact.getModel() instanceof Composite) {
-                    Composite composite = (Composite)artifact.getModel();
-                    composites.remove(composite.getName());
-                    compositeFiles.remove(composite.getURI());
-                }
-            }            
-        
-            // remove the contribution from the contribution service
-            nodeRuntime.getContributionService().remove(contributionURI);
-            
-            // remove any deployed composites from the node level composite
-            for (Composite composite : contribution.getDeployables()) {
-                nodeComposite.getIncludes().remove(composite);
-            }
-            
-            // remove the local record of the contribution
-            contributions.remove(contributionURI);
+            removeContributionFromDomain(contributionURI);
             
             // remove the contribution from the domain. It will generally already be removed
             // unless the contribution has been removed from the node itself. 
@@ -442,7 +500,6 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
         } catch (Exception ex) {
             throw new NodeException(ex);
         }  
-
     }
 
     private void removeAllContributions() throws NodeException {
