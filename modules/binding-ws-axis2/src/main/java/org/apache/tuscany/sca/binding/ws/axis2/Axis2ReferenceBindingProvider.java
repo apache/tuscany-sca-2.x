@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.wsdl.java2wsdl.Java2WSDLHelper;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
@@ -47,7 +48,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
         if (contract == null) {
             contract = reference.getInterfaceContract().makeUnidirectional(false);
             if ((contract instanceof JavaInterfaceContract)) {
-                contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract, wsBinding);
+                contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract, Axis2ServiceBindingProvider.requiresSOAP12(wsBinding));
             }
             wsBinding.setBindingInterfaceContract(contract);
         }

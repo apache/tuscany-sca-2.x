@@ -18,13 +18,20 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.wsdl.java2wsdl.Java2WSDLHelper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -46,7 +53,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
         if (contract == null) {
             contract = service.getInterfaceContract().makeUnidirectional(false);
             if ((contract instanceof JavaInterfaceContract)) {
-                contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract, wsBinding);
+                contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract, requiresSOAP12(wsBinding));
             }
             wsBinding.setBindingInterfaceContract(contract);
         }
@@ -96,4 +103,17 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
         return true;
     }
 
+    private static final QName SOAP12_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0", "soap12");
+
+    protected static boolean requiresSOAP12(WebServiceBinding wsBinding) {
+        if (wsBinding instanceof IntentAttachPoint) {
+            List<Intent> intents = ((IntentAttachPoint)wsBinding).getRequiredIntents();
+            for (Intent intent : intents) {
+                if (SOAP12_INTENT.equals(intent.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
