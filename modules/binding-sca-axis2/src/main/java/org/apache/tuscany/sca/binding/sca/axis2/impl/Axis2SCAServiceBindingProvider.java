@@ -19,12 +19,6 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.axiom.om.OMElement;
@@ -33,11 +27,10 @@ import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceProvider;
-import org.apache.tuscany.sca.binding.ws.axis2.Java2WSDLHelper;
-import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.wsdl.java2wsdl.Java2WSDLHelper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.node.NodeFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -75,7 +68,7 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
         // Turn the java interface contract into a wsdl interface contract
         InterfaceContract contract = service.getInterfaceContract();
         if ((contract instanceof JavaInterfaceContract)) {
-            contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract, null);
+            contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract);
         }
         
         // Set to use the Axiom data binding

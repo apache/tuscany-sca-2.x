@@ -84,6 +84,11 @@
             <version>1.1-incubating-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-wsdl-java2wsdl</artifactId>
+            <version>1.1-incubating-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 
