@@ -92,6 +92,7 @@
                 <module>interface-java</module>
                 <module>interface-java-xml</module>
                 <module>interface-wsdl</module>
+                <module>interface-wsdl-java2wsdl</module>
                 <module>interface-wsdl-xml</module>
                 <module>implementation-bpel</module>
                 <module>implementation-das</module>
