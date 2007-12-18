@@ -527,8 +527,10 @@
                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.work.WorkScheduler</resource>
                                 </transformer>
+                               <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.policy.util.PolicyHandler</resource>
+                                </transformer>
                             </transformers>
-
                         </configuration>
                     </execution>
                 </executions>
