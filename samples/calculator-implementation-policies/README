@@ -7,8 +7,25 @@ The README in the samples directory (the directory above this) provides
 general instructions about building and running samples. Take a look there 
 first. 
 
-If you just want to run it to see what happens open a command prompt, navigate
+
+NOTE : JVM Security Setup up for JAAS
+-------------------------------------
+Before you run this sample its important that to set up the JAAS configuration file location in your 
+JAVA_HOME/jre/lib/security/java.security configuration file as follows: 
+
+- Open the JAVA_HOME/jre/lib/security/java.security file
+- Go to the section titled or commented as 'Default login configuration file' and in there add the 
+following entry : 
+		login.config.url.1=<location of tuscany sca samples>/calculator-implementation-policies/src/main/resources/CalculatorJass.config
+		
+	For example on a Windows machine this might look something like...
+		login.config.url.1=file:///c:/Tuscany/sca/samples/calculator-implementation-policies/src/main/resources/CalculatorJass.config		
+
+
+
+If you just want to run the sample  to see what happens open a command prompt, navigate
 to this sample directory and do:
+
 
 ant run
 
@@ -25,18 +42,27 @@ Sample Overview
 ---------------
 The sample provides the calculator service with a default SCA (java) binding.  The 'logging' policy
 which is handled by the Tuscany SCA java policy-logging module is used in this calculator 
-composite to specify the need for 'logging'.  
+composite to specify the need for 'logging'.  The MultiplyService Component specifies for 'jassAuthentication'
+which is one way of implemention login authentication, using the Java Authentication and Authorization Service.
 
 The logging intent and policyset that is to be used by this calculator application must be 
 defined in the definitions.xml file.  Here we use the policyset structure already defined in
 Tuscany for logging under the policy-logging and hence there is no need to specify the policyset processors 
 and policy handler classes as part of this application.  
 
+Similarly the jaasAuthentication intent and policyset also is defined in the definitions.xml file 
+of this sample.  This sample uses the calculator.security.JaasLoginModule class for handling the 
+authentication functions.  Right now there is a simply matching of userid and passwords that happens in this
+class.  Applications could implement their own sophisticated authentication mechanisms.  For more information
+on how to do this please look up Java Authentication and Authorization Service documentation.  The sample
+also use the calculator.security.CalculatorCallbackHandler to fetch the userid and password to be use for the
+login authentication.  This handler presently uses hardcoded userids and passwords.  Applications could
+typically use this handler to prompt for userid and passwords.
+
 There are two components that provide the calculator service namely 'CalculatorServiceComponent'
 and 'AnotherCalculatorServiceComponent'.  The logging intent is specified for the 'subtract' and 'divide' 
 operations of the 'CalculatorServiceCompnent' implementation, and on the entire implementation 
-(i.e. all operations) for the AddServiceComponent and AnotherCalculatorServiceComponent. 
-
+(i.e. all operations) for the AddServiceComponent and AnotherCalculatorServiceComponent.
 
 The CalculatorClient first exercises the CalculatorServiceComponent calling add, 
 subtract, multiply and divide operations.  This results in logging messages appearing on the 
@@ -44,7 +70,12 @@ console for 'add', 'subtract' and 'divide' operations.  The CalculatorClient the
 AnotherCalculatorServiceComponent calling all the service methods.  This will result in logging messages
 printed on the console for all the operations.  For the 'add' operation there will be two sets of messages
 printed - one that has resulted from specifying the 'logging' intent on the implementation element of the
-AnotherCalculatorServiceComponent and another from specifying the 'logging' intent on the 'AddServiceCompoent'
+'AnotherCalculatorServiceComponent' and another from specifying the 'logging' intent on the 
+'AddServiceComponent'
+
+The jaasAuthentication intent is specified for the 'MultiplyServiceComponent'.  So everytime this component
+is invoke an authentication is attempted and only if it succeeds, is the multiply function is invoked.  The
+console prints messages that denote if the authentication has succeeded or failed.
 
 Thus this sample demonstrates how intents could be applied to either implementations as a whole or to some
 selective operations on an implementation.
@@ -70,6 +101,11 @@ calculator/
                                                 deploys the Calculator.composite. 
                                                 It then calls the deployed Calculator 
                                                 Components services
+       calculator/security		
+       	  JaasLoginModule.java					JaasLoginModule implementation for this sample
+       	  CalculatorCallbackHandler.java		JAAS callbackhandler for fetching userid and password
+			
+		                                                
       resources/
         Calculator.composite                    - the SCA assembly for this sample
         definitions.xml                         - sca definitions file that defines the 'logging' intent 
@@ -77,6 +113,8 @@ calculator/
                                                 used by this application
         CalculatorLogMessages.properties        - A resource bundle contain the log messages to be 
                                                 used.
+        CalculatorJaas.config					- JAAS Login Configuration file
+        
     test/
       java/
         calculator/
@@ -157,49 +195,87 @@ You should see the following output from the test phase. Notice the log messages
  T E S T S
 -------------------------------------------------------
 Running calculator.CalculatorTestCase
-Nov 23, 2007 1:00:11 PM org.apache.tuscany.sca.contribution.processor.ValidatingXMLStreamReader$1 error
-WARNING: XMLSchema validation problem in: file:/F:/LatestTrunk/sca/samples/calculator-impl-policies/target/classes/Ca
-lculator.composite, line: 27, column: 4
+Dec 18, 2007 12:05:06 PM org.apache.tuscany.sca.contribution.processor.ValidatingXMLStreamReader$1 error
+WARNING: XMLSchema validation problem in: file:/F:/LatestTrunk/sca/samples/calculator-implementation-policies/target/
+classes/Calculator.composite, line: 28, column: 4
 cvc-complex-type.2.4.a: Invalid content was found starting with element 'operation'. One of '{WC[##other:"http://www.
 osoa.org/xmlns/sca/1.0"]}' is expected.
-Nov 23, 2007 1:00:12 PM
+Dec 18, 2007 12:05:06 PM
 INFO:  Invoking operation - add
-Nov 23, 2007 1:00:12 PM
+Dec 18, 2007 12:05:06 PM
+FINER: Inovoking operation add with arguments 3.0, 2.0,
+Dec 18, 2007 12:05:06 PM
 INFO:  Returned from operation - add
-Nov 23, 2007 1:00:12 PM
+Dec 18, 2007 12:05:06 PM
+FINER: Returning from operation add with return value 5
+Dec 18, 2007 12:05:06 PM
 INFO:  Invoking operation - subtract
-Nov 23, 2007 1:00:12 PM
+Dec 18, 2007 12:05:06 PM
+FINER: Inovoking operation subtract with arguments 3.0, 2.0,
+Dec 18, 2007 12:05:06 PM
 INFO:  Returned from operation - subtract
-Nov 23, 2007 1:00:12 PM
+Dec 18, 2007 12:05:06 PM
+FINER: Returning from operation subtract with return value 1
+Successfully AUTHENTICATED!!
+Dec 18, 2007 12:05:06 PM
 INFO:  Invoking operation - divide
-Nov 23, 2007 1:00:12 PM
+Dec 18, 2007 12:05:06 PM
+FINER: Inovoking operation divide with arguments 3.0, 2.0,
+Dec 18, 2007 12:05:06 PM
 INFO:  Returned from operation - divide
-Nov 23, 2007 1:00:13 PM org.apache.tuscany.sca.contribution.processor.ValidatingXMLStreamReader$1 error
-WARNING: XMLSchema validation problem in: file:/F:/LatestTrunk/sca/samples/calculator-impl-policies/target/classes/Ca
-lculator.composite, line: 27, column: 4
+Dec 18, 2007 12:05:06 PM
+FINER: Returning from operation divide with return value 1.5
+Dec 18, 2007 12:05:06 PM org.apache.tuscany.sca.contribution.processor.ValidatingXMLStreamReader$1 error
+WARNING: XMLSchema validation problem in: file:/F:/LatestTrunk/sca/samples/calculator-implementation-policies/target/
+classes/Calculator.composite, line: 28, column: 4
 cvc-complex-type.2.4.a: Invalid content was found starting with element 'operation'. One of '{WC[##other:"http://www.
 osoa.org/xmlns/sca/1.0"]}' is expected.
-Nov 23, 2007 1:00:13 PM
+Dec 18, 2007 12:05:06 PM
 INFO:  Invoking operation - add
-Nov 23, 2007 1:00:13 PM
+Dec 18, 2007 12:05:06 PM
+FINER: Inovoking operation add with arguments 3.0, 2.0,
+Dec 18, 2007 12:05:06 PM
 INFO:  Invoking operation - add
-Nov 23, 2007 1:00:13 PM
+Dec 18, 2007 12:05:06 PM
+FINER: Inovoking operation add with arguments 3.0, 2.0,
+Dec 18, 2007 12:05:06 PM
 INFO:  Returned from operation - add
-Nov 23, 2007 1:00:13 PM
+Dec 18, 2007 12:05:06 PM
+FINER: Returning from operation add with return value 5
+Dec 18, 2007 12:05:06 PM
 INFO:  Returned from operation - add
-Nov 23, 2007 1:00:13 PM
+Dec 18, 2007 12:05:06 PM
+FINER: Returning from operation add with return value 5
+Dec 18, 2007 12:05:06 PM
 INFO:  Invoking operation - subtract
-Nov 23, 2007 1:00:13 PM
+Dec 18, 2007 12:05:06 PM
+FINER: Inovoking operation subtract with arguments 3.0, 2.0,
+Dec 18, 2007 12:05:06 PM
 INFO:  Returned from operation - subtract
-Nov 23, 2007 1:00:13 PM
+Dec 18, 2007 12:05:06 PM
+FINER: Returning from operation subtract with return value 1
+Dec 18, 2007 12:05:06 PM
 INFO:  Invoking operation - multiply
-Nov 23, 2007 1:00:13 PM
+Dec 18, 2007 12:05:06 PM
+FINER: Inovoking operation multiply with arguments 3.0, 2.0,
+Successfully AUTHENTICATED!!
+Dec 18, 2007 12:05:06 PM
 INFO:  Returned from operation - multiply
-Nov 23, 2007 1:00:13 PM
+Dec 18, 2007 12:05:06 PM
+FINER: Returning from operation multiply with return value 6
+Dec 18, 2007 12:05:06 PM
 INFO:  Invoking operation - divide
-Nov 23, 2007 1:00:13 PM
+Dec 18, 2007 12:05:06 PM
+FINER: Inovoking operation divide with arguments 3.0, 2.0,
+Dec 18, 2007 12:05:06 PM
 INFO:  Returned from operation - divide
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.985 sec
+Dec 18, 2007 12:05:06 PM
+FINER: Returning from operation divide with return value 1.5
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.823 sec
+
+Results :
+
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
 
 Results :
 
