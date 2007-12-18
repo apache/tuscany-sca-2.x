@@ -45,7 +45,9 @@ public class PolicyHandlingInterceptor implements Interceptor {
             applyPreInvocationPolicies(targetOperation, msg);
             msg = next.invoke(msg);
         } finally {
-            applyPostInvocationPolices(targetOperation, msg);
+            if ( !msg.isFault() ) {
+                applyPostInvocationPolices(targetOperation, msg);
+            }
         }
         return msg;
     }
@@ -65,8 +67,8 @@ public class PolicyHandlingInterceptor implements Interceptor {
     }
 
     private void applyPostInvocationPolices(Object... context) {
-        for (PolicyHandler policyHandler : policyHandlers) {
-            policyHandler.afterInvoke(context);
+        for ( int count = policyHandlers.size() - 1 ; count >= 0 ; --count) {
+            policyHandlers.get(count).afterInvoke(context);
         }
     }
 }

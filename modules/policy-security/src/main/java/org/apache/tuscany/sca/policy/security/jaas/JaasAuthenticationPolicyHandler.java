@@ -46,8 +46,6 @@ public class JaasAuthenticationPolicyHandler implements PolicyHandler {
     }
     
     public void beforeInvoke(Object... context) { 
-        Message msg = null;
-        
         try {
             CallbackHandler callbackHandler = (CallbackHandler)
                 Class.forName(((JaasAuthenticationPolicy)applicablePolicySet.getPolicies().get(0)).
