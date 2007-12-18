@@ -30,13 +30,13 @@ import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ReferenceBindingProvider;
-import org.apache.tuscany.sca.binding.ws.axis2.Java2WSDLHelper;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.wsdl.java2wsdl.Java2WSDLHelper;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.node.NodeFactory;
@@ -81,7 +81,7 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
         // Turn the java interface contract into a wsdl interface contract
         InterfaceContract contract = reference.getInterfaceContract();
         if ((contract instanceof JavaInterfaceContract)) {
-            contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract, null);
+            contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract);
         }
         
         // Set to use the Axiom data binding
