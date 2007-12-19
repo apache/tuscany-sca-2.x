@@ -29,7 +29,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
-import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.MavenInvocationException;
@@ -99,74 +98,75 @@ public class IncrementalBuildMojo extends AbstractBuildMojo {
 
     public void execute() throws MojoExecutionException {
         getLog().info("Building " + project.getName() + " [" + project.getId() + "]");
+        List<String> goals = new ArrayList<String>();
         String type = project.getArtifact().getType();
         if ("pom".equals(type)) {
-            // FIXME: We should try to run "mvn -N" but I cannot find a way to pass -N to the invoker
-            return;
-        }
-        String projectID = id(project);
-
-        Compiler compiler = getCompiler();
-        boolean changed = isSourceChanged(compiler) || isResourceChanged() || isPOMChanged();
-        boolean testChanged = false;
-        if (changed) {
-            modifiedProjectIDs.add(projectID);
-        } else {
-            testChanged = isTestSourceChanged(compiler) || isTestResourceChanged();
-        }
-
-        // Check if a project has compile dependencies on the modified projects
-        // and will need to be recompiled, or has runtime or test dependencies
-        // on the modified projects and needs to be retested
-        List<String> goals = new ArrayList<String>();
-
-        if (changed) {
-            goals.add("clean");
             goals.add("install");
         } else {
-            for (Artifact artifact : (List<Artifact>)project.getCompileArtifacts()) {
-                String artifactID = id(artifact);
-                if (modifiedProjectIDs.contains(artifactID)) {
-                    getLog().info("Project " + projectID
-                        + " depends on modified project "
-                        + artifactID
-                        + " and will be recompiled.");
-                    goals.add("clean");
-                    goals.add("install");
-                    break;
-                }
+            String projectID = id(project);
+
+            Compiler compiler = getCompiler();
+            boolean changed = isSourceChanged(compiler) || isResourceChanged() || isPOMChanged();
+            boolean testChanged = false;
+            if (changed) {
+                modifiedProjectIDs.add(projectID);
+            } else {
+                testChanged = isTestSourceChanged(compiler) || isTestResourceChanged();
             }
 
-            if (goals.isEmpty()) {
-                List<Artifact> artifacts = new ArrayList<Artifact>();
-                artifacts.addAll(project.getRuntimeArtifacts());
-                artifacts.addAll(project.getTestArtifacts());
-                for (Artifact artifact : artifacts) {
+            // Check if a project has compile dependencies on the modified projects
+            // and will need to be recompiled, or has runtime or test dependencies
+            // on the modified projects and needs to be retested
+
+            if (changed) {
+                goals.add("clean");
+                goals.add("install");
+            } else {
+                for (Artifact artifact : (List<Artifact>)project.getCompileArtifacts()) {
                     String artifactID = id(artifact);
                     if (modifiedProjectIDs.contains(artifactID)) {
                         getLog().info("Project " + projectID
                             + " depends on modified project "
                             + artifactID
-                            + " and will be retested.");
-                        goals.add("test");
+                            + " and will be recompiled.");
+                        goals.add("clean");
+                        goals.add("install");
                         break;
                     }
                 }
-            }
-        }
 
-        if (testChanged && goals.isEmpty()) {
-            goals.add("test");
+                if (goals.isEmpty()) {
+                    List<Artifact> artifacts = new ArrayList<Artifact>();
+                    artifacts.addAll(project.getRuntimeArtifacts());
+                    artifacts.addAll(project.getTestArtifacts());
+                    for (Artifact artifact : artifacts) {
+                        String artifactID = id(artifact);
+                        if (modifiedProjectIDs.contains(artifactID)) {
+                            getLog().info("Project " + projectID
+                                + " depends on modified project "
+                                + artifactID
+                                + " and will be retested.");
+                            goals.add("test");
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (testChanged && goals.isEmpty()) {
+                goals.add("test");
+            }
         }
 
         // Invoke Maven with the necessary goals
         if (!goals.isEmpty()) {
-            InvocationRequest request = new DefaultInvocationRequest();
+            DefaultInvocationRequest request = new DefaultInvocationRequest();
             request.setGoals(goals);
             // FIXME: The maven invoker doesn't handle the directory names with spaces
             // request.setLocalRepositoryDirectory(new File(localRepository.getBasedir()));
             request.setInteractive(false);
             request.setShowErrors(true);
+            request.setRecursive(false);
             // request.setDebug(true);
             request.setOffline(settings.isOffline());
             request.setBaseDirectory(project.getBasedir());
