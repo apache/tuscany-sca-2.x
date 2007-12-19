@@ -46,7 +46,7 @@ import org.apache.tuscany.sca.runtime.ReferenceParameters;
  */
 public class Axis2BindingInvoker implements Invoker {
 
-    private ServiceClient serviceClient;
+    private Axis2ServiceClient serviceClient;
     private QName wsdlOperationName;
     private Options options;
     private SOAPFactory soapFactory;
@@ -60,7 +60,7 @@ public class Axis2BindingInvoker implements Invoker {
     public static final QName CALLBACK_ID_REFPARM_QN = new QName(Constants.SCA10_TUSCANY_NS, "CallbackID");
     public static final QName CONVERSATION_ID_REFPARM_QN = new QName(Constants.SCA10_TUSCANY_NS, "ConversationID");
 
-    public Axis2BindingInvoker(ServiceClient serviceClient,
+    public Axis2BindingInvoker(Axis2ServiceClient serviceClient,
                                QName wsdlOperationName,
                                Options options,
                                SOAPFactory soapFactory) {
@@ -134,7 +134,7 @@ public class Axis2BindingInvoker implements Invoker {
         requestMC.setEnvelope(env);
 
         // Axis2 operationClients can not be shared so create a new one for each request
-        OperationClient operationClient = serviceClient.createClient(wsdlOperationName);
+        OperationClient operationClient = serviceClient.getServiceClient().createClient(wsdlOperationName);
         operationClient.setOptions(options);
 
         ReferenceParameters parameters = msg.getTo().getReferenceParameters();

@@ -38,6 +38,7 @@ public class SimpleTestCase extends BaseTest {
             // create and start domains
             nodeA = createNode("http://localhost:8100/nodeA");
             nodeB = createNode("http://localhost:8200/nodeB");
+            testDomain.start();
             nodeA.start();
             nodeB.start();
 

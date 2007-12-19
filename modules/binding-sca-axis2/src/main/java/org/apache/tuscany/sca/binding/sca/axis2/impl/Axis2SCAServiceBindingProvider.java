@@ -214,6 +214,12 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
     }
 
     public void stop() {
+        if (!started) {
+            return;
+        } else {
+            started = false;
+        }
+        
         axisProvider.stop();
     }
 

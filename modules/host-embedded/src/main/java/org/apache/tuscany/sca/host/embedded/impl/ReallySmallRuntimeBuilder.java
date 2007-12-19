@@ -28,7 +28,9 @@ import javax.xml.stream.XMLOutputFactory;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.DomainBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
+import org.apache.tuscany.sca.assembly.builder.impl.DomainWireBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
@@ -153,6 +155,14 @@ public class ReallySmallRuntimeBuilder {
                                                           List<PolicySet> domainPolicySets) {
         return new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, interfaceContractMapper, domainPolicySets, null);
     }
+    
+    public static DomainBuilder createDomainBuilder(AssemblyFactory assemblyFactory,
+            SCABindingFactory scaBindingFactory,
+            IntentAttachPointTypeFactory intentAttachPointTypeFactory,
+            InterfaceContractMapper interfaceContractMapper, 
+            List<PolicySet> domainPolicySets) {
+        return new DomainWireBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, interfaceContractMapper, domainPolicySets, null);
+    }     
 
     /**
      * Create the contribution service used by this domain.

@@ -38,6 +38,7 @@ public class CallbackTestCase extends BaseTest {
             // create and start domains
             nodeA = createNode("http://localhost:8100/nodeE");
             nodeB = createNode("http://localhost:8200/nodeF");
+            testDomain.start();
             nodeA.start();
             nodeB.start();
 

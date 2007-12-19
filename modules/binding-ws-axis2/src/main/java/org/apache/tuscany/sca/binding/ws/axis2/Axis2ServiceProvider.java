@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.PrivilegedAction;
 import java.util.Iterator;
@@ -289,9 +290,20 @@ public class Axis2ServiceProvider {
             jmsSender.stop();
 
         try {
-            configContext.getAxisConfiguration().removeService(wsBinding.getURI());
-        }
-        catch (AxisFault e) {
+            // get the path to the service
+            URI uriPath = new URI(wsBinding.getURI());
+            String stringURIPath = uriPath.getPath();
+            
+            // remove any "/" from the start of the path
+            if (stringURIPath.startsWith("/")) {
+                stringURIPath = stringURIPath.substring(1, stringURIPath.length());
+            } 
+            
+            // remove it from the Axis context
+            configContext.getAxisConfiguration().removeService(stringURIPath);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        } catch (AxisFault e) {
             throw new RuntimeException(e);
         }
     }

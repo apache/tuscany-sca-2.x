@@ -78,12 +78,13 @@ public class DomainDrivenTestCase {
             domain.addToDomainLevelComposite(new QName("http://sample", "CalculatorC"));
             
             domain.startComposite(new QName("http://sample", "CalculatorA"));
+           
             domain.startComposite(new QName("http://sample", "CalculatorB"));
             domain.startComposite(new QName("http://sample", "CalculatorC"));
             
             calculatorServiceA = domain.getService(CalculatorService.class, "CalculatorServiceComponentA");
             calculatorServiceB = domain.getService(CalculatorService.class, "CalculatorServiceComponentB");
-            
+ 
             
         } catch(Exception ex){
             ex.printStackTrace();
@@ -99,6 +100,12 @@ public class DomainDrivenTestCase {
         nodeC.destroy();
         domain.destroy();
     }
+    
+    //@Test
+    public void testKeepServerRunning() throws Exception {
+        System.out.println("press enter to continue");
+        System.in.read();
+    }      
 
     @Test
     public void testCalculator() throws Exception {       

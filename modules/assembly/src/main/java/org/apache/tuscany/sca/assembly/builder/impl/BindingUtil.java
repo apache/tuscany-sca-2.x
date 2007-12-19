@@ -70,7 +70,11 @@ class BindingUtil {
                         
                         //Customise the binding name to make it unique 
                         // regardless of how many bindings or targets there are
-                        cloned.setName(binding.getName() + "#" + serviceBinding.getName());
+                        if ( component != null){
+                            cloned.setName(binding.getName() + "#" + component.getName() + "/" + serviceBinding.getName());
+                        } else {
+                            cloned.setName(binding.getName() + "#" + serviceBinding.getName());
+                        }
                         
                         // Set the binding URI to the URI of the target service
                         // that has been matched
@@ -89,30 +93,7 @@ class BindingUtil {
                         break;
                     } catch (Exception ex) {
                         // do nothing 
-                    }
-/*                    
-                   
-                    Binding cloned = binding;
-                    if (binding instanceof OptimizableBinding) {
-                        // TODO: We need to clone the reference binding
-                        try {
-                            cloned = (Binding)((OptimizableBinding)binding).clone();
-                            OptimizableBinding endpoint = ((OptimizableBinding)cloned);
-                            endpoint.setTargetComponent(component);
-                            endpoint.setTargetComponentService(service);
-                            endpoint.setTargetBinding(serviceBinding);
-                            cloned.setURI(serviceBinding.getURI());
-                        } catch (Exception e) {
-                            // warning("The binding doesn't support clone: " + binding.getClass().getSimpleName(), binding);
-                        }
-                    } else {
-                        if (binding.getURI() == null) {
-                            binding.setURI(serviceBinding.getURI());
-                        }
-                    }
-                    matched.add(cloned);
-                    break;
-*/                    
+                    }                   
                 }
             }
         }

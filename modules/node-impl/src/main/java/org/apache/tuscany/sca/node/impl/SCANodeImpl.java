@@ -47,6 +47,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.builder.DomainBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.DomainWireBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -113,7 +114,9 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
     NodeFactoryImpl nodeFactory;
     
     // domain level wiring 
-    DomainWireBuilderImpl domainWireBuilder = new DomainWireBuilderImpl();
+    DomainBuilder domainBuilder;
+    List<Binding> removeCandidates = new ArrayList<Binding>();
+    List<Binding> addCandidates = new ArrayList<Binding>();
     
        
     // methods defined on the implementation only
@@ -185,6 +188,9 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             // create a node runtime for the domain contributions to run on
             nodeRuntime = new ReallySmallRuntime(nodeClassLoader);
             nodeRuntime.start();
+            
+            // get the domain builder
+            domainBuilder = nodeRuntime.getDomainBuilder();            
             
             // configure the default port and path for this runtime
             int port = URI.create(nodeURI).getPort();
@@ -689,7 +695,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
                 // the node has more than one composite and is stand alone
                 // If the node is not stand alone the domain will do this
                 if (domainURI == null){
-                    domainWireBuilder.wireDomain(nodeComposite);
+                    domainBuilder.wireDomain(nodeComposite);
                 }
                 
                 for (Composite composite : nodeComposite.getIncludes()) {
@@ -830,6 +836,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             throw new NodeException(ex);
         }       
         
+/*        
         // for each component in the composite compare it against the live component
         for (Component newComponent : newComposite.getComponents()){
             for (Component component : composite.getComponents()){         
@@ -906,7 +913,105 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
         }
         
         // TODO - Compare other parts of the composite?
- 
-    }  
+    } 
+*/
+        
+        // for each component in the composite compare it against the live component
+        for (Component newComponent : newComposite.getComponents()){
+            for (Component component : composite.getComponents()){         
+                if (component.getName().equals(newComponent.getName())){
+                    // compare the component references
+                    for (Reference newReference : newComponent.getReferences()){
+                        for (Reference reference : component.getReferences()) {           
+                            if (reference.getName().equals(newReference.getName())) {
+                                boolean referenceChanged = false;
+                                removeCandidates.clear();
+                                addCandidates.clear();
+                                
+                                for (Binding newBinding : newReference.getBindings()){
+                                    boolean bindingFound = false;
+                                    for (Binding binding : reference.getBindings()){ 
+                                        // find the matching target service binding       
+                                        if (binding.getName().equals(newBinding.getName())){
+                                            if ((binding.getURI() != null) && 
+                                                (newBinding.getURI() != null) &&
+                                                !binding.getURI().equals(newBinding.getURI())){
+                                                binding.setURI(newBinding.getURI());
+                                                referenceChanged = true;
+                                                
+                                                logger.log(Level.INFO, "Updating binding " + 
+                                                                       component.getName() + 
+                                                                       " reference " + 
+                                                                       reference.getName() +
+                                                                       " binding " + 
+                                                                       binding.getClass().getName() + 
+                                                                       " URI " + 
+                                                                       binding.getURI());
+                                            }
+                                            bindingFound = true;
+                                        } else {
+                                            removeCandidates.add(binding);
+                                        }
+                                    }
+                                    
+                                    if (bindingFound == false){
+                                        addCandidates.add(newBinding);
+                                    }
+
+                                }
+                                
+                                for (Binding addBinding : addCandidates){
+                                    reference.getBindings().add(addBinding);
+                                    referenceChanged = true;
+                                    logger.log(Level.INFO, "Adding binding " + 
+                                            component.getName() + 
+                                            " reference " + 
+                                            reference.getName() +
+                                            " binding " + 
+                                            addBinding.getClass().getName() + 
+                                            " URI " + 
+                                            addBinding.getURI());                                        
+                                }
+                                
+                                // remove all of the old bindings
+                                for (Binding removeBinding : removeCandidates){
+                                    reference.getBindings().remove(removeBinding);
+                                    referenceChanged = true;
+                                    logger.log(Level.INFO, "Removing binding " + 
+                                            component.getName() + 
+                                            " reference " + 
+                                            reference.getName() +
+                                            " binding " + 
+                                            removeBinding.getClass().getName() + 
+                                            " URI " + 
+                                            removeBinding.getURI());
+                                }
+                                
+                                // if the node is running restart the reference and the component that holds it
+                                if (referenceChanged && nodeStarted){
+                                    try {
+                                        nodeRuntime.getCompositeActivator().stop((RuntimeComponent)component);
+                                        nodeRuntime.getCompositeActivator().deactivate((RuntimeComponent)component, 
+                                                (RuntimeComponentReference)reference);
+                                        nodeRuntime.getCompositeActivator().start((RuntimeComponent)component, 
+                                                (RuntimeComponentReference)reference);
+                                        nodeRuntime.getCompositeActivator().start((RuntimeComponent)component);
+                                       
+                                    } catch (Exception ex) {
+                                        throw new NodeException(ex);
+                                    }
+                                    
+                                }                                
+                            }
+                        }
+                    }
+                    
+                    // TODO - compare other parts of the component
+                }
+            }
+        }
+        
+        // TODO - Compare other parts of the composite?
+    }
 
 }

@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.DomainBuilder;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.DefaultContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -71,6 +72,7 @@ public class ReallySmallRuntime {
     private ContributionService contributionService;
     private CompositeActivator compositeActivator;
     private CompositeBuilder compositeBuilder;
+    private DomainBuilder domainBuilder;    
     private WorkScheduler workScheduler;
     private ScopeRegistry scopeRegistry;
     private ProxyFactory proxyFactory;
@@ -160,6 +162,14 @@ public class ReallySmallRuntime {
                                                                             intentAttachPointTypeFactory,
                                                                             mapper,
                                                                             domainPolicySets);
+
+        //Create a domain builder
+        domainBuilder = ReallySmallRuntimeBuilder.createDomainBuilder(assemblyFactory,
+                                                                      scaBindingFactory,
+                                                                      intentAttachPointTypeFactory,
+                                                                      mapper,
+                                                                      domainPolicySets);
+        
         if (logger.isLoggable(Level.FINE)) {
             long end = System.currentTimeMillis();
             logger.fine("The tuscany runtime is started in " + (end - start) + " ms.");
@@ -223,6 +233,10 @@ public class ReallySmallRuntime {
         return assemblyFactory;
     }
 
+    public DomainBuilder getDomainBuilder() {
+        return domainBuilder;
+    }
+    
     @SuppressWarnings("unchecked")
     private List<ModuleActivator> loadModules(ExtensionPointRegistry registry) throws ActivationException {
 
