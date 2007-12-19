@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.DomainBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.DomainWireBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -108,7 +109,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
     protected Composite domainComposite;
     
     // the logic for wiring up references and services at the domain level
-    protected DomainWireBuilderImpl domainWireBuilder = new DomainWireBuilderImpl();
+    protected DomainBuilder domainBuilder;
     
     // Used to pipe dummy node information into the domain management runtime
     // primarily so that the sca binding can resolve endpoints. 
@@ -155,6 +156,9 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             // create a runtime for the domain management services to run on
             domainManagementRuntime = new ReallySmallRuntime(domainClassLoader);
             domainManagementRuntime.start();
+            
+            // get the domain builder
+            domainBuilder = domainManagementRuntime.getDomainBuilder();            
             
             // Configure the default server port and path
             int port = URI.create(domainModel.getDomainURI()).getPort();
@@ -245,7 +249,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
     }          
     
     private void notifyDomainChange() throws DomainException {
-        List<Composite> changedComposites = domainWireBuilder.wireDomain(domainComposite);
+        List<Composite> changedComposites = domainBuilder.wireDomain(domainComposite);
         
         // notify nodes that have composites that the composites have changed
         for (Composite composite : changedComposites){
@@ -544,8 +548,6 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                             domainModel.getDeployedComposites().put(compositeQName, compositeModel);
                             domainModel.getDomainLevelComposite().getIncludes().add(compositeModel.getComposite());
                         }
-                        
-                        // TODO - resolve and unresolved references
                     }
                 }   
             }
@@ -574,10 +576,10 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         } 
         
         // TODO - only interested if multiplicity is <= 1
-        componentName = domainWireBuilder.getComponentNameFromReference(targetServiceName);
-        serviceName = domainWireBuilder.getServiceNameFromReference(targetServiceName);
+        componentName = domainBuilder.getComponentNameFromReference(targetServiceName);
+        serviceName = domainBuilder.getServiceNameFromReference(targetServiceName);
         
-        domainWireBuilder.updateDomainLevelServiceURI(domainComposite, targetServiceName, bindingClassName, URL);        
+        domainBuilder.updateDomainLevelServiceURI(domainComposite, targetServiceName, bindingClassName, URL);        
         
         // find the node with the service
         NodeModel node = domainModel.getNodes().get(nodeURI);     
@@ -609,10 +611,6 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                                       "that isn't registered");
         }
 
-        // TODO - create and even list for this to separate
-        //        the incoming call from the node notifications
-        //notifyServiceChange(targetServiceName, bindingClassName);
-        //notifyDomainChange();
     }    
      
     public void unregisterServiceEndpoint(String domainURI, String nodeURI, String serviceName, String bindingClassName) throws DomainException{
@@ -628,9 +626,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         node.getServices().remove(shortServiceName + bindingClassName);
         
         logger.log(Level.FINE, "Removed service: " +  serviceName );   
-        
-        //notifyServiceChange(serviceName, bindingClassName);
-        //notifyDomainChange();
+
     }
        
     public String findServiceEndpoint(String domainURI, String serviceName, String bindingName) throws DomainException{
@@ -670,7 +666,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         for (NodeModel node : domainModel.getNodes().values()){
             Service service = null;
             for (CompositeModel compositeModel : node.getDeployedComposites().values()){
-                service = domainWireBuilder.findServiceForReference(compositeModel.getComposite(), serviceName);
+                service = domainBuilder.findServiceForReference(compositeModel.getComposite(), serviceName);
                 if (service != null) {
                     nodeURI = node.getNodeURI();
                     break;
@@ -868,6 +864,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                         node.getContributions().clear();
                         node.getDeployedComposites().clear();
                         node.setLifecycleState(LifecyleState.AVAILABLE);
+                        node.getServices().clear();
                     } catch (Exception ex) {
                         // TODO - collate errors and report
                         ex.printStackTrace();

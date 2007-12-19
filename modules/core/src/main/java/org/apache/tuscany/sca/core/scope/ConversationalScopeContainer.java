@@ -149,7 +149,9 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
             if (msgContext != null) {
                 msgContext.getTo().getReferenceParameters().setConversationID(contextId);
             }
-        }
+        }    
+        
+        contextId = contextId;
 
         InstanceLifeCycleWrapper anInstanceWrapper = this.instanceLifecycleCollection.get(contextId);
 
@@ -163,8 +165,9 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
         // If an existing instance is found return it only if its not expired and update its 
         // last referenced time. 
         else {
-            if (anInstanceWrapper.isExpired())
+            if (anInstanceWrapper.isExpired()) {               
                 throw new ConversationEndedException();
+            }
             anInstanceWrapper.updateLastReferencedTime();
         }
 
@@ -188,6 +191,8 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
      *                and reset when the component instance is removed
      */
     public void addWrapperReference(Object existingContextId, Object contextId) throws TargetResolutionException {
+       
+        
         // get the instance wrapper via the existing id
         InstanceLifeCycleWrapper existingInstanceWrapper = this.instanceLifecycleCollection.get(existingContextId);
         InstanceLifeCycleWrapper newInstanceWrapper = this.instanceLifecycleCollection.get(contextId);

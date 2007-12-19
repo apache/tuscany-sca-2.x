@@ -90,5 +90,10 @@ public class EchoBindingImpl implements EchoBinding, PolicySetAttachPoint {
         this.requiredIntents = intents;
         
     }
+    
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }    
 
 }

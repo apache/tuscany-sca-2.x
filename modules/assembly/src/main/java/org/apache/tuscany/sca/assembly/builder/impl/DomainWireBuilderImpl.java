@@ -45,20 +45,34 @@ import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
+import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
+import org.apache.tuscany.sca.assembly.builder.DomainBuilder;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.ProfileIntent;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
 
-public class DomainWireBuilderImpl {
+public class DomainWireBuilderImpl implements DomainBuilder {
+    
+    private CompositeWireBuilderImpl wireBuilder;
+    
+    public DomainWireBuilderImpl(AssemblyFactory assemblyFactory,
+            SCABindingFactory scaBindingFactory,
+            IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
+            InterfaceContractMapper interfaceContractMapper,
+            List<PolicySet> domainPolicySets,
+            CompositeBuilderMonitor monitor) {
+        wireBuilder = new CompositeWireBuilderImpl(assemblyFactory, interfaceContractMapper, domainPolicySets, monitor);
+    }
     
     public String getComponentNameFromReference(String referenceName){
         // Extract the component name
@@ -186,64 +200,20 @@ public class DomainWireBuilderImpl {
                     binding.setURI(URI);
                     break;
                 }
-            }
-/*
-            // update any references that refer to this service
-            List<Reference> referenceList = new ArrayList<Reference>();
-            
-            for (Composite composite : domainLevelComposite.getIncludes()){
-                referenceList.addAll(findReferenceForService(composite, referenceName));
-            }
-           
-            for (Reference reference : referenceList){
-                // find if a  bindings that are already resolved against the target
-                Binding binding = null;
-                
-                for (Binding tmpBinding : reference.getBindings()){
-                    if (tmpBinding.getClass().getName().equals(bindingClassName) &&
-                        (tmpBinding.getName().equals(referenceName) || 
-                                tmpBinding.getName().equals(componentName))){
-                        binding = tmpBinding;
-                    }
-                }
-                
-                if (binding == null) {
-                    // find the named target and if it's not already resolved resolve it  
-                    for (ComponentService targetService : reference.getTargets()){
-                        if ( (targetService.getName().equals(referenceName) || targetService.getName().equals(componentName) ) &&
-                             targetService.isUnresolved()){
-                            
-                            List<Binding> source = targetService.getBindings();
-                            List<Binding> target = service.getBindings();
-                            
-                            // Resolve the binding that will be used
-                            // TODO - this cast to ComponentReference should not be here as the service
-                            //        could be a composite level service
-                            binding = BindingUtil.matchBinding(null, (ComponentService)service, source, target);
-                            
-                            if ( binding != null){
-                                // put the selected binding into the reference 
-                                Binding clonedBinding = binding;//.clone();
-                                reference.getBindings().remove(binding);
-                                reference.getBindings().add(clonedBinding);
-                            }
-                        }
-                    }
-                }
-                
-                if ( binding != null){
-                    binding.setURI(URI);
-                    binding.setName(referenceName);
-                }   
-            }
- */            
+            }        
         }   
     }
 
     public List<Composite> wireDomain(Composite domainLevelComposite){
         List<Composite> changedComposites = new ArrayList<Composite>();
         
-        // process included composites
+        // process wires
+        
+        // autowire
+        
+        // wire by impl?
+        
+        // process all wired references
         for(Composite composite : domainLevelComposite.getIncludes()) {
             boolean compositeChanged = false;
             for(Component component : composite.getComponents()){
@@ -251,8 +221,30 @@ public class DomainWireBuilderImpl {
                     for (ComponentService targetService : reference.getTargets()){
                         String targetName = targetService.getName();
                         String componentName = getComponentNameFromReference(targetName);
+                        String serviceName = getServiceNameFromReference(targetName);
                         
-                        Service service = findDomainLevelService(domainLevelComposite, targetName);
+                        Service service = null;
+                        Component serviceComponent = null;
+                        
+                        // find the real target service in the domain
+                        for(Composite tmpComposite : domainLevelComposite.getIncludes()) {
+                            for (Component tmpComponent: tmpComposite.getComponents()) {
+                                if (tmpComponent.getName().equals(componentName)){
+                                    serviceComponent = tmpComponent;
+                                    if (tmpComponent.getServices().size() > 1) {
+                                        for (Service tmpService: tmpComponent.getServices()) {
+                                            if (tmpService.getName().equals(serviceName)){
+                                                service = tmpService; 
+                                                break;
+                                            }
+                                        }
+                                    } else {
+                                        service = tmpComponent.getServices().get(0);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                         
                         if ( targetService.isUnresolved()){
                             
@@ -262,16 +254,18 @@ public class DomainWireBuilderImpl {
                                 
                                 for (Binding tmpBinding : reference.getBindings()){
                                     if ((tmpBinding.getName() != null) &&
-                                        (tmpBinding.getName().equals(targetName) || 
-                                         tmpBinding.getName().equals(componentName))){
+                                        (tmpBinding.getName().startsWith(reference.getName() + "#" + targetName))){
                                         binding = tmpBinding;
                                     }
                                 }
 
                                 // Resolve the binding that should be used for this target
+                                // TODO - hang onto the old bindings at the domain level, i.e. 
+                                //        don't rely on the target objects as we still need the
+                                //        bindings if we are going to do autowiring 
                                 List<Binding> source = targetService.getBindings();
                                 List<Binding> target = service.getBindings();
-                                Binding newBinding = BindingUtil.matchBinding(null, (ComponentService)service, source, target);
+                                Binding newBinding = BindingUtil.matchBinding(serviceComponent, (ComponentService)service, source, target);
                                 
                                 // update the existing binding to the new binding if required
                                 if (newBinding != null) {
@@ -284,9 +278,7 @@ public class DomainWireBuilderImpl {
                                         }
                                     } else {
                                         // this is a newly configured binding so add it
-                                        Binding clonedBinding = newBinding;//.clone();
-                                        clonedBinding.setName(targetName);
-                                        reference.getBindings().add(clonedBinding);
+                                        reference.getBindings().add(newBinding);
                                         compositeChanged = true;
                                     }
                                 }
@@ -294,29 +286,18 @@ public class DomainWireBuilderImpl {
                                 // Do nothing - the target service hasn't been contributed yet
                             }
                         } else {
-                            // this is a wired reference within a composite. check that the 
-                            // reference and service binding uris match
-                            
-                            // TODO - If we had the name of the target service stored on the 
-                            //        binding we could go straight to it
-                            // Resolve the binding that should be used for this target
-                            List<Binding> source = service.getBindings();
-                            List<Binding> target = reference.getBindings();
-                            Binding newBinding = BindingUtil.matchBinding(null, (ComponentService)service, source, target);
-                            
-                            if (newBinding instanceof SCABinding){
-                                // do nothing as it will already be sorted
-                            } else {
-                                // find this binding in the reference and copy the URL
-                                for (Binding binding : reference.getBindings()){
-                                    if ((binding.getClass() == newBinding.getClass()) && 
-                                        (!binding.getURI().equals(newBinding.getURI()))){
-                                        binding.setURI(newBinding.getURI());
-                                        compositeChanged = true;
+                            // find the reference binding with the right name 
+                            for (Binding refBinding : reference.getBindings()){
+                                if ((refBinding.getName() != null) &&
+                                    (refBinding.getName().startsWith(reference.getName() + "#" + targetName))){
+                                    // find the matching service binding
+                                    for (Binding serviceBinding : service.getBindings()){
+                                        if (refBinding.getClass() == serviceBinding.getClass()){
+                                            refBinding.setURI(serviceBinding.getURI());
+                                        }
                                     }
-                                }
+                                }  
                             }
-
                         }
                     }
                 }
@@ -325,14 +306,7 @@ public class DomainWireBuilderImpl {
             if (compositeChanged) {
                 changedComposites.add(composite);
             }
-        }
-        
-        // process wires
-        
-        // autowire
-        
-        // wire by impl?
-        
+        }       
         
         return changedComposites;
     }

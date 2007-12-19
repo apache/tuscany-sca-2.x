@@ -66,19 +66,19 @@ public class DomainInMemoryTestCase {
             
             nodeA = nodeFactory.createSCANode("http://localhost:8085/nodeA", "http://localhost:9999");
             nodeA.addContribution("nodeA", cl.getResource("nodeA/"));
-            nodeA.addToDomainLevelComposite(new QName("http://sample", "Calculator"));
+            nodeA.addToDomainLevelComposite(new QName("http://sample", "CalculatorA"));
             nodeA.start();
 
             
             nodeB = nodeFactory.createSCANode("http://localhost:8086/nodeB", "http://localhost:9999");
             nodeB.addContribution("nodeB", cl.getResource("nodeB/"));
-            nodeB.addToDomainLevelComposite(new QName("http://sample", "Calculator"));
+            nodeB.addToDomainLevelComposite(new QName("http://sample", "CalculatorB"));
             nodeB.start();
 
             
             nodeC = nodeFactory.createSCANode("http://localhost:8087/nodeC", "http://localhost:9999");
             nodeC.addContribution("nodeC", cl.getResource("nodeC/"));
-            nodeC.addToDomainLevelComposite(new QName("http://sample", "Calculator"));
+            nodeC.addToDomainLevelComposite(new QName("http://sample", "CalculatorC"));
             nodeC.start();
 
             SCADomainFinder domainFinder = SCADomainFinder.newInstance();
@@ -89,7 +89,7 @@ public class DomainInMemoryTestCase {
             calculatorServiceB = nodeB.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentB");
             
             //addServiceB = domain.getService(AddService.class, "AddServiceComponentB");
-            addServiceB = nodeA.getDomain().getService(AddService.class, "AddServiceComponentB");
+            //addServiceB = nodeA.getDomain().getService(AddService.class, "AddServiceComponentB");
             
         } catch(Exception ex){
             System.err.println(ex.toString());

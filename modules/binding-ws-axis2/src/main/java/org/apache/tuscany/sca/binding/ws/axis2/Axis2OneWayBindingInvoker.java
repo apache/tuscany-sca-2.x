@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.invocation.Message;
 
 public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
 
-    public Axis2OneWayBindingInvoker(ServiceClient serviceClient,
+    public Axis2OneWayBindingInvoker(Axis2ServiceClient serviceClient,
                                      QName wsdlOperationName,
                                      Options options,
                                      SOAPFactory soapFactory) {

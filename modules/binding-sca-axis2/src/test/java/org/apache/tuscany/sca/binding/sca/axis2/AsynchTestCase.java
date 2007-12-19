@@ -40,6 +40,7 @@ public class AsynchTestCase extends BaseTest {
             // create and start domains
             nodeA = createNode("http://localhost:8100/nodeG");
             nodeB = createNode("http://localhost:8200/nodeH");
+            testDomain.start();
             nodeA.start();
             nodeB.start();
 

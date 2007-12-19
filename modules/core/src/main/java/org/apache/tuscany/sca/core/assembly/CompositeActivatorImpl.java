@@ -191,8 +191,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param reference
      */
     private void resolveTargets(RuntimeComponentReference reference) {
-        // Support for distributed domain follows
-
+        
+/* Not used now that domain wires are created using the domain wire builder
         // go over any targets that have not been resolved yet (as they are running on other nodes)
         // and try an resolve them remotely
         // TODO - this should work for any kind of wired binding but the only wireable binding 
@@ -235,7 +235,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                             // warning("The binding doesn't support clone: " + binding.getClass().getSimpleName(), binding);
                         }
                     } else {
-                        /*
+                        
                          * Just leave the binding as it. It will be filled in later 
                          * when the node resolves the targets
                         throw new IllegalStateException(
@@ -243,11 +243,12 @@ public class CompositeActivatorImpl implements CompositeActivator {
                                                             .getName()
                                                             + " and target: "
                                                             + service.getName());
-                        */
+                     
                     }
                 }
             }
         }
+*/        
     }
 
     /**

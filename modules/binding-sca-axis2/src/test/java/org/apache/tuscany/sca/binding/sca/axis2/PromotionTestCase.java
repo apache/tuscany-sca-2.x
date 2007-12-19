@@ -35,6 +35,7 @@ public class PromotionTestCase extends BaseTest {
             // create and start domains
             nodeA = createNode("http://localhost:8100/nodeC");
             nodeB = createNode("http://localhost:8200/nodeD");
+            testDomain.start();
             nodeA.start();
             nodeB.start();
 

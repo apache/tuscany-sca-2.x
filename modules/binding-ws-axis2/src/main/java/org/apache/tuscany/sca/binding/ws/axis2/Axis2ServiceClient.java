@@ -86,11 +86,17 @@ public class Axis2ServiceClient {
                               MessageFactory messageFactory) {
 
         this.wsBinding = wsBinding;
-        this.serviceClient = createServiceClient();
     }
 
     protected void start() {
+        if (serviceClient == null){
+            this.serviceClient = createServiceClient();
+        }
     }
+    
+    public ServiceClient getServiceClient() {
+        return serviceClient;
+    }    
 
     /**
      * Create an Axis2 ServiceClient
@@ -254,13 +260,17 @@ public class Axis2ServiceClient {
     }
 
     protected void stop() {
-        // close all connections that we have initiated, so that the jetty server
-        // can be restarted without seeing ConnectExceptions
-        HttpClient httpClient =
-            (HttpClient)serviceClient.getServiceContext().getConfigurationContext()
-                .getProperty(HTTPConstants.CACHED_HTTP_CLIENT);
-        if (httpClient != null)
-            ((MultiThreadedHttpConnectionManager)httpClient.getHttpConnectionManager()).shutdown();
+        if (serviceClient != null){
+            // close all connections that we have initiated, so that the jetty server
+            // can be restarted without seeing ConnectExceptions
+            HttpClient httpClient =
+                (HttpClient)serviceClient.getServiceContext().getConfigurationContext()
+                    .getProperty(HTTPConstants.CACHED_HTTP_CLIENT);
+            if (httpClient != null)
+                ((MultiThreadedHttpConnectionManager)httpClient.getHttpConnectionManager()).shutdown();
+            
+            serviceClient = null;
+        }
     }
 
     /**
@@ -288,9 +298,9 @@ public class Axis2ServiceClient {
 
         Axis2BindingInvoker invoker;
         if (operation.isNonBlocking()) {
-            invoker = new Axis2OneWayBindingInvoker(serviceClient, wsdlOperationQName, options, soapFactory);
+            invoker = new Axis2OneWayBindingInvoker(this, wsdlOperationQName, options, soapFactory);
         } else {
-            invoker = new Axis2BindingInvoker(serviceClient, wsdlOperationQName, options, soapFactory);
+            invoker = new Axis2BindingInvoker(this, wsdlOperationQName, options, soapFactory);
         }
         return invoker;
     }
