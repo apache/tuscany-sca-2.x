@@ -44,8 +44,8 @@ public class LaunchCloud {
         URL assetsContribution = new File(new File("../assets") + "/target/classes").toURL();
         
         SCANode catalogsNode = nodeFactory.createSCANode("http://localhost:8200/cloud", "http://localhost:9998");
-        catalogsNode.addContribution("http://cloud", cloudContribution);
         catalogsNode.addContribution("http://assets", assetsContribution);
+        catalogsNode.addContribution("http://cloud", cloudContribution);
         catalogsNode.addToDomainLevelComposite(new QName("http://cloud", "catalogs"));
         // the ejb component simply provides the meta data required to locate the 
         // EJB running in Geronimo
