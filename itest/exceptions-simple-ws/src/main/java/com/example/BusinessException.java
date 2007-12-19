@@ -28,14 +28,18 @@ public class BusinessException extends Exception {
 
     public BusinessException(String message) {
         super(message);
-        setMessage(message);
+        setDetailMessage(message);
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public String getDetailMessage() {
+        return message;
+    }
+
+    public void setDetailMessage(String message) {
         this.message = message;
     }
 }
