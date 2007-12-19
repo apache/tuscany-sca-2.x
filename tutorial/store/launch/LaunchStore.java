@@ -19,6 +19,7 @@
 
 package launch;
 
+import java.io.File;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
@@ -30,11 +31,15 @@ import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 public class LaunchStore {
     public static void main(String[] args) throws Exception {
         System.out.println("Starting ...");
+        
+        URL storeContribution = new URL(new File(".").getAbsolutePath() + "/target/classes");
+        URL assetsContribution = new URL(new File("../assets").getAbsolutePath() + "/target/classes");
+        
         SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         SCANode node = nodeFactory.createSCANode(null, "http://localhost:9998");
         
-        URL contribution = SCAContributionUtil.findContributionFromClass(LaunchStore.class);
-        node.addContribution("http://store", contribution);
+        node.addContribution("http://store", storeContribution);
+        node.addContribution("http://assets", assetsContribution);
         
         node.addToDomainLevelComposite(new QName("http://store", "store"));
         node.start();

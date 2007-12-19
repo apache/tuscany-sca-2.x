@@ -19,6 +19,7 @@
 
 package launch;
 
+import java.io.File;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
@@ -27,7 +28,6 @@ import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainFactory;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
-import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 
 
 public class LaunchCloud {
@@ -39,19 +39,23 @@ public class LaunchCloud {
         SCADomain domain = domainFactory.createSCADomain("http://localhost:9998");
         System.out.println("Domain controller ready for big business !!!");
         
+        
+        URL cloudContribution = new File(new File(".") + "/target/classes").toURL();
+        URL assetsContribution = new File(new File("../assets") + "/target/classes").toURL();
+        
         SCANode catalogsNode = nodeFactory.createSCANode("http://localhost:8200/cloud", "http://localhost:9998");
-        URL catalogsContribution = SCAContributionUtil.findContributionFromClass(LaunchCloud.class);
-        catalogsNode.addContribution("http://cloud", catalogsContribution);
+        catalogsNode.addContribution("http://cloud", cloudContribution);
+        catalogsNode.addContribution("http://assets", assetsContribution);
         catalogsNode.addToDomainLevelComposite(new QName("http://cloud", "catalogs"));
         // the ejb component simply provides the meta data required to locate the 
         // EJB running in Geronimo
-        catalogsNode.addToDomainLevelComposite(new QName("http://store", "catalog-jee"));
+//        catalogsNode.addToDomainLevelComposite(new QName("http://store", "catalog-jee"));
         catalogsNode.start();
         System.out.println("catalogs.composite ready for big business !!!");
         
         SCANode currencyNode = nodeFactory.createSCANode("http://localhost:8300/cloud", "http://localhost:9998");
-        URL currencyContribution = SCAContributionUtil.findContributionFromClass(LaunchCloud.class);
-        currencyNode.addContribution("http://cloud", currencyContribution);
+        currencyNode.addContribution("http://cloud", cloudContribution);
+        catalogsNode.addContribution("http://assets", assetsContribution);
         currencyNode.addToDomainLevelComposite(new QName("http://cloud", "currency"));
         currencyNode.start();
         System.out.println("currency.composite ready for big business !!!");    
