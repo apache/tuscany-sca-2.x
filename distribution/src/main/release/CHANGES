@@ -7,7 +7,9 @@ TODO
   * ???
 - Better JMS support
 - JAXB based POJO transformations.
-- More policy function including JAAS and better designed policy handlers
+- Improvements in PolicyFramework Support
+	* Support for policy specifications on operation elements in a composite definition
+	* Separate sample to demonstrate use of Implementation Policies (ues logging and JAAS Authentication)
 - Modeling of client side java script components
 - JSONRPC reference binding
 - Better support for doman API suggested by assembly spec including a standalone node and nodes running connected together in a domain.
