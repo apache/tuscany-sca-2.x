@@ -1,3 +1,77 @@
+Changes With Apache Tuscany SCA 1.1 (incubating) January 2008 
+===============================================================
+
+TODO
+
+- Fix the following JIRA issues (http://issues.apache.org/jira/browse/TUSCANY):
+  * ???
+- Better JMS support
+- JAXB based POJO transformations.
+- More policy function including JAAS and better designed policy handlers
+- Modeling of client side java script components
+- JSONRPC reference binding
+- Better support for doman API suggested by assembly spec including a standalone node and nodes running connected together in a domain.
+- Class loading and OSGI improvements
+- Support for BPEL references 
+
+Changes With Apache Tuscany SCA 1.0.1 (incubating) November 2007 
+================================================================
+
+The Tuscany SCA Java 1.0.1 is mainly a bug-fix release. It also comes with some improvements as listed below.
+ 
+- Fix the following JIRA issues (http://issues.apache.org/jira/browse/TUSCANY):
+  * TUSCANY-1848
+  * TUSCANY-1857
+  * TUSCANY-1859
+  * TUSCANY-1801
+  * TUSCANY-1823
+  * TUSCANY-1839
+  * TUSCANY-1814
+  * TUSCANY-1818
+  * TUSCANY-1834
+  * TUSCANY-1637
+  * TUSCANY-1826
+  * TUSCANY-1823
+  * TUSCANY-1819
+  * TUSCANY-1821
+  * TUSCANY-1822
+  * TUSCANY-1806
+  * TUSCANY-1808
+  * TUSCANY-1756
+  * TUSCANY-1757
+
+- Fix build issues with Maven 2.0.7 and JDK 6
+
+- Reduce memory consumption for WSDLs that import large XSDs
+
+- Add more logging statements for better servicibility
+
+- Add an extension point to allow extensions to plug-in extension schemas.
+
+- Add a demo application to showcase XML integration story 
+
+- Improve in databinding framework
+  * Add support for JSON Databindings and other refactoring
+  * Set databinding for introspected data type and enhance the checking of wrapper style
+  * Improve the tree-based XMLStreamReader and convert Bean & DOM to use this approach
+  * Add a tree-iterator based XMLStreamReader base impl
+  * Add default element info to java interface
+  * Rename Interface.setDefaultDataBinding to resetDataBinding
+
+- Limit the method injection to setters and allow the setter annotation to override field annotation
+
+- Evolving support in Intent and Policy handling
+  * Add support for policies in implementation
+  * Fix the algorithm for macthing policySets defined on bindings for the wire
+  * Add policy intent for implementation.java
+  * Extend java implementation type to recognize and apply policies, adding util support for this in Policy module
+  * Add policy module for logging
+
+- Evolving development in the SCA Domain/Node
+
+- Update NOTICE files with missing dependencies
+
+
 Changes With Apache Tuscany SCA 1.0 (incubating) September 2007 
 ===============================================================
 
