@@ -157,9 +157,9 @@ public class DomainWireBuilderImpl implements DomainBuilder {
                             return service; 
                         }
                     }
-                } else {
+                } else if (component.getServices().size() == 1) {
                     return component.getServices().get(0);
-                }
+                } 
             }
         }          
 
@@ -238,7 +238,7 @@ public class DomainWireBuilderImpl implements DomainBuilder {
                                                 break;
                                             }
                                         }
-                                    } else {
+                                    } else if (tmpComponent.getServices().size() == 1) {
                                         service = tmpComponent.getServices().get(0);
                                         break;
                                     }

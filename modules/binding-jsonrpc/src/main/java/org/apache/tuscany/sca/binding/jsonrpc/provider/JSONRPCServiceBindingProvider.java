@@ -23,6 +23,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCServiceServlet;
 import org.apache.tuscany.sca.binding.jsonrpc.ScaDomainScriptServlet;
@@ -108,6 +110,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         if (!mapping.endsWith("*")) {
             mapping += "*";
         }
+                
         servletHost.addServletMapping(mapping, serviceServlet);
         servletMappings.add(mapping);
         servletHost.addServletMapping(binding.getURI(), serviceServlet);

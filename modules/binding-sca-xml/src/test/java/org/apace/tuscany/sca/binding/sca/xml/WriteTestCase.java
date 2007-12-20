@@ -96,10 +96,7 @@ public class WriteTestCase extends TestCase {
         assertNotNull(componentType);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(componentType, bos);
-        assertEquals("<?xml version='1.0' encoding='UTF-8'?><componentType xmlns=\"http" +
-                     "://www.osoa.org/xmlns/sca/1.0\"><service name=\"CalculatorService\">" +
-                     "<binding.sca /></service><reference name=\"addService\"><binding.sca />" +
-                     "</reference></componentType>",
+        assertEquals("<?xml version='1.0' encoding='UTF-8'?><componentType xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns1=\"http://www.osoa.org/xmlns/sca/1.0\"><service name=\"CalculatorService\"><binding.sca /></service><reference name=\"addService\"><binding.sca /></reference></componentType>",
                      bos.toString());
         //System.err.println(bos.toString());
     }
@@ -110,18 +107,7 @@ public class WriteTestCase extends TestCase {
         assertNotNull(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(composite, bos);
-        assertEquals(
-            "<?xml version='1.0' encoding='UTF-8'?><composite xmlns=\"http://www.osoa.org/xmln" +
-            "s/sca/1.0\" targetNamespace=\"http://calc\" name=\"Calculator\"><service name=\"Calcul" +
-            "atorService\" promote=\"CalculatorServiceComponent\"><binding.sca /></service><comp" +
-            "onent name=\"CalculatorServiceComponent\"><reference name=\"addService\" target=\"Add" +
-            "ServiceComponent\"><binding.sca /></reference><reference name=\"subtractService\" t" +
-            "arget=\"SubtractServiceComponent\" /><reference name=\"multiplyService\" target=\"Mul" +
-            "tiplyServiceComponent\" /><reference name=\"divideService\" target=\"DivideServiceCo" +
-            "mponent\" /></component><component name=\"AddServiceComponent\"><service><binding.s" +
-            "ca /></service></component><component name=\"SubtractServiceComponent\" /><compone" +
-            "nt name=\"MultiplyServiceComponent\" /><component name=\"DivideServiceComponent\" />" +
-            "</composite>",
+        assertEquals("<?xml version='1.0' encoding='UTF-8'?><composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns1=\"http://www.osoa.org/xmlns/sca/1.0\" targetNamespace=\"http://calc\" name=\"Calculator\"><service name=\"CalculatorService\" promote=\"CalculatorServiceComponent\"><binding.sca /></service><component name=\"CalculatorServiceComponent\"><reference name=\"addService\" target=\"AddServiceComponent\"><binding.sca /></reference><reference name=\"subtractService\" target=\"SubtractServiceComponent\" /><reference name=\"multiplyService\" target=\"MultiplyServiceComponent\" /><reference name=\"divideService\" target=\"DivideServiceComponent\" /></component><component name=\"AddServiceComponent\"><service><binding.sca /></service></component><component name=\"SubtractServiceComponent\" /><component name=\"MultiplyServiceComponent\" /><component name=\"DivideServiceComponent\" /></composite>",
             bos.toString() );
         //System.err.println(bos.toString());
     }

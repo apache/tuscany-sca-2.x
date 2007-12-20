@@ -335,6 +335,15 @@ public class JettyServer implements ServletHost {
         List<ServletMapping> mappings =
             new ArrayList<ServletMapping>(Arrays.asList(servletHandler.getServletMappings()));
         String path = uri.getPath();
+        
+        if (!path.startsWith("/")) {
+            path = '/' + path;
+        }
+        
+        if (!path.startsWith(contextPath)) {
+            path = contextPath + path;
+        }
+        
         for (ServletMapping mapping : mappings) {
             if (Arrays.asList(mapping.getPathSpecs()).contains(path)) {
                 try {
@@ -369,6 +378,15 @@ public class JettyServer implements ServletHost {
         List<ServletMapping> mappings =
             new ArrayList<ServletMapping>(Arrays.asList(servletHandler.getServletMappings()));
         String path = uri.getPath();
+        
+        if (!path.startsWith("/")) {
+            path = '/' + path;
+        }
+        
+        if (!path.startsWith(contextPath)) {
+            path = contextPath + path;
+        }
+        
         for (ServletMapping mapping : mappings) {
             if (Arrays.asList(mapping.getPathSpecs()).contains(path)) {
                 try {
@@ -383,7 +401,9 @@ public class JettyServer implements ServletHost {
         }
         if (removedServlet != null) {
             servletHandler.setServletMappings(mappings.toArray(new ServletMapping[mappings.size()]));
-        } 
+        } else {
+            logger.info("Trying to Remove servlet mapping: " + path + " where mapping is not registered");
+        }
         
         return removedServlet;
     }

@@ -88,6 +88,9 @@ public class NodeDrivenTestCase {
             nodeC.addToDomainLevelComposite(new QName("http://sample", "CalculatorC"));
             nodeC.start();
             
+            // wait for domain to configure
+            Thread.sleep(1000);
+            
         } catch(Exception ex){
             ex.printStackTrace();
         }  

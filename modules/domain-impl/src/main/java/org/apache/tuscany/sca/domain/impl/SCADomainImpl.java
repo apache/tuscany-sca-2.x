@@ -24,7 +24,12 @@ import java.io.Externalizable;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -120,7 +125,12 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
     protected DomainModel domainModel;
     
     // management services
-    private SCADomainManagerInitService domainManagerInitService;   
+    private SCADomainManagerInitService domainManagerInitService;
+    
+    // runs the domain update for nodes that are telling the domain 
+    // that something has changed
+    private ScheduledExecutorService scheduler;
+    private DomainUpdateProcessor domainUpdateProcessor;
     
     // Implementation methods
      
@@ -241,7 +251,11 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                 throw new ActivationException("Domain management contribution " + 
                                               domainCompositeName + 
                                               " not found on the classpath");
-            }       
+            }  
+            
+            // Get a scheduler and scheduled a task to be run in the future indefinitely until its explicitly shutdown.
+            domainUpdateProcessor = new DomainUpdateProcessor();
+            this.scheduler = Executors.newSingleThreadScheduledExecutor();
             
         } catch(Exception ex) {
             throw new DomainException(ex);
@@ -259,6 +273,12 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                 if (node.getDeployedComposites().containsKey(composite.getName())){
                     try {
                         if (((NodeModelImpl)node).getSCANodeManagerService() != null) {
+                            
+                            logger.log(Level.INFO, "Updating node: " + 
+                                                   node.getNodeURI() + 
+                                                   " with composite: " + 
+                                                   compositeXML);
+                            
                             // notify node
                             ((NodeModelImpl)node).getSCANodeManagerService().updateComposite(composite.getName().toString(), 
                                                                                              Base64Binary.encode(compositeXML.getBytes()));
@@ -359,9 +379,6 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                                               " doesn't match a composite in the contribution " +
                                               contributionURI );
                 }
-                
-                // build the contribution to create the services and references
-                domainManagementRuntime.getCompositeBuilder().build(composite);
             }
         } catch(DomainException ex) {   
             throw ex;
@@ -393,7 +410,9 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
             XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+            //outputFactory.setProperty("javax.xml.stream.isPrefixDefaulting",Boolean.TRUE);
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
+            
             processor.write(composite, writer);
             writer.flush();
             writer.close();
@@ -447,7 +466,9 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             // if the node was started by the domain we already know it's running
             if (node.getLifecycleState() != LifecyleState.RUNNING){
                 node.setLifecycleState(LifecyleState.RUNNING);
-                notifyDomainChange();
+                
+                // run the update in a separate thread so that the caller doesn't block
+                scheduler.execute(domainUpdateProcessor);
             }
         } else {
             logger.log(Level.WARNING, "trying to start node: " + 
@@ -463,7 +484,9 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             // if the node was stopped by the domain we already know it's running
             if (node.getLifecycleState() == LifecyleState.RUNNING){
                 node.setLifecycleState(LifecyleState.DEPLOYED);
-                notifyDomainChange();
+                
+                // run the update in a separate thread so that the caller doesn't block
+                scheduler.execute(domainUpdateProcessor);
             }                
         } else {
             logger.log(Level.WARNING, "trying to stop node: " + 
@@ -485,6 +508,8 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                 if ((node != null) && (contributionModel != null)) {
                     node.getContributions().put(contributionURI, contributionModel);
                 } 
+            } else {
+                // TODO - throw and exception here ?
             }
             
         } catch (Exception ex) {
@@ -546,6 +571,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                             contributionModel.getDeployedComposites().put(compositeQName, compositeModel);
                             node.getDeployedComposites().put(compositeQName, compositeModel);
                             domainModel.getDeployedComposites().put(compositeQName, compositeModel);
+                            domainManagementRuntime.getCompositeBuilder().build(compositeModel.getComposite()); 
                             domainModel.getDomainLevelComposite().getIncludes().add(compositeModel.getComposite());
                         }
                     }
@@ -760,6 +786,9 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             
             // Stop the SCA runtime that the domain is using
             domainManagementRuntime.stop();
+            
+            // stop the scheduler 
+            scheduler.shutdownNow();
                         
         } catch(ActivationException ex) {
             throw new DomainException(ex); 
@@ -885,25 +914,31 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
     public void addToDomainLevelComposite(QName compositeName) throws DomainException {
         // find this composite and add the composite as a deployed composite
         
-        for (ContributionModel contribution : domainModel.getContributions().values()){
-            CompositeModel composite = contribution.getComposites().get(compositeName);
-            if (composite != null) {
-                domainModel.getDeployedComposites().put(compositeName, composite);
-                domainModel.getDomainLevelComposite().getIncludes().add(composite.getComposite());
+        try {
+            for (ContributionModel contribution : domainModel.getContributions().values()){
+                CompositeModel composite = contribution.getComposites().get(compositeName);
+                if (composite != null) {
+                    // build the contribution to create the services and references
+                    domainModel.getDeployedComposites().put(compositeName, composite);
+                    domainManagementRuntime.getCompositeBuilder().build(composite.getComposite());                
+                    domainModel.getDomainLevelComposite().getIncludes().add(composite.getComposite());
+                }
             }
+        } catch (Exception ex){
+            throw new DomainException(ex);
         }
     }
       
     public void removeFromDomainLevelComposite(QName compositeQName) throws DomainException {
 
-        domainModel.getDomainLevelComposite().getIncludes().remove(domainModel.getDeployedComposites().get(compositeQName));
+        domainModel.getDomainLevelComposite().getIncludes().remove(domainModel.getDeployedComposites().get(compositeQName).getComposite());
         domainModel.getDeployedComposites().remove(compositeQName);
         
         ContributionModel contributionModel = findContributionFromComposite(compositeQName);
         contributionModel.getDeployedComposites().remove(compositeQName);
         
         for(NodeModel node : domainModel.getNodes().values()) {
-            if ( node.getDeployedComposites().containsValue(compositeQName)){
+            if ( node.getDeployedComposites().containsKey(compositeQName)){
                 try {
                     if (node.getLifecycleState() == LifecyleState.RUNNING) {
                         ((NodeModelImpl)node).getSCANodeManagerService().stop();
@@ -1045,7 +1080,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                 
         // stop all the nodes running this composite
         for(NodeModel node : domainModel.getNodes().values()) {
-            if ( node.getDeployedComposites().containsValue(compositeName)){
+            if ( node.getDeployedComposites().containsKey(compositeName)){
                 try {
                     if (node.getLifecycleState() == LifecyleState.RUNNING) {
                         node.setLifecycleState(LifecyleState.DEPLOYED);
@@ -1213,5 +1248,23 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             }
         }
     }
+    
+    // This inner class processes domain wiring actions on a separate thread so that
+    // we don't have nodes block when they register the fact that they have started
+    class DomainUpdateProcessor implements Runnable {
+
+        public DomainUpdateProcessor() {
+        }
+        
+        public void run() {
+               
+            try {
+                notifyDomainChange();
+            } catch (Exception ex) {
+                logger.log(Level.SEVERE, "Error notifying domain update: " + 
+                                         ex.toString());
+            }
+        }
+    }    
 
 }

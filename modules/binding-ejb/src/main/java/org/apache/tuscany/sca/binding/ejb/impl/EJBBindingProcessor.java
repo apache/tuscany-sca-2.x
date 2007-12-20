@@ -135,7 +135,16 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBindingImpl
         // Write a <binding.ejb>
         writer.writeStartElement(Constants.SCA10_NS, EJBBinding.BINDING_EJB);
 
-        // FIXME Implement
+        if (ejbBinding.getName() != null){
+            writer.writeAttribute(EJBBinding.NAME, ejbBinding.getName());
+        }
+        
+        if (ejbBinding.getURI() != null){
+            writer.writeAttribute(EJBBinding.URI, ejbBinding.getURI());
+        }        
+        
+        
+        // FIXME Implement the rest
 
         writer.writeEndElement();
     }

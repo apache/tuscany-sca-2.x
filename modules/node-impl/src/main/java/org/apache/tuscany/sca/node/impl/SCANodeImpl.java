@@ -114,10 +114,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
     NodeFactoryImpl nodeFactory;
     
     // domain level wiring 
-    DomainBuilder domainBuilder;
-    List<Binding> removeCandidates = new ArrayList<Binding>();
-    List<Binding> addCandidates = new ArrayList<Binding>();
-    
+    DomainBuilder domainBuilder;  
        
     // methods defined on the implementation only
        
@@ -835,86 +832,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
         } catch (Exception ex) {
             throw new NodeException(ex);
         }       
-        
-/*        
-        // for each component in the composite compare it against the live component
-        for (Component newComponent : newComposite.getComponents()){
-            for (Component component : composite.getComponents()){         
-                if (component.getName().equals(newComponent.getName())){
-                    // compare the component references
-                    for (Reference newReference : newComponent.getReferences()){
-                        for (Reference reference : component.getReferences()) {           
-                            if (reference.getName().equals(newReference.getName())) {
-                                boolean referenceChanged = false;
-                                Binding removalCandidates[] = new Binding[reference.getBindings().size()];
-                                int bindingIndex = 0;
-                                for (Binding binding : reference.getBindings()){ 
-                                    removalCandidates[bindingIndex] = binding;
-                                    bindingIndex++;
-                                }
-                                
-                                for (Binding newBinding : newReference.getBindings()){
-                                    boolean bindingFound = false;
-                                    bindingIndex = 0;
-                                    for (Binding binding : reference.getBindings()){                
-                                        if (binding.getName().equals(newBinding.getName())){
-                                            if ((binding.getURI() != null) && 
-                                                (newBinding.getURI() != null) &&
-                                                !binding.getURI().equals(newBinding.getURI())){
-                                                binding.setURI(newBinding.getURI());
-                                                referenceChanged = true;
-                                                
-                                                logger.log(Level.INFO, "Updating component " + 
-                                                                       component.getName() + 
-                                                                       " reference " + 
-                                                                       reference.getName() +
-                                                                       " binding " + 
-                                                                       binding.getClass().getName() + 
-                                                                       " URI " + 
-                                                                       binding.getURI());
-                                            }
-                                            bindingFound = true;
-                                            removalCandidates[bindingIndex] = null;
-                                        }
-                                        bindingIndex++;
-                                    }
-                                    
-                                    // if the new binding is not currently deployed then add it
-                                    if (bindingFound == false){
-                                        reference.getBindings().add(newBinding);
-                                        referenceChanged = true;
-                                    }
-                                }
-                                
-                                // remove all of the old bindings
-                                for ( int i = 0; i < removalCandidates.length; i++){
-                                    if (removalCandidates[i] != null){
-                                        reference.getBindings().remove(removalCandidates[i]);
-                                        referenceChanged = true;
-                                    }
-                                }
-                                
-                                // if the node is running restart the reference
-                                if (referenceChanged && nodeStarted){
-                                    nodeRuntime.getCompositeActivator().deactivate((RuntimeComponent)component, 
-                                                                                    (RuntimeComponentReference)reference);
-                                    
-                                    nodeRuntime.getCompositeActivator().start((RuntimeComponent)component, 
-                                                                              (RuntimeComponentReference)reference);
-                                    
-                                }                                
-                            }
-                        }
-                    }
-                    
-                    // TODO - compare other parts of the component
-                }
-            }
-        }
-        
-        // TODO - Compare other parts of the composite?
-    } 
-*/
+
         
         // for each component in the composite compare it against the live component
         for (Component newComponent : newComposite.getComponents()){
@@ -925,8 +843,10 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
                         for (Reference reference : component.getReferences()) {           
                             if (reference.getName().equals(newReference.getName())) {
                                 boolean referenceChanged = false;
-                                removeCandidates.clear();
-                                addCandidates.clear();
+                                List<Binding> removeCandidates = new ArrayList<Binding>();
+                                List<Binding> addCandidates = new ArrayList<Binding>();
+                                
+                                removeCandidates.addAll(reference.getBindings());
                                 
                                 for (Binding newBinding : newReference.getBindings()){
                                     boolean bindingFound = false;
@@ -949,9 +869,8 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
                                                                        binding.getURI());
                                             }
                                             bindingFound = true;
-                                        } else {
-                                            removeCandidates.add(binding);
-                                        }
+                                            removeCandidates.remove(binding);
+                                        } 
                                     }
                                     
                                     if (bindingFound == false){
