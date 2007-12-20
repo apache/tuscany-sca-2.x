@@ -45,9 +45,7 @@ public class PolicyHandlingInterceptor implements Interceptor {
             applyPreInvocationPolicies(targetOperation, msg);
             msg = next.invoke(msg);
         } finally {
-            if ( !msg.isFault() ) {
-                applyPostInvocationPolices(targetOperation, msg);
-            }
+            applyPostInvocationPolices(targetOperation, msg);
         }
         return msg;
     }

@@ -30,5 +30,4 @@ import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 
 public interface OperationsConfigurator {
     List<ConfiguredOperation> getConfiguredOperations();
-    void setConfiguredOperations(List<ConfiguredOperation> cofiguredOps);
 }

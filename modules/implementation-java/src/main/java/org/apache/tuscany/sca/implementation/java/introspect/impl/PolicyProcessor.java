@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.java.introspect.impl;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -25,11 +26,13 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Callback;
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
+import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.policy.Intent;
@@ -105,14 +108,14 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
         }
     }
     
-    private void readIntents(Method method, List<Intent> requiredIntents) {
-        Requires intentAnnotation = method.getAnnotation(Requires.class);
+    private void readIntents(Requires intentAnnotation, List<Intent> requiredIntents) {
+        //Requires intentAnnotation = method.getAnnotation(Requires.class);
         if (intentAnnotation != null) {
             String[] intentNames = intentAnnotation.value();
             if (intentNames.length != 0) {
-                Operation operation = assemblyFactory.createOperation();
-                operation.setName(method.getName());
-                operation.setUnresolved(true);
+                //Operation operation = assemblyFactory.createOperation();
+                //operation.setName(method.getName());
+                //operation.setUnresolved(true);
                 for (String intentName : intentNames) {
 
                     // Add each intent to the list, associated with the
@@ -121,6 +124,25 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
                     intent.setName(getQName(intentName));
                     //intent.getOperations().add(operation);
                     requiredIntents.add(intent);
+                }
+            }
+        }
+    }
+    
+    private void readPolicySets(PolicySets policySetAnnotation, List<PolicySet> policySets) {
+        if (policySetAnnotation != null) {
+            String[] policySetNames = policySetAnnotation.value();
+            if (policySetNames.length != 0) {
+                //Operation operation = assemblyFactory.createOperation();
+                //operation.setName(method.getName());
+                //operation.setUnresolved(true);
+                for (String policySetName : policySetNames) {
+                    // Add each intent to the list, associated with the
+                    // operation corresponding to the annotated method
+                    PolicySet policySet = policyFactory.createPolicySet();
+                    policySet.setName(getQName(policySetName));
+                    //intent.getOperations().add(operation);
+                    policySets.add(policySet);
                 }
             }
         }
@@ -153,8 +175,14 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
 
                         // Read intents on the service interface methods 
                         Method[] methods = javaInterface.getJavaClass().getMethods();
+                        ConfiguredOperation confOp = null;
                         for (Method method: methods) {
-                            readIntents(method, service.getRequiredIntents());
+                            confOp = assemblyFactory.createConfiguredOperation();
+                            confOp.setName(method.getName());
+                            confOp.setContractName(service.getName());
+                            service.getConfiguredOperations().add(confOp);
+                            readIntents(method.getAnnotation(Requires.class), confOp.getRequiredIntents());
+                            readPolicySets(method.getAnnotation(PolicySets.class), confOp.getPolicySets());
                         }
                     }
                     
@@ -175,8 +203,13 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
 
                         // Read intents on the callback interface methods 
                         Method[] methods = javaCallbackInterface.getJavaClass().getMethods();
+                        ConfiguredOperation confOp = null;
                         for (Method method: methods) {
-                            readIntents(method, callback.getRequiredIntents());
+                            confOp = assemblyFactory.createConfiguredOperation();
+                            confOp.setName(method.getName());
+                            callback.getConfiguredOperations().add(confOp);
+                            readIntents(method.getAnnotation(Requires.class), confOp.getRequiredIntents());
+                            readPolicySets(method.getAnnotation(PolicySets.class), confOp.getPolicySets());
                         }
                     }
                 }
@@ -184,12 +217,69 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
         }
     }
 
+    private Reference getReference(Method method, JavaImplementation type) {
+        //since the ReferenceProcessor is called ahead of the PolicyProcessor the type should have
+        //picked up the reference setter method
+        org.osoa.sca.annotations.Reference annotation = 
+                                        method.getAnnotation(org.osoa.sca.annotations.Reference.class);
+        if (annotation != null) {
+            if (JavaIntrospectionHelper.isSetter(method)) {
+                String name = annotation.name();
+                if ("".equals(name)) {
+                    name = JavaIntrospectionHelper.toPropertyName(method.getName());
+                }
+                return getReferenceByName(name, type);
+            }
+        }
+        return null;
+    }
+    
+    private Reference getReferenceByName(String name, JavaImplementation type) {
+        for ( Reference reference : type.getReferences() ) {
+            if ( reference.getName().equals(name) ) {
+                return reference;
+            }
+        }
+        return null;
+    }
+    
+    @Override
+    public void visitField(Field field, JavaImplementation type) throws IntrospectionException {
+        org.osoa.sca.annotations.Reference annotation = 
+            field.getAnnotation( org.osoa.sca.annotations.Reference.class);
+        if (annotation == null) {
+            return;
+        }
+        String name = annotation.name();
+        if ("".equals(name)) {
+            name = field.getName();
+        }
+        
+        Reference reference = null;
+        if ( (reference = getReferenceByName(name, type)) != null ) {
+            readIntents(field.getAnnotation(Requires.class), reference.getRequiredIntents());
+            readPolicySets(field.getAnnotation(PolicySets.class), reference.getPolicySets());
+        }
+    }
+
     @Override
     public void visitMethod(Method method, JavaImplementation type) throws IntrospectionException {
-        
-        // Read the intents specified on the given implementation method
-        if ( type instanceof PolicySetAttachPoint ) {
-            readIntents(method, ((PolicySetAttachPoint)type).getRequiredIntents());
+        Reference reference = null;
+        if ( (reference = getReference(method, type)) != null ) {
+            readIntents(method.getAnnotation(Requires.class), reference.getRequiredIntents());
+            readPolicySets(method.getAnnotation(PolicySets.class), reference.getPolicySets());
+        } else {
+            if ( type instanceof OperationsConfigurator ) {
+                ConfiguredOperation confOp = assemblyFactory.createConfiguredOperation();
+                confOp.setName(method.getName());
+                ((OperationsConfigurator)type).getConfiguredOperations().add(confOp);
+            
+                // Read the intents specified on the given implementation method
+                if ( type instanceof PolicySetAttachPoint ) {
+                    readIntents(method.getAnnotation(Requires.class), confOp.getRequiredIntents());
+                    readPolicySets(method.getAnnotation(PolicySets.class), confOp.getPolicySets());
+                }
+            }
         }
     }
 }
