@@ -73,7 +73,7 @@ public class CallableReferenceRemoteTestCase {
             nodeB.start();
             
             // wait for doamin to intialize
-            Thread.sleep(1000);
+            Thread.sleep(2000);
             
             // get a reference to the calculator service from domainA
             // which will be running this component
