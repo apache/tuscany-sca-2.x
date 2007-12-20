@@ -124,8 +124,7 @@ public class DomainAPITestCase {
     @Test
     public void testAddAndUpdateContribution() throws Exception {  
         try {
-            
-System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");            
+                       
             domain.addContribution("nodeA", cl.getResource("nodeA/"));
             domain.addContribution("nodeB", cl.getResource("nodeB/"));
             domain.addToDomainLevelComposite(new QName("http://sample", "CalculatorA"));

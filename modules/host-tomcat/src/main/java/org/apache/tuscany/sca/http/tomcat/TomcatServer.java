@@ -307,6 +307,15 @@ public class TomcatServer implements ServletHost {
         }
         
         String mapping = uri.getPath();
+        
+        if (!mapping.startsWith("/")) {
+            mapping = '/' + mapping;
+        }
+        
+        if (!mapping.startsWith(contextPath)) {
+            mapping = contextPath + mapping;
+        }
+        
         Context context = port.getHost().map(mapping);
         MappingData md = new MappingData();
         MessageBytes mb = MessageBytes.newInstance();
@@ -340,6 +349,15 @@ public class TomcatServer implements ServletHost {
         }
         
         String mapping = uri.getPath();
+        
+        if (!mapping.startsWith("/")) {
+            mapping = '/' + mapping;
+        }
+        
+        if (!mapping.startsWith(contextPath)) {
+            mapping = contextPath + mapping;
+        }
+        
         Context context = port.getHost().map(mapping);
         MappingData md = new MappingData();
         MessageBytes mb = MessageBytes.newInstance();
@@ -363,10 +381,16 @@ public class TomcatServer implements ServletHost {
                 // seem harmful, will find a better solution for the next release
             }
             context.removeChild(servletWrapper);
-            servletWrapper.destroyServlet();
+            try {
+                servletWrapper.destroyServlet();
+            } catch (Exception ex){
+                // Temporary hack to stop destruction of servlets without servlet
+                // context 
+            }
             //logger.info("Remove Servlet mapping: " + suri);
             return servletWrapper.getServlet();
         } else {
+            logger.info("Trying to Remove servlet mapping: " + mapping + " where mapping is not registered");
             return null;
         }
     }

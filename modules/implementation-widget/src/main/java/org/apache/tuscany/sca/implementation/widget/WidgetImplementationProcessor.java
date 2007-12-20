@@ -105,7 +105,10 @@ public class WidgetImplementationProcessor implements StAXArtifactProcessor<Widg
     public void write(WidgetImplementation implementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         
         // Write <implementation.resource>
+        writer.setPrefix("widget",IMPLEMENTATION_WIDGET.getNamespaceURI());
         writer.writeStartElement(IMPLEMENTATION_WIDGET.getNamespaceURI(), IMPLEMENTATION_WIDGET.getLocalPart());
+        writer.writeNamespace("widget",IMPLEMENTATION_WIDGET.getNamespaceURI());
+      
         
         if (implementation.getLocation() != null) {
             writer.writeAttribute("location", implementation.getLocation());

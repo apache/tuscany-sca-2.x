@@ -185,13 +185,13 @@ public abstract class BaseStAXArtifactProcessor {
      * @param uri
      * @throws XMLStreamException
      */
-    private void writeElementPrefix(XMLStreamWriter writer, String uri) throws XMLStreamException {
+    private String writeElementPrefix(XMLStreamWriter writer, String uri) throws XMLStreamException {
         if (uri == null) {
-            return;
+            return null;
         }
         String prefix = writer.getPrefix(uri);
         if (prefix != null) {
-            return;
+            return null;
         } else {
             
             // Find an available prefix and bind it to the given uri 
@@ -203,6 +203,7 @@ public abstract class BaseStAXArtifactProcessor {
                 }
             }
             writer.setPrefix(prefix, uri);
+            return prefix;
         }
         
     }
@@ -215,9 +216,13 @@ public abstract class BaseStAXArtifactProcessor {
      * @throws XMLStreamException
      */
     protected void writeStart(XMLStreamWriter writer, String uri, String name, XAttr... attrs) throws XMLStreamException {
-        writeElementPrefix(writer, uri);
+        String prefix = writeElementPrefix(writer, uri);
         writeAttributePrefixes(writer, attrs);
         writer.writeStartElement(uri, name);
+        
+        if (prefix != null){
+            writer.writeNamespace(prefix,uri); 
+        }
         writeAttributes(writer, attrs);
     }
 
