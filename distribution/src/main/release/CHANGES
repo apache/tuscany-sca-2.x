@@ -8,12 +8,17 @@ TODO
 - Better JMS support
 - JAXB based POJO transformations.
 - Improvements in PolicyFramework Support
-	* Support for policy specifications on operation elements in a composite definition
-	* Separate sample to demonstrate use of Implementation Policies (ues logging and JAAS Authentication)
+  * Support for policy specifications on operation elements in a composite definition
+  * Separate sample to demonstrate use of Implementation Policies (ues logging and JAAS Authentication)
 - Modeling of client side java script components
+  * See implementation.widget
 - JSONRPC reference binding
 - Better support for doman API suggested by assembly spec including a standalone node and nodes running connected together in a domain.
 - Class loading and OSGI improvements
+  * Enable Tuscany to be run in a multi-classloader environment including inside OSGi. By default,
+    Tuscany continues to run using a single CLASSPATH-based classloader.
+  * Contributions no longer need to be in the CLASSPATH. All import/export dependencies across contributions should be 
+    explicitly specified (as described in the spec).
 - Support for BPEL references 
 
 Changes With Apache Tuscany SCA 1.0.1 (incubating) November 2007 
