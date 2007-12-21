@@ -89,7 +89,7 @@ public class NodeDrivenTestCase {
             nodeC.start();
             
             // wait for domain to configure
-            Thread.sleep(1000);
+            Thread.sleep(2000);
             
         } catch(Exception ex){
             ex.printStackTrace();
