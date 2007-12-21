@@ -38,9 +38,9 @@ public class CurrencyConverterImpl implements CurrencyConverter {
     
     public String getCurrencySymbol(String currencyCode) {
         if (currencyCode.equals("USD"))
-            return "$";
+            return "$ ";
         else if (currencyCode.equals("EUR"))
-            return "€";
+            return "€ ";
         return "?";
     }
 }
