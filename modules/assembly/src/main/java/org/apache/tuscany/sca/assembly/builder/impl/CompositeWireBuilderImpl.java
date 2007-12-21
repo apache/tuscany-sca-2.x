@@ -617,7 +617,8 @@ public class CompositeWireBuilderImpl {
                 if (resolvedReference.getInterfaceContract() == null || interfaceContractMapper
                     .isCompatible(resolvedReference.getInterfaceContract(), resolvedService.getInterfaceContract())) {
     
-                    resolvedReference.getTargets().add(resolvedService);
+                    //resolvedReference.getTargets().add(resolvedService);
+                    resolvedReference.getTargets().add(wire.getTarget());
                 } else {
                     warning("Incompatible interfaces on wire source and target: " + source.getName()
                         + " : "
