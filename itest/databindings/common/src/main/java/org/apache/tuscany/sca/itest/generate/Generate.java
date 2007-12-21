@@ -25,7 +25,9 @@ import java.util.Properties;
 
 import org.apache.tuscany.generate.GenerateFactory;
 import org.apache.tuscany.generate.GenerateType;
+import org.apache.tuscany.generate.InputFileType;
 import org.apache.tuscany.generate.TemplateType;
+import org.apache.tuscany.sdo.generate.XSD2JavaGenerator;
 import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -38,8 +40,8 @@ import commonj.sdo.helper.XMLDocument;
  * and a set of velocity templates. The process is
  *
  * for each template
- *     for each file
- *         add a line to pom for code gen
+ *     for each xsd file
+ *         generate SDOs
  *         include the factory into the composite
  *         for each type
  *             add client iface method
@@ -70,14 +72,14 @@ public class Generate {
             fis = new FileInputStream(projectBuildDir + "/classes/generate/generate.xml");
 
             // Load the stream into SDO
-            // We are just using SDO as a conveniet way to parse the XML config file
+            // We are just using SDO as a convenient way to parse the XML config file
             HelperContext scope       = SDOUtil.createHelperContext();
             GenerateFactory.INSTANCE.register(scope);
             XMLDocument xmlDoc        = scope.getXMLHelper().load(fis);
             GenerateType generateType = (GenerateType)xmlDoc.getRootObject();
 
             // Get the file list. This is the list of XSD that is passed into the 
-            // the velocity templates. Each confiured file holds a list of types
+            // the velocity templates. Each configured file holds a list of types
             // that the velocity templates expand into appropriate methods and method calls           
             List fileList = generateType.getInputFile();
             
@@ -103,12 +105,60 @@ public class Generate {
                 fw.close();
             } 
 
+
         } catch (Exception e) {
             System.out.println("Exception : " + e.toString());
             e.printStackTrace();
             return;
         }        
     }
+    
+    /**
+     * The SDO generator tool does all of the hard work
+     *
+     * @param projectBuildDir the path to the target dir of the project being generated. 
+     */
+    public static void generateSDO(String projectBuildDir) {
+        System.out.println(">> Building SDOs from dir: " + projectBuildDir);
+        FileInputStream fis = null;
+
+        try {
+            // Load the config file into a stream
+            fis = new FileInputStream(projectBuildDir + "/classes/generate/generate.xml");
+
+            // Load the stream into SDO
+            // We are just using SDO as a convenient way to parse the XML config file
+            HelperContext scope       = SDOUtil.createHelperContext();
+            GenerateFactory.INSTANCE.register(scope);
+            XMLDocument xmlDoc        = scope.getXMLHelper().load(fis);
+            GenerateType generateType = (GenerateType)xmlDoc.getRootObject();
+
+            // Get the file list. This is the list of XSD that is passed into the 
+            // the velocity templates. Each configured file holds a list of types
+            // that the velocity templates expand into appropriate methods and method calls           
+            List fileList = generateType.getInputFile();
+                        
+            // for each XSD in the XSD file list generate an SDO.
+            XSD2JavaGenerator generator = new XSD2JavaGenerator();
+            
+            for ( Object item : fileList){
+                InputFileType file = (InputFileType)item;
+                
+                XSD2JavaGenerator.generateFromXMLSchema(projectBuildDir + "/classes/xsd/" + file.getFileName(), 
+                                                        file.getNamespace(), 
+                                                        projectBuildDir + "/sdo-source", 
+                                                        file.getJavaPackage(), 
+                                                        null, //file.getPrefix(), 
+                                                        XSD2JavaGenerator.OPTION_NO_CONTAINMENT | XSD2JavaGenerator.OPTION_NO_NOTIFICATION | XSD2JavaGenerator.OPTION_NO_UNSETTABLE);
+                             
+            }
+
+        } catch (Exception e) {
+            System.out.println("Exception : " + e.toString());
+            e.printStackTrace();
+            return;
+        }        
+    }    
 
     /**
      * The mainline
@@ -116,8 +166,12 @@ public class Generate {
      * @param args the target directory where project in which files are being generated
      */
     public static void main(String[] args) {
-        Generate gen = new Generate();
-        gen.generate(args[0]);
+        
+        Generate.generate(args[0]);
+        
+        if (args.length > 1){
+            Generate.generateSDO(args[0]);
+        } 
     }
 
 }

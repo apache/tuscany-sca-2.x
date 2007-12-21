@@ -63,6 +63,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.tuscany.sdo</groupId>
+            <artifactId>tuscany-sdo-tools</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>        
+        <dependency>
             <groupId>velocity</groupId>
             <artifactId>velocity</artifactId>
             <version>1.4</version>
