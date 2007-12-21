@@ -54,6 +54,9 @@ public class WireTestCase extends TestCase {
         domain = SCADomain.newInstance("WireTest.composite");
         aWireClient = domain.getService(WireClient.class, "WireClient");
         Assert.assertNotNull(aWireClient);
+        
+        aWireClient = domain.getService(WireClient.class, "AnotherWireClient");
+        Assert.assertNotNull(aWireClient);
     }
 
     /**

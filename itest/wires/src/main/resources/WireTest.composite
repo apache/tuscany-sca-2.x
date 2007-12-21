@@ -26,9 +26,14 @@
 <!--    <reference name="aWireService" target="WireService"/>-->
     </component> 
     
-    <component name="WireService">
+    <component name="AnotherWireClient">
+        <implementation.java class="org.apache.tuscany.sca.itest.WireClientImpl"/>
+    </component> 
+    
+    <component name="WireServiceComponent">
       <implementation.java class="org.apache.tuscany.sca.itest.WireServiceImpl"/>
     </component>  
   
-    <wire source="WireClient/aWireService" target="WireService/WireService"/>
+    <wire source="WireClient/aWireService" target="WireServiceComponent"/>
+    <wire source="AnotherWireClient/aWireService" target="WireServiceComponent/WireService"/>
 </composite>
