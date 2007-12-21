@@ -20,10 +20,7 @@
 <tns:Generate xmlns:tns="http://www.apache.org/tuscany/generate" 
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
               xsi:schemaLocation="http://www.example.org/generate generate.xsd ">
-  <Template>
-    <TemplateName>pom.xml.vm</TemplateName>
-    <TemplateTargetDir>..</TemplateTargetDir>
-  </Template>              
+             
   <Template>
     <TemplateName>greeter.composite.vm</TemplateName>
     <TemplateTargetDir>classes</TemplateTargetDir>
