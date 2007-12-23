@@ -177,12 +177,16 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
                         Method[] methods = javaInterface.getJavaClass().getMethods();
                         ConfiguredOperation confOp = null;
                         for (Method method: methods) {
-                            confOp = assemblyFactory.createConfiguredOperation();
-                            confOp.setName(method.getName());
-                            confOp.setContractName(service.getName());
-                            service.getConfiguredOperations().add(confOp);
-                            readIntents(method.getAnnotation(Requires.class), confOp.getRequiredIntents());
-                            readPolicySets(method.getAnnotation(PolicySets.class), confOp.getPolicySets());
+                            if ( method.getAnnotation(Requires.class) != null  ||    
+                                method.getAnnotation(PolicySets.class) != null ) {
+                                confOp = assemblyFactory.createConfiguredOperation();
+                                confOp.setName(method.getName());
+                                confOp.setContractName(service.getName());
+                            
+                                service.getConfiguredOperations().add(confOp);
+                                readIntents(method.getAnnotation(Requires.class), confOp.getRequiredIntents());
+                                readPolicySets(method.getAnnotation(PolicySets.class), confOp.getPolicySets());
+                            }
                         }
                     }
                     
@@ -270,12 +274,15 @@ public class PolicyProcessor extends BaseJavaClassVisitor {
             readPolicySets(method.getAnnotation(PolicySets.class), reference.getPolicySets());
         } else {
             if ( type instanceof OperationsConfigurator ) {
-                ConfiguredOperation confOp = assemblyFactory.createConfiguredOperation();
-                confOp.setName(method.getName());
-                ((OperationsConfigurator)type).getConfiguredOperations().add(confOp);
+                //Read the intents specified on the given implementation method
+                if ( (method.getAnnotation(Requires.class) != null || 
+                        method.getAnnotation(PolicySets.class) != null ) && 
+                            (type instanceof PolicySetAttachPoint )) {
+                    ConfiguredOperation confOp = assemblyFactory.createConfiguredOperation();
+                    confOp.setName(method.getName());
+                    ((OperationsConfigurator)type).getConfiguredOperations().add(confOp);
             
-                // Read the intents specified on the given implementation method
-                if ( type instanceof PolicySetAttachPoint ) {
+                
                     readIntents(method.getAnnotation(Requires.class), confOp.getRequiredIntents());
                     readPolicySets(method.getAnnotation(PolicySets.class), confOp.getPolicySets());
                 }

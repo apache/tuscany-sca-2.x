@@ -786,32 +786,61 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             //resolve component implemenation
             Implementation implementation = component.getImplementation();
             if (implementation != null) {
-                if (implementation instanceof PolicySetAttachPoint) {
-                    resolveIntents(((PolicySetAttachPoint)implementation).getRequiredIntents(), resolver);
-                    resolvePolicySets(((PolicySetAttachPoint)implementation).getPolicySets(), resolver);
-                    validatePolicySets(component, (PolicySetAttachPoint)implementation);
-                    //add implementation policies into component... since implementation instance are 
-                    //reused and its likely that this implementation instance will not hold after its resolution
-                    component.getRequiredIntents().addAll(((PolicySetAttachPoint)implementation).getRequiredIntents());
-                    component.getPolicySets().addAll(((PolicySetAttachPoint)implementation).getPolicySets());
-                    if ( implementation instanceof OperationsConfigurator ) {
-                        ((OperationsConfigurator)component).getConfiguredOperations().
-                            addAll(((OperationsConfigurator)implementation).getConfiguredOperations());
-                        
-                        for ( ConfiguredOperation op : ((OperationsConfigurator)component).
-                                                                    getConfiguredOperations() ) {
-                            resolveIntents(op.getRequiredIntents(), resolver);
-                            resolvePolicySets(op.getPolicySets(), resolver);
-                        }
-                        
-                    }
-                }
+                copyPoliciesToComponent(component, implementation, resolver);
                 
+                //now resolve the implementation so that even if there is a shared instance
+                //for this that is resolved, the specified intents and policysets are safe in the
+                //component and not lost
                 implementation = resolveImplementation(implementation, resolver);
+                
+                //resolved implementation may contain intents and policysets specified at 
+                //componentType (either in the componentType side file or in annotations if its a 
+                //java implementation).  This has to be consolidated in to the component.
+                copyPoliciesToComponent(component, implementation, resolver);
+                
                 component.setImplementation(implementation);
             }
         }
     }
+    
+    private void copyPoliciesToComponent(Component component, 
+                                         Implementation implementation, 
+                                         ModelResolver resolver) throws ContributionResolveException {
+        if (implementation instanceof PolicySetAttachPoint) {
+            resolveIntents(((PolicySetAttachPoint)implementation).getRequiredIntents(), resolver);
+            resolvePolicySets(((PolicySetAttachPoint)implementation).getPolicySets(), resolver);
+            validatePolicySets(component, (PolicySetAttachPoint)implementation);
+            //add implementation policies into component... since implementation instance are 
+            //reused and its likely that this implementation instance will not hold after its resolution
+            component.getRequiredIntents().addAll(((PolicySetAttachPoint)implementation).getRequiredIntents());
+            component.getPolicySets().addAll(((PolicySetAttachPoint)implementation).getPolicySets());
+            if ( implementation instanceof OperationsConfigurator ) {
+                boolean notFound;
+                List<ConfiguredOperation> opsFromImplementation = new ArrayList<ConfiguredOperation>();
+                for ( ConfiguredOperation implConfOp : ((OperationsConfigurator)implementation).getConfiguredOperations() ) {
+                    notFound = true;
+                    resolveIntents(implConfOp.getRequiredIntents(), resolver);
+                    resolvePolicySets(implConfOp.getPolicySets(), resolver);
+                    for ( ConfiguredOperation compConfOp : ((OperationsConfigurator)component).getConfiguredOperations() ) {
+                        if ( implConfOp.getName().equals(compConfOp.getName()) ) {
+                            notFound = false;
+                            addInheritedIntents(implConfOp.getRequiredIntents(), compConfOp.getRequiredIntents());
+                            addInheritedPolicySets(implConfOp.getPolicySets(), compConfOp.getPolicySets());
+                            notFound = false;
+                        }
+                    }
+                    
+                    if ( notFound ) {
+                        opsFromImplementation.add(implConfOp);
+                    }
+                }
+                ((OperationsConfigurator)component).getConfiguredOperations().addAll(opsFromImplementation);
+            }
+            ((PolicySetAttachPoint)implementation).getRequiredIntents().clear();
+            ((PolicySetAttachPoint)implementation).getPolicySets().clear();
+        }
+    }
+    
     
     public QName getArtifactType() {
         return COMPOSITE_QNAME;

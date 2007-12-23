@@ -26,10 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -51,12 +48,7 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.apache.tuscany.sca.policy.ProfileIntent;
-import org.apache.tuscany.sca.policy.QualifiedIntent;
 
 public class CompositeWireBuilderImpl {
 
@@ -910,9 +902,28 @@ public class CompositeWireBuilderImpl {
             for (ComponentService componentService : component.getServices()) {
                 Service service = componentService.getService();
                 if (service != null) {
-                    // reconcile intents and policysets
+                    // reconcile intents and policysets from componentType
                      addInheritedIntents(service.getRequiredIntents(), componentService.getRequiredIntents());
                      addInheritedPolicySets(service.getPolicySets(), componentService.getPolicySets(), true);
+                     
+                     //reconcile intents and policysets for operations 
+                     boolean notFound;
+                     List<ConfiguredOperation> opsFromComponentType = new ArrayList<ConfiguredOperation>();
+                     for ( ConfiguredOperation ctsConfOp : service.getConfiguredOperations() ) {
+                         notFound = true;
+                         for ( ConfiguredOperation csConfOp : componentService.getConfiguredOperations() ) {
+                             if ( csConfOp.getName().equals(ctsConfOp.getName()) ) {
+                                 addInheritedIntents(ctsConfOp.getRequiredIntents(), csConfOp.getRequiredIntents());
+                                 addInheritedPolicySets(ctsConfOp.getPolicySets(), csConfOp.getPolicySets(), true);
+                                 notFound = false;
+                             } 
+                         }
+                         
+                         if ( notFound ) {
+                             opsFromComponentType.add(ctsConfOp);
+                         }
+                     }
+                     componentService.getConfiguredOperations().addAll(opsFromComponentType);
                 }
                 
                 if ( componentService.getCallback() != null ) {

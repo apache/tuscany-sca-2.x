@@ -138,9 +138,6 @@ public class ReadTestCase extends TestCase {
         staxProcessor.resolve(scaDefns, resolver);
         staxProcessor.resolve(composite, resolver);
 
-        //intents are not computed for the implementation as yet
-        assertEquals(((PolicySetAttachPoint)composite.getComponents().get(0).getImplementation()).getRequiredIntents().size(), 1);
-        
         CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, mapper, scaDefns.getPolicySets(), null);
         compositeUtil.build(composite);
         
@@ -210,9 +207,6 @@ public class ReadTestCase extends TestCase {
         staxProcessor.resolve(scaDefns, resolver);
         staxProcessor.resolve(composite, resolver);
 
-        //intents are not computed for the implementation as yet
-        assertEquals(((PolicySetAttachPoint)composite.getComponents().get(0).getImplementation()).getRequiredIntents().size(), 1);
-        
         CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, mapper, scaDefns.getPolicySets(), null);
         compositeUtil.build(composite);
         
