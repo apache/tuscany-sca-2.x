@@ -35,7 +35,7 @@ public class BigBankClient {
 
         AccountService accountService = domain.getService(AccountService.class, "AccountServiceComponent");
 
-        String customerID = "1234";
+        String customerID = "Customer_01";
 
         System.out.println("Calling account service for customer: " + customerID);
         System.out.println();

@@ -23,10 +23,12 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
 import stockquote.StockQuoteService;
-import bigbank.accountdata.AccountDataService;
-import bigbank.accountdata.CheckingAccount;
-import bigbank.accountdata.SavingsAccount;
-import bigbank.accountdata.StockAccount;
+import bigbank.account.checking.CheckingAccountDetails;
+import bigbank.account.checking.CheckingAccountService;
+import bigbank.account.savings.SavingsAccountDetails;
+import bigbank.account.savings.SavingsAccountService;
+import bigbank.account.stock.StockAccountDetails;
+import bigbank.account.stock.StockAccountService;
 import calculator.CalculatorService;
 
 /**
@@ -37,7 +39,13 @@ import calculator.CalculatorService;
 public class AccountServiceImpl implements AccountService {
 
     @Reference
-    protected AccountDataService accountDataService;
+    protected SavingsAccountService savingsAcService;
+    
+    @Reference 
+    protected CheckingAccountService checkingAcService;
+    
+    @Reference
+    protected StockAccountService stockAcService;
     
     @Reference
     protected StockQuoteService stockQuoteService;
@@ -52,38 +60,37 @@ public class AccountServiceImpl implements AccountService {
 
         // Get the checking, savings and stock accounts from the AccountData
         // service component
-        CheckingAccount checking = null;
+        CheckingAccountDetails checking = null;
         try {
-            checking = accountDataService.getCheckingAccount(customerID);
-        
-        System.out.println("Checking account: " + checking);
+            checking = checkingAcService.getAccountDetails(customerID);
+            System.out.println("Checking account: " + checking);
 
-        SavingsAccount savings = accountDataService.getSavingsAccount(customerID);
-        System.out.println("Savings account: " + savings);
+            SavingsAccountDetails savings = savingsAcService.getAccountDetails(customerID);
+            System.out.println("Savings account: " + savings);
 
-        StockAccount stock = accountDataService.getStockAccount(customerID);
-        System.out.println("Stock account: " + stock);
+            StockAccountDetails stock = stockAcService.getAccountDetails(customerID);
+            System.out.println("Stock account: " + stock);
         
-        // Get the stock price in USD
-        double price = stockQuoteService.getQuote(stock.getSymbol());
-        System.out.println("Stock price for " + stock.getSymbol() + ": " + price);
+            // Get the stock price in USD
+            double price = stockQuoteService.getQuote(stock.getSymbol());
+            System.out.println("Stock price for " + stock.getSymbol() + ": " + price);
         
-        // Convert to the configured currency
-        if (currency.equals("EURO")) {
+            // Convert to the configured currency
+            if (currency.equals("EURO")) {
+                
+                // Use our fancy calculator service to convert to the target currency
+                price = calculatorService.multiply(price, 0.70);
+                
+                System.out.println("Converted to " + currency + ": " + price);
+            }
             
-            // Use our fancy calculator service to convert to the target currency
-            price = calculatorService.multiply(price, 0.70);
+            // Calculate the value of the stock account
+            double stockValue = price * stock.getQuantity(); 
             
-            System.out.println("Converted to " + currency + ": " + price);
-        }
-        
-        // Calculate the value of the stock account
-        double stockValue = price * stock.getQuantity(); 
-        
-        // Calculate the total balance of all accounts and return it
-        double balance = checking.getBalance() + savings.getBalance() + stockValue;
-        
-        return balance;
+            // Calculate the total balance of all accounts and return it
+            double balance = checking.getBalance() + savings.getBalance() + stockValue;
+            
+            return balance;
         } catch ( Throwable e ) {
             e.printStackTrace();
             return 0;

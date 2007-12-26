@@ -16,18 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package bigbank.accountdata;
+package bigbank.account.stock;
 
 /**
  * @version $$Rev: 567543 $$ $$Date: 2007-04-09 12:03:34 -0700 (Mon, 09 Apr
  *          2007) $$
  */
 
-public class StockAccount {
+public class StockAccountDetails {
     private String accountNumber;
     private String symbol;
     private int quantity;
-
+    
+    public StockAccountDetails() {
+    }
+    
+    public StockAccountDetails(String acNo, String symbol, int qty) {
+        this.accountNumber = acNo;
+        this.symbol = symbol;
+        this.quantity = qty;
+    }
+    
     public String getAccountNumber() {
         return accountNumber;
     }

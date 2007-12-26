@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package bigbank.accountdata;
+package bigbank.account.checking;
 
 /**
  * @version $$Rev: 567543 $$ $$Date: 2007-04-09 12:03:34 -0700 (Mon, 09 Apr
  *          2007) $$
  */
 
-public class CheckingAccount {
+public class CheckingAccountDetails {
     private String accountNumber;
     private double balance;
 
