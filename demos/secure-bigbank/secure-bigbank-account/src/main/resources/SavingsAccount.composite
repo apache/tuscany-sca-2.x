@@ -18,17 +18,16 @@
  * under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	targetNamespace="http://bigbank"
-	xmlns:bb="http://bigbank"
-	name="AccountData">
+	targetNamespace="http://bigbank/savings"
+	xmlns:bbsv="http://bigbank/savings"
+	name="SavingsAccountDept">
 
-    <service name="AccountDataService" promote="AccountDataServiceComponent">
-        <interface.java interface="bigbank.accountdata.AccountDataService"/>
-        <binding.ws uri="http://localhost:8085/services/AccountDataWebService" requires="authentication"/>
+    <service name="SavingsAccountService" promote="SavingsAccountServiceComponent">
+        <interface.java interface="bigbank.account.savings.SavingsAccountService"/>
     </service>
 
-    <component name="AccountDataServiceComponent">
-        <implementation.java class="bigbank.accountdata.AccountDataServiceImpl"/>
+    <component name="SavingsAccountServiceComponent">
+        <implementation.java class="bigbank.account.savings.SavingsAccountServiceImpl"/>
     </component>
 
 </composite>

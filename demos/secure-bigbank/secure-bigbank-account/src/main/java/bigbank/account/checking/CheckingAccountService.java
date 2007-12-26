@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package bigbank.accountdata;
+package bigbank.account.checking;
 
 import org.osoa.sca.annotations.Remotable;
 
@@ -24,12 +24,12 @@ import org.osoa.sca.annotations.Remotable;
  * @version $$Rev: 540764 $$ $$Date: 2007-05-23 03:17:57 +0530 (Wed, 23 May 2007) $$
  */
 @Remotable
-public interface AccountDataService {
+public interface CheckingAccountService {
     
-    public CheckingAccount getCheckingAccount(String customerID);
+    public CheckingAccountDetails getAccountDetails(String customerID);
     
-    public SavingsAccount getSavingsAccount(String customerID);
+    public double deposit(String accountNo, double depositAmt);
     
-    public StockAccount getStockAccount(String customerID);
+    public double withdraw(String accountNo, double withdrawalAmount);
     
 }

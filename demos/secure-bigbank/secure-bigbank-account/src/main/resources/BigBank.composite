@@ -21,6 +21,9 @@
 	xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
 	targetNamespace="http://bigbank"
 	xmlns:bb="http://bigbank"
+	xmlns:bbsv="http://bigbank/savings"
+	xmlns:bbst="http://bigbank/stock"
+	xmlns:bbck="http://bigbank/checkings"
 	name="BigBank">
 
     <component name="AccountServiceComponent">
@@ -33,9 +36,14 @@
 	    </service>
 
         <!-- reference name="accountDataService" target="AccountDataServiceComponent"/-->
+        <reference name="savingsAcService" target="SavingsAccountServiceComponent"/>
         
-        <reference name="accountDataService">
-	        <binding.ws uri="http://localhost:8084/services/AccountDataWebService" requires="tuscany:wsAuthentication"/>
+        <reference name="checkingAcService" requires="tuscany:wsAuthentication">
+	        <binding.ws uri="http://localhost:8085/services/CheckingAcWebService"/>
+        </reference>
+        
+        <reference name="stockAcService">
+	        <binding.ws uri="http://localhost:8086/services/StockAcWebService"/>
         </reference>
         
 	    <reference name="calculatorService">
@@ -57,9 +65,17 @@
         <reference name="accountService" target="AccountServiceComponent"/>
     </component>
 
-    <component name="AccountDataServiceComponent">
-        <implementation.composite name="bb:AccountData"/>
-    </component>
+	<component name="SavingsAccountServiceComponent">
+		<implementation.composite name="bbsv:SavingsAccountDept"/>
+	</component>
+	
+	<component name="CheckingAccountServiceComponent">
+		<implementation.composite name="bbck:CheckingsAccountDept"/>
+	</component>
+	
+	<component name="StockAccountServiceComponent">
+		<implementation.composite name="bbst:StockAccountDept"/>
+	</component>
 
     <component name="WebResourceComponent">
         <tuscany:implementation.resource location="web"/>
