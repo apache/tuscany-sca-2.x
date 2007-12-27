@@ -18,7 +18,13 @@
  */
 	
 function AtomClient(uri) {
-	
+
+	this.msxmlNames = [ "MSXML2.XMLHTTP.5.0",
+                        "MSXML2.XMLHTTP.4.0",
+                        "MSXML2.XMLHTTP.3.0",
+                        "MSXML2.XMLHTTP",
+                        "Microsoft.XMLHTTP" ];
+			            
 	this.uri=uri;
 	
 	this.get = function(id, responseFunction) {
@@ -26,9 +32,14 @@ function AtomClient(uri) {
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4) {
 				if (xhr.status == 200) {
-					if (responseFunction != null) responseFunction(xhr.responseXML);
+				    var strDocument = xhr.responseText;
+				    var xmlDocument = xhr.responseXML;
+				    if(!xmlDocument || xmlDocument.childNodes.length==0){ 
+                        xmlDocument = (new DOMParser()).parseFromString(strDocument, "text/xml");
+                    } 
+                    if (responseFunction != null) responseFunction(xmlDocument);
 				} else {
-					alert("get - Error getting data from the server");
+                    alert("get - Error getting data from the server");
 				}
 			}
 		}
@@ -40,7 +51,12 @@ function AtomClient(uri) {
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4) {
 				if (xhr.status == 201) {
-					if (responseFunction != null) responseFunction(xhr.responseXML);
+				    var strDocument = xhr.responseText;
+				    var xmlDocument = xhr.responseXML;
+				    if(!xmlDocument || xmlDocument.childNodes.length==0){ 
+                        xmlDocument = (new DOMParser()).parseFromString(strDocument, "text/xml");
+                    } 
+					if (responseFunction != null) responseFunction(xmlDocument);
 				} else {
 					alert("post - Error getting data from the server");
 				}
@@ -49,13 +65,18 @@ function AtomClient(uri) {
 		xhr.open("POST", uri, true);
 		xhr.setRequestHeader("Content-Type", "application/atom+xml");
 		xhr.send(entry);
-	}
+	}	
 	this.put = function (id, entry, responseFunction) {
 		var xhr = this.createXMLHttpRequest();
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4) {
 				if (xhr.status == 200) {
-					if (responseFunction != null) responseFunction(xhr.responseXML);
+				    var strDocument = xhr.responseText;
+				    var xmlDocument = xhr.responseXML;
+				    if(!xmlDocument || xmlDocument.childNodes.length==0){ 
+                        xmlDocument = (new DOMParser()).parseFromString(strDocument, "text/xml");
+                    } 
+					if (responseFunction != null) responseFunction(xmlDocument);
 				} else {
 					alert("put - Error getting data from the server");
 				}
@@ -79,14 +100,36 @@ function AtomClient(uri) {
 		xhr.open("DELETE", uri + id, true);		
 		xhr.send(null);
 	}
-	
 	this.createXMLHttpRequest = function () {
-		try {return new XMLHttpRequest();} catch(e) {}      
-		try {return new ActiveXObject("Msxml2.XMLHTTP");} catch(e) {}
-		try {return new ActiveXObject("Microsoft.XMLHTTP");} catch(e) {}
-		alert("XML http request not supported");
-		return null;
+        /* Mozilla XMLHttpRequest */
+        try {return new XMLHttpRequest();} catch(e) {}      
+		
+        /* Microsoft MSXML ActiveX */
+        for (var i=0;i < this.msxmlNames.length; i++) {
+            try {return new ActiveXObject(this.msxmlNames[i]);} catch (e) {}
+        }
+        alert("XML http request not supported");
+        return null;
 	}
+	if (typeof DOMParser == "undefined") {
+	   DOMParser = function () {}
+	
+	   DOMParser.prototype.parseFromString = function (str, contentType) {
+	      if (typeof ActiveXObject != "undefined") {
+	         var d = new ActiveXObject("MSXML.DomDocument");
+	         d.loadXML(str);
+	         return d;
+	      } else if (typeof XMLHttpRequest != "undefined") {
+	         var req = new XMLHttpRequest;
+	         req.open("GET", "data:" + (contentType || "application/xml") +
+	                         ";charset=utf-8," + encodeURIComponent(str), false);
+	         if (req.overrideMimeType) {
+	            req.overrideMimeType(contentType);
+	         }
+	         req.send(null);
+	         return req.responseXML;
+	      }
+      }
+   }
 }
-
 bindingatom = "loaded";
