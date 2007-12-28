@@ -32,6 +32,7 @@
                target="1.5">
             <classpath>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            	<fileset refid="3rdparty.jars"/>
             </classpath>
         </javac> 
         <copy todir="target/classes">
@@ -50,6 +51,7 @@
             <classpath>
                 <pathelement path="target/classes"/>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            	<fileset refid="3rdparty.jars"/>
             </classpath>
         </java>
     </target>
@@ -58,8 +60,9 @@
         <java classname="${test.class}"
               fork="true">
             <classpath>
-                <pathelement path="target/${test.jar}"/>
+                <pathelement path="target/classes"/>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            	<fileset refid="3rdparty.jars"/>
             </classpath>
         </java>    	
     </target>	
@@ -69,4 +72,8 @@
             <fileset dir="target"/>
         </delete>
     </target>
+    
+    <fileset id="3rdparty.jars" dir="../../lib">
+        <include name="saxon-9.0.0.2.jar"/>
+    </fileset>
 </project>
