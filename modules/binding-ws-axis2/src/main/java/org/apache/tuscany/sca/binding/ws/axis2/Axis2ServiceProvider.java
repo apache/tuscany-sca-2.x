@@ -26,13 +26,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.Principal;
 import java.security.PrivilegedAction;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.security.auth.Subject;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.extensions.soap.SOAPAddress;
@@ -98,6 +101,9 @@ import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.apache.ws.security.WSSecurityEngineResult;
+import org.apache.ws.security.handler.WSHandlerConstants;
+import org.apache.ws.security.handler.WSHandlerResult;
 
 public class Axis2ServiceProvider {
     
@@ -517,7 +523,6 @@ public class Axis2ServiceProvider {
     // methods for Axis2 message receivers
 
     public Object invokeTarget(Operation op, Object[] args, MessageContext inMC) throws InvocationTargetException {
-
         String callbackAddress = null;
         String callbackID = null;
         Object conversationID = null;
@@ -558,6 +563,9 @@ public class Axis2ServiceProvider {
         Message msg = messageFactory.createMessage();
         msg.setBody(args);
         msg.setOperation( op );
+        
+        //fill message with QoS context info 
+        fillQoSContext(msg, inMC);
         
         // if reference parameters are needed, create a new "To" EPR to hold them
         EndpointReference to = null;
@@ -683,6 +691,29 @@ public class Axis2ServiceProvider {
             moduleBuilder.populateModule();
         } catch (IOException e) {
             throw new DeploymentException(e);
+        }
+    }
+    
+    private void fillQoSContext(Message message, MessageContext axis2MsgCtx) {
+        if ( axis2MsgCtx.getProperty(WSHandlerConstants.RECV_RESULTS) != null &&
+            axis2MsgCtx.getProperty(WSHandlerConstants.RECV_RESULTS) instanceof Vector ) {
+            Vector recvResults = (Vector)axis2MsgCtx.getProperty(WSHandlerConstants.RECV_RESULTS);
+            for ( int count1 = 0 ; count1 < recvResults.size() ; ++count1 ) {
+                if ( recvResults.elementAt(count1) instanceof WSHandlerResult ) {
+                    WSHandlerResult wshr = (WSHandlerResult)recvResults.elementAt(count1);
+                    Vector results = wshr.getResults();
+                    for ( int count2 = 0 ; count2 < results.size() ; ++count2 ) {
+                        if ( results.elementAt(count2) instanceof WSSecurityEngineResult ) {
+                            WSSecurityEngineResult securityResult = 
+                                (WSSecurityEngineResult)wshr.getResults().elementAt(count2);
+                            if ( securityResult.get("principal") != null ) {
+                                message.getQoSContext().put(Message.QOS_CTX_SECURITY_PRINCIPAL, securityResult.get("principal"));
+                            }
+                        }
+                    }
+                }
+            }
+            
         }
     }
 }

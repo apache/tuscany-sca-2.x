@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.implementation.notification;
 
+import java.util.Map;
+
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
@@ -84,6 +86,11 @@ public class ImmutableMessage implements Message {
      * @see org.apache.tuscany.sca.invocation.Message#getReplyTo()
      */
     public EndpointReference getReplyTo() {
+        return null;
+    }
+
+    public Map<String, Object> getQoSContext() {
+        // TODO Auto-generated method stub
         return null;
     }
 

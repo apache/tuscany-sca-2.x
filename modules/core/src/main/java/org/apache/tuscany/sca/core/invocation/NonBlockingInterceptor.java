@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.core.invocation;
 
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -154,6 +155,9 @@ public class NonBlockingInterceptor implements Interceptor {
             return null;
         }
 
+        public Map<String, Object> getQoSContext() {
+            return null;
+        }
     }
 
 }
