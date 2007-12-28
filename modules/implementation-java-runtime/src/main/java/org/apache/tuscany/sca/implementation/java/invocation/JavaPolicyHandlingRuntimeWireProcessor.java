@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
+import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.policy.Intent;
@@ -56,7 +57,6 @@ public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProces
         RuntimeComponent component = wire.getTarget().getComponent();
         if ( component != null && component.getImplementation() instanceof JavaImplementation ) {
             JavaImplementation javaImpl = (JavaImplementation)component.getImplementation();
-            
             if ( javaImpl instanceof PolicySetAttachPoint ) {
                 PolicyHandler policyHandler = null;
                 List<PolicyHandler> implPolicyHandlers = new ArrayList<PolicyHandler>();
@@ -101,7 +101,15 @@ public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProces
                         }
                         
                         if ( !applicablePolicyHandlers.isEmpty() ) {
-                            chain.addInterceptor(1, new PolicyHandlingInterceptor(chain.getTargetOperation(),
+                            int index = 0;
+                            Invoker invoker = chain.getHeadInvoker();
+                            while ( invoker != chain.getTailInvoker()) {
+                                if ( invoker instanceof Interceptor ) {
+                                    invoker = ((Interceptor)invoker).getNext();
+                                    ++index;
+                                }
+                            }
+                            chain.addInterceptor(index, new PolicyHandlingInterceptor(chain.getTargetOperation(),
                                                                                   applicablePolicyHandlers));
                         }
                     }
