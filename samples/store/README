@@ -1,5 +1,24 @@
 Store Sample
 ======================================
 
-See getting-started-1.0.pdf
+This is a sample store scenario that is used as a getting started guide
+for Tuscany SCA. For detailed information, please see :
 
+getting-started-1.0.pdf
+
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built using Ant as 
+follows
+
+cd store
+ant compile
+
+and then, to run 
+
+ant run
+
+Once the web app is deployed use your browser to visit the following URL;
+
+http://localhost:8080/store/store.html
