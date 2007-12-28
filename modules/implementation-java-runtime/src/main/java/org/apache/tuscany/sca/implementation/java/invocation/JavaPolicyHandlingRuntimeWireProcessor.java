@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
@@ -47,10 +48,10 @@ public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProces
     }
 
     public void process(RuntimeWire wire) {
-        Contract contract = wire.getSource().getContract();
+        /*Contract contract = wire.getSource().getContract();
         if (!(contract instanceof RuntimeComponentReference)) {
             return;
-        }
+        }*/
         
         RuntimeComponent component = wire.getTarget().getComponent();
         if ( component != null && component.getImplementation() instanceof JavaImplementation ) {
@@ -100,7 +101,7 @@ public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProces
                         }
                         
                         if ( !applicablePolicyHandlers.isEmpty() ) {
-                            chain.addInterceptor(0, new PolicyHandlingInterceptor(chain.getTargetOperation(),
+                            chain.addInterceptor(1, new PolicyHandlingInterceptor(chain.getTargetOperation(),
                                                                                   applicablePolicyHandlers));
                         }
                     }
