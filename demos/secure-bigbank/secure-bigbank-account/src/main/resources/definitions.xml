@@ -21,6 +21,7 @@
  			targetNamespace="http://www.osoa.org/xmlns/sca/1.0"
  			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
  			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+			xmlns:chk="http://bigbank/checkings"
  			xmlns:bb="http://bigbank">
 
  <sca:intent name="soap"  
@@ -64,6 +65,15 @@
  			 Communitcation thro this binding required Authentication.
  			 </description>
  </sca:intent>
+ 
+ <sca:intent name="chk:chkDeptAuthorization" 
+ 			 constrains="sca:implementation.java">
+ 			 <description>
+ 				Authorization enforced by checkings dept of bigbank
+ 			 </description>
+ </sca:intent>
+ 
+ 
  
  <!-- WS Security POLICY SETS -->
  <sca:policySet name="tuscany:wsIntegrityPolicy"
@@ -114,6 +124,14 @@
                </action>
     	</parameter>
  	</tuscany:wsConfigParam>
+ </sca:policySet>
+ 
+ <sca:policySet name="chk:chkDeptAuthorizationPolicy"
+ 	provides="chk:chkDeptAuthorization"
+ 	appliesTo="sca:implementation.java">
+ 	<chk:AuthPolicy>
+ 		<!-- need to evolve what should go in here -->
+ 	</chk:AuthPolicy>
  </sca:policySet>
  
 </sca:definitions>
