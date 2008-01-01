@@ -37,6 +37,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>maven-dependency-lister</module>
                 <module>maven-java2wsdl</module>
                 <module>maven-wsdl2java</module>
                 <module>maven-ant-generator</module>
