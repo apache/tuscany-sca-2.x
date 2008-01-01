@@ -39,7 +39,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
+            <version>4.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -101,18 +101,11 @@
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency>
-        <!-- 
-            <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-jetty</artifactId>
-            <version>${pom.version}</version>
-            <scope>test</scope>
-            </dependency>
-        -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-webapp</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -131,6 +124,12 @@
             <artifactId>rome</artifactId>
             <version>0.9</version>
         </dependency>
+        <!--dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-jetty</artifactId>
+            <version>1.1-incubating-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency-->
     </dependencies>
 
     <build>
@@ -275,7 +274,6 @@
                 </executions>
             </plugin>
 
-
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven2-plugin</artifactId>
@@ -298,7 +296,10 @@
                 <configuration>
                     <container>
                         <containerId>jetty6x</containerId>
-                        <type>embedded</type>
+                        <type>embedded</type>  
+                        <systemProperties>
+                            <org.apache.commons.logging.Log>org.apache.commons.logging.impl.SimpleLog</org.apache.commons.logging.Log>
+                        </systemProperties>
                     </container>
                     <wait>false</wait>
                     <configuration>
@@ -314,8 +315,24 @@
                             </deployable>
                         </deployables>
                     </configuration>
-                </configuration>
+                </configuration>                
             </plugin>
+            
+            <plugin>
+                <groupId>org.apache.tuscany.sca</groupId>
+                <artifactId>tuscany-maven-ant-generator</artifactId>
+                <version>1.1-incubating-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <buildDependencyFileOnly>true</buildDependencyFileOnly>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>             
         </plugins>
     </build>
 

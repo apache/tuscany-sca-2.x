@@ -21,10 +21,14 @@ package org.apache.tuscany.sca.demos.aggregator;
 
 import java.io.ByteArrayInputStream;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.json.JSONObject;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
@@ -34,23 +38,20 @@ import com.meterware.httpunit.WebResponse;
 
 /**
  */
-public class AlertsIntegrationTest extends TestCase  {
-    private SCADomain scaDomain;
-    /**
-     * Runs before each test method
-     */
-    @Override
-    protected void setUp() throws Exception {
-        scaDomain = SCADomain.newInstance("alerts-client.composite");
-        super.setUp();
+public class AlertsIntegrationTest {
+    //private static SCADomain scaDomain;
+    
+    @BeforeClass
+    public static void setUp() throws Exception {
+        //scaDomain = SCADomain.newInstance("alerts.composite");
     }
 
     /**
      * Runs after each test method
      */
-    @Override
-    protected void tearDown() {
-        scaDomain.close();
+    @AfterClass
+    public static void tearDown() {
+        //scaDomain.close();
     }
     
 /* Use this if you want to test locally without deploying to a web container
@@ -61,25 +62,28 @@ public class AlertsIntegrationTest extends TestCase  {
     }
 */    
 
+    @Test
     public void testGetAllNewAlerts() throws Exception {   
         JSONObject jsonRequest = new JSONObject("{\"params\":[\"sometext\"],\"method\":\"getAllNewAlerts\",\"id\":2}");
         JSONObject jsonResp    = callService ("http://localhost:8080/demo-alert-aggregator-webapp/AlertsServiceJSONRPC",
                                               jsonRequest);
-        assertNotNull(jsonResp);
+        Assert.assertNotNull(jsonResp);
     }   
     
+    @Test
     public void testAddAlertSources() throws Exception {   
         JSONObject jsonRequest = new JSONObject("{\"params\":[{\"name\":\"news\",\"id\":\"2\",\"address\":\"www.news.com\",\"feedAddress\":\"http://news.com.com/2547-1_3-0-20.xml\",\"feedType\":\"rss\",\"lastChecked\":\"lastChecked\",\"javaClass\":\"org.apache.tuscany.sca.demos.aggregator.types.impl.SourceTypeImpl\"}],\"method\":\"addAlertSource\",\"id\":2}");
         JSONObject jsonResp    = callService ("http://localhost:8080/demo-alert-aggregator-webapp/AlertsSourcesServiceJSONRPC",
                                               jsonRequest);  
-        assertNotNull(jsonResp);
+        Assert.assertNotNull(jsonResp);
     }
   
+    @Test
     public void testGetAlertSources() throws Exception {  
         JSONObject jsonRequest = new JSONObject("{\"params\":[\"sometext\"],\"method\":\"getAlertSources\",\"id\":2}");
         JSONObject jsonResp    = callService ("http://localhost:8080/demo-alert-aggregator-webapp/AlertsSourcesServiceJSONRPC",
                                               jsonRequest);                                 
-        assertEquals("BBC News", jsonResp.getJSONObject("result").getJSONObject("source").optJSONArray("list").getJSONObject(0).getString("name")); 
+        Assert.assertEquals("BBC News", jsonResp.getJSONObject("result").getJSONObject("source").optJSONArray("list").getJSONObject(0).getString("name")); 
     }    
   
     public JSONObject callService(String url, JSONObject jsonRequest) throws Exception {
@@ -89,7 +93,7 @@ public class AlertsIntegrationTest extends TestCase  {
                                                          new ByteArrayInputStream(jsonRequest.toString().getBytes("UTF-8")),"application/json");
         WebResponse response = wc.getResource(request);
         System.out.println("Response= " + response.getText());               
-        assertEquals(200, response.getResponseCode());
+        Assert.assertEquals(200, response.getResponseCode());
         return new JSONObject(response.getText()); 
     }
 }
