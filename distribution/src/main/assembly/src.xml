@@ -102,13 +102,17 @@
              <exclude>modules/host-tomcat/work/**/*</exclude>
              <exclude>modules/node-impl/work</exclude>
              <exclude>modules/node-impl/work/**/*</exclude>
-             <exclude>modules/binding-jms</exclude>
-             <exclude>modules/binding-jms/**/*</exclude>
+             <!--exclude>modules/binding-jms</exclude>
+             <exclude>modules/binding-jms/**/*</exclude-->
              <exclude>modules/implementation-bpel/derby.log</exclude>
              <exclude>modules/implementation-das</exclude>
              <exclude>modules/implementation-das/**/*</exclude>
              <exclude>modules/implementation-data</exclude>
              <exclude>modules/implementation-data/**/*</exclude>
+             <exclude>modules/implementation-ejb</exclude>
+             <exclude>modules/implementation-ejb/**/*</exclude>
+             <exclude>modules/implementation-ejb-xml</exclude>
+             <exclude>modules/implementation-ejb-xml/**/*</exclude>
              <exclude>modules/implementation-osgi/.felix</exclude>
              <exclude>modules/implementation-osgi/.felix/**/*</exclude>
              <exclude>samples/old</exclude>
@@ -129,6 +133,8 @@
              <exclude>samples/helloworld-jsonrpc-webapp/src/main/webapp/dojo/**/*</exclude>
              <exclude>samples/helloworld-dojo-webapp/src/main/webapp/dojo</exclude>
              <exclude>samples/helloworld-dojo-webapp/src/main/webapp/dojo/**/*</exclude>
+             <exclude>samples/helloworld-ws-deep-webapp/work</exclude>
+             <exclude>samples/helloworld-ws-deep-webapp/work/**/*</exclude>
              <exclude>samples/helloworld-ws-reference/work</exclude>
              <exclude>samples/helloworld-ws-reference/work/**/*</exclude>
              <exclude>samples/helloworld-ws-reference-secure/work</exclude>
