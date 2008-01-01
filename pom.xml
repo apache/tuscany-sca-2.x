@@ -93,7 +93,34 @@
                 <module>distribution</module>
             </modules>
         </profile>
+
+        <profile>
+            <id>dependencies</id>
+            <modules>
+                <module>modules</module>
+                <module>samples</module>
+                <module>demos</module>
+            </modules>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-maven-dependency-lister</artifactId>
+                        <version>1.1-incubating-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>           
+                </plugins>         
+            </build>
+        </profile>
     </profiles>
+ 
 
     <build>
         <defaultGoal>install</defaultGoal>
