@@ -48,7 +48,7 @@
         <dependency>
             <groupId>org.apache.bsf</groupId>
             <artifactId>bsf-all</artifactId>
-            <version>3.0-SNAPSHOT</version>
+            <version>3.0-beta2</version>    
         </dependency>
 
         <dependency>
@@ -65,6 +65,14 @@
                     <groupId>xerces</groupId>
                     <artifactId>xercesImpl</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>javax.mail</groupId>
+                    <artifactId>mail</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>                 
             </exclusions>
             <version>1.2.5</version>
         </dependency>
@@ -103,6 +111,22 @@
             <version>1.1-incubating-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+           <groupId>commons-logging</groupId>
+           <artifactId>commons-logging</artifactId>
+           <version>1.1</version>
+           <exclusions>
+               <exclusion>
+                   <groupId>commons-logging</groupId>
+                   <artifactId>commons-logging</artifactId>
+               </exclusion>
+               <exclusion>
+                   <groupId>javax.servlet</groupId>
+                   <artifactId>servlet-api</artifactId>
+               </exclusion>
+           </exclusions>
+        </dependency>          
 
 <!-- TODO: big hack to add script engine dependencies till extension dependencies fixed -->
 

@@ -30,6 +30,7 @@
 				<available file="${localRepository}/net/sf/saxon/saxon/${saxon.version}/saxon-${saxon.version}.jar" />
 				<available file="${localRepository}/net/sf/saxon/saxon-dom/${saxon.version}/saxon-dom-${saxon.version}.jar" />
 				<available file="${localRepository}/net/sf/saxon/saxon-api/${saxon.version}/saxon-api-${saxon.version}.jar" />
+				<available file="${localRepository}/net/sf/saxon/saxon-xpath/${saxon.version}/saxon-xpath-${saxon.version}.jar" />
 			</and>
 		</condition>
 		<condition property="maven.suffix" value="">
@@ -61,6 +62,9 @@
 		<exec executable="mvn${maven.suffix}" dir="${basedir}" failonerror="false">
 			<arg line="install:install-file -DgroupId=net.sf.saxon  -DartifactId=saxon-api -Dversion=${saxon.version} -Dpackaging=jar -DgeneratePom=true -Dfile=${saxon.dir}/saxon9-s9api.jar" />
 		</exec>
+	    <exec executable="mvn${maven.suffix}" dir="${basedir}" failonerror="false">
+	        <arg line="install:install-file -DgroupId=net.sf.saxon  -DartifactId=saxon-xpath -Dversion=${saxon.version} -Dpackaging=jar -DgeneratePom=true -Dfile=${saxon.dir}/saxon9-xpath.jar" />
+	    </exec>
 	</target>
 
 	<target name="install-saxon-nomaven" depends="check-saxon-installed" unless="already.installed">
@@ -71,7 +75,7 @@
 		<copy file="${saxon.dir}/saxon9.jar" tofile="${localRepository}/net/sf/saxon/saxon/${saxon.version}/saxon-${saxon.version}.jar" />
 		<copy file="${saxon.dir}/saxon9-dom.jar" tofile="${localRepository}/net/sf/saxon/saxon-dom/${saxon.version}/saxon-dom-${saxon.version}.jar" />
 		<copy file="${saxon.dir}/saxon9-s9api.jar" tofile="${localRepository}/net/sf/saxon/saxon-api/${saxon.version}/saxon-api-${saxon.version}.jar" />
-
+		<copy file="${saxon.dir}/saxon9-xpath.jar" tofile="${localRepository}/net/sf/saxon/saxon-xpath/${saxon.version}/saxon-xpath-${saxon.version}.jar" />
 	</target>
 
 	<target name="clean-saxon-files">

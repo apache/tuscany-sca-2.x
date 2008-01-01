@@ -81,6 +81,18 @@
             <version>4.2</version>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+           <groupId>org.apache.geronimo.specs</groupId>
+           <artifactId>geronimo-jms_1.1_spec</artifactId>
+           <version>1.1</version>
+           <exclusions>
+               <exclusion>
+                   <groupId>org.apache.geronimo.specs</groupId>
+                   <artifactId>geronimo-jms_1.1_spec</artifactId>
+               </exclusion>
+           </exclusions>
+        </dependency>         
 
     </dependencies>
     

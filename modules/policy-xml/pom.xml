@@ -60,6 +60,10 @@
                     <groupId>javax.mail</groupId>
                     <artifactId>mail</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>                
             </exclusions>
         </dependency>
         
@@ -87,13 +91,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-           <version>1.1</version>
-            <scope>runtime</scope>
-        </dependency>
                 
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
@@ -101,5 +98,18 @@
             <version>3.2.1</version>
             <scope>runtime</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1</version>
+            <scope>runtime</scope>
+            <exclusions>
+               <exclusion>
+                   <groupId>commons-logging</groupId>
+                   <artifactId>commons-logging</artifactId>
+               </exclusion>
+            </exclusions>
+        </dependency>        
     </dependencies>
 </project>
