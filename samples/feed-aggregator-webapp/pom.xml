@@ -23,7 +23,7 @@
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-sca</artifactId>
         <version>1.1-incubating-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>sample-feed-aggregator-webapp</artifactId>
     <packaging>war</packaging>
@@ -55,7 +55,7 @@
             <artifactId>tuscany-binding-feed</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
             <scope>compile</scope>
-        </dependency>
+        </dependency>   
 
         <dependency>
             <groupId>junit</groupId>
@@ -68,6 +68,20 @@
     
     <build>
        <finalName>${artifactId}</finalName>
+       <plugins>
+            <plugin>
+                <groupId>org.apache.tuscany.sca</groupId>
+                <artifactId>tuscany-maven-ant-generator</artifactId>
+                <version>1.1-incubating-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>         
+       </plugins>         
     </build>
 
 </project>
