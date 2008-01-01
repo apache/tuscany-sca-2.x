@@ -88,6 +88,23 @@
 
     <build>
        <finalName>${artifactId}</finalName>
+       <plugins>
+            <plugin>
+                <groupId>org.apache.tuscany.sca</groupId>
+                <artifactId>tuscany-maven-ant-generator</artifactId>
+                <version>1.1-incubating-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <mainClass>myapp.MyClientImpl</mainClass>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+       </plugins>         
     </build>
 
 </project>
