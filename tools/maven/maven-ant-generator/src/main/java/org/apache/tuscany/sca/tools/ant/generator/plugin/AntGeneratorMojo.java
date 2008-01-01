@@ -151,24 +151,24 @@ public class AntGeneratorMojo extends AbstractMojo {
             }
         }
         
-        pw.println("<!--" + 
-                   " * Licensed to the Apache Software Foundation (ASF) under one\n" +
-                   " * or more contributor license agreements.  See the NOTICE file\n" + 
-                   " * distributed with this work for additional information\n" + 
-                   " * regarding copyright ownership.  The ASF licenses this file\n" +
-                   " * to you under the Apache License, Version 2.0 (the\n" +
-                   " * \"License\"); you may not use this file except in compliance\n" +
-                   " * with the License.  You may obtain a copy of the License at\n" +
-                   " * \n" +
-                   " *   http://www.apache.org/licenses/LICENSE-2.0\n" +
-                   " * \n" +
-                   " * Unless required by applicable law or agreed to in writing,\n" +
-                   " * software distributed under the License is distributed on an\n" +
-                   " * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n" +
-                   " * KIND, either express or implied.  See the License for the\n" +
-                   " * specific language governing permissions and limitations\n" +
-                   " * under the License.\n" +    
-                   "-->");
+        pw.println("<!--");
+        pw.println(" * Licensed to the Apache Software Foundation (ASF) under one");
+        pw.println(" * or more contributor license agreements.  See the NOTICE file");
+        pw.println(" * distributed with this work for additional information");
+        pw.println(" * regarding copyright ownership.  The ASF licenses this file");
+        pw.println(" * to you under the Apache License, Version 2.0 (the");
+        pw.println(" * \"License\"); you may not use this file except in compliance");
+        pw.println(" * with the License.  You may obtain a copy of the License at");
+        pw.println(" * ");
+        pw.println(" *   http://www.apache.org/licenses/LICENSE-2.0");
+        pw.println(" * ");
+        pw.println(" * Unless required by applicable law or agreed to in writing,");
+        pw.println(" * software distributed under the License is distributed on an");
+        pw.println(" * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY");
+        pw.println(" * KIND, either express or implied.  See the License for the");
+        pw.println(" * specific language governing permissions and limitations");
+        pw.println(" * under the License.");
+        pw.println("-->");
 
         pw.println();
     
@@ -218,24 +218,24 @@ public class AntGeneratorMojo extends AbstractMojo {
             }
         }
         
-        pw.println("<!--" + 
-                   " * Licensed to the Apache Software Foundation (ASF) under one\n" +
-                   " * or more contributor license agreements.  See the NOTICE file\n" + 
-                   " * distributed with this work for additional information\n" + 
-                   " * regarding copyright ownership.  The ASF licenses this file\n" +
-                   " * to you under the Apache License, Version 2.0 (the\n" +
-                   " * \"License\"); you may not use this file except in compliance\n" +
-                   " * with the License.  You may obtain a copy of the License at\n" +
-                   " * \n" +
-                   " *   http://www.apache.org/licenses/LICENSE-2.0\n" +
-                   " * \n" +
-                   " * Unless required by applicable law or agreed to in writing,\n" +
-                   " * software distributed under the License is distributed on an\n" +
-                   " * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n" +
-                   " * KIND, either express or implied.  See the License for the\n" +
-                   " * specific language governing permissions and limitations\n" +
-                   " * under the License.\n" +    
-                   "-->");
+        pw.println("<!--");
+        pw.println(" * Licensed to the Apache Software Foundation (ASF) under one");
+        pw.println(" * or more contributor license agreements.  See the NOTICE file");
+        pw.println(" * distributed with this work for additional information");
+        pw.println(" * regarding copyright ownership.  The ASF licenses this file");
+        pw.println(" * to you under the Apache License, Version 2.0 (the");
+        pw.println(" * \"License\"); you may not use this file except in compliance");
+        pw.println(" * with the License.  You may obtain a copy of the License at");
+        pw.println(" * ");
+        pw.println(" *   http://www.apache.org/licenses/LICENSE-2.0");
+        pw.println(" * ");
+        pw.println(" * Unless required by applicable law or agreed to in writing,");
+        pw.println(" * software distributed under the License is distributed on an");
+        pw.println(" * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY");
+        pw.println(" * KIND, either express or implied.  See the License for the");
+        pw.println(" * specific language governing permissions and limitations");
+        pw.println(" * under the License.");
+        pw.println("-->");
 
         
         pw.println("<project name=\"" + project.getArtifactId() + "\" default=\"compile\">");
@@ -264,7 +264,12 @@ public class AntGeneratorMojo extends AbstractMojo {
             String source = resource.getDirectory();
             if (source.length() > base) {
                 source = source.substring(base);
-                pw.println("            <fileset dir=\"" + source + "\"/>");
+                
+                if (source.equals(".")){
+                    pw.println("            <fileset dir=\".\" includes=\"*\" excludes=\"src, target, pom.xml, build.xml\"/>");
+                } else {
+                    pw.println("            <fileset dir=\"" + source + "\"/>");
+                }
             } else {
                 if (project.getResources().size() > 1) {
                     break;
