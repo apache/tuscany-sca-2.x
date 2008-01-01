@@ -96,23 +96,46 @@ public class AntGeneratorMojo extends AbstractMojo {
     private String mainClass;
     
     /**
+     * If set true then only the dependency file is created. The dependency
+     * file can then be included in a hand generated build.xml file
+     * @parameter
+     */
+    private Boolean buildDependencyFileOnly;    
+    
+    /**
      * The build.xml file to generate.
      * @parameter expression="${basedir}/build.xml"
      */
     private String buildFile;
     
+    /**
+     * The build-dependency.xml file to generate.
+     * @parameter expression="${basedir}/build-dependency.xml"
+     */
+    private String buildDependencyFile;    
+    
     public void execute() throws MojoExecutionException {
+        if ((buildDependencyFileOnly != null) &&
+            (buildDependencyFileOnly == true)){
+            createBuildDependencyXML();
+        } else {
+            createBuildXML();
+        }
+    }
+    
+    public void createBuildDependencyXML() throws MojoExecutionException {
         
-        getLog().info("Generating " + buildFile);
+        getLog().info("Generating " + buildDependencyFile);
         
-        // Open the target build.xml file
-        File targetFile = new File(buildFile);
+        // Open the target build-dependency.xml file
+        File targetFile = new File(buildDependencyFile);
         PrintWriter pw;
         try {
             pw = new PrintWriter(new FileOutputStream(targetFile));
         } catch (FileNotFoundException e) {
             throw new MojoExecutionException(e.toString());
         }
+        
 
         // Determine the project packaging
         String packaging = project.getPackaging().toLowerCase();
@@ -127,6 +150,93 @@ public class AntGeneratorMojo extends AbstractMojo {
                 otherModules.add(artifact);
             }
         }
+        
+        pw.println("<!--" + 
+                   " * Licensed to the Apache Software Foundation (ASF) under one\n" +
+                   " * or more contributor license agreements.  See the NOTICE file\n" + 
+                   " * distributed with this work for additional information\n" + 
+                   " * regarding copyright ownership.  The ASF licenses this file\n" +
+                   " * to you under the Apache License, Version 2.0 (the\n" +
+                   " * \"License\"); you may not use this file except in compliance\n" +
+                   " * with the License.  You may obtain a copy of the License at\n" +
+                   " * \n" +
+                   " *   http://www.apache.org/licenses/LICENSE-2.0\n" +
+                   " * \n" +
+                   " * Unless required by applicable law or agreed to in writing,\n" +
+                   " * software distributed under the License is distributed on an\n" +
+                   " * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n" +
+                   " * KIND, either express or implied.  See the License for the\n" +
+                   " * specific language governing permissions and limitations\n" +
+                   " * under the License.\n" +    
+                   "-->");
+
+        pw.println();
+    
+        // Generate the classpath
+        pw.println("    <fileset id=\"tuscany.jars\" dir=\"../../modules\">");
+        for (Artifact artifact: tuscanyModules) {
+            pw.println("        <include name=\"" + artifact.getFile().getName() +"\"/>");
+        }
+        pw.println("    </fileset>");
+        
+        pw.println("    <fileset id=\"3rdparty.jars\" dir=\"../../lib\">");
+        for (Artifact artifact: otherModules) {
+            pw.println("        <include name=\"" + artifact.getFile().getName() +"\"/>");
+        }
+        pw.println("    </fileset>");
+        
+        pw.println();
+        
+        pw.close();
+    }
+    
+    public void createBuildXML() throws MojoExecutionException {
+        
+        getLog().info("Generating " + buildFile);
+        
+        // Open the target build.xml file
+        File targetFile = new File(buildFile);
+        PrintWriter pw;
+        try {
+            pw = new PrintWriter(new FileOutputStream(targetFile));
+        } catch (FileNotFoundException e) {
+            throw new MojoExecutionException(e.toString());
+        }
+        
+
+        // Determine the project packaging
+        String packaging = project.getPackaging().toLowerCase();
+
+        // Determine the module dependencies
+        List<Artifact> tuscanyModules = new ArrayList<Artifact>();
+        List<Artifact> otherModules = new ArrayList<Artifact>();
+        for (Artifact artifact: (List<Artifact>)project.getRuntimeArtifacts()) {
+            if (artifact.getGroupId().startsWith("org.apache.tuscany.sca")) {
+                tuscanyModules.add(artifact);
+            } else {
+                otherModules.add(artifact);
+            }
+        }
+        
+        pw.println("<!--" + 
+                   " * Licensed to the Apache Software Foundation (ASF) under one\n" +
+                   " * or more contributor license agreements.  See the NOTICE file\n" + 
+                   " * distributed with this work for additional information\n" + 
+                   " * regarding copyright ownership.  The ASF licenses this file\n" +
+                   " * to you under the Apache License, Version 2.0 (the\n" +
+                   " * \"License\"); you may not use this file except in compliance\n" +
+                   " * with the License.  You may obtain a copy of the License at\n" +
+                   " * \n" +
+                   " *   http://www.apache.org/licenses/LICENSE-2.0\n" +
+                   " * \n" +
+                   " * Unless required by applicable law or agreed to in writing,\n" +
+                   " * software distributed under the License is distributed on an\n" +
+                   " * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n" +
+                   " * KIND, either express or implied.  See the License for the\n" +
+                   " * specific language governing permissions and limitations\n" +
+                   " * under the License.\n" +    
+                   "-->");
+
         
         pw.println("<project name=\"" + project.getArtifactId() + "\" default=\"compile\">");
         pw.println();
@@ -226,5 +336,6 @@ public class AntGeneratorMojo extends AbstractMojo {
         pw.println("</project>");
         pw.close();
     }
+    
 
 }
