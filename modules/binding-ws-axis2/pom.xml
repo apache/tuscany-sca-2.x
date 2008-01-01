@@ -192,6 +192,12 @@
             <artifactId>servlet-api</artifactId>
             <version>2.4</version><!-- to keep compatible with older servlet containers -->
             <scope>provided</scope>
+            <exclusions>
+               <exclusion>
+                   <groupId>javax.servlet</groupId>
+                   <artifactId>servlet-api</artifactId>
+               </exclusion>
+            </exclusions>            
         </dependency>
 
 
