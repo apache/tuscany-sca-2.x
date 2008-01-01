@@ -56,7 +56,7 @@ public class WebAppServletHost implements ServletHost {
 
     private Map<String, Servlet> servlets;
     private SCADomain scaDomain;
-    private String contextPath;
+    private String contextPath = "/";
     private int defaultPortNumber = 8080;
 
     private WebAppServletHost() {
