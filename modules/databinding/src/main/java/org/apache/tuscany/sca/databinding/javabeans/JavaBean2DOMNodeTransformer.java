@@ -57,14 +57,16 @@ public class JavaBean2DOMNodeTransformer extends JavaBean2XMLTransformer<Node> {
     }
 
     @Override
-    public Node createText(String textData) throws Java2XMLMapperException {
+    public void appendText(Node parentElement, String textData) throws Java2XMLMapperException {
+        Node textNode;
         if (textData != null) {
-            return factory.createTextNode(textData);
+            textNode = factory.createTextNode(textData);
         } else {
             Attr nil = factory.createAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:nil");
             nil.setValue("true");
-            return nil;
-        }        
+            textNode = nil;
+        }
+        appendChild(parentElement, textNode);
     }
 
     @Override

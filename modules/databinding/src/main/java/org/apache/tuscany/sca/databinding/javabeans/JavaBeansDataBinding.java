@@ -46,6 +46,10 @@ public class JavaBeansDataBinding extends BaseDataBinding {
     public JavaBeansDataBinding() {
         super(NAME, Object.class);
     }
+
+    protected JavaBeansDataBinding(String name, Class<?> baseType) {
+        super(name, baseType);
+    }
     
     @Override
     public Object copy(Object arg) {

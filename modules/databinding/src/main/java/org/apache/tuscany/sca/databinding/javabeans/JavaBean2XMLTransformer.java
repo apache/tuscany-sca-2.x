@@ -85,7 +85,7 @@ public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object,
         T element = null;
         if (javaObject != null) {
             if (javaType.isPrimitive() || isSimpleJavaType(javaObject)) {
-                appendChild(parent, createText(mapper.toXMLLiteral(null, javaObject, context)));
+                appendText(parent, mapper.toXMLLiteral(null, javaObject, context));
             } else if (javaType.isArray()) {
                 int size = Array.getLength(javaObject);
                 for (int count = 0; count < size; ++count) {
@@ -127,7 +127,8 @@ public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object,
                 for (Method aMethod : methods) {
                     try {
                         if (Modifier.isPublic(aMethod.getModifiers()) && aMethod.getName().startsWith(GET)
-                            && aMethod.getParameterTypes().length == 0) {
+                            && aMethod.getParameterTypes().length == 0
+                            && isMappedGetter(aMethod.getName())) {
                             fieldName = resolveFieldFromMethod(aMethod.getName());
                             try {
                                 javaType.getField(fieldName);
@@ -158,6 +159,15 @@ public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object,
                 }
             }
         }
+    }
+
+    /*
+     * Subclasses can override this method to prevent some getter methods
+     * from being mapped.  The default implementation provided by this class
+     * maps all getter methods.
+     */
+    protected boolean isMappedGetter(String methodName) {
+        return true;
     }
 
     @Override
@@ -233,12 +243,12 @@ public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object,
     public abstract T createElement(QName qName) throws Java2XMLMapperException;
 
     /**
-     * Create a text node with the given text data
+     * Create a text node and add it to the parent
+     * @param parentElement
      * @param textData
-     * @return
      * @throws Java2XMLMapperException
      */
-    public abstract T createText(String textData) throws Java2XMLMapperException;
+    public abstract void appendText(T parentElement, String textData) throws Java2XMLMapperException;
 
     /**
      * Add the child element to the parent

@@ -19,11 +19,13 @@
 package org.apache.tuscany.sca.databinding.javabeans;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +44,7 @@ public abstract class XML2JavaBeanTransformer<T> extends BaseTransformer<T, Obje
         PullTransformer<T, Object> {
 
     public static final String SET = "set";
+    public static final QName QNAME_MESSAGE = new QName("message");
 
     protected SimpleTypeMapperImpl mapper;
 
@@ -76,25 +79,39 @@ public abstract class XML2JavaBeanTransformer<T> extends BaseTransformer<T, Obje
     @SuppressWarnings("unchecked")
     private <L> L createJavaObject(T element, Class<L> javaType, TransformationContext context) 
         throws XML2JavaMapperException {
-        List<T> childElements = getChildElements(element);
-        if (childElements.size() == 1 && isTextElement(childElements.get(0))) {
+        if (isTextOnly(element)) {
             return (L) mapper.toJavaObject(mapper.getXMLType(javaType).getQName(),
-                                                 getText(childElements.get(0)),
+                                                 getText(element),
                                                  context);
         } else {
             String fieldName = null;
             try {
-                L javaInstance = javaType.newInstance();
+                L javaInstance;
+                T detailMsg = null;
+                if (Throwable.class.isAssignableFrom(javaType)) {
+                    T msgElement = getFirstChildWithName(element, QNAME_MESSAGE);
+                    if (msgElement != null && isTextOnly(msgElement)) {
+                        detailMsg = msgElement;  // skip this when handling child elements
+                        Constructor constructor = javaType.getConstructor(new Class[] {String.class});
+                        javaInstance = (L)constructor.newInstance(new Object[] {getText(detailMsg)});
+                    } else {
+                        javaInstance = javaType.newInstance();
+                    }
+                } else {
+                    javaInstance = javaType.newInstance();
+                }
                 Map<Field, List<Object>> arrayFields = new Hashtable<Field, List<Object>>();
                 Map<Method, List<Object>> arraySetters = new Hashtable<Method, List<Object>>();
-                for (int count = 0; count < childElements.size(); ++count) {
-                    if (!isTextElement(childElements.get(count))) {
-                        fieldName = getElementName(childElements.get(count));
+                
+                for (Iterator<T> childElements = getChildElements(element); childElements.hasNext(); ) {
+                    T childElement = childElements.next();
+                    if (!isTextElement(childElement) && childElement != detailMsg) {
+                        fieldName = getElementName(childElement);
                         try {
                             Field javaField = javaType.getField(fieldName);
                             setFieldValue(javaInstance,
                                           javaField,
-                                          childElements.get(count),
+                                          childElement,
                                           arrayFields,
                                           context);
 
@@ -102,7 +119,7 @@ public abstract class XML2JavaBeanTransformer<T> extends BaseTransformer<T, Obje
                             setFieldValueUsingSetter(javaType,
                                                      javaInstance,
                                                      fieldName,
-                                                     childElements.get(count),
+                                                     childElement,
                                                      arraySetters,
                                                      context);
                         }
@@ -286,12 +303,16 @@ public abstract class XML2JavaBeanTransformer<T> extends BaseTransformer<T, Obje
 
     public abstract String getText(T source) throws XML2JavaMapperException;
 
-    public abstract List<T> getChildElements(T parent) throws XML2JavaMapperException;
+    public abstract Iterator<T> getChildElements(T parent) throws XML2JavaMapperException;
 
     public abstract String getElementName(T element) throws XML2JavaMapperException;
 
     public abstract boolean isTextElement(T element) throws XML2JavaMapperException;
     
+    public abstract boolean isTextOnly(T element) throws XML2JavaMapperException;
+
+    public abstract T getFirstChildWithName(T element, QName name) throws XML2JavaMapperException;
+
     public abstract T getRootElement(T element) throws XML2JavaMapperException;
 
     @Override
