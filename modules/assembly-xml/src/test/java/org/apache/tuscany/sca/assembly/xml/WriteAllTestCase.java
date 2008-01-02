@@ -108,8 +108,8 @@ public class WriteAllTestCase extends TestCase {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
         Composite composite = staxProcessor.read(is, Composite.class);
         
-        URL url = getClass().getResource("definitions.xml");
-        URI uri = URI.create("definitions.xml");
+        URL url = getClass().getResource("test_definitions.xml");
+        URI uri = URI.create("test_definitions.xml");
         SCADefinitions scaDefns = (SCADefinitions)scaDefnDocProcessor.read(null, uri, url);
         assertNotNull(scaDefns);
         scaDefnDocProcessor.resolve(scaDefns, resolver);

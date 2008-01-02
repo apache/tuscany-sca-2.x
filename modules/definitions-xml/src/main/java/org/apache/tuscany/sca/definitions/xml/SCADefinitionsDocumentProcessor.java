@@ -36,9 +36,8 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.definitions.SCADefinitionsBuilder;
-import org.apache.tuscany.sca.definitions.SCADefinitionsBuilderException;
 import org.apache.tuscany.sca.definitions.SCADefinitionsBuilderImpl;
-import org.apache.tuscany.sca.definitions.SCADefinitionsResolver;
+import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
 import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -56,7 +55,7 @@ import org.apache.tuscany.sca.policy.xml.SimpleIntentProcessor;
 public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SCADefinitions> {
     private StAXArtifactProcessor<Object> extensionProcessor;
     private SCADefinitionsBuilder definitionsBuilder;
-    private ModelResolver domainModelResolver;
+    private ModelResolver scaDefinitionsResolver;
     private XMLInputFactory inputFactory;
 
     /**
@@ -72,11 +71,11 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
         this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
         this.inputFactory = inputFactory;
         definitionsBuilder = new SCADefinitionsBuilderImpl();
-        this.domainModelResolver = new SCADefinitionsResolver();
+        this.scaDefinitionsResolver = new SCADefinitionsResolver();
         
         IntentAttachPointTypeFactory intentAttachPointFactory = new DefaultIntentAttachPointTypeFactory();
             
-        SCADefinitionsProcessor scaDefnProcessor = new SCADefinitionsProcessor(policyFactory, extensionProcessor, domainModelResolver);
+        SCADefinitionsProcessor scaDefnProcessor = new SCADefinitionsProcessor(policyFactory, extensionProcessor, scaDefinitionsResolver);
         staxProcessors.addArtifactProcessor(scaDefnProcessor);
         
         staxProcessors.addArtifactProcessor(new SimpleIntentProcessor(policyFactory, extensionProcessor));
@@ -114,16 +113,13 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
         }
     }
     
+    
     public void resolve(SCADefinitions scaDefinitions, ModelResolver resolver) throws ContributionResolveException {
-        try {
-            if ( resolver == null ) {
-                resolver = this.domainModelResolver;
-            }
-            definitionsBuilder.build(scaDefinitions);
-            extensionProcessor.resolve(scaDefinitions, resolver);
-        } catch (SCADefinitionsBuilderException e) {
-            throw new ContributionResolveException(e);
+        if ( resolver == null ) {
+            resolver = this.scaDefinitionsResolver;
         }
+        SCADefinitionsUtil.stripDuplicates(scaDefinitions);
+        extensionProcessor.resolve(scaDefinitions, resolver);
     }
 
     public String getArtifactType() {
@@ -134,11 +130,11 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
         return SCADefinitions.class;
     }
 
-    public ModelResolver getDomainModelResolver() {
-        return domainModelResolver;
+    public ModelResolver getSCADefinitionsResolver() {
+        return scaDefinitionsResolver;
     }
 
     public void setDomainModelResolver(ModelResolver scaDefnsModelResolver) {
-        this.domainModelResolver = scaDefnsModelResolver;
+        this.scaDefinitionsResolver = scaDefnsModelResolver;
     }
 }

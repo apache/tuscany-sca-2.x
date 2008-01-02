@@ -47,6 +47,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.ExtensibleContributionListener;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
 
 /**
  * Service interface that manages artifacts contributed to a Tuscany runtime.
@@ -108,9 +109,12 @@ public class ContributionServiceImpl implements ContributionService {
     private AssemblyFactory assemblyFactory;
 
     /**
-     * Contribution model facotry
+     * Contribution model factory
      */
     private ContributionFactory contributionFactory;
+    
+    
+    private List<SCADefinitions> contributionSCADefinitions = new ArrayList<SCADefinitions>(); 
 
     private ModelResolver domainResolver;
 
@@ -379,6 +383,10 @@ public class ContributionServiceImpl implements ContributionService {
 
                 // Add the loaded model to the model resolver
                 modelResolver.addModel(model);
+                
+                if ( model instanceof SCADefinitions ) {
+                    contributionSCADefinitions.add((SCADefinitions)model);
+                }
             }
         }
     }
@@ -426,5 +434,9 @@ public class ContributionServiceImpl implements ContributionService {
         }
         contribution.getDeployables().clear();
         contribution.getDeployables().addAll(resolvedDeployables);
+    }
+
+    public List<SCADefinitions> getContributionSCADefinitions() {
+        return contributionSCADefinitions;
     }
 }

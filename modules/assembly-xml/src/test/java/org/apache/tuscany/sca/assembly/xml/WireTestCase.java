@@ -99,8 +99,8 @@ public class WireTestCase extends TestCase {
         is.close();
         assertNotNull(composite);
         
-        URL url = getClass().getResource("definitions.xml");
-        URI uri = URI.create("definitions.xml");
+        URL url = getClass().getResource("test_definitions.xml");
+        URI uri = URI.create("test_definitions.xml");
         SCADefinitions scaDefns = (SCADefinitions)scaDefnDocProcessor.read(null, uri, url);
         assertNotNull(scaDefns);
         
@@ -129,8 +129,8 @@ public class WireTestCase extends TestCase {
         Composite composite = compositeReader.read(reader);
         is.close();
         
-        URL url = getClass().getResource("definitions.xml");
-        URI uri = URI.create("definitions.xml");
+        URL url = getClass().getResource("test_definitions.xml");
+        URI uri = URI.create("test_definitions.xml");
         SCADefinitions scaDefns = (SCADefinitions)scaDefnDocProcessor.read(null, uri, url);
         assertNotNull(scaDefns);
         

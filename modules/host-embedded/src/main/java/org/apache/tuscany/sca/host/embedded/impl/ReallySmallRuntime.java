@@ -23,13 +23,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.DomainBuilder;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.DefaultContextFactoryExtensionPoint;
@@ -51,12 +54,16 @@ import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.impl.SCADefinitionsImpl;
+import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
 import org.apache.tuscany.sca.definitions.xml.SCADefinitionsDocumentProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -76,6 +83,7 @@ public class ReallySmallRuntime {
     private WorkScheduler workScheduler;
     private ScopeRegistry scopeRegistry;
     private ProxyFactory proxyFactory;
+    private SCADefinitions scaDefinitions = null;
 
     public ReallySmallRuntime(ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -87,7 +95,7 @@ public class ReallySmallRuntime {
         // Create our extension point registry
         registry = new DefaultExtensionPointRegistry();
 
-//      Get work scheduler
+        //Get work scheduler
         workScheduler = registry.getExtensionPoint(WorkScheduler.class);
 
         // Create an interface contract mapper
@@ -146,53 +154,29 @@ public class ReallySmallRuntime {
         startModules(registry, modules);
 
         // Load the definitions.xml
-        URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        SCADefinitionsDocumentProcessor definitionsProcessor = (SCADefinitionsDocumentProcessor)documentProcessors.getProcessor(SCADefinitions.class);
-        SCADefinitions definitions = loadDomainDefinitions(definitionsProcessor);
-        List<PolicySet> domainPolicySets;
-        if ( definitions != null ) {
-            domainPolicySets = definitions.getPolicySets();
-        } else {
-            domainPolicySets = null;
-        }
+        loadSCADefinitions(registry);
         
         //Create a composite builder
-        compositeBuilder = ReallySmallRuntimeBuilder.createCompositeBuilder(assemblyFactory,
+        /*compositeBuilder = ReallySmallRuntimeBuilder.createCompositeBuilder(assemblyFactory,
                                                                             scaBindingFactory,
                                                                             intentAttachPointTypeFactory,
                                                                             mapper,
                                                                             domainPolicySets);
-
+        */
+        
         //Create a domain builder
-        domainBuilder = ReallySmallRuntimeBuilder.createDomainBuilder(assemblyFactory,
+        /*domainBuilder = ReallySmallRuntimeBuilder.createDomainBuilder(assemblyFactory,
                                                                       scaBindingFactory,
                                                                       intentAttachPointTypeFactory,
                                                                       mapper,
                                                                       domainPolicySets);
-        
+        */
         if (logger.isLoggable(Level.FINE)) {
             long end = System.currentTimeMillis();
             logger.fine("The tuscany runtime is started in " + (end - start) + " ms.");
         }
     }
     
-    private SCADefinitions loadDomainDefinitions(SCADefinitionsDocumentProcessor definitionsProcessor) throws ActivationException {
-        URL url = this.classLoader.getResource("definitions.xml");
-        SCADefinitions definitions = null;
-        
-        if ( url != null ) {
-            try {
-                definitions = definitionsProcessor.read(null, null, url);
-                definitionsProcessor.resolve(definitions, definitionsProcessor.getDomainModelResolver());
-            } catch ( ContributionReadException e ) {
-                throw new ActivationException(e);
-            } catch ( ContributionResolveException e ) {
-                throw new ActivationException(e);
-            }
-        } 
-        return definitions;
-    }
-
     public void stop() throws ActivationException {
     	long start = System.currentTimeMillis();
 
@@ -216,6 +200,30 @@ public class ReallySmallRuntime {
             logger.fine("The tuscany runtime is stopped in " + (end - start) + " ms.");
         }
     }
+    
+    public void buildComposite(Composite composite) throws CompositeBuilderException {
+        //Get factory extension point
+        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        SCABindingFactory scaBindingFactory = factories.getFactory(SCABindingFactory.class);
+        IntentAttachPointTypeFactory intentAttachPointTypeFactory = factories.getFactory(IntentAttachPointTypeFactory.class);
+        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
+        
+        //Create a composite builder
+        compositeBuilder = ReallySmallRuntimeBuilder.createCompositeBuilder(assemblyFactory,
+                                                                            scaBindingFactory,
+                                                                            intentAttachPointTypeFactory,
+                                                                            mapper,
+                                                                            scaDefinitions.getPolicySets());
+        compositeBuilder.build(composite);
+        
+    }
+    
+    public void updateSCADefinitions(List<SCADefinitions> scaDefns) {
+        for ( SCADefinitions aDefn : scaDefns ) {
+            SCADefinitionsUtil.aggregateSCADefinitions(aDefn, scaDefinitions);
+        }
+        SCADefinitionsUtil.stripDuplicates(scaDefinitions);
+    }
 
     public ContributionService getContributionService() {
         return contributionService;
@@ -234,7 +242,48 @@ public class ReallySmallRuntime {
     }
 
     public DomainBuilder getDomainBuilder() {
+        if ( domainBuilder == null ) {
+            //Create a domain builder
+            //Get factory extension point
+            ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+            SCABindingFactory scaBindingFactory = factories.getFactory(SCABindingFactory.class);
+            IntentAttachPointTypeFactory intentAttachPointTypeFactory = factories.getFactory(IntentAttachPointTypeFactory.class);
+            InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
+            domainBuilder = ReallySmallRuntimeBuilder.createDomainBuilder(assemblyFactory,
+                                                                          scaBindingFactory,
+                                                                          intentAttachPointTypeFactory,
+                                                                          mapper,
+                                                                          scaDefinitions.getPolicySets());
+        }
         return domainBuilder;
+    }
+    
+    private SCADefinitions loadSCADefinitions(ExtensionPointRegistry registry) throws ActivationException {
+        URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        SCADefinitionsDocumentProcessor definitionsProcessor = (SCADefinitionsDocumentProcessor)documentProcessors.getProcessor(SCADefinitions.class);
+        
+        scaDefinitions = new SCADefinitionsImpl();
+        try {
+            Map<ClassLoader, Set<URL>> scaDefinitionFiles = 
+            ServiceDiscovery.getInstance().getServiceResources("definitions.xml");
+            
+            for ( ClassLoader cl : scaDefinitionFiles.keySet() ) {
+                for ( URL scaDefnUrl : scaDefinitionFiles.get(cl) ) {
+                    SCADefinitions defnSubset = definitionsProcessor.read(null, null, scaDefnUrl);
+                    SCADefinitionsUtil.aggregateSCADefinitions(defnSubset, scaDefinitions);
+                }
+            }
+            
+            definitionsProcessor.resolve(scaDefinitions, definitionsProcessor.getSCADefinitionsResolver());
+        } catch ( ContributionReadException e ) {
+            throw new ActivationException(e);
+        } catch ( ContributionResolveException e ) {
+            throw new ActivationException(e);
+        } catch ( IOException e ) {
+            throw new ActivationException(e);
+        }
+    
+        return scaDefinitions;
     }
     
     @SuppressWarnings("unchecked")

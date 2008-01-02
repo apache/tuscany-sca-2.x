@@ -138,7 +138,7 @@ public class TestNode implements SCANode {
 
             // Add the deployable composite to the domain
             nodeComposite.getIncludes().add(appComposite);
-            nodeRuntime.getCompositeBuilder().build(appComposite);
+            nodeRuntime.buildComposite(appComposite);
             nodeRuntime.getCompositeActivator().activate(appComposite);
             
             ((TestDomain)domain).addComposite(appComposite);

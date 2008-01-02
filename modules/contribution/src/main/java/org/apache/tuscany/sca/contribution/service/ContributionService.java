@@ -21,10 +21,12 @@ package org.apache.tuscany.sca.contribution.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
 
 /**
  * Service interface that manages artifacts contributed to a Tuscany runtime.
@@ -138,5 +140,11 @@ public interface ContributionService {
      * @throws DeploymentException
      */
     void remove(String contribution) throws ContributionException;
-
+    
+    /**
+     * Return the collection of SCA Definitions processed in the contribution
+     * 
+     * @return collection of SCADefinitions
+     */
+    List<SCADefinitions> getContributionSCADefinitions();
 }

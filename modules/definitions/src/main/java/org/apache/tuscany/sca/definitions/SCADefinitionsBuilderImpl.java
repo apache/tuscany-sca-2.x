@@ -59,6 +59,18 @@ public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
             definedImplTypes.put(implType.getName(), implType);
         }
         
+        //filling up the maps removes all duplicate entries... so fill this unique lists
+        //into the scaDefns.
+        scaDefns.getPolicyIntents().clear();
+        scaDefns.getPolicySets().clear();
+        scaDefns.getBindingTypes().clear();
+        scaDefns.getImplementationTypes().clear();
+        
+        scaDefns.getPolicyIntents().addAll(definedIntents.values());
+        scaDefns.getPolicySets().addAll(definedPolicySets.values());
+        scaDefns.getBindingTypes().addAll(definedBindingTypes.values());
+        scaDefns.getImplementationTypes().addAll(definedImplTypes.values());
+        
         buildPolicyIntents(scaDefns, definedIntents);
         buildPolicySets(scaDefns, definedPolicySets, definedIntents);
         buildBindingTypes(scaDefns, definedBindingTypes, definedIntents);

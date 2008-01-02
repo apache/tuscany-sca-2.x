@@ -67,7 +67,7 @@ public abstract class PolicyComputer {
                     }
                 }
             } else {
-                new PolicyValidationException("Policy Intent '" + intent.getName() + "' is not defined in this domain");
+                throw new PolicyValidationException("Policy Intent '" + intent.getName() + "' is not defined in this domain");
             }
         }
         
@@ -122,7 +122,7 @@ public abstract class PolicyComputer {
             //expand profile intents specified on operations
             expandProfileIntents(confOp.getRequiredIntents());
             
-            //validateIntents(confOp, attachPointType);
+            validateIntents(confOp, attachPointType);
             
             //add intents specified for parent intent attach point (binding / implementation)
             //wherever its not overriden in the operation
