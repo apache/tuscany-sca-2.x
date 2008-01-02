@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
+ * Tests the POJO implementation extension.
  */
 public class HelloWorldTestCase extends TestCase {
     

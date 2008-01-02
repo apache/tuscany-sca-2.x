@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import pojo.POJOImplementation;
 
 /**
- * The model representing a sample POJO implementation in an SCA assembly model.
+ * A factory for POJO implementation providers.
  */
 public class POJOImplementationProviderFactory implements ImplementationProviderFactory<POJOImplementation> {
     

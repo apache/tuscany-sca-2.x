@@ -117,7 +117,7 @@ public class POJOImplementationProcessor implements StAXArtifactProcessor<POJOIm
         // First resolve its class
         ClassReference classReference = new ClassReference(implementation.getPOJOName());
         classReference = resolver.resolveModel(ClassReference.class, classReference);
-        Class pojoClass = classReference.getJavaClass();
+        Class<?> pojoClass = classReference.getJavaClass();
         if (pojoClass == null) {
             throw new ContributionResolveException("Class could not be resolved: " + implementation.getPOJOName());
         }
