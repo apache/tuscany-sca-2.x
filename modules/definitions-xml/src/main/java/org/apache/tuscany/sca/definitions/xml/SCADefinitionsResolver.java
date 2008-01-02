@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.definitions;
+package org.apache.tuscany.sca.definitions.xml;
 
 import java.util.HashMap;
 import java.util.Map;

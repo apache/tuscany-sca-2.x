@@ -34,6 +34,12 @@
             <artifactId>tuscany-assembly</artifactId>
             <version>1.1-incubating-SNAPSHOT</version>
         </dependency>
+
+	<dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-definitions</artifactId>
+            <version>1.1-incubating-SNAPSHOT</version>
+        </dependency>
             	
         <dependency>
             <groupId>stax</groupId>

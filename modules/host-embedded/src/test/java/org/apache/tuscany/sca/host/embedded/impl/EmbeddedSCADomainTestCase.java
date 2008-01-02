@@ -71,7 +71,13 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         
         // Add the deployable composite to the domain
         domain.getDomainComposite().getIncludes().add(myComposite);
-        domain.getCompositeBuilder().build(myComposite);
+        
+        
+        //update for sca definitions processed from contributions.. need to do this  before building
+        //the composite
+        domain.updateContributionSCADefinitions(contributionService.getContributionSCADefinitions());
+        
+        domain.buildComposite(myComposite);
 
         // Start the composite
         domain.getCompositeActivator().activate(myComposite);
@@ -128,7 +134,12 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         
         // Add the deployable composite to the domain
         domain.getDomainComposite().getIncludes().add(myComposite);
-        domain.getCompositeBuilder().build(myComposite);
+        
+        //update for sca definitions processed from contributions.. need to do this  before building
+        //the composite
+        domain.updateContributionSCADefinitions(contributionService.getContributionSCADefinitions());
+        
+        domain.buildComposite(myComposite);
 
         // Start the composite
         domain.getCompositeActivator().activate(myComposite);

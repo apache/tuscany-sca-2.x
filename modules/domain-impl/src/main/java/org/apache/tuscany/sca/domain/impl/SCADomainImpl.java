@@ -24,12 +24,9 @@ import java.io.Externalizable;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,17 +35,14 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.DomainBuilder;
-import org.apache.tuscany.sca.assembly.builder.impl.DomainWireBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
@@ -167,9 +161,6 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             domainManagementRuntime = new ReallySmallRuntime(domainClassLoader);
             domainManagementRuntime.start();
             
-            // get the domain builder
-            domainBuilder = domainManagementRuntime.getDomainBuilder();            
-            
             // Configure the default server port and path
             int port = URI.create(domainModel.getDomainURI()).getPort();
             String path = URI.create(domainModel.getDomainURI()).getPath();
@@ -217,6 +208,16 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                                                                               contributionURL, 
                                                                               false);
                 
+                //update the runtime for all SCA Definitions processed from the contribution..
+                //so that the policyset determination done during 'build' has the all the defined
+                //intents and policysets
+                domainManagementRuntime.updateSCADefinitions(domainManagementContributionService.getContributionSCADefinitions());
+                
+                
+                //get the domain builder
+                domainBuilder = domainManagementRuntime.getDomainBuilder();
+                
+                
                 Composite composite = null;
                 for (DeployedArtifact artifact: contribution.getArtifacts()) {
                     if (domainCompositeName.equals(artifact.getURI())) {
@@ -227,7 +228,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                 if (composite != null) {
                 
                     domainManagementComposite.getIncludes().add(composite);
-                    domainManagementRuntime.getCompositeBuilder().build(composite);
+                    domainManagementRuntime.buildComposite(composite);
                     domainManagementRuntime.getCompositeActivator().activate(composite); 
                     domainManagementRuntime.getCompositeActivator().start(composite);
                 

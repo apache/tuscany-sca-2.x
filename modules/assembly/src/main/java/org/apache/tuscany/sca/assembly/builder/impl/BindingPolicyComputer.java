@@ -163,11 +163,13 @@ public class BindingPolicyComputer extends PolicyComputer {
             
             if ( policiedBinding.getRequiredIntents().size() > 0 ) {
                 if ( contract instanceof Service ) {
-                    throw new PolicyComputationException("There are unfulfilled intents for " +
-                            "binding in service - " + contract.getName());
+                    throw new PolicyComputationException("The following are unfulfilled intents for " +
+                            "binding in service - " + contract.getName() + "\nUnfulfilled Intents = " + 
+                            policiedBinding.getRequiredIntents());
                 } else {
-                    throw new PolicyComputationException("There are unfulfilled intents for " +
-                            "binding in reference - " + contract.getName());
+                    throw new PolicyComputationException("The are unfulfilled intents for " +
+                            "binding in reference - " + contract.getName() + "\nUnfulfilled Intents = " + 
+                            policiedBinding.getRequiredIntents());
                 }
             }
         }

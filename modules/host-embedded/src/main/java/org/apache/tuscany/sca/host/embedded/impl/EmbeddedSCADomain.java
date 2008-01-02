@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.host.embedded.impl;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -29,12 +31,14 @@ import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -94,6 +98,14 @@ public class EmbeddedSCADomain extends SCADomain {
         
         // Cleanup
         domainComposite = null;
+    }
+    
+    public void updateContributionSCADefinitions(List<SCADefinitions> scaDefns) {
+        runtime.updateSCADefinitions(scaDefns);
+    }
+    
+    public void buildComposite(Composite composite) throws CompositeBuilderException {
+        runtime.buildComposite(composite);
     }
 
     public ContributionService getContributionService() {

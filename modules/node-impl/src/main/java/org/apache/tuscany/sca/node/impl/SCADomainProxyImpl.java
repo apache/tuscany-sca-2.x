@@ -207,6 +207,10 @@ public class SCADomainProxyImpl extends SCADomainImpl {
                                                                                               modelResolver,
                                                                                               false);
                 
+                //update runtime with contribution sca definitions
+                //this should be done before building the composite
+                domainManagementRuntime.updateSCADefinitions(domainManagementContributionService.getContributionSCADefinitions());
+                
                 Composite composite = null;
                 
                 for (DeployedArtifact artifact: domainManagementContribution.getArtifacts()) {
@@ -218,7 +222,7 @@ public class SCADomainProxyImpl extends SCADomainImpl {
                 if (composite != null) {
                 
                     domainManagementComposite.getIncludes().add(composite);
-                    domainManagementRuntime.getCompositeBuilder().build(composite);
+                    domainManagementRuntime.buildComposite(composite);
                     
                     if (domainModel.getDomainURL() != null) {
                         URI domainURI = URI.create(domainModel.getDomainURI());

@@ -219,7 +219,7 @@ public class ReallySmallRuntimeBuilder {
         SCADefinitionsDocumentProcessor definitionsDocumentProcessor =
             new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, inputFactory, policyFactory);
         documentProcessors.addArtifactProcessor(definitionsDocumentProcessor);
-        ModelResolver domainModelResolver = definitionsDocumentProcessor.getDomainModelResolver();
+        ModelResolver domainModelResolver = definitionsDocumentProcessor.getSCADefinitionsResolver();
 
         // Create Model Resolver extension point
         ModelResolverExtensionPoint modelResolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);

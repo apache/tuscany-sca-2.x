@@ -57,7 +57,6 @@ import org.apache.tuscany.sca.host.embedded.management.ComponentListener;
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.policy.Policy;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -95,10 +94,6 @@ public class DefaultSCADomain extends SCADomain {
         this.uri = domainURI;
         this.composites = composites;
 
-        // Create and start the runtime
-        // System.out.println("Test " + ReallySmallRuntime.class.getCanonicalName());
-        // IntentAttachPointTypeFactory iaptf;
-        Policy policy;
         runtime = new ReallySmallRuntime(runtimeClassLoader);
         try {
             runtime.start();
@@ -106,6 +101,8 @@ public class DefaultSCADomain extends SCADomain {
         } catch (ActivationException e) {
             throw new ServiceRuntimeException(e);
         }
+        
+        
 
         // Contribute the given contribution to an in-memory repository
         ContributionService contributionService = runtime.getContributionService();
@@ -161,13 +158,16 @@ public class DefaultSCADomain extends SCADomain {
             }
 
         }
+        
+        //update the runtime for all SCA Definitions processed from the contribution..
+        //so that the policyset determination done during 'build' has the all the defined
+        //intents and policysets
+        runtime.updateSCADefinitions(contributionService.getContributionSCADefinitions());
 
         // Build the SCA composites
-        CompositeBuilder compositeBuilder = runtime.getCompositeBuilder();
-
         for (Composite composite : domainComposite.getIncludes()) {
             try {
-                compositeBuilder.build(composite);
+                runtime.buildComposite(composite);
             } catch (CompositeBuilderException e) {
                 throw new ServiceRuntimeException(e);
             }

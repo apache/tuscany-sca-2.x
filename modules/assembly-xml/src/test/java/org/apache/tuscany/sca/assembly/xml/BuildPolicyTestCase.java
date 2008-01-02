@@ -112,8 +112,8 @@ public class BuildPolicyTestCase extends TestCase {
         composite = (Composite)documentProcessor.read(null, uri, url);
         assertNotNull(composite);
         
-        url = getClass().getResource("AnotherDefinitions.xml");
-        uri = URI.create("AnotherDefinitions.xml");
+        url = getClass().getResource("another_test_definitions.xml");
+        uri = URI.create("another_test_definitions.xml");
         SCADefinitions scaDefns = (SCADefinitions)scaDefnDocProcessor.read(null, uri, url);
         assertNotNull(scaDefns);
         

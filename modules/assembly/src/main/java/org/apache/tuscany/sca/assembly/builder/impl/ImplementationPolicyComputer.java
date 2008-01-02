@@ -92,8 +92,9 @@ public class ImplementationPolicyComputer extends PolicyComputer {
                                                             policiedImplementation.getType());
     
                         if (confOp.getRequiredIntents().size() > 0) {
-                            new PolicyComputationException("There are unfulfilled intents for operations configured in "
-                                    + "component implementation - " + component.getName());
+                            new PolicyComputationException("The following are unfulfilled intents for operations configured in "
+                                    + "component implementation - " + component.getName() + "\nUnfulfilled Intents = " +
+                                    confOp.getRequiredIntents());
                         }
                     }
                 }
@@ -111,8 +112,8 @@ public class ImplementationPolicyComputer extends PolicyComputer {
                                                     policiedImplementation.getType());
                                                     
                 if (component.getRequiredIntents().size() > 0) {
-                    throw new PolicyComputationException("There are unfulfilled intents for component implementation - " + component
-                        .getName());
+                    throw new PolicyComputationException("The following are unfulfilled intents for component implementation - " + component
+                        .getName() + "\nUnfulfilled Intents = " + component.getRequiredIntents());
                 }
             }
         }
