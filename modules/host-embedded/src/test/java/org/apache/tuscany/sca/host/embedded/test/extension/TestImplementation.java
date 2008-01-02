@@ -16,36 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package test.crud;
+package org.apache.tuscany.sca.host.embedded.test.extension;
 
 import org.apache.tuscany.sca.assembly.Implementation;
 
 /**
- * The model representing a sample CRUD implementation in an SCA assembly model.
- * The sample CRUD implementation is not a full blown implementation, it only
- * supports a subset of what a component implementation can support: - a single
- * fixed service (as opposed to a list of services typed by different
- * interfaces) - a directory attribute used to specify where a CRUD component is
- * going to persist resources - no references or properties - no policy intents
- * or policy sets
+ * The model representing a test implementation in an SCA assembly model.
  * 
  * @version $$Rev$$ $$Date: 2007-04-23 19:18:54 -0700 (Mon, 23 Apr
  *          2007) $$
  */
-public interface CRUDImplementation extends Implementation {
+public interface TestImplementation extends Implementation {
 
     /**
-     * Returns the directory used by CRUD implementations to persist resources.
+     * Returns the greeting string that can be configured on test implementations.
      * 
-     * @return the directory used to persist resources
+     * @return the greeting string that can be configured on test implementations
      */
-    public String getDirectory();
+    public String getGreeting();
 
     /**
-     * Sets the directory used by CRUD implementations to persist resources.
+     * Sets the greeting string that can be configured on test implementations.
      * 
-     * @param directory the directory used to persist resources
+     * @param greeting the greeting string that can be configured on test implementations
      */
-    public void setDirectory(String directory);
+    public void setGreeting(String greeting);
 
 }

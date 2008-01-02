@@ -16,34 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package test.crud.provider;
+package org.apache.tuscany.sca.host.embedded.test.extension.provider;
 
+import org.apache.tuscany.sca.host.embedded.test.extension.TestImplementation;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
-import test.crud.CRUDImplementation;
-
 
 /**
- * The model representing a sample CRUD implementation in an SCA assembly model.
+ * The model representing a test implementation in an SCA assembly model.
  * 
  * @version $$Rev$$ $$Date: 2007-04-23 19:18:54 -0700 (Mon, 23 Apr
  *          2007) $$
  */
-public class CRUDImplementationProviderFactory implements ImplementationProviderFactory<CRUDImplementation> {
+public class TestImplementationProviderFactory implements ImplementationProviderFactory<TestImplementation> {
 
     /**
-     * Constructs a new CRUD implementation.
+     * Constructs a new test implementation provider factory.
      */
-    public CRUDImplementationProviderFactory() {
+    public TestImplementationProviderFactory() {
     }
 
-    public ImplementationProvider createImplementationProvider(RuntimeComponent component, CRUDImplementation implementation) {
-        return new CRUDImplementationProvider(component, implementation);
+    public ImplementationProvider createImplementationProvider(RuntimeComponent component, TestImplementation implementation) {
+        return new TestImplementationProvider(component, implementation);
     }
     
-    public Class<CRUDImplementation> getModelType() {
-        return CRUDImplementation.class;
+    public Class<TestImplementation> getModelType() {
+        return TestImplementation.class;
     }
 }

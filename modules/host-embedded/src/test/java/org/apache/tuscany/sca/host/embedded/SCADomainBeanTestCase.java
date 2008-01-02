@@ -21,12 +21,14 @@ package org.apache.tuscany.sca.host.embedded;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.host.embedded.test.extension.TestService;
 import org.osoa.sca.ServiceReference;
 
-import test.crud.CRUD;
 
 
 /**
+ * Test creation of an SCADomainBean and invocation of a service.
+ * 
  * @version $Rev$ $Date$
  */
 public class SCADomainBeanTestCase extends TestCase {
@@ -36,27 +38,17 @@ public class SCADomainBeanTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         domain = new SCADomainBean();
-        domain.setDeployableComposites("crud.composite");
+        domain.setDeployableComposites("test.composite");
     }
 
-    public void testStart() throws Exception {
-        ServiceReference<CRUD> serviceReference = domain.getServiceReference(CRUD.class, "CRUDServiceComponent");
+    public void testInvoke() throws Exception {
+        ServiceReference<TestService> serviceReference = domain.getServiceReference(TestService.class, "TestServiceComponent");
         assertNotNull(serviceReference);
-        CRUD service = serviceReference.getService();
-        String id = service.create("ABC");
-        Object result = service.retrieve(id);
-        assertEquals("ABC", result);
-        service.update(id, "EFG");
-        result = service.retrieve(id);
-        assertEquals("EFG", result);
-        service.delete(id);
-        result = service.retrieve(id);
-        assertNull(result);
+        TestService service = serviceReference.getService();
+        String result = service.ping("Bob");
+        assertEquals("Hello Bob", result);
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Override
     protected void tearDown() throws Exception {
         domain.close();

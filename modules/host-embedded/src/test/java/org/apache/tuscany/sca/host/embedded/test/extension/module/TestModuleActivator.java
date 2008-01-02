@@ -17,51 +17,48 @@
  * under the License.    
  */
 
-package test.crud.module;
+package org.apache.tuscany.sca.host.embedded.test.extension.module;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.host.embedded.test.extension.TestImplementationFactory;
+import org.apache.tuscany.sca.host.embedded.test.extension.DefaultTestImplementationFactory;
+import org.apache.tuscany.sca.host.embedded.test.extension.impl.TestImplementationProcessor;
+import org.apache.tuscany.sca.host.embedded.test.extension.provider.TestImplementationProviderFactory;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 
-import test.crud.CRUDImplementationFactory;
-import test.crud.DefaultCRUDImplementationFactory;
-import test.crud.impl.CRUDImplementationProcessor;
-import test.crud.provider.CRUDImplementationProviderFactory;
 
 
 /**
- * Implements a module activator for the CRUD implementation extension module.
- * The module activator is responsible for contributing the CRUD implementation
- * extensions and plugging them in the extension points defined by the Tuscany
- * runtime.
+ * Implements a module activator for the test implementation extension module.
  * 
  * @version $Rev$ $Date$
  */
-public class CRUDModuleActivator implements ModuleActivator {
+public class TestModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry registry) {
 
-        // Create the CRUD implementation factory
+        // Create the test  implementation factory
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
         JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
-        CRUDImplementationFactory crudFactory = new DefaultCRUDImplementationFactory(assemblyFactory, javaFactory);
-        factories.addFactory(crudFactory);
+        TestImplementationFactory testFactory = new DefaultTestImplementationFactory(assemblyFactory, javaFactory);
+        factories.addFactory(testFactory);
 
-        // Add the CRUD implementation extension to the StAXArtifactProcessor
+        // Add the test implementation extension to the StAXArtifactProcessor
         // extension point
         StAXArtifactProcessorExtensionPoint processors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        CRUDImplementationProcessor implementationArtifactProcessor = new CRUDImplementationProcessor(crudFactory);
+        TestImplementationProcessor implementationArtifactProcessor = new TestImplementationProcessor(testFactory);
         processors.addArtifactProcessor(implementationArtifactProcessor);
 
-        // Add the CRUD provider factory to the ProviderFactory extension point
+        // Add the test provider factory to the ProviderFactory extension point
         ProviderFactoryExtensionPoint providerFactories = registry.getExtensionPoint(ProviderFactoryExtensionPoint.class);
-        providerFactories.addProviderFactory(new CRUDImplementationProviderFactory());
+        providerFactories.addProviderFactory(new TestImplementationProviderFactory());
     }
 
     public void stop(ExtensionPointRegistry registry) {

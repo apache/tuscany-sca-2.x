@@ -31,19 +31,16 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.host.embedded.management.ComponentListener;
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
-
-import test.crud.CRUD;
-
+import org.apache.tuscany.sca.host.embedded.test.extension.TestService;
 
 /**
+ * Test creation of an EmbeddedSCADomain and invocation of a service.
+ * 
  * @version $Rev$ $Date$
  */
 public class EmbeddedSCADomainTestCase extends TestCase {
     private EmbeddedSCADomain domain;
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Override
     protected void setUp() throws Exception {
         
@@ -67,7 +64,7 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         assertNotNull(contribution);
         
         // Decide which SCA composite I want to deploy
-        Composite myComposite = myResolver.getComposite(new QName("http://sample/crud", "crud"));
+        Composite myComposite = myResolver.getComposite(new QName("http://test", "test"));
         
         // Add the deployable composite to the domain
         domain.getDomainComposite().getIncludes().add(myComposite);
@@ -86,19 +83,12 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         // At this point the domain contains my contribution, my composite and
         // it's started, my application code can start using it
         
-        // Get the CRUDServiceComponent service
-        CRUD service = domain.getService(CRUD.class, "CRUDServiceComponent");
+        // Get the TestServiceComponent service
+        TestService service = domain.getService(TestService.class, "TestServiceComponent");
         
         // Invoke the service
-        String id = service.create("ABC");
-        Object result = service.retrieve(id);
-        assertEquals("ABC", result);
-        service.update(id, "EFG");
-        result = service.retrieve(id);
-        assertEquals("EFG", result);
-        service.delete(id);
-        result = service.retrieve(id);
-        assertNull(result);
+        String result = service.ping("Bob");
+        assertEquals("Hello Bob", result);
         
         // Stop my composite
         domain.getCompositeActivator().stop(myComposite);
@@ -130,7 +120,7 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         assertNotNull(contribution);
         
         // Decide which SCA composite I want to deploy
-        Composite myComposite = myResolver.getComposite(new QName("http://sample/crud", "crud"));
+        Composite myComposite = myResolver.getComposite(new QName("http://test", "test"));
         
         // Add the deployable composite to the domain
         domain.getDomainComposite().getIncludes().add(myComposite);
@@ -150,26 +140,26 @@ public class EmbeddedSCADomainTestCase extends TestCase {
 
         ComponentManager componentManager = domain.getComponentManager();
         assertEquals(1, componentManager.getComponentNames().size());
-        assertEquals("CRUDServiceComponent", componentManager.getComponentNames().iterator().next());
+        assertEquals("TestServiceComponent", componentManager.getComponentNames().iterator().next());
         
-        Component component = componentManager.getComponent("CRUDServiceComponent");
+        Component component = componentManager.getComponent("TestServiceComponent");
         assertNotNull(component);
-        assertEquals("CRUDServiceComponent", component.getName());
+        assertEquals("TestServiceComponent", component.getName());
         
         MyComponentListener cl = new MyComponentListener();
         componentManager.addComponentListener(cl);
 
-        assertTrue(componentManager.isComponentStarted("CRUDServiceComponent"));
+        assertTrue(componentManager.isComponentStarted("TestServiceComponent"));
         
         assertFalse(cl.stopCalled);
-        componentManager.stopComponent("CRUDServiceComponent");
+        componentManager.stopComponent("TestServiceComponent");
         assertTrue(cl.stopCalled);
-        assertFalse(componentManager.isComponentStarted("CRUDServiceComponent"));
+        assertFalse(componentManager.isComponentStarted("TestServiceComponent"));
         
         assertFalse(cl.startCalled);
-        componentManager.startComponent("CRUDServiceComponent");
+        componentManager.startComponent("TestServiceComponent");
         assertTrue(cl.startCalled);
-        assertTrue(componentManager.isComponentStarted("CRUDServiceComponent"));
+        assertTrue(componentManager.isComponentStarted("TestServiceComponent"));
 
         // Stop my composite
         domain.getCompositeActivator().stop(myComposite);
@@ -199,9 +189,6 @@ public class EmbeddedSCADomainTestCase extends TestCase {
         
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Override
     protected void tearDown() throws Exception {
         domain.close();

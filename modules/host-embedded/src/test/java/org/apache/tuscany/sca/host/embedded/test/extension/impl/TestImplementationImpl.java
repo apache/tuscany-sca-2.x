@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package test.crud.impl;
+package org.apache.tuscany.sca.host.embedded.test.extension.impl;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,93 +26,93 @@ import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.host.embedded.test.extension.TestService;
+import org.apache.tuscany.sca.host.embedded.test.extension.TestImplementation;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
-import test.crud.CRUD;
-import test.crud.CRUDImplementation;
 
 /**
- * The model representing a sample CRUD implementation in an SCA assembly model.
+ * The model representing a test implementation in an SCA assembly model.
  * 
  * @version $$Rev$$ $$Date: 2007-04-23 19:18:54 -0700 (Mon, 23 Apr
  *          2007) $$
  */
-public class CRUDImplementationImpl implements CRUDImplementation {
+public class TestImplementationImpl implements TestImplementation {
 
-    private Service crudService;
-    private String directory;
+    private Service testService;
+    private String greeting;
     
     /**
-     * Constructs a new CRUD implementation.
+     * Constructs a new test implementation.
      */
-    public CRUDImplementationImpl(AssemblyFactory assemblyFactory,
+    public TestImplementationImpl(AssemblyFactory assemblyFactory,
                               JavaInterfaceFactory javaFactory) {
 
-        // CRUD implementation always provide a single service exposing
-        // the CRUD interface, and have no references and properties
-        crudService = assemblyFactory.createService();
-        crudService.setName("CRUD");
+        // Test implementations always provide a single service exposing
+        // the TestService interface, and have no references and properties
+        testService = assemblyFactory.createService();
+        testService.setName("Test");
         JavaInterface javaInterface;
         try {
-            javaInterface = javaFactory.createJavaInterface(CRUD.class);
+            javaInterface = javaFactory.createJavaInterface(TestService.class);
         } catch (InvalidInterfaceException e) {
             throw new IllegalArgumentException(e);
         }
         JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
         interfaceContract.setInterface(javaInterface);
-        crudService.setInterfaceContract(interfaceContract);
+        testService.setInterfaceContract(interfaceContract);
     }
 
-    public String getDirectory() {
-        return directory;
+    public String getGreeting() {
+        return greeting;
     }
 
-    public void setDirectory(String directory) {
-        this.directory = directory;
+    public void setGreeting(String greeting) {
+        this.greeting = greeting;
     }
 
     public ConstrainingType getConstrainingType() {
-        // The sample CRUD implementation does not support constrainingTypes
+        // The test implementation does not support constrainingTypes
         return null;
     }
 
     public List<Property> getProperties() {
-        // The sample CRUD implementation does not support properties
+        // The test implementation does not support properties
         return Collections.emptyList();
     }
 
     public List<Service> getServices() {
-        // The sample CRUD implementation provides a single fixed CRUD service
-        return Collections.singletonList(crudService);
+        // The test implementation provides a single fixed Test service
+        return Collections.singletonList(testService);
     }
     
     public List<Reference> getReferences() {
-        // The sample CRUD implementation does not support properties
+        // The test implementation does not support properties
         return Collections.emptyList();
     }
 
     public String getURI() {
-        // The sample CRUD implementation does not have a URI
+        // The test implementation does not have a URI
         return null;
     }
 
     public void setConstrainingType(ConstrainingType constrainingType) {
-        // The sample CRUD implementation does not support constrainingTypes
+        // The test implementation does not support constrainingTypes
     }
 
     public void setURI(String uri) {
-        // The sample CRUD implementation does not have a URI
+        // The test implementation does not have a URI
     }
 
     public boolean isUnresolved() {
-        // The sample CRUD implementation is always resolved
+        // The test implementation is always resolved
         return false;
     }
 
     public void setUnresolved(boolean unresolved) {
-        // The sample CRUD implementation is always resolved
+        // The test implementation is always resolved
     }
 }

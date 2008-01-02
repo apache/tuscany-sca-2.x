@@ -58,7 +58,7 @@ public class TestModelResolver implements ModelResolver {
             
             // Load a class on demand
             ClassReference classReference = (ClassReference)unresolved;
-            Class clazz;
+            Class<?> clazz;
             try {
                 clazz = Class.forName(classReference.getClassName(), true, classLoader.get());
             } catch (ClassNotFoundException e) {
