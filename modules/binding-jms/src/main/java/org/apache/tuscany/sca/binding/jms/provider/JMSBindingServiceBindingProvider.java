@@ -117,10 +117,6 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
 
         consumer = session.createConsumer(destination);
 
-        // TODO - We assume the target is a Java class here!!!
-        // Class<?> aClass = getTargetJavaClass(getBindingInterfaceContract().getInterface());
-        // Object instance = component.createSelfReference(aClass).getService();
-
         consumer.setMessageListener(new JMSBindingListener(jmsBinding, jmsResourceFactory, service));
 
         jmsResourceFactory.startConnection();
