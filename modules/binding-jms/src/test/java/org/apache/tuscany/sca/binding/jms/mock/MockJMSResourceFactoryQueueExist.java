@@ -25,19 +25,17 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.easymock.EasyMock;
 
 /**
- * This mock JMSResourceFactory will create a mock Destination when the
- * lookupDestination() method is called
+ * This mock JMSResourceFactory will create a mock Destination when the lookupDestination() method is called
  */
-public class MockJMSResourceFactoryQueueExist extends MockJMSResourceFactory 
-{
+public class MockJMSResourceFactoryQueueExist extends MockJMSResourceFactory {
     /**
      * Constructor
-     *
+     * 
      * @param jmsBinding Ignored
      */
     public MockJMSResourceFactoryQueueExist(JMSBinding jmsBinding) {
     }
-    
+
     /**
      * Return a mock Destination object
      */

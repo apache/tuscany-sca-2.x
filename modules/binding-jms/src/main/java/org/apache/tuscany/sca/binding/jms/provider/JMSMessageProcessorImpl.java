@@ -37,12 +37,12 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 
 public class JMSMessageProcessorImpl implements JMSMessageProcessor {
 
-    protected String  operationPropertyName;
+    protected String operationPropertyName;
     protected boolean xmlFormat;
 
     public JMSMessageProcessorImpl(JMSBinding jmsBinding) {
         this.operationPropertyName = jmsBinding.getOperationSelectorPropertyName();
-        this.xmlFormat             = jmsBinding.getXMLFormat();
+        this.xmlFormat = jmsBinding.getXMLFormat();
     }
 
     /*
@@ -63,8 +63,7 @@ public class JMSMessageProcessorImpl implements JMSMessageProcessor {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.tuscany.binding.jms.OperationAndDataBinding#setOperationName(javax.jms.Message,
-     *      java.lang.String)
+     * @see org.apache.tuscany.binding.jms.OperationAndDataBinding#setOperationName(javax.jms.Message, java.lang.String)
      */
     public void setOperationName(String operationName, Message message) {
         try {
@@ -79,8 +78,7 @@ public class JMSMessageProcessorImpl implements JMSMessageProcessor {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.tuscany.binding.jms.OperationAndDataBinding#extractPayload(javax.jms.Session,
-     *      java.lang.Object)
+     * @see org.apache.tuscany.binding.jms.OperationAndDataBinding#extractPayload(javax.jms.Session, java.lang.Object)
      */
     public Message insertPayloadIntoJMSMessage(Session session, Object o) {
         if (xmlFormat) {
@@ -120,7 +118,7 @@ public class JMSMessageProcessorImpl implements JMSMessageProcessor {
             throw new JMSBindingException(e);
         }
     }
-    
+
     protected Object extractObjectPayload(Message msg) {
         try {
 
@@ -129,7 +127,7 @@ public class JMSMessageProcessorImpl implements JMSMessageProcessor {
         } catch (JMSException e) {
             throw new JMSBindingException(e);
         }
-    }    
+    }
 
     protected Message createXMLJMSMessage(Session session, Object o) {
         try {

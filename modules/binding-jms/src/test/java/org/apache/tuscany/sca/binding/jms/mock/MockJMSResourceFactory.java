@@ -62,8 +62,8 @@ public abstract class MockJMSResourceFactory implements JMSResourceFactory {
         final Session session = EasyMock.createMock(Session.class);
         final MessageConsumer consumer = EasyMock.createMock(MessageConsumer.class);
         final MessageListener listener = EasyMock.createMock(MessageListener.class);
-        EasyMock.expect(session.createConsumer((Destination) EasyMock.anyObject())).andReturn(consumer);
-        consumer.setMessageListener((MessageListener) EasyMock.anyObject());
+        EasyMock.expect(session.createConsumer((Destination)EasyMock.anyObject())).andReturn(consumer);
+        consumer.setMessageListener((MessageListener)EasyMock.anyObject());
         EasyMock.replay(session);
         EasyMock.replay(consumer);
         EasyMock.replay(listener);

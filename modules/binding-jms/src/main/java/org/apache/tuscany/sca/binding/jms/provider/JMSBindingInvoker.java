@@ -41,32 +41,31 @@ import org.apache.tuscany.sca.invocation.Invoker;
  */
 public class JMSBindingInvoker implements Invoker {
 
-    protected Operation           operation;
-    protected String              operationName; 
-    
-    protected JMSBinding          jmsBinding;
-    protected JMSResourceFactory  jmsResourceFactory;
+    protected Operation operation;
+    protected String operationName;
+
+    protected JMSBinding jmsBinding;
+    protected JMSResourceFactory jmsResourceFactory;
     protected JMSMessageProcessor requestMessageProcessor;
     protected JMSMessageProcessor responseMessageProcessor;
-    protected Destination         requestDest;
-    protected Destination         replyDest;
+    protected Destination requestDest;
+    protected Destination replyDest;
 
-    public JMSBindingInvoker(JMSBinding jmsBinding,
-                             Operation  operation ) {
-        
-        this.operation           = operation;
-        operationName            = operation.getName();
-        
-        this.jmsBinding          = jmsBinding;
-        jmsResourceFactory       = jmsBinding.getJmsResourceFactory();
-        requestMessageProcessor  = jmsBinding.getRequestMessageProcessor();
+    public JMSBindingInvoker(JMSBinding jmsBinding, Operation operation) {
+
+        this.operation = operation;
+        operationName = operation.getName();
+
+        this.jmsBinding = jmsBinding;
+        jmsResourceFactory = jmsBinding.getJmsResourceFactory();
+        requestMessageProcessor = jmsBinding.getRequestMessageProcessor();
         responseMessageProcessor = jmsBinding.getResponseMessageProcessor();
         try {
-            requestDest          = lookupDestination();
-            replyDest            = lookupResponseDestination();
+            requestDest = lookupDestination();
+            replyDest = lookupResponseDestination();
         } catch (NamingException e) {
             throw new JMSBindingException(e);
-        }            
+        }
 
     }
 
@@ -76,20 +75,18 @@ public class JMSBindingInvoker implements Invoker {
      * @return The Destination Queue
      * @throws NamingException Failed to lookup Destination Queue
      * @throws JMSBindingException Failed to lookup Destination Queue
-     * 
      * @see #lookupDestinationQueue(boolean)
      */
     private Destination lookupDestination() throws NamingException, JMSBindingException {
         return lookupDestinationQueue(false);
     }
-    
+
     /**
      * Looks up the Destination Response Queue for the JMS Binding
      * 
      * @return The Destination Response Queue
      * @throws NamingException Failed to lookup Destination Response Queue
      * @throws JMSBindingException Failed to lookup Destination Response Queue
-     * 
      * @see #lookupDestinationQueue(boolean)
      */
     private Destination lookupResponseDestination() throws NamingException, JMSBindingException {
@@ -104,15 +101,16 @@ public class JMSBindingInvoker implements Invoker {
      * <li>always - the JMS queue is always created. It is an error if the queue already exists
      * <li>ifnotexist - the JMS queue is created if it does not exist. It is not an error if the queue already exists
      * <li>never - the JMS queue is never created. It is an error if the queue does not exist
-     * </ul> 
+     * </ul>
      * See the SCA JMS Binding specification for more information.
      * <p>
+     * 
      * @param isReponseQueue <code>true</code> if we are creating a response queue. <code>false</code> if we are
-     *        creating a request queue
+     *            creating a request queue
      * @return The Destination queue.
      * @throws NamingException Failed to lookup JMS queue
-     * @throws JMSBindingException Failed to lookup JMS Queue. Probable cause is that the JMS queue's current 
-     *         existance/non-existance is not compatible with the create mode specified on the binding 
+     * @throws JMSBindingException Failed to lookup JMS Queue. Probable cause is that the JMS queue's current
+     *             existance/non-existance is not compatible with the create mode specified on the binding
      */
     private Destination lookupDestinationQueue(boolean isReponseQueue) throws NamingException, JMSBindingException {
         String queueName;
@@ -127,21 +125,22 @@ public class JMSBindingInvoker implements Invoker {
             queueType = "JMS Destination ";
             qCreateMode = jmsBinding.getDestinationCreate();
         }
-        
-        Destination dest          = jmsResourceFactory.lookupDestination(queueName);
-        
+
+        Destination dest = jmsResourceFactory.lookupDestination(queueName);
+
         if (qCreateMode.equals(JMSBindingConstants.CREATE_ALWAYS)) {
             // In this mode, the queue must not already exist as we are creating it
             if (dest != null) {
-                throw new JMSBindingException(queueType + 
-                        queueName +
-                        " already exists but has create mode of \"" + qCreateMode + "\" while registering binding " + 
-                        jmsBinding.getName() +
-                        " invoker");
+                throw new JMSBindingException(queueType + queueName
+                    + " already exists but has create mode of \""
+                    + qCreateMode
+                    + "\" while registering binding "
+                    + jmsBinding.getName()
+                    + " invoker");
             }
             // Create the queue
             dest = jmsResourceFactory.createDestination(queueName);
-            
+
         } else if (qCreateMode.equals(JMSBindingConstants.CREATE_IF_NOT_EXIST)) {
             // In this mode, the queue may nor may not exist. It will be created if it does not exist
             if (dest == null) {
@@ -151,27 +150,28 @@ public class JMSBindingInvoker implements Invoker {
         } else if (qCreateMode.equals(JMSBindingConstants.CREATE_NEVER)) {
             // In this mode, the queue must have already been created.
             if (dest == null) {
-                throw new JMSBindingException(queueType +
-                        queueName +
-                        " not found but create mode of \"" + qCreateMode + "\" while registering binding " + 
-                        jmsBinding.getName() +
-                        " invoker");
+                throw new JMSBindingException(queueType + queueName
+                    + " not found but create mode of \""
+                    + qCreateMode
+                    + "\" while registering binding "
+                    + jmsBinding.getName()
+                    + " invoker");
             }
         }
-            
-        
+
         // Make sure we ended up with a queue
         if (dest == null) {
-            throw new JMSBindingException(queueType + 
-                    queueName +
-                    " not found with create mode of \"" + qCreateMode + "\" while registering binding " + 
-                    jmsBinding.getName() +
-                    " invoker");
+            throw new JMSBindingException(queueType + queueName
+                + " not found with create mode of \""
+                + qCreateMode
+                + "\" while registering binding "
+                + jmsBinding.getName()
+                + " invoker");
         }
 
         return dest;
     }
-    
+
     public org.apache.tuscany.sca.invocation.Message invoke(org.apache.tuscany.sca.invocation.Message msg) {
         try {
             Object resp = invokeTarget((Object[])msg.getBody(), (short)0);
@@ -183,14 +183,14 @@ public class JMSBindingInvoker implements Invoker {
         }
         return msg;
     }
-    
+
     public Object invokeTarget(Object payload, final short sequence) throws InvocationTargetException {
         try {
             Session session = jmsResourceFactory.createSession();
             try {
 
                 Destination replyToDest = (replyDest != null) ? replyDest : session.createTemporaryQueue();
-                
+
                 Message requestMsg = sendRequest((Object[])payload, session, replyToDest);
                 Message replyMsg = receiveReply(session, replyToDest, requestMsg.getJMSMessageID());
 
@@ -205,8 +205,8 @@ public class JMSBindingInvoker implements Invoker {
             throw new InvocationTargetException(e);
         }
     }
-    
-    public void stop() throws NamingException, JMSException{
+
+    public void stop() throws NamingException, JMSException {
         jmsResourceFactory.closeConnection();
     }
 

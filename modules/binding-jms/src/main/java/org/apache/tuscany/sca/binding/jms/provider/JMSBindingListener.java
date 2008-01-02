@@ -65,9 +65,8 @@ public class JMSBindingListener implements MessageListener {
         }
     }
 
-    /** 
-     * Turn the JMS message back into a Tuscany message and invoke the
-     * target component
+    /**
+     * Turn the JMS message back into a Tuscany message and invoke the target component
      * 
      * @param requestJMSMsg
      * @return
@@ -86,7 +85,7 @@ public class JMSBindingListener implements MessageListener {
         if (opList.size() == 1) {
             // SCA JMS Binding Specification - Rule 1.5.1 line 203
             operation = opList.get(0);
-        } else if (operationName != null){
+        } else if (operationName != null) {
             // SCA JMS Binding Specification - Rule 1.5.1 line 205
             for (Operation op : opList) {
                 if (op.getName().equals(operationName)) {
@@ -107,8 +106,8 @@ public class JMSBindingListener implements MessageListener {
         if (operation != null) {
             return service.getRuntimeWire(jmsBinding).invoke(operation, (Object[])requestPayload);
         } else {
-            throw new JMSBindingException("Can't find operation " + 
-                    (operationName != null ? operationName : ON_MESSAGE_METHOD_NAME) );
+            throw new JMSBindingException("Can't find operation " + (operationName != null ? operationName
+                : ON_MESSAGE_METHOD_NAME));
         }
 
     }

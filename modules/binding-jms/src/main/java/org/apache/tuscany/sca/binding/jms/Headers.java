@@ -20,9 +20,8 @@
 package org.apache.tuscany.sca.binding.jms;
 
 /**
- * this element allows JMS headers to be set to the given values for all
- * operations. These values apply to requests from a reference and responses
- * from a service.
+ * this element allows JMS headers to be set to the given values for all operations. These values apply to requests from
+ * a reference and responses from a service.
  * 
  * @version $Rev$ $Date$
  */

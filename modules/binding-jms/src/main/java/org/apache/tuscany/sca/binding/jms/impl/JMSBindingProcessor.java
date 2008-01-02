@@ -38,72 +38,27 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
- * A processor to read the XML that describes the JMS binding...
- * 
- * <binding.jms correlationScheme="string"?
- *              initialContextFactory="xs:anyURI"?
- *              jndiURL="xs:anyURI"?
- *              requestConnection="QName"?
- *              responseConnection="QName"?
- *              operationProperties="QName"?
- *              ...>
- * 
- *     <destination name="xs:anyURI" type="string"? create="string"?>
- *         <property name="NMTOKEN" type="NMTOKEN">*
- *     </destination>?
- * 
- *     <connectionFactory name="xs:anyURI" create="string"?>
- *         <property name="NMTOKEN" type="NMTOKEN">*
- *     </connectionFactory>?
- * 
- *     <activationSpec name="xs:anyURI" create="string"?>
- *         <property name="NMTOKEN" type="NMTOKEN">*
- *     </activationSpec>?
- * 
- *     <response>
- *         <destination name="xs:anyURI" type="string"? create="string"?>
- *             <property name="NMTOKEN" type="NMTOKEN">*
- *         </destination>?
- * 
- *         <connectionFactory name="xs:anyURI" create="string"?>
- *             <property name="NMTOKEN" type="NMTOKEN">*
- *         </connectionFactory>?
- * 
- *         <activationSpec name="xs:anyURI" create="string"?>
- *             <property name="NMTOKEN" type="NMTOKEN">*
- *         </activationSpec>?
- *     </response>?
- * 
- *     <resourceAdapter name="NMTOKEN">?
- *         <property name="NMTOKEN" type="NMTOKEN">*
- *     </resourceAdapter>?
- * 
- *     <headers JMSType="string"?
- *              JMSCorrelationId="string"?
- *              JMSDeliveryMode="string"?
- *              JMSTimeToLive="int"?
- *              JMSPriority="string"?>
- *         <property name="NMTOKEN" type="NMTOKEN">*
- *     </headers>?
- * 
- *     <operationProperties name="string" nativeOperation="string"?>
- *         <property name="NMTOKEN" type="NMTOKEN">*
- *         <headers JMSType="string"?
- *                  JMSCorrelationId="string"?
- *                  JMSDeliveryMode="string"?
- *                  JMSTimeToLive="int"?
- *                  JMSPriority="string"?>
- *             <property name="NMTOKEN" type="NMTOKEN">*
- *         </headers>?
- *     </operationProperties>*
- * </binding.jms>
+ * A processor to read the XML that describes the JMS binding... <binding.jms correlationScheme="string"?
+ * initialContextFactory="xs:anyURI"? jndiURL="xs:anyURI"? requestConnection="QName"? responseConnection="QName"?
+ * operationProperties="QName"? ...> <destination name="xs:anyURI" type="string"? create="string"?> <property
+ * name="NMTOKEN" type="NMTOKEN">* </destination>? <connectionFactory name="xs:anyURI" create="string"?> <property
+ * name="NMTOKEN" type="NMTOKEN">* </connectionFactory>? <activationSpec name="xs:anyURI" create="string"?> <property
+ * name="NMTOKEN" type="NMTOKEN">* </activationSpec>? <response> <destination name="xs:anyURI" type="string"?
+ * create="string"?> <property name="NMTOKEN" type="NMTOKEN">* </destination>? <connectionFactory name="xs:anyURI"
+ * create="string"?> <property name="NMTOKEN" type="NMTOKEN">* </connectionFactory>? <activationSpec name="xs:anyURI"
+ * create="string"?> <property name="NMTOKEN" type="NMTOKEN">* </activationSpec>? </response>? <resourceAdapter
+ * name="NMTOKEN">? <property name="NMTOKEN" type="NMTOKEN">* </resourceAdapter>? <headers JMSType="string"?
+ * JMSCorrelationId="string"? JMSDeliveryMode="string"? JMSTimeToLive="int"? JMSPriority="string"?> <property
+ * name="NMTOKEN" type="NMTOKEN">* </headers>? <operationProperties name="string" nativeOperation="string"?> <property
+ * name="NMTOKEN" type="NMTOKEN">* <headers JMSType="string"? JMSCorrelationId="string"? JMSDeliveryMode="string"?
+ * JMSTimeToLive="int"? JMSPriority="string"?> <property name="NMTOKEN" type="NMTOKEN">* </headers>?
+ * </operationProperties>* </binding.jms>
  */
 
-public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
-    
+public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
+
     private PolicyFactory policyFactory;
     private PolicyAttachPointProcessor policyProcessor;
-
 
     public JMSBindingProcessor(ModelFactoryExtensionPoint modelFactories) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
@@ -118,9 +73,9 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
         return JMSBinding.class;
     }
 
-    public JMSBinding read(XMLStreamReader reader)  throws ContributionReadException, XMLStreamException {
+    public JMSBinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         JMSBinding jmsBinding = new JMSBinding();
-        
+
         // Read policies
         policyProcessor.readPolicies(jmsBinding, reader);
 
@@ -129,7 +84,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
         if (name != null) {
             jmsBinding.setName(name);
         }
-        
+
         // Read binding URI
         String uri = reader.getAttributeValue(null, "uri");
         if (uri != null) {
@@ -159,14 +114,14 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
         if (jndiURL != null && jndiURL.length() > 0) {
             jmsBinding.setJndiURL(jndiURL);
         }
-        
+
         // Read requestConnection
         // TODO
         // Read reponseConnection
         // TODO
         // Read operationProperties
         // TODO
-        
+
         // Read subelements of binding.jms
         boolean endFound = false;
         while (!endFound) {
@@ -182,12 +137,12 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
                     } else if ("response".equals(elementName)) {
                         parseResponse(reader, jmsBinding);
                     } else if ("resourceAdapter".equals(elementName)) {
-                        parseResourceAdapter(reader, jmsBinding);                            
+                        parseResourceAdapter(reader, jmsBinding);
                     } else if ("headers".equals(elementName)) {
                         parseHeaders(reader, jmsBinding);
                     } else if ("operationProperties".equals(elementName)) {
                         parseOperationProperties(reader, jmsBinding);
-                    } 
+                    }
                     reader.next();
                     break;
                 case END_ELEMENT:
@@ -195,35 +150,36 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
                     if (x.equals(JMSBindingConstants.BINDING_JMS_QNAME)) {
                         endFound = true;
                     } else {
-                        throw new RuntimeException("Incomplete binding.jms definition found unexpected element " + x.toString());
+                        throw new RuntimeException("Incomplete binding.jms definition found unexpected element " + x
+                            .toString());
                     }
             }
         }
-        
-        jmsBinding.validate();           
-        
+
+        jmsBinding.validate();
+
         return jmsBinding;
     }
-    
-    public void resolve(JMSBinding model, ModelResolver resolver) throws ContributionResolveException {
-    }    
 
-    public void write(JMSBinding rmiBinding, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void resolve(JMSBinding model, ModelResolver resolver) throws ContributionResolveException {
+    }
+
+    public void write(JMSBinding rmiBinding, XMLStreamWriter writer) throws ContributionWriteException,
+        XMLStreamException {
         // Write a <binding.jms>
         writer.writeStartElement(Constants.SCA10_NS, JMSBindingConstants.BINDING_JMS);
 
         // FIXME Implement
-        
+
         writer.writeEndElement();
     }
-
 
     private void parseDestination(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
         String name = reader.getAttributeValue(null, "name");
         if (name != null && name.length() > 0) {
             jmsBinding.setDestinationName(name);
         }
-        
+
         String type = reader.getAttributeValue(null, "type");
         if (type != null && type.length() > 0) {
             if (JMSBindingConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(type)) {
@@ -235,13 +191,13 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
             }
             System.err.println("JMS Binding doesn't process destination type yet");
         }
-        
+
         String create = reader.getAttributeValue(null, "create");
         if (create != null && create.length() > 0) {
             jmsBinding.setDestinationCreate(create);
         }
-    } 
-    
+    }
+
     private void parseConnectionFactory(XMLStreamReader reader, JMSBinding jmsBinding) {
         String name = reader.getAttributeValue(null, "name");
         if (name != null && name.length() > 0) {
@@ -249,7 +205,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
         } else {
             throw new RuntimeException("missing connectionFactory name");
         }
-    }    
+    }
 
     private void parseActivationSpec(XMLStreamReader reader, JMSBinding jmsBinding) {
         String name = reader.getAttributeValue(null, "name");
@@ -265,8 +221,8 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
         String name = reader.getAttributeValue(null, "name");
         if (name != null && name.length() > 0) {
             jmsBinding.setResponseDestinationName(name);
-        }      
-        
+        }
+
         String type = reader.getAttributeValue(null, "type");
         if (type != null && type.length() > 0) {
             if (JMSBindingConstants.DESTINATION_TYPE_QUEUE.equalsIgnoreCase(type)) {
@@ -278,13 +234,13 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
             }
             System.err.println("JMS Binding doesn't process response destination type yet");
         }
-        
+
         String create = reader.getAttributeValue(null, "create");
         if (create != null && create.length() > 0) {
             jmsBinding.setResponseDestinationCreate(create);
         }
-    } 
-    
+    }
+
     private void parseResponseConnectionFactory(XMLStreamReader reader, JMSBinding jmsBinding) {
         String name = reader.getAttributeValue(null, "name");
         if (name != null && name.length() > 0) {
@@ -293,7 +249,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
         } else {
             throw new RuntimeException("missing response connectionFactory name");
         }
-    }    
+    }
 
     private void parseResponseActivationSpec(XMLStreamReader reader, JMSBinding jmsBinding) {
         String name = reader.getAttributeValue(null, "name");
@@ -304,9 +260,8 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
             throw new RuntimeException("missing response ActivationSpec name");
         }
     }
-    
-    private void parseResponse(XMLStreamReader reader, JMSBinding jmsBinding)
-      throws XMLStreamException {
+
+    private void parseResponse(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
         // Read subelements of response
         while (true) {
             switch (reader.next()) {
@@ -318,7 +273,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
                         parseResponseConnectionFactory(reader, jmsBinding);
                     } else if ("activationSpec".equals(elementName)) {
                         parseResponseActivationSpec(reader, jmsBinding);
-                    } 
+                    }
                     reader.next();
                     break;
                 case END_ELEMENT:
@@ -326,7 +281,9 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
                     if (x.getLocalPart().equals("response")) {
                         return;
                     } else {
-                        throw new RuntimeException("Incomplete binding.jms/response definition found unexpected element " + x.toString());
+                        throw new RuntimeException(
+                                                   "Incomplete binding.jms/response definition found unexpected element " + x
+                                                       .toString());
                     }
             }
         }
@@ -335,10 +292,10 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding>{
     private void parseResourceAdapter(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
         System.err.println("JMS Binding doesn't process resourceAdapter yet");
     }
-    
+
     private void parseHeaders(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
         System.err.println("JMS Binding doesn't process headers yet");
-    }    
+    }
 
     private void parseOperationProperties(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
         System.err.println("JMS Binding doesn't process operationProperties yet");

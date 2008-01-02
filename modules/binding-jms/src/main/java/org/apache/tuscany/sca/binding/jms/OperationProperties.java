@@ -20,8 +20,7 @@
 package org.apache.tuscany.sca.binding.jms;
 
 /**
- * Specifies various properties that are specific to the processing of a particular 
- * operation.
+ * Specifies various properties that are specific to the processing of a particular operation.
  * 
  * @version $Rev$ $Date$
  */

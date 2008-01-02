@@ -34,8 +34,9 @@ public class RPCTestCase {
 
     @Before
     public void init() {
-        scaDomain = SCADomain.newInstance("http://localhost", "/", "simple/client.composite", "simple/service.composite");
-//        scaDomain = SCADomain.newInstance("http://localhost", "/", "simple/client.composite");
+        scaDomain =
+            SCADomain.newInstance("http://localhost", "/", "simple/client.composite", "simple/service.composite");
+        // scaDomain = SCADomain.newInstance("http://localhost", "/", "simple/client.composite");
     }
 
     @Test

@@ -20,12 +20,14 @@
 package org.apache.tuscany.sca.binding.jms;
 
 /**
- * 
  * @version $Rev$ $Date$
  */
 public interface ConnectionFactory extends PropertyList {
     String getName();
+
     void setName(String name);
+
     CreateResource getCreate();
+
     void setCreate(CreateResource create);
 }
