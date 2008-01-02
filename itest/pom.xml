@@ -37,6 +37,7 @@
             </activation>
             <modules>
                 <module>callablereferences</module>
+                <module>callablereferences-ws</module>
                 <module>callback-api</module>
                 <module>callback-basic</module>
                 <module>callback-complex-type</module>

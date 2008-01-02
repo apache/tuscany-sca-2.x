@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.databinding.axiom;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
@@ -29,8 +30,18 @@ public class OMElement2XMLStreamReader extends BaseTransformer<OMElement, XMLStr
     PullTransformer<OMElement, XMLStreamReader> {
     // private XmlOptions options;
 
+    public static QName QNAME_NIL = new QName("http://www.w3.org/2001/XMLSchema-instance", "nil");
+
     public XMLStreamReader transform(OMElement source, TransformationContext context) {
-        return source != null ? source.getXMLStreamReader() : null;
+        if (source == null) {
+            return null;
+        } else {
+            if ("true".equals(source.getAttributeValue(QNAME_NIL))) {
+                return null;
+            } else {
+                return source.getXMLStreamReader();
+            }
+        }
     }
 
     @Override

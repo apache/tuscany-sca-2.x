@@ -16,8 +16,8 @@
 # under the License.
 
 # Implementation classes for the transformers
-org.apache.tuscany.sca.databinding.axiom.Externalizable2OMElement;source=org.osoa.sca.CallableReference,target=org.apache.axiom.om.OMElement,weight=10
-org.apache.tuscany.sca.databinding.axiom.OMElement2Externalizable;source=org.apache.axiom.om.OMElement,target=org.osoa.sca.CallableReference,weight=10
+# org.apache.tuscany.sca.databinding.axiom.CallableReference2OMElement;source=org.osoa.sca.CallableReference,target=org.apache.axiom.om.OMElement,weight=10
+# org.apache.tuscany.sca.databinding.axiom.OMElement2CallableReference;source=org.apache.axiom.om.OMElement,target=org.osoa.sca.CallableReference,weight=10
 org.apache.tuscany.sca.databinding.axiom.Externalizable2OMElement;source=java.io.Externalizable,target=org.apache.axiom.om.OMElement,weight=10
 org.apache.tuscany.sca.databinding.axiom.OMElement2Externalizable;source=org.apache.axiom.om.OMElement,target=java.io.Externalizable,weight=10
 # org.apache.tuscany.sca.databinding.axiom.Object2OMElement;source=java:simpleType,target=org.apache.axiom.om.OMElement,weight=80000
