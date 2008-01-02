@@ -30,13 +30,23 @@ import org.osoa.sca.ServiceRuntimeException;
 import pojo.POJOImplementation;
 
 /**
- * The model representing a sample CRUD implementation in an SCA assembly model.
- * The sample CRUD implementation is not a full blown implementation, it only
- * supports a subset of what a component implementation can support: - a single
- * fixed service (as opposed to a list of services typed by different
- * interfaces) - a directory attribute used to specify where a CRUD component is
- * going to persist resources - no references or properties - no policy intents
- * or policy sets
+ * An implementation provider for sample CRUD implementations.
+ * 
+ * The implementation provider is responsible for handling the lifecycle of a component
+ * implementation and creating operation invokers for the service operations provided
+ * by the implementation.
+ * 
+ * The start() and stop() methods are called when a component is started
+ * and stopped. In this example we are using that opportunity to call init and destroy methods
+ * on the POJO instance if these methods exist.
+ *
+ * The createInvoker method is called for each operation provided by the component
+ * implementation. The implementation provider can create an invoker and initialize it
+ * at that time to minimize the amount of work to be performed on each invocation.
+ * 
+ * For example here we are looking up the Java method corresponding to the service operation
+ * at passing it to the invoker constructor. This way the invoker won't have to lookup the Java
+ * method on each invocation.  
  */
 class POJOImplementationProvider implements ImplementationProvider {
     
