@@ -16,45 +16,37 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package test.crud.provider;
+package org.apache.tuscany.sca.host.embedded.test.extension.provider;
 
+import org.apache.tuscany.sca.host.embedded.test.extension.TestImplementation;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
-import test.crud.CRUDImplementation;
-import test.crud.backend.ResourceManager;
-
 
 /**
- * The model representing a sample CRUD implementation in an SCA assembly model.
- * The sample CRUD implementation is not a full blown implementation, it only
- * supports a subset of what a component implementation can support: - a single
- * fixed service (as opposed to a list of services typed by different
- * interfaces) - a directory attribute used to specify where a CRUD component is
- * going to persist resources - no references or properties - no policy intents
- * or policy sets
+ * Implementation provider for test implementations.
  * 
  * @version $$Rev$$ $$Date: 2007-04-23 19:18:54 -0700 (Mon, 23 Apr
  *          2007) $$
  */
-public class CRUDImplementationProvider implements ImplementationProvider {
+public class TestImplementationProvider implements ImplementationProvider {
     
     private RuntimeComponent component;
-    private CRUDImplementation implementation;
+    private TestImplementation implementation;
 
     /**
-     * Constructs a new CRUD implementation.
+     * Constructs a new test implementation provider.
      */
-    public CRUDImplementationProvider(RuntimeComponent component, CRUDImplementation implementation) {
+    public TestImplementationProvider(RuntimeComponent component, TestImplementation implementation) {
         this.component = component;
         this.implementation = implementation;
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
-        CRUDInvoker invoker = new CRUDInvoker(operation, new ResourceManager(implementation.getDirectory()));
+        TestInvoker invoker = new TestInvoker(operation, implementation.getGreeting());
         return invoker;
     }
     

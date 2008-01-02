@@ -16,32 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
-package test.crud;
-
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-
-import test.crud.impl.CRUDImplementationImpl;
+package org.apache.tuscany.sca.host.embedded.test.extension;
 
 /**
- * A default factory for the CRUD implementation model.
- *
+ * Service interface for test component implementations.
+ * 
  * @version $Rev$ $Date$
  */
-public class DefaultCRUDImplementationFactory implements CRUDImplementationFactory {
-    
-    private AssemblyFactory assemblyFactory;
-    private JavaInterfaceFactory javaFactory;
-    
-    public DefaultCRUDImplementationFactory(AssemblyFactory assemblyFactory,
-                                            JavaInterfaceFactory javaFactory) {
-        this.assemblyFactory = assemblyFactory;
-        this.javaFactory = javaFactory;
-    }
+public interface TestService {
 
-    public CRUDImplementation createCRUDImplementation() {
-        return new CRUDImplementationImpl(assemblyFactory, javaFactory);
-    }
+    String ping(String name);
 
 }

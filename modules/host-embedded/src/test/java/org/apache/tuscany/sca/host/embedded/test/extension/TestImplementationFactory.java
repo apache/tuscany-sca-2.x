@@ -17,21 +17,21 @@
  * under the License.    
  */
 
-package test.crud;
+package org.apache.tuscany.sca.host.embedded.test.extension;
 
 
 /**
- * A factory for the sample CRUD implementation model.
+ * A factory for the test implementation model.
  *
  * @version $Rev$ $Date$
  */
-public interface CRUDImplementationFactory {
+public interface TestImplementationFactory {
     
     /**
-     * Creates a new CRUD implementation.
+     * Creates a new test implementation.
      * 
      * @return
      */
-    CRUDImplementation createCRUDImplementation();
+    TestImplementation createTestImplementation();
 
 }
