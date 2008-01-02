@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.core.context;
 
+import javax.xml.stream.XMLStreamReader;
+
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.conversation.ConversationState;
@@ -41,8 +43,18 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
 
     protected transient Object callback;
 
+    /*
+     * Public constructor for Externalizable serialization/deserialization
+     */
     public ServiceReferenceImpl() {
         super();
+    }
+
+    /*
+     * Public constructor for use by XMLStreamReader2CallableReference
+     */
+    public ServiceReferenceImpl(XMLStreamReader xmlReader) {
+        super(xmlReader);
     }
 
     /**

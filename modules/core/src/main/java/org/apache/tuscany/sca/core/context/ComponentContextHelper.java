@@ -220,9 +220,17 @@ public class ComponentContextHelper {
 
     public RuntimeComponent read(Reader reader) throws IOException {
         try {
-            StAXArtifactProcessor<Composite> processor = staxProcessors.getProcessor(Composite.class);
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
             XMLStreamReader streamReader = inputFactory.createXMLStreamReader(reader);
+            return read(streamReader);
+        } catch (Exception e) {
+            throw new IOException(e.getMessage());
+        }
+    }
+
+    public RuntimeComponent read(XMLStreamReader streamReader) throws IOException {
+        try {
+            StAXArtifactProcessor<Composite> processor = staxProcessors.getProcessor(Composite.class);
             Composite composite = processor.read(streamReader);
             RuntimeComponent component = (RuntimeComponent)composite.getComponents().get(0);
             return component;
@@ -233,6 +241,10 @@ public class ComponentContextHelper {
 
     public Component fromXML(String xml) throws IOException {
         return read(new StringReader(xml));
+    }
+
+    public Component fromXML(XMLStreamReader streamReader) throws IOException {
+        return read(streamReader);
     }
 
     public static RuntimeComponent getCurrentComponent() {

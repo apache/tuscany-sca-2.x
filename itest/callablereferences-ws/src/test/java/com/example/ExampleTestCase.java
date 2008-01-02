@@ -16,20 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package com.example;
 
-package org.apache.tuscany.sca.databinding.externalizable;
+import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-public class CallableReferenceDataBinding extends BaseDataBinding {
+public class ExampleTestCase extends TestCase {
+
+    private SCADomain scaDomain;
+    private ExampleClient client;
+
+    @Override
+    protected void setUp() throws Exception {
+        scaDomain = SCADomain.newInstance("example.composite");
+        client = scaDomain.getService(ExampleClient.class, "ExampleClientComponent");
+    }
     
-    public static final String NAME = org.osoa.sca.CallableReference.class.getName();
-    public static final String[] ALIASES = new String[] {"callablereference"};
-
-    public CallableReferenceDataBinding() {
-        super(NAME, ALIASES, org.osoa.sca.CallableReference.class);
+    @Override
+    protected void tearDown() throws Exception {
+        scaDomain.close();
     }
 
-    
-
+    public void test() throws Exception {
+        client.runTest();
+    }
 }

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.UUID;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
@@ -76,8 +77,22 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
 
     protected String scdl;
 
+    private transient RuntimeComponentReference clonedRef;
+    private transient ReferenceParameters refParams;
+    private transient XMLStreamReader xmlReader;
+
+    /*
+     * Protected constructor for Externalizable serialization/deserialization
+     */
     protected CallableReferenceImpl() {
         super();
+    }
+
+    /*
+     * Public constructor for use by XMLStreamReader2CallableReference
+     */
+    public CallableReferenceImpl(XMLStreamReader xmlReader) {
+        this.xmlReader = xmlReader;
     }
 
     protected CallableReferenceImpl(Class<B> businessInterface,
@@ -195,17 +210,25 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
      * @throws IOException
      */
     private synchronized void resolve() throws Exception {
-        if (scdl != null && component == null && reference == null) {
+        if ((scdl != null || xmlReader != null) && component == null && reference == null) {
             ComponentContextHelper componentContextHelper = ComponentContextHelper.getCurrentComponentContextHelper();
             if (componentContextHelper != null) {
                 CompositeActivator currentActivator = ComponentContextHelper.getCurrentCompositeActivator();
                 this.compositeActivator = currentActivator;
                 this.conversationManager = this.compositeActivator.getConversationManager();
-                Component c = componentContextHelper.fromXML(scdl);
+                Component c;
+                if (xmlReader != null) {
+                    c = componentContextHelper.fromXML(xmlReader);
+                    xmlReader = null;  // OK to GC this now
+                } else {
+                    c = componentContextHelper.fromXML(scdl);
+                    scdl = null;  // OK to GC this now
+                }
                 this.component = (RuntimeComponent)c;
                 currentActivator.configureComponentContext(this.component);
                 this.reference = (RuntimeComponentReference)c.getReferences().get(0);
                 this.reference.setComponent(this.component);
+                clonedRef = reference;
                 ReferenceParameters parameters = null;
                 for (Object ext : reference.getExtensions()) {
                     if (ext instanceof ReferenceParameters) {
@@ -214,6 +237,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                     }
                 }
                 if (parameters != null) {
+                    refParams = parameters;
                     this.callbackID = parameters.getCallbackID();
                     this.conversationID = parameters.getConversationID();
                 }
@@ -282,24 +306,32 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
      */
     public void writeExternal(ObjectOutput out) throws IOException {
         try {
-            if (reference != null) {
-                ReferenceParameters parameters = new ReferenceParametersImpl();
-                parameters.setCallbackID(callbackID);
-                if (conversationID != null) {
-                    parameters.setConversationID(conversationID);
-                } else {
-                    parameters.setConversationID(null);
-                }
-                reference.getExtensions().add(parameters);
-                scdl =
-                    ((CompositeActivatorImpl)compositeActivator).getComponentContextHelper()
-                        .toXML(component, reference);
-                reference.getExtensions().remove(parameters);
-            }
-            out.writeUTF(scdl);
+            out.writeUTF(toXMLString());
         } catch (Exception e) {
             e.printStackTrace();
             throw new IOException(e.getMessage());
+        }
+    }
+
+    public String toXMLString() throws IOException {
+        if (reference != null) {
+            if (clonedRef == null) {
+                try {
+                    clonedRef = (RuntimeComponentReference)reference.clone();
+                } catch (CloneNotSupportedException e) {
+                    // will not happen
+                }
+            }
+            if (refParams == null) {
+                refParams = new ReferenceParametersImpl();
+                clonedRef.getExtensions().add(refParams);
+            }
+            refParams.setCallbackID(callbackID);
+            refParams.setConversationID(conversationID);
+            return ((CompositeActivatorImpl)compositeActivator).getComponentContextHelper()
+                    .toXML(component, clonedRef);
+        } else { 
+            return scdl;
         }
     }
 
@@ -344,6 +376,10 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         ReferenceParameters parameters = getReferenceParameters();
         epr.setReferenceParameters(parameters);
         return epr;
+    }
+
+    public XMLStreamReader getXMLReader() {
+        return xmlReader;
     }
 
 }
