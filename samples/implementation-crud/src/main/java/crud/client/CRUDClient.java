@@ -25,6 +25,12 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 import crud.CRUD;
 
 /**
+ * A sample client that shows how to create an SCA domain, get a service, and
+ * invoke service methods of a CRUD component.
+ * 
+ * The CRUD component uses an <implementation.crud> implementation extension
+ * from module implementation-crud-extension.
+ *  
  * @version $Rev$ $Date$
  */
 public class CRUDClient {
@@ -35,21 +41,19 @@ public class CRUDClient {
         CRUD crudService = scaDomain.getService(CRUD.class, "CRUDServiceComponent");
         
         String id = crudService.create("ABC");
+        
         Object result = crudService.retrieve(id);
         System.out.println("Result from create: " + result);
+
         crudService.update(id, "EFG");
         result = crudService.retrieve(id);
         System.out.println("Result from update: " + result);
+        
         crudService.delete(id);
         result = crudService.retrieve(id);
-        if (result == null) {
-            System.out.println("Result from delete: null");
-        } else {
-            System.out.println("Result from delete: should be null but was " + result);
-        }
+        System.out.println("Result from delete: " + result);
         
         scaDomain.close();
-
     }
 
 }
