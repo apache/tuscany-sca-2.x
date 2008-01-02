@@ -155,7 +155,7 @@ public class NestedBundleTestCase extends TestCase {
             
             for (Composite deployable : supplychainContribution.getDeployables()) {
                 domain.getDomainComposite().getIncludes().add(deployable);
-                domain.getCompositeBuilder().build(deployable);
+                domain.buildComposite(deployable);
             }
             
             // Start Components from my composite

@@ -58,7 +58,7 @@ public class HelloWorldServerTestCase extends TestCase{
         wsdlContribution = contributionService.contribute("http://import-export/export-wsdl", wsdlContribURL, false);
         for (Composite deployable : wsdlContribution.getDeployables() ) {
             domain.getDomainComposite().getIncludes().add(deployable);
-            domain.getCompositeBuilder().build(deployable);
+            domain.buildComposite(deployable);
         }
 
         File helloWorldContribLocation = new File("./target/classes/");
@@ -66,7 +66,7 @@ public class HelloWorldServerTestCase extends TestCase{
         consumerContribution = contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, false);
         for (Composite deployable : consumerContribution.getDeployables() ) {
             domain.getDomainComposite().getIncludes().add(deployable);
-            domain.getCompositeBuilder().build(deployable);
+            domain.buildComposite(deployable);
         }
 
         // Start Components from my composite

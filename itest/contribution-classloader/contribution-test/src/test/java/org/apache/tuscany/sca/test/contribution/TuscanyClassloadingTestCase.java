@@ -434,11 +434,11 @@ public class TuscanyClassloadingTestCase {
     	Object domainComposite = invokeNoArgsMethod(domain, "getDomainComposite");   	
     	List includes = (List)invokeNoArgsMethod(domainComposite, "getIncludes");
     	includes.add(composite);
-    	Object compositeBuilder = invokeNoArgsMethod(domain, "getCompositeBuilder");
+    	//Object compositeBuilder = invokeNoArgsMethod(domain, "getCompositeBuilder");
     	Object compositeActivator = invokeNoArgsMethod(domain, "getCompositeActivator");
     	
     	Class compositeClass = embeddedDomainClass.getClassLoader().loadClass(Composite.class.getName());
-    	invokeOneArgMethod(compositeBuilder, "build", compositeClass, composite);
+    	invokeOneArgMethod(domain, "buildComposite", compositeClass, composite);
     	invokeOneArgMethod(compositeActivator, "activate", compositeClass, composite);
     	invokeOneArgMethod(compositeActivator, "start", compositeClass, composite);
     	

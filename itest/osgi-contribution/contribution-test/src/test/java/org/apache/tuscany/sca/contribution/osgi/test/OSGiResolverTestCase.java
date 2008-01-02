@@ -210,23 +210,23 @@ public class OSGiResolverTestCase extends TestCase {
              
             for (Composite deployable : customerContribution.getDeployables()) {
                 domain.getDomainComposite().getIncludes().add(deployable);
-                domain.getCompositeBuilder().build(deployable);
+                domain.buildComposite(deployable);
             }
             
 
             for (Composite deployable : retailerContribution.getDeployables() ) {
                 domain.getDomainComposite().getIncludes().add(deployable);
-                domain.getCompositeBuilder().build(deployable);
+                domain.buildComposite(deployable);
             }
             
             for (Composite deployable : warehouseContribution.getDeployables() ) {
                 domain.getDomainComposite().getIncludes().add(deployable);
-                domain.getCompositeBuilder().build(deployable);
+                domain.buildComposite(deployable);
             }
             
             for (Composite deployable : shipperContribution.getDeployables() ) {
                 domain.getDomainComposite().getIncludes().add(deployable);
-                domain.getCompositeBuilder().build(deployable);
+                domain.buildComposite(deployable);
             }
             
             // Start Components from my composite

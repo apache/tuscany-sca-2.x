@@ -63,7 +63,7 @@ public class ContributionTestCase extends TestCase {
         
         for (Composite deployable : helloContribution.getDeployables()) {
             domain.getDomainComposite().getIncludes().add(deployable);
-            domain.getCompositeBuilder().build(deployable);
+            domain.buildComposite(deployable);
         }
         for (Composite deployable : helloContribution.getDeployables()) {
             domain.getCompositeActivator().activate(deployable);
@@ -74,7 +74,7 @@ public class ContributionTestCase extends TestCase {
             contributionService.contribute("http://import-export/helloworld_one", helloWorldContribution_one_URL, false);
         for (Composite deployable : helloWorldContribution_one.getDeployables()) {
             domain.getDomainComposite().getIncludes().add(deployable);
-            domain.getCompositeBuilder().build(deployable);
+            domain.buildComposite(deployable);
         }
 
         for (Composite deployable : helloWorldContribution_one.getDeployables()) {
