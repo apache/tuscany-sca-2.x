@@ -32,9 +32,7 @@ import javax.naming.NamingException;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
-import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 public class JMSBindingListener implements MessageListener {
@@ -46,9 +44,6 @@ public class JMSBindingListener implements MessageListener {
     private JMSMessageProcessor requestMessageProcessor;
     private JMSMessageProcessor responseMessageProcessor;
     private String correlationScheme;
-    private MessageFactory messageFactory;
-
-    //private Method                  operationMethod;    
 
     public JMSBindingListener(JMSBinding jmsBinding,
                               JMSResourceFactory jmsResourceFactory,
@@ -59,7 +54,6 @@ public class JMSBindingListener implements MessageListener {
         requestMessageProcessor = jmsBinding.getRequestMessageProcessor();
         responseMessageProcessor = jmsBinding.getResponseMessageProcessor();
         correlationScheme = jmsBinding.getCorrelationScheme();
-        messageFactory = new MessageFactoryImpl();
     }
 
     public void onMessage(Message requestJMSMsg) {
