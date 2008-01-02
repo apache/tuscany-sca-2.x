@@ -26,34 +26,29 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
 /**
  * This shows how to test the JMS binding using a simple HelloWorld application.
  */
 public class JMSTestCaseFIXME {
 
-    private static BrokerService        broker;
-    private static HelloWorldService    helloWorldService;
-    private static SCADomain            scaDomain; 
+    private static BrokerService broker;
+    private static HelloWorldService helloWorldService;
+    private static SCADomain scaDomain;
 
     /*
-     * This test is a bit strange for two reasons
-     * 1/ starting and stopping the broker repeatedly for multiple tests 
-     *    sometimes leads to orphaned lock files being left on disc
-     * 2/ it doesn't seem possible to load a single composite file
-     *    at the moment so I've put all the components for the test
-     *    in one. This makes it very difficult to test for failure 
-     *    cases at this level.
-     * For these reasons setup happens at a class level at the moment
+     * This test is a bit strange for two reasons 1/ starting and stopping the broker repeatedly for multiple tests
+     * sometimes leads to orphaned lock files being left on disc 2/ it doesn't seem possible to load a single composite
+     * file at the moment so I've put all the components for the test in one. This makes it very difficult to test for
+     * failure cases at this level. For these reasons setup happens at a class level at the moment
      */
-    
+
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         // start the activemq broker
         broker = new BrokerService();
         broker.addConnector("tcp://localhost:61616");
         broker.start();
-        
+
         // start the SCA runtime
         scaDomain = SCADomain.newInstance("JMSBindingTest.composite");
     }
@@ -61,26 +56,22 @@ public class JMSTestCaseFIXME {
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
         scaDomain.close();
-        
+
         broker.stop();
         // only available in 4.2 snapshot
-        //broker.waitUntilStopped();
+        // broker.waitUntilStopped();
     }
-    
-/* At the moment I can't get at the target list in order to auto generate queue names
- * so binding.jms with no configuration doesn't work
-    @Test
-    public void testHelloWorldMinimal() throws Exception {
-        helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldMinimalClientComponent");
-        assertEquals("Hello Fred", helloWorldService.sayHello("Fred"));
-    }
-*/
+
+    /*
+     * At the moment I can't get at the target list in order to auto generate queue names so binding.jms with no
+     * configuration doesn't work @Test public void testHelloWorldMinimal() throws Exception { helloWorldService =
+     * scaDomain.getService(HelloWorldService.class, "HelloWorldMinimalClientComponent"); assertEquals("Hello Fred",
+     * helloWorldService.sayHello("Fred")); }
+     */
     @Test
     public void testHelloWorldCreate() throws Exception {
         helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldCreateClientComponent");
         assertEquals("ServiceA says Hello Fred-A ServiceB says Hello Fred-B", helloWorldService.sayHello("Fred"));
     }
-    
-
 
 }

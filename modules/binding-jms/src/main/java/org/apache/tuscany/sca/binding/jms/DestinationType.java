@@ -20,9 +20,8 @@
 package org.apache.tuscany.sca.binding.jms;
 
 /**
- * The type of the request destination. Must take one of the values "queue" or "topic". 
- * The default value is "queue". When "topic" is specified, then all the operations in 
- * the interface that corresponds to the binding must be one-way.
+ * The type of the request destination. Must take one of the values "queue" or "topic". The default value is "queue".
+ * When "topic" is specified, then all the operations in the interface that corresponds to the binding must be one-way.
  * 
  * @version $Rev$ $Date$
  */

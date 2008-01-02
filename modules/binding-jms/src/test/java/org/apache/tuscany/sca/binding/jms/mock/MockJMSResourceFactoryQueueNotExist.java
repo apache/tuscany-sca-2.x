@@ -24,19 +24,17 @@ import javax.naming.NamingException;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 
 /**
- * This mock JMSResourceFactory will always return <code>null</code> when the
- * lookupDestination() method is called
+ * This mock JMSResourceFactory will always return <code>null</code> when the lookupDestination() method is called
  */
-public class MockJMSResourceFactoryQueueNotExist extends MockJMSResourceFactory 
-{
+public class MockJMSResourceFactoryQueueNotExist extends MockJMSResourceFactory {
     /**
      * Constructor
-     *
+     * 
      * @param jmsBinding Ignored
      */
     public MockJMSResourceFactoryQueueNotExist(JMSBinding jmsBinding) {
     }
-    
+
     /**
      * Always returns null
      */

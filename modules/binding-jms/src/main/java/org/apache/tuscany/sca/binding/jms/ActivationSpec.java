@@ -24,7 +24,10 @@ package org.apache.tuscany.sca.binding.jms;
  */
 public interface ActivationSpec extends PropertyList {
     String getName();
+
     void setName(String name);
+
     CreateResource getCreate();
+
     void setCreate(CreateResource create);
 }

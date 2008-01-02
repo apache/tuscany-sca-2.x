@@ -29,228 +29,250 @@ import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.junit.Test;
 
 /**
- * This unit test tests various combinations of the JMS Binding create modes for both request and response 
- * queues.
+ * This unit test tests various combinations of the JMS Binding create modes for both request and response queues.
  * <p>
  * The SCA JMS Binding specification lists 3 create modes:
  * <ul>
  * <li>always - the JMS queue is always created. It is an error if the queue already exists
  * <li>ifnotexist - the JMS queue is created if it does not exist. It is not an error if the queue already exists
  * <li>never - the JMS queue is never created. It is an error if the queue does not exist
- * </ul> 
+ * </ul>
  * See the SCA JMS Binding specification for more information.
  */
 public class JMSBindingReferenceQueueCreateModeTestCase {
-    
+
     /**
-     * Test creating a request queue in "never" mode 
-     * where the queue does not exist. 
-     * We are expecting an exception
+     * Test creating a request queue in "never" mode where the queue does not exist. We are expecting an exception
      */
     @Test
     public void testRequestCreateNeverQueueNotExist() {
-        String requestCreateMode = "never"; 
+        String requestCreateMode = "never";
         String responseCreateMode = "ifnotexist";
         boolean preCreateQueue = false;
         boolean expectingRequestException = true;
         boolean expectingResponseException = false;
-        
-        doTestCase(requestCreateMode, responseCreateMode, preCreateQueue, expectingRequestException, expectingResponseException);
+
+        doTestCase(requestCreateMode,
+                   responseCreateMode,
+                   preCreateQueue,
+                   expectingRequestException,
+                   expectingResponseException);
     }
 
     /**
-     * Test creating a request queue in "never" mode 
-     * where the queue exists. 
-     * We are expecting this to work
+     * Test creating a request queue in "never" mode where the queue exists. We are expecting this to work
      */
     @Test
     public void testRequestCreateNeverQueueExists() {
-        String requestCreateMode = "never"; 
+        String requestCreateMode = "never";
         String responseCreateMode = "ifnotexist";
         boolean preCreateQueue = true;
         boolean expectingRequestException = false;
         boolean expectingResponseException = false;
-        
-        doTestCase(requestCreateMode, responseCreateMode, preCreateQueue, expectingRequestException, expectingResponseException);
+
+        doTestCase(requestCreateMode,
+                   responseCreateMode,
+                   preCreateQueue,
+                   expectingRequestException,
+                   expectingResponseException);
     }
-    
 
     /**
-     * Test creating a request queue in "ifnotexist" mode 
-     * where the queue does not exist. 
-     * We are expecting this to work
+     * Test creating a request queue in "ifnotexist" mode where the queue does not exist. We are expecting this to work
      */
     @Test
     public void testRequestCreateIfNotExistQueueNotExist() {
-        String requestCreateMode = "ifnotexist"; 
+        String requestCreateMode = "ifnotexist";
         String responseCreateMode = "ifnotexist";
         boolean preCreateQueue = false;
         boolean expectingRequestException = false;
         boolean expectingResponseException = false;
-        
-        doTestCase(requestCreateMode, responseCreateMode, preCreateQueue, expectingRequestException, expectingResponseException);
+
+        doTestCase(requestCreateMode,
+                   responseCreateMode,
+                   preCreateQueue,
+                   expectingRequestException,
+                   expectingResponseException);
     }
 
     /**
-     * Test creating a request queue in "ifnotexist" mode 
-     * where the queue exists. 
-     * We are expecting this to work
+     * Test creating a request queue in "ifnotexist" mode where the queue exists. We are expecting this to work
      */
     @Test
     public void testRequestCreateIfNotExistQueueExist() {
-        String requestCreateMode = "ifnotexist"; 
+        String requestCreateMode = "ifnotexist";
         String responseCreateMode = "ifnotexist";
         boolean preCreateQueue = true;
         boolean expectingRequestException = false;
         boolean expectingResponseException = false;
-        
-        doTestCase(requestCreateMode, responseCreateMode, preCreateQueue, expectingRequestException, expectingResponseException);
+
+        doTestCase(requestCreateMode,
+                   responseCreateMode,
+                   preCreateQueue,
+                   expectingRequestException,
+                   expectingResponseException);
     }
-    
 
     /**
-     * Test creating a request queue in "always" mode 
-     * where the queue does not exist. 
-     * We are expecting this to work
+     * Test creating a request queue in "always" mode where the queue does not exist. We are expecting this to work
      */
     @Test
     public void testRequestCreateAlwaysQueueNotExist() {
-        String requestCreateMode = "always"; 
+        String requestCreateMode = "always";
         String responseCreateMode = "ifnotexist";
         boolean preCreateQueue = false;
         boolean expectingRequestException = false;
         boolean expectingResponseException = false;
-        
-        doTestCase(requestCreateMode, responseCreateMode, preCreateQueue, expectingRequestException, expectingResponseException);
+
+        doTestCase(requestCreateMode,
+                   responseCreateMode,
+                   preCreateQueue,
+                   expectingRequestException,
+                   expectingResponseException);
     }
 
     /**
-     * Test creating a request queue in "always" mode 
-     * where the queue exists. 
-     * We are expecting an exception
+     * Test creating a request queue in "always" mode where the queue exists. We are expecting an exception
      */
     @Test
     public void testRequestCreateAlwaysQueueExists() {
-        String requestCreateMode = "always"; 
+        String requestCreateMode = "always";
         String responseCreateMode = "ifnotexist";
         boolean preCreateQueue = true;
         boolean expectingRequestException = true;
         boolean expectingResponseException = false;
-        
-        doTestCase(requestCreateMode, responseCreateMode, preCreateQueue, expectingRequestException, expectingResponseException);
+
+        doTestCase(requestCreateMode,
+                   responseCreateMode,
+                   preCreateQueue,
+                   expectingRequestException,
+                   expectingResponseException);
     }
 
     /**
-     * Test creating a response queue in "never" mode 
-     * where the queue does not exist. 
-     * We are expecting an exception
+     * Test creating a response queue in "never" mode where the queue does not exist. We are expecting an exception
      */
     @Test
     public void testResponseCreateNeverQueueNotExist() {
-        String requestCreateMode = "ifnotexist"; 
+        String requestCreateMode = "ifnotexist";
         String responseCreateMode = "never";
         boolean preCreateQueue = false;
         boolean expectingRequestException = false;
         boolean expectingResponseException = true;
-        
-        doTestCase(requestCreateMode, responseCreateMode, preCreateQueue, expectingRequestException, expectingResponseException);
+
+        doTestCase(requestCreateMode,
+                   responseCreateMode,
+                   preCreateQueue,
+                   expectingRequestException,
+                   expectingResponseException);
     }
 
     /**
-     * Test creating a response queue in "never" mode 
-     * where the queue exists. 
-     * We are expecting this to work
+     * Test creating a response queue in "never" mode where the queue exists. We are expecting this to work
      */
     @Test
     public void testResponseCreateNeverQueueExists() {
-        String requestCreateMode = "ifnotexist"; 
+        String requestCreateMode = "ifnotexist";
         String responseCreateMode = "never";
         boolean preCreateQueue = true;
         boolean expectingRequestException = false;
         boolean expectingResponseException = false;
-        
-        doTestCase(requestCreateMode, responseCreateMode, preCreateQueue, expectingRequestException, expectingResponseException);
+
+        doTestCase(requestCreateMode,
+                   responseCreateMode,
+                   preCreateQueue,
+                   expectingRequestException,
+                   expectingResponseException);
     }
-    
 
     /**
-     * Test creating a response queue in "ifnotexist" mode 
-     * where the queue does not exist. 
-     * We are expecting this to work
+     * Test creating a response queue in "ifnotexist" mode where the queue does not exist. We are expecting this to work
      */
     @Test
     public void testResponseCreateIfNotExistQueueNotExist() {
-        String requestCreateMode = "ifnotexist"; 
+        String requestCreateMode = "ifnotexist";
         String responseCreateMode = "ifnotexist";
         boolean preCreateQueue = false;
         boolean expectingRequestException = false;
         boolean expectingResponseException = false;
-        
-        doTestCase(requestCreateMode, responseCreateMode, preCreateQueue, expectingRequestException, expectingResponseException);
+
+        doTestCase(requestCreateMode,
+                   responseCreateMode,
+                   preCreateQueue,
+                   expectingRequestException,
+                   expectingResponseException);
     }
 
     /**
-     * Test creating a response queue in "ifnotexist" mode 
-     * where the queue not exists. 
-     * We are expecting this to work
+     * Test creating a response queue in "ifnotexist" mode where the queue not exists. We are expecting this to work
      */
     @Test
     public void testResponseCreateIfNotExistQueueExist() {
-        String requestCreateMode = "ifnotexist"; 
+        String requestCreateMode = "ifnotexist";
         String responseCreateMode = "ifnotexist";
         boolean preCreateQueue = true;
         boolean expectingRequestException = false;
         boolean expectingResponseException = false;
-        
-        doTestCase(requestCreateMode, responseCreateMode, preCreateQueue, expectingRequestException, expectingResponseException);
+
+        doTestCase(requestCreateMode,
+                   responseCreateMode,
+                   preCreateQueue,
+                   expectingRequestException,
+                   expectingResponseException);
     }
-    
 
     /**
-     * Test creating a response queue in "always" mode 
-     * where the queue does not exist. 
-     * We are expecting this to work
+     * Test creating a response queue in "always" mode where the queue does not exist. We are expecting this to work
      */
     @Test
     public void testResponseCreateAlwaysQueueNotExist() {
-        String requestCreateMode = "ifnotexist"; 
+        String requestCreateMode = "ifnotexist";
         String responseCreateMode = "always";
         boolean preCreateQueue = false;
         boolean expectingRequestException = false;
         boolean expectingResponseException = false;
-        
-        doTestCase(requestCreateMode, responseCreateMode, preCreateQueue, expectingRequestException, expectingResponseException);
+
+        doTestCase(requestCreateMode,
+                   responseCreateMode,
+                   preCreateQueue,
+                   expectingRequestException,
+                   expectingResponseException);
     }
 
     /**
-     * Test creating a response queue in "always" mode 
-     * where the queue exists. 
-     * We are expecting an exception
+     * Test creating a response queue in "always" mode where the queue exists. We are expecting an exception
      */
     @Test
     public void testResponseCreateAlwaysQueueExists() {
-        String requestCreateMode = "ifnotexist"; 
+        String requestCreateMode = "ifnotexist";
         String responseCreateMode = "always";
         boolean preCreateQueue = true;
         boolean expectingRequestException = false;
         boolean expectingResponseException = true;
-        
-        doTestCase(requestCreateMode, responseCreateMode, preCreateQueue, expectingRequestException, expectingResponseException);
+
+        doTestCase(requestCreateMode,
+                   responseCreateMode,
+                   preCreateQueue,
+                   expectingRequestException,
+                   expectingResponseException);
     }
-    
+
     /**
      * This is the main test method for the various test scenarios for the JMS Binding.
      * 
      * @param requestCreateMode The required create mode for the request destination queue
      * @param responseCreateMode The required create mode for the response destination queue
      * @param preCreateQueue Whether the queue should be pre-created.
-     * @param expectingRequestException true if we are expecting an exception because the 
-     *        request queue configuration is invalid; false otherwise 
-     * @param expectingResponseException true if we are expecting an exception because the 
-     *        request queue configuration is invalid; false otherwise 
+     * @param expectingRequestException true if we are expecting an exception because the request queue configuration is
+     *            invalid; false otherwise
+     * @param expectingResponseException true if we are expecting an exception because the request queue configuration
+     *            is invalid; false otherwise
      */
-    private void doTestCase(String requestCreateMode, String responseCreateMode, boolean preCreateQueue, 
-            boolean expectingRequestException, boolean expectingResponseException) { 
+    private void doTestCase(String requestCreateMode,
+                            String responseCreateMode,
+                            boolean preCreateQueue,
+                            boolean expectingRequestException,
+                            boolean expectingResponseException) {
         String requestDestinationName = "SomeRequestDestination";
         String responseDestinationName = "SomeResponseDestination";
         String jmsBindingName = "MyJMSBinding";
@@ -267,15 +289,15 @@ public class JMSBindingReferenceQueueCreateModeTestCase {
         jmsBinding.setDestinationName(requestDestinationName);
         jmsBinding.setResponseDestinationName(responseDestinationName);
         jmsBinding.setName(jmsBindingName);
-        
+
         // Create the operation
         Operation operation = new OperationImpl();
         operation.setName("OperationName");
-        
+
         // Try and create the JMS Binding Invoker for the JMS Binding
         try {
             new JMSBindingInvoker(jmsBinding, operation);
-            
+
             // Check whether we were expecting an exception
             if (expectingRequestException || expectingResponseException) {
                 // We were expecting an exception

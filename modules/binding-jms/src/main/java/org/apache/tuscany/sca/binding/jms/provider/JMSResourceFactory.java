@@ -25,8 +25,7 @@ import javax.jms.Session;
 import javax.naming.NamingException;
 
 /*
- * Brings together the JMS binding description and the 
- * API used for generating and manageing JMS resources
+ * Brings together the JMS binding description and the API used for generating and manageing JMS resources
  */
 
 public interface JMSResourceFactory {
@@ -40,6 +39,6 @@ public interface JMSResourceFactory {
     public abstract void closeConnection() throws JMSException, NamingException;
 
     public abstract Destination lookupDestination(String jndiName) throws NamingException;
-    
+
     public abstract Destination createDestination(String jndiName) throws NamingException;
 }

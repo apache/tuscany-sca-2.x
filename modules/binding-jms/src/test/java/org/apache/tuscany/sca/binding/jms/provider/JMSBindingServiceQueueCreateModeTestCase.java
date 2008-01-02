@@ -36,95 +36,82 @@ import org.junit.Test;
  * <li>always - the JMS queue is always created. It is an error if the queue already exists
  * <li>ifnotexist - the JMS queue is created if it does not exist. It is not an error if the queue already exists
  * <li>never - the JMS queue is never created. It is an error if the queue does not exist
- * </ul> 
+ * </ul>
  * See the SCA JMS Binding specification for more information.
  */
-public class JMSBindingServiceQueueCreateModeTestCase
-{
+public class JMSBindingServiceQueueCreateModeTestCase {
     /**
-     * Test creating a queue in "never" mode 
-     * where the queue does not exist. 
-     * We are expecting an exception
+     * Test creating a queue in "never" mode where the queue does not exist. We are expecting an exception
      */
     @Test
     public void testCreateNeverQueueNotExist() {
-        String createMode = "never"; 
+        String createMode = "never";
         boolean preCreateQueue = false;
         boolean expectingException = true;
-        
+
         doTestCase(createMode, preCreateQueue, expectingException);
     }
 
     /**
-     * Test creating a queue in "never" mode 
-     * where the queue exists. 
-     * We are expecting this to work
+     * Test creating a queue in "never" mode where the queue exists. We are expecting this to work
      */
     @Test
     public void testCreateNeverQueueExist() {
-        String createMode = "never"; 
+        String createMode = "never";
         boolean preCreateQueue = true;
         boolean expectingException = false;
-        
+
         doTestCase(createMode, preCreateQueue, expectingException);
     }
 
     /**
-     * Test creating a queue in "ifnotexist" mode 
-     * where the queue does not exist. 
-     * We are expecting this to work
+     * Test creating a queue in "ifnotexist" mode where the queue does not exist. We are expecting this to work
      */
     @Test
     public void testCreateIfNotExistQueueNotExist() {
-        String createMode = "ifnotexist"; 
+        String createMode = "ifnotexist";
         boolean preCreateQueue = false;
         boolean expectingException = false;
-        
-        doTestCase(createMode, preCreateQueue, expectingException);
-    }
-    
-    /**
-     * Test creating a queue in "ifnotexist" mode 
-     * where the queue exists. 
-     * We are expecting this to work
-     */
-    @Test
-    public void testCreateIfNotExistQueueExist() {
-        String createMode = "ifnotexist"; 
-        boolean preCreateQueue = true;
-        boolean expectingException = false;
-        
+
         doTestCase(createMode, preCreateQueue, expectingException);
     }
 
     /**
-     * Test creating a queue in "always" mode 
-     * where the queue does not exist. 
-     * We are expecting this to work
+     * Test creating a queue in "ifnotexist" mode where the queue exists. We are expecting this to work
+     */
+    @Test
+    public void testCreateIfNotExistQueueExist() {
+        String createMode = "ifnotexist";
+        boolean preCreateQueue = true;
+        boolean expectingException = false;
+
+        doTestCase(createMode, preCreateQueue, expectingException);
+    }
+
+    /**
+     * Test creating a queue in "always" mode where the queue does not exist. We are expecting this to work
      */
     @Test
     public void testCreateAlwaysQueueNotExist() {
-        String createMode = "always"; 
+        String createMode = "always";
         boolean preCreateQueue = false;
         boolean expectingException = false;
-        
+
         doTestCase(createMode, preCreateQueue, expectingException);
     }
-    
+
     /**
-     * Test creating a queue in "always" mode 
-     * where the queue exists. 
-     * We are expecting an exception
+     * Test creating a queue in "always" mode where the queue exists. We are expecting an exception
      */
     @Test
     public void testCreateAlwaysQueueExist() {
-        String createMode = "always"; 
+        String createMode = "always";
         boolean preCreateQueue = true;
         boolean expectingException = true;
-        
+
         doTestCase(createMode, preCreateQueue, expectingException);
     }
-    
+
     /**
      * This is the main test method for the various test scenarios for the JMS Binding.
      * 
@@ -132,8 +119,7 @@ public class JMSBindingServiceQueueCreateModeTestCase
      * @param preCreateQueue Whether the queue should be pre-created.
      * @param expectingException true if test should throw an exception
      */
-    private void doTestCase(String createMode, boolean preCreateQueue, 
-            boolean expectingException) { 
+    private void doTestCase(String createMode, boolean preCreateQueue, boolean expectingException) {
         String destinationName = "SomeDestination";
         String jmsBindingName = "MyJMSBinding";
         String serviceName = "MyServiceName";
@@ -151,10 +137,11 @@ public class JMSBindingServiceQueueCreateModeTestCase
 
         RuntimeComponentService service = new RuntimeComponentServiceImpl();
         service.setName(serviceName);
-        
+
         // Try and create the JMS Binding Service for the JMS Binding
         try {
-            JMSBindingServiceBindingProvider jmsService = new JMSBindingServiceBindingProvider(null, service, jmsBinding);
+            JMSBindingServiceBindingProvider jmsService =
+                new JMSBindingServiceBindingProvider(null, service, jmsBinding);
             jmsService.start();
 
             // Check whether we were expecting an exception
@@ -172,13 +159,14 @@ public class JMSBindingServiceQueueCreateModeTestCase
 
             // We should get a JMSBindingException
             Assert.assertTrue(ex.getMessage().indexOf("Error starting JMSServiceBinding") != -1);
-            
+
             // Validate that the expected chained exception exception has the text we expect
             Assert.assertNotNull(ex.getCause());
             Assert.assertTrue(ex.getCause().getMessage().indexOf("JMS Destination") != -1);
             Assert.assertTrue(ex.getCause().getMessage().indexOf(createMode) != -1);
             Assert.assertTrue(ex.getCause().getMessage().indexOf(destinationName) != -1);
-            Assert.assertTrue(ex.getCause().getMessage().indexOf("registering service " + serviceName + " listener") != -1);
+            Assert
+                .assertTrue(ex.getCause().getMessage().indexOf("registering service " + serviceName + " listener") != -1);
         }
     }
 }

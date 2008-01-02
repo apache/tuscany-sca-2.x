@@ -33,26 +33,24 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 
 /**
  * Abstracts away any JMS provide specific feature from the JMS binding
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class JMSResourceFactoryActiveMQImpl implements JMSResourceFactory {
 
     private JMSBinding jmsBinding;
     private Connection connection;
-    private Context    context;
-    private boolean    isConnectionStarted;
+    private Context context;
+    private boolean isConnectionStarted;
 
     public JMSResourceFactoryActiveMQImpl(JMSBinding jmsBinding) {
         this.jmsBinding = jmsBinding;
     }
 
     /*
-     * This is a simple implementation where a connection is created per binding
-     * Ideally the resource factory should be able to leverage the host
-     * environment to provide connection pooling if it can. E.g. if Tuscany is
-     * running inside an AppServer Then we could leverage the JMS resources it
-     * provides
+     * This is a simple implementation where a connection is created per binding Ideally the resource factory should be
+     * able to leverage the host environment to provide connection pooling if it can. E.g. if Tuscany is running inside
+     * an AppServer Then we could leverage the JMS resources it provides
      * 
      * @see org.apache.tuscany.binding.jms.JMSResourceFactory#getConnection()
      */
@@ -105,10 +103,8 @@ public class JMSResourceFactoryActiveMQImpl implements JMSResourceFactory {
 
     private void createInitialContext() throws NamingException {
         Properties props = new Properties();
-        props.setProperty(Context.INITIAL_CONTEXT_FACTORY, 
-                          jmsBinding.getInitialContextFactoryName().trim());
-        props.setProperty(Context.PROVIDER_URL, 
-                          jmsBinding.getJndiURL().trim());
+        props.setProperty(Context.INITIAL_CONTEXT_FACTORY, jmsBinding.getInitialContextFactoryName().trim());
+        props.setProperty(Context.PROVIDER_URL, jmsBinding.getJndiURL().trim());
 
         context = new InitialContext(props);
     }
@@ -117,23 +113,22 @@ public class JMSResourceFactoryActiveMQImpl implements JMSResourceFactory {
         if (context == null) {
             createInitialContext();
         }
-        
+
         Destination dest = null;
-        
+
         try {
             dest = (Destination)context.lookup(jndiName);
-        } catch(NamingException ex){
-            
-        }   
+        } catch (NamingException ex) {
+
+        }
         return dest;
     }
 
     /**
-     * You can create a destination in ActiveMQ (and have it appear in JNDI)
-     * by putting "dynamicQueues/" in front of the queue name being looked up
-     * 
+     * You can create a destination in ActiveMQ (and have it appear in JNDI) by putting "dynamicQueues/" in front of the
+     * queue name being looked up
      */
     public Destination createDestination(String jndiName) throws NamingException {
-        return lookupDestination("dynamicQueues/" + jndiName);   
+        return lookupDestination("dynamicQueues/" + jndiName);
     }
 }

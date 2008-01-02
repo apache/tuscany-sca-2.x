@@ -28,26 +28,28 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
-
-
 /**
  * A factory from creating the JMS binding provider.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class JMSBindingProviderFactory implements BindingProviderFactory<JMSBinding> {
-    
-    public JMSBindingProviderFactory(ExtensionPointRegistry extensionPoints) {        
+
+    public JMSBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, JMSBinding binding) {
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
+                                                                   RuntimeComponentReference reference,
+                                                                   JMSBinding binding) {
         return new JMSBindingReferenceBindingProvider(component, reference, binding);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, JMSBinding binding) {
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
+                                                               RuntimeComponentService service,
+                                                               JMSBinding binding) {
         return new JMSBindingServiceBindingProvider(component, service, binding);
     }
-    
+
     public Class<JMSBinding> getModelType() {
         return JMSBinding.class;
     }

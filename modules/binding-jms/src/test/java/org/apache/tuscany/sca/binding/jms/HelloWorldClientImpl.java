@@ -33,11 +33,9 @@ public class HelloWorldClientImpl implements HelloWorldService {
     public void setServiceA(HelloWorldService service) {
         this.serviceA = service;
     }
-    
+
     public String sayHello(String name) {
         return serviceA.sayHello(name);
     }
-    
-   
-    
+
 }

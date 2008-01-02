@@ -23,18 +23,15 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Extensible;
 
 /**
- * This is the generic JMS binding type. The type is extensible so that JMS
- * binding implementers can add additional JMS provider-specific attributes and
- * elements although such extensions are not guaranteed to be portable across
- * runtimes.
+ * This is the generic JMS binding type. The type is extensible so that JMS binding implementers can add additional JMS
+ * provider-specific attributes and elements although such extensions are not guaranteed to be portable across runtimes.
  * 
  * @version $Rev$ $Date$
  */
 public interface JMSBinding extends Binding, Extensible {
     /**
-     * Identifies the correlation scheme used when sending reply or callback
-     * messages. Valid values are "RequestMsgIDToCorrelID" (the default),
-     * "RequestCorrelIDToCorrelID", and "None".
+     * Identifies the correlation scheme used when sending reply or callback messages. Valid values are
+     * "RequestMsgIDToCorrelID" (the default), "RequestCorrelIDToCorrelID", and "None".
      * 
      * @return
      */
@@ -61,11 +58,9 @@ public interface JMSBinding extends Binding, Extensible {
     void setJndiURL(String jndiURL);
 
     /**
-     * identifies a binding.jms element that is present in a definition
-     * document, whose destination, connectionFactory, activationSpec and
-     * resourceAdapter children are used to define the values for this binding.
-     * In this case the corresponding elements must not be present within this
-     * binding element
+     * identifies a binding.jms element that is present in a definition document, whose destination, connectionFactory,
+     * activationSpec and resourceAdapter children are used to define the values for this binding. In this case the
+     * corresponding elements must not be present within this binding element
      * 
      * @return
      */
@@ -74,10 +69,9 @@ public interface JMSBinding extends Binding, Extensible {
     void setRequestConnection(ConnectionInfo requestConnection);
 
     /**
-     * identifies a binding.jms element that is present in a definition
-     * document, whose response child element is used to define the values for
-     * this binding. In this case no response element must be present within
-     * this binding element
+     * identifies a binding.jms element that is present in a definition document, whose response child element is used
+     * to define the values for this binding. In this case no response element must be present within this binding
+     * element
      * 
      * @return
      */
@@ -86,10 +80,9 @@ public interface JMSBinding extends Binding, Extensible {
     void setResponseConnection(ConnectionInfo responseConnection);
 
     /**
-     * identifies a binding.jms element that is present in a definition
-     * document, whose operationProperties children are used to define the
-     * values for this binding. In this case no operationProperties elements
-     * must be present within this binding element
+     * identifies a binding.jms element that is present in a definition document, whose operationProperties children are
+     * used to define the values for this binding. In this case no operationProperties elements must be present within
+     * this binding element
      * 
      * @return
      */
