@@ -28,7 +28,7 @@ import crud.CRUDImplementationFactory;
 
 
 /**
- * A default factory for the CRUD implementation model.
+ * A factory for the CRUD implementation model.
  */
 public class CRUDImplementationFactoryImpl implements CRUDImplementationFactory {
     
