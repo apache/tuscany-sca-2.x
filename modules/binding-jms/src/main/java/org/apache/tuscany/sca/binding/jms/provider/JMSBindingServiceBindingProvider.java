@@ -28,6 +28,7 @@ import javax.naming.NamingException;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -63,6 +64,27 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
                                           service.getName());
         }
 
+        if (jmsBinding.getXMLFormat()) {
+            setXMLDataBinding(service);
+        }
+
+
+    }
+
+    protected void setXMLDataBinding(RuntimeComponentService service) {
+        if (service.getInterfaceContract()!= null) {
+            try {
+                InterfaceContract ic = (InterfaceContract)service.getInterfaceContract().clone();
+
+                Interface ii = (Interface)ic.getInterface().clone();
+                ii.resetDataBinding("org.apache.axiom.om.OMElement");
+                ic.setInterface(ii);
+                service.setInterfaceContract(ic);
+
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public InterfaceContract getBindingInterfaceContract() {
