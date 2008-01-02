@@ -28,13 +28,10 @@ import crud.provider.CRUDImplementationProvider;
 
 
 /**
- * The model representing a sample CRUD implementation in an SCA assembly model.
- * The sample CRUD implementation is not a full blown implementation, it only
- * supports a subset of what a component implementation can support: - a single
- * fixed service (as opposed to a list of services typed by different
- * interfaces) - a directory attribute used to specify where a CRUD component is
- * going to persist resources - no references or properties - no policy intents
- * or policy sets
+ * A factory for CRUD implementation providers.
+ * 
+ *  The factory is called to create an implementation provider for each component using
+ *  the CRUD implementation.
  */
 public class CRUDImplementationProviderFactory implements ImplementationProviderFactory<CRUDImplementation> {
 

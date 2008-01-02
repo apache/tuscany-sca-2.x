@@ -26,42 +26,35 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 import crud.CRUD;
 
 /**
- * Tests the CRUD service
+ * Tests the CRUD implementation extension.
  */
 public class CRUDTestCase extends TestCase {
 
     private SCADomain scaDomain;
     private CRUD crudService;
     
-    /**
-     * @throws java.lang.Exception
-     */
     @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("crud.composite");
         crudService = scaDomain.getService(CRUD.class, "CRUDServiceComponent");
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Override
     protected void tearDown() throws Exception {
         scaDomain.close();
     }
-
     
     public void testCRUD() throws Exception {
         String id = crudService.create("ABC");
         Object result = crudService.retrieve(id);
         assertEquals("ABC", result);
+        
         crudService.update(id, "EFG");
         result = crudService.retrieve(id);
         assertEquals("EFG", result);
+        
         crudService.delete(id);
         result = crudService.retrieve(id);
         assertNull(result);
     }
-
-
 }

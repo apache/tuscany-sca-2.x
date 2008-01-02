@@ -27,12 +27,20 @@ import crud.backend.ResourceManager;
 
 
 /**
- * Implements a target invoker for CRUD component implementations.
+ * Implements an invoker for CRUD component implementations.
  * 
- * The target invoker is responsible for dispatching invocations to the particular
- * component implementation logic. In this example we are simply delegating the
- * CRUD operation invocations to the corresponding methods on our fake
- * resource manager.
+ * The invoker is responsible for handling invocations of a business operation.
+ * Input business data is passed to the invoke method in a Message object.
+ * The invoke method is responsible for handling the invocation and returning a Message with
+ * the output business data. 
+ * 
+ * In this example we are simply delegating the CRUD operation invocations to the
+ * corresponding methods on our fake resource manager class.
+ * 
+ * More sophisticated invokers can delegate the invocation to an implementation artifact directly
+ * (for example a Java class using reflection as in the implementation-pojo sample) or call a runtime
+ * engine like a BPEL engine or an XQuery engine for example (this is what the Tuscany
+ * implementation-bpel and implementation-xquery extensions do).
  */
 class CRUDImplementationInvoker implements Invoker {
     private Operation operation;
