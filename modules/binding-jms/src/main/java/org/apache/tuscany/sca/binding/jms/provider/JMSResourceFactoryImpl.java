@@ -36,14 +36,14 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
  * 
  * @version $Rev$ $Date$
  */
-public class JMSResourceFactoryActiveMQImpl implements JMSResourceFactory {
+public class JMSResourceFactoryImpl implements JMSResourceFactory {
 
     private JMSBinding jmsBinding;
     private Connection connection;
     private Context context;
     private boolean isConnectionStarted;
 
-    public JMSResourceFactoryActiveMQImpl(JMSBinding jmsBinding) {
+    public JMSResourceFactoryImpl(JMSBinding jmsBinding) {
         this.jmsBinding = jmsBinding;
     }
 
