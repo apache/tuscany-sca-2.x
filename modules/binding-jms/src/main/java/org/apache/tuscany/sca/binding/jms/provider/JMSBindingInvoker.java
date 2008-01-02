@@ -194,7 +194,7 @@ public class JMSBindingInvoker implements Invoker {
                 Message requestMsg = sendRequest((Object[])payload, session, replyToDest);
                 Message replyMsg = receiveReply(session, replyToDest, requestMsg.getJMSMessageID());
 
-                return responseMessageProcessor.extractPayloadFromJMSMessage(replyMsg);
+                return ((Object[])responseMessageProcessor.extractPayloadFromJMSMessage(replyMsg))[0];
 
             } finally {
                 session.close();
@@ -210,7 +210,7 @@ public class JMSBindingInvoker implements Invoker {
         jmsResourceFactory.closeConnection();
     }
 
-    protected Message sendRequest(Object[] payload, Session session, Destination replyToDest) throws JMSException {
+    protected Message sendRequest(Object payload, Session session, Destination replyToDest) throws JMSException {
 
         Message requestMsg = requestMessageProcessor.insertPayloadIntoJMSMessage(session, payload);
 

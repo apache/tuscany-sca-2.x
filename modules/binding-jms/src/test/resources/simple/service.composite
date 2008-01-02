@@ -20,23 +20,11 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            name="RPCComposite">
 
-    <component name="HelloWorldClient">
-        <implementation.java class="org.apache.tuscany.sca.binding.jms.HelloWorldClientImpl"/>
-        <reference name="serviceA">
-            <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory" jndiURL="tcp://localhost:61616">
-               <destination name="DestQueueA" create="always"/>
-               <response>
-                  <destination name="RespQueueA" create="always"/>
-               </response>
-            </binding.jms>  
-        </reference>
-    </component>        
-
     <component name="HelloWorldService">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.HelloWorldServiceImpl"/>
         <service name="HelloWorldService">
             <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory" jndiURL="tcp://localhost:61616">
-               <destination name="DestQueueB" create="always"/>
+               <destination name="DestQueueA" create="always"/>
                <response>
                   <destination name="RespQueueA" create="always"/>
                </response>

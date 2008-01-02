@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
@@ -49,7 +50,25 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
                                               JMSBinding binding) {
         this.reference  = reference;
         this.jmsBinding = binding;         
-        
+
+        if (jmsBinding.getXMLFormat()) {
+            setXMLDataBinding(reference);
+        }
+
+    }
+
+    protected void setXMLDataBinding(RuntimeComponentReference reference) {
+        try {
+            InterfaceContract ic = (InterfaceContract)reference.getInterfaceContract().clone();
+
+            Interface ii = (Interface)ic.getInterface().clone();
+            ii.resetDataBinding("org.apache.axiom.om.OMElement");
+            ic.setInterface(ii);
+            reference.setInterfaceContract(ic);
+
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Invoker createInvoker(Operation operation) {

@@ -28,13 +28,14 @@ import org.junit.Test;
 /**
  * This shows how to test the JMS binding using a simple HelloWorld application.
  */
-public class JMSTestCase2 {
+public class RPCTestCase {
 
     private static SCADomain scaDomain;
 
     @Before
     public void init() {
-        scaDomain = SCADomain.newInstance("simple/rpc.composite");
+        scaDomain = SCADomain.newInstance("http://localhost", "/", "simple/client.composite", "simple/service.composite");
+//        scaDomain = SCADomain.newInstance("http://localhost", "/", "simple/client.composite");
     }
 
     @Test

@@ -177,7 +177,7 @@ public class JMSBinding implements Binding {
     private String operationSelectorName                   = null;
     
     // Set true if messages are sent/received in XML format
-    private boolean xmlFormat                              = false;    
+    private boolean xmlFormat                              = true;    
     
     
 //TODO .....  
