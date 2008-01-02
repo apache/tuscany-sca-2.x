@@ -38,21 +38,65 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
- * A processor to read the XML that describes the JMS binding... <binding.jms correlationScheme="string"?
- * initialContextFactory="xs:anyURI"? jndiURL="xs:anyURI"? requestConnection="QName"? responseConnection="QName"?
- * operationProperties="QName"? ...> <destination name="xs:anyURI" type="string"? create="string"?> <property
- * name="NMTOKEN" type="NMTOKEN">* </destination>? <connectionFactory name="xs:anyURI" create="string"?> <property
- * name="NMTOKEN" type="NMTOKEN">* </connectionFactory>? <activationSpec name="xs:anyURI" create="string"?> <property
- * name="NMTOKEN" type="NMTOKEN">* </activationSpec>? <response> <destination name="xs:anyURI" type="string"?
- * create="string"?> <property name="NMTOKEN" type="NMTOKEN">* </destination>? <connectionFactory name="xs:anyURI"
- * create="string"?> <property name="NMTOKEN" type="NMTOKEN">* </connectionFactory>? <activationSpec name="xs:anyURI"
- * create="string"?> <property name="NMTOKEN" type="NMTOKEN">* </activationSpec>? </response>? <resourceAdapter
- * name="NMTOKEN">? <property name="NMTOKEN" type="NMTOKEN">* </resourceAdapter>? <headers JMSType="string"?
- * JMSCorrelationId="string"? JMSDeliveryMode="string"? JMSTimeToLive="int"? JMSPriority="string"?> <property
- * name="NMTOKEN" type="NMTOKEN">* </headers>? <operationProperties name="string" nativeOperation="string"?> <property
- * name="NMTOKEN" type="NMTOKEN">* <headers JMSType="string"? JMSCorrelationId="string"? JMSDeliveryMode="string"?
- * JMSTimeToLive="int"? JMSPriority="string"?> <property name="NMTOKEN" type="NMTOKEN">* </headers>?
- * </operationProperties>* </binding.jms>
+ * A processor to read the XML that describes the JMS binding...
+ * 
+ * <binding.jms correlationScheme="string"?
+ *              initialContextFactory="xs:anyURI"?
+ *              jndiURL="xs:anyURI"?
+ *              requestConnection="QName"?
+ *              responseConnection="QName"?
+ *              operationProperties="QName"?
+ *              ...>
+ * 
+ *     <destination name="xs:anyURI" type="string"? create="string"?>
+ *         <property name="NMTOKEN" type="NMTOKEN">*
+ *     </destination>?
+ * 
+ *     <connectionFactory name="xs:anyURI" create="string"?>
+ *         <property name="NMTOKEN" type="NMTOKEN">*
+ *     </connectionFactory>?
+ * 
+ *     <activationSpec name="xs:anyURI" create="string"?>
+ *         <property name="NMTOKEN" type="NMTOKEN">*
+ *     </activationSpec>?
+ * 
+ *     <response>
+ *         <destination name="xs:anyURI" type="string"? create="string"?>
+ *             <property name="NMTOKEN" type="NMTOKEN">*
+ *         </destination>?
+ * 
+ *         <connectionFactory name="xs:anyURI" create="string"?>
+ *             <property name="NMTOKEN" type="NMTOKEN">*
+ *         </connectionFactory>?
+ * 
+ *         <activationSpec name="xs:anyURI" create="string"?>
+ *             <property name="NMTOKEN" type="NMTOKEN">*
+ *         </activationSpec>?
+ *     </response>?
+ * 
+ *     <resourceAdapter name="NMTOKEN">?
+ *         <property name="NMTOKEN" type="NMTOKEN">*
+ *     </resourceAdapter>?
+ * 
+ *     <headers JMSType="string"?
+ *              JMSCorrelationId="string"?
+ *              JMSDeliveryMode="string"?
+ *              JMSTimeToLive="int"?
+ *              JMSPriority="string"?>
+ *         <property name="NMTOKEN" type="NMTOKEN">*
+ *     </headers>?
+ * 
+ *     <operationProperties name="string" nativeOperation="string"?>
+ *         <property name="NMTOKEN" type="NMTOKEN">*
+ *         <headers JMSType="string"?
+ *                  JMSCorrelationId="string"?
+ *                  JMSDeliveryMode="string"?
+ *                  JMSTimeToLive="int"?
+ *                  JMSPriority="string"?>
+ *             <property name="NMTOKEN" type="NMTOKEN">*
+ *         </headers>?
+ *     </operationProperties>*
+ * </binding.jms>
  */
 
 public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
