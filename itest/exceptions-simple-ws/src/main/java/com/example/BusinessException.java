@@ -20,26 +20,24 @@ package com.example;
 
 public class BusinessException extends Exception {
 
-    private String message;
-
-    public BusinessException() {
-        super();
-    }
+    private String clientName;
 
     public BusinessException(String message) {
         super(message);
-        setDetailMessage(message);
     }
 
-    public String getMessage() {
-        return message;
+    public BusinessException(String message, String clientName) {
+        super(message);
+        this.clientName = clientName;
     }
 
-    public String getDetailMessage() {
-        return message;
+    public String getClientName() {
+        return clientName;
     }
 
-    public void setDetailMessage(String message) {
-        this.message = message;
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
+
 }
+

@@ -19,7 +19,9 @@
 package org.apache.tuscany.sca.databinding.javabeans;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import javax.xml.namespace.QName;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -41,14 +43,14 @@ public class DOMNode2JavaBeanTransformer extends XML2JavaBeanTransformer<Node> {
     }
 
     @Override
-    public List<Node> getChildElements(Node parent) throws XML2JavaMapperException {
+    public Iterator<Node> getChildElements(Node parent) throws XML2JavaMapperException {
         NodeList nodeList = parent.getChildNodes();
         List<Node> nodeArrayList = new ArrayList<Node>(nodeList.getLength());
         for (int count = 0; count < nodeList.getLength(); ++count) {
             nodeArrayList.add(nodeList.item(count));
         }
 
-        return nodeArrayList;
+        return nodeArrayList.iterator();
     }
 
     @Override
@@ -67,6 +69,23 @@ public class DOMNode2JavaBeanTransformer extends XML2JavaBeanTransformer<Node> {
     @Override
     public boolean isTextElement(Node element) throws XML2JavaMapperException {
         return element.getNodeType() == Node.TEXT_NODE;
+    }
+
+    @Override
+    public boolean isTextOnly(Node element) throws XML2JavaMapperException {
+        NodeList childNodes = element.getChildNodes();
+        return childNodes.getLength() == 1 && isTextElement(childNodes.item(0));
+    }
+
+    @Override
+    public Node getFirstChildWithName(Node element, QName name) throws XML2JavaMapperException {
+        Node child;
+        for (child = element.getFirstChild();
+             child != null && !(child.getNodeName() == name.getLocalPart()
+                                && child.getNamespaceURI() == name.getNamespaceURI()) ;
+             child = child.getNextSibling()) {
+        }
+        return child;
     }
 
     @Override

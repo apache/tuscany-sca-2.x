@@ -37,8 +37,8 @@ public class ExampleClientImpl implements ExampleClient {
         try {
             Object result = myService.hello("John");
             System.out.println("myService returned " + result.getClass().getName());
-        } catch(BusinessException e) {
-            System.out.println("caught exception from hello(): " + e.getMessage());
+        } catch (BusinessException e) {
+            System.out.println("caught exception from hello(): " + e.getMessage() + " for " + e.getClientName());
         }
     }
 }

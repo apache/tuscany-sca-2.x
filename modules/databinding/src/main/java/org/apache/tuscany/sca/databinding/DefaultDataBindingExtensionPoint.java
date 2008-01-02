@@ -241,7 +241,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
                         DataType faultType = excHandler.getFaultType(dataType);
                         if (faultType != null) {
                             dataType.setDataBinding(binding.getName());
-                            dataType.setLogical(faultType);
+                            dataType.setLogical(faultType.getLogical());
                             return true;
                         }
                     }

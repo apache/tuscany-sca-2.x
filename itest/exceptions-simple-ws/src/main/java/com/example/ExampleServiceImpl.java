@@ -20,7 +20,7 @@ package com.example;
 
 public class ExampleServiceImpl implements ExampleService {
     public String hello(String name) throws BusinessException {
-        throw new BusinessException("bad news");
-        //return "Hello, " + name;
+        throw new BusinessException("bad news", name);
+        // return "Hello, " + name;
     }
 }
