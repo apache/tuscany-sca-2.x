@@ -171,7 +171,7 @@ public class SupplyChain {
 
             for (Composite deployable : c.getDeployables()) {
                 domain.getDomainComposite().getIncludes().add(deployable);
-                domain.getCompositeBuilder().build(deployable);
+                domain.buildComposite(deployable);
             }
             
         }

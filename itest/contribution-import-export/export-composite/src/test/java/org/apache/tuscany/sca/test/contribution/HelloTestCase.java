@@ -59,7 +59,7 @@ public class HelloTestCase extends TestCase {
             contributionService.contribute("http://import-export/hello", helloURL, helloResolver, false);
         Composite consumerComposite = consumerContribution.getDeployables().get(0);
         domain.getDomainComposite().getIncludes().add(consumerComposite);
-        domain.getCompositeBuilder().build(consumerComposite);
+        domain.buildComposite(consumerComposite);
 
         // Start Components from my composite
         domain.getCompositeActivator().activate(consumerComposite);

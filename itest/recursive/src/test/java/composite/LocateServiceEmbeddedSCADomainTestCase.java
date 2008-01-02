@@ -51,7 +51,7 @@ public class LocateServiceEmbeddedSCADomainTestCase extends TestCase {
         contribution = contributionService.contribute("http://contribution", contributionURL, false);
         for (Composite deployable : contribution.getDeployables()) {
             domain.getDomainComposite().getIncludes().add(deployable);
-            domain.getCompositeBuilder().build(deployable);
+            domain.buildComposite(deployable);
         }
 
         // Start Components from my composite
