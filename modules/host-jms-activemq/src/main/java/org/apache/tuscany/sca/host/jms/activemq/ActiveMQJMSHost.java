@@ -19,27 +19,15 @@
 
 package org.apache.tuscany.sca.host.jms.activemq;
 
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.host.jms.JMSHost;
+import org.apache.tuscany.sca.host.jms.JMSResourceFactory;
 
-public class ActiveMQModuleActivator implements ModuleActivator {
+public class ActiveMQJMSHost implements JMSHost {
 
-    private static ActiveMQHost activeMQHost;
-
-    public void start(ExtensionPointRegistry registry) {
+    public JMSResourceFactory createJMSResourceFactory(String connectionFactoryName, String initialContextFactoryName, String jndiURL) {
+        return new JMSResourceFactoryImpl(connectionFactoryName, initialContextFactoryName, jndiURL);
     }
+    
+    
 
-    public void stop(ExtensionPointRegistry registry) {
-        if (activeMQHost != null) {
-            activeMQHost.stop();
-            activeMQHost = null;
-        }
-    }
-
-    public static void startBroker() {
-        if (activeMQHost == null) {
-            activeMQHost = new ActiveMQHost();
-            activeMQHost.start();
-        }
-    }
 }

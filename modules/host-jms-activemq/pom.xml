@@ -25,18 +25,24 @@
         <version>1.1-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
+
     <artifactId>tuscany-host-jms-activemq</artifactId>
     <name>Apache Tuscany SCA Host JMS ActiveMQ</name>
 
-    <repositories>
-       <repository>
-          <id>apache.incubator</id>
-          <url>http://people.apache.org/repo/m2-incubating-repository</url>
-       </repository>
-    </repositories>
-
     <dependencies>
             
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-jms</artifactId>
+            <version>1.1-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+           <groupId>org.apache.geronimo.specs</groupId>
+           <artifactId>geronimo-jms_1.1_spec</artifactId>
+           <version>1.1</version>
+        </dependency>         
+
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-core</artifactId>
@@ -70,30 +76,12 @@
         </dependency>  
 
         <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-core-spi</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.2</version>
             <scope>test</scope>
         </dependency>
         
-        <dependency>
-           <groupId>org.apache.geronimo.specs</groupId>
-           <artifactId>geronimo-jms_1.1_spec</artifactId>
-           <version>1.1</version>
-           <exclusions>
-               <exclusion>
-                   <groupId>org.apache.geronimo.specs</groupId>
-                   <artifactId>geronimo-jms_1.1_spec</artifactId>
-               </exclusion>
-           </exclusions>
-        </dependency>         
-
     </dependencies>
     
 </project>
