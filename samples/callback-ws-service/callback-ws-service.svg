@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   sodipodi:docbase="C:\simon\tuscany\java-panic\sca\samples\callback-ws-service"
+   sodipodi:docname="callback-ws-service.svg"
+   version="1.0"
+   inkscape:export-filename="C:\simon\tuscany\java-panic\sca\samples\callback-ws-service\callback-ws-service.png"
+   inkscape:export-xdpi="52.84"
+   inkscape:export-ydpi="52.84"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lstart"
+       style="overflow:visible">
+      <path
+         id="path3156"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
+         transform="scale(0.8) translate(12.5,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;">
+      <path
+         id="path3159"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="541.4664"
+     inkscape:cy="414.63224"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="1054"
+     inkscape:window-height="721"
+     inkscape:window-x="388"
+     inkscape:window-y="200" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g2997"
+       transform="matrix(0.991389,0,0,1,2.215655,0)">
+      <rect
+         rx="13.79423"
+         ry="12.692303"
+         y="192.00233"
+         x="258.3114"
+         height="299.99988"
+         width="446.72086"
+         id="rect2067"
+         style="opacity:1;fill:#90baf4;fill-opacity:1;stroke:#060000;stroke-width:2.00866628;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <flowRoot
+         id="flowRoot2954"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2956"><rect
+             y="212.66591"
+             x="281.42856"
+             height="61.42857"
+             width="170"
+             id="rect2958" /></flowRegion><flowPara
+           id="flowPara2960">callbackws</flowPara></flowRoot>    </g>
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2.1793592;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2988"
+       width="115.48311"
+       height="102.11218"
+       x="432.14886"
+       y="307.25729"
+       rx="6.9853158"
+       ry="8.4710283" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2966"
+       transform="translate(176.75411,112.37196)"><flowRegion
+         id="flowRegion2968"><rect
+           id="rect2970"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara1883">MyService</flowPara><flowPara
+         id="flowPara1885">Component</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.34265757px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 372.72286,323.25736 L 441.18554,323.25736 L 453.63329,358.34829 L 439.11093,390.73995 L 372.72286,390.73995 L 388.28257,358.34829 L 372.72286,323.25736 z "
+       id="path3017" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot1889"
+       transform="translate(-56.05091,109.83236)"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion1891"><rect
+           id="rect1893"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara1897">http://localhost:8086/MyServiceComponent</flowPara><flowPara
+         id="flowPara1899" /></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.1331737px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Lend);stroke-opacity:1"
+       d="M 231.49516,358.3136 C 387.07627,357.7325 387.07627,357.7325 387.07627,357.7325"
+       id="path1901" />
+    <path
+       style="fill:#b74aae;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.25983226px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 438.85378,352.31178 L 397.27706,352.31178 L 389.71767,369.02293 L 398.53696,384.44862 L 438.85378,384.44862 L 429.40452,369.02293 L 438.85378,352.31178 z "
+       id="path3361" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3363"
+       transform="translate(106.89573,117.99181)"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion3365"><rect
+           id="rect3367"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara3371">myservice</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3375"
+       transform="translate(111.18143,149.42038)"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans"><flowRegion
+         id="flowRegion3377"><rect
+           id="rect3379"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591"
+           style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans" /></flowRegion><flowPara
+         id="flowPara3383">callback</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.14703035;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow1Lstart);marker-end:none;stroke-miterlimit:4;stroke-dasharray:6.88218229, 1.14703038;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 232.21637,370.32429 C 392.06934,369.7448 392.06934,369.7448 392.06934,369.7448"
+       id="path3387" />
+  </g>
+</svg>
