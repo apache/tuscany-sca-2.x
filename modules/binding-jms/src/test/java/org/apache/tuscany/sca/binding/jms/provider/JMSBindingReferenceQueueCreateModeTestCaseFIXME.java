@@ -24,6 +24,8 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.binding.jms.mock.MockJMSResourceFactoryQueueExist;
 import org.apache.tuscany.sca.binding.jms.mock.MockJMSResourceFactoryQueueNotExist;
+import org.apache.tuscany.sca.host.jms.JMSHost;
+import org.apache.tuscany.sca.host.jms.JMSResourceFactory;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.junit.Test;
@@ -39,7 +41,7 @@ import org.junit.Test;
  * </ul>
  * See the SCA JMS Binding specification for more information.
  */
-public class JMSBindingReferenceQueueCreateModeTestCase {
+public class JMSBindingReferenceQueueCreateModeTestCaseFIXME {
 
     /**
      * Test creating a request queue in "never" mode where the queue does not exist. We are expecting an exception
@@ -296,7 +298,7 @@ public class JMSBindingReferenceQueueCreateModeTestCase {
 
         // Try and create the JMS Binding Invoker for the JMS Binding
         try {
-            new JMSBindingInvoker(jmsBinding, operation);
+            new JMSBindingInvoker(jmsBinding, operation, null);
 
             // Check whether we were expecting an exception
             if (expectingRequestException || expectingResponseException) {

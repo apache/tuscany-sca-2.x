@@ -44,4 +44,7 @@ public class MockJMSResourceFactoryQueueExist extends MockJMSResourceFactory {
         EasyMock.replay(d);
         return d;
     }
+
+    public void startBroker() {
+    }
 }

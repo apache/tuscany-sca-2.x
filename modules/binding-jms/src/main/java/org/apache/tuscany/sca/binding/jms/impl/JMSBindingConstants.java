@@ -25,7 +25,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorImpl;
-import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactoryImpl;
 
 public interface JMSBindingConstants {
 
@@ -52,7 +51,7 @@ public interface JMSBindingConstants {
     public final static String DEFAULT_JNDI_URL = "tcp://localhost:61616";
     public final static int DEFAULT_TIME_TO_LIVE = 10000; // in milli seconds
     public final static int DEFAULT_PRIORITY = 1;
-    public final static String DEFAULT_RF_CLASSNAME = JMSResourceFactoryImpl.class.getName();
+    public final static String DEFAULT_RF_CLASSNAME = "org.apache.tuscany.sca.host.jms.activemq.JMSResourceFactoryImpl";
     public final static String DEFAULT_MP_CLASSNAME = JMSMessageProcessorImpl.class.getName();
     public final static String DEFAULT_OPERATION_PROP_NAME = "scaOperationName";
 

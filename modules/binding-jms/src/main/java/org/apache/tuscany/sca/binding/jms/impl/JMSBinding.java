@@ -26,7 +26,7 @@ import javax.jms.DeliveryMode;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
-import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.host.jms.JMSResourceFactory;
 
 /**
  * Models a binding to a JMS resource.
@@ -411,9 +411,9 @@ public class JMSBinding implements Binding {
         this.jmsResourceFactoryName = jmsResourceFactoryName;
     }
 
-    public JMSResourceFactory getJmsResourceFactory() {
-        return (JMSResourceFactory)instantiate(null, jmsResourceFactoryName);
-    }
+//    public JMSResourceFactory getJmsResourceFactory() {
+//        return (JMSResourceFactory)instantiate(null, jmsResourceFactoryName);
+//    }
 
     public void setRequestMessageProcessorName(String name) {
         this.requestMessageProcessorName = name;
