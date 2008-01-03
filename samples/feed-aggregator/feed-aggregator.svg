@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   sodipodi:docbase="C:\simon\tuscany\java-panic\sca\samples\feed-aggregator"
+   sodipodi:docname="feed-aggregator.svg"
+   version="1.0"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="C:\simon\tuscany\java-panic\sca\samples\feed-aggregator\feed-aggregator.png"
+   inkscape:export-xdpi="52.84"
+   inkscape:export-ydpi="52.84">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;">
+      <path
+         id="path4836"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="414.03021"
+     inkscape:cy="406.46344"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="1250"
+     inkscape:window-height="812"
+     inkscape:window-x="309"
+     inkscape:window-y="124" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g2997"
+       transform="translate(-123.57143,-11.428571)">
+      <rect
+         rx="18.008654"
+         ry="15.124533"
+         y="194.32922"
+         x="263.49548"
+         height="357.48895"
+         width="583.20337"
+         id="rect2067"
+         style="opacity:1;fill:#90baf4;fill-opacity:1;stroke:#060000;stroke-width:2.36807251;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <flowRoot
+         id="flowRoot2954"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2956"><rect
+             y="212.66591"
+             x="281.42856"
+             height="61.42857"
+             width="170"
+             id="rect2958" /></flowRegion><flowPara
+           id="flowPara2960">FeedAggregator</flowPara></flowRoot>      <rect
+         style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect2191"
+         width="115.66247"
+         height="85.862968"
+         x="690.82629"
+         y="338.0274"
+         rx="6.9961648"
+         ry="7.1230249" />
+      <flowRoot
+         xml:space="preserve"
+         id="flowRoot2193"
+         transform="translate(423.23555,132.08885)"><flowRegion
+           id="flowRegion2195"><rect
+             id="rect2197"
+             width="170"
+             height="61.42857"
+             x="281.42856"
+             y="212.66591" /></flowRegion><flowPara
+           id="flowPara2199">Sort</flowPara></flowRoot>      <rect
+         style="opacity:1;fill:#fff62c;fill-opacity:1;stroke:#060000;stroke-width:1.71304226;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect2201"
+         width="66.00518"
+         height="19.995022"
+         x="720.71613"
+         y="322.72653"
+         rx="33.00259"
+         ry="0" />
+      <path
+         style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 673.67581,369.87439 L 707.01085,369.87439 L 713.07176,383.00637 L 706.0007,395.12821 L 673.67581,395.12821 L 681.25196,383.00637 L 673.67581,369.87439 z "
+         id="path2203" />
+      <flowRoot
+         xml:space="preserve"
+         id="flowRoot2207"
+         transform="matrix(1.0567037,0,0,1.4908917,429.12889,11.81052)"
+         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Arial"><flowRegion
+           id="flowRegion2209"><rect
+             id="rect2211"
+             width="170"
+             height="61.42857"
+             x="281.42856"
+             y="212.66591"
+             style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Arial" /></flowRegion><flowPara
+           id="flowPara2213"
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;font-family:Arial">newFirst = true</flowPara></flowRoot>    </g>
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2.47956681;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2988"
+       width="115.1829"
+       height="132.52626"
+       x="315.87039"
+       y="222.40738"
+       rx="6.9671569"
+       ry="10.994121" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2966"
+       transform="translate(51.611257,19.800501)"><flowRegion
+         id="flowRegion2968"><rect
+           id="rect2970"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara2972">RssAggregator</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 295.62295,271.87174 L 328.95799,271.87174 L 335.0189,285.00372 L 327.94784,297.12556 L 295.62295,297.12556 L 303.1991,285.00372 L 295.62295,271.87174 z "
+       id="path3017" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 409.58968,317.89061 L 442.92472,317.89061 L 448.98563,331.02259 L 441.91457,343.14443 L 409.58968,343.14443 L 417.16583,331.02259 L 409.58968,317.89061 z "
+       id="path3019" />
+    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.64855945px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 104.19773,263.9347 L 156.32465,263.9347 L 165.80226,286.758 L 154.74505,307.82567 L 104.19773,307.82567 L 116.04476,286.758 L 104.19773,263.9347 z "
+       id="path2171" />
+    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.64855945px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 107.05488,444.29186 L 159.1818,444.29186 L 168.65941,467.11516 L 157.6022,488.18283 L 107.05488,488.18283 L 118.90191,467.11516 L 107.05488,444.29186 z "
+       id="path2173" />
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2.52499318;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2175"
+       width="115.13747"
+       height="137.48083"
+       x="311.08875"
+       y="388.28992"
+       rx="6.9644089"
+       ry="11.405141" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2177"
+       transform="translate(51.092672,193.51745)"><flowRegion
+         id="flowRegion2179"><rect
+           id="rect2181"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara2183">AtomAggregator</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 294.39008,454.8744 L 327.72512,454.8744 L 333.78603,468.00638 L 326.71497,480.12822 L 294.39008,480.12822 L 301.96623,468.00638 L 294.39008,454.8744 z "
+       id="path2187" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 404.78538,423.7504 L 438.12042,423.7504 L 444.18133,436.88238 L 437.11027,449.00422 L 404.78538,449.00422 L 412.36153,436.88238 L 404.78538,423.7504 z "
+       id="path2189" />
+    <rect
+       style="opacity:1;fill:#fff62c;fill-opacity:1;fill-rule:nonzero;stroke:#060000;stroke-width:1.58481252;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2241"
+       width="56.133411"
+       height="20.123253"
+       x="343.00476"
+       y="211.17569"
+       rx="28.066706"
+       ry="0" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3831"
+       transform="matrix(0.7178392,0,0,0.807316,168.7694,106.36338)"><flowRegion
+         id="flowRegion3833"><rect
+           id="rect3835"
+           width="75.714287"
+           height="14.285714"
+           x="247.85715"
+           y="135.52306" /></flowRegion><flowPara
+         id="flowPara3837">Rss Sample</flowPara></flowRoot>    <rect
+       style="opacity:1;fill:#fff62c;fill-opacity:1;fill-rule:nonzero;stroke:#060000;stroke-width:1.58481252;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3839"
+       width="56.133411"
+       height="20.123253"
+       x="342.64758"
+       y="376.17572"
+       rx="28.066706"
+       ry="0" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3841"
+       transform="matrix(0.7178392,0,0,0.807316,168.41222,271.3634)"><flowRegion
+         id="flowRegion3843"><rect
+           id="rect3845"
+           width="75.714287"
+           height="14.285714"
+           x="247.85715"
+           y="135.52306" /></flowRegion><flowPara
+         id="flowPara3847">Atom Sample</flowPara></flowRoot>    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 410.30203,282.89615 L 443.63707,282.89615 L 449.69798,296.02813 L 442.62692,308.14997 L 410.30203,308.14997 L 417.87818,296.02813 L 410.30203,282.89615 z "
+       id="path3849" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 410.30203,245.039 L 443.63707,245.039 L 449.69798,258.17098 L 442.62692,270.29282 L 410.30203,270.29282 L 417.87818,258.17098 L 410.30203,245.039 z "
+       id="path3851" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 403.87346,461.46758 L 437.2085,461.46758 L 443.26941,474.59956 L 436.19835,486.7214 L 403.87346,486.7214 L 411.44961,474.59956 L 403.87346,461.46758 z "
+       id="path3853" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 402.44488,492.89614 L 435.77992,492.89614 L 441.84083,506.02812 L 434.76977,518.14996 L 402.44488,518.14996 L 410.02103,506.02812 L 402.44488,492.89614 z "
+       id="path3855" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:none;marker-mid:none;marker-end:url(#Arrow1Lend)"
+       d="M 449.28571,257.66591 L 752.85714,257.66591"
+       id="path3857" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow1Lend);stroke-opacity:1"
+       d="M 448.92857,296.23734 L 752.5,296.23734"
+       id="path5028" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow1Lend);stroke-opacity:1"
+       d="M 442.5,474.80877 L 746.07143,474.80877"
+       id="path5030" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-mid:none;marker-end:url(#Arrow1Lend);stroke-opacity:1"
+       d="M 441.78571,506.95163 L 745.35714,506.95163"
+       id="path5032" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 448.57143,331.23734 L 494.28571,331.23734 L 494.28571,367.66591 L 555,367.66591"
+       id="path5034" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.05817151px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 444.31479,436.92255 L 493.43055,436.92255 L 494.16361,377.69499 L 553.54235,378.47431"
+       id="path5036" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="757.85712"
+       y="259.09448"
+       id="text5038"><tspan
+         sodipodi:role="line"
+         id="tspan5040"
+         x="757.85712"
+         y="259.09448">Engadget</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="757.42694"
+       y="298.5553"
+       id="text5042"><tspan
+         sodipodi:role="line"
+         id="tspan5044"
+         x="757.42694"
+         y="298.5553">BBC</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="752.85718"
+       y="477.66589"
+       id="text5046"><tspan
+         sodipodi:role="line"
+         id="tspan5048"
+         x="752.85718"
+         y="477.66589">Oreilly</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="752.85712"
+       y="510.52304"
+       id="text5050"><tspan
+         sodipodi:role="line"
+         id="tspan5052"
+         x="752.85712"
+         y="510.52304">Apache</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 165.71429,286.23734 L 300.71429,286.23734"
+       id="path5054" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 168.57143,468.3802 L 300.71429,469.80877"
+       id="path5056" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot5058"><flowRegion
+         id="flowRegion5060"><rect
+           id="rect5062"
+           width="27.142857"
+           height="20.714285"
+           x="122.85714"
+           y="276.23734" /></flowRegion><flowPara
+         id="flowPara5064">RSS</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot5066"><flowRegion
+         id="flowRegion5068"><rect
+           id="rect5070"
+           width="36.428574"
+           height="19.285715"
+           x="122.85714"
+           y="459.80878" /></flowRegion><flowPara
+         id="flowPara5072">Atom</flowPara></flowRoot>  </g>
+</svg>

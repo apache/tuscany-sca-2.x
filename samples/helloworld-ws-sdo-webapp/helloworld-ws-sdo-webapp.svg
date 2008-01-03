@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   sodipodi:docbase="C:\simon\tuscany\java-panic\sca\samples\helloworld-ws-sdo-webapp"
+   sodipodi:docname="helloworld-ws-sdo-webapp.svg"
+   version="1.0"
+   inkscape:export-filename="C:\simon\tuscany\java-panic\sca\samples\helloworld-ws-sdo-webapp\helloworld-ws-sdo-webapp.png"
+   inkscape:export-xdpi="52.84"
+   inkscape:export-ydpi="52.84"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="474.33468"
+     inkscape:cy="392.43347"
+     inkscape:document-units="px"
+     inkscape:current-layer="g3216"
+     inkscape:window-width="1163"
+     inkscape:window-height="721"
+     inkscape:window-x="357"
+     inkscape:window-y="72" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g2997"
+       transform="matrix(0.991389,0,0,1,2.215655,0)">
+      <rect
+         rx="13.79423"
+         ry="12.692303"
+         y="192.00233"
+         x="258.3114"
+         height="299.99988"
+         width="446.72086"
+         id="rect2067"
+         style="opacity:1;fill:#90baf4;fill-opacity:1;stroke:#060000;stroke-width:2.00866628;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <flowRoot
+         id="flowRoot2954"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2956"><rect
+             y="212.66591"
+             x="281.42856"
+             height="61.42857"
+             width="170"
+             id="rect2958" /></flowRegion><flowPara
+           id="flowPara2960">helloworldws</flowPara></flowRoot>    </g>
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2988"
+       width="115.66247"
+       height="85.862968"
+       x="339.20203"
+       y="307.1676"
+       rx="6.9961648"
+       ry="7.1230249" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2966"
+       transform="translate(79.611257,115.2291)"><flowRegion
+         id="flowRegion2968"><rect
+           id="rect2970"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara2972">HelloWorld</flowPara><flowPara
+         id="flowPara1883">Service</flowPara><flowPara
+         id="flowPara1885">Component</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 322.05153,339.0146 L 355.38657,339.0146 L 361.44748,352.14658 L 354.37642,364.26842 L 322.05153,364.26842 L 329.62768,352.14658 L 322.05153,339.0146 z "
+       id="path3017" />
+    <path
+       style="fill:#ae62bf;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 435.30397,337.17632 L 468.63901,337.17632 L 474.69992,350.3083 L 467.62886,362.43014 L 435.30397,362.43014 L 442.88012,350.3083 L 435.30397,337.17632 z "
+       id="path3019" />
+    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.76309967px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 230.68358,326.42055 L 285.13117,326.42055 L 295.03072,351.41286 L 283.48124,374.4827 L 230.68358,374.4827 L 243.05804,351.41286 L 230.68358,326.42055 z "
+       id="path2180" />
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2182"
+       width="115.66247"
+       height="85.862968"
+       x="535.82629"
+       y="305.44873"
+       rx="6.9961648"
+       ry="7.1230249" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2184"
+       transform="translate(283.37839,113.51021)"><flowRegion
+         id="flowRegion2186"><rect
+           id="rect2188"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara2194">HelloWorld</flowPara><flowPara
+         id="flowPara2204">Impl</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 518.67581,337.29571 L 552.01085,337.29571 L 558.07176,350.42769 L 551.0007,362.54953 L 518.67581,362.54953 L 526.25196,350.42769 L 518.67581,337.29571 z "
+       id="path2196" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 473.57143,350.52305 C 525,350.52305 526.42857,350.52305 526.42857,350.52305"
+       id="path2206" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 295,351.52305 C 329.28571,351.52305 329.28571,351.52305 329.28571,351.52305"
+       id="path2208" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2210"><flowRegion
+         id="flowRegion2212"><rect
+           id="rect2214"
+           width="27.857143"
+           height="15.714286"
+           x="483.57144"
+           y="328.38019" /></flowRegion><flowPara
+         id="flowPara2216">SDO</flowPara></flowRoot>    <rect
+       style="opacity:1;fill:#e4a637;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.32558763;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2218"
+       width="72.069756"
+       height="85.64119"
+       x="130.03654"
+       y="303.41675"
+       rx="1.4370956"
+       ry="0.69386131" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3194"
+       transform="matrix(0.7837401,0,0,1,28.844049,-2.1428568)"><flowRegion
+         id="flowRegion3196"><rect
+           id="rect3198"
+           width="95.714287"
+           height="22.857143"
+           x="135.71428"
+           y="310.52304" /></flowRegion><flowPara
+         id="flowPara3200">HelloWorld.jsp</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 202.14286,350.52305 C 242.85714,350.52305 242.85714,350.52305 242.85714,350.52305"
+       id="path3202" />
+    <g
+       id="g3216"
+       transform="matrix(1.4466337,0,0,1.2696311,-263.94558,-87.265114)">
+      <rect
+         rx="13.79423"
+         ry="12.692303"
+         y="192.00233"
+         x="258.3114"
+         height="299.99988"
+         width="446.72086"
+         id="rect3218"
+         style="opacity:0.18888889;fill:#223756;fill-opacity:1;stroke:#060000;stroke-width:2.00866628;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <text
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         x="130"
+         y="179.09448"
+         id="text4213"
+         transform="matrix(0.69126,0,0,0.7876304,182.45502,68.732653)"><tspan
+           sodipodi:role="line"
+           id="tspan4215"
+           x="130"
+           y="179.09448">sample-helloworld-ws-sdo-webapp.war</tspan></text>
+    </g>
+  </g>
+</svg>

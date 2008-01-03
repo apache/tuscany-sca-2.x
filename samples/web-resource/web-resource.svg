@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   sodipodi:docbase="C:\simon\tuscany\java-panic\sca\samples\web-resource"
+   sodipodi:docname="web-resource.svg"
+   version="1.0"
+   inkscape:export-filename="C:\simon\tuscany\java-panic\sca\samples\web-resource\web-resource.png"
+   inkscape:export-xdpi="52.84"
+   inkscape:export-ydpi="52.84"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="525.73551"
+     inkscape:cy="374.31238"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="1143"
+     inkscape:window-height="653"
+     inkscape:window-x="342"
+     inkscape:window-y="109" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g2997"
+       transform="matrix(0.991389,0,0,0.9858089,2.215655,2.7105357)">
+      <rect
+         rx="13.798461"
+         ry="11.012117"
+         y="201.35284"
+         x="261.12485"
+         height="260.28641"
+         width="446.85785"
+         id="rect2067"
+         style="opacity:1;fill:#90baf4;fill-opacity:1;stroke:#060000;stroke-width:1.87128341;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <flowRoot
+         id="flowRoot2954"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2956"><rect
+             y="212.66591"
+             x="281.42856"
+             height="61.42857"
+             width="170"
+             id="rect2958" /></flowRegion><flowPara
+           id="flowPara2960">WebResource</flowPara></flowRoot>      <text
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         x="447.14285"
+         y="370.52304"
+         id="text2184"
+         transform="matrix(1.0086858,0,0,1.0143954,-2.2348997,-2.7495549)"><tspan
+           sodipodi:role="line"
+           id="tspan2186"
+           x="447.14285"
+           y="370.52304" /></text>
+    </g>
+    <rect
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2.24079084;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2988"
+       width="137.56453"
+       height="90.622177"
+       x="419.32242"
+       y="262.28799"
+       rx="8.3209715"
+       ry="7.5178399" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2966"
+       transform="translate(158.89697,68.086243)"><flowRegion
+         id="flowRegion2968"><rect
+           id="rect2970"
+           width="170"
+           height="61.42857"
+           x="281.42856"
+           y="212.66591" /></flowRegion><flowPara
+         id="flowPara1885">myWeb</flowPara></flowRoot>    <path
+       style="fill:#5b9d05;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.64851415px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 371.6615,289.33886 L 427.41483,289.33886 L 437.55179,310.67646 L 425.72534,330.37273 L 371.6615,330.37273 L 384.33272,310.67646 L 371.6615,289.33886 z "
+       id="path3017" />
+    <text
+       xml:space="preserve"
+       style="font-size:10.96820259px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="479.19058"
+       y="292.96347"
+       id="text2202"
+       transform="scale(0.9140169,1.0940717)"><tspan
+         sodipodi:role="line"
+         id="tspan2204"
+         x="479.19058"
+         y="292.96347">implementation.resource</tspan></text>
+    <rect
+       style="opacity:0.18888891;fill:#223756;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.2524904;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2206"
+       width="252.14285"
+       height="55.714287"
+       x="514.28571"
+       y="469.80875"
+       rx="8.3209715"
+       ry="7.5178399" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="530.71429"
+       y="484.09448"
+       id="text2208"><tspan
+         sodipodi:role="line"
+         id="tspan2210"
+         x="530.71429"
+         y="484.09448">File System</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="532.85718"
+       y="500.52304"
+       id="text2212"><tspan
+         sodipodi:role="line"
+         id="tspan2214"
+         x="532.85718"
+         y="500.52304">./myContent</tspan><tspan
+         sodipodi:role="line"
+         x="532.85718"
+         y="515.52304"
+         id="tspan2216">     /index.html</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:6,1;stroke-dashoffset:0"
+       d="M 482.85714,324.80877 L 482.85714,493.3802 L 531.42857,493.3802"
+       id="path2218" />
+    <text
+       xml:space="preserve"
+       style="font-size:9.94491482px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="390.92761"
+       y="302.53455"
+       id="text3193"
+       transform="scale(0.9925021,1.0075545)"><tspan
+         sodipodi:role="line"
+         id="tspan3195"
+         x="390.92761"
+         y="302.53455">binding.</tspan><tspan
+         sodipodi:role="line"
+         x="390.92761"
+         y="314.96569"
+         id="tspan3197">http</tspan></text>
+  </g>
+</svg>

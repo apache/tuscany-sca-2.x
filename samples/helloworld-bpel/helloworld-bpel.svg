@@ -30,13 +30,14 @@
    height="744.09448"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.44"
-   sodipodi:docbase="C:\simon\Projects\Tuscany\java\java-head\sca\samples\helloworld-ws-service"
-   sodipodi:docname="helloworld-ws-service.svg"
+   inkscape:version="0.45.1"
+   sodipodi:docbase="C:\simon\tuscany\java-panic\sca\samples\helloworld-bpel"
+   sodipodi:docname="helloworld-bpel.svg"
    version="1.0"
-   inkscape:export-filename="C:\simon\Projects\Tuscany\java\java-head\sca\samples\helloworld-ws-reference\helloworld-ws-reference.png"
+   inkscape:export-filename="C:\simon\tuscany\java-panic\sca\samples\helloworld-bpel\helloworld-bpel.png"
    inkscape:export-xdpi="52.84"
-   inkscape:export-ydpi="52.84">
+   inkscape:export-ydpi="52.84"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -54,10 +55,10 @@
      inkscape:cy="414.63224"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     inkscape:window-width="1054"
-     inkscape:window-height="573"
-     inkscape:window-x="117"
-     inkscape:window-y="316" />
+     inkscape:window-width="1141"
+     inkscape:window-height="676"
+     inkscape:window-x="360"
+     inkscape:window-y="147" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -96,18 +97,18 @@
              id="rect2958" /></flowRegion><flowPara
            id="flowPara2960">helloworldws</flowPara></flowRoot>    </g>
     <rect
-       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#317fed;fill-opacity:1;stroke:#060000;stroke-width:2.77353811;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect2988"
-       width="115.66247"
-       height="85.862968"
-       x="432.05917"
-       y="307.1676"
-       rx="6.9961648"
-       ry="7.1230249" />
+       width="137.03178"
+       height="139.37514"
+       x="433.16025"
+       y="308.26868"
+       rx="8.2887468"
+       ry="11.562291" />
     <flowRoot
        xml:space="preserve"
        id="flowRoot2966"
-       transform="translate(172.4684,115.2291)"><flowRegion
+       transform="translate(183.89697,109.51481)"><flowRegion
          id="flowRegion2968"><rect
            id="rect2970"
            width="170"
@@ -145,5 +146,34 @@
        inkscape:export-filename="C:\simon\Projects\Tuscany\java\java-head\sca\samples\helloworld-ws-service\helloworld-ws-service.png"
        inkscape:export-xdpi="52.84"
        inkscape:export-ydpi="52.84" />
+    <rect
+       style="opacity:1;fill:#e4a637;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.03563392;stroke-miterlimit:4;stroke-dasharray:6.21380369, 1.03563395;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2179"
+       width="107.35972"
+       height="30.216856"
+       x="454.17728"
+       y="404.70035"
+       rx="1.1482089"
+       ry="1.0659764" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3152"
+       transform="matrix(0.8110318,0,0,0.9349147,74.607827,34.581873)"><flowRegion
+         id="flowRegion3154"><rect
+           id="rect3156"
+           width="114.28571"
+           height="12.857142"
+           x="450.71429"
+           y="376.23734" /></flowRegion><flowPara
+         id="flowPara3158">implementation.bpel</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="466.42856"
+       y="423.38019"
+       id="text3160"><tspan
+         sodipodi:role="line"
+         id="tspan3162"
+         x="466.42856"
+         y="423.38019">helloworld.bpel</tspan></text>
   </g>
 </svg>
