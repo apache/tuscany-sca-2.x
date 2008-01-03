@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
@@ -277,25 +278,29 @@ public class AntGeneratorMojo extends AbstractMojo {
     private void generateBuildDependencies(PrintWriter pw) {
 
         // Determine the module dependencies
-        List<Artifact> tuscanyModules = new ArrayList<Artifact>();
-        List<Artifact> otherModules = new ArrayList<Artifact>();
+        List<String> tuscanyModules = new ArrayList<String>();
+        List<String> otherModules = new ArrayList<String>();
         for (Artifact artifact: (List<Artifact>)project.getRuntimeArtifacts()) {
             if (artifact.getGroupId().startsWith("org.apache.tuscany.sca")) {
-                tuscanyModules.add(artifact);
+                tuscanyModules.add(artifact.getFile().getName());
             } else {
-                otherModules.add(artifact);
+                otherModules.add(artifact.getFile().getName());
             }
         }
+        
+        // Sort lists of modules, making output deterministic
+        Collections.sort(tuscanyModules);
+        Collections.sort(otherModules);
 
         // Generate filesets for the tuscany and 3rd party dependencies
         pw.println("    <fileset id=\"tuscany.jars\" dir=\"../../modules\">");
-        for (Artifact artifact: tuscanyModules) {
-            pw.println("        <include name=\"" + artifact.getFile().getName() +"\"/>");
+        for (String name: tuscanyModules) {
+            pw.println("        <include name=\"" + name +"\"/>");
         }
         pw.println("    </fileset>");
         pw.println("    <fileset id=\"3rdparty.jars\" dir=\"../../lib\">");
-        for (Artifact artifact: otherModules) {
-            pw.println("        <include name=\"" + artifact.getFile().getName() +"\"/>");
+        for (String name: otherModules) {
+            pw.println("        <include name=\"" + name +"\"/>");
         }
         pw.println("    </fileset>");
         pw.println();
