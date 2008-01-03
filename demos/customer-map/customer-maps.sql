@@ -17,6 +17,8 @@
 --  under the License.
 --
 
+DROP TABLE CUSTOMER;
+
 CREATE TABLE CUSTOMER (ID INT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY ,
                        NAME VARCHAR(30),
                        ADDRESS VARCHAR(30),
