@@ -241,6 +241,12 @@ public class AntGeneratorMojo extends AbstractMojo {
         }
         pw.println("    </target>");
         pw.println();
+        
+        
+        // Generate a package target alongside the compile target 
+        // Tuscany SCA samples use "package" as the target for webapps
+        pw.println("    <target name=\"package\" depends=\"compile\"/>");
+        pw.println();
     
         // Generate the run target
         if (mainClass != null) {
