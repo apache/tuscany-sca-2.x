@@ -22,4 +22,5 @@
               xmlns:s="http://store">
    <deployable composite="s:store"/>
    <import.java package="services"/>
+   <import.java package="services.merger"/>
 </contribution>
