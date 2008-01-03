@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
 import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
+import org.apache.tuscany.sca.databinding.javabeans.JavaExceptionDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 
@@ -241,7 +242,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
                         DataType faultType = excHandler.getFaultType(dataType);
                         if (faultType != null) {
                             dataType.setDataBinding(binding.getName());
-                            dataType.setLogical(faultType.getLogical());
+                            dataType.setLogical(faultType);
                             return true;
                         }
                     }
@@ -261,6 +262,9 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         if (dataType.getPhysical().isArray()) {
             introspectArray(dataType, annotations);
             return true;
+        } else if (isException) {
+            dataType.setDataBinding(JavaExceptionDataBinding.NAME);
+            return false;
         } else {
             dataType.setDataBinding(JavaBeansDataBinding.NAME);
             return false;

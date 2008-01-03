@@ -27,8 +27,12 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 public class JavaExceptionExceptionHandler extends JavaBeansExceptionHandler {
 
     public DataType<?> getFaultType(DataType exceptionDataType) {
-        // needed to make exception handling code in DefaultDataBindingExtensionPoint work correctly
-        return exceptionDataType;
+        // We only handle faults that have been explicitly associated with the
+        // JavaExceptionDataBinding by the DefaultDataBindingExtensionPoint.
+        if (JavaExceptionDataBinding.NAME.equals(exceptionDataType.getDataBinding())) {
+            return exceptionDataType;
+        }
+        return null;
     }
 
 }
