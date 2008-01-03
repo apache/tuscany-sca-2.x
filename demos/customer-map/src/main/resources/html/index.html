@@ -31,7 +31,10 @@
     }
        
     function customer_handleResponse(result) {
-		alert(result);
+		alert(result["p0:dataObject"].CUSTOMER);
+		alert(result["p0:dataObject"].CUSTOMER.NAME["$"]);
+		
+		document.getElementById('result').innerHTML=result;
 	}
 </script>
 
@@ -44,6 +47,7 @@
 <div id="customer">
   <h2>Customer List</h2>
   <input type="button" value="Submit" onclick="getCustomers()" />
+  <div id="result">None yet.</div>
   <div id="customer_list" ></div>
 </div>
   

@@ -19,12 +19,15 @@
 
 package customer;
 
+import org.osoa.sca.annotations.Remotable;
+
 import commonj.sdo.DataObject;
 
 /**
  * 
  * @version $Rev$ $Date$
  */
+@Remotable
 public interface CustomerService {
     
     public DataObject getCustomers();
