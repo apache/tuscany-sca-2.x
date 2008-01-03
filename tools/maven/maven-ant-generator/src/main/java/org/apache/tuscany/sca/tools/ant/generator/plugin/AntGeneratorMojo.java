@@ -36,6 +36,11 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
 
 /**
+ * A Maven plugin that generates an Ant build.xml file for Tuscany SCA samples.
+ * 
+ * Build dependencies and additional build steps like WSDL2Java for example are
+ * automatically determined from the pom.xml file describing the module's Maven build.
+ * 
  * @version $Rev$ $Date$
  * @goal generate
  * @phase generate-sources
@@ -43,8 +48,9 @@ import org.apache.maven.settings.Settings;
  * @description Generate Ant build script for an SCA project
  */
 public class AntGeneratorMojo extends AbstractMojo {
+
     /**
-     * The project to create a build for.
+     * The project to generate an Ant build for.
      *
      * @parameter expression="${project}"
      * @required
@@ -117,13 +123,16 @@ public class AntGeneratorMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         if ((buildDependencyFileOnly != null) &&
             (buildDependencyFileOnly == true)){
-            createBuildDependencyXML();
+            generateBuildDependencyFile();
         } else {
-            createBuildXML();
+            generateBuildFile();
         }
     }
-    
-    public void createBuildDependencyXML() throws MojoExecutionException {
+
+    /**
+     * Generate Ant build dependency XML file
+     */ 
+    private void generateBuildDependencyFile() throws MojoExecutionException {
         
         getLog().info("Generating " + buildDependencyFile);
         
@@ -135,62 +144,20 @@ public class AntGeneratorMojo extends AbstractMojo {
         } catch (FileNotFoundException e) {
             throw new MojoExecutionException(e.toString());
         }
-        
 
-        // Determine the project packaging
-        String packaging = project.getPackaging().toLowerCase();
+        // Generate the Apache license header
+        generateLicenseHeader(pw);
 
-        // Determine the module dependencies
-        List<Artifact> tuscanyModules = new ArrayList<Artifact>();
-        List<Artifact> otherModules = new ArrayList<Artifact>();
-        for (Artifact artifact: (List<Artifact>)project.getRuntimeArtifacts()) {
-            if (artifact.getGroupId().startsWith("org.apache.tuscany.sca")) {
-                tuscanyModules.add(artifact);
-            } else {
-                otherModules.add(artifact);
-            }
-        }
-        
-        pw.println("<!--");
-        pw.println(" * Licensed to the Apache Software Foundation (ASF) under one");
-        pw.println(" * or more contributor license agreements.  See the NOTICE file");
-        pw.println(" * distributed with this work for additional information");
-        pw.println(" * regarding copyright ownership.  The ASF licenses this file");
-        pw.println(" * to you under the Apache License, Version 2.0 (the");
-        pw.println(" * \"License\"); you may not use this file except in compliance");
-        pw.println(" * with the License.  You may obtain a copy of the License at");
-        pw.println(" * ");
-        pw.println(" *   http://www.apache.org/licenses/LICENSE-2.0");
-        pw.println(" * ");
-        pw.println(" * Unless required by applicable law or agreed to in writing,");
-        pw.println(" * software distributed under the License is distributed on an");
-        pw.println(" * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY");
-        pw.println(" * KIND, either express or implied.  See the License for the");
-        pw.println(" * specific language governing permissions and limitations");
-        pw.println(" * under the License.");
-        pw.println("-->");
-
-        pw.println();
-    
-        // Generate the classpath
-        pw.println("    <fileset id=\"tuscany.jars\" dir=\"../../modules\">");
-        for (Artifact artifact: tuscanyModules) {
-            pw.println("        <include name=\"" + artifact.getFile().getName() +"\"/>");
-        }
-        pw.println("    </fileset>");
-        
-        pw.println("    <fileset id=\"3rdparty.jars\" dir=\"../../lib\">");
-        for (Artifact artifact: otherModules) {
-            pw.println("        <include name=\"" + artifact.getFile().getName() +"\"/>");
-        }
-        pw.println("    </fileset>");
-        
-        pw.println();
+        // Generate Ant filesets representing the build dependencies
+        generateBuildDependencies(pw);
         
         pw.close();
     }
     
-    public void createBuildXML() throws MojoExecutionException {
+    /**
+     * Generate Ant build XML file
+     */ 
+    private void generateBuildFile() throws MojoExecutionException {
         
         getLog().info("Generating " + buildFile);
         
@@ -202,41 +169,12 @@ public class AntGeneratorMojo extends AbstractMojo {
         } catch (FileNotFoundException e) {
             throw new MojoExecutionException(e.toString());
         }
-        
 
         // Determine the project packaging
         String packaging = project.getPackaging().toLowerCase();
 
-        // Determine the module dependencies
-        List<Artifact> tuscanyModules = new ArrayList<Artifact>();
-        List<Artifact> otherModules = new ArrayList<Artifact>();
-        for (Artifact artifact: (List<Artifact>)project.getRuntimeArtifacts()) {
-            if (artifact.getGroupId().startsWith("org.apache.tuscany.sca")) {
-                tuscanyModules.add(artifact);
-            } else {
-                otherModules.add(artifact);
-            }
-        }
-        
-        pw.println("<!--");
-        pw.println(" * Licensed to the Apache Software Foundation (ASF) under one");
-        pw.println(" * or more contributor license agreements.  See the NOTICE file");
-        pw.println(" * distributed with this work for additional information");
-        pw.println(" * regarding copyright ownership.  The ASF licenses this file");
-        pw.println(" * to you under the Apache License, Version 2.0 (the");
-        pw.println(" * \"License\"); you may not use this file except in compliance");
-        pw.println(" * with the License.  You may obtain a copy of the License at");
-        pw.println(" * ");
-        pw.println(" *   http://www.apache.org/licenses/LICENSE-2.0");
-        pw.println(" * ");
-        pw.println(" * Unless required by applicable law or agreed to in writing,");
-        pw.println(" * software distributed under the License is distributed on an");
-        pw.println(" * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY");
-        pw.println(" * KIND, either express or implied.  See the License for the");
-        pw.println(" * specific language governing permissions and limitations");
-        pw.println(" * under the License.");
-        pw.println("-->");
-
+        // Generate the Apache license header
+        generateLicenseHeader(pw);
         
         pw.println("<project name=\"" + project.getArtifactId() + "\" default=\"compile\">");
         pw.println();
@@ -324,8 +262,32 @@ public class AntGeneratorMojo extends AbstractMojo {
         pw.println("        </delete>");
         pw.println("    </target>");
         pw.println();
-    
-        // Generate the classpath
+
+        // Generate Ant filesets representing the build dependencies
+        generateBuildDependencies(pw);
+        
+        pw.println("</project>");
+        pw.close();
+    }
+
+    /**
+     * Generate Ant filesets representing the build dependencies. 
+     * @param pw PrintWriter to write to
+     */
+    private void generateBuildDependencies(PrintWriter pw) {
+
+        // Determine the module dependencies
+        List<Artifact> tuscanyModules = new ArrayList<Artifact>();
+        List<Artifact> otherModules = new ArrayList<Artifact>();
+        for (Artifact artifact: (List<Artifact>)project.getRuntimeArtifacts()) {
+            if (artifact.getGroupId().startsWith("org.apache.tuscany.sca")) {
+                tuscanyModules.add(artifact);
+            } else {
+                otherModules.add(artifact);
+            }
+        }
+
+        // Generate filesets for the tuscany and 3rd party dependencies
         pw.println("    <fileset id=\"tuscany.jars\" dir=\"../../modules\">");
         for (Artifact artifact: tuscanyModules) {
             pw.println("        <include name=\"" + artifact.getFile().getName() +"\"/>");
@@ -337,10 +299,33 @@ public class AntGeneratorMojo extends AbstractMojo {
         }
         pw.println("    </fileset>");
         pw.println();
-        
-        pw.println("</project>");
-        pw.close();
     }
-    
+
+    /**
+     * Generate license header.
+     * 
+     * @param pw PrintWriter to write to
+     */
+    private void generateLicenseHeader(PrintWriter pw) {
+        pw.println("<!--");
+        pw.println(" * Licensed to the Apache Software Foundation (ASF) under one");
+        pw.println(" * or more contributor license agreements.  See the NOTICE file");
+        pw.println(" * distributed with this work for additional information");
+        pw.println(" * regarding copyright ownership.  The ASF licenses this file");
+        pw.println(" * to you under the Apache License, Version 2.0 (the");
+        pw.println(" * \"License\"); you may not use this file except in compliance");
+        pw.println(" * with the License.  You may obtain a copy of the License at");
+        pw.println(" * ");
+        pw.println(" *   http://www.apache.org/licenses/LICENSE-2.0");
+        pw.println(" * ");
+        pw.println(" * Unless required by applicable law or agreed to in writing,");
+        pw.println(" * software distributed under the License is distributed on an");
+        pw.println(" * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY");
+        pw.println(" * KIND, either express or implied.  See the License for the");
+        pw.println(" * specific language governing permissions and limitations");
+        pw.println(" * under the License.");
+        pw.println("-->");
+        pw.println();
+    }
 
 }
