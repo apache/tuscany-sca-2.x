@@ -11,7 +11,7 @@ binding.feed
 The easiest way to get going is to build the demo
 
 cd alert-aggregator-webapp
-ant compile
+ant package
 
 This will build a war file 
 
