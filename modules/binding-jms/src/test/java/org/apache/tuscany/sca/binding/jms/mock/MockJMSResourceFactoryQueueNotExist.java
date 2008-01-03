@@ -41,4 +41,7 @@ public class MockJMSResourceFactoryQueueNotExist extends MockJMSResourceFactory 
     public Destination lookupDestination(String jndiName) throws NamingException {
         return null;
     }
+
+    public void startBroker() {
+    }
 }

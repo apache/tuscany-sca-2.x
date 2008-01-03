@@ -25,6 +25,8 @@ import java.util.List;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.host.jms.JMSHost;
+import org.apache.tuscany.sca.host.jms.JMSResourceFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -43,12 +45,14 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
     private RuntimeComponentReference reference;
     private JMSBinding jmsBinding;
     private List<JMSBindingInvoker> jmsBindingInvokers = new ArrayList<JMSBindingInvoker>();
+    private JMSResourceFactory jmsResourceFactory;
 
     public JMSBindingReferenceBindingProvider(RuntimeComponent component,
                                               RuntimeComponentReference reference,
-                                              JMSBinding binding) {
+                                              JMSBinding binding, JMSHost jmsHost) {
         this.reference = reference;
         this.jmsBinding = binding;
+        jmsResourceFactory = jmsHost.createJMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
 
         if (jmsBinding.getXMLFormat()) {
             setXMLDataBinding(reference);
@@ -113,7 +117,7 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
                     jmsBinding.setResponseDestinationName(reference.getName());
                 }    
         */        
-        JMSBindingInvoker invoker = new JMSBindingInvoker(jmsBinding, operation);
+        JMSBindingInvoker invoker = new JMSBindingInvoker(jmsBinding, operation, jmsResourceFactory);
         jmsBindingInvokers.add(invoker);
         return invoker;
     }

@@ -31,6 +31,7 @@ import javax.naming.NamingException;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.apache.tuscany.sca.host.jms.JMSResourceFactory;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 
@@ -51,13 +52,13 @@ public class JMSBindingInvoker implements Invoker {
     protected Destination requestDest;
     protected Destination replyDest;
 
-    public JMSBindingInvoker(JMSBinding jmsBinding, Operation operation) {
+    public JMSBindingInvoker(JMSBinding jmsBinding, Operation operation, JMSResourceFactory jmsResourceFactory) {
 
         this.operation = operation;
         operationName = operation.getName();
 
         this.jmsBinding = jmsBinding;
-        jmsResourceFactory = jmsBinding.getJmsResourceFactory();
+        this.jmsResourceFactory = jmsResourceFactory;
         requestMessageProcessor = jmsBinding.getRequestMessageProcessor();
         responseMessageProcessor = jmsBinding.getResponseMessageProcessor();
         try {
@@ -239,6 +240,9 @@ public class JMSBindingInvoker implements Invoker {
             replyMsg = consumer.receive(jmsBinding.getTimeToLive());
         } finally {
             consumer.close();
+        }
+        if (replyMsg == null) {
+            throw new JMSBindingException("No reply message received on " + replyToDest + " for message id " + requestMsgId);
         }
         return replyMsg;
     }

@@ -26,7 +26,7 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.naming.NamingException;
 
-import org.apache.tuscany.sca.binding.jms.provider.JMSResourceFactory;
+import org.apache.tuscany.sca.host.jms.JMSResourceFactory;
 import org.easymock.EasyMock;
 
 /**
