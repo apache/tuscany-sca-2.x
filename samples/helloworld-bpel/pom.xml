@@ -145,11 +145,7 @@
 				<executions>
 					<execution>
 						<configuration>
-							<wsdlFiles>
-								<wsdlFile>
-									<fileName>${basedir}/src/main/resources/helloworld.wsdl</fileName>
-								</wsdlFile>
-							</wsdlFiles>
+							<wsdlFile>${basedir}/src/main/resources/helloworld.wsdl</wsdlFile>
 						</configuration>
 						<goals>
 							<goal>generate</goal>
