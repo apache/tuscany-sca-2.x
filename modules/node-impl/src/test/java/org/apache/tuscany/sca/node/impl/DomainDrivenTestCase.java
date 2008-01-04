@@ -77,15 +77,11 @@ public class DomainDrivenTestCase {
             domain.addToDomainLevelComposite(new QName("http://sample", "CalculatorB"));
             domain.addToDomainLevelComposite(new QName("http://sample", "CalculatorC"));
             
-            domain.startComposite(new QName("http://sample", "CalculatorA"));
-           
-            domain.startComposite(new QName("http://sample", "CalculatorB"));
-            domain.startComposite(new QName("http://sample", "CalculatorC"));
+            domain.start();
             
             calculatorServiceA = domain.getService(CalculatorService.class, "CalculatorServiceComponentA");
             calculatorServiceB = domain.getService(CalculatorService.class, "CalculatorServiceComponentB");
  
-            
         } catch(Exception ex){
             ex.printStackTrace();
         }  
@@ -94,10 +90,15 @@ public class DomainDrivenTestCase {
 
     @AfterClass
     public static void destroy() throws Exception {
-        // stop the nodes and hence the domains they contain        
+        // stop the domain
+        domain.stop();
+        
+        // destroy the nodes
         nodeA.destroy();
         nodeB.destroy();
         nodeC.destroy();
+        
+        // destroy the domain
         domain.destroy();
     }
     

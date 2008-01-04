@@ -93,7 +93,7 @@ public class SCANodeManagerServiceImpl implements SCANodeManagerService, SCANode
     }
     
     public void destroyNode() throws NodeException {
-        node.destroy();
+        // do nothing - the domain can't destroy nodes
     }    
     
     public void updateComposite(String compositeQName, String compositeXMLBase64 ) throws NodeException {

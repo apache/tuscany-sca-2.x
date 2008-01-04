@@ -56,12 +56,15 @@ public class CalculatorNode {
             SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             SCANode node = nodeFactory.createSCANode(null, domainName);
             node.addContribution(nodeName, cl.getResource(nodeName + "/"));
-            node.addToDomainLevelComposite(new QName("http://sample", "Calculator"));
-            node.start();             
+            node.addToDomainLevelComposite(new QName("http://sample", "Calculator"));           
                                          
             // nodeA is the head node and runs some tests while all other nodes
             // simply listen for incoming messages
-            if ( nodeName.equals("nodeA") ) {            
+            if ( nodeName.equals("nodeA") ) {  
+                
+                // start the domain 
+                node.getDomain().start();
+                
                 // do some application stuff
                 CalculatorService calculatorService = 
                     node.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentA");

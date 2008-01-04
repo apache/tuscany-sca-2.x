@@ -65,15 +65,13 @@ public class CallableReferenceRemoteTestCase {
             nodeA = nodeFactory.createSCANode("http://localhost:8100/nodeA", "http://localhost:9999");
             nodeA.addContribution("nodeA", cl.getResource("nodeA/"));
             nodeA.addToDomainLevelComposite(new QName("http://foo", "CompositeA"));
-            nodeA.start();
+
             
             nodeB = nodeFactory.createSCANode("http://localhost:8200/nodeB", "http://localhost:9999");
             nodeB.addContribution("nodeB", cl.getResource("nodeB/"));
             nodeB.addToDomainLevelComposite(new QName("http://foo", "CompositeB"));
-            nodeB.start();
-            
-            // wait for doamin to intialize
-            Thread.sleep(2000);
+
+            domain.start();
             
             // get a reference to the calculator service from domainA
             // which will be running this component

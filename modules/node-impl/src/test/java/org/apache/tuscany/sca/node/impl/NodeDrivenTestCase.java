@@ -73,23 +73,20 @@ public class NodeDrivenTestCase {
             nodeA = nodeFactory.createSCANode("http://localhost:8100/nodeA", "http://localhost:9999");
             nodeA.addContribution("nodeA", cl.getResource("nodeA/"));
             nodeA.addToDomainLevelComposite(new QName("http://sample", "CalculatorA"));
-            nodeA.start();
 
             // sca-deployables test
             nodeB = nodeFactory.createSCANode("http://localhost:8200/nodeB", "http://localhost:9999");
             nodeB.addContribution("nodeB", cl.getResource("nodeB/"));
             nodeB.addToDomainLevelComposite(new QName("http://sample", "CalculatorB"));
-            nodeB.start();
 
             // sca-deployables test
             nodeC = nodeFactory.createSCANode("http://localhost:8300/nodeC", "http://localhost:9999");
             nodeC.addContribution("nodeC", cl.getResource("nodeC/"));
             nodeC.addToDomainLevelComposite(new QName("http://sample", "CalculatorC")); 
             nodeC.addToDomainLevelComposite(new QName("http://sample", "CalculatorC"));
-            nodeC.start();
             
-            // wait for domain to configure
-            Thread.sleep(2000);
+            // start the domain
+            domain.start();
             
         } catch(Exception ex){
             ex.printStackTrace();
@@ -99,10 +96,16 @@ public class NodeDrivenTestCase {
 
     @AfterClass
     public static void destroy() throws Exception {
-        // stop the nodes and hence the domains they contain        
+        // stop the domain
+        domain.stop();
+        
+        // destroy the nodes    
         nodeA.destroy();
         nodeB.destroy();    
         nodeC.destroy();
+        
+        // destroy the domain
+        domain.destroy();
     }
     
     //@Test
