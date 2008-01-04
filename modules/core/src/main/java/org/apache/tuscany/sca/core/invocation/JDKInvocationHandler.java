@@ -239,7 +239,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         msg.setBody(args);
 
         Message msgContext = ThreadMessageContext.getMessageContext();
-        Object currentConversationID = msgContext.getTo().getReferenceParameters().getConversationID();
+        Object currentConversationID = msgContext.getFrom().getReferenceParameters().getConversationID();
 
         conversationPreinvoke(msg, wire);
         handleCallback(msg, wire, currentConversationID);
@@ -266,7 +266,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
      */
     private void handleCallback(Message msg, RuntimeWire wire, Object currentConversationID)
         throws TargetResolutionException {
-        ReferenceParameters parameters = msg.getTo().getReferenceParameters();
+        ReferenceParameters parameters = msg.getFrom().getReferenceParameters();
         parameters.setCallbackID(getCallbackID());
         if (wire.getSource() == null || wire.getSource().getCallbackEndpoint() == null) {
             return;
@@ -305,7 +305,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                             InstanceWrapper wrapper = new CallbackObjectWrapper(callbackObject);
                             scopeContainer.registerWrapper(wrapper, conversation.getConversationID());
                         }
-                        parameters.setCallbackObjectID("java:" + System.identityHashCode(callbackObject));
+                        parameters.setCallbackObjectID(callbackObject);
                     }
                 }
             }
@@ -331,7 +331,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         }
         // TODO - assuming that the conversation ID is a string here when
         //       it can be any object that is serializable to XML
-        msg.getTo().getReferenceParameters().setConversationID(conversation.getConversationID());
+        msg.getFrom().getReferenceParameters().setConversationID(conversation.getConversationID());
 
     }
 

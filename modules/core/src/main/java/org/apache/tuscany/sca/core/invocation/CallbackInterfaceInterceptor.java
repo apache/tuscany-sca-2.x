@@ -37,7 +37,7 @@ public class CallbackInterfaceInterceptor implements Interceptor {
     }
 
     public Message invoke(Message msg) {
-        ReferenceParameters parameters = msg.getTo().getReferenceParameters();
+        ReferenceParameters parameters = msg.getFrom().getReferenceParameters();
         if (parameters.getCallbackObjectID() != null || parameters.getCallbackReference() != msg.getFrom()
             .getCallbackEndpoint()) {
             return next.invoke(msg);

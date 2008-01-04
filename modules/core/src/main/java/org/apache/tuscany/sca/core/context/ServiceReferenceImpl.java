@@ -123,7 +123,7 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
             } else {
                 EndpointReference callbackRef = getRuntimeWire().getSource().getCallbackEndpoint();
                 parameters.setCallbackReference(callbackRef);
-                parameters.setCallbackObjectID("java:" + System.identityHashCode(callback));
+                parameters.setCallbackObjectID(callback);
             }
         }
         return parameters;

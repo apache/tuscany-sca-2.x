@@ -64,7 +64,7 @@ public class RequestContextImpl implements RequestContext {
         RuntimeComponent component = (RuntimeComponent) to.getComponent();
         
         CallableReference<B> callableReference = component.getComponentContext().getCallableReference(null, component, service);
-        ReferenceParameters parameters = msgContext.getTo().getReferenceParameters();
+        ReferenceParameters parameters = msgContext.getFrom().getReferenceParameters();
         ((CallableReferenceImpl<B>) callableReference).attachCallbackID(parameters.getCallbackID());
         if (callableReference.getConversation() != null) {
             ((CallableReferenceImpl<B>) callableReference).attachConversationID(parameters.getConversationID());
@@ -95,7 +95,7 @@ public class RequestContextImpl implements RequestContext {
         List<RuntimeWire> wires = callbackReference.getRuntimeWires();
         CallbackReferenceImpl ref = new CallbackReferenceImpl(javaClass, proxyFactory, wires);
         ref.resolveTarget();
-        ReferenceParameters parameters = msgContext.getTo().getReferenceParameters();
+        ReferenceParameters parameters = msgContext.getFrom().getReferenceParameters();
         ref.attachCallbackID(parameters.getCallbackID());
         if (ref.getConversation() != null) {
             ref.attachConversationID(parameters.getConversationID());

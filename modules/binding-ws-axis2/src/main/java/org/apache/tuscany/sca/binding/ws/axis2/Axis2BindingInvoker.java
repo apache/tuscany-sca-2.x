@@ -52,13 +52,14 @@ public class Axis2BindingInvoker implements Invoker {
     private SOAPFactory soapFactory;
 
     public static final QName QNAME_WSA_FROM =
-        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM);
-    public static final QName QNAME_WSA_TO =
-        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_TO);
+        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM,
+                  AddressingConstants.WSA_DEFAULT_PREFIX);
 
-    public static final QName CALLBACK_REFERENCE_REFPARM_QN = new QName(Constants.SCA10_TUSCANY_NS, "CallbackReference");
-    public static final QName CALLBACK_ID_REFPARM_QN = new QName(Constants.SCA10_TUSCANY_NS, "CallbackID");
-    public static final QName CONVERSATION_ID_REFPARM_QN = new QName(Constants.SCA10_TUSCANY_NS, "ConversationID");
+    public static final String TUSCANY_PREFIX = "tuscany";
+    public static final QName CALLBACK_ID_REFPARM_QN =
+        new QName(Constants.SCA10_TUSCANY_NS, "CallbackID", TUSCANY_PREFIX);
+    public static final QName CONVERSATION_ID_REFPARM_QN =
+        new QName(Constants.SCA10_TUSCANY_NS, "ConversationID", TUSCANY_PREFIX);
 
     public Axis2BindingInvoker(Axis2ServiceClient serviceClient,
                                QName wsdlOperationName,
@@ -137,46 +138,56 @@ public class Axis2BindingInvoker implements Invoker {
         OperationClient operationClient = serviceClient.getServiceClient().createClient(wsdlOperationName);
         operationClient.setOptions(options);
 
-        ReferenceParameters parameters = msg.getTo().getReferenceParameters();
-
-        // if target endpoint was not specified when this invoker was created, 
-        // use dynamically specified target endpoint passed in on this call
-        EndpointReference toEPR = options.getTo();
-        if (toEPR == null) {
-            org.apache.tuscany.sca.runtime.EndpointReference ep = msg.getTo();
-            toEPR = new EndpointReference(ep.getURI());
-        }
+        ReferenceParameters parameters = msg.getFrom().getReferenceParameters();
 
         // set callback endpoint and callback ID for WS-Addressing header
-        if (parameters.getCallbackReference() != null) {
-            toEPR.addReferenceParameter(CALLBACK_REFERENCE_REFPARM_QN,
-                                        parameters.getCallbackReference().getBinding().getURI());
+        EndpointReference fromEPR = null;
+        org.apache.tuscany.sca.runtime.EndpointReference callbackEPR = parameters.getCallbackReference();
+        if (callbackEPR != null) {
+            fromEPR = new EndpointReference(callbackEPR.getBinding().getURI());
         }
-        if (parameters.getCallbackID() != null) {
+        Object callbackID = parameters.getCallbackID();
+        if (callbackID != null) {
+            if (fromEPR == null) {
+                fromEPR = new EndpointReference(AddressingConstants.Final.WSA_ANONYMOUS_URL);
+            }
             //FIXME: serialize callback ID to XML in case it is not a string
-            toEPR.addReferenceParameter(CALLBACK_ID_REFPARM_QN, parameters.getCallbackID().toString());
+            fromEPR.addReferenceParameter(CALLBACK_ID_REFPARM_QN, callbackID.toString());
         }
 
         // set conversation ID for WS-Addressing header
-        //FIXME: get conversation ID from the message's callable reference
         Object conversationId = parameters.getConversationID();
         if (conversationId != null) {
+            if (fromEPR == null) {
+                fromEPR = new EndpointReference(AddressingConstants.Final.WSA_ANONYMOUS_URL);
+            }
             //FIXME: serialize conversation ID to XML in case it is not a string
-            toEPR.addReferenceParameter(CONVERSATION_ID_REFPARM_QN, conversationId.toString());
+            fromEPR.addReferenceParameter(CONVERSATION_ID_REFPARM_QN, conversationId.toString());
         }
 
         // add WS-Addressing header
         //FIXME: is there any way to use the Axis2 addressing support for this?
-        if (toEPR != null) {
+        if (fromEPR != null) {
             SOAPEnvelope sev = requestMC.getEnvelope();
             SOAPHeader sh = sev.getHeader();
             OMElement epr =
                 EndpointReferenceHelper.toOM(sev.getOMFactory(),
-                                             toEPR,
-                                             QNAME_WSA_TO,
+                                             fromEPR,
+                                             QNAME_WSA_FROM,
                                              AddressingConstants.Final.WSA_NAMESPACE);
             sh.addChild(epr);
-            requestMC.setTo(toEPR);
+            requestMC.setFrom(fromEPR);
+        }
+
+        // if target endpoint was not specified when this invoker was created, 
+        // use dynamically specified target endpoint passed in on this call
+        if (options.getTo() == null) {
+            org.apache.tuscany.sca.runtime.EndpointReference ep = msg.getTo();
+            if (ep != null) {
+                requestMC.setTo(new EndpointReference(ep.getURI()));
+            } else {
+                throw new RuntimeException("Unable to determine destination endpoint");
+            }
         }
 
         operationClient.addMessageContext(requestMC);

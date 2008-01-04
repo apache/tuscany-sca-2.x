@@ -80,23 +80,19 @@ public class Axis2SCABindingInvoker implements Interceptor {
                     + " reference: "
                     + provider.getComponentReference().getName());
             }
-            if (to != null) {
-                to.mergeEndpoint(eprTo);
-            } else {
-                msg.setTo(eprTo);
-            }
+            msg.setTo(eprTo);
         }
 
         // make sure that the epr of the callback service (if there is one) is set
         // in the callbackReference field of the message. 
-        EndpointReference callbackEPR = msg.getTo().getReferenceParameters().getCallbackReference();
+        EndpointReference callbackEPR = msg.getFrom().getReferenceParameters().getCallbackReference();
 
         if ((callbackEPR == null) || (callbackEPR.getURI().equals("/"))) {
 
             callbackEPR = provider.getCallbackEndpoint();
 
             if (callbackEPR != null) {
-                msg.getTo().getReferenceParameters().setCallbackReference(callbackEPR);
+                msg.getFrom().getReferenceParameters().setCallbackReference(callbackEPR);
             }
         }
 

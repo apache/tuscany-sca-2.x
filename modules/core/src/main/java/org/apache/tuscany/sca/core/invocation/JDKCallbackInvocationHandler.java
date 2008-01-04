@@ -81,7 +81,7 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
             // create a conversation id if one doesn't exist 
             // already, i.e. the conversation is just starting
             if (convID == null) {
-                convID = msgContext.getTo().getReferenceParameters().getConversationID();
+                convID = msgContext.getFrom().getReferenceParameters().getConversationID();
                 if (convID != null) {
                     conversation = ((RuntimeWireImpl)wire).getConversationManager().getConversation(convID);
                     if (callableReference != null) {
@@ -91,10 +91,10 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
             }
         }
 
-        Object callbackID = msgContext.getTo().getReferenceParameters().getCallbackID();
+        Object callbackID = msgContext.getFrom().getReferenceParameters().getCallbackID();
         ((CallbackReferenceImpl)callableReference).attachCallbackID(callbackID);
 
-        EndpointReference epr = msgContext.getTo().getReferenceParameters().getCallbackReference();
+        EndpointReference epr = msgContext.getFrom().getReferenceParameters().getCallbackReference();
         setEndpoint(epr);
 
         // need to set the endpoint on the binding also so that when the chains are created next

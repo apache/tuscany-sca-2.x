@@ -41,7 +41,7 @@ public class CallbackInterfaceInterceptorTestCase extends TestCase {
         interceptor.setNext(next);
         Message msg = new MessageFactoryImpl().createMessage();
         msg.setFrom(new EndpointReferenceImpl("uri"));
-        msg.getTo().getReferenceParameters().setCallbackObjectID("java:" + System.identityHashCode("ABC"));
+        msg.getFrom().getReferenceParameters().setCallbackObjectID("ABC");
         interceptor.invoke(msg);
         EasyMock.verify(next);
     }
@@ -50,7 +50,7 @@ public class CallbackInterfaceInterceptorTestCase extends TestCase {
         CallbackInterfaceInterceptor interceptor = new CallbackInterfaceInterceptor();
         Message msg = new MessageFactoryImpl().createMessage();
         msg.setFrom(new EndpointReferenceImpl("uri"));
-        msg.getTo().getReferenceParameters().setCallbackObjectID(null);
+        msg.getFrom().getReferenceParameters().setCallbackObjectID(null);
         try {
             interceptor.invoke(msg);
             fail();

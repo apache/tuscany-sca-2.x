@@ -119,7 +119,8 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         this.compositeActivator = compositeActivator;
         this.conversationManager = this.compositeActivator.getConversationManager();
         RuntimeWire wire = this.reference.getRuntimeWire(this.binding);
-        init(wire);
+        // init(wire);
+        initCallbackID();
     }
 
     public CallableReferenceImpl(Class<B> businessInterface, RuntimeWire wire, ProxyFactory proxyFactory) {
@@ -143,10 +144,15 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
             this.binding = wire.getSource().getBinding();
             this.compositeActivator = ((ComponentContextImpl)component.getComponentContext()).getCompositeActivator();
             this.conversationManager = this.compositeActivator.getConversationManager();
-            init(wire);
+            // init(wire);
+            initCallbackID();
         }
     }
 
+    /**
+     * This method has bugs in it and has been replaced by the initCallbackID
+     * method below.  It is no longer called and will be removed soon.
+     */
     protected void init(RuntimeWire wire) {
         EndpointReference target = wire.getTarget();
 
@@ -158,6 +164,12 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         Interface contractInterface = contract.getInterface();
 
         if (contract.getCallbackInterface() != null) {
+            this.callbackID = createCallbackID();
+        }
+    }
+
+    protected void initCallbackID() {
+        if (reference.getInterfaceContract().getCallbackInterface() != null) {
             this.callbackID = createCallbackID();
         }
     }
