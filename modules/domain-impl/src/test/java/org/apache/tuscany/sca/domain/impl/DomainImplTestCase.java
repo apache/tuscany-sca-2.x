@@ -105,12 +105,16 @@ public class DomainImplTestCase {
     public void testGetComposite() throws Exception { 
         System.out.println(((SCADomainImpl)domain).getComposite(new QName("http://sample", "CalculatorA")));
     }      
-/*    
+   
     @Test
     public void testStartComposite() throws Exception {   
         domain.startComposite(new QName("http://sample", "CalculatorA"));
     } 
     
+    @Test
+    public void testStopComposite() throws Exception {   
+        domain.stopComposite(new QName("http://sample", "CalculatorA"));
+    }     
     
     @Test
     public void testRemoveContributions() throws Exception { 
@@ -123,7 +127,7 @@ public class DomainImplTestCase {
         domainEventService.unregisterNode("http://localhost:8100/mynode1");
         domainEventService.unregisterNode("http://localhost:8200/mynode2");
     }     
- */
+
     //@Test
     public void testKeepServerRunning() throws Exception {
         System.out.println("press enter to continue");

@@ -500,13 +500,7 @@ public class SCADomainProxyImpl extends SCADomainImpl {
     }
     
     public void destroy() throws DomainException {
-/*    
-        if ((domainModel.getDomainURL() != null) && (domainAPIService != null)){
-            domainAPIService.destroyDomain();
-        }
-*/   
-          
-        
+
         try {
 
             

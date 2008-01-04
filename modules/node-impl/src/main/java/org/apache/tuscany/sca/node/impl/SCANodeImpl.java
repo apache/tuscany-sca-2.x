@@ -276,7 +276,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
     }
     
     public void startFromDomain() throws NodeException {
-        if ((!nodeStarted) && (nodeComposite.getIncludes().size() > 0)){
+        if (!nodeStarted){
             startComposites();
             nodeStarted = true;
         }
@@ -287,7 +287,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             stopComposites();
             nodeStarted = false;             
         } 
-    }
+    }  
     
     public void addContributionFromDomain(String contributionURI, URL contributionURL, ClassLoader contributionClassLoader ) throws NodeException {
         
@@ -372,7 +372,13 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             
             // remove any deployed composites from the node level composite
             for (Composite composite : contribution.getDeployables()) {
-                nodeComposite.getIncludes().remove(composite);
+                if (nodeComposite.getIncludes().contains(composite)){
+                    // deactivate it
+                    deactivateComposite(composite);
+                    
+                    // remove it
+                    nodeComposite.getIncludes().remove(composite);
+                }
             }
             
             // remove the local record of the contribution
@@ -388,82 +394,76 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
         if (nodeStarted){
             throw new NodeException("Can't add composite " + compositeQName.toString() + " when the node is running. Call stop() on the node first");
         }
-       
-        // if no composite name is specified add all deployable composites
-        // to the domain
-        if (compositeQName == null){
-            for (Composite composite : composites.values()) {
-                if (!nodeComposite.getIncludes().contains(composite)) {
-                    nodeComposite.getIncludes().add(composite);                        
-                }
-            } 
-        } else {          
-            Composite composite = composites.get(compositeQName);
+        
+        Composite composite = composites.get(compositeQName);
+        
+        if (composite == null) {
+            throw new NodeException("Composite " + compositeQName.toString() + " not found" );
+        }
+        
+        // if the named composite is not already in the list then deploy it
+        if (!nodeComposite.getIncludes().contains(composite)) {
+            nodeComposite.getIncludes().add(composite);  
             
-            if (composite == null) {
-                throw new NodeException("Composite " + compositeQName.toString() + " not found" );
-            }
-            
-            // if the named composite is not already in the list then deploy it
-            if (!nodeComposite.getIncludes().contains(composite)) {
-                nodeComposite.getIncludes().add(composite);              
-            }
-        }  
+            try {
+                // build and activate the model for this composite
+                activateComposite(composite); 
+            } catch (Exception ex) {
+                throw new NodeException(ex);
+            }                   
+        }
     }
 
     // SCANode API methods 
     
     public void start() throws NodeException {
-        if ((!nodeStarted) && (nodeComposite.getIncludes().size() > 0)){
+        if (domainURI != null){
+            throw new NodeException("Node is part of domain " +
+                                    domainURI + 
+                                    " so must be starterd from there");
+        } else {
             startFromDomain();
-            
-            try {
-                scaDomain.registerNodeStart(nodeURI);
-            } catch (Exception ex) {
-                throw new NodeException(ex);
-            } 
         }
     }
     
     public void stop() throws NodeException {
-        if (nodeStarted){
-            stopFromDomain();
-            
-            try {
-                scaDomain.registerNodeStop(nodeURI);
-            } catch (Exception ex) {
-                throw new NodeException(ex);
-            }             
+        if (domainURI != null){
+            throw new NodeException("Node is part of domain " +
+                                    domainURI + 
+                                    " so must be stopped from there");
+        } else {
+            stopFromDomain();           
         } 
     }
     
     public void destroy() throws NodeException {
         try {
-            stop();
+            stopFromDomain();
             
-            removeAllContributions(); 
-            
+            removeAllContributions();
+                       
+            // remove the node factory
             ModelFactoryExtensionPoint factories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
             factories.removeFactory(nodeFactory); 
             nodeFactory.setNode(null);
             
-            scaDomain.removeNode(this);  
-            scaDomain.destroy();
+            // unregister the node
+            scaDomain.removeNode(this);
             
             // node runtime is stopped by the domain proxy once it has
             // removed the management components
-            
+            scaDomain.destroy();
+                        
             scaDomain = null;            
             nodeRuntime = null;
             contributions = null;
             composites = null;
-            compositeFiles = null;
-            
+            compositeFiles = null;            
         } catch(NodeException ex) {
             throw ex;            
         } catch (Exception ex) {
             throw new NodeException(ex);
-        }
+        }  
     }
  
     public String getURI(){
@@ -496,8 +496,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
         try { 
             removeContributionFromDomain(contributionURI);
             
-            // remove the contribution from the domain. It will generally already be removed
-            // unless the contribution has been removed from the node itself. 
+            // remove the contribution from the domain. 
             scaDomain.unregisterContribution(nodeURI, contributionURI);                  
             
         } catch (Exception ex) {
@@ -550,12 +549,16 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
                     nodeComposite.getIncludes().add(composite);
                     
                     try {
+                        // build and activate the model for this composite
+                        activateComposite(composite);
+                        
                         // register the composite with the domain
                         scaDomain.registerDomainLevelComposite(nodeURI, composite.getName().toString());                  
                     
                     } catch (Exception ex) {
                         throw new NodeException(ex);
-                    }                        
+                    }   
+                    
                 }
             } 
         } else {          
@@ -564,18 +567,15 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             if (composite == null) {
                 throw new NodeException("Composite " + compositeQName.toString() + " not found" );
             }
-            
-            /* being marked as deployable is only an indicator and shouldn;t be enforced             
-            if ( !isDeployable(composite)){
-                throw new NodeException("Composite " + compositeQName.toString() + " is not deployable");
-            }
-            */
-            
+                        
             // if the named composite is not already in the list then deploy it
             if (!nodeComposite.getIncludes().contains(composite)) {
                 nodeComposite.getIncludes().add(composite);
                 
                 try {
+                    // build and activate the model for this composite
+                    activateComposite(composite);
+                    
                     // register the composite with the domain
                     scaDomain.registerDomainLevelComposite(nodeURI, composite.getName().toString());                  
                 
@@ -584,6 +584,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
                 }                 
             }
         }  
+        
     }
     
     public void addToDomainLevelComposite(String compositePath) throws NodeException {
@@ -597,10 +598,29 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
                 addToDomainLevelComposite(composite.getName());
             } else {
                 throw new NodeException("Composite " + compositePath + " not found" );
-            }
-                
+            }  
         }
     }
+    
+    private void activateComposite(Composite composite) throws CompositeBuilderException, ActivationException {
+        logger.log(Level.INFO, "Building composite: " + composite.getName());
+        
+        // Create the model for the composite
+        nodeRuntime.getCompositeBuilder().build(composite); 
+        
+        // activate the composite
+        nodeRuntime.getCompositeActivator().activate(composite); 
+        
+        // tell the domain where all the service endpoints are
+        registerRemoteServices(nodeURI, composite);        
+    }  
+    
+    private void deactivateComposite(Composite composite) throws CompositeBuilderException, ActivationException {
+        nodeRuntime.getCompositeActivator().deactivate(composite);
+       
+        // no deregistering of endpoints as endpoint handling is going to have to change
+    }
+    
 
     /**
      * Configure the default HTTP port for this node.
@@ -676,18 +696,13 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
                 logger.log(Level.INFO, nodeURI + 
                                        " has no composites to start" );
             } else {
-                
+/* TODO - moved build/activate back to the point where the 
+ *        composite is added. What should I do about this default port business.
+ *        I think that needs to be consumed by the domain model anyhow            
                 // Configure the default server port for the node
                 configureDefaultPort();
-                
-                for (Composite composite : nodeComposite.getIncludes()) {
-                    // don't try and restart the management composite
-                    // they will already have been started by the domain proxy
-                    if (!composite.getName().equals(nodeManagementCompositeName)){
-                        buildComposite(composite);
-                    }
-                }
-                
+*/                 
+               
                 // do cross composite wiring. This is here just in case
                 // the node has more than one composite and is stand alone
                 // If the node is not stand alone the domain will do this
@@ -708,22 +723,9 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             throw new NodeException(ex);
         }  
     }
-    
-    private void buildComposite(Composite composite) throws CompositeBuilderException, ActivationException {
-        logger.log(Level.INFO, "Building composite: " + composite.getName());
-        
-        // Create the model for the composite
-        nodeRuntime.getCompositeBuilder().build(composite); 
-        
-        // activate the composite
-        nodeRuntime.getCompositeActivator().activate(composite); 
-    }
 
     private void startComposite(Composite composite) throws CompositeBuilderException, ActivationException {
         logger.log(Level.INFO, "Starting composite: " + composite.getName());               
-        
-        // tell the domain where all the service endpoints are
-        registerRemoteServices(nodeURI, composite);
         
         //start the composite
         nodeRuntime.getCompositeActivator().start(composite);
@@ -750,7 +752,6 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
       throws ActivationException {
         logger.log(Level.INFO, "Stopping composite: " + composite.getName());
         nodeRuntime.getCompositeActivator().stop(composite);
-        nodeRuntime.getCompositeActivator().deactivate(composite);
     }
     
     private void registerRemoteServices(String nodeURI, Composite composite){

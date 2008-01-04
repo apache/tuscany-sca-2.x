@@ -67,26 +67,26 @@ public class DomainInMemoryTestCase {
             nodeA = nodeFactory.createSCANode("http://localhost:8085/nodeA", "http://localhost:9999");
             nodeA.addContribution("nodeA", cl.getResource("nodeA/"));
             nodeA.addToDomainLevelComposite(new QName("http://sample", "CalculatorA"));
-            nodeA.start();
 
             
             nodeB = nodeFactory.createSCANode("http://localhost:8086/nodeB", "http://localhost:9999");
             nodeB.addContribution("nodeB", cl.getResource("nodeB/"));
             nodeB.addToDomainLevelComposite(new QName("http://sample", "CalculatorB"));
-            nodeB.start();
 
             
             nodeC = nodeFactory.createSCANode("http://localhost:8087/nodeC", "http://localhost:9999");
             nodeC.addContribution("nodeC", cl.getResource("nodeC/"));
             nodeC.addToDomainLevelComposite(new QName("http://sample", "CalculatorC"));
-            nodeC.start();
 
+            
             SCADomainFinder domainFinder = SCADomainFinder.newInstance();
             domain = domainFinder.getSCADomain("http://localhost:9999");
             
+            domain.start();
+            
             // get a reference to various services in the domain
             calculatorServiceA = nodeA.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentA");
-            calculatorServiceB = nodeB.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentB");
+            //calculatorServiceB = nodeB.getDomain().getService(CalculatorService.class, "CalculatorServiceComponentB");
             
             //addServiceB = domain.getService(AddService.class, "AddServiceComponentB");
             //addServiceB = nodeA.getDomain().getService(AddService.class, "AddServiceComponentB");
@@ -99,10 +99,16 @@ public class DomainInMemoryTestCase {
 
     @AfterClass
     public static void destroy() throws Exception {
-        // stop the nodes and hence the domains they contain        
+        // stop the domain
+        domain.stop();
+        
+        // destory the nodes       
         nodeA.destroy();
         nodeB.destroy();
         nodeC.destroy();
+        
+        // destroy the domain
+        domain.destroy();
     }    
 
     @Test
