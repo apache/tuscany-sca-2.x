@@ -98,6 +98,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
 import org.apache.tuscany.sca.runtime.EndpointReference;
+import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -121,9 +122,6 @@ public class Axis2ServiceProvider {
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_ADDRESS);
     public static final QName QNAME_WSA_FROM =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_FROM);
-    public static final QName QNAME_WSA_TO =
-        new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.WSA_TO);
-
     public static final QName QNAME_WSA_REFERENCE_PARAMETERS =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_REFERENCE_PARAMETERS);
 
@@ -530,9 +528,15 @@ public class Axis2ServiceProvider {
         //FIXME: can we use the Axis2 addressing support for this?
         SOAPHeader header = inMC.getEnvelope().getHeader();
         if (header != null) {
-            OMElement to = header.getFirstChildWithName(QNAME_WSA_TO);
-            if (to != null) {
-                OMElement params = to.getFirstChildWithName(QNAME_WSA_REFERENCE_PARAMETERS);
+            OMElement from = header.getFirstChildWithName(QNAME_WSA_FROM);
+            if (from != null) {
+                OMElement callbackAddrElement = from.getFirstChildWithName(QNAME_WSA_ADDRESS);
+                if (callbackAddrElement != null) {
+                    if (contract.getInterfaceContract().getCallbackInterface() != null) {
+                        callbackAddress = callbackAddrElement.getText();
+                    }
+                }
+                OMElement params = from.getFirstChildWithName(QNAME_WSA_REFERENCE_PARAMETERS);
                 if (params != null) {
                     OMElement convIDElement =
                         params.getFirstChildWithName(Axis2BindingInvoker.CONVERSATION_ID_REFPARM_QN);
@@ -541,19 +545,10 @@ public class Axis2ServiceProvider {
                             conversationID = convIDElement.getText();
                         }
                     }
-                    OMElement callbackAddrElement =
-                        params.getFirstChildWithName(Axis2BindingInvoker.CALLBACK_REFERENCE_REFPARM_QN);
-                    if (callbackAddrElement != null) {
-                        if (contract.getInterfaceContract().getCallbackInterface() != null) {
-                            callbackAddress = callbackAddrElement.getText();
-                        }
-                    }
                     OMElement callbackIDElement =
                         params.getFirstChildWithName(Axis2BindingInvoker.CALLBACK_ID_REFPARM_QN);
                     if (callbackIDElement != null) {
-                        if (contract.getInterfaceContract().getCallbackInterface() != null) {
-                            callbackID = callbackIDElement.getText();
-                        }
+                        callbackID = callbackIDElement.getText();
                     }
                 }
             }
@@ -562,29 +557,31 @@ public class Axis2ServiceProvider {
         // create a message object and set the args as its body
         Message msg = messageFactory.createMessage();
         msg.setBody(args);
-        msg.setOperation( op );
+        msg.setOperation(op);
         
         //fill message with QoS context info 
         fillQoSContext(msg, inMC);
         
-        // if reference parameters are needed, create a new "To" EPR to hold them
-        EndpointReference to = null;
+        // if reference parameters are needed, create a new "From" EPR to hold them
+        EndpointReference from = null;
+        ReferenceParameters parameters = null;
         if (callbackAddress != null ||
             callbackID != null ||
             conversationID != null) {
-            to = new EndpointReferenceImpl(null);
-            msg.setTo(to);
+            from = new EndpointReferenceImpl(null);
+            parameters = from.getReferenceParameters();
+            msg.setFrom(from);
         }
 
-        // set the reference parameters into the "To" EPR
+        // set the reference parameters into the "From" EPR
         if (callbackAddress != null) {
-            to.getReferenceParameters().setCallbackReference(new EndpointReferenceImpl(callbackAddress));
+            parameters.setCallbackReference(new EndpointReferenceImpl(callbackAddress));
         }
         if (callbackID != null) {
-            to.getReferenceParameters().setCallbackID(callbackID);
+            parameters.setCallbackID(callbackID);
         }
         if (conversationID != null) {
-            to.getReferenceParameters().setConversationID(conversationID);
+            parameters.setConversationID(conversationID);
         }
 
         // find the runtime wire and invoke it with the message

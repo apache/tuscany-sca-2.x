@@ -128,11 +128,11 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
      * @param msgContext
      */
     private static EndpointReference getCallbackEndpoint(Message msgContext) {
-        EndpointReference to = msgContext.getTo();
-        if (to == null) {
+        EndpointReference from = msgContext.getFrom();
+        if (from == null) {
             return null;
         }
-        return to.getReferenceParameters().getCallbackReference();
+        return from.getReferenceParameters().getCallbackReference();
     }
 
     private static RuntimeWire cloneAndBind(Message msgContext, RuntimeWire wire) {

@@ -27,7 +27,7 @@ public class ConversationIDObjectFactory implements ObjectFactory {
     }
 
     public Object getInstance() {
-        return ThreadMessageContext.getMessageContext().getTo().getReferenceParameters().getConversationID();
+        return ThreadMessageContext.getMessageContext().getFrom().getReferenceParameters().getConversationID();
 
     }
 }

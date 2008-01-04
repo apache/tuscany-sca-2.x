@@ -101,11 +101,11 @@ public class OSGiTargetInvoker<T> implements Invoker {
 
         Object contextId = null;
 
-        EndpointReference to = msg.getTo();
+        EndpointReference from = msg.getFrom();
         ReferenceParameters parameters = null;
 
-        if (to != null) {
-            parameters = to.getReferenceParameters();
+        if (from != null) {
+            parameters = from.getReferenceParameters();
         }
         // check what sort of context is required
         if (scopeContainer != null) {

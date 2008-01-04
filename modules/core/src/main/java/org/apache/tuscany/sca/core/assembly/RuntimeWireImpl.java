@@ -119,7 +119,6 @@ public class RuntimeWireImpl implements RuntimeWire {
     public Object invoke(Operation operation, Object[] args) throws InvocationTargetException {
         Message msg = messageFactory.createMessage();
         msg.setBody(args);
-        msg.setTo(wireTarget);
         return invoker.invoke(operation, msg);
     }
 

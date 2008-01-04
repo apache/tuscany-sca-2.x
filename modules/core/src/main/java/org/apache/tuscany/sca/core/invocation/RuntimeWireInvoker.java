@@ -55,7 +55,6 @@ public class RuntimeWireInvoker {
     protected boolean conversational;
     protected ExtendedConversation conversation;
     protected MessageFactory messageFactory;
-    protected EndpointReference endpoint;
     protected Object conversationID;
     protected Object callbackID;
     protected Object callbackObject;
@@ -90,30 +89,26 @@ public class RuntimeWireInvoker {
     }
 
     protected Object invoke(InvocationChain chain, Message msg, RuntimeWire wire) throws InvocationTargetException {
+        EndpointReference from = msg.getFrom();
+        EndpointReference epFrom = wire.getSource();
+        if (from != null) {
+            from.mergeEndpoint(epFrom);
+        } else {
+            msg.setFrom(epFrom);
+        }
+        msg.setTo(wire.getTarget());
 
-        msg.setFrom(wire.getSource());
-        EndpointReference epTo = null;
-        if (endpoint != null) {
-            epTo = endpoint;
-        } else {
-            epTo = wire.getTarget();
-        }
-        if (msg.getTo() != null) {
-            msg.getTo().mergeEndpoint(epTo);
-        } else {
-            msg.setTo(epTo);
-        }
         Invoker headInvoker = chain.getHeadInvoker();
         Operation operation = chain.getTargetOperation();
         msg.setOperation(operation);
 
         Message msgContext = ThreadMessageContext.getMessageContext();
-        Object currentConversationID = msgContext.getTo().getReferenceParameters().getConversationID();
+        Object currentConversationID = msgContext.getFrom().getReferenceParameters().getConversationID();
 
         ThreadMessageContext.setMessageContext(msg);
         try {
             conversationPreinvoke(msg);
-            handleCallback(msg, currentConversationID);
+            // handleCallback(msg, currentConversationID);
             // dispatch the wire down the chain and get the response
             Message resp = headInvoker.invoke(msg);
             Object body = resp.getBody();
@@ -140,21 +135,20 @@ public class RuntimeWireInvoker {
      * @param msgContext
      */
     protected EndpointReference getCallbackEndpoint(Message msgContext) {
-        EndpointReference to = msgContext.getTo();
-        return to == null ? null : to.getReferenceParameters().getCallbackReference();
+        EndpointReference from = msgContext.getFrom();
+        return from == null ? null : from.getReferenceParameters().getCallbackReference();
     }
 
     /**
-     * @param msg
-     * @param wire
-     * @param interfaze
-     * @throws TargetResolutionException
+     * This method has bugs in it and is not needed by this class.  It is no
+     * longer called and will be removed completely when I finish my cleanup
+     * of this class.
      */
     @SuppressWarnings("unchecked")
     private void handleCallback(Message msg, Object currentConversationID) throws TargetResolutionException {
         EndpointReference from = msg.getFrom();
-        EndpointReference to = msg.getTo();
-        msg.getTo().getReferenceParameters().setCallbackID(callbackID);
+        ReferenceParameters parameters = from.getReferenceParameters();
+        parameters.setCallbackID(callbackID);
         if (from == null || from.getCallbackEndpoint() == null) {
             return;
         }
@@ -168,12 +162,10 @@ public class RuntimeWireInvoker {
             ScopeContainer scopeContainer = getConversationalScopeContainer(msg);
 
             if (scopeContainer != null) {
-                scopeContainer.addWrapperReference(currentConversationID, to.getReferenceParameters()
-                    .getConversationID());
+                scopeContainer.addWrapperReference(currentConversationID, parameters.getConversationID());
             }
         }
 
-        ReferenceParameters parameters = msg.getTo().getReferenceParameters();
         Interface interfaze = msg.getOperation().getInterface();
         if (callbackObject != null) {
             if (callbackObject instanceof ServiceReference) {
@@ -190,7 +182,7 @@ public class RuntimeWireInvoker {
                             InstanceWrapper wrapper = new CallbackObjectWrapper(callbackObject);
                             scopeContainer.registerWrapper(wrapper, conversation.getConversationID());
                         }
-                        parameters.setCallbackObjectID("java:" + System.identityHashCode(callbackObject));
+                        parameters.setCallbackObjectID(callbackObject);
                     }
                 }
             }
@@ -204,10 +196,12 @@ public class RuntimeWireInvoker {
      */
     private void conversationPreinvoke(Message msg) {
         if (conversational) {
+            ReferenceParameters parameters = msg.getFrom().getReferenceParameters();
             // in some cases the ConversationID that should be used comes in with the 
-            // message, e.g. when ws binding is in use. 
-            if (msg.getTo().getReferenceParameters().getConversationID() != null) {
-                conversationID =  msg.getTo().getReferenceParameters().getConversationID();
+            // message, e.g. when ws binding is in use.
+            Object convID = parameters.getConversationID();
+            if (convID != null) {
+                conversationID = convID;
             }
             conversation = conversationManager.getConversation(conversationID);
             
@@ -215,9 +209,8 @@ public class RuntimeWireInvoker {
                 conversation = conversationManager.startConversation(conversationID);
             }
     
-            msg.getTo().getReferenceParameters().setConversationID(conversation.getConversationID());
+            parameters.setConversationID(conversation.getConversationID());
         }
-
     }
 
     /**
@@ -234,8 +227,9 @@ public class RuntimeWireInvoker {
             if (sequence == ConversationSequence.CONVERSATION_END) {
                 // in some cases the ConversationID that should be used comes in with the 
                 // message, e.g. when ws binding is in use. 
-                if (msg.getTo().getReferenceParameters().getConversationID() != null) {
-                    conversationID =  msg.getTo().getReferenceParameters().getConversationID();
+                Object convID = msg.getFrom().getReferenceParameters().getConversationID();
+                if (convID != null) {
+                    conversationID = convID;
                 }
                 conversation = conversationManager.getConversation(conversationID);            
     
