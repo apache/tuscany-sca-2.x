@@ -52,6 +52,7 @@
                 <module>conversations</module>
                 <module>conversations-ws</module>
                 <module>databindings</module>
+                <module>domain</module>
                 <module>exceptions</module>
                 <module>exceptions-cross-binding</module>
                 <module>exceptions-cross-binding-ws</module>
