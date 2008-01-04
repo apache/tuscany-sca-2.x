@@ -24,17 +24,24 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.model.FileSet;
+import org.apache.maven.model.Plugin;
+import org.apache.maven.model.PluginExecution;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+
+import com.ibm.xslt4j.bcel.generic.CASTORE;
 
 /**
  * A Maven plugin that generates an Ant build.xml file for Tuscany SCA samples.
@@ -184,6 +191,11 @@ public class AntGeneratorMojo extends AbstractMojo {
         int base = project.getBasedir().toString().length() + 1;
         pw.println("    <target name=\"compile\">");
         pw.println("        <mkdir dir=\"target/classes\"/>");
+
+        // Generate any pre-compilation tasks
+        generatePreCompileTasks(pw);
+        
+        // Generate the compile task
         pw.println("        <javac destdir=\"target/classes\" debug=\"on\" source=\"1.5\" target=\"1.5\">");
         for (String source: (List<String>)project.getCompileSourceRoots()) {
             if (source.length() > base) {
@@ -310,6 +322,188 @@ public class AntGeneratorMojo extends AbstractMojo {
         }
         pw.println("    </fileset>");
         pw.println();
+    }
+    
+    /**
+     * Extract plugin execution configurations out of the Maven model. This handles
+     * nested configurations with a base configuration and a collection of nested
+     * configuration elements, for example: 
+     * <configuration>
+     *     <schemaFiles>
+     *         <configuration>
+     *             <fileName>x.wsdl</fileName>
+     *         </configuration>
+     *         <configuration>
+     *             <fileName>y.wsdl</fileName>
+     *         </configuration>
+     *     </schemaFiles>
+     *     <noNotification>true</noNotification>
+     * </configuration>
+     *                         
+     * @param execution Maven plugin execution model
+     * @return a list of maps containing the plugin configuration key value pairs
+     */
+    private static List<Map<String, String>> pluginConfigurations(PluginExecution execution) {
+        List<Map<String, String>> configurations = new ArrayList<Map<String,String>>();
+        Map<String, String> topConfiguration = new HashMap<String, String>();
+        
+        Xpp3Dom dom = (Xpp3Dom)execution.getConfiguration();
+        for (Xpp3Dom element: dom.getChildren()) {
+            if (element.getChildCount() != 0) {
+                // Handle nested configuration element, create a child configuration
+                // for each
+                for (Xpp3Dom childConfigurationElement: element.getChildren()) {
+                    Map<String, String> childConfiguration = new HashMap<String, String>();
+                    for (Xpp3Dom childElement: childConfigurationElement.getChildren()) {
+                        childConfiguration.put(childElement.getName(), childElement.getValue());
+                    }
+                    configurations.add(childConfiguration);
+                }
+            } else {
+                // Handle top level key value pair element
+                topConfiguration.put(element.getName(), element.getValue());
+            }
+        }
+        // Return the top configuration or the child configurations merged
+        // with the top one
+        if (configurations.isEmpty()) {
+            configurations.add(topConfiguration);
+        } else {
+            for (Map<String, String> configuration: configurations) {
+                configuration.putAll(topConfiguration);
+            }
+        }
+        return configurations;
+    }
+    
+    /**
+     * Generate Ant tasks for the pre-compilation generation plugins
+     * used in the Maven module.
+     * @param pw PrintWriter to write to
+     * @return list of directories containing generated source to compile
+     */
+    private void generatePreCompileTasks(PrintWriter pw) {
+        String baseDir = project.getBasedir().getAbsolutePath() + '/';
+        
+        List<Plugin> plugins = (List<Plugin>)project.getBuildPlugins();
+        for (Plugin plugin: plugins) {
+            
+            // Generate Ant task equivalent to the Tuscany SDO plugin
+            if ("org.apache.tuscany.sdo".equals(plugin.getGroupId()) && "tuscany-sdo-plugin".equals(plugin.getArtifactId())) {
+                for (PluginExecution execution: (List<PluginExecution>)plugin.getExecutions()) {
+                    for (Map<String, String> configuration: pluginConfigurations(execution)) {
+                        
+                        pw.println("        <java classname=\"org.apache.tuscany.sdo.generate.XSD2JavaGenerator\" fork=\"true\">");
+                        
+                        // Generate the various code generation options
+                        for (Map.Entry<String, String> element: configuration.entrySet()) {
+                            String key = element.getKey();
+                            String value = element.getValue();
+                            if (key.equals("schemaNamespace")) {
+                                pw.println("            <arg value=\"-schemaNamespace\"/>");
+                                pw.println("            <arg value=\"" + value + "\"/>");
+                            }
+                            if (key.equals("javaPackage")) {
+                                pw.println("            <arg value=\"-javaPackage\"/>");
+                                pw.println("            <arg value=\"" + value + "\"/>");
+                            }
+                            if (key.equals("prefix")) {
+                                pw.println("            <arg value=\"-prefix\"/>");
+                                pw.println("            <arg value=\"" + value + "\"/>");
+                            }
+                            if (key.equals("noInterfaces") && "true".equals(value)) {
+                                pw.println("            <arg value=\"-noInterfaces\"/>");
+                            }
+                            if (key.equals("noNotification") && "true".equals(value)) {
+                                pw.println("            <arg value=\"-noNotification\"/>");
+                            }
+                            if (key.equals("noContainer") && "true".equals(value)) {
+                                pw.println("            <arg value=\"-noContainment\"/>");
+                            }
+                            if (key.equals("noUnsettable") && "true".equals(value)) {
+                                pw.println("            <arg value=\"-noUnsettable\"/>");
+                            }
+                        }
+                        
+                        // Generate target directory parameter
+                        String targetDirectory = configuration.get("targetDirectory");
+                        if (targetDirectory == null) {
+                            targetDirectory = "target/sdo-source";
+                        } else if (targetDirectory.startsWith(baseDir)) {
+                            targetDirectory = targetDirectory.substring(baseDir.length());
+                        }
+                        pw.println("            <arg value=\"-targetDirectory\"/>");
+                        pw.println("            <arg value=\"" + targetDirectory + "\"/>");
+                        
+                        // Generate schema file parameter
+                        String schemaFile = configuration.get("schemaFile");
+                        if (schemaFile == null) {
+                            schemaFile = configuration.get("fileName");
+                        }
+                        if (schemaFile != null) {
+                            if (schemaFile.startsWith(baseDir)) {
+                                schemaFile = schemaFile.substring(baseDir.length());
+                            }
+                            pw.println("            <arg value=\"" + schemaFile + "\"/>");
+                        }
+
+                        pw.println("            <classpath>");
+                        pw.println("                <fileset refid=\"tuscany.jars\"/>");
+                        pw.println("                <fileset refid=\"3rdparty.jars\"/>");
+                        pw.println("            </classpath>");
+                        pw.println("        </java>");
+                    }
+                }
+            }
+            
+            // Generate Ant task equivalent to the Tuscany WSDL2Java plugin
+            else if ("org.apache.tuscany.sca".equals(plugin.getGroupId()) && "tuscany-maven-wsdl2java".equals(plugin.getArtifactId())) {
+                for (PluginExecution execution: (List<PluginExecution>)plugin.getExecutions()) {
+                    for (Map<String, String> configuration: pluginConfigurations(execution)) {
+
+                        pw.println("        <java classname=\"org.apache.tuscany.tools.wsdl2java.generate.WSDL2JavaGenerator\" fork=\"true\">");
+                        
+                        // Generate the various code generation options
+                        for (Map.Entry<String, String> element: configuration.entrySet()) {
+                            String key = element.getKey();
+                            String value = element.getValue();
+                            if (key.equals("javaPackage")) {
+                                pw.println("            <arg value=\"-javaPackage\"/>");
+                                pw.println("            <arg value=\"" + value + "\"/>");
+                            }
+                        }
+                        
+                        // Generate target directory parameter
+                        String targetDirectory = configuration.get("targetDirectory");
+                        if (targetDirectory == null) {
+                            targetDirectory = "target/wsdl2java-source";
+                        } else if (targetDirectory.startsWith(baseDir)) {
+                            targetDirectory = targetDirectory.substring(baseDir.length());
+                        }
+                        pw.println("            <arg value=\"-targetDirectory\"/>");
+                        pw.println("            <arg value=\"" + targetDirectory + "\"/>");
+                        
+                        // Generate WSDL file parameter
+                        String wsdlFile = configuration.get("wsdlFile");
+                        if (wsdlFile == null) {
+                            wsdlFile = configuration.get("fileName");
+                        }
+                        if (wsdlFile != null) {
+                            if (wsdlFile.startsWith(baseDir)) {
+                                wsdlFile = wsdlFile.substring(baseDir.length());
+                            }
+                            pw.println("            <arg value=\"" + wsdlFile + "\"/>");
+                        }
+
+                        pw.println("            <classpath>");
+                        pw.println("                <fileset refid=\"tuscany.jars\"/>");
+                        pw.println("                <fileset refid=\"3rdparty.jars\"/>");
+                        pw.println("            </classpath>");
+                        pw.println("        </java>");
+                    }
+                }
+            }
+        }
     }
 
     /**
