@@ -161,19 +161,19 @@
                 <executions>
                     <execution>
                         <id>generate-sdo</id>
-                        <phase>process-resources</phase>
+                        <phase>generate-sources</phase>
                         <configuration>
                             <schemaFiles>
                                 <configuration>
-                                    <fileName>${project.build.directory}/classes/Alerts.wsdl</fileName>
+                                    <fileName>${basedir}/src/main/resources/Alerts.wsdl</fileName>
                                     <javaPackage>org.apache.tuscany.sca.demos.aggregator.service</javaPackage>
                                 </configuration>
                                 <configuration>
-                                    <fileName>${project.build.directory}/classes/AlertsSources.wsdl</fileName>
+                                    <fileName>${basedir}/src/main/resources/AlertsSources.wsdl</fileName>
                                     <javaPackage>org.apache.tuscany.sca.demos.aggregator.sources</javaPackage>
                                 </configuration>
                                 <configuration>
-                                    <fileName>${project.build.directory}/classes/Alerts.xsd</fileName>
+                                    <fileName>${basedir}/src/main/resources/Alerts.xsd</fileName>
                                     <javaPackage>org.apache.tuscany.sca.demos.aggregator.types</javaPackage>
                                 </configuration>
                             </schemaFiles>
