@@ -23,4 +23,5 @@
    <export.java package="services.merger"/>
    <export.java package="services.db"/>
    <import.java package="org.apache.tuscany.sca.implementation.data.collection"/>
+   <import.java package="org.apache.derby.*"/>
 </contribution>
