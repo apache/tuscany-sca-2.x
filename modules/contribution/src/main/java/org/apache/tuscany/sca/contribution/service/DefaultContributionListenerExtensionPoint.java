@@ -20,10 +20,13 @@
 package org.apache.tuscany.sca.contribution.service;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
 import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 
@@ -36,6 +39,15 @@ public class DefaultContributionListenerExtensionPoint implements ContributionLi
     
     private List<ContributionListener> listeners = new ArrayList<ContributionListener>();
     private boolean loadedListeners;
+    private ModelFactoryExtensionPoint modelFactories;
+    
+    /**
+     * Constructs a new DefaultContributionListenerExtensionPoint.
+     *  
+     */
+    public DefaultContributionListenerExtensionPoint(ModelFactoryExtensionPoint modelFactories) {
+        this.modelFactories = modelFactories;
+    }
 
     public void addContributionListener(ContributionListener listener) {
         listeners.add(listener);
@@ -58,7 +70,7 @@ public class DefaultContributionListenerExtensionPoint implements ContributionLi
         if (loadedListeners)
             return;
 
-        // Get the databinding service declarations
+        // Get the listener service declarations
         Set<ServiceDeclaration> listenerDeclarations; 
         try {
             listenerDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(ContributionListener.class);
@@ -66,12 +78,21 @@ public class DefaultContributionListenerExtensionPoint implements ContributionLi
             throw new IllegalStateException(e);
         }
         
-        // Load data bindings
+        // Load and instantiate the listeners
         for (ServiceDeclaration listenerDeclaration: listenerDeclarations) {
             ContributionListener listener;
             try {
                 Class<ContributionListener> listenerClass = (Class<ContributionListener>)listenerDeclaration.loadClass();
-                listener = listenerClass.newInstance();
+                try {
+                    Constructor<ContributionListener> constructor = listenerClass.getConstructor(ModelFactoryExtensionPoint.class);
+                    try {
+                        listener = constructor.newInstance(modelFactories);
+                    } catch (InvocationTargetException e) {
+                        throw new IllegalArgumentException(e);
+                    }
+                } catch (NoSuchMethodException e) {
+                    listener = listenerClass.newInstance();
+                }
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(e);
             } catch (InstantiationException e) {

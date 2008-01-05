@@ -20,14 +20,20 @@
 package org.apache.tuscany.sca.contribution.java.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.resolver.DefaultImportAllModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionListener;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 
@@ -39,7 +45,16 @@ import org.apache.tuscany.sca.contribution.service.ContributionRepository;
  * @version $Rev$ $Date$
  */
 public class JavaImportExportListener implements ContributionListener {
-
+    
+    private ContributionFactory contributionFactory;
+    
+    /**
+     * Constructs a new JavaImportExportListener
+     */
+    public JavaImportExportListener(ModelFactoryExtensionPoint modelFactories) {
+        contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+    }
+    
     /**
      * Initialize the import/export model resolvers
      * Export model resolvers are same as Contribution model resolver
@@ -49,6 +64,46 @@ public class JavaImportExportListener implements ContributionListener {
      * match import/export for class loading.
      */
     public void contributionAdded(ContributionRepository repository, Contribution contribution) {
+        
+        // If the contribution does not contain sca-contribution.xml metadata
+        // (for example it's an existing JAR developed before SCA existed)
+        // export all its Java packages
+        ModelResolver modelResolver = contribution.getModelResolver();
+        
+        // Look for META-INF/sca-contribution.xml
+        DeployedArtifact artifact = contributionFactory.createDeployedArtifact();
+        artifact.setURI(Contribution.SCA_CONTRIBUTION_META);
+        artifact = modelResolver.resolveModel(DeployedArtifact.class, artifact);
+        if (artifact.getLocation() == null) {
+
+            // Look for META-INF/sca-contribution-generated.xml
+            artifact.setURI(Contribution.SCA_CONTRIBUTION_GENERATED_META);
+            artifact = modelResolver.resolveModel(DeployedArtifact.class, artifact);
+            if (artifact.getLocation() == null) {
+                
+                // No contribution metadata file was found, default to export all the
+                // Java packages found in the contribution
+                Set<String> packages = new HashSet<String>();
+                for (DeployedArtifact a: contribution.getArtifacts()) {
+                    String uri = a.getURI();
+                    if (uri.endsWith(".class")) {
+                        uri = uri.substring(0, uri.length() - 6);
+                        int d = uri.lastIndexOf('/');
+                        if (d != -1) {
+                            packages.add(uri.substring(0, d).replace('/', '.'));
+                        }
+                    }
+                }
+                
+                // Add Java export model objects for all the packages we found
+                for (String pkg: packages) {
+                    JavaExport export = new JavaExportImpl();
+                    export.setPackage(pkg);
+                    contribution.getExports().add(export);
+                }
+            }
+        }
+        
         // Initialize the contribution exports
         for (Export export: contribution.getExports()) {
             export.setModelResolver(contribution.getModelResolver());
