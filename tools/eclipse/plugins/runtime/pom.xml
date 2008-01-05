@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-sca-eclipse-tools</artifactId>
-        <version>1.1-incubating-SNAPSHOT</version>
+        <version>1.2-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -34,302 +34,302 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly-xml</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly-xsd</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-dwr</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ejb</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-feed</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-http</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-jsonrpc</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-rmi</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-sca</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-sca-axis2</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-sca-xml</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-axis2</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-xml</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution-impl</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution-java</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution-namespace</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-core</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-core-databinding</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-core-spi</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-axiom</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-jaxb</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-json</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-sdo</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-sdo-axiom</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-definitions</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-definitions-xml</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-domain</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-domain-api</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-domain-impl</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-extension-helper</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-http</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-jetty</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-rmi</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-data</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-xml</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-resource</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-script</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-spring</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-widget</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-interface</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-interface-java</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-interface-java-xml</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-interface-wsdl</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-interface-wsdl-xml</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-java2wsdl</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-api</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-impl</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-policy</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-policy-logging</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-policy-security</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-policy-xml</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-sca-api</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
