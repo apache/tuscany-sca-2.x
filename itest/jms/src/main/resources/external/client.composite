@@ -27,7 +27,7 @@
 
     <reference name="serviceA" promote="HelloWorldClient/serviceA">
         <interface.java interface="org.apache.tuscany.sca.binding.jms.HelloWorldService" />
-        <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory" jndiURL="tcp://localhost:61619">
+        <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory" jndiURL="tcp://localhost:61616">
             <destination name="DestQueueA"/>
             <response>
                <destination name="RespQueueA"/>

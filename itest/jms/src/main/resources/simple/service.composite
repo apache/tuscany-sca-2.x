@@ -23,7 +23,7 @@
     <component name="HelloWorldService">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.HelloWorldServiceImpl"/>
         <service name="HelloWorldService">
-            <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory" jndiURL="tcp://localhost:61616">
+            <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory" jndiURL="tcp://localhost:61619">
                <destination name="DestQueueA" create="always"/>
                <response>
                   <destination name="RespQueueA" create="always"/>
