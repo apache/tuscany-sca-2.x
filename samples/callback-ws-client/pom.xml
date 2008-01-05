@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-sca</artifactId>
-        <version>1.1-incubating-SNAPSHOT</version>
+        <version>1.2-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>sample-callback-ws-client</artifactId>
@@ -39,34 +39,34 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-api</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ws-axis2</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-tomcat</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node-impl</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>        
 
@@ -80,7 +80,7 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>sample-callback-ws-service</artifactId>
-            <version>1.1-incubating-SNAPSHOT</version>
+            <version>1.2-incubating-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>        
 
@@ -92,7 +92,7 @@
             <plugin>
                 <groupId>org.apache.tuscany.sca</groupId>
                 <artifactId>tuscany-maven-ant-generator</artifactId>
-                <version>1.1-incubating-SNAPSHOT</version>
+                <version>1.2-incubating-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <configuration>

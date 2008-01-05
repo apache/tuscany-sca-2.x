@@ -69,6 +69,10 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
                 IPath sourcePath =
                     runtimePath.append("src/apache-tuscany-sca-1.1-incubating-SNAPSHOT-src.zip");
                 list.add(JavaCore.newLibraryEntry(path, sourcePath, null));
+            } else if (path.lastSegment().equals("tuscany-sca-all-1.2-incubating-SNAPSHOT.jar")) {
+                IPath sourcePath =
+                    runtimePath.append("src/apache-tuscany-sca-1.2-incubating-SNAPSHOT-src.zip");
+                list.add(JavaCore.newLibraryEntry(path, sourcePath, null));
             } else
                 list.add(JavaCore.newLibraryEntry(path, null, null));
         }

@@ -20,7 +20,7 @@
     <property name="test.class" value="calculator.demo.CalculatorServer" />
 	
     <path id="test.classpath">
-        <pathelement location="../../modules/tuscany-binding-rmi-1.1-incubating-SNAPSHOT.jar"/>
+        <pathelement location="../../modules/tuscany-binding-rmi-1.2-incubating-SNAPSHOT.jar"/>
     	<pathelement path="target/demo-bigbank-calculator.jar"/>     	
     	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>    	
     </path>

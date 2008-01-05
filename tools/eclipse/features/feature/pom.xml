@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-sca-eclipse-tools</artifactId>
-        <version>1.1-incubating-SNAPSHOT</version>
+        <version>1.2-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>org.apache.tuscany.sca.feature</artifactId>

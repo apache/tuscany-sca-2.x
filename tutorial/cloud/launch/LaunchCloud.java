@@ -43,7 +43,7 @@ public class LaunchCloud {
         URL cloudContribution = new File("./target/classes").toURL();
         URL assetsContribution = new File("../assets/target/classes").toURL();
         URL derbyContribution = new File(System.getProperty("user.home") + "/.m2/repository/org/apache/derby/derby/10.1.2.1/derby-10.1.2.1.jar").toURL();
-        URL dataAPIContribution = new File(System.getProperty("user.home") + "/.m2/repository/org/apache/tuscany/sca/tuscany-implementation-data-api/1.1-incubating-SNAPSHOT/tuscany-implementation-data-api-1.1-incubating-SNAPSHOT.jar").toURL();
+        URL dataAPIContribution = new File(System.getProperty("user.home") + "/.m2/repository/org/apache/tuscany/sca/tuscany-implementation-data-api/1.2-incubating-SNAPSHOT/tuscany-implementation-data-api-1.2-incubating-SNAPSHOT.jar").toURL();
         
         SCANode catalogsNode = nodeFactory.createSCANode("http://localhost:8200/cloud", "http://localhost:9998");
         catalogsNode.addContribution("http://org/apache/derby", derbyContribution);
