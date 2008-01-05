@@ -190,12 +190,20 @@ public class JMSBindingInvoker implements Invoker {
             Session session = jmsResourceFactory.createSession();
             try {
 
-                Destination replyToDest = (replyDest != null) ? replyDest : session.createTemporaryQueue();
+                Destination replyToDest;
+                if (operation.isNonBlocking()) {
+                    replyToDest = null;
+                } else {
+                    replyToDest = (replyDest != null) ? replyDest : session.createTemporaryQueue();
+                }
 
                 Message requestMsg = sendRequest((Object[])payload, session, replyToDest);
-                Message replyMsg = receiveReply(session, replyToDest, requestMsg.getJMSMessageID());
-
-                return ((Object[])responseMessageProcessor.extractPayloadFromJMSMessage(replyMsg))[0];
+                if (replyToDest == null) {
+                    return null;
+                } else {
+                    Message replyMsg = receiveReply(session, replyToDest, requestMsg.getJMSMessageID());
+                    return ((Object[])responseMessageProcessor.extractPayloadFromJMSMessage(replyMsg))[0];
+                }
 
             } finally {
                 session.close();

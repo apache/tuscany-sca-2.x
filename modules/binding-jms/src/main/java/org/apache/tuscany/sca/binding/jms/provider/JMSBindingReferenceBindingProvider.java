@@ -80,9 +80,6 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
             throw new JMSBindingException("No destination specified for reference " + reference.getName());
         }
 
-        if (jmsBinding.getResponseDestinationName().equals(JMSBindingConstants.DEFAULT_RESPONSE_DESTINATION_NAME)) {
-            throw new JMSBindingException("No response destination specified for reference " + reference.getName());
-        }
         /* The following doesn't work as I can't get to the 
          * target list on the composite reference
                 // if the default destination queue name is set

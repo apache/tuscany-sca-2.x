@@ -26,7 +26,6 @@ import javax.jms.DeliveryMode;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
-import org.apache.tuscany.sca.host.jms.JMSResourceFactory;
 
 /**
  * Models a binding to a JMS resource.
