@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.core.ModuleActivator;
 
 public class ActiveMQModuleActivator implements ModuleActivator {
 
-    private static ActiveMQHost activeMQHost;
+    private static ActiveMQBroker activeMQHost;
 
     public void start(ExtensionPointRegistry registry) {
     }
@@ -38,7 +38,7 @@ public class ActiveMQModuleActivator implements ModuleActivator {
 
     public static void startBroker() {
         if (activeMQHost == null) {
-            activeMQHost = new ActiveMQHost();
+            activeMQHost = new ActiveMQBroker();
             activeMQHost.start();
         }
     }

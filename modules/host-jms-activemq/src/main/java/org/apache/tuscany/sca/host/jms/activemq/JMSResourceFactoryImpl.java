@@ -36,9 +36,10 @@ import org.apache.tuscany.sca.host.jms.JMSResourceFactory;
  */
 public class JMSResourceFactoryImpl implements JMSResourceFactory {
 
-    private String initialContextFactoryName = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
+    private static final String DEFAULT_ICFN = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
+    private String initialContextFactoryName = DEFAULT_ICFN;
     private String connectionFactoryName = "ConnectionFactory";
-    private String jndiURL = "tcp://localhost:61616";
+    private String jndiURL = ActiveMQBroker.CONNECTOR_URL;
     
     private Connection connection;
     private Context context;
@@ -103,8 +104,18 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
     }
 
     public void startBroker() {
-        // ensure the broker has been started
-        ActiveMQModuleActivator.startBroker();
+        if (isEmbedded()) {
+            // ensure the broker has been started
+            ActiveMQModuleActivator.startBroker();
+        }
+    }
+
+    /**
+     * TODO: need to find a way to determine whether or not need to start the embedded broker
+     * for now it always starts it if the activemq icf is being used with our default jndiurl
+     */
+    protected boolean isEmbedded() {
+        return DEFAULT_ICFN.equals(initialContextFactoryName) && ActiveMQBroker.CONNECTOR_URL.equals(jndiURL);
     }
 
     private void createConnection() throws NamingException, JMSException {

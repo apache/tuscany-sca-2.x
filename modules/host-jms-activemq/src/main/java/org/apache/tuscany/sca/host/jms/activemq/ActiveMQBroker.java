@@ -22,17 +22,18 @@ import org.apache.activemq.broker.BrokerService;
 
 /**
  */
-public class ActiveMQHost {
+public class ActiveMQBroker {
 
+    public static final String CONNECTOR_URL = "tcp://localhost:61619";
     private BrokerService broker;
 
-    public ActiveMQHost() {
+    public ActiveMQBroker() {
     }
 
     public void start() {
         broker = new BrokerService();
         try {
-            broker.addConnector("tcp://localhost:61616");
+            broker.addConnector(CONNECTOR_URL);
             broker.start();
         } catch ( Exception e) {
             e.printStackTrace();
