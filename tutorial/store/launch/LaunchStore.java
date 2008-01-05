@@ -45,7 +45,7 @@ public class LaunchStore {
         node.addContribution("http://store", storeContribution);
         
         node.addToDomainLevelComposite(new QName("http://store", "store"));
-        node.start();
+        node.getDomain().start();
 
         System.out.println("store.composite ready for big business !!!");
         System.in.read();

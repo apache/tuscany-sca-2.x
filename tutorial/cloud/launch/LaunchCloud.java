@@ -54,7 +54,8 @@ public class LaunchCloud {
         // the ejb component simply provides the meta data required to locate the 
         // EJB running in Geronimo
 //        catalogsNode.addToDomainLevelComposite(new QName("http://store", "catalog-jee"));
-        catalogsNode.start();
+        //FIXME looks like we can't start/stop individual nodes anymore
+        //catalogsNode.start();
         System.out.println("catalogs.composite ready for big business !!!");
         
         SCANode currencyNode = nodeFactory.createSCANode("http://localhost:8300/cloud", "http://localhost:9998");
@@ -63,8 +64,12 @@ public class LaunchCloud {
         currencyNode.addContribution("http://assets", assetsContribution);
         currencyNode.addContribution("http://cloud", cloudContribution);
         currencyNode.addToDomainLevelComposite(new QName("http://cloud", "currency"));
-        currencyNode.start();
-        System.out.println("currency.composite ready for big business !!!");    
+        //FIXME looks like we can't start/stop individual nodes anymore
+        //currencyNode.start();
+        System.out.println("currency.composite ready for big business !!!");
+        
+        //FIXME looks like we can't start/stop individual nodes anymore
+        catalogsNode.getDomain().start();
      
         System.in.read();
         System.out.println("Stopping ...");
