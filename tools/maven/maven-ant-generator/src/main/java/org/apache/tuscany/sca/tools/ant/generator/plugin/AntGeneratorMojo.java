@@ -41,8 +41,6 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
-import com.ibm.xslt4j.bcel.generic.CASTORE;
-
 /**
  * A Maven plugin that generates an Ant build.xml file for Tuscany SCA samples.
  * 
