@@ -281,4 +281,12 @@ public class WebAppServletHost implements ServletHost {
 //        }
     }
 
+    /**
+     * TODO: How context paths work is still up in the air so for now
+     *    this hacks in a path that gets some samples working
+     *    can't use setContextPath as NodeImpl calls that later
+     */
+    public void setContextPath2(String path) {
+        this.contextPath = path;
+    }
 }
