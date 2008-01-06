@@ -27,14 +27,12 @@ import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
-import javax.xml.namespace.QName;
 
 import org.apache.catalina.Container;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.core.StandardHost;
-import org.apache.tuscany.sca.node.NodeException;
 import org.apache.tuscany.sca.runtime.Launcher;
 
 /**
@@ -59,15 +57,15 @@ public class TuscanyHost extends StandardHost {
     private String contextPath = "/tuscany";
     
     public synchronized void start() throws LifecycleException {
-        startRuntime();
         try {
 
-            launcher.getSCANode().stop();
-            super.start();
-            launcher.getSCANode().addToDomainLevelComposite((QName)null);
-            launcher.getSCANode().start();
+            launcher = initTuscany();
 
-        } catch (NodeException e) {
+            super.start();
+            
+            launcher.start();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -77,21 +75,7 @@ public class TuscanyHost extends StandardHost {
         stopRuntime();
     }
 
-    private void startRuntime() {
-        System.out.println("XXXXXXXX TomcatHost.startRuntime");
-        
-        addTuscany();
-        
-        launcher = new Launcher(new File(REPO));
-        try {
-            launcher.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-    }
-
-    private void addTuscany() {
+    private Launcher initTuscany() {
         StandardContext tc = new TuscanyContext();
         tc.setPath(contextPath);
         super.addChild(tc);
@@ -102,6 +86,10 @@ public class TuscanyHost extends StandardHost {
         wrapper.setName("TuscanyServlet");
         tc.addChild(wrapper);
         tc.addServletMapping("/*", "TuscanyServlet", true);
+
+        Launcher launcher = new Launcher(new File(REPO));
+
+        return launcher;
     }
 
     private void stopRuntime() {
@@ -112,12 +100,9 @@ public class TuscanyHost extends StandardHost {
     }
 
     public synchronized void addChild(Container child) {
-        System.out.println("XXXXXXXX TomcatHost.addChild" + child);
         if (!(child instanceof StandardContext)) {
             throw new IllegalArgumentException(sm.getString("tuscanyHost.notContext"));
         }
-        StandardContext ctx = (StandardContext) child;
-        ctx.addLifecycleListener(new TuscanyContextListener(launcher.getSCANode()));
         super.addChild(child);
     }
 
