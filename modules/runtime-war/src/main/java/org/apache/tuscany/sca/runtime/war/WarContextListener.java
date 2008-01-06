@@ -20,6 +20,10 @@
 package org.apache.tuscany.sca.runtime.war;
 
 import java.io.File;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +31,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
 import org.apache.tuscany.sca.runtime.Launcher;
 
 public class WarContextListener implements ServletContextListener {
@@ -35,15 +40,29 @@ public class WarContextListener implements ServletContextListener {
 
     protected Launcher launcher;
 
-    protected static final String DEFAULT_REPOSITORY_FOLDER = "sca-contributions";
+    protected static final String DEFAULT_REPOSITORY_FOLDER = "/repository";
 
     public void contextInitialized(ServletContextEvent event) {
         try {
-            launcher = new Launcher(getRepositoryFolder(event));
+            String cp = initContextPath(event.getServletContext());
+            hackContextPath(cp);
+            launcher = new Launcher(getRepositoryFolder(event), cp);
             launcher.start();
         } catch (Throwable e) {
             e.printStackTrace();
             logger.log(Level.SEVERE, "exception starting SCA runtime", e);
+        }
+    }
+
+    /**
+     * TODO: How context paths work is still up in the air so for now
+     *    this hacks in a path that gets some samples working
+     */
+    protected void hackContextPath(String cp) {
+        try {
+            WebAppServletHost.getInstance().setContextPath2(new URL(cp).getPath());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -63,11 +82,42 @@ public class WarContextListener implements ServletContextListener {
         if (servletContext.getInitParameter("repositoryFolder") != null) {
             repositoryFolder = new File(servletContext.getInitParameter("repositoryFolder"));
         } else {
-            repositoryFolder = new File(servletContext.getRealPath("sca-contributions"));
+            try {
+                repositoryFolder = new File(servletContext.getRealPath(DEFAULT_REPOSITORY_FOLDER));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+//            repositoryFolder = new File(servletContext.getRealPath(DEFAULT_REPOSITORY_FOLDER));
         }
 
         logger.info((new StringBuilder()).append("Contribution Repository -> ").append(repositoryFolder).toString());
         return repositoryFolder;
     }
 
+    /**
+     * Initializes the contextPath
+     * The 2.5 Servlet API has a getter for this, for pre 2.5 servlet
+     * containers use an init parameter.
+     */
+    @SuppressWarnings("unchecked")
+    public String initContextPath(ServletContext context) {
+        String contextPath;
+        if (Collections.list(context.getInitParameterNames()).contains("contextPath")) {
+            contextPath = context.getInitParameter("contextPath");
+        } else {
+            Method m;
+            try {
+                m = context.getClass().getMethod("getContextPath", new Class[]{});
+                try {
+                    contextPath = (String)m.invoke(context, new Object[]{});
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException("'contextPath' init parameter must be set for pre-2.5 servlet container");
+            }
+        }
+        logger.info("initContextPath: " + contextPath);
+        return "http://localhost:8080" + contextPath;
+    }
 }
