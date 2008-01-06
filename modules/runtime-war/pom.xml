@@ -28,7 +28,7 @@
 
     <name>Apache Tuscany SCA WAR Runtime</name>
     <artifactId>tuscany-runtime-war</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
