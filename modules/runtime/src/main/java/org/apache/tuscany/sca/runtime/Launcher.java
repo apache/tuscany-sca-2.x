@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,10 @@ public class Launcher {
 
     protected String cp;
 
+    public Launcher(File repository) {
+        this(repository, "http://localhost:8080/Tuscany");
+    }
+
     public Launcher(File repository, String cp) {
         this.repository = repository;
         this.cp = cp;
@@ -66,12 +71,34 @@ public class Launcher {
         scaNodes = new ArrayList<SCANode>();
         
         if (repository != null && repository.exists()) {
-            addTopLevelJARs(repository);
-            addSubFolders(repository);
+            if (isExplodedContribution(repository)) {
+                addContributionFolder(repository);
+            } else {
+                addTopLevelJARs(repository);
+                addSubFolders(repository);
+            }
         }
     }
-    public Launcher(File repository) {
-        this(repository, "http://localhost:8080/Tuscany");
+    
+    protected boolean isExplodedContribution(File folder) {
+        return getJARsInFolder(repository).length < 1 && containsCompositeFile(repository);
+    }
+
+    protected void addContributionFolder(File folder) {
+        SCANode repoNode;
+        try {
+            repoNode = createNode(cp);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+        try {
+            repoNode.addContribution(folder.toURL().toString(), folder.toURL());
+            logger.info("added contribution folder: " + folder.toURL());
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.log(Level.WARNING, "exception adding contribution folder: " + folder, e);
+        }
     }
 
     protected URL[] addTopLevelJARs(File repository) {
@@ -209,6 +236,32 @@ public class Launcher {
         }
 
         return contributionFolders.toArray(new URL[contributionFolders.size()]);
+    }
+
+    /**
+     * Tests if the directory or any sub-directories contains a .composite file
+     */
+    protected boolean containsCompositeFile(File repository) {
+        String[] compositesFileNames = repository.list(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".composite");
+            }
+        });
+
+        if (compositesFileNames == null || compositesFileNames.length < 1) {
+            for (URL subFolder : getSubFolders(repository)) {
+                try {
+                    if (containsCompositeFile(new File(subFolder.toURI()))) {
+                        return true;
+                    }
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
