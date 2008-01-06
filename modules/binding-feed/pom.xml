@@ -128,6 +128,10 @@
                    <groupId>commons-logging</groupId>
                    <artifactId>commons-logging</artifactId>
                </exclusion>
+               <exclusion>
+                   <groupId>avalon-framework</groupId>
+                   <artifactId>avalon-framework</artifactId>
+               </exclusion>
            </exclusions>
         </dependency>          
                 
