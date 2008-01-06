@@ -82,12 +82,7 @@ public class WarContextListener implements ServletContextListener {
         if (servletContext.getInitParameter("repositoryFolder") != null) {
             repositoryFolder = new File(servletContext.getInitParameter("repositoryFolder"));
         } else {
-            try {
-                repositoryFolder = new File(servletContext.getRealPath(DEFAULT_REPOSITORY_FOLDER));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-//            repositoryFolder = new File(servletContext.getRealPath(DEFAULT_REPOSITORY_FOLDER));
+            repositoryFolder = new File(servletContext.getRealPath(DEFAULT_REPOSITORY_FOLDER));
         }
 
         logger.info((new StringBuilder()).append("Contribution Repository -> ").append(repositoryFolder).toString());
@@ -118,6 +113,7 @@ public class WarContextListener implements ServletContextListener {
             }
         }
         logger.info("initContextPath: " + contextPath);
+        // TODO: yet another context path hack, Domain/Node seems to need a host and port
         return "http://localhost:8080" + contextPath;
     }
 }
