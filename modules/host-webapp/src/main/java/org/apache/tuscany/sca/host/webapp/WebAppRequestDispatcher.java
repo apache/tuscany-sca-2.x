@@ -69,7 +69,12 @@ class WebAppRequestDispatcher implements RequestDispatcher {
                 if (path.length() == 0) {
                     path = super.getPathInfo();
                 }
-                path = path.substring(servletPath.length());
+                // TODO: another context path hack, shouldn't hardcode this "tuscany" string
+                if (servletPath.startsWith("/tuscany/")) {
+                    path = path.substring(servletPath.length()-8);
+                } else {
+                    path = path.substring(servletPath.length());
+                }
                 return path;
             }
         };
