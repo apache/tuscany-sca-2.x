@@ -81,7 +81,7 @@ public class Launcher {
     }
     
     protected boolean isExplodedContribution(File folder) {
-        return getJARsInFolder(repository).length < 1 && containsCompositeFile(repository);
+        return getJARsInFolder(folder).length < 1 && containsCompositeFile(folder);
     }
 
     protected void addContributionFolder(File folder) {
