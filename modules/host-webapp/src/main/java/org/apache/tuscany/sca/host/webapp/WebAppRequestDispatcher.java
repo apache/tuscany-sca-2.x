@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.host.webapp;
 
 import java.io.IOException;
+import java.util.StringTokenizer;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
@@ -69,18 +70,34 @@ class WebAppRequestDispatcher implements RequestDispatcher {
                 if (path.length() == 0) {
                     path = super.getPathInfo();
                 }
-                // TODO: another context path hack, shouldn't hardcode this "tuscany" string
-                if (servletPath.startsWith("/tuscany/")) {
-                    path = path.substring(servletPath.length()-8);
-                } else {
-                    path = path.substring(servletPath.length());
-                }
+
+                // TODO: another context path hack, revisit when context path is sorted out
+                path = fiddlePath(path, servletPath);
+
                 return path;
             }
         };
         return requestWrapper;
     }
-    
+
+    /**
+     * Remove any path suffix thats part of the servlet context path
+     */
+    protected String fiddlePath(String path, String servletPath) {
+        StringTokenizer st = new StringTokenizer(path, "/");
+        String root = "";
+        while (st.hasMoreTokens()){
+                String s = st.nextToken();
+                if (servletPath.endsWith((root + "/" + s))) {
+                        root += "/" + s;
+                } else {
+                        break;
+                }
+        }
+        String fiddlePath = path.substring(root.length());
+        return fiddlePath;
+    }
+
     public void forward(ServletRequest request, ServletResponse response) throws ServletException, IOException {
         servlet.service(createRequestWrapper(request), response);
     }
