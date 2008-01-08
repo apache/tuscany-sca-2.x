@@ -65,7 +65,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
- * The runtime representaion of the notification reference binding
+ * The runtime representation of the notification reference binding
  * 
  * @version $Rev$ $Date$
  */
