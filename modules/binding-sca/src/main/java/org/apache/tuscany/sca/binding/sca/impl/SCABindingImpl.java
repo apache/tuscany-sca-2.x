@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
- * he assemly mode object for an SCA binding.
+ * The assembly mode object for an SCA binding.
  * 
  * @version $Rev$ $Date$
  */
@@ -92,7 +92,7 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPo
     /**
      * Setter for the binding uri
      * 
-     * @para uri the binding uri
+     * @param uri the binding uri
      */
     public void setURI(String uri) {
         this.uri = uri;
