@@ -47,15 +47,17 @@ public class LaunchCloud {
         
         SCANode catalogsNode = nodeFactory.createSCANode("http://localhost:8200/cloud", "http://localhost:9998");
         catalogsNode.addContribution("http://org/apache/derby", derbyContribution);
-        catalogsNode.addContribution("http://org/apache/tuscany/implementation-data-api", dataAPIContribution);
+        catalogsNode.addContribution("http://org/apache/tuscany/sca/implementation-data-api", dataAPIContribution);
         catalogsNode.addContribution("http://assets", assetsContribution);
         catalogsNode.addContribution("http://cloud", cloudContribution);
         catalogsNode.addToDomainLevelComposite(new QName("http://cloud", "catalogs"));
+        
         // the ejb component simply provides the meta data required to locate the 
         // EJB running in Geronimo
 //        catalogsNode.addToDomainLevelComposite(new QName("http://store", "catalog-jee"));
         //FIXME looks like we can't start/stop individual nodes anymore
         //catalogsNode.start();
+        
         System.out.println("catalogs.composite ready for big business !!!");
         
         SCANode currencyNode = nodeFactory.createSCANode("http://localhost:8300/cloud", "http://localhost:9998");
