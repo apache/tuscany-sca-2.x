@@ -127,7 +127,7 @@ public class Axis2BindingInvoker implements Invoker {
                     body.addChild((OMElement)bc);
                 } else {
                     throw new IllegalArgumentException(
-                                                       "Can't handle mixed payloads betweem OMElements and other types.");
+                                                       "Can't handle mixed payloads between OMElements and other types.");
                 }
             }
         }
