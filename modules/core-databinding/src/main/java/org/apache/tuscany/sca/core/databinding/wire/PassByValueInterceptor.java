@@ -20,7 +20,9 @@
 package org.apache.tuscany.sca.core.databinding.wire;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.sca.databinding.DataBinding;
@@ -33,82 +35,142 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 
+/**
+ * Implementation of an interceptor that enforces pass-by-value semantics
+ * on operation invocations by copying the operation input and output data.
+ *
+ * @version $Rev$ $Date$
+ */
 public class PassByValueInterceptor implements Interceptor {
 
     private DataBindingExtensionPoint dataBindings;
+    private DataBinding[] inputDataBindings;
+    private DataBinding outputDataBinding;
+    private DataBinding javaBeanDataBinding;
+    private DataBinding jaxbDataBinding;
     private Operation operation;
-
     private Invoker nextInvoker;
 
+    /**
+     * Constructs a new PassByValueInterceptor.
+     * @param dataBindings databinding extension point
+     * @param operation the intercepted operation
+     */
     public PassByValueInterceptor(DataBindingExtensionPoint dataBindings, Operation operation) {
-        this.dataBindings = dataBindings;
         this.operation = operation;
+        
+        // Cache data bindings to use
+        this.dataBindings = dataBindings;
+        jaxbDataBinding = dataBindings.getDataBinding(JAXBDataBinding.NAME);
+        javaBeanDataBinding = dataBindings.getDataBinding(JavaBeansDataBinding.NAME);
+        
+        // Determine the input databindings
+        if (operation.getInputType() != null) {
+            List<DataType> inputTypes = operation.getInputType().getLogical();
+            inputDataBindings = new DataBinding[inputTypes.size()];
+            int i = 0;
+            for (DataType inputType: inputTypes) {
+                String id = inputType.getDataBinding(); 
+                inputDataBindings[i++] = dataBindings.getDataBinding(id);
+            }
+        }
+        
+        // Determine the output databinding
+        if (operation.getOutputType() != null) {
+            String id = operation.getOutputType().getDataBinding();
+            outputDataBinding = dataBindings.getDataBinding(id);
+        }
     }
 
     public Message invoke(Message msg) {
-        Object obj = msg.getBody();
-        msg.setBody(copy((Object[])obj));
+        msg.setBody(copy((Object[])msg.getBody(), inputDataBindings));
 
         Message resultMsg = nextInvoker.invoke(msg);
 
         if (!msg.isFault() && operation.getOutputType() != null) {
-            String dataBindingId = operation.getOutputType().getDataBinding();
-            DataBinding dataBinding = dataBindings.getDataBinding(dataBindingId);
-            resultMsg.setBody(copy(resultMsg.getBody(), dataBinding));
+            resultMsg.setBody(copy(resultMsg.getBody(), outputDataBinding));
         }
         return resultMsg;
     }
 
-    public Object[] copy(Object[] args) {
-        if (args == null) {
+    /**
+     * Copy an array of data objects passed to an operation
+     * @param data array of objects to copy
+     * @return the copy
+     */
+    private Object[] copy(Object[] data, DataBinding[] dataBindings) {
+        if (data == null) {
             return null;
         }
-        Object[] copiedArgs = new Object[args.length];
+        Object[] copy = new Object[data.length];
         Map<Object, Object> map = new IdentityHashMap<Object, Object>();
-        for (int i = 0; i < args.length; i++) {
-            if (args[i] == null) {
-                copiedArgs[i] = null;
+        for (int i = 0; i < data.length; i++) {
+            Object arg = data[i];
+            if (arg == null) {
+                copy[i] = null;
             } else {
-                Object copiedArg = map.get(args[i]);
+                Object copiedArg = map.get(arg);
                 if (copiedArg != null) {
-                    copiedArgs[i] = copiedArg;
+                    copy[i] = copiedArg;
                 } else {
-                    String dataBindingId = operation.getInputType().getLogical().get(i).getDataBinding();
-                    DataBinding dataBinding = dataBindings.getDataBinding(dataBindingId);
-                    // HACK: Use JAXB to copy non-Serializable beans
-                    if (dataBinding != null &&
-                        JavaBeansDataBinding.NAME.equals(dataBinding.getName()) &&
-                        !(args[i] instanceof Serializable)) {
-                        dataBinding = dataBindings.getDataBinding(JAXBDataBinding.NAME);
-                    }
-                    copiedArg = copy(args[i], dataBinding);
-                    map.put(args[i], copiedArg);
-                    copiedArgs[i] = copiedArg;
+                    copiedArg = copy(arg, dataBindings[i]);
+                    map.put(arg, copiedArg);
+                    copy[i] = copiedArg;
                 }
             }
         }
-        return copiedArgs;
+        return copy;
     }
 
-    public Object copy(Object arg, DataBinding argDataBinding) {
-        if (arg == null) {
+    /**
+     * Copy data using the specified databinding.
+     * @param data input data
+     * @param dataBinding databinding to use
+     * @return a copy of the data
+     */
+    private Object copy(Object data, DataBinding dataBinding) {
+        if (data == null) {
             return null;
         }
-        Object copiedArg;
-        if (argDataBinding != null) {
-            copiedArg = argDataBinding.copy(arg);
-        } else {
-            copiedArg = arg;
-            DataType<?> dataType = dataBindings.introspectType(arg);
+
+        // If no databinding was specified, introspect the given arg to
+        // determine its databinding
+        if (dataBinding == null) {
+            DataType<?> dataType = dataBindings.introspectType(data);
             if (dataType != null) {
-                DataBinding binding = dataBindings.getDataBinding(dataType.getDataBinding());
-                if (binding != null) {
-                    copiedArg = binding.copy(arg);
+                dataBinding = dataBindings.getDataBinding(dataType.getDataBinding());
+            }
+            if (dataBinding == null) {
+                
+                // Default to the JavaBean databinding
+                dataBinding = javaBeanDataBinding;            
+            }
+        }
+        
+        // Use the JAXB databinding to copy non-Serializable data
+        if (dataBinding == javaBeanDataBinding) {
+            
+            // If the input data is an array containing non serializable elements
+            // use JAXB
+            Class<?> clazz = data.getClass();
+            if (clazz.isArray()) {
+                if (Array.getLength(data) != 0) {
+                    Object element = Array.get(data, 0);
+                    if (element != null && !(element instanceof Serializable)) {
+                        dataBinding = jaxbDataBinding;
+                    }
+                }
+            } else {
+
+                // If the input data is not serializable use JAXB
+                if (!(data instanceof Serializable)) {
+                    dataBinding = jaxbDataBinding;
                 }
             }
-            // FIXME: What to do if it's not recognized?
         }
-        return copiedArg;
+        
+        Object copy = dataBinding.copy(data);
+        return copy;
     }
 
     public Invoker getNext() {
