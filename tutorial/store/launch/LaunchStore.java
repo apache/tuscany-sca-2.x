@@ -39,8 +39,7 @@ public class LaunchStore {
         URL derbyContribution = new File(System.getProperty("user.home") + "/.m2/repository/org/apache/derby/derby/10.1.2.1/derby-10.1.2.1.jar").toURL();
         URL dataAPIContribution = new File(System.getProperty("user.home") + "/.m2/repository/org/apache/tuscany/sca/tuscany-implementation-data-api/1.2-incubating-SNAPSHOT/tuscany-implementation-data-api-1.2-incubating-SNAPSHOT.jar").toURL();
         
-        node.addContribution("http://org/apache/derby", derbyContribution);
-        node.addContribution("http://org/apache/tuscany/implementation-data-api", dataAPIContribution);
+        node.addContribution("http://org/apache/tuscany/sca/implementation-data-api", dataAPIContribution);
         node.addContribution("http://assets", assetsContribution);
         node.addContribution("http://store", storeContribution);
         
