@@ -19,25 +19,31 @@
 
 package launch;
 
+import java.io.File;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
-import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 
 public class LaunchStoreMerger {
     public static void main(String[] args) throws Exception {
         System.out.println("Starting ...");
+        
+        URL storeMergerContribution = new File("./target/classes").toURL();
+        URL assetsContribution = new File("../assets/target/classes").toURL();
+        
         SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         SCANode node = nodeFactory.createSCANode(null, "http://localhost:9998");
+        URL dataAPIContribution = new File(System.getProperty("user.home") + "/.m2/repository/org/apache/tuscany/sca/tuscany-implementation-data-api/1.2-incubating-SNAPSHOT/tuscany-implementation-data-api-1.2-incubating-SNAPSHOT.jar").toURL();
         
-        URL contribution = SCAContributionUtil.findContributionFromClass(LaunchStoreMerger.class);
-        node.addContribution("http://store", contribution);
+        node.addContribution("http://org/apache/tuscany/sca/implementation-data-api", dataAPIContribution);
+        node.addContribution("http://assets", assetsContribution);
+        node.addContribution("http://store", storeMergerContribution);
         
         node.addToDomainLevelComposite(new QName("http://store", "store-merger"));
-        node.start();
+        node.getDomain().start();
 
         System.out.println("store-merger.composite ready for big business !!!");
         System.in.read();
