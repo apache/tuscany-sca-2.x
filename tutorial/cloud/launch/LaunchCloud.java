@@ -64,6 +64,8 @@ public class LaunchCloud {
      
         System.in.read();
         System.out.println("Stopping ...");
+        //FIXME looks like we can't start/stop individual nodes anymore
+        catalogsNode.getDomain().stop();
         currencyNode.destroy();
         catalogsNode.destroy();
         domain.destroy();
