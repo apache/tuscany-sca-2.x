@@ -54,7 +54,6 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
         // Prepare authorization header
         String authorization = "admin" + ":" + "admin";
         authorizationHeader = "Basic " + new String(Base64.encodeBase64(authorization.getBytes()));
-        ;
 
         // Create an HTTP client
         httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
@@ -100,7 +99,6 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
     }
 
     public void stop() {
-        httpClient = null;
     }
     
     public boolean supportsOneWayInvocation() {
