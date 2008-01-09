@@ -40,7 +40,7 @@ public class LaunchStoreMerger {
         
         node.addContribution("http://org/apache/tuscany/sca/implementation-data-api", dataAPIContribution);
         node.addContribution("http://assets", assetsContribution);
-        node.addContribution("http://store", storeMergerContribution);
+        node.addContribution("http://store-merger", storeMergerContribution);
         
         node.addToDomainLevelComposite(new QName("http://store", "store-merger"));
         //FIXME looks like we can't start/stop individual nodes anymore

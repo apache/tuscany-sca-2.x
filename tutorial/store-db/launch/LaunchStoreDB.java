@@ -19,31 +19,42 @@
 
 package launch;
 
+import java.io.File;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
-import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 
 public class LaunchStoreDB {
     public static void main(String[] args) throws Exception {
         System.out.println("Starting ...");
+        
+        URL storeDBContribution = new File("./target/classes").toURL();
+        URL assetsContribution = new File("../assets/target/classes").toURL();
+        URL derbyContribution = new File(System.getProperty("user.home") + "/.m2/repository/org/apache/derby/derby/10.1.2.1/derby-10.1.2.1.jar").toURL();
+        URL dataAPIContribution = new File(System.getProperty("user.home") + "/.m2/repository/org/apache/tuscany/sca/tuscany-implementation-data-api/1.2-incubating-SNAPSHOT/tuscany-implementation-data-api-1.2-incubating-SNAPSHOT.jar").toURL();
+        
         SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         SCANode node = nodeFactory.createSCANode(null, "http://localhost:9998");
         
-        URL contribution = SCAContributionUtil.findContributionFromClass(LaunchStoreDB.class);
-        node.addContribution("http://store", contribution);
+        node.addContribution("http://org/apache/derby", derbyContribution);
+        node.addContribution("http://org/apache/tuscany/sca/implementation-data-api", dataAPIContribution);
+        node.addContribution("http://assets", assetsContribution);
+        node.addContribution("http://store-db", storeDBContribution);
         
         node.addToDomainLevelComposite(new QName("http://store", "store-db"));
-        node.start();
+        //FIXME looks like we can't start/stop individual nodes anymore
+        node.getDomain().start();
 
         System.out.println("store-db.composite ready for big business !!!");
         System.in.read();
         
         System.out.println("Stopping ...");
-        node.stop();
+        //FIXME looks like we can't start/stop individual nodes anymore
+        node.getDomain().stop();
+        //node.stop();
         node.destroy();
         System.out.println();
     }
