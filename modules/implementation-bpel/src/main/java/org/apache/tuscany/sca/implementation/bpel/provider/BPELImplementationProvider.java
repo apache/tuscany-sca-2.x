@@ -114,6 +114,8 @@ public class BPELImplementationProvider implements ImplementationProvider {
             odeServer.stop();
         }
         
+        txMgr = null;
+        
         System.out.println("Stopped !!!");
 
     }

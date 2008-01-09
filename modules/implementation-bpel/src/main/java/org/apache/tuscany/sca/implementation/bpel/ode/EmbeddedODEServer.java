@@ -71,8 +71,6 @@ public class EmbeddedODEServer {
 
     protected ProcessStore store;
 
-    private ExecutorService _executor;
-
     private Scheduler _scheduler;
 
     
@@ -139,11 +137,7 @@ public class EmbeddedODEServer {
         if (__log.isDebugEnabled()) {
             __log.debug("ODE initializing");
         }
-        if (_config.getThreadPoolMaxSize() == 0)
-            _executor = Executors.newCachedThreadPool();
-        else
-            _executor = Executors.newFixedThreadPool(_config.getThreadPoolMaxSize());
-
+        
         _bpelServer = new BpelServerImpl();
         _scheduler = createScheduler();
         _scheduler.setJobProcessor(_bpelServer);
@@ -177,15 +171,64 @@ public class EmbeddedODEServer {
     }
 
     public void stop() throws ODEShutdownException {
-        try {
-            _bpelServer.stop();
-        } catch (Exception ex) {
-            String errmsg = "An error occured during the ODE BPEL server shutdown.";
-            __log.error(errmsg, ex);
-            throw new ODEInitializationException(errmsg, ex);
+        if(_bpelServer != null) {
+            try {
+                __log.debug("Stopping BPEL Embedded server");
+                _bpelServer.shutdown();
+                _bpelServer = null;
+            } catch (Exception ex) {
+                __log.debug("Error stopping BPEL server");
+            }
+        }
+
+        if(_scheduler != null) {
+            try {
+                __log.debug("Stopping scheduler");
+                _scheduler.shutdown();
+                _scheduler = null;
+            } catch (Exception ex) {
+                __log.debug("Error stopping scheduler");
+            }
         }
         
-        _db.shutdown();
+        if(store != null) {
+            try {
+                __log.debug("Stopping store");
+                ((ProcessStoreImpl)store).shutdown();
+                store = null;
+            } catch (Exception ex) {
+                __log.debug("Error stopping store");
+            }
+        }
+        
+        if(_daoCF != null) {
+            try {
+                __log.debug("Stopping DAO");
+                _daoCF.shutdown();
+                _daoCF = null;
+            } catch (Exception ex) {
+                __log.debug("Error stopping DAO");
+            }
+        }
+        
+        if(_db != null) {
+            try {
+                __log.debug("Stopping DB");
+                _db.shutdown();
+                _db = null;
+            } catch (Exception ex) {
+                __log.debug("Error stopping DB");
+            }
+        }
+        
+        if(_txMgr != null) {
+            try {
+                __log.debug("Stopping Transaction Manager");
+                _txMgr = null;
+            } catch (Exception ex) {
+                __log.debug("Error stopping Transaction Manager");
+            }
+        }
     }
 
     protected Scheduler createScheduler() {
@@ -220,6 +263,8 @@ public class EmbeddedODEServer {
             throw new ODEDeploymentException(errMsg,ex);
         }
         
+
+        /* We are already registering the process on the "register" event
         try {
             for (QName procName : procs) {
                 ProcessConf conf = (ProcessConf) store.getProcessConfiguration(procName);
@@ -232,6 +277,7 @@ public class EmbeddedODEServer {
             __log.debug(errMsg , ex);
             throw new ODEDeploymentException(errMsg, ex);
         }
+        */
     }
     
     public void undeploy(ODEDeployment d) {
