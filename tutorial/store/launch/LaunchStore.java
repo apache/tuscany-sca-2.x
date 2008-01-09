@@ -50,7 +50,8 @@ public class LaunchStore {
         System.in.read();
         
         System.out.println("Stopping ...");
-        node.stop();
+        //FIXME looks like we can't start/stop individual nodes anymore
+        node.getDomain().stop();
         node.destroy();
         System.out.println();
     }
