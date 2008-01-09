@@ -4,7 +4,11 @@ Store Sample
 This is a sample store scenario that is used as a getting started guide
 for Tuscany SCA. For detailed information, please see :
 
-getting-started-1.0.pdf
+getting-started-1.0.pdf 
+
+or
+
+http://incubator.apache.org/tuscany/getting-started-with-tuscany.html
 
 
 Building And Running The Sample Using Ant
