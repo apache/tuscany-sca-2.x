@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.implementation.bpel.ode.GeronimoTxFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.osoa.sca.annotations.Destroy;
 
 /**
  * BPEL Implementation provider factory
@@ -57,5 +58,10 @@ public class BPELImplementationProviderFactory implements ImplementationProvider
     
     public Class<BPELImplementation> getModelType() {
         return BPELImplementation.class;
+    }
+    
+    @Destroy
+    public void destroy() {
+        txMgr = null;
     }
 }
