@@ -302,15 +302,25 @@ public class ContributionClassLoader extends URLClassLoader {
      * @return true if this is a matching import
      */
     private boolean matchesImport(String name, Import import_, boolean matchJavaClass) {
-       
+        
+        //FIXME this whole method needs serious cleanup
         if (matchJavaClass) {
             if (import_ instanceof JavaImport && name != null && name.lastIndexOf('.') > 0) {
                 JavaImport javaImport = (JavaImport) import_;
-                String packageName = name.substring(0, name.lastIndexOf('.'));
-                if (javaImport.getPackage() == null)
+                if (javaImport.getPackage() == null) {
+                    //FIXME we shouldn't get there at all
                     return false;
-                else
-                    return packageName.equals(javaImport.getPackage());
+                } else {
+                    String packageName = name.substring(0, name.lastIndexOf('.'));
+                    if (javaImport.getPackage().endsWith(".*")) {
+                        String prefix = javaImport.getPackage().substring(0, javaImport.getPackage().length() -1);
+                        if (packageName.startsWith(prefix)) {
+                            return true;
+                        }
+                    } else {
+                        return packageName.equals(javaImport.getPackage());
+                    }
+                }
             }
             
         } else {
@@ -318,12 +328,26 @@ public class ContributionClassLoader extends URLClassLoader {
                 return false;
             else if (import_ instanceof JavaImport) {
                 JavaImport javaImport = (JavaImport) import_;
-                String packageName = name.substring(0, name.lastIndexOf('/'));
-                if (javaImport.getPackage() == null)
+                if (javaImport.getPackage() == null) {
+                    //FIXME we shouldn't get there at all
                     return false;
-                else
-                    return packageName.equals(javaImport.getPackage().replaceAll("\\.", "/"));
+                }
+                else {
+                    if (javaImport.getPackage().endsWith(".*")) {
+                        String packageName = name.substring(0, name.lastIndexOf('/')).replace('/', '.');
+                        String prefix = javaImport.getPackage().substring(0, javaImport.getPackage().length() -1);
+                        if (packageName.startsWith(prefix)) {
+                            return true;
+                        }
+                    } else {
+                        //FIXME a package name does not contain "/", should be replaced by "."
+                        String packageName = name.substring(0, name.lastIndexOf('/'));
+                        //FIXME Why the "\\" in the replace string?? 
+                        return packageName.equals(javaImport.getPackage().replaceAll("\\.", "/"));
+                    }
+                }
             } else if (import_ instanceof NamespaceImport) {
+                //FIXME This is weird, what are we doing with NamespaceImports here??
                 NamespaceImport namespaceImport = (NamespaceImport) import_;
                 String namespace = name.substring(0, name.lastIndexOf('/'));
                 if (namespaceImport.getNamespace() == null)
