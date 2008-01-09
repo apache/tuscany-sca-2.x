@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadFactory;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Property;
@@ -57,8 +58,17 @@ public class ThreadPoolWorkManager implements WorkManager {
      *
      * @param threadPoolSize Thread-pool size.
      */
-    public ThreadPoolWorkManager(@Property(name = "poolSize") int threadPoolSize) {
-        executor = Executors.newFixedThreadPool(threadPoolSize);
+    public ThreadPoolWorkManager(int threadPoolSize) {
+        
+        // Creates a new Executor, use a custom ThreadFactory that
+        // creates daemon threads.
+        executor = Executors.newFixedThreadPool(threadPoolSize, new ThreadFactory() {
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r);
+                thread.setDaemon(true);
+                return thread;
+            }
+        });
     }
 
     /**
