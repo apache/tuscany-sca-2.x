@@ -79,7 +79,7 @@
 			if (items[i].checked) {
 				var entry = '<entry xmlns="http://www.w3.org/2005/Atom"><title>item</title><content type="text/xml">' +
                 	'<Item xmlns="http://services/">' +
-                	'<name>' + catalogItems[i].name + '</name>' + '<price>' + catalogItems[i].price + '</price>' +
+                	'<name xmlns="">' + catalogItems[i].name + '</name>' + '<price xmlns="">' + catalogItems[i].price + '</price>' +
                  	'</Item>' + '</content></entry>';
 				shoppingCart.post(entry, shoppingCart_postResponse);
 				items[i].checked = false;
