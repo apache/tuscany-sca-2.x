@@ -42,27 +42,16 @@ public class LaunchCloud {
         
         URL cloudContribution = new File("./target/classes").toURL();
         URL assetsContribution = new File("../assets/target/classes").toURL();
-        URL derbyContribution = new File(System.getProperty("user.home") + "/.m2/repository/org/apache/derby/derby/10.1.2.1/derby-10.1.2.1.jar").toURL();
-        URL dataAPIContribution = new File(System.getProperty("user.home") + "/.m2/repository/org/apache/tuscany/sca/tuscany-implementation-data-api/1.2-incubating-SNAPSHOT/tuscany-implementation-data-api-1.2-incubating-SNAPSHOT.jar").toURL();
         
         SCANode catalogsNode = nodeFactory.createSCANode("http://localhost:8200/cloud", "http://localhost:9998");
-        catalogsNode.addContribution("http://org/apache/derby", derbyContribution);
-        catalogsNode.addContribution("http://org/apache/tuscany/sca/implementation-data-api", dataAPIContribution);
         catalogsNode.addContribution("http://assets", assetsContribution);
         catalogsNode.addContribution("http://cloud", cloudContribution);
         catalogsNode.addToDomainLevelComposite(new QName("http://cloud", "catalogs"));
-        
-        // the ejb component simply provides the meta data required to locate the 
-        // EJB running in Geronimo
-//        catalogsNode.addToDomainLevelComposite(new QName("http://store", "catalog-jee"));
         //FIXME looks like we can't start/stop individual nodes anymore
         //catalogsNode.start();
-        
         System.out.println("catalogs.composite ready for big business !!!");
         
         SCANode currencyNode = nodeFactory.createSCANode("http://localhost:8300/cloud", "http://localhost:9998");
-        currencyNode.addContribution("http://org/apache/derby", derbyContribution);
-        currencyNode.addContribution("http://org/apache/tuscany/implementation-data-api", dataAPIContribution);
         currencyNode.addContribution("http://assets", assetsContribution);
         currencyNode.addContribution("http://cloud", cloudContribution);
         currencyNode.addToDomainLevelComposite(new QName("http://cloud", "currency"));
