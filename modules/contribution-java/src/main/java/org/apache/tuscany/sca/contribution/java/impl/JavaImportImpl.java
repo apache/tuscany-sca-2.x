@@ -86,9 +86,18 @@ public class JavaImportImpl implements JavaImport {
      */
     public boolean match(Export export) {
         if(export instanceof JavaExport) {
-            if(this.getLocation() == null || this.getLocation().length() == 0) {
-                if (this.getPackage().equals(((JavaExport)export).getPackage())) {
+            JavaExport javaExport = (JavaExport)export;
+            if (location == null || location.length() == 0) {
+                String exportedPackage = javaExport.getPackage();
+                if (packageName.equals(exportedPackage)) {
                     return true;
+                } else {
+                    if (packageName.endsWith(".*")) {
+                        String prefix = packageName.substring(0, packageName.length() - 1);
+                        if (exportedPackage.startsWith(prefix)) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
