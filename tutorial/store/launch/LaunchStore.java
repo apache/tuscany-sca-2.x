@@ -33,17 +33,17 @@ public class LaunchStore {
         
         URL storeContribution = new File("./target/classes").toURL();
         URL assetsContribution = new File("../assets/target/classes").toURL();
+        URL dataAPIContribution = new File(System.getProperty("user.home") + "/.m2/repository/org/apache/tuscany/sca/tuscany-implementation-data-api/1.2-incubating-SNAPSHOT/tuscany-implementation-data-api-1.2-incubating-SNAPSHOT.jar").toURL();
         
         SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
         SCANode node = nodeFactory.createSCANode(null, "http://localhost:9998");
-        URL derbyContribution = new File(System.getProperty("user.home") + "/.m2/repository/org/apache/derby/derby/10.1.2.1/derby-10.1.2.1.jar").toURL();
-        URL dataAPIContribution = new File(System.getProperty("user.home") + "/.m2/repository/org/apache/tuscany/sca/tuscany-implementation-data-api/1.2-incubating-SNAPSHOT/tuscany-implementation-data-api-1.2-incubating-SNAPSHOT.jar").toURL();
         
         node.addContribution("http://org/apache/tuscany/sca/implementation-data-api", dataAPIContribution);
         node.addContribution("http://assets", assetsContribution);
         node.addContribution("http://store", storeContribution);
         
         node.addToDomainLevelComposite(new QName("http://store", "store"));
+        //FIXME looks like we can't start/stop individual nodes anymore
         node.getDomain().start();
 
         System.out.println("store.composite ready for big business !!!");
