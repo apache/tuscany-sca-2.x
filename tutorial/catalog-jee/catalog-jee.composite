@@ -22,10 +22,10 @@
    name="catalog-jee">
 
     <component name="JEEVegetablesCatalog">
-        <implementation.ejb ejb-link="catalog-ejb.jar#CatalogEJB"/> 
-        <service name="Catalog">
-            <binding.ejb uri="VegetablesCatalogImplRemote"/>
+        <implementation.ejb ejb-link="tutorial-catalog-ejb.jar#VegetablesCatalogEJB"/>
+        <service name="CatalogEJB">
+            <binding.ejb uri="java:VegetablesCatalogEJB"/>
         </service>
-    </component> 
+    </component>
 
 </composite>
