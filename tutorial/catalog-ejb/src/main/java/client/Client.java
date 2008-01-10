@@ -1,14 +1,12 @@
 package client;
 
-import java.net.URI;
-import java.util.Hashtable;
 import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import services.Catalog;
-import services.Item;
+import services.CatalogEJB;
+import services.Vegetable;
 
 public class Client {
 
@@ -23,13 +21,9 @@ public class Client {
             properties.setProperty(Context.PROVIDER_URL, "ejbd://localhost:4201");
             InitialContext context = new InitialContext(properties);
             
-            URI uri = URI.create("JEEVegetablesCatalog/").resolve("java:VegetablesCatalogImplRemote");
-            System.out.println(uri.toString());
-            
-            Catalog catalog = (Catalog)context.lookup("java:VegetablesCatalogImplRemote");
-            //Catalog catalog = (Catalog)context.lookup("java:JEEVegetablesCatalog/VegetablesCatalogImplRemote");
+            CatalogEJB catalog = (CatalogEJB)context.lookup("java:VegetablesCatalogEJB");
         
-            Item items[] = catalog.get();
+            Vegetable items[] = catalog.get();
             System.out.println(items[0].getName());
         
         } catch (Exception ex) {
