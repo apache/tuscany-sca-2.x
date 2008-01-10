@@ -25,7 +25,7 @@
         <version>1.2-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tutorial-catalog-jse</artifactId>
+    <artifactId>tutorial-catalog-webapp</artifactId>
     <name>Apache Tuscany SCA Tutorial Catalog WAR Contribution</name>
     <packaging>war</packaging>
 
