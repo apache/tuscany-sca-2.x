@@ -82,7 +82,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
 
     @Override
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if (request.getParameter("smd") != null) {
+        if ("smd".equals(request.getQueryString())) {
             handleSMDRequest(request, response);
         } else {
             try {
