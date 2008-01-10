@@ -17,38 +17,29 @@
  * under the License.    
  */
 
-package services;
+package services.ejb;
 
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Vegetable implements Serializable {
-    private static final long serialVersionUID = -5847326138627338217L;
-    
-    private String name;
-    private String price;
-    
-    public Vegetable() {
-    }
-    
-    public Vegetable(String name, String price) {
-        this.name = name;
-        this.price = price;
-    }
-    
-    public String getName() {
-        return name;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public String getPrice() {
-        return price;
-    }
-    
-    public void setPrice(String price) {
-        this.price = price;
+import javax.ejb.Init;
+import javax.ejb.Stateless;
+
+@Stateless(name="VegetablesCatalogEJB")
+public class VegetablesCatalogEJBImpl implements CatalogEJB {
+    private List<Vegetable> catalog = new ArrayList<Vegetable>();
+ 
+    @Init
+    public void init() {
+        catalog.add(new Vegetable("Broccoli", "$2.99"));
+        catalog.add(new Vegetable("Asparagus", "$3.55"));
+        catalog.add(new Vegetable("Cauliflower", "$1.55"));
     }
 
+    public Vegetable[] get() {   
+        init();
+        Vegetable[] catalogArray = new Vegetable[catalog.size()];
+        catalog.toArray(catalogArray);
+        return catalogArray;
+    }
 }

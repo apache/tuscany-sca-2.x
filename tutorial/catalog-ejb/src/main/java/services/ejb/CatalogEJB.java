@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package services;
+package services.ejb;
 
 import javax.ejb.Remote;
 

@@ -5,8 +5,8 @@ import java.util.Properties;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import services.CatalogEJB;
-import services.Vegetable;
+import services.ejb.CatalogEJB;
+import services.ejb.Vegetable;
 
 public class Client {
 
