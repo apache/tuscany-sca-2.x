@@ -20,9 +20,11 @@
 package org.apache.tuscany.sca.data.engine;
 
 import java.io.InputStream;
+import java.util.List;
 
 import org.apache.tuscany.das.rdb.ConfigHelper;
 import org.apache.tuscany.das.rdb.DAS;
+import org.apache.tuscany.das.rdb.config.wrapper.MappingWrapper;
 import org.apache.tuscany.sca.data.engine.config.ConnectionInfo;
 
 /**
@@ -39,9 +41,9 @@ public class DataAccessEngineManager {
         super();
     }
     
-    protected DAS initializeDAS(String config, ConnectionInfo connectionInfo) throws MissingConfigFileException {
+    protected DAS initializeDAS(String config, ConnectionInfo connectionInfo, String table, String pkColumns) throws MissingConfigFileException {
         //load the config file
-        System.out.println("Initializing DAS");
+        //System.out.println("Initializing DAS");
         
         ConfigHelper configHelper;
         
@@ -70,10 +72,17 @@ public class DataAccessEngineManager {
             
         }
         
+        if(table != null && pkColumns != null) {
+            MappingWrapper configWrapper = new MappingWrapper(configHelper.getConfig());
+            List<String> pkColsList = DataAccessEngine.getKeys(pkColumns);
+            for(int i=0; i<pkColsList.size(); i++) {
+            	configWrapper.addPrimaryKey(table+"."+pkColsList.get(i), pkColsList.get(i));
+            }                	
+        }
         
         DAS das = DAS.FACTORY.createDAS(configHelper.getConfig());
         
-        return das;
+        return das;    	
     }
     
 /*
@@ -105,7 +114,15 @@ public class DataAccessEngineManager {
         
         //FIXME: cache the das, we need to define the keys to use (datasource and databaseurl + hashed(username + password))
         
-        return initializeDAS(config, connectionInfo);
+        return initializeDAS(config, connectionInfo, null, null);
+    }
+    
+    public DAS getDAS(String config, ConnectionInfo connectionInfo, String table, String pkColumns) throws MissingConfigFileException {
+        assert connectionInfo != null;
+        
+        //FIXME: cache the das, we need to define the keys to use (datasource and databaseurl + hashed(username + password))
+        
+        return initializeDAS(config, connectionInfo, table, pkColumns);
     }
     
     protected InputStream getConfigStream(String config) throws MissingConfigFileException{
