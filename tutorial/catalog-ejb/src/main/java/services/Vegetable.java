@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,12 +15,40 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<componentType xmlns="http://www.osoa.org/xmlns/sca/1.0"
-   targetNamespace="http://store">
+ */
 
-    <service name="Catalog">
-        <interface.java interface="services.Catalog"/>
-    </service> 
+package services;
 
-</componentType>
+import java.io.Serializable;
+
+public class Vegetable implements Serializable {
+    private static final long serialVersionUID = -5847326138627338217L;
+    
+    private String name;
+    private String price;
+    
+    public Vegetable() {
+    }
+    
+    public Vegetable(String name, String price) {
+        this.name = name;
+        this.price = price;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public String getPrice() {
+        return price;
+    }
+    
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+}
