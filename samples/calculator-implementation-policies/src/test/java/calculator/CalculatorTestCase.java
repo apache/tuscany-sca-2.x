@@ -33,6 +33,7 @@ public class CalculatorTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
+        System.setProperty("java.security.auth.login.config", "target/classes/CalculatorJass.config");
         scaDomain = SCADomain.newInstance("Calculator.composite");
         calculatorService = scaDomain.getService(CalculatorService.class, "CalculatorServiceComponent");
         anotherCalculatorService = scaDomain.getService(CalculatorService.class, "AnotherCalculatorServiceComponent");
