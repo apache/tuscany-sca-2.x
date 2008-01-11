@@ -191,26 +191,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.0</version>
-                <executions>
-                    <execution>
-                        <id>add-test-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-test-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>target/sdo-source</source>
-                                <source>target/wsdl2java-source</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>        
-            <plugin>
                 <groupId>org.apache.tuscany.sdo</groupId>
                 <artifactId>tuscany-sdo-plugin</artifactId>
                 <version>1.0-incubating-SNAPSHOT</version>
