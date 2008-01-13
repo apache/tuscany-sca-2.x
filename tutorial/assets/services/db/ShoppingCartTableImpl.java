@@ -24,10 +24,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Init;
@@ -50,15 +51,16 @@ public class ShoppingCartTableImpl implements Cart, Total {
         connection = DriverManager.getConnection("jdbc:derby:target/" + database, "", "");
     }
 
-    public Map<String, Item> getAll() {
+    public Entry<String, Item>[] getAll() {
         try {
             Statement statement = connection.createStatement();
             ResultSet results = statement.executeQuery("select * from Cart");
-            Map<String, Item> items = new HashMap<String, Item>();
+            List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
             while (results.next()) {
-                items.put(results.getString("id"), new Item(results.getString("name"), results.getString("price")));
+                Item item = new Item(results.getString("name"), results.getString("price"));
+                entries.add(new Entry<String, Item>(results.getString("id"), item));
             }
-            return items;
+            return entries.toArray(new Entry[entries.size()]);
         } catch (SQLException e) {
             throw new ServiceRuntimeException(e);
         }
@@ -123,29 +125,31 @@ public class ShoppingCartTableImpl implements Cart, Total {
         }
     }
 
-    public Map<String, Item> query(String queryString) {
+    public Entry<String, Item>[] query(String queryString) {
         try {
             Statement statement = connection.createStatement();
             ResultSet results = statement.executeQuery("select * from Cart where " + queryString);
-            Map<String, Item> items = new HashMap<String, Item>();
+            List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
             while (results.next()) {
-                items.put(results.getString("id"), new Item(results.getString("name"), results.getString("price")));
+                Item item = new Item(results.getString("name"), results.getString("price"));
+                entries.add(new Entry<String, Item>(results.getString("id"), item));
             }
-            return items;
+            return entries.toArray(new Entry[entries.size()]);
         } catch (SQLException e) {
             throw new ServiceRuntimeException(e);
         }
     }
     
     public String getTotal() {
-        Map<String, Item> cart = getAll(); 
+        Entry<String, Item>[] entries = getAll(); 
         double total = 0;
         String currencySymbol = "";
-        if (!cart.isEmpty()) {
-            Item item = cart.values().iterator().next();
+        if (entries.length > 0) {
+            Item item = entries[0].getData();
             currencySymbol = item.getPrice().substring(0, 1);
         }
-        for (Item item : cart.values()) {
+        for (Entry<String, Item> entry : entries) {
+            Item item = entry.getData();
             total += Double.valueOf(item.getPrice().substring(1));
         }
         return currencySymbol + total;
