@@ -45,6 +45,12 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
     private String authorizationHeader;
     private HttpClient httpClient;
 
+    /**
+     * Construcst a new AtomReferenceBindingProvider
+     * @param component
+     * @param reference
+     * @param binding
+     */
     AtomReferenceBindingProvider(RuntimeComponent component,
                                         RuntimeComponentReference reference,
                                         AtomBinding binding) {
@@ -71,8 +77,8 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
         } else if (operationName.equals("delete")) {
             return new AtomBindingInvoker.DeleteInvoker(operation, binding.getURI(), httpClient,
                                                         authorizationHeader);
-        } else if (operationName.equals("getFeed")) {
-            return new AtomBindingInvoker.GetCollectionInvoker(operation, binding.getURI(), httpClient,
+        } else if (operationName.equals("getFeed") || operationName.equals("getAll")) {
+            return new AtomBindingInvoker.GetAllInvoker(operation, binding.getURI(), httpClient,
                                                                authorizationHeader);
         } else if (operationName.equals("postMedia")) {
             return new AtomBindingInvoker.PostMediaInvoker(operation, binding.getURI(), httpClient,

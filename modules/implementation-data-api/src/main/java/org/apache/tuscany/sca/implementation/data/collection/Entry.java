@@ -18,60 +18,63 @@
  */
 package org.apache.tuscany.sca.implementation.data.collection;
 
-import org.osoa.sca.annotations.Remotable;
 
 /**
- * Provides access to a collection of data items.
+ * Represents a key/data pair in a data collection.
  * 
  * @version $Rev$ $Date$
  */
-@Remotable
-public interface Collection <K, D> {
+public class Entry <K, D> {
 
+    private K key;
+    private D data;
+    
     /**
-     * Get the whole collection.
-     * 
-     * @return the whole collection.
+     * Constructs a new entry.
      */
-    Entry<K, D>[] getAll();
-
+    public Entry() {
+    }
+    
     /**
-     * Returns a collection resulting from a query.
-     * 
-     * @return the collection.
+     * Constructs a new entry.
+     * @param key the entry key
+     * @param data the entry data
      */
-    Entry<K, D>[] query(String queryString);
-
+    public Entry(K key, D data) {
+        this.key = key;
+        this.data = data;
+    }
+    
     /**
-     * Creates a new item.
-     * 
-     * @param item
-     * @return
+     * Returns the entry key.
+     * @return the key
      */
-    K post(D item);
-
+    public K getKey() {
+        return key;
+    }
+    
     /**
-     * Retrieves an item.
-     * 
-     * @param key
-     * @return
+     * Sets the entry key.
+     * @param key the key
      */
-    D get(K key) throws NotFoundException;
-
+    public void setKey(K key) {
+        this.key = key;
+    }
+    
     /**
-     * Updates an item.
-     * 
-     * @param key
-     * @param item
-     * @return
+     * Returns the entry data.
+     * @return the entry data
      */
-    void put(K key, D item) throws NotFoundException;
-
+    public D getData() {
+        return data;
+    }
+    
     /**
-     * Delete an item.
-     * 
-     * @param key
+     * Sets the entry data
+     * @param data the entry data
      */
-    void delete(K key) throws NotFoundException;
-
+    public void setData(D data) {
+        this.data = data;
+    }
+    
 }
