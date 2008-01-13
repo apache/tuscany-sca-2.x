@@ -26,8 +26,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletException;
-
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -47,7 +45,7 @@ import com.sun.syndication.io.WireFeedOutput;
  *
  * @version $Rev$ $Date$
  */
-class AtomEntryUtil {
+class AtomFeedEntryUtil {
 
     /**
      * Read an Atom entry
@@ -59,7 +57,7 @@ class AtomEntryUtil {
      * @throws FeedException
      * @throws IllegalArgumentException
      */
-    static Entry readEntry(String feedType, Reader reader) throws JDOMException, IOException, IllegalArgumentException,
+    static Entry readFeedEntry(String feedType, Reader reader) throws JDOMException, IOException, IllegalArgumentException,
         FeedException {
         SAXBuilder builder = new SAXBuilder();
         Document document = builder.build(reader);
@@ -72,9 +70,9 @@ class AtomEntryUtil {
         document.getRootElement().addContent(root);
         WireFeedInput input = new WireFeedInput();
         feed = (Feed)input.build(document);
-        Entry entry = (Entry)feed.getEntries().get(0);
-        if (entry.getContents().size() != 0) {
-            Content content = (Content)entry.getContents().get(0);
+        Entry feedEntry = (Entry)feed.getEntries().get(0);
+        if (feedEntry.getContents().size() != 0) {
+            Content content = (Content)feedEntry.getContents().get(0);
             if ("text/xml".equals(content.getType())) {
                 Element element = root.getChild("content", root.getNamespace());
                 if (!element.getChildren().isEmpty()) {
@@ -86,7 +84,7 @@ class AtomEntryUtil {
                 }
             }
         }
-        return entry;
+        return feedEntry;
     }
 
     /**
@@ -99,13 +97,13 @@ class AtomEntryUtil {
      * @throws IOException
      * @throws ServletException
      */
-    static void writeEntry(Entry entry, String feedType, Writer writer) throws IllegalArgumentException, FeedException,
+    static void writeFeedEntry(Entry feedEntry, String feedType, Writer writer) throws IllegalArgumentException, FeedException,
         IOException {
         Feed feed = new Feed();
         feed.setFeedType(feedType);
-        List<Entry> entries = new ArrayList<Entry>();
-        entries.add(entry);
-        feed.setEntries(entries);
+        List<Entry> feedEntries = new ArrayList<Entry>();
+        feedEntries.add(feedEntry);
+        feed.setEntries(feedEntries);
 
         WireFeedOutput wireFeedOutput = new WireFeedOutput();
         Document document = wireFeedOutput.outputJDom(feed);

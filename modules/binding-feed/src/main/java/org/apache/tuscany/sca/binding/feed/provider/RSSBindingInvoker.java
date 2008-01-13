@@ -65,6 +65,9 @@ class RSSBindingInvoker implements Invoker {
                 SyndFeed syndFeed = input.build(new XmlReader(new URL(uri)));
                 feed = (Feed)syndFeed.createWireFeed("atom_1.0");
             }
+            
+            //FIXME Support conversion to data-api entries
+            
             msg.setBody(feed);
 
         } catch (MalformedURLException e) {
