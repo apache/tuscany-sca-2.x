@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<project name="DojoZipInstaller">
+<project name="SaxonJarInstaller">
 
 
 	<property name="saxon.version" value="9.0.0.2" />
