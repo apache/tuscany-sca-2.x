@@ -131,6 +131,9 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
             jsonReq = new JSONObject(data.toString());
             method = jsonReq.getString("method");
         } catch (Exception e) {
+            //FIXME Exceptions are not handled correctly here
+            // They should be reported to the client JavaScript as proper
+            // JavaScript exceptions.
             throw new RuntimeException("Unable to parse request", e);
         }
 
