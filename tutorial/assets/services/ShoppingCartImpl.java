@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
@@ -30,14 +31,20 @@ import org.osoa.sca.annotations.Scope;
 @Scope("COMPOSITE")
 public class ShoppingCartImpl implements Cart, Total {
     
-    private Map<String, Item> cart = new HashMap<String, Item>();
+    private Map<String, Item> cart;
     
     @Init
     protected void init() {
+        cart = new HashMap<String, Item>();
     }
 
-    public Map<String, Item> getAll() {
-        return cart;
+    public Entry<String, Item>[] getAll() {
+        Entry<String, Item>[] entries = new Entry[cart.size()];
+        int i = 0;
+        for (Map.Entry<String, Item> e: cart.entrySet()) {
+            entries[i++] = new Entry<String, Item>(e.getKey(), e.getValue());
+        }
+        return entries;
     }
 
     public Item get(String key) throws NotFoundException {
@@ -72,7 +79,7 @@ public class ShoppingCartImpl implements Cart, Total {
         }
     }
 
-    public Map<String, Item> query(String queryString) {
+    public Entry<String, Item>[] query(String queryString) {
         // Implement queries later
         return null;
     }
