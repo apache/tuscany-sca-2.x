@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.tools.incremental.build.plugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -106,8 +107,15 @@ public class IncrementalBuildMojo extends AbstractBuildMojo {
             String projectID = id(project);
 
             Compiler compiler = getCompiler();
-            boolean changed = isSourceChanged(compiler) || isResourceChanged() || isPOMChanged();
+            boolean changed = false;
             boolean testChanged = false;
+            String marker = project.getBasedir().getPath() + "/.modified";
+            if (new File(marker).exists()) {
+                getLog().info("Project: " + projectID + " has been modified.");
+                changed = true;
+            } else {
+                changed = isSourceChanged(compiler) || isResourceChanged() || isPOMChanged();
+            }
             if (changed) {
                 modifiedProjectIDs.add(projectID);
             } else {
