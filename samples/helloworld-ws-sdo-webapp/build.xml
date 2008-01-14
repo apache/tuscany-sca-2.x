@@ -79,7 +79,6 @@
         </javac> 
         <copy todir="target/classes">
             <fileset dir="src/main/resources"/>
-            <fileset dir="target/sdo-source"/>
         </copy>
     </target>	
 	
@@ -90,7 +89,6 @@
             <lib refid="tuscany.jars"/>
             <lib refid="3rdparty.jars"/>
             <classes dir="target/classes"/>
-            <classes dir="target/sdo-source"/>
         </war>
      </target>
 		
