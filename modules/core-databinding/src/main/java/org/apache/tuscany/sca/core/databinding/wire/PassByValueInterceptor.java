@@ -138,7 +138,11 @@ public class PassByValueInterceptor implements Interceptor {
         if (dataBinding == null) {
             DataType<?> dataType = dataBindings.introspectType(data);
             if (dataType != null) {
-                dataBinding = dataBindings.getDataBinding(dataType.getDataBinding());
+                String db = dataType.getDataBinding();
+                dataBinding = dataBindings.getDataBinding(db);
+                if (dataBinding == null && db != null) {
+                    return data;
+                }
             }
             if (dataBinding == null) {
                 
