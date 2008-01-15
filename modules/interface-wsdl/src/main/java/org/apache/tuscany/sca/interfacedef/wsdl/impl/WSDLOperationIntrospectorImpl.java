@@ -31,6 +31,7 @@ import javax.wsdl.Input;
 import javax.wsdl.Message;
 import javax.wsdl.Output;
 import javax.wsdl.Part;
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -63,6 +64,7 @@ import org.apache.ws.commons.schema.XmlSchemaType;
  */
 public class WSDLOperationIntrospectorImpl {
     private static final Logger logger = Logger.getLogger(WSDLOperationIntrospectorImpl.class.getName());
+    private final static QName ANY = new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "any");
 
     private WSDLFactory wsdlFactory;
     private ModelResolver resolver;
@@ -106,8 +108,9 @@ public class WSDLOperationIntrospectorImpl {
     public boolean isWrapperStyle() throws InvalidWSDLException {
         if (wrapperStyle == null) {
             wrapperStyle =
-                (operation.getInput() == null || operation.getInput().getMessage().getParts().size() == 0 || wrapper.getInputChildElements() != null) && 
-                (operation.getOutput() == null || operation.getOutput().getMessage().getParts().size() == 0 || wrapper.getOutputChildElements() != null);
+                (operation.getInput() == null || operation.getInput().getMessage().getParts().size() == 0 || wrapper
+                    .getInputChildElements() != null) && (operation.getOutput() == null || operation.getOutput()
+                    .getMessage().getParts().size() == 0 || wrapper.getOutputChildElements() != null);
         }
         return wrapperStyle;
     }
@@ -382,12 +385,25 @@ public class WSDLOperationIntrospectorImpl {
             for (int i = 0; i < items.getCount(); i++) {
                 XmlSchemaObject schemaObject = items.getItem(i);
                 if (!(schemaObject instanceof XmlSchemaElement)) {
+                    // Should contain elements only
                     return null;
                 }
                 XmlSchemaElement childElement = (XmlSchemaElement)schemaObject;
+                /*
+                if (childElement.getSubstitutionGroup() != null) {
+                    return null;
+                }
+                */
                 if (childElement.getName() == null || childElement.getRefName() != null) {
-                    // FIXME: [rfeng] Not very clear if the JAX-WS spec allows element-ref
-                    // return null;
+                    XmlSchemaElement ref = getElement(childElement.getRefName());
+                    if (ref == null) {
+                        throw new InvalidWSDLException("XML schema element ref cannot be resolved: " + childElement);
+                    }
+                    childElement = ref;
+                }
+                if (ANY.equals(childElement.getQName())) {
+                    // Wildcard is not allowed
+                    return null;
                 }
                 // TODO: Do we support maxOccurs >1 ?
                 if (childElement.getMaxOccurs() > 1) {
@@ -434,6 +450,10 @@ public class WSDLOperationIntrospectorImpl {
                     throw new InvalidWSDLException("The element is not declared in a XML schema: " + elementName
                         .toString());
                 }
+                if (inputWrapperElement.isNillable()) {
+                    // The wrapper element cannot be nilable
+                    return null;
+                }
                 inputElements = getChildElements(inputWrapperElement);
                 return inputElements;
             } else {
@@ -466,6 +486,10 @@ public class WSDLOperationIntrospectorImpl {
                 }
                 outputWrapperElement = WSDLOperationIntrospectorImpl.this.getElement(elementName);
                 if (outputWrapperElement == null) {
+                    return null;
+                }
+                if (outputWrapperElement.isNillable()) {
+                    // The wrapper element cannot be nilable
                     return null;
                 }
                 outputElements = getChildElements(outputWrapperElement);
