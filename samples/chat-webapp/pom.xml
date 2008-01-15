@@ -58,6 +58,14 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- marking dependency as provided to exclude from war file -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.3</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
