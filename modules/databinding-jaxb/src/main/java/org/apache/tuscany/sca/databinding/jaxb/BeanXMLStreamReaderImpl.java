@@ -40,15 +40,16 @@ import org.apache.tuscany.sca.databinding.xml.SimpleXmlNodeImpl;
 import org.apache.tuscany.sca.databinding.xml.XmlNode;
 import org.apache.tuscany.sca.databinding.xml.XmlTreeStreamReaderImpl;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
+import org.jvnet.jaxb.reflection.model.annotation.RuntimeInlineAnnotationReader;
+import org.jvnet.jaxb.reflection.model.core.Ref;
+import org.jvnet.jaxb.reflection.model.impl.RuntimeModelBuilder;
+import org.jvnet.jaxb.reflection.model.runtime.RuntimeClassInfo;
+import org.jvnet.jaxb.reflection.model.runtime.RuntimePropertyInfo;
+import org.jvnet.jaxb.reflection.model.runtime.RuntimeTypeInfoSet;
+import org.jvnet.jaxb.reflection.runtime.IllegalAnnotationsException;
+import org.jvnet.jaxb.reflection.runtime.JAXBContextImpl;
 
-import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
-import com.sun.xml.bind.v2.model.core.Ref;
-import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
-import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
-import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
-import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfoSet;
-import com.sun.xml.bind.v2.runtime.IllegalAnnotationsException;
-import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
+
 
 /**
  * @version $Rev$ $Date$
