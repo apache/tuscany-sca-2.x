@@ -17,6 +17,9 @@
  * under the License.    
 -->
 <project name="sample-helloworld-bpel" default="compile">
+    <property name="test.class"   value="helloworld.BPELClient" />
+    <property name="test.jar"     value="sample-helloworld-bpel.jar" />
+    <property name="manifest.jar" value="../../lib/tuscany-sca-manifest.jar" />
 
     <target name="init">
         <mkdir dir="target/classes"/>
@@ -34,8 +37,7 @@
             <arg value="src/main/resources/helloworld.wsdl"/>
 
             <classpath>
-                <fileset refid="tuscany.jars"/>
-                <fileset refid="3rdparty.jars"/>
+                <pathelement location="${manifest.jar}"/>
             </classpath>
         </java>
         
@@ -45,175 +47,49 @@
             <arg value="src/main/resources/helloworld.wsdl"/>
 
             <classpath>
-                <fileset refid="tuscany.jars"/>
-                <fileset refid="3rdparty.jars"/>
+                <pathelement location="${manifest.jar}"/>
             </classpath>
         </java>
     </target>
 
     <target name="unzip-ode-db" depends="init">
-    	<unzip src="../../lib/ode-dao-jpa-ojpa-derby-1.1.zip" dest="target/database"/>
+        <unzip src="../../lib/ode-dao-jpa-ojpa-derby-1.1.zip" dest="target/database"/>
     </target> 
 
     <target name="compile" depends="init,generate-wsdl,unzip-ode-db">
-        <mkdir dir="target/classes"/>
         <javac destdir="target/classes" debug="on" source="1.5" target="1.5">
             <src path="src/main/java"/>
             <src path="target/wsdl2java-source"/>
             <classpath>
-                <fileset refid="tuscany.jars"/>
-                <fileset refid="3rdparty.jars"/>
+                <pathelement location="${manifest.jar}"/>
             </classpath>
         </javac>
         <copy todir="target/classes">
             <fileset dir="src/main/resources"/>
         </copy>
-        <jar destfile="target/sample-helloworld-bpel.jar" basedir="target/classes">
+        <jar destfile="target/${test.jar}" basedir="target/classes">
             <manifest>
-                <attribute name="Main-Class" value="helloworld.BPELClient"/>
+                <attribute name="Main-Class" value="${test.class}" /> 
             </manifest>
         </jar>
     </target>
 
     <target name="run">
-        <java classname="helloworld.BPELClient"> <!-- fork="true" -->
+        <java classname="${test.class}"> <!-- fork="true" -->
             <!-- jvmarg value="-Xdebug"/ -->
             <!-- jvmarg value="-Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y"/ -->
             <classpath>
                 <pathelement location="target/classes"/>
                 <pathelement location="target/database"/>
-                <fileset refid="tuscany.jars"/>
-                <fileset refid="3rdparty.jars"/>
+                <pathelement location="${manifest.jar}"/>
             </classpath>
         </java>
     </target>
-
+    
     <target name="clean">
         <delete includeemptydirs="true">
             <fileset dir="target"/>
         </delete>
     </target>
-
-    <fileset id="tuscany.jars" dir="../../modules">
-        <include name="tuscany-interface-java-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-assembly-xsd-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-implementation-java-xml-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-interface-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-interface-java-xml-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-implementation-java-runtime-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-domain-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-implementation-bpel-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-assembly-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-sca-api-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-host-embedded-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-node-api-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-policy-xml-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-policy-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-contribution-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-policy-logging-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-implementation-java-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-contribution-impl-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-binding-sca-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-interface-wsdl-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-domain-api-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-core-spi-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-core-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-contribution-java-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-databinding-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-node-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-definitions-xml-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-binding-sca-xml-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-core-databinding-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-interface-wsdl-xml-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-contribution-namespace-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-definitions-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-assembly-xml-1.0.1-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-wsdl2java-1.0.1-incubating-SNAPSHOT.jar"/>
-    </fileset>
-    <fileset id="3rdparty.jars" dir="../../lib">
-        <include name="tuscany-sdo-impl-1.0-incubating-SNAPSHOT.jar"/>
-        <include name="tuscany-sdo-tools-1.0-incubating-SNAPSHOT.jar"/>
-        <include name="geronimo-security-1.2-beta.jar"/>
-        <include name="geronimo-spec-jta-1.0.1B-rc4.jar"/>
-        <include name="saxon-xpath-8.7.jar"/>
-        <include name="log4j-1.2.12.jar"/>
-        <include name="geronimo-interceptor-1.2-beta.jar"/>
-        <include name="geronimo-core-1.2-beta.jar"/>
-        <include name="geronimo-j2ee-jacc_1.0_spec-1.1.jar"/>
-        <include name="ode-bpel-compiler-1.1.jar"/>
-        <include name="ode-bpel-runtime-1.1.jar"/>
-        <include name="geronimo-jpa_3.0_spec-1.0.jar"/>
-        <include name="ode-jacob-1.1.jar"/>
-        <include name="xbean-naming-2.7.jar"/>
-        <include name="axiom-impl-1.2.5.jar"/>
-        <include name="openjpa-all-0.9.7-incubating.jar"/>
-        <include name="xml-resolver-1.1.jar"/>
-        <include name="xalan-2.7.0.jar"/>
-        <include name="ode-bpel-epr-1.1.jar"/>
-        <include name="activeio-2.0-r118.jar"/>
-        <include name="ode-bpel-obj-1.1.jar"/>
-        <include name="geronimo-management-1.2-beta.jar"/>
-        <include name="openjpa-persistence-0.9.7-incubating.jar"/>
-        <include name="ode-jacob-ap-1.1.jar"/>
-        <include name="commons-jexl-1.1.jar"/>
-        <include name="geronimo-ejb_3.0_spec-1.0.jar"/>
-        <include name="ecore-xmi-2.2.3.jar"/>
-        <include name="commons-lang-2.1.jar"/>
-        <include name="serp-1.12.0.jar"/>
-        <include name="neethi-2.0.2.jar"/>
-        <include name="geronimo-j2ee-management_1.0_spec-1.1.jar"/>
-        <include name="geronimo-spec-j2ee-connector-1.5-rc4.jar"/>
-        <include name="derby-10.1.3.1.jar"/>
-        <include name="geronimo-naming-1.2-beta.jar"/>
-        <include name="common-2.2.3.jar"/>
-        <include name="xsd-2.2.3.jar"/>
-        <include name="geronimo-j2ee-1.2-beta.jar"/>
-        <include name="cglib-nodep-2.1_3.jar"/>
-        <include name="geronimo-system-1.2-beta.jar"/>
-        <include name="wsdl4j-1.6.2.jar"/>
-        <include name="xercesImpl-2.8.1.jar"/>
-        <include name="ode-dao-jpa-1.1.jar"/>
-        <include name="geronimo-kernel-1.2-beta.jar"/>
-        <include name="stax-api-1.0-2.jar"/>
-        <include name="commons-collections-3.1.jar"/>
-        <include name="ode-utils-1.1.jar"/>
-        <include name="regexp-1.3.jar"/>
-        <include name="xml-apis-1.3.03.jar"/>
-        <include name="ode-bpel-api-1.1.jar"/>
-        <include name="tuscany-sdo-lib-1.0-incubating-SNAPSHOT.jar"/>
-        <include name="geronimo-common-1.2-beta.jar"/>
-        <include name="ode-bpel-store-1.1.jar"/>
-        <include name="backport-util-concurrent-2.2.jar"/>
-        <include name="geronimo-transaction-1.2-beta.jar"/>
-        <include name="ode-scheduler-simple-1.1.jar"/>
-        <include name="commons-primitives-1.0.jar"/>
-        <include name="geronimo-j2ee-connector_1.5_spec-1.1.jar"/>
-        <include name="tranql-connector-1.1.jar"/>
-        <include name="geronimo-util-1.2-beta.jar"/>
-        <include name="ode-bpel-schemas-1.1.jar"/>
-        <include name="xmlbeans-2.3.0.jar"/>
-        <include name="wstx-asl-3.2.1.jar"/>
-        <include name="geronimo-connector-1.2-beta.jar"/>
-        <include name="geronimo-deployment-1.2-beta.jar"/>
-        <include name="geronimo-jta_1.0.1B_spec-1.0.jar"/>
-        <include name="tuscany-sdo-api-r2.1-1.0-incubating-SNAPSHOT.jar"/>
-        <include name="commons-codec-1.2.jar"/>
-        <include name="geronimo-commonj_1.1_spec-1.0.jar"/>
-        <include name="jaxen-1.1-beta-9.jar"/>
-        <include name="XmlSchema-1.3.2.jar"/>
-        <include name="ode-bpel-dao-1.1.jar"/>
-        <include name="commons-logging-1.0.3.jar"/>
-        <include name="javacc-3.2.jar"/>
-        <include name="ecore-2.2.3.jar"/>
-        <include name="axion-1.0-M3-dev.jar"/>
-        <include name="axiom-api-1.2.5.jar"/>
-        <include name="ecore-change-2.2.3.jar"/>
-        <include name="howl-1.0.1-1.jar"/>
-        <include name="saxon-8.7.jar"/>
-        <include name="saxon-dom-8.7.jar"/>
-        <include name="codegen-2.2.3.jar"/>
-        <include name="codegen-ecore-2.2.3.jar"/>
-        <include name="commons-logging-1.1.jar"/>
-    </fileset>
 
 </project>
