@@ -294,8 +294,8 @@ public class DirectedGraph<V, E> {
             nodesOnPath.add(nextNode);
             for (Edge edge : nextNode.vertex.outEdges.values()) {
                 Node adjacentNode = nodes.get(edge.targetVertex);
-                // Only look for public edge
-                if (edge.isPublic()) {
+                // The private edge can only be used if the edge connects to the target directly
+                if (edge.isPublic() || edge.getTargetVertex() == target) {
                     if (nextNode.distance + edge.weight < adjacentNode.distance) {
                         adjacentNode.distance = nextNode.distance + edge.weight;
                         adjacentNode.previous = nextNode;
