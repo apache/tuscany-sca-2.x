@@ -47,12 +47,16 @@ public class ExtensibleServletHost implements ServletHost {
         }
     }
     
+    private ServletHost getDefaultServletHost() {
+        return servletHosts.getServletHosts().get(0);
+    }
+    
     public int getDefaultPort() {
         if (servletHosts.getServletHosts().isEmpty()) {
             throw new ServletMappingException("No servlet host available");
         }
 
-        return servletHosts.getServletHosts().get(0).getDefaultPort();
+        return getDefaultServletHost().getDefaultPort();
     }
 
     public void addServletMapping(String uri, Servlet servlet) throws ServletMappingException {
@@ -62,7 +66,7 @@ public class ExtensibleServletHost implements ServletHost {
 
         // TODO implement selection of the correct servlet host based on the mapping
         // For now just select the first one
-        servletHosts.getServletHosts().get(0).addServletMapping(uri, servlet);
+        getDefaultServletHost().addServletMapping(uri, servlet);
     }
 
     public Servlet getServletMapping(String uri) throws ServletMappingException {
@@ -72,7 +76,7 @@ public class ExtensibleServletHost implements ServletHost {
 
         // TODO implement selection of the correct servlet host based on the mapping
         // For now just select the first one
-        return servletHosts.getServletHosts().get(0).getServletMapping(uri);
+        return getDefaultServletHost().getServletMapping(uri);
     }
     
     public Servlet removeServletMapping(String uri) throws ServletMappingException {
@@ -82,7 +86,7 @@ public class ExtensibleServletHost implements ServletHost {
 
         // TODO implement selection of the correct servlet host based on the mapping
         // For now just select the first one
-        return servletHosts.getServletHosts().get(0).removeServletMapping(uri);
+        return getDefaultServletHost().removeServletMapping(uri);
     }
     
     public RequestDispatcher getRequestDispatcher(String uri) throws ServletMappingException {
@@ -92,7 +96,7 @@ public class ExtensibleServletHost implements ServletHost {
 
         // TODO implement selection of the correct servlet host based on the mapping
         // For now just select the first one
-        return servletHosts.getServletHosts().get(0).getRequestDispatcher(uri);
+        return getDefaultServletHost().getRequestDispatcher(uri);
     }
 
     public String getContextPath() {
@@ -102,7 +106,7 @@ public class ExtensibleServletHost implements ServletHost {
 
         // TODO implement selection of the correct servlet host based on the mapping
         // For now just select the first one
-        return servletHosts.getServletHosts().get(0).getContextPath();
+        return getDefaultServletHost().getContextPath();
     }
     
     public URL getURLMapping(String uri) {
@@ -110,10 +114,10 @@ public class ExtensibleServletHost implements ServletHost {
             throw new ServletMappingException("No servlet host available");
         }
 
-        return servletHosts.getServletHosts().get(0).getURLMapping(uri);
+        return getDefaultServletHost().getURLMapping(uri);
     }
 
     public void setContextPath(String path) {
-        servletHosts.getServletHosts().get(0).setContextPath(path);
+        getDefaultServletHost().setContextPath(path);
     }
 }
