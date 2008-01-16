@@ -28,21 +28,6 @@
     <artifactId>tuscany-host-tomcat</artifactId>
     <name>Apache Tuscany SCA Tomcat Servlet Host Extension</name>
 
-    <repositories>
-        <repository>
-            <id>tomcat-m2-repo</id>
-            <name>Tomcat M2 Repository</name>
-            <url>http://tomcat.apache.org/dev/dist/m2-repository/</url>
-            <layout>default</layout>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -59,7 +44,7 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>catalina</artifactId>
-            <version>6.0.10</version>
+            <version>6.0.14</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.tomcat</groupId>
@@ -71,7 +56,7 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>coyote</artifactId>
-            <version>6.0.10</version>
+            <version>6.0.14</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.tomcat</groupId>
