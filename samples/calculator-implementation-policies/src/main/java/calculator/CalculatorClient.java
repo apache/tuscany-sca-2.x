@@ -19,6 +19,8 @@
 
 package calculator;
 
+import javax.security.auth.login.Configuration;
+
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
@@ -27,6 +29,15 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {
+        try {
+            Configuration secConf = Configuration.getConfiguration();
+        } catch ( java.lang.SecurityException e ) {
+            if ( e.getMessage().equals("Unable to locate a login configuration") ) {
+                System.setProperty("java.security.auth.login.config", "target/classes/CalculatorJass.config");
+            } else {
+                throw e;
+            }
+        }
 
         SCADomain scaDomain = SCADomain.newInstance("Calculator.composite");
         
