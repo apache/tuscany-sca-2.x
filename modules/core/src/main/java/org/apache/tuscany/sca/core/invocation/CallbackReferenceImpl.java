@@ -21,7 +21,9 @@ package org.apache.tuscany.sca.core.invocation;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
+import org.apache.tuscany.sca.core.assembly.RuntimeWireImpl;
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.invocation.Message;
@@ -67,6 +69,7 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
             return super.getProxy();
         } else {
             // wire not yet selected, so return a proxy that resolves the target dynamically
+            //FIXME: the following call creates a new instance of CallbackReferenceImpl
             return proxyFactory.createCallbackProxy(businessInterface, wires);
         }
     }
@@ -77,14 +80,17 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
             return null;
         }
 
-        //FIXME: need a cache for better performance.  This requires making this
-        // method non-static, which means changing the signature of createCallbackProxy().
-
         // first choice is wire with matching destination endpoint
         for (RuntimeWire wire : wires) {
             if (callbackEPR.getURI().equals(wire.getTarget().getURI())) {
+                RuntimeWire clonedWire = ((RuntimeWireImpl)wire).lookupCache(callbackEPR);
+                if (clonedWire != null) {
+                    return clonedWire;
+                }
                 try {
-                    return (RuntimeWire)wire.clone();
+                    clonedWire = (RuntimeWire)wire.clone();
+                    ((RuntimeWireImpl)wire).addToCache(callbackEPR, clonedWire);
+                    return clonedWire;
                 } catch (CloneNotSupportedException e) {
                     throw new ServiceRuntimeException(e);
                 }
@@ -135,29 +141,37 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
         return from.getReferenceParameters().getCallbackReference();
     }
 
-    private static RuntimeWire cloneAndBind(Message msgContext, RuntimeWire wire) {
+    private RuntimeWire cloneAndBind(Message msgContext, RuntimeWire wire) {
         EndpointReference callback = getCallbackEndpoint(msgContext);
-        if (callback != null && callback.getContract() != null) {
+        RuntimeWire boundWire = null;
+        if (callback != null) {
+            boundWire = ((RuntimeWireImpl)wire).lookupCache(callback);
+            if (boundWire != null) {
+                return boundWire;
+            }
             try {
+                Contract contract = callback.getContract();
                 RuntimeComponentReference ref = null;
-                if (callback.getContract() instanceof RuntimeComponentReference) {
-                    ref = (RuntimeComponentReference)callback.getContract();
-                    return ref.getRuntimeWire(callback.getBinding());
-                } else {
-                    ref =
-                        bind((RuntimeComponentReference)wire.getSource().getContract(),
-                             callback.getComponent(),
-                             (RuntimeComponentService)callback.getContract());
+                if (contract == null) {
+                    boundWire = (RuntimeWire)wire.clone();
 
-                    return ref.getRuntimeWires().get(0);
+                } else if (contract instanceof RuntimeComponentReference) {
+                    ref = (RuntimeComponentReference)contract;
+                    boundWire = ref.getRuntimeWire(callback.getBinding());
+
+                } else {  // contract instanceof RuntimeComponentService
+                    ref = bind((RuntimeComponentReference)wire.getSource().getContract(),
+                               callback.getComponent(),
+                               (RuntimeComponentService)contract);
+                    boundWire = ref.getRuntimeWires().get(0);
                 }
+                configureWire(boundWire, msgContext);
+                ((RuntimeWireImpl)wire).addToCache(callback, boundWire);
             } catch (CloneNotSupportedException e) {
                 // will not happen
-                return null;
             }
-        } else {
-            return wire;
         }
+        return boundWire;
     }
 
     private static RuntimeComponentReference bind(RuntimeComponentReference reference,
@@ -180,4 +194,20 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
         return ref;
     }
 
+    private void configureWire(RuntimeWire wire, Message msgContext) {
+        // need to set the endpoint on the binding also so that when the chains are created next
+        // the sca binding can decide whether to provide local or remote invokers. 
+        // TODO - there is a problem here though in that I'm setting a target on a 
+        //        binding that may possibly be trying to point at two things in the multi threaded 
+        //        case. Need to confirm the general model here and how the clone and bind part
+        //        is intended to work
+        EndpointReference epr = msgContext.getFrom().getReferenceParameters().getCallbackReference();
+        wire.getSource().getBinding().setURI(epr.getURI());
+
+        // also need to set the target contract as it varies for the sca binding depending on 
+        // whether it is local or remote
+        RuntimeComponentReference ref = (RuntimeComponentReference)wire.getSource().getContract();
+        Binding binding = wire.getSource().getBinding();
+        wire.getTarget().setInterfaceContract(ref.getBindingProvider(binding).getBindingInterfaceContract());
+    }
 }
