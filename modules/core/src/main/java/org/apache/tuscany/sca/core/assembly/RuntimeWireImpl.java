@@ -64,6 +64,13 @@ public class RuntimeWireImpl implements RuntimeWire {
     private transient ConversationManager conversationManager;
     private transient RuntimeWireInvoker invoker;
 
+    // the following is a very simple cache that avoids re-cloning a wire
+    // when consecutive callbacks to the same endpoint are made
+    private EndpointReference lastCallback;
+    private RuntimeWire cachedWire;
+    private boolean wireReserved;
+    private RuntimeWireImpl clonedFrom;
+
     private List<InvocationChain> chains;
 
     /**
@@ -274,5 +281,35 @@ public class RuntimeWireImpl implements RuntimeWire {
      */
     public ConversationManager getConversationManager() {
         return conversationManager;
+    }
+
+    public synchronized RuntimeWire lookupCache(EndpointReference callback) {
+        if (lastCallback != null && callback.getURI().equals(lastCallback.getURI()) && !wireReserved) {
+            wireReserved = true;
+            return cachedWire;
+        } else {
+            return null;
+        }
+    }
+
+    public synchronized void addToCache(EndpointReference callback, RuntimeWire clonedWire) {
+        ((RuntimeWireImpl)clonedWire).setClonedFrom(this);
+        lastCallback = callback;
+        cachedWire = clonedWire;
+        wireReserved = true;
+    }
+
+    public synchronized void releaseClonedWire(RuntimeWire wire) {
+        if (cachedWire == wire) {
+            wireReserved = false;
+        }
+    }
+
+    public synchronized void releaseWire() {
+        clonedFrom.releaseClonedWire(this);
+    }
+
+    private void setClonedFrom(RuntimeWireImpl wire) {
+        clonedFrom = wire;
     }
 }
