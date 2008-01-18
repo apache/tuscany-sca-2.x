@@ -13,7 +13,7 @@ DEPENDENCY              PHASE   MODULE                                          
 jaxb-api-2.1.jar	compile	Apache Tuscany SCA Atom+RSS Feed Aggregator Sample Webapp	tuscany-host-webapp-1.1-incubating-SNAPSHOT	tuscany-host-embedded-1.1-incubating-SNAPSHOT	tuscany-core-databinding-1.1-incubating-SNAPSHOT	tuscany-databinding-jaxb-1.1-incubating-SNAPSHOT	jaxb-api-2.1
 
 It is often convenient to further analyse these entries using the spreadsheet of your
-choice so the columns are tab separated to allow for easy converstion.
+choice so the columns are tab separated to allow for easy conversion.
 
 The plugin can be included in a module using the following,
 
@@ -31,18 +31,16 @@ The plugin can be included in a module using the following,
 </plugin>  
 
 If you include this at the top level of you project and have it run for each model you
-will get a report for each model independently. Once you have dependency.txt files in your modules
+will get a report for each model independently. For example, in the Tuscany SCA project
+the plugin is included in the pom.xml files at the sca level under the profile 
+"dependecies" so to generate a dependencies report for the Tuscany SCA project:
+
+cd sca
+mvn -o -Pdependencies -Dmaven.test.skip=true 
+
+Once you have dependency.txt files in your modules
 the you favourite command line tools can be used to concatenate and sort them
 to get a full picture of the dependencies in you project, for example, with linux you
 could do,
 
 find . -name dependency.txt -exec cat '{}' >> deptotal.txt \;
-
-
-
-
-
-
- 
-
-
