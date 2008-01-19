@@ -25,9 +25,9 @@
         <version>1.2-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-demos</artifactId>
+    <artifactId>tuscany-demos-secure-bigbank</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Demos</name>
+    <name>Apache Tuscany SCA Secure Bigbank Demo</name>
 
     <profiles>
         <profile>
@@ -36,14 +36,9 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>alert-aggregator-webapp</module>
-                <module>bigbank-account</module>
-                <module>bigbank-calculator</module>
-                <module>bigbank-stockquote</module>
-                <module>mortgage-creditcheck</module>
-                <module>mortgage-loanapproval</module>
-                <module>secure-bigbank</module>
-                <module>xml-bigbank</module>
+                <module>secure-bigbank-account</module>
+                <module>secure-bigbank-calculator</module>
+                <module>secure-bigbank-stockquote</module>
             </modules>
         </profile>
 
