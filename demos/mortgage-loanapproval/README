@@ -28,15 +28,11 @@ Buildfile: build.xml
 
 run:
      [java] Starting the CreditCheck Service...
-     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
-om.util.StAXUtils).
-     [java] log4j:WARN Please initialize the log4j system properly.
-     [java] Sep 13, 2007 12:25:41 PM org.apache.tuscany.sca.http.jetty.JettyServ
-er addServletMapping
-     [java] INFO: Added Servlet mapping: http://localhost:8085/CreditCheckServic
-e
+     [java] 14-Jan-2008 14:14:20 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:8085/CreditCheckServiceC
+omponent
      [java] Press Enter to Exit...
-
 
 In the second command window
 ----------------------------
@@ -49,10 +45,6 @@ mortgage-loanapproval is run:
 
 Buildfile: build.xml
 run:
-     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
-om.util.StAXUtils).
-     [java] log4j:WARN Please initialize the log4j system properly.
-     [java] Credit score for 111-22-3333: 722
      [java] Interest rate for a 30-year loan of $200000.0 in CA: 6.5%
      [java] Approved: John Smith[111-22-3333]
 
@@ -61,9 +53,6 @@ mortgage-loanapproval is run:
 
 Buildfile: build.xml
 run:
-     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
-om.util.StAXUtils).
-     [java] log4j:WARN Please initialize the log4j system properly.
      [java] Credit score for 111-22-3333: 708
      [java] Interest rate for a 30-year loan of $200000.0 in CA: 6.5%
      [java] Debt/Income ratio 0.2528272093971861 is too high.

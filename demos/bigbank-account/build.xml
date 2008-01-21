@@ -18,7 +18,7 @@
  * under the License.
 -->
 <project name="bigbank-account" default="run">
-    <property name="localRepository" value="./target/repo" />
+    <property name="settings.localRepository" value="./target/repo" />
     <property name="artifactId" value="demo-bigbank-account" />	
     <property name="test.class" value="bigbank.demo.BigBankServer" />
 	

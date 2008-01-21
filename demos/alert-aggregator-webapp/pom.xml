@@ -50,6 +50,11 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
+            <artifactId>tuscany-sdo-api-r2.1</artifactId>
+            <version>1.0-incubating</version>
+        </dependency>         
+        <dependency>
+            <groupId>org.apache.tuscany.sdo</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
             <version>1.0-incubating-SNAPSHOT</version>
         </dependency>
@@ -124,12 +129,12 @@
             <artifactId>rome</artifactId>
             <version>0.9</version>
         </dependency>
-        <!--dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-jetty</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency-->
+        <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <version>3.2.1</version>
+            <scope>runtime</scope>
+        </dependency>  
     </dependencies>
 
     <build>
