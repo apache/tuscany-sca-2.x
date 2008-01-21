@@ -1,28 +1,62 @@
 Changes With Apache Tuscany SCA 1.1 (incubating) January 2008 
 ===============================================================
 
-TODO
-
 - Fix the following JIRA issues (http://issues.apache.org/jira/browse/TUSCANY):
-  * ???
+  * TUSCANY-1939
+  * TUSCANY-1914
+  * TUSCANY-1854
+  * TUSCANY-1931
+  * TUSCANY-1547
+  * TUSCANY-1909
+  * TUSCANY-1919
+  * TUSCANY-1930
+  * TUSCANY-1806
+  * TUSCANY-1804
+  * TUSCANY-1916
+  * TUSCANY-1913
+  * TUSCANY-1834
+  * TUSCANY-1857
+  * TUSCANY-1687
+  * TUSCANY-1801
+  * TUSCANY-1742
+  * TUSCANY-1762
+  * TUSCANY-1945
+  * TUSCANY-1595
+  * TUSCANY-1594
+  * TUSCANY-1849
+  * TUSCANY-1836
+  * TUSCANY-1934
+  * TUSCANY-1902
+  * TUSCANY-1608
+  * TUSCANY-1943
+  * TUSCANY-1896
+  * TUSCANY-1626
+  * TUSCANY-1797
+  * TUSCANY-1601
+  * TUSCANY-1415
+
 - Better JMS support
-- JAXB based POJO transformations.
+  * binding.jms supporting point to point text based messaging only
+  * New SOAP/JMS sample (helloworld-ws-reference/service-jms)
+
 - Improvements in PolicyFramework Support
   * Support for policy specifications on operation elements in a composite definition
-- A new demo
-  * Separate sample to demonstrate use of Implementation Policies (uses logging and JAAS Authentication)
+  * Separate sample (calculator-implementation-policies) to demonstrate use of Implementation Policies 
+    (uses logging and JAAS Authentication)
+
 - Modeling of client side java script components
   * See implementation.widget
-- JSONRPC reference binding
-- Better support for doman API suggested by assembly spec including a standalone node and nodes running connected together in a domain.
-  * stand alone nodes can be configured and started without recourse to the domain.
-  * using the domain API contributions can be added and associated with a node. Wiring across nodes is supported. 
+
+- Evolving support for doman API suggested by assembly spec including a standalone node and nodes running 
+  connected together in a domain. This is still experimental. 
+ 
 - Class loading and OSGI improvements
   * Enable Tuscany to be run in a multi-classloader environment including inside OSGi. By default,
     Tuscany continues to run using a single CLASSPATH-based classloader.
   * Contributions no longer need to be in the CLASSPATH. All import/export dependencies across contributions should be 
     explicitly specified (as described in the spec).
-- Support for BPEL references 
+
+- JAXB based POJO transformations
 
 Changes With Apache Tuscany SCA 1.0.1 (incubating) November 2007 
 ================================================================

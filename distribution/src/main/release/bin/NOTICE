@@ -42,9 +42,13 @@ This product includes software from the GlassFish project (https://glassfish.dev
 This product includes software from the Rome project (https://rome.dev.java.net/)
     Copyright (c) 2006, Sun Microsystems, Inc.
 
-This product also includes software developed by:
-- the Eclipse Modeling Framework project (http://www.eclipse.org/emf/)
-- the Mozilla Rhino project (http://www.mozilla.org/rhino/)
+This product includes/uses the Eclipse Modeling Framework project (http://www.eclipse.org/emf/)
+
+This product includes/uses the Mozilla Rhino project (http://www.mozilla.org/rhino/)
+
+This product includes/uses the Sourceforge wsdl4j project (http://sourceforge.net/projects/wsdl4j/)i
+
+This product includes/uses the Codehaus JRuby project (http://jruby.codehaus.org/)
 
 This product includes/uses JDOM (http://www.jdom.org/)
  Copyright (C) 2000-2004 Jason Hunter & Brett McLaughlin. All rights reserved.
