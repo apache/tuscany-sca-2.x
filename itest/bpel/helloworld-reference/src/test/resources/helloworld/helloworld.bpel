@@ -22,45 +22,63 @@
     xmlns:bpws="http://schemas.xmlsoap.org/ws/2004/03/business-process/"
     xmlns:tns="http://tuscany.apache.org/implementation/bpel/example/helloworld"    
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:test="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl"
+    xmlns:helloworld="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl"
+    xmlns:greetings="http://greetings"
     queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"
     expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
 
   <import location="helloworld.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
      namespace="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl"/>
 
+  <import location="../greetings/greetings.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
+     namespace="http://greetings"/>
+
    <partnerLinks>
-      <partnerLink name="helloPartnerLink" partnerLinkType="test:HelloPartnerLinkType" myRole="me" />
+      <partnerLink name="helloPartnerLink" partnerLinkType="helloworld:HelloPartnerLinkType" myRole="me" />
+      <partnerLink name="greetingsPartnerLink" partnerLinkType="greetings:GreetingsPartnerLinkType" myRole="processGreetings" initializePartnerRole="yes" />
    </partnerLinks>
     
    <variables>
-     <variable name="helloMessage" messageType="test:HelloMessage"/>
-     <variable name="tmpVar" type="xsd:string"/>
+     <variable name="helloMessage" messageType="helloworld:HelloMessage"/>
+     <variable name="helloResponse" messageType="helloworld:HelloMessage"/>
+     <variable name="greetingsRequest" messageType="greetings:getGreetingsRequest"/>
+     <variable name="greetingsResponse" messageType="helloworld:getGreetingsResponse"/>
    </variables>
 
    <sequence>
        <receive
           name="start"
-          partnerLink="helloPartnerLink"
-          portType="test:HelloPortType"
+          createInstance="yes"
           operation="hello"
-          variable="helloMessage"
-          createInstance="yes"/>
+          partnerLink="helloPartnerLink"
+          portType="helloworld:HelloPortType"
+          variable="helloMessage"/>
 
-      <assign name="assign1">
+       <assign name="assignToGreetingsRequest">
           <copy>
-              <from variable="helloMessage" part="TestPart"/>
-              <to variable="tmpVar"/>
+              <from>$helloMessage.TestPart</from>
+              <to>$getGreetingsRequest.parameters</to>
           </copy>
+       </assign>
+
+      <invoke name="invokeGreetings"
+              operation="getGreetings"
+              inputVariable="greetingsRequest"
+              outputVariable="greetingsResponse"
+              partnerLink="greetingsPartnerLink"
+              portType="greetings:Greetings" />
+
+       <assign name="assignToHelloResponse">
           <copy>
-              <from>concat($tmpVar,' World')</from>
-              <to variable="helloMessage" part="TestPart"/>
+              <from>$getGreetingsResponse.parameters</from>
+              <to>$helloResponse.TestPart</to>
           </copy>
-      </assign>
+       </assign>
+
        <reply name="end"  
-              partnerLink="helloPartnerLink"
-              portType="test:HelloPortType" 
               operation="hello"
-              variable="helloMessage"/>
+              partnerLink="helloPartnerLink"
+              portType="helloworld:HelloPortType" 
+              variable="helloResponse"/>
    </sequence>
 </process>

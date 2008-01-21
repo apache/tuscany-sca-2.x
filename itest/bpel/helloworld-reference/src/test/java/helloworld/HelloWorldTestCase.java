@@ -19,6 +19,11 @@
 
 package helloworld;
 
+import greetings.GreetingsService;
+
+import java.io.IOException;
+import java.net.Socket;
+
 import junit.framework.TestCase;
 
 import org.apache.tuscany.implementation.bpel.example.helloworld.HelloPortType;
@@ -30,7 +35,6 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  * @version $Rev$ $Date$
  */
 public class HelloWorldTestCase extends TestCase {
-
     private SCADomain scaDomain;
     
     /**
@@ -49,15 +53,19 @@ public class HelloWorldTestCase extends TestCase {
         scaDomain.close();
     }
     
+    public void testPing() throws IOException {
+        new Socket("127.0.0.1", 8085);
+    }
+    
+    public void testGreetingsServiceInvocation() {
+        GreetingsService greetingsService = scaDomain.getService(GreetingsService.class, "GreetingsServiceComponent");
+        String response = greetingsService.getGreetings("Luciano");
+        assertEquals("Hello Luciano", response);
+    }
+    
     public void testServiceInvocation() {
         HelloPortType bpelService = scaDomain.getService(HelloPortType.class, "BPELHelloWorldService");
         String response = bpelService.hello("Hello");
         assertEquals("Hello World", response);
-    }
-    
-    public void testReferenceInvocation() {
-        HelloWorld bpelService = scaDomain.getService(HelloWorld.class, "BPELHelloWorld");
-        String response = bpelService.hello("Hello");
-        assertEquals("Hello World", response);        
     }
 }
