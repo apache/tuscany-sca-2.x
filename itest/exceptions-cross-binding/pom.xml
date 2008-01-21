@@ -179,6 +179,13 @@
                     <packageName>org.apache.tuscany.sca.test.exceptions.impl.jaxb</packageName>
                     <keep>true</keep>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>javax.jws</groupId>
+                        <artifactId>jsr181-api</artifactId>
+                        <version>1.0-MR1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <!-- SDO Generation -->
             <plugin>
