@@ -18,31 +18,16 @@
  */
 package helloworld;
 
-import java.io.IOException;
-
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.host.jms.activemq.ActiveMQModuleActivator;
+import org.osoa.sca.annotations.Service;
 
 /**
- * This server program shows how to create an SCA runtime, and start it which
- * activates the helloworld Web service endpoint.
+ * This class implements the HelloWorld service.
  */
-public class HelloWorldServer {
+@Service(HelloWorldService.class)
+public class HelloWorldImpl implements HelloWorldService {
 
-    public static void main(String[] args) {
-
-    	ActiveMQModuleActivator.startBroker();
-        SCADomain scaDomain = SCADomain.newInstance("helloworldwsjms.composite");
-
-        try {
-            System.out.println("HelloWorld server started (press enter to shutdown)");
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        scaDomain.close();
-        System.out.println("HelloWorld server stopped");
+    public String getGreetings(String name) {
+        return "Hello " + name;
     }
 
 }

@@ -96,8 +96,7 @@ ntation/bpel/example/helloworld.wsdl">Hello</message></hello></TestPart></messag
      [java] Stopped !!!
 
 BUILD SUCCESSFUL
-Total time: 36 seconds
-
+Total time: 36 seconds     
 
 Building And Running The Sample Using Maven 
 -------------------------------------------
@@ -149,6 +148,4 @@ e\.m2\repository\org\apache\tuscany\sca\sample-helloworld-bpel\1.1-incubating-SN
 [INFO] ------------------------------------------------------------------------
 
 
-
-
-This shows that the Junit test cases have run successfully.
+This shows that the Junit test cases have run successfully. 

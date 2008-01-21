@@ -74,6 +74,38 @@
             <version>4.2</version>
             <scope>test</scope>
         </dependency>
+        <!--  dependencies that must be present in order that the build scripts work -->
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-wsdl2java</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency> 
+                
+        <dependency>
+            <groupId>org.apache.tuscany.sdo</groupId>
+            <artifactId>tuscany-sdo-tools</artifactId>
+            <version>1.0-incubating</version>
+        </dependency>  
+        
+        <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <version>3.2.1</version>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.1.5</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.xml.stream</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>        
 
     </dependencies>
     

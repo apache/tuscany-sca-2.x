@@ -23,20 +23,21 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
 
     <display-name>Apache Tuscany Hello World Web Service SDO Sample</display-name>
+    
+  <filter>
+    <filter-name>tuscany</filter-name> 
+    <filter-class>org.apache.tuscany.sca.host.webapp.TuscanyServletFilter</filter-class> 
+  </filter>
 
-    <listener>
-        <listener-class>org.apache.tuscany.sca.host.webapp.TuscanyContextListener</listener-class>
-    </listener>
-
-    <servlet>
-        <servlet-name>TuscanyServlet</servlet-name>
-        <servlet-class>org.apache.tuscany.sca.host.webapp.TuscanyServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>TuscanyServlet</servlet-name>
-        <url-pattern>/services/*</url-pattern>
-    </servlet-mapping>
+  <filter-mapping>
+    <filter-name>tuscany</filter-name> 
+    <url-pattern>/*</url-pattern> 
+  </filter-mapping>
+  
+  <filter-mapping>
+    <filter-name>tuscany</filter-name> 
+    <url-pattern>/services/*</url-pattern> 
+  </filter-mapping>
 
   <welcome-file-list id="WelcomeFileList">
     <welcome-file>HelloWorld.jsp</welcome-file>

@@ -29,6 +29,12 @@
     <packaging>pom</packaging>
     <name>Apache Tuscany SCA Samples</name>
 
+    <repositories>
+        <repository>
+            <id>apache.incubator</id>
+            <url>http://people.apache.org/repo/m2-incubating-repository</url>
+        </repository>
+    </repositories>
     <profiles>
         <profile>
             <id>default</id>
@@ -60,9 +66,10 @@
                 <module>helloworld-dojo-webapp</module>
                 <module>helloworld-jsonrpc-webapp</module>
                 <module>helloworld-ws-service</module>
+                <module>helloworld-ws-service-jms</module>
                 <module>helloworld-ws-service-secure</module>
                 <module>helloworld-ws-reference</module>
-                <!-- module>helloworld-ws-reference-jms</module -->
+                <module>helloworld-ws-reference-jms</module>
                 <module>helloworld-ws-reference-secure</module>
                 <module>helloworld-ws-sdo</module>
                 <module>helloworld-ws-sdo-webapp</module>

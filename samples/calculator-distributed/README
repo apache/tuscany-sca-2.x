@@ -121,101 +121,289 @@ follows
 
 cd calculator-distributed
 ant compile
-ant runDomainNode
+ant runDomain
 ant runNodeB
 ant runNodeC
 ant runNodeA
 
 You should see the following output from the four separate command prompt:
 
-runDomainNode:
-     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
-om.util.StAXUtils).
-     [java] log4j:WARN Please initialize the log4j system properly.
-     [java] 23-Aug-2007 17:40:40 org.apache.tuscany.sca.http.jetty.JettyServer a
+runDomain:
+     [java] 14-Jan-2008 10:49:34 org.apache.tuscany.sca.domain.impl.SCADomainImp
+l init
+     [java] INFO: Domain management configured from file:/C:/simon/tuscany/relea
+se/sca-r1.1-rc2/tuscany-sca-1.1-incubating-SNAPSHOT/lib/tuscany-sca-all-1.1-incu
+bating-SNAPSHOT.jar
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] 14-Jan-2008 10:49:43 org.apache.tuscany.sca.http.jetty.JettyServer a
 ddServletMapping
-     [java] INFO: Added Servlet mapping: http://localhost:8080/ServiceDiscoveryC
-omponent/ServiceDiscovery
-     [java] Domain node started (press enter to shutdown)
-     [java] Registering service: [mydomain nodeB AddServiceComponent org.apache.
-tuscany.sca.assembly.SCABinding http://localhost:8085/AddServiceComponent]
-     [java] Registering service: [mydomain nodeC SubtractServiceComponent org.ap
-ache.tuscany.sca.assembly.SCABinding http://localhost:8086/SubtractServiceCompon
-ent]
-     [java] Finding service: [mydomain SubtractServiceComponent org.apache.tusca
-ny.sca.assembly.SCABinding]
-     [java] Matching service url: http://localhost:8086/SubtractServiceComponent
-
-     [java] Finding service: [mydomain AddServiceComponent org.apache.tuscany.sc
-a.assembly.SCABinding]
-     [java] Matching service url: http://localhost:8085/AddServiceComponent
-     [java] Java Result: 1
-Terminate batch job (Y/N)? y
+     [java] INFO: Added Servlet mapping: http://L3AW203:8877/domain/*
+     [java] 14-Jan-2008 10:49:43 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:8877/SCADomainManagerCom
+ponent/SCADomainManagerService/*
+     [java] 14-Jan-2008 10:49:43 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:8877/SCADomainManagerCom
+ponent/SCADomainManagerService
+     [java] 14-Jan-2008 10:49:43 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:8877/SCADomain/scaDomain
+.js
+     [java] 14-Jan-2008 10:49:43 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:8877/SCADomainManagerCom
+ponent/SCADomainEventService
+     [java] 14-Jan-2008 10:49:43 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:8877/SCADomainManagerCom
+ponent/SCADomainAPIService
+     [java] Domain started (press enter to shutdown)
 
 
 
 runNodeB:
-     [java] file:/C:/simon/tuscany/java-head/sca/samples/calculator-distributed/
-target/classes/management/
-     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
-om.util.StAXUtils).
-     [java] log4j:WARN Please initialize the log4j system properly.
-     [java] Registering service: [mydomain nodeB AddServiceComponent/ org.apache
-.tuscany.sca.assembly.SCABinding http://localhost:8085/AddServiceComponent]
-     [java] 23-Aug-2007 17:41:25 org.apache.tuscany.sca.http.jetty.JettyServer a
+     [java] 14-Jan-2008 10:50:41 org.apache.tuscany.sca.domain.impl.SCADomainImp
+l registerNode
+     [java] INFO: Registered node: http://L3AW203:2047 at endpoint http://L3AW20
+3:2047
+     [java] 14-Jan-2008 10:50:41 org.apache.tuscany.sca.node.impl.SCADomainProxy
+Impl createRuntime
+     [java] INFO: Domain management configured from file:/C:/simon/tuscany/relea
+se/sca-r1.1-rc2/tuscany-sca-1.1-incubating-SNAPSHOT/lib/tuscany-sca-all-1.1-incu
+bating-SNAPSHOT.jar
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] 14-Jan-2008 10:50:51 org.apache.tuscany.sca.http.jetty.JettyServer a
 ddServletMapping
-     [java] INFO: Added Servlet mapping: http://localhost:8085/AddServiceCompone
-nt
+     [java] INFO: Added Servlet mapping: http://L3AW203:2047/SCADomainEventServi
+ceProxyComponent
+     [java] 14-Jan-2008 10:50:51 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2047/SCADomainAPIService
+ProxyComponent
+     [java] 14-Jan-2008 10:50:51 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2047/SCANodeManagerCompo
+nent/SCANodeManagerService
+     [java] 14-Jan-2008 10:50:51 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2047/SCANodeManagerCompo
+nent/ComponentManagerService/*
+     [java] 14-Jan-2008 10:50:51 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2047/SCANodeManagerCompo
+nent/ComponentManagerService
+     [java] 14-Jan-2008 10:50:51 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2047/SCADomain/scaDomain
+.js
+     [java] 14-Jan-2008 10:50:53 org.apache.tuscany.sca.node.impl.SCANodeImpl ac
+tivateComposite
+     [java] INFO: Building composite: {http://sample}CalculatorB
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
      [java] Node started (press enter to shutdown)
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.node.impl.SCANodeImpl st
+artComposite
+     [java] INFO: Starting composite: {http://sample}CalculatorB
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2047/AddServiceComponent
+B
      [java] AddService - add 3.0 and 2.0
-     
+     [java] 14-Jan-2008 10:51:39 org.apache.tuscany.sca.node.impl.SCANodeImpl st
+opComposite
+     [java] INFO: Stopping composite: {http://sample}CalculatorB
      
 runNodeC:
-     [java] file:/C:/simon/tuscany/java-head/sca/samples/calculator-distributed/
-target/classes/management/
-     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
-om.util.StAXUtils).
-     [java] log4j:WARN Please initialize the log4j system properly.
-     [java] Registering service: [mydomain nodeC SubtractServiceComponent org.ap
-ache.tuscany.sca.assembly.SCABinding http://localhost:8086/SubtractServiceCompon
-ent]
-     [java] 23-Aug-2007 17:41:51 org.apache.tuscany.sca.http.jetty.JettyServer a
+     [java] 14-Jan-2008 10:51:06 org.apache.tuscany.sca.domain.impl.SCADomainImp
+l registerNode
+     [java] INFO: Registered node: http://L3AW203:2053 at endpoint http://L3AW20
+3:2053
+     [java] 14-Jan-2008 10:51:07 org.apache.tuscany.sca.node.impl.SCADomainProxy
+Impl createRuntime
+     [java] INFO: Domain management configured from file:/C:/simon/tuscany/relea
+se/sca-r1.1-rc2/tuscany-sca-1.1-incubating-SNAPSHOT/lib/tuscany-sca-all-1.1-incu
+bating-SNAPSHOT.jar
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] 14-Jan-2008 10:51:16 org.apache.tuscany.sca.http.jetty.JettyServer a
 ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2053/SCADomainEventServi
+ceProxyComponent
+     [java] 14-Jan-2008 10:51:16 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2053/SCADomainAPIService
+ProxyComponent
+     [java] 14-Jan-2008 10:51:16 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2053/SCANodeManagerCompo
+nent/SCANodeManagerService
+     [java] 14-Jan-2008 10:51:16 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2053/SCANodeManagerCompo
+nent/ComponentManagerService/*
+     [java] 14-Jan-2008 10:51:16 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2053/SCANodeManagerCompo
+nent/ComponentManagerService
+     [java] 14-Jan-2008 10:51:16 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2053/SCADomain/scaDomain
+.js
+     [java] 14-Jan-2008 10:51:18 org.apache.tuscany.sca.node.impl.SCANodeImpl ac
+tivateComposite
+     [java] INFO: Building composite: {http://sample}CalculatorC
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
      [java] Node started (press enter to shutdown)
-     [java] INFO: Added Servlet mapping: http://localhost:8086/SubtractServiceCo
-mponent
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.node.impl.SCANodeImpl st
+artComposite
+     [java] INFO: Starting composite: {http://sample}CalculatorC
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2053/SubtractServiceComp
+onentC
      [java] SubtractService - subtract 3.0 and 2.0
-Terminate batch job (Y/N)? y
+     [java] 14-Jan-2008 10:51:39 org.apache.tuscany.sca.node.impl.SCANodeImpl st
+opComposite
+     [java] INFO: Stopping composite: {http://sample}CalculatorC
 
 
 runNodeA:
-     [java] file:/C:/simon/tuscany/java-head/sca/samples/calculator-distributed/
-target/classes/management/
-     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
-om.util.StAXUtils).
-     [java] log4j:WARN Please initialize the log4j system properly.
-     [java] 23-Aug-2007 17:42:12 org.apache.tuscany.sca.assembly.builder.impl.Co
+     [java] 14-Jan-2008 10:51:26 org.apache.tuscany.sca.domain.impl.SCADomainImp
+l registerNode
+     [java] INFO: Registered node: http://L3AW203:2057 at endpoint http://L3AW20
+3:2057
+     [java] 14-Jan-2008 10:51:26 org.apache.tuscany.sca.node.impl.SCADomainProxy
+Impl createRuntime
+     [java] INFO: Domain management configured from file:/C:/simon/tuscany/relea
+se/sca-r1.1-rc2/tuscany-sca-1.1-incubating-SNAPSHOT/lib/tuscany-sca-all-1.1-incu
+bating-SNAPSHOT.jar
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] 14-Jan-2008 10:51:36 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2057/SCADomainEventServi
+ceProxyComponent
+     [java] 14-Jan-2008 10:51:36 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2057/SCADomainAPIService
+ProxyComponent
+     [java] 14-Jan-2008 10:51:36 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2057/SCANodeManagerCompo
+nent/SCANodeManagerService
+     [java] 14-Jan-2008 10:51:36 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2057/SCANodeManagerCompo
+nent/ComponentManagerService/*
+     [java] 14-Jan-2008 10:51:36 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2057/SCANodeManagerCompo
+nent/ComponentManagerService
+     [java] 14-Jan-2008 10:51:36 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:2057/SCADomain/scaDomain
+.js
+     [java] 14-Jan-2008 10:51:37 org.apache.tuscany.sca.node.impl.SCANodeImpl ac
+tivateComposite
+     [java] INFO: Building composite: {http://sample}CalculatorA
+     [java] 14-Jan-2008 10:51:37 org.apache.tuscany.sca.assembly.builder.impl.Co
 mpositeBuilderImpl$1 problem
-     [java] WARNING: [WARNING] Component reference target not found, it might be
- a remote service: AddServiceComponent null
-     [java]
-     [java] 23-Aug-2007 17:42:12 org.apache.tuscany.sca.assembly.builder.impl.Co
+     [java] WARNING: Component reference target not found, it might be a remote
+service: SubtractServiceComponentC
+     [java] 14-Jan-2008 10:51:37 org.apache.tuscany.sca.assembly.builder.impl.Co
 mpositeBuilderImpl$1 problem
-     [java] WARNING: [WARNING] Component reference target not found, it might be
- a remote service: SubtractServiceComponent null
-     [java]
-     [java] Finding service: [mydomain SubtractServiceComponent org.apache.tusca
-ny.sca.assembly.SCABinding]
-     [java] Finding service: [mydomain AddServiceComponent org.apache.tuscany.sc
-a.assembly.SCABinding]
+     [java] WARNING: Component reference target not found, it might be a remote
+service: AddServiceComponentB
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.node.impl.SCANodeImpl up
+dateComposite
+     [java] INFO: Updating composite {http://sample}CalculatorA at node http://L
+3AW203:2057
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.node.impl.SCANodeImpl up
+dateComposite
+     [java] INFO: Adding binding CalculatorServiceComponentA reference addServic
+e binding org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl URI AddServiceC
+omponentB
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.node.impl.SCANodeImpl up
+dateComposite
+     [java] INFO: Adding binding CalculatorServiceComponentA reference subtractS
+ervice binding org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl URI Subtra
+ctServiceComponentC
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.node.impl.SCANodeImpl st
+artComposite
+     [java] INFO: Starting composite: {http://sample}CalculatorA
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.domain.impl.SCADomainImp
+l findServiceEndpoint
+     [java] INFO: Finding service: [http://localhost:8877 SubtractServiceCompone
+ntC org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl]
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.domain.impl.SCADomainImp
+l findServiceEndpoint
+     [java] INFO: Finding service: [http://localhost:8877 SubtractServiceCompone
+ntC org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl]
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.domain.impl.SCADomainImp
+l findServiceEndpoint
+     [java] INFO: Finding service: [http://localhost:8877 SubtractServiceCompone
+ntC org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl]
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.domain.impl.SCADomainImp
+l findServiceEndpoint
+     [java] INFO: Finding service: [http://localhost:8877 AddServiceComponentB o
+rg.apache.tuscany.sca.binding.sca.impl.SCABindingImpl]
+     [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.domain.impl.SCADomainImp
+l findServiceEndpoint
+     [java] INFO: Finding service: [http://localhost:8877 AddServiceComponentB o
+rg.apache.tuscany.sca.binding.sca.impl.SCABindingImpl]
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.domain.impl.SCADomainImp
+l findServiceEndpoint
+     [java] INFO: Finding service: [http://localhost:8877 AddServiceComponentB o
+rg.apache.tuscany.sca.binding.sca.impl.SCABindingImpl]
      [java] CalculatorService - add 3.0 and 2.0
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.domain.impl.SCADomainImp
+l findServiceEndpoint
+     [java] INFO: Finding service: [http://localhost:8877 AddServiceComponentB o
+rg.apache.tuscany.sca.binding.sca.impl.SCABindingImpl]
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.domain.impl.SCADomainImp
+l findServiceEndpoint
+     [java] INFO: Finding service: [http://localhost:8877 AddServiceComponentB o
+rg.apache.tuscany.sca.binding.sca.impl.SCABindingImpl]
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.domain.impl.SCADomainImp
+l findServiceEndpoint
+     [java] INFO: Finding service: [http://localhost:8877 AddServiceComponentB o
+rg.apache.tuscany.sca.binding.sca.impl.SCABindingImpl]
      [java] 3 + 2=5.0
      [java] CalculatorService - subtract 3.0 and 2.0
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.domain.impl.SCADomainImp
+l findServiceEndpoint
+     [java] INFO: Finding service: [http://localhost:8877 SubtractServiceCompone
+ntC org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl]
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.domain.impl.SCADomainImp
+l findServiceEndpoint
+     [java] INFO: Finding service: [http://localhost:8877 SubtractServiceCompone
+ntC org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl]
+     [java] 14-Jan-2008 10:51:38 org.apache.tuscany.sca.domain.impl.SCADomainImp
+l findServiceEndpoint
+     [java] INFO: Finding service: [http://localhost:8877 SubtractServiceCompone
+ntC org.apache.tuscany.sca.binding.sca.impl.SCABindingImpl]
      [java] 3 - 2=1.0
      [java] CalculatorService - multiply 3.0 and 2.0
      [java] 3 * 2=6.0
      [java] CalculatorService - divide 3.0 and 2.0
      [java] 3 / 2=1.5
+     [java] 14-Jan-2008 10:51:39 org.apache.tuscany.sca.node.impl.SCANodeImpl st
+opComposite
+     [java] INFO: Stopping composite: {http://sample}CalculatorA
 
 
 Building And Running The Sample Using Maven 
@@ -284,10 +472,5 @@ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 
 This shows that the Junit test cases have run successfully. 
 
-Known Bug : 
----------
-The processes that are running NodeB and NodeC do not seem to end on pressing the
-<Enter>.  This will be fixed for the next release.  For this release you should use
-^C (Control C) to exit these processes.
 
 

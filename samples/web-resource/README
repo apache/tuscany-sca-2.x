@@ -53,11 +53,15 @@ ant run
 You should see the following output from the run target.
 
 run:
-    [java] Added Servlet mapping: http://localhost:8080/myWeb/*
-    [java] Sample server started (press enter to shutdown)
-
-    [java] To get the Web resource, point your Web browser to the following address:
-    [java] http://localhost:8080/myWeb/index.html
+     [java] 14-Jan-2008 14:28:07 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:8080/myWeb/*
+     [java] Sample server started (press enter to shutdown)
+     [java]
+     [java] To get the Web resource, point your Web browser to the following add
+ress:
+     [java] http://localhost:8080/myWeb/index.html
+     [java]
      
 As this point the Web resource is exposed by a web server started automatically
 by the SCA runtime. To stop the server just press enter.

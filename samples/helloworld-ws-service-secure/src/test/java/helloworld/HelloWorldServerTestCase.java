@@ -46,13 +46,13 @@ public class HelloWorldServerTestCase{
 		new Socket("127.0.0.1", 8085);
 	}
     
-    /*@Test
+    @Test
     public void testServiceCall() throws IOException {
         HelloWorldService helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent/HelloWorldService");
         assertNotNull(helloWorldService);
         
         assertEquals("Hello Smith", helloWorldService.getGreetings("Smith"));
-    }*/
+    }
 
 	@After
 	public void stopServer() throws Exception {

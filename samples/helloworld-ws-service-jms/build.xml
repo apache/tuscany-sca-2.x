@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="helloworld-ws-service" default="compile">
+<project name="helloworld-ws-service-jms" default="compile">
     <property name="test.class" value="helloworld.HelloWorldServer" />
-	<property name="test.jar"   value="sample-helloworld-ws-service.jar" />
+	<property name="test.jar"   value="sample-helloworld-ws-service-jms.jar" />
 	
     <target name="init">
         <mkdir dir="target/classes"/>

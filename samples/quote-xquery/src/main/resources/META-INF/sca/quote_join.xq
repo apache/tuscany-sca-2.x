@@ -48,7 +48,7 @@ declare function quoteJoin:joinPriceAndAvailQuotes($priceQuoteDoc, $availQuoteDo
                 <quo:totalCost>{ quoteCalculator:calculateTotalPrice(
                 				  $quoteCalculator,
                 				  
-                				  $taxRate,
+                				  xs:float($taxRate),
 
                                   $availRequest/requestedQuantity,
 

@@ -21,7 +21,6 @@ package helloworld;
 import java.io.IOException;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.host.jms.activemq.ActiveMQModuleActivator;
 
 /**
  * This server program shows how to create an SCA runtime, and start it which
@@ -31,8 +30,7 @@ public class HelloWorldServer {
 
     public static void main(String[] args) {
 
-    	ActiveMQModuleActivator.startBroker();
-        SCADomain scaDomain = SCADomain.newInstance("helloworldwsjms.composite");
+        SCADomain scaDomain = SCADomain.newInstance("META-INF/sca-deployables/helloworldws.composite");
 
         try {
             System.out.println("HelloWorld server started (press enter to shutdown)");
