@@ -119,6 +119,10 @@
              <exclude>samples/old/**/*</exclude>
              <exclude>samples/calculator-distributed/work</exclude>
              <exclude>samples/calculator-distributed/work/**/*</exclude>
+             <exclude>samples/callback-ws-client/work</exclude>
+             <exclude>samples/callback-ws-client/work/**/*</exclude>
+             <exclude>samples/callback-ws-service/work</exclude>
+             <exclude>samples/callback-ws-service/work/**/*</exclude>
              <exclude>samples/company-das</exclude>
              <exclude>samples/company-das/**/*</exclude>
              <exclude>samples/company-das-webapp</exclude>
@@ -133,24 +137,30 @@
              <exclude>samples/helloworld-jsonrpc-webapp/src/main/webapp/dojo/**/*</exclude>
              <exclude>samples/helloworld-dojo-webapp/src/main/webapp/dojo</exclude>
              <exclude>samples/helloworld-dojo-webapp/src/main/webapp/dojo/**/*</exclude>
+             <exclude>samples/helloworld-ws-deep-webapp</exclude>
+             <exclude>samples/helloworld-ws-deep-webapp/**/*</exclude>
              <exclude>samples/helloworld-ws-deep-webapp/work</exclude>
              <exclude>samples/helloworld-ws-deep-webapp/work/**/*</exclude>
              <exclude>samples/helloworld-ws-reference/work</exclude>
              <exclude>samples/helloworld-ws-reference/work/**/*</exclude>
+             <exclude>samples/helloworld-ws-reference-jms/activemq-data</exclude>
+             <exclude>samples/helloworld-ws-reference-jms/activemq-data/**/*</exclude>
              <exclude>samples/helloworld-ws-reference-secure/work</exclude>
              <exclude>samples/helloworld-ws-reference-secure/work/**/*</exclude>
              <exclude>samples/helloworld-ws-sdo/work</exclude>
              <exclude>samples/helloworld-ws-sdo/work/**/*</exclude>
              <exclude>samples/helloworld-ws-service/work</exclude>
              <exclude>samples/helloworld-ws-service/work/**/*</exclude>
+             <exclude>samples/helloworld-ws-service-jms/activemq-data</exclude>
+             <exclude>samples/helloworld-ws-service-jms/activemq-data/**/*</exclude>
              <exclude>samples/helloworld-ws-service-secure/work</exclude>
              <exclude>samples/helloworld-ws-service-secure/work/**/*</exclude>
              <exclude>samples/helloworld-ws-service-webapp</exclude>
              <exclude>samples/helloworld-ws-service-webapp/**/*</exclude>
              <exclude>samples/osgi-supplychain/.felix</exclude>
              <exclude>samples/osgi-supplychain/.felix/**/*</exclude>
-             <exclude>samples/quote-xquery</exclude>
-             <exclude>samples/quote-xquery/**/*</exclude>
+             <!--exclude>samples/quote-xquery</exclude-->
+             <!--exclude>samples/quote-xquery/**/*</exclude-->
              <exclude>samples/spi-implementation-pojo</exclude>
              <exclude>samples/spi-implementation-pojo/**/*</exclude>
              <exclude>samples/simple-callback-ws/work</exclude>
@@ -159,6 +169,8 @@
              <exclude>demos/alert-aggregator-webapp/src/main/webapp/dojo/**/*</exclude>
              <exclude>demos/bigbank-account/src/main/resources/web/dojo</exclude> 
              <exclude>demos/bigbank-account/src/main/resources/web/dojo/**/*</exclude> 
+             <exclude>demos/secure-bigbank/secure-bigbank-account/src/main/resources/web/dojo</exclude> 
+             <exclude>demos/secure-bigbank/secure-bigbank-account/src/main/resources/web/dojo/**/*</exclude> 
              <exclude>*/**/*.svg</exclude>
              <exclude>*/**/*.ruleset</exclude>
              <exclude>*/**/*.pmd</exclude>

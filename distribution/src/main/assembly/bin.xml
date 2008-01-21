@@ -77,10 +77,14 @@
                 <exclude>company-das-webapp/**/*</exclude>
                 <exclude>helloworld-dojo-webapp/src/main/webapp/dojo</exclude>
                 <exclude>helloworld-dojo-webapp/src/main/webapp/dojo/**/*</exclude>
+                <exclude>helloworld-ws-deep-webapp</exclude>
+                <exclude>helloworld-ws-deep-webapp/**/*</exclude>
                 <exclude>helloworld-ws-deep-webapp/work</exclude>
                 <exclude>helloworld-ws-deep-webapp/work/**/*</exclude>
                 <exclude>helloworld-ws-reference/work</exclude>
                 <exclude>helloworld-ws-reference/work/**/*</exclude>
+                <exclude>helloworld-ws-reference-jms/activemq-data</exclude>
+                <exclude>helloworld-ws-reference-jms/activemq-data/**/*</exclude>
                 <exclude>helloworld-ws-reference-secure/work</exclude>
                 <exclude>helloworld-ws-reference-secure/work/**/*</exclude>
                 <exclude>helloworld-ws-service-webapp</exclude>
@@ -89,6 +93,8 @@
                 <exclude>helloworld-ws-service/secure/work/**/*</exclude>
                 <exclude>helloworld-ws-service/secure/work</exclude>
                 <exclude>helloworld-ws-service/work/**/*</exclude>
+                <exclude>helloworld-ws-service-jms/activemq-data</exclude>
+                <exclude>helloworld-ws-service-jms/activemq-data/**/*</exclude>
                 <exclude>helloworld-ws-service-secure/work</exclude>
                 <exclude>helloworld-ws-service-secure/work/**/*</exclude>
                 <exclude>helloworld-ws-service-webapp/target/sample-helloworld-ws-service-webapp</exclude>
@@ -103,6 +109,10 @@
                 <exclude>calculator-webapp/target/sample-calculator-webapp/**/*</exclude>
                 <exclude>calculator-ws-webapp/target/sample-calculator-ws-webapp</exclude>
                 <exclude>calculator-ws-webapp/target/sample-calculator-ws-webapp/**/*</exclude>
+                <exclude>callback-ws-client/work</exclude>
+                <exclude>callback-ws-client/work/**/*</exclude>
+                <exclude>callback-ws-service/work</exclude>
+                <exclude>callback-ws-service/work/**/*</exclude>
                 <exclude>chat-webapp/target/sample-chat-webapp</exclude>
                 <exclude>chat-webapp/target/sample-chat-webapp/**/*</exclude>
                 <exclude>domain-webapp</exclude>
@@ -119,8 +129,8 @@
                 <exclude>osgi-supplychain/target/sample-osgi-supplychain/**/*</exclude>
                 <exclude>loanapplication</exclude>
                 <exclude>loanapplication/**/*</exclude>
-                <exclude>quote-xquery</exclude>
-                <exclude>quote-xquery/**/*</exclude>
+                <!--exclude>quote-xquery</exclude-->
+                <!--exclude>quote-xquery/**/*</exclude-->
                 <exclude>simple-callback-ws/work</exclude>
                 <exclude>simple-callback-ws/work/**/*</exclude>
                 <exclude>spi-implementation-pojo</exclude>
@@ -174,6 +184,8 @@
                 <exclude>helloworld-ws-sdo/work/**/*</exclude>
                 <exclude>bigbank-account/src/main/resources/web/dojo</exclude> 
                 <exclude>bigbank-account/src/main/resources/web/dojo/**/*</exclude>
+                <exclude>secure-bigbank/secure-bigbank-account/src/main/resources/web/dojo</exclude> 
+                <exclude>secure-bigbank/secure-bigbank-account/src/main/resources/web/dojo/**/*</exclude> 
                 <exclude>mortgage-creditcheck/target/demo-mortgage-creditcheck</exclude>
                 <exclude>mortgage-creditcheck/target/demo-mortgage-creditcheck/**/*</exclude>
                 <exclude>*/.classpath</exclude>
@@ -192,8 +204,26 @@
                 <exclude>*/**/*.ruleset</exclude>
                 <exclude>alert-aggregator-webapp/target</exclude>
                 <exclude>alert-aggregator-webapp/target/**/*</exclude>
+                <exclude>bigbank-account/target</exclude>
+                <exclude>bigbank-account/target/**/*</exclude>
+                <exclude>bigbank-calculator/target</exclude>
+                <exclude>bigbank-calculator/target/**/*</exclude>
+                <exclude>bigbank-stockquote/target</exclude>
+                <exclude>bigbank-stockquote/target/**/*</exclude>
                 <exclude>mortgage-creditcheck/target</exclude>
                 <exclude>mortgage-creditcheck/target/**/*</exclude>
+                <exclude>mortgage-loanapproval/target</exclude>
+                <exclude>mortgage-loanapproval/target/**/*</exclude>
+                <exclude>secure-bigbank/secure-bigbank-account/target</exclude>
+                <exclude>secure-bigbank/secure-bigbank-account/target/**/*</exclude>
+                <exclude>secure-bigbank/secure-bigbank-calculator/target</exclude>
+                <exclude>secure-bigbank/secure-bigbank-calculator/target/**/*</exclude>
+                <exclude>secure-bigbank/secure-bigbank-stockquote/target</exclude>
+                <exclude>secure-bigbank/secure-bigbank-stockquote/target/**/*</exclude>
+                <exclude>xml-bigbank/target</exclude>
+                <exclude>xml-bigbank/target/**/*</exclude>
+                <exclude>target</exclude>
+                <exclude>target/**/*</exclude>
             </excludes>
         </fileSet>
         <!-- Add the generated tuscany manifest classpath jar to the lib directory -->

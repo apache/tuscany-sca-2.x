@@ -213,9 +213,17 @@ conditions of the following licenses.
 
 ===============================================================================
 
+The following components come under Apache Software License 1.1
+
+ commons-cli-1.0.jar
+ commons-discovery-0.2.jar
+ commons-primitives-1.0.jar
+
 The following components come under Apache Software License 2.0
 
  activeio-2.0-r118.jar
+ activeio-core-3.0.0-incubator.jar
+ activemq-core-4.1.1.jar
  addressing-1.3.mar
  annogen-0.1.0.jar
  annotations-api-6.0.10.jar
@@ -229,10 +237,9 @@ The following components come under Apache Software License 2.0
  axis2-java2wsdl-1.3.jar
  axis2-kernel-1.3.jar
  axis2-mtompolicy-1.3.jar
- bsf-all-3.0-beta1.jar
+ bsf-all-3.0-beta2.jar
  catalina-6.0.10.jar
  cglib-nodep-2.1_3.jar
- common-2.2.2.jar
  commons-collections-3.1.jar
  commons-codec-1.3.jar
  commons-fileupload-1.1.1.jar
@@ -241,7 +248,6 @@ The following components come under Apache Software License 2.0
  commons-jexl-1.1.jar
  commons-lang-2.1.jar
  commons-logging-1.1.jar
- commons-primitives-1.0.jar
  coyote-6.0.10.jar
  derby-10.1.3.1.jar
  geronimo-activation_1.1_spec-1.0-M1.jar
@@ -272,6 +278,7 @@ The following components come under Apache Software License 2.0
  httpcore-4.0-alpha5.jar
  httpcore-nio-4.0-alpha5.jar
  httpcore-niossl-4.0-alpha5.jar
+ jettison-1.0-RC2.jar
  jetty-6.1.3.jar
  jetty-util-6.1.3.jar
  json-rpc-1.0.jar
@@ -305,8 +312,8 @@ The following components come under Apache Software License 2.0
  openjpa-persistence-0.9.7-incubating.jar
  opensaml-1.1.jar
  org.apache.felix.bundlerepository-1.0.0.jar
- org.apache.felix.framework-1.0.0.jar
- org.apache.felix.main-1.0.0.jar
+ org.apache.felix.framework-1.0.1.jar
+ org.apache.felix.main-1.0.1.jar
  org.apache.felix.shell-1.0.0.jar
  org.apache.felix.shell.tui-1.0.0.jar
  plexus-container-default-1.0-alpha-9.jar
@@ -319,7 +326,6 @@ The following components come under Apache Software License 2.0
  spring-beans-2.0.6.jar
  spring-context-2.0.6.jar
  spring-core-2.0.6.jar
- stax-api-1.0.2.jar
  tranql-connector-1.1.jar
  tuscany-sdo-api-r2.1-1.0-incubating.jar
  tuscany-sdo-impl-1.0-incubating.jar
@@ -332,6 +338,7 @@ The following components come under Apache Software License 2.0
  wss4j-1.5.3.jar
  wstx-asl-3.2.1.jar
  xalan-2.7.0.jar
+ xbean-2.1.0.jar
  xmlbeans-2.3.0.jar
  xbean-naming-2.7.jar
  xercesImpl-2.8.1.jar
@@ -752,7 +759,7 @@ EXHIBIT A.
 
 ===============================================================================
 
-For the Rhino JavaScript engine js-1.6R6.jar:
+For the Rhino JavaScript engine js-1.6R7.jar:
 
                           MOZILLA PUBLIC LICENSE
                                 Version 1.1
@@ -1423,8 +1430,8 @@ JPython version 1.1.x
 
 ===============================================================================
 
-The jars; activation, jaxb-api, jaxb-impl, jaxb-xjc, jsr181-api,
-jsr250-api, jaxws-api, mail, saaj-api, servlet-api-2.5.jar:
+The jars; activation, jaxb-api, jaxb-impl, jaxb-xjc, jaxb2-reflection, jsr181-api,
+jsr250-api, jaxws-api, mail, saaj-api, servlet-api-2.5.jar, stax-api-1.0.2.jar:
 
 COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
 

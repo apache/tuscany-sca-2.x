@@ -1,9 +1,9 @@
-Installing the Apache Tuscany SCA 0.91 (incubating) July 2007 Release binary distribution
-=========================================================================================
+Installing the Apache Tuscany SCA 1.1 (incubating) January 2008 Release binary distribution
+===========================================================================================
 
 Unzip Tuscany binary distribution archive and you get the following:
 
-tuscany-sca-0.91-incubating        
+tuscany-sca-1.1-incubating        
    DISCLAIMER    - the ASF incubation disclaimer
    INSTALL       - this help file
    LICENSE       - the Apache License and any dependecy licenses
