@@ -171,8 +171,17 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
         bundleContext = null;
         instance = null;
         
+        // We could potentially use Felix.stopAndWait, but use timed wait for now because
+        // stopAndWait hangs with Felix 1.0.0
         if (felix instanceof Bundle) {
-            ((Bundle)felix).stop();
+            Bundle felixBundle = (Bundle)felix;
+            felixBundle.stop();
+            int retries = 50;
+            synchronized (felix) {
+                while (retries-- > 0 && felixBundle.getState() != Bundle.UNINSTALLED) {
+                    felix.wait(100);
+                }
+            }
         }
         else if (felix != null) {
             Method shutdownMethod = felixClass.getMethod("shutdown");

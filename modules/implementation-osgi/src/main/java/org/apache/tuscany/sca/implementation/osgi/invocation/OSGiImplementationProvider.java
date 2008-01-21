@@ -173,6 +173,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
             bundleContext.getServiceReference("org.osgi.service.packageadmin.PackageAdmin");
         if (packageAdminReference != null) {
             packageAdmin = (PackageAdmin) bundleContext.getService(packageAdminReference);
+            bundleContext.addFrameworkListener(this);
         }
         
         
@@ -333,7 +334,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                 
                 resolveBundle();
                 
-                processAnnotations();
+                processAnnotations(true);
                 
                 
                 for (Bundle bundle : dependentBundles) {
@@ -547,20 +548,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         bundle.start();
         
         if (existingBundle != null && packageAdmin != null) {
-            
-
-            bundleContext.addFrameworkListener(this);
-                      
-            packagesRefreshed = false;
-            packageAdmin.refreshPackages(null);
-                        
-            synchronized (this) {
-                if (!packagesRefreshed) {
-                    this.wait(2000);
-                }
-            }            
-            packagesRefreshed = false;
-            bundleContext.removeFrameworkListener(this);
+            refreshPackages();
             
         }
 
@@ -826,6 +814,25 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         
     }
     
+    private void refreshPackages() {
+    
+        if (packageAdmin != null) {
+            synchronized (this) {
+                packagesRefreshed = false;
+                packageAdmin.refreshPackages(null);
+                        
+                if (!packagesRefreshed) {
+                	try {
+                        this.wait(2000);
+                	} catch (InterruptedException e) {
+                		// ignore
+                	}
+                }
+                packagesRefreshed = false;
+            }                       
+        }
+    }
+    
     
     private void resolveBundle() throws ObjectCreationException {
         
@@ -893,6 +900,8 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                     }
                     index++;
                 }
+
+                refreshPackages();
                 
                 
                 index = 0;
@@ -1085,57 +1094,55 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         setReferencesAndProperties();
     }
         
-    public void processAnnotations() throws IntrospectionException {
+    public void processAnnotations(boolean doWait) throws IntrospectionException {
         
-        synchronized (this) {       
-            if (processedResolvedBundle || processingResolvedBundle)
+        synchronized (this) {   
+            if (processedResolvedBundle)
                 return;
+            else if (processingResolvedBundle) {            	
+                if (doWait) {
+                    while (processingResolvedBundle) {
+                        try {
+                            wait(5000);
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                }
+                return;
+            }
             processingResolvedBundle = true;
         }
         
-        osgiAnnotations.processAnnotations();
+        try {
+            osgiAnnotations.processAnnotations();
         
-        Scope scope = osgiAnnotations.getScope();
-        if (scope.equals(Scope.SYSTEM) || scope.equals(Scope.COMPOSITE)) {
-            // Nothing
-        } else {
+            Scope scope = osgiAnnotations.getScope();
+            if (scope.equals(Scope.SYSTEM) || scope.equals(Scope.COMPOSITE)) {
+                // Nothing
+            } else {
 
-            if (runtimeComponent instanceof ScopedRuntimeComponent) {
+                if (runtimeComponent instanceof ScopedRuntimeComponent) {
 
-                ScopedRuntimeComponent component = (ScopedRuntimeComponent) runtimeComponent;
+                    ScopedRuntimeComponent component = (ScopedRuntimeComponent) runtimeComponent;
 
-                ScopeContainer oldScopeContainer = component.getScopeContainer();
-                component.setScopeContainer(null);
-                ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(runtimeComponent);
+                    ScopeContainer oldScopeContainer = component.getScopeContainer();
+                    component.setScopeContainer(null);
+                    ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(runtimeComponent);
 
-                if (oldScopeContainer != null && oldScopeContainer.getLifecycleState() == ScopeContainer.RUNNING) {
-                    scopeContainer.start();
-                }
+                    if (oldScopeContainer != null && oldScopeContainer.getLifecycleState() == ScopeContainer.RUNNING) {
+                        scopeContainer.start();
+                    }
                 
-                component.setScopeContainer(scopeContainer);
-            }
+                    component.setScopeContainer(scopeContainer);
+                }
 
-            // Check for conversational contract if conversational scope
-//            if (scope.equals(Scope.CONVERSATION)) {
-//                boolean hasConversationalContract = false;
-//                for (Service serviceDef : implementation.getServices()) {
-//                    if (serviceDef.getInterfaceContract().getInterface()
-//                            .isConversational()) {
-//                        hasConversationalContract = true;
-//                        break;
-//                    }
-//                }
-//                if (!hasConversationalContract) {
-//                    Exception e = new NoConversationalContractException(
-//                            runtimeComponent.getName() + ":" + osgiBundle);
-//                    throw new RuntimeException(e);
-//                }
-//            }
-        }
-            
-        synchronized (this) {                
-            processedResolvedBundle = true;
-            this.notifyAll();
+            }
+        } finally {
+            synchronized (this) {                
+                processingResolvedBundle = false;
+                processedResolvedBundle = true;
+                this.notifyAll();
+            }
         }  
     }
     
@@ -1160,7 +1167,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     public void bundleChanged(BundleEvent event) {
         if (event.getType() == BundleEvent.RESOLVED && event.getBundle() == osgiBundle) {
             try {
-                processAnnotations();
+                processAnnotations(false);
             } catch (Throwable e) {
                 e.printStackTrace();
             }             
