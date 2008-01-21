@@ -20,7 +20,7 @@
     <property name="test.class" value="stockquote.demo.StockQuoteServer" />
 	
     <path id="test.classpath">
-    	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>    	
+    	<pathelement location="../../../lib/tuscany-sca-manifest.jar"/>    	
     	<pathelement location="target/demo-bigbank-stockquote.jar"/>    	
     </path>
 	
@@ -35,7 +35,7 @@
                source="1.5"
                target="1.5">
             <classpath>
-            	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
+            	<pathelement location="../../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
         </javac> 
         <copy todir="target/classes">
