@@ -55,7 +55,7 @@ public class ConversationalClientActivator implements BundleActivator, ServiceLi
         Hashtable<String, Object> serviceProps;
         
         serviceProps = new Hashtable<String, Object>();
-        
+         
         serviceProps.put("component.name", "ConversationalStatelessClientStatelessService");
         Object statelessClientFactory1 = 
             new ConversationalClientServiceFactory(ConversationalClientStatelessImpl.class, bundleContext, 1);
@@ -74,6 +74,7 @@ public class ConversationalClientActivator implements BundleActivator, ServiceLi
                 serviceProps);
         
             
+        serviceProps = new Hashtable<String, Object>();
         serviceProps.put("component.name", "ConversationalStatefulClientStatelessService");
         Object statefulClientFactory1 = 
             new ConversationalClientServiceFactory(ConversationalClientStatefulImpl.class, bundleContext, 3);
@@ -91,21 +92,6 @@ public class ConversationalClientActivator implements BundleActivator, ServiceLi
                 statefulClientFactory2, 
                 serviceProps);
       
-        serviceProps.put("component.name", "ConversationalReferenceClient");
-        ConversationalReferenceClientImpl refClient = new ConversationalReferenceClientImpl();
-        bundleContext.registerService(ConversationalReferenceClient.class.getName(), refClient, serviceProps);
-        
-        serviceProps = new Hashtable<String, Object>();
-        serviceProps.put("component.name", "ConversationalServiceStateful");
-        Object statefulService = 
-            new ConversationalClientServiceFactory(ConversationalServiceStatefulImpl.class, bundleContext, 5);
-        bundleContext.registerService(ConversationalService.class.getName(), statefulService, serviceProps);
-        
-        serviceProps = new Hashtable<String, Object>();
-        serviceProps.put("component.name", "ConversationalServiceStateless");
-        ConversationalServiceStatelessImpl statelessService = new ConversationalServiceStatelessImpl();
-        bundleContext.registerService(ConversationalService.class.getName(), statelessService, serviceProps);
-        
         
     }
     
