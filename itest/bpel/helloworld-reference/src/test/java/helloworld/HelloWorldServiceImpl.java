@@ -30,15 +30,18 @@ public class HelloWorldServiceImpl implements HelloWorldService {
     GreetingsService greetingsService;
 
     public GreetingsService getGreetingsService() {
+        System.out.println("Got Injected greetingsService");
         return greetingsService;
     }
 
     @Reference
     public void setGreetingsService(GreetingsService greetingsService) {
+        System.out.println("Injected greetingsService");
         this.greetingsService = greetingsService;
     }
     
     public String hello(String name) {
+        System.out.println("Calling greeting services getGreetings");
         return greetingsService.getGreetings(name);
     }
 }

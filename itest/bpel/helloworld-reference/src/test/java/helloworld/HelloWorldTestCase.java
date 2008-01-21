@@ -19,15 +19,11 @@
 
 package helloworld;
 
-import greetings.GreetingsService;
-
-import java.io.IOException;
-import java.net.Socket;
-
+import greetings.GreetingsTestServer;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.implementation.bpel.example.helloworld.HelloPortType;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.SCATestCaseRunner;
 
 /**
  * Tests the BPEL Helloworld Service
@@ -37,12 +33,17 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 public class HelloWorldTestCase extends TestCase {
     private SCADomain scaDomain;
     
+    private SCATestCaseRunner server;
+    
     /**
      * @throws java.lang.Exception
      */
     @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("helloworld/helloworld.composite");
+        
+        server =  new SCATestCaseRunner(GreetingsTestServer.class);
+        server.before();
     }
 
     /**
@@ -50,22 +51,13 @@ public class HelloWorldTestCase extends TestCase {
      */
     @Override
     protected void tearDown() throws Exception {
+        server.after();
         scaDomain.close();
     }
     
-    public void testPing() throws IOException {
-        new Socket("127.0.0.1", 8085);
-    }
-    
-    public void testGreetingsServiceInvocation() {
-        GreetingsService greetingsService = scaDomain.getService(GreetingsService.class, "GreetingsServiceComponent");
-        String response = greetingsService.getGreetings("Luciano");
-        assertEquals("Hello Luciano", response);
-    }
-    
     public void testServiceInvocation() {
-        HelloPortType bpelService = scaDomain.getService(HelloPortType.class, "BPELHelloWorldService");
-        String response = bpelService.hello("Hello");
-        assertEquals("Hello World", response);
+        HelloWorldService bpelService = scaDomain.getService(HelloWorldService.class, "HelloWorldService");
+        String response = bpelService.hello("Luciano");
+        assertEquals("Hello Luciano", response);
     }
 }
