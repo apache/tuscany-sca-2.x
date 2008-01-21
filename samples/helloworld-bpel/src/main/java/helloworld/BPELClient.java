@@ -38,5 +38,6 @@ public class BPELClient {
         
         scaDomain.close();
 
+        System.exit(0);
     }
 }

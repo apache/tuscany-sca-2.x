@@ -1,5 +1,8 @@
 Hello World Dojo RPC Sample
 ===========================
+
+Note. This sample is currently not working correctly on WebSphere - see TUSCANY-1990
+
 This sample demostrates the SCA JSONRPC binding using a simple web app that
 uses the RPC support of the Dojo Toolkit to an SCA service.  
 

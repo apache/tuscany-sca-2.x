@@ -24,6 +24,7 @@ import static junit.framework.Assert.assertNotNull;
 import java.io.IOException;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.jms.activemq.ActiveMQModuleActivator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +38,7 @@ public class HelloWorldJmsPolicyServerTestCase{
 
     @Before
     public void startServer() throws Exception {
+    	ActiveMQModuleActivator.startBroker();
         scaDomain = SCADomain.newInstance("helloworldwsjmspolicy.composite");
     }
 

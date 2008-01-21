@@ -69,8 +69,10 @@ ant run
 You should see the following output from the run target.
 
 run:
+     [java] Passing thro invoker...
      [java] Returned message: foo
      [java] Echo reference = foo
+     [java] Passing thro invoker...
      [java] Returned message: bar
      [java] Echo service = bar
 
@@ -89,7 +91,9 @@ You should see the following output from the test phase.
  T E S T S
 -------------------------------------------------------
 Running echo.EchoBindingTestCase
+Passing thro invoker...
 Returned message: foo
+Passing thro invoker...
 Returned message: bar
 Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.811 sec
 

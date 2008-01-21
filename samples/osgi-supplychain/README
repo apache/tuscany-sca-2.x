@@ -125,12 +125,13 @@ Buildfile: build.xml
 
 run:
      [java] Main thread Thread[main,5,main]
-     [java] Main thread Started OSGi bundle with activator OSGiCustomerImpl
-     [java] Main thread Started OSGi bundle with activator OSGiShipperImpl
-     [java] Main thread Sleeping ...
-     [java] Work thread Thread[pool-1-thread-1,5,main] - Order, submitted, fulfilled, shipped
-
- 
+     [java] Started OSGi bundle with activator OSGiCustomerImpl
+     [java] Started OSGi bundle with activator OSGiShipperImpl
+     [java] Main thread sleeping ...
+     [java] Work thread Thread[pool-1-thread-1,5,main] - Order, submitted, fulfi
+lled, shipped
+     [java] Stop OSGi bundle with activator OSGiShipperImpl
+     [java] Stop OSGi bundle with activator OSGiCustomerImpl
 
 
 Building And Running The Sample Using Maven 
@@ -147,15 +148,14 @@ You should see the following output from the test phase.
  T E S T S
 -------------------------------------------------------
 Running supplychain.SupplyChainClientTestCase
-Main thread Thread[main,5,main]
 Started OSGi bundle with activator OSGiCustomerImpl
 Started OSGi bundle with activator OSGiShipperImpl
 Sleeping ...
-Work thread Thread[pool-1-thread-1,5,main] - Order, submitted, fulfilled, shipped
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.625 sec
-
-Results :
-
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+Work thread Thread[pool-1-thread-1,5,main] - Order, submitted, fulfilled, shippe
+d
+Test complete
+Stop OSGi bundle with activator OSGiShipperImpl
+Stop OSGi bundle with activator OSGiCustomerImpl
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.062 sec
 
 This shows that the Junit test cases have run successfully. 

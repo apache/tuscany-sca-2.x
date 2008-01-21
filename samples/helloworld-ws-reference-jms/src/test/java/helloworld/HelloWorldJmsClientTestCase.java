@@ -23,6 +23,7 @@ import junit.framework.Assert;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.host.embedded.SCATestCaseRunner;
+import org.apache.tuscany.sca.host.jms.activemq.ActiveMQModuleActivator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,16 +36,18 @@ public class HelloWorldJmsClientTestCase {
 
     private HelloWorldService helloWorldService;
     private HelloWorldService helloTuscanyService;
-    private SCADomain scaDomain;
-    
-    private SCATestCaseRunner server;
+    private SCADomain scaClientDomain;
+    private SCADomain scaServiceDomain;
+   
 
     @Before
     public void startClient() throws Exception {
         try {
-            scaDomain = SCADomain.newInstance("helloworldwsjmsclient.composite");
-            helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
-            helloTuscanyService = scaDomain.getService(HelloWorldService.class, "HelloTuscanyServiceComponent");
+        	ActiveMQModuleActivator.startBroker();
+        	scaServiceDomain = SCADomain.newInstance("helloworldwsjms.composite");
+        	scaClientDomain = SCADomain.newInstance("helloworldwsjmsclient.composite");
+            helloWorldService = scaClientDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
+            helloTuscanyService = scaClientDomain.getService(HelloWorldService.class, "HelloTuscanyServiceComponent");
     
         } catch (Throwable e) {
             e.printStackTrace();
@@ -55,13 +58,17 @@ public class HelloWorldJmsClientTestCase {
     public void testWSClient() throws Exception {
         String msg = helloWorldService.getGreetings("Smith");
         Assert.assertEquals("Hello Smith", msg);
+        msg = helloTuscanyService.getGreetings("Green");
+        Assert.assertEquals("Hello Green", msg);
+        
+        Thread.sleep(2000);
    }
     
     
     @After
     public void stopClient() throws Exception {
-    	server.after();
-        scaDomain.close();
+        scaServiceDomain.close();
+        scaClientDomain.close();
     }
 
 }

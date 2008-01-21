@@ -63,8 +63,7 @@
                 <pathelement path="target/${test.jar}"/>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
             </classpath>
-        	<sysproperty key="notification.httpPort" value="8083"/>
-        	<arg value="end"/>
+        	<sysproperty key="notification.httpPort" value="8082"/>
         </java>    	
     </target>
 	

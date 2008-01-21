@@ -56,7 +56,7 @@ public class CalculatorNode {
             SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             SCANode node = nodeFactory.createSCANode(null, domainName);
             node.addContribution(nodeName, cl.getResource(nodeName + "/"));
-            node.addToDomainLevelComposite(new QName("http://sample", "Calculator"));           
+            node.addToDomainLevelComposite((QName)null);           
                                          
             // nodeA is the head node and runs some tests while all other nodes
             // simply listen for incoming messages
@@ -85,6 +85,9 @@ public class CalculatorNode {
                         System.out.println("3 / 2=" + calculatorService.divide(3, 2));
                     }
                 }
+                
+                // stop all the nodes
+                node.getDomain().stop(); 
             } else {
                 // start up and wait for messages
                 try {
@@ -95,8 +98,6 @@ public class CalculatorNode {
                 }  
             }
             
-            // stop the node and all the domains in it 
-            node.stop(); 
             node.destroy();
         
         } catch(Exception ex) {

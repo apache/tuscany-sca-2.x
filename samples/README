@@ -21,55 +21,82 @@ Sample Overview
 The samples generally show off different features of the SCA runtime
 and the extensions that come packaged with it.
 
-calculator               - Calculator built with java components and local wires. 
-calculator-script        - Calculator built using various script languages
-calculator-webapp        - Calculator running inside a web app
-calculator-ws-webapp     - Calculator running inside a web app also showing webservices binding
-calculator-rmi-reference - The calculator configured to talk RMI to the 
-                           calculator-rmi-service sample
-calculator-rmi-service   - The calculator configured to accept RMI requests 
-                           from calculator-rmi-reference
-calculator-distributed   - A calculator built using SCA nodes running on multiple JVMs
+binding-notification-broker        - A broker for notificatione
+binding-notification-consumer      - A consumer of notifications
+binding-notification-producer      - A producer of notifications
+
+calculator                         - Calculator built with java components and 
+                                     local wires. 
+calculator-distributed             - A calculator built using SCA nodes running 
+                                     on multiple JVMs
+calculator-implementation-policies - Shows logging policites associated with 
+                                     SCA implementations
+calculator-rmi-reference           - The calculator configured to talk RMI to the 
+                                     calculator-rmi-service sample
+calculator-rmi-service             - The calculator configured to accept RMI requests 
+                                     from calculator-rmi-reference
+calculator-script                  - Calculator built using various script languages
+calculator-webapp                  - Calculator running inside a web app
+calculator-ws-webapp               - Calculator running inside a web app also 
+                                     showing webservices binding
+
+callbck-ws-client                  - The client for showing callbacks across web services
+callback-ws-service                - The server for showing callbacks across web serviced
+
    
-chat-webapp              - A simple chat style web app demonsrating use of AJAX binding
+chat-webapp                        - A simple chat style web app demonsrating use of AJAX binding
+
+databinding-echo                   - An SCA application that shows how databindings 
+                                     transform data
                     
-feed-aggregator          - Demonstrates using the ATOM binding
-feed-aggregator-webapp   - feed-aggregator running in webapp
+feed-aggregator                    - Demonstrates using the ATOM binding
+feed-aggregator-webapp             - feed-aggregator running in webapp
 
-helloworld-bpel          - Demonstrates an SCA component invoking a BPEL process in a composition
+helloworld-bpel                    - Demonstrates an SCA component invoking a BPEL 
+                                     process in a composition
 
-helloworld-dojo-webapp   -  An SCA application that exposes a service using 
-                           JSONRPC and a client using the Dojo toolkit
-helloworld-jsonrpc-webapp- helloworld using jsonrpc binding
-helloworld-ws-reference  - The client side of a hello world sample that uses a 
-                           web service binding (requires helloworld-ws-service)
-helloworld-ws-service    - The server side of a hello world sample that uses a 
-                           web service binding
-helloworld-ws-service-secure -  Shows how policy intent can be used.
-helloworld-ws-sdo        - helloworld using ws binding and SDO
-helloworld-ws-sdo-webapp - helloworld using ws binding and SDO within a webapp
+helloworld-dojo-webapp             - An SCA application that exposes a service using 
+                                     JSONRPC and a client using the Dojo toolkit
+helloworld-jsonrpc-webapp          - helloworld using jsonrpc binding
+helloworld-ws-reference            - The client side of a hello world sample that uses a 
+                                     web service binding (requires helloworld-ws-service)
+helloworld-ws-service              - The server side of a hello world sample that uses a 
+                                     web service binding
+helloworld-ws-reference-jms        - The client side of a hello world sample that uses a 
+                                     web service binding with SOAP/JMS (requires 
+                                     helloworld-ws-service)
+helloworld-ws-service-jms          - The server side of a hello world sample that 
+                                     uses a web service binding with SOAP/JMS
+helloworld-ws-reference-secure     - The client side of a hello world sample that 
+                                     shows how policy intent can be used.
+helloworld-ws-service-secure       - The client side of a hello world sample that 
+                                     shows how policy intent can be used.
+helloworld-ws-sdo                  - helloworld using ws binding and SDO
+helloworld-ws-sdo-webapp           - helloworld using ws binding and SDO within a webapp
 
-implementation-composite - Shows how SCA composites are used 
+implementation-composite           - Shows how SCA composites are used 
                      
-osgi-supplychain         - SCA asynchronous API with OSGi and Java implementation types
-simple-bigbank           - A banking application built with java components 
-                           and local wire
-simple-bigbank-spring    - A banking application showing how SCA works with Spring
+osgi-supplychain                   - SCA asynchronous API with OSGi and Java 
+                                     implementation types
 
-simple-callback          - demonstrates the callback interface
-simple-callback-ws       - demonstrates use of callback interface across WS binding
-store                    - Step by step guide for creating an online store
-supplychain              - shows how asynchronous callbacks can be used
+simple-bigbank                     - A banking application built with java components 
+                                     and local wire
+simple-bigbank-spring              - A banking application showing how SCA works with Spring
 
-databinding-echo         - An SCA application that shows how databindings 
-                           transform data
-web-resource             - Demonstrates using an SCA Web resource component
+simple-callback                    - demonstrates the callback interface
+simple-callback-ws                 - demonstrates use of callback interface across WS binding
 
-quote-xquery             - Demonstrate SCA components using XQuery
+store                              - Step by step guide for creating an online store
+
+supplychain                        - shows how asynchronous callbacks can be used
+
+web-resource                       - Demonstrates using an SCA Web resource component
+
+quote-xquery                       - Demonstrate SCA components using XQuery
 
 Samples for building extensions
 -------------------------------
-There are two samples that demonstrate how to build extensions for the 
+There are samples that demonstrate how to build extensions for the 
 Tuscany SCA runtime. These samples are slightly different from the samples
 above in that the provided code is concerned with building the extension
 and not with building an application that uses it. The application

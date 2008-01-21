@@ -7,25 +7,8 @@ The README in the samples directory (the directory above this) provides
 general instructions about building and running samples. Take a look there 
 first. 
 
-
-NOTE : JVM Security Setup up for JAAS
--------------------------------------
-Before you run this sample its important that to set up the JAAS configuration file location in your 
-JAVA_HOME/jre/lib/security/java.security configuration file as follows: 
-
-- Open the JAVA_HOME/jre/lib/security/java.security file
-- Go to the section titled or commented as 'Default login configuration file' and in there add the 
-following entry : 
-		login.config.url.1=<location of tuscany sca samples>/calculator-implementation-policies/src/main/resources/CalculatorJass.config
-		
-	For example on a Windows machine this might look something like...
-		login.config.url.1=file:///c:/Tuscany/sca/samples/calculator-implementation-policies/src/main/resources/CalculatorJass.config		
-
-
-
 If you just want to run the sample  to see what happens open a command prompt, navigate
 to this sample directory and do:
-
 
 ant run
 

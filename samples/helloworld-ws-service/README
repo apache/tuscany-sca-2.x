@@ -65,9 +65,9 @@ ant run
 You should see the following output from the run target.
 
 run:
-     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
-om.util.StAXUtils).
-     [java] log4j:WARN Please initialize the log4j system properly.
+     [java] 14-Jan-2008 14:18:47 org.apache.tuscany.sca.http.jetty.JettyServer a
+ddServletMapping
+     [java] INFO: Added Servlet mapping: http://L3AW203:8085/HelloWorldService
      [java] HelloWorld server started (press enter to shutdown)
      
 As this point the SCA service is exposed as a web service by a web server 
@@ -96,37 +96,46 @@ You should see the following output from the test phase.
  T E S T S
 -------------------------------------------------------
 Running helloworld.HelloWorldServerTestCase
-log4j:WARN No appenders could be found for logger (org.apache.axiom.om.util.StAX
-Utils).
-log4j:WARN Please initialize the log4j system properly.
-10-May-2007 13:48:42 org.apache.catalina.core.StandardEngine start
+14-Jan-2008 14:19:57 org.apache.catalina.core.StandardEngine start
 INFO: Starting Servlet Engine: Apache Tomcat/6.0.10
-10-May-2007 13:48:42 org.apache.catalina.startup.ContextConfig defaultWebConfig
+14-Jan-2008 14:19:57 org.apache.catalina.startup.ContextConfig defaultWebConfig
 INFO: No default web.xml
-10-May-2007 13:48:42 org.apache.catalina.startup.DigesterFactory register
+14-Jan-2008 14:19:57 org.apache.catalina.startup.DigesterFactory register
 WARNING: Could not get url for /javax/servlet/jsp/resources/jsp_2_0.xsd
-10-May-2007 13:48:42 org.apache.catalina.startup.DigesterFactory register
+14-Jan-2008 14:19:57 org.apache.catalina.startup.DigesterFactory register
 WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_1_
 1.dtd
-10-May-2007 13:48:42 org.apache.catalina.startup.DigesterFactory register
+14-Jan-2008 14:19:57 org.apache.catalina.startup.DigesterFactory register
 WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_1_
 2.dtd
-10-May-2007 13:48:42 org.apache.catalina.startup.DigesterFactory register
+14-Jan-2008 14:19:57 org.apache.catalina.startup.DigesterFactory register
 WARNING: Could not get url for /javax/servlet/jsp/resources/web-jsptaglibrary_2_
 0.xsd
-10-May-2007 13:48:42 org.apache.catalina.startup.DigesterFactory register
+14-Jan-2008 14:19:57 org.apache.catalina.startup.DigesterFactory register
 WARNING: Could not get url for /javax/servlet/resources/j2ee_web_services_1_1.xs
 d
-10-May-2007 13:48:43 org.apache.coyote.http11.Http11Protocol init
+14-Jan-2008 14:19:57 org.apache.coyote.http11.Http11Protocol init
 INFO: Initializing Coyote HTTP/1.1 on http-8085
-10-May-2007 13:48:43 org.apache.coyote.http11.Http11Protocol start
+14-Jan-2008 14:19:57 org.apache.coyote.http11.Http11Protocol start
 INFO: Starting Coyote HTTP/1.1 on http-8085
-10-May-2007 13:48:43 org.apache.coyote.http11.Http11Protocol destroy
+14-Jan-2008 14:19:57 org.apache.tuscany.sca.http.tomcat.TomcatServer addServletM
+apping
+INFO: Added Servlet mapping: http://L3AW203:8085/HelloWorldService
+14-Jan-2008 14:19:57 org.apache.coyote.http11.Http11Protocol destroy
 INFO: Stopping Coyote HTTP/1.1 on http-8085
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.857 sec
-
-Results :
-
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+14-Jan-2008 14:19:58 org.apache.catalina.core.StandardEngine start
+INFO: Starting Servlet Engine: Apache Tomcat/6.0.10
+14-Jan-2008 14:19:58 org.apache.catalina.startup.ContextConfig defaultWebConfig
+INFO: No default web.xml
+14-Jan-2008 14:19:58 org.apache.coyote.http11.Http11Protocol init
+INFO: Initializing Coyote HTTP/1.1 on http-8085
+14-Jan-2008 14:19:58 org.apache.coyote.http11.Http11Protocol start
+INFO: Starting Coyote HTTP/1.1 on http-8085
+14-Jan-2008 14:19:58 org.apache.tuscany.sca.http.tomcat.TomcatServer addServletM
+apping
+INFO: Added Servlet mapping: http://L3AW203:8085/HelloWorldService
+14-Jan-2008 14:19:59 org.apache.coyote.http11.Http11Protocol destroy
+INFO: Stopping Coyote HTTP/1.1 on http-8085
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.75 sec
 
 This shows that the Junit test cases have run successfully. 
