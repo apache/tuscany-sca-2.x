@@ -16,30 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package helloworld;
 
-import org.apache.tuscany.implementation.bpel.example.helloworld.HelloPortType;
-import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Remotable;
 
 /**
- * @version $Rev$ $Date$
+ * The interface for the helloworld service
  */
-public class HelloWorld {
-    private HelloPortType helloService;
-    
-    public HelloWorld() {
-        super();
-    }
-    
-    @Reference
-    public void setHelloService(HelloPortType helloService){
-        this.helloService = helloService;
-    }
-    
-    public String hello(String hello) {
-        System.out.println(">>> Invoking helloService.hello with : " + hello);
-        return this.helloService.hello(hello);
-    }
-
+@Remotable
+public interface HelloWorldService {
+    public String hello(String name);
 }

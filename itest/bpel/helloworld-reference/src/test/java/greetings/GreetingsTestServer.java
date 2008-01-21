@@ -6,58 +6,50 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-
 package greetings;
 
 import java.io.IOException;
 import java.net.Socket;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * Tests the Greetings service
- * 
- * @version $Rev$ $Date$
+ * Starts up the SCA runtime which starts listening for service requests
  */
-public class GreetingsTestCase extends TestCase {
+public class GreetingsTestServer {
 
     private SCADomain scaDomain;
-    GreetingsService greetingsService = null;
-    
-    /**
-     * @throws java.lang.Exception
-     */
-    @Override
-    protected void setUp() throws Exception {
-        scaDomain = SCADomain.newInstance("greetings/greetings.composite");
-        greetingsService = scaDomain.getService(GreetingsService.class, "GreetingsServiceComponent");
+
+    @Before
+    public void startServer() throws Exception {
+        try {
+            scaDomain = SCADomain.newInstance("greetings/greetings.composite");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Override
-    protected void tearDown() throws Exception {
-        scaDomain.close();
-    }
-    
+    @Test
     public void testPing() throws IOException {
         new Socket("127.0.0.1", 8085);
     }
-    public void testInvoke() {
-        String response = greetingsService.getGreetings("Luciano");
-        assertEquals("Hello Luciano", response);
+
+    @After
+    public void stopServer() throws Exception {
+        scaDomain.close();
     }
+
 }

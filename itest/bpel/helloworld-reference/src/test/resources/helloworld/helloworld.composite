@@ -22,15 +22,15 @@
     xmlns:hns="http://tuscany.apache.org/implementation/bpel/example/helloworld"
     name="helloworld">
     
-    <component name="BPELHelloWorld">
-        <implementation.java class="helloworld.HelloWorld"/>
-        <reference name="helloService" target="BPELHelloWorldService">
-            <!--  Workaround for databinding issue -->
-        	<!--  interface.wsdl interface="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl#wsdl.interface(HelloPortType)" / -->
-        </reference>
-    </component>
-    
-    <component name="BPELHelloWorldService">
+    <component name="BPELHelloWorldServiceComponent">
         <implementation.bpel process="hns:HelloWorld"/>
     </component>
+    
+    <component name="GreetingsServiceComponent">
+        <implementation.java class="greetings.GreetingsServiceImpl" />
+	    <service name="GreetingsService">
+	    	<interface.wsdl interface="http://greetings#wsdl.interface(Greetings)" />
+	        <binding.ws uri="http://localhost:8085/GreetingsService"/>
+	    </service>
+    </component> 
 </composite>
