@@ -41,6 +41,11 @@
             <url>http://download.java.net/maven/1</url>
             <layout>legacy</layout>
         </repository>
+        <repository>
+            <id>java.net2</id>
+            <name>java.net Maven 2.x Repository</name>
+            <url>http://download.java.net/maven/2</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -61,7 +66,7 @@
             <artifactId>tuscany-binding-ws-axis2</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
-        </dependency>     
+        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding-jaxb</artifactId>
@@ -87,13 +92,13 @@
             <scope>compile</scope>
         </dependency>
         <!-- 
-        <dependency>
+            <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
             <version>2.1.4</version>
             <scope>runtime</scope>
-        </dependency>
-         -->
+            </dependency>
+        -->
         <dependency>
             <groupId>com.sun.xml.ws</groupId>
             <artifactId>jaxws-rt</artifactId>
@@ -104,7 +109,7 @@
             <artifactId>itest-databindings-common</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
-        </dependency> 
+        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>itest-databindings-sdo</artifactId>
@@ -122,25 +127,25 @@
             <artifactId>tuscany-host-embedded</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
-        </dependency> 
+        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
-        </dependency> 
+        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-interface-java-xml</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
-        </dependency>  
+        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-jetty</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
             <scope>test</scope>
-        </dependency>                 
+        </dependency>
     </dependencies>
 
     <build>
@@ -152,62 +157,62 @@
                     <argLine>-Djava.endorsed.dirs=target/endorsed</argLine>
                 </configuration>
             </plugin>
-           <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-dependency-plugin</artifactId>
-              <executions>
-                  <execution>
-                      <phase>generate-sources</phase>
-                      <goals>
-                          <goal>unpack</goal>
-                      </goals>
-                      <configuration>
-                          <artifactItems>
-                              <artifactItem>
-                                  <groupId>org.apache.tuscany.sca</groupId>
-                                  <artifactId>itest-databindings-common</artifactId>
-                                  <version>${project.version}</version>
-                                  <overWrite>true</overWrite>
-                                  <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                              </artifactItem>
-                          </artifactItems>
-                      </configuration>
-                  </execution>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
                     <execution>
-                      <id>copy</id>
-                      <phase>generate-sources</phase>
-                      <goals>
-                          <goal>copy</goal>
-                      </goals>
-                      <configuration>
-                         <artifactItems>
-                             <artifactItem>
-                                 <groupId>javax.xml.ws</groupId>
-                                 <artifactId>jaxws-api</artifactId>
-                                 <version>2.1</version>
-                                 <type>jar</type>
-                             </artifactItem>
-                             <artifactItem>
-                                 <groupId>javax.xml.bind</groupId>
-                                 <artifactId>jaxb-api</artifactId>
-                                 <version>2.1</version>
-                                 <type>jar</type>
-                             </artifactItem>
-                         </artifactItems>
-                         <outputDirectory>${project.build.directory}/endorsed</outputDirectory>
-                         <overWriteReleases>false</overWriteReleases>
-                         <overWriteSnapshots>true</overWriteSnapshots>
-                      </configuration>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.tuscany.sca</groupId>
+                                    <artifactId>itest-databindings-common</artifactId>
+                                    <version>${project.version}</version>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
                     </execution>
-              </executions>              
-            </plugin>         
+                    <execution>
+                        <id>copy</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>javax.xml.ws</groupId>
+                                    <artifactId>jaxws-api</artifactId>
+                                    <version>2.1</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>javax.xml.bind</groupId>
+                                    <artifactId>jaxb-api</artifactId>
+                                    <version>2.1</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/endorsed</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>generate-test-source</id>
-                        <phase>process-resources</phase>                    
+                        <phase>process-resources</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
@@ -215,11 +220,11 @@
                 </executions>
                 <configuration>
                     <mainClass>org.apache.tuscany.sca.itest.generate.Generate</mainClass>
-                    <arguments>  
+                    <arguments>
                         <argument>${project.build.directory}</argument>
                     </arguments>
                 </configuration>
-            </plugin>         
+            </plugin>
         </plugins>
     </build>
 </project>
