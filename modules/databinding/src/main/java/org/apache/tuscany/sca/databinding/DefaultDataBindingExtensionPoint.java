@@ -63,18 +63,17 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
     }
 
     public void addDataBinding(DataBinding dataBinding) {
-    	if (logger.isLoggable(Level.FINE)) {
-			String className = dataBinding.getClass().getName();
-			boolean lazy = false;
-			if (dataBinding instanceof LazyDataBinding) {
-				className = ((LazyDataBinding) dataBinding).dataBindingDeclaration.getClassName();
-				lazy = true;
-			}
-			logger.fine("Adding databinding: " + className + ";type="
-					+ dataBinding.getName() + ",lazy=" + lazy);
-		}
+        if (logger.isLoggable(Level.FINE)) {
+            String className = dataBinding.getClass().getName();
+            boolean lazy = false;
+            if (dataBinding instanceof LazyDataBinding) {
+                className = ((LazyDataBinding)dataBinding).dataBindingDeclaration.getClassName();
+                lazy = true;
+            }
+            logger.fine("Adding databinding: " + className + ";type=" + dataBinding.getName() + ",lazy=" + lazy);
+        }
         databindings.add(dataBinding);
-		bindings.put(dataBinding.getName().toLowerCase(), dataBinding);
+        bindings.put(dataBinding.getName().toLowerCase(), dataBinding);
 
         String[] aliases = dataBinding.getAliases();
         if (aliases != null) {
@@ -111,8 +110,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         // Get the databinding service declarations
         Set<ServiceDeclaration> dataBindingDeclarations;
         try {
-            dataBindingDeclarations =
-                ServiceDiscovery.getInstance().getServiceDeclarations(DataBinding.class);
+            dataBindingDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations(DataBinding.class);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -159,8 +157,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
         private DataBinding getDataBinding() {
             if (dataBinding == null) {
                 try {
-                    Class<DataBinding> dataBindingClass =
-                        (Class<DataBinding>)dataBindingDeclaration.loadClass();
+                    Class<DataBinding> dataBindingClass = (Class<DataBinding>)dataBindingDeclaration.loadClass();
                     Constructor<DataBinding> constructor = dataBindingClass.getConstructor();
                     dataBinding = constructor.newInstance();
                 } catch (Exception e) {

@@ -26,7 +26,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.security.Principal;
 import java.security.PrivilegedAction;
 import java.util.Iterator;
 import java.util.List;
@@ -35,8 +34,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.security.auth.Subject;
 import javax.wsdl.Definition;
+import javax.wsdl.Import;
 import javax.wsdl.Port;
 import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap12.SOAP12Address;
@@ -436,6 +435,32 @@ public class Axis2ServiceProvider {
 
         return axisService;
     }
+    
+    /**
+     * Workaround for https://issues.apache.org/jira/browse/AXIS2-3205
+     * @param definition
+     * @param serviceName
+     * @return
+     */
+    private static Definition getDefinition(Definition definition, QName serviceName) {
+        if (definition == null) {
+            return null;
+        }
+        Object service = definition.getServices().get(serviceName);
+        if (service != null) {
+            return definition;
+        }
+        for (Object i : definition.getImports().values()) {
+            List<Import> imports = (List<Import>)i;
+            for (Import imp : imports) {
+                Definition d = getDefinition(imp.getDefinition(), serviceName);
+                if (d != null) {
+                    return d;
+                }
+            }
+        }
+        return definition;
+    }
 
     /**
      * Create an AxisService from the WSDL doc used by ws binding
@@ -450,12 +475,14 @@ public class Axis2ServiceProvider {
         Axis2ServiceClient.setServiceAndPort(wsBinding);
         QName serviceQName = wsBinding.getServiceName();
         String portName = wsBinding.getPortName();
+        
+        Definition def = getDefinition(definition, serviceQName);
 
-        WSDLToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(definition, serviceQName, portName);
+        WSDLToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(def, serviceQName, portName);
         builder.setServerSide(true);
         // [rfeng] Add a custom resolver to work around WSCOMMONS-228
-        builder.setCustomResolver(new URIResolverImpl(definition));
-        builder.setBaseUri(definition.getDocumentBaseURI());
+        builder.setCustomResolver(new URIResolverImpl(def));
+        builder.setBaseUri(def.getDocumentBaseURI());
         // [rfeng]
         AxisService axisService = builder.populateService();
 
@@ -476,7 +503,7 @@ public class Axis2ServiceProvider {
         }
         // Use the existing WSDL
         Parameter wsdlParam = new Parameter(WSDLConstants.WSDL_4_J_DEFINITION, null);
-        wsdlParam.setValue(definition);
+        wsdlParam.setValue(def);
         axisService.addParameter(wsdlParam);
         Parameter userWSDL = new Parameter("useOriginalwsdl", "true");
         axisService.addParameter(userWSDL);
