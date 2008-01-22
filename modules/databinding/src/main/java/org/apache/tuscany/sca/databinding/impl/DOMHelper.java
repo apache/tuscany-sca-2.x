@@ -138,7 +138,7 @@ public final class DOMHelper {
                     qname = prefix + ":" + qname;
                 }
                 Element newElement = element.getOwnerDocument().createElementNS(newName.getNamespaceURI(), qname);
-                newElement.setPrefix(prefix);
+                // newElement.setPrefix(prefix);
                 NodeList nodeList = element.getChildNodes();
                 // Need to copy the nodes from the list fisrt as the appendChild() will change the list
                 int length = nodeList.getLength();
