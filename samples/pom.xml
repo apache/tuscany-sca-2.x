@@ -65,6 +65,8 @@
                 <module>helloworld-bpel</module>
                 <module>helloworld-dojo-webapp</module>
                 <module>helloworld-jsonrpc-webapp</module>
+                <module>helloworld-reference-jms</module>
+                <module>helloworld-service-jms</module>
                 <module>helloworld-ws-service</module>
                 <module>helloworld-ws-service-jms</module>
                 <module>helloworld-ws-service-secure</module>

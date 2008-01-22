@@ -1,0 +1,119 @@
+Hello World SOAP/JMS Service Sample
+===================================
+This sample demonstrates an SCA service that uses a web service binding using 
+a SOAP/JMS protocol 
+
+The README in the samples directory (the directory above this) provides 
+general instructions about building and running samples. Take a look there 
+first. 
+
+If you just want to run it to see what happens open a command prompt, navigate
+to this sample directory and do:
+
+ant run
+
+OR if you don't have ant, on Windows do
+
+java -cp ..\..\lib\tuscany-sca-manifest.jar;target\sample-helloworld-ws-service-jms.jar helloworld.HelloWorldServer
+
+and on *nix do
+
+java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-helloworld-ws-service-jms.jar helloworld.HelloWorldServer
+
+Now the server is started you can use the helloworld-ws-reference-jms sample to 
+exercise it. 
+
+Sample Overview
+---------------
+The sample provides a single component that is wired to a service with a 
+web service binding.
+
+helloworld-ws-service-jms/
+  src/
+    main/
+      java/
+        helloworld/
+          HelloWorldService.java          - interface description for 
+                                            HelloWorldServiceComponent
+          HelloWorldImpl.java             - component implementation
+          HelloWorldServer.java           - starts the SCA Runtime and 
+                                            deploys the helloworldwsjms
+                                            .composite and then waits for the
+                                            service to be called via web services
+      resources/
+        wsdl/
+          helloworld.wsdl                 - the service description that describes
+                                            the exposed service
+        helloworldwsjms.composite         - the SCA assembly for this sample
+        helloworldwsjmspolicy.composite   - shows how the protocol can be 
+                                            selected using policy. Not run
+                                            by the sample
+    test/
+      java/
+        helloworld/
+          HelloWorldJMSServerTestCase.java- JUnit test case 
+          HelloWorldJMSPolicyServerTestCase.java- JUnit test case 
+  helloworld-ws-service.png               - a pictorial representation of the 
+                                            sample .composite file
+  build.xml                               - the Ant build file
+  pom.xml                                 - the Maven build file        
+
+Building And Running The Sample Using Ant
+-----------------------------------------
+With the binary distribution the sample can be built and run using Ant using the 
+following commands
+
+cd helloworld-ws-service-jms
+ant compile
+ant run
+
+You should see the following output from the run target.
+
+run:
+     [java] log4j:WARN No appenders could be found for logger (org.apache.axiom.
+om.util.StAXUtils).
+     [java] log4j:WARN Please initialize the log4j system properly.
+     [java] HelloWorld server started (press enter to shutdown)
+     
+As this point the SCA service is exposed as a web service by a web server 
+started automatically by the SCA runtime. To stop the server just press 
+enter.
+
+To exercise the service run up the helloworld-ws-reference-jms sample. Take a look at 
+the README in that sample and you will see you need the following commands
+
+cd helloworld-ws-reference-jms
+ant run
+
+Building And Running The Sample Using Maven 
+-------------------------------------------
+With either the binary or source distributions the sample can be built and run 
+using Maven as follows. When using Maven you don't need to run the helloworld-
+ws-reference-jms sample as Maven includes a simple ping test to make sure that the
+service is available
+
+cd helloworld-ws-service-jms
+mvn
+
+You should see the following output from the test phase.
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running helloworld.HelloWorldJmsPolicyServerTestCase
+08-Jan-2008 10:41:17 org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceProvide
+r start
+INFO: Axis2 JMS URL=jms:/HelloWorldServiceComponent?java.naming.factory.initial=
+org.apache.activemq.jndi.ActiveMQInitialContextFactory&java.naming.provider.url=
+tcp://localhost:61619&transport.jms.ConnectionFactoryJNDIName=QueueConnectionFac
+tory
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.984 sec
+Running helloworld.HelloWorldJmsServerTestCase
+08-Jan-2008 10:41:22 org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceProvide
+r start
+INFO: Axis2 JMS URL=jms:/queue.sample?transport.jms.ConnectionFactoryJNDIName=Qu
+eueConnectionFactory&java.naming.factory.initial=org.apache.activemq.jndi.Active
+MQInitialContextFactory&java.naming.provider.url=tcp://localhost:61619
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.266 sec
+
+This shows that the Junit test cases have run successfully. 
