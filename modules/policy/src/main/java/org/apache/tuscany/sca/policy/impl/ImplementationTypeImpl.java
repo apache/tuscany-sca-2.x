@@ -59,4 +59,29 @@ public class ImplementationTypeImpl implements IntentAttachPointType {
     public void setUnresolved(boolean unresolved) {
         this.unResolved = unresolved;
     }
+    
+    @Override
+    public int hashCode() {
+        return String.valueOf(getName()).hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        } else if (obj instanceof ImplementationTypeImpl ) {
+            if (getName() != null) {
+                return getName().equals(((ImplementationTypeImpl)obj).getName());
+            } else {
+                return ((ImplementationTypeImpl)obj).getName() == null;
+            }
+        } else {
+            return false;
+        }
+    }
+    
+    @Override
+    public String toString() {
+        return getName().toString();
+    }
 }

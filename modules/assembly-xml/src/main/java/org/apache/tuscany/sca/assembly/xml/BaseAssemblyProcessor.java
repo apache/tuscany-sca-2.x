@@ -62,9 +62,11 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.impl.IntentAttachPointTypeFactoryImpl;
 import org.apache.tuscany.sca.policy.util.PolicyValidationUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -85,6 +87,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
     protected StAXArtifactProcessor<Object> extensionProcessor;
     protected PolicyAttachPointProcessor policyProcessor;
     private DocumentBuilderFactory documentBuilderFactory;
+    protected IntentAttachPointTypeFactory intentAttachPointTypeFactory;
 
     /**
      * Construcst a new BaseArtifactProcessor.
@@ -102,6 +105,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
         this.contributionFactory = contribFactory;
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
+        this.intentAttachPointTypeFactory = new IntentAttachPointTypeFactoryImpl();
     }
 
     /**
@@ -243,6 +247,14 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                         resolver.addModel(implementation);
                     }
                 }
+            }
+            
+            if ( implementation instanceof IntentAttachPoint &&
+                ((IntentAttachPoint)implementation).getType() != null && 
+                ((IntentAttachPoint)implementation).getType().isUnresolved() ) {
+                ((IntentAttachPoint)implementation).setType(
+                               resolver.resolveModel(IntentAttachPointType.class, 
+                                                     ((IntentAttachPoint)implementation).getType()));
             }
         }
         return implementation;

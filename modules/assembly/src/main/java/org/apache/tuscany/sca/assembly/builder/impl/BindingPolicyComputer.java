@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -72,15 +73,15 @@ public class BindingPolicyComputer extends PolicyComputer {
         for (Binding binding : bindings) {
             if (binding instanceof IntentAttachPoint) {
                 IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
-                //since for an implementation the component has its policy intents and policysets its possible
-                //that there are some intents there that does not constrain the implementation.. so prune 
+                //since the parent component could also contain intents that apply to implementation
+                //and binding elements within, we filter out only those that apply to this binding type
                 List<Intent> prunedIntents = computeInheritableIntents(policiedBinding.getType(), 
                                                                        inheritedIntents);
                 policiedBinding.getRequiredIntents().addAll(prunedIntents);
                 
                 computeIntents(policiedBinding);
-                trimInherentlyProvidedIntents(policiedBinding.getType(), 
-                                              policiedBinding.getRequiredIntents());
+                //trimInherentlyProvidedIntents(policiedBinding.getType(), 
+                //                              policiedBinding.getRequiredIntents());
                 
                 computeIntentsForOperations((IntentAttachPoint)policiedBinding);
             }
@@ -106,6 +107,7 @@ public class BindingPolicyComputer extends PolicyComputer {
     }
     
     public void determineApplicableBindingPolicySets(Contract source, Contract target) throws PolicyComputationException {
+        List<Intent> intentsCopy = null;
         for (Binding aBinding : source.getBindings()) {
             if (aBinding instanceof PolicySetAttachPoint) {
                 PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)aBinding;
@@ -134,11 +136,36 @@ public class BindingPolicyComputer extends PolicyComputer {
                     OperationsConfigurator opConfigurator = (OperationsConfigurator)aBinding;
                     
                     for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
+                        intentsCopy = new ArrayList<Intent>(confOp.getRequiredIntents());
+                        
+                        trimInherentlyProvidedIntents(policiedBinding.getType(), 
+                                                      confOp.getRequiredIntents());
                         trimProvidedIntents(confOp.getRequiredIntents(), confOp.getPolicySets());
                         trimProvidedIntents(confOp.getRequiredIntents(), policiedBinding.getPolicySets());
+                        
+                        if (domainPolicySets != null) {
+                            determineApplicableDomainPolicySets(aBinding, 
+                                                                confOp,
+                                                                policiedBinding.getType());
+        
+                            if (confOp.getRequiredIntents().size() > 0) {
+                                new PolicyComputationException("The following are unfulfilled intents for operations configured in "
+                                        + "binding - " + aBinding.getName() + "\nUnfulfilled Intents = " +
+                                        confOp.getRequiredIntents());
+                            }
+                        }
+                        
+                        //the intents list could have been trimmed when matching for policysets
+                        //since the bindings may need the original set of intents we copy that back
+                        confOp.getRequiredIntents().clear();
+                        confOp.getRequiredIntents().addAll(intentsCopy);
+                        
                     }
                 }
 
+                intentsCopy = new ArrayList<Intent>(policiedBinding.getRequiredIntents());
+                trimInherentlyProvidedIntents(policiedBinding.getType(), 
+                                              policiedBinding.getRequiredIntents());
                 trimProvidedIntents(policiedBinding.getRequiredIntents(), policiedBinding
                     .getPolicySets());
 
@@ -149,6 +176,12 @@ public class BindingPolicyComputer extends PolicyComputer {
                 // if there are intents that are not provided by any policy set
                 // throw a warning
                 determineApplicableDomainPolicySets(source, policiedBinding);
+                
+                //the intents list could have been trimmed when matching for policysets
+                //since the bindings may need the original set of intents we copy that back
+                policiedBinding.getRequiredIntents().clear();
+                policiedBinding.getRequiredIntents().addAll(intentsCopy);
+                
             }
         }
     }

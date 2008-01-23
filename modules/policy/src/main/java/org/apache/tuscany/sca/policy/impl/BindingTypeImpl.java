@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Concrete implementation for a BindingType
@@ -59,5 +60,30 @@ public class BindingTypeImpl implements IntentAttachPointType {
 
     public void setUnresolved(boolean unresolved) {
         this.unResolved = unresolved;
+    }
+    
+    @Override
+    public int hashCode() {
+        return String.valueOf(getName()).hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        } else if (obj instanceof BindingTypeImpl ) {
+            if (getName() != null) {
+                return getName().equals(((BindingTypeImpl)obj).getName());
+            } else {
+                return ((BindingTypeImpl)obj).getName() == null;
+            }
+        } else {
+            return false;
+        }
+    }
+    
+    @Override
+    public String toString() {
+        return getName().toString();
     }
 }

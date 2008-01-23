@@ -210,10 +210,6 @@ public class ReadTestCase extends TestCase {
         CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, mapper, scaDefns.getPolicySets(), null);
         compositeUtil.build(composite);
         
-        //intents are computed and erased since there will be matching policysets
-        assertEquals(((PolicySetAttachPoint)composite.getComponents().get(0)).getRequiredIntents().size(), 0);
-        assertEquals(((PolicySetAttachPoint)composite.getComponents().get(5)).getRequiredIntents().size(), 0);
-        
         //test for determination of policysets for implementation
         assertEquals(((PolicySetAttachPoint)composite.getComponents().get(0)).getPolicySets().size(), 1);
         for ( PolicySet policySet : ((PolicySetAttachPoint)composite.getComponents().get(0).getImplementation()).getPolicySets() ) {

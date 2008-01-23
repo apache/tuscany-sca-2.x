@@ -61,6 +61,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
@@ -87,6 +88,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                               InterfaceContractMapper interfaceContractMapper,
                               StAXArtifactProcessor extensionProcessor) {
         super(contributionFactory, factory, policyFactory, extensionProcessor);
+        
     }
 
     /**
@@ -341,8 +343,13 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                         composite.getExtensions().add(extension);
                                     }
                                 }
-
                             } else if (extension instanceof Binding) {
+                                if ( extension instanceof PolicySetAttachPoint ) {
+                                    IntentAttachPointType bindingType = intentAttachPointTypeFactory.createBindingType();
+                                    bindingType.setName(name);
+                                    bindingType.setUnresolved(true);
+                                    ((PolicySetAttachPoint)extension).setType(bindingType);
+                                }
                                 // <service><binding> and
                                 // <reference><binding>
                                 if (callback != null) {
@@ -361,7 +368,12 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 }
 
                             } else if (extension instanceof Implementation) {
-
+                                if ( extension instanceof PolicySetAttachPoint ) {
+                                    IntentAttachPointType implType = intentAttachPointTypeFactory.createImplementationType();
+                                    implType.setName(name);
+                                    implType.setUnresolved(true);
+                                    ((PolicySetAttachPoint)extension).setType(implType);
+                                }
                                 // <component><implementation>
                                 if (component != null) {
                                     component.setImplementation((Implementation)extension);

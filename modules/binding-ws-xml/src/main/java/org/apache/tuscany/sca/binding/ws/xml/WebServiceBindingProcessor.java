@@ -81,10 +81,10 @@ public class WebServiceBindingProcessor implements
 
         // Read a <binding.ws>
         WebServiceBinding wsBinding = wsFactory.createWebServiceBinding();
-        IntentAttachPointType bindingType = intentAttachPointTypeFactory.createBindingType();
+        /*IntentAttachPointType bindingType = intentAttachPointTypeFactory.createBindingType();
         bindingType.setName(getArtifactType());
         bindingType.setUnresolved(true);
-        ((PolicySetAttachPoint)wsBinding).setType(bindingType);
+        ((PolicySetAttachPoint)wsBinding).setType(bindingType);*/
         wsBinding.setUnresolved(true);
 
         // Read policies

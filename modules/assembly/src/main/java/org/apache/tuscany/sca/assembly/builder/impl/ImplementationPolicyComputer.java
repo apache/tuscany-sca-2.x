@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Component;
@@ -51,8 +52,8 @@ public class ImplementationPolicyComputer extends PolicyComputer {
             parent.getRequiredIntents().clear();
             parent.getRequiredIntents().addAll(prunedIntents);
             computeIntents(parent);
-            trimInherentlyProvidedIntents(policiedImplementation.getType(), 
-                                          parent.getRequiredIntents());
+            //trimInherentlyProvidedIntents(policiedImplementation.getType(), 
+            //                              parent.getRequiredIntents());
             
             computeIntentsForOperations((OperationsConfigurator)parent,
                                         (IntentAttachPoint)implementation,
@@ -74,6 +75,7 @@ public class ImplementationPolicyComputer extends PolicyComputer {
     }
     
     private void determineApplicableImplementationPolicySets(Component component) throws PolicyComputationException {
+        List<Intent> intentsCopy = null;
         if ( component.getImplementation() instanceof PolicySetAttachPoint ) {
             PolicySetAttachPoint policiedImplementation = (PolicySetAttachPoint)component.getImplementation();
            
@@ -83,6 +85,9 @@ public class ImplementationPolicyComputer extends PolicyComputer {
                 OperationsConfigurator opConfigurator = (OperationsConfigurator)component;
                 
                 for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
+                    intentsCopy = new ArrayList<Intent>(confOp.getRequiredIntents());
+                    trimInherentlyProvidedIntents(policiedImplementation.getType(), 
+                                                  confOp.getRequiredIntents());
                     trimProvidedIntents(confOp.getRequiredIntents(), confOp.getPolicySets());
                     trimProvidedIntents(confOp.getRequiredIntents(), component.getPolicySets());
                     
@@ -97,9 +102,17 @@ public class ImplementationPolicyComputer extends PolicyComputer {
                                     confOp.getRequiredIntents());
                         }
                     }
+                    
+                    //the intents list could have been trimmed when matching for policysets
+                    //since the implementation may need the original set of intents we copy that back
+                    confOp.getRequiredIntents().clear();
+                    confOp.getRequiredIntents().addAll(intentsCopy);
                 }
             }
                 
+            intentsCopy = new ArrayList<Intent>(component.getRequiredIntents());
+            trimInherentlyProvidedIntents(policiedImplementation.getType(), 
+                                          component.getRequiredIntents());
             trimProvidedIntents(component.getRequiredIntents(), component.getPolicySets());
                 
             //determine additional policysets that match remaining intents
@@ -116,9 +129,11 @@ public class ImplementationPolicyComputer extends PolicyComputer {
                         .getName() + "\nUnfulfilled Intents = " + component.getRequiredIntents());
                 }
             }
+            
+            //the intents list could have been trimmed when matching for policysets
+            //since the bindings may need the original set of intents we copy that back
+            component.getRequiredIntents().clear();
+            component.getRequiredIntents().addAll(intentsCopy);
         }
     }
-    
-    
-    
 }
