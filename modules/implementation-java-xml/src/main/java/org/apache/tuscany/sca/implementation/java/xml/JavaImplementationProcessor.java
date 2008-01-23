@@ -86,12 +86,12 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         // Read an <implementation.java>
         JavaImplementation javaImplementation = javaFactory.createJavaImplementation();
         
-        if ( javaImplementation instanceof PolicySetAttachPoint ) {
+        /*if ( javaImplementation instanceof PolicySetAttachPoint ) {
             IntentAttachPointType implType = intentAttachPointTypeFactory.createImplementationType();
             implType.setName(getArtifactType());
             implType.setUnresolved(true);
             ((PolicySetAttachPoint)javaImplementation).setType(implType);
-        }
+        }*/
         
         javaImplementation.setUnresolved(true);
         javaImplementation.setName(reader.getAttributeValue(null, CLASS));
