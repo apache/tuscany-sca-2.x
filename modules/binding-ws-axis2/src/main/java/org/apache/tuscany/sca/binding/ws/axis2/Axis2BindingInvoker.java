@@ -31,7 +31,6 @@ import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.addressing.EndpointReferenceHelper;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
-import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
@@ -188,6 +187,8 @@ public class Axis2BindingInvoker implements Invoker {
             } else {
                 throw new RuntimeException("Unable to determine destination endpoint");
             }
+        } else {
+            requestMC.setTo(new EndpointReference(options.getTo().getAddress())); 
         }
 
         operationClient.addMessageContext(requestMC);
