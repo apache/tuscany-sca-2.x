@@ -17,27 +17,19 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.resource.provider;
-
-import java.net.URL;
-
-import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.Message;
+package org.apache.tuscany.sca.binding.http;
 
 /**
- * Implements an invoker for resource component implementations.
+ * Factory for the HTTP binding model.
+ *
+ * @version $Rev$ $Date$
  */
-class ResourceImplementationInvoker implements Invoker {
-    private URL locationURL;
+public interface HTTPBindingFactory {
     
-    ResourceImplementationInvoker(URL locationURL) {
-        this.locationURL = locationURL;
-    }
-    
-    public Message invoke(Message msg) {
-        // Return the location URL
-        msg.setBody(locationURL);
-        return msg;
-    }
+    /**
+     * Creates a new HTTP binding.
+     * @return a new HTTP binding
+     */
+    HTTPBinding createHTTPResourceBinding();
 
 }

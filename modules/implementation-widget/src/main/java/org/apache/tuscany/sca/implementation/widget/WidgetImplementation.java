@@ -36,6 +36,8 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 /**
  * The model representing a widget implementation in an SCA assembly model.
+ *
+ * @version $Rev$ $Date$
  */
 public class WidgetImplementation implements Implementation {
     private AssemblyFactory assemblyFactory;

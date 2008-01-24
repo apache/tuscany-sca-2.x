@@ -17,18 +17,48 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.resource;
+package org.apache.tuscany.sca.binding.http.impl;
 
-import java.io.InputStream;
+import org.apache.tuscany.sca.binding.http.HTTPBinding;
 
-import org.apache.tuscany.sca.implementation.data.collection.Collection;
 
 /**
- * The service interface of resource implementations. This is not an API for application
- * developers. Application developers should use the data collection API to invoke
- * resource components.
+ * Implementation of the HTTP binding model.
  * 
- * @version $Rev: 548609 $ $Date: 2007-06-18 23:31:03 -0700 (Mon, 18 Jun 2007) $
+ * @version $Rev$ $Date$
  */
-public interface Resource extends Collection<String, InputStream> {
+class HTTPBindingImpl implements HTTPBinding {
+    
+    private String name;
+    private String uri;
+
+    public String getName() {
+        return name;
+    }
+
+    public String getURI() {
+        return uri;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setURI(String uri) {
+        this.uri = uri;
+    }
+
+    
+    public boolean isUnresolved() {
+        return false;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+        // The sample binding is always resolved
+    }
+    
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }     
+
 }

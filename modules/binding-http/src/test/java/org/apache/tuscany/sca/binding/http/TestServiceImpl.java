@@ -19,17 +19,42 @@
 
 package org.apache.tuscany.sca.binding.http;
 
+import java.io.IOException;
+
+import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
+import org.osoa.sca.annotations.Service;
+
 /**
- * Factory for the HTTP resource binding model.
+ * Test service implementation.
  *
  * @version $Rev$ $Date$
  */
-public interface HTTPResourceBindingFactory {
-    
-    /**
-     * Creates a new HTTP resource binding.
-     * @return a new HTTP resource binding
-     */
-    HTTPResourceBinding createHTTPResourceBinding();
+
+@Service(Servlet.class)
+public class TestServiceImpl implements Servlet {
+
+    public void init(ServletConfig config) throws ServletException {
+    }
+
+    public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+        //HttpServletResponse httpResponse = (HttpServletResponse)response;
+        response.getOutputStream().print("<html><body><p>hey</body></html>");
+    }
+
+    public void destroy() {
+    }
+
+    public ServletConfig getServletConfig() {
+        return null;
+    }
+
+    public String getServletInfo() {
+        return null;
+    }
 
 }

@@ -17,20 +17,29 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http.impl;
+package org.apache.tuscany.sca.interfacedef.java;
 
-import org.apache.tuscany.sca.binding.http.HTTPResourceBinding;
-import org.apache.tuscany.sca.binding.http.HTTPResourceBindingFactory;
+import java.lang.reflect.Method;
+
+import org.apache.tuscany.sca.interfacedef.Operation;
 
 /**
- * Factory for the HTTP resource binding model.
+ * Represents a Java operation.
  *
  * @version $Rev$ $Date$
  */
-public class HTTPResourceBindingFactoryImpl implements HTTPResourceBindingFactory {
+public interface JavaOperation extends Operation {
 
-    public HTTPResourceBinding createHTTPResourceBinding() {
-        return new HTTPResourceBindingImpl();
-    }
+    /**
+     * Returns the Java method defining the operation.
+     * @return the Java method
+     */
+    Method getJavaMethod();
+    
+    /**
+     * Sets the Java method defining the operation.
+     * @param method the Java method
+     */
+    void setJavaMethod(Method method);
 
 }

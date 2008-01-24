@@ -29,18 +29,20 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
+ * HTTP binding unit tests.
+ * 
  * @version $Rev$ $Date$
  */
-public class HTTPResourceBindingTestCase extends TestCase {
+public class HTTPBindingTestCase extends TestCase {
 
-//    private static final String REQUEST1_HEADER =
-//        "GET /ResourceServiceComponent/test.html HTTP/1.0\n" + "Host: localhost\n"
-//            + "Content-Type: text/xml\n"
-//            + "Connection: close\n"
-//            + "Content-Length: ";
-//    private static final String REQUEST1_CONTENT = "";
-//    private static final String REQUEST1 =
-//        REQUEST1_HEADER + REQUEST1_CONTENT.getBytes().length + "\n\n" + REQUEST1_CONTENT;
+    private static final String REQUEST1_HEADER =
+        "GET /httpservice/test HTTP/1.0\n" + "Host: localhost\n"
+            + "Content-Type: text/xml\n"
+            + "Connection: close\n"
+            + "Content-Length: ";
+    private static final String REQUEST1_CONTENT = "";
+    private static final String REQUEST1 =
+        REQUEST1_HEADER + REQUEST1_CONTENT.getBytes().length + "\n\n" + REQUEST1_CONTENT;
 
     private static final String REQUEST2_HEADER =
         "GET /webcontent/test.html HTTP/1.0\n" + "Host: localhost\n"
@@ -51,13 +53,22 @@ public class HTTPResourceBindingTestCase extends TestCase {
     private static final String REQUEST2 =
         REQUEST2_HEADER + REQUEST2_CONTENT.getBytes().length + "\n\n" + REQUEST2_CONTENT;
 
+    private static final String REQUEST3_HEADER =
+        "GET /httpget/test HTTP/1.0\n" + "Host: localhost\n"
+            + "Content-Type: text/xml\n"
+            + "Connection: close\n"
+            + "Content-Length: ";
+    private static final String REQUEST3_CONTENT = "";
+    private static final String REQUEST3 =
+        REQUEST3_HEADER + REQUEST3_CONTENT.getBytes().length + "\n\n" + REQUEST3_CONTENT;
+
     private static final int HTTP_PORT = 8085;
 
     private SCADomain scaDomain;
     
     @Override
     protected void setUp() throws Exception {
-        scaDomain = SCADomain.newInstance("resource.composite");
+        scaDomain = SCADomain.newInstance("test.composite");
     }
 
     @Override
@@ -65,19 +76,39 @@ public class HTTPResourceBindingTestCase extends TestCase {
         scaDomain.close();
     }
 
-    // This works with port 8080 but we can't use that port on the build
-    // machine as it's already in use
-//    public void testResourceImplementation() throws Exception {
-//        Socket client = new Socket("127.0.0.1", HTTP_PORT);
-//        OutputStream os = client.getOutputStream();
-//        os.write(REQUEST1.getBytes());
-//        os.flush();
-//        
-//        String document = read(client);
-//        assertTrue(document.indexOf("<body><p>hello</body>") != -1);
-//    }
+    /**
+     * Test invoking a POJO service implementation using the HTTP binding. 
+     * @throws Exception
+     */
+    public void testServiceImplementation() throws Exception {
+        Socket client = new Socket("127.0.0.1", HTTP_PORT);
+        OutputStream os = client.getOutputStream();
+        os.write(REQUEST1.getBytes());
+        os.flush();
+        
+        String document = read(client);
+        assertTrue(document.indexOf("<body><p>hey</body>") != -1);
+    }
 
-    public void testResourceImplementationWithBindingURI() throws Exception {
+    /**
+     * Test invoking a POJO get method implementation using the HTTP binding. 
+     * @throws Exception
+     */
+    public void testGetImplementation() throws Exception {
+        Socket client = new Socket("127.0.0.1", HTTP_PORT);
+        OutputStream os = client.getOutputStream();
+        os.write(REQUEST3.getBytes());
+        os.flush();
+        
+        String document = read(client);
+        assertTrue(document.indexOf("<body><p>uh oh</body>") != -1);
+    }
+
+    /**
+     * Test getting a static resource provided using the HTTP binding. 
+     * @throws Exception
+     */
+    public void testStaticResourceImplementation() throws Exception {
         Socket client = new Socket("127.0.0.1", HTTP_PORT);
         OutputStream os = client.getOutputStream();
         os.write(REQUEST2.getBytes());
@@ -87,6 +118,12 @@ public class HTTPResourceBindingTestCase extends TestCase {
         assertTrue(document.indexOf("<body><p>hello</body>") != -1);
     }
 
+    /**
+     * Read response stream from the given socket.
+     * @param socket
+     * @return
+     * @throws IOException
+     */
     private static String read(Socket socket) throws IOException {
         BufferedReader reader = null;
         try {

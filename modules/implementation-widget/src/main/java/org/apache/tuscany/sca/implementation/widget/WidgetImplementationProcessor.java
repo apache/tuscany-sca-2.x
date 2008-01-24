@@ -40,7 +40,9 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
 
 /**
- * Implements a STAX artifact processor for resource implementations.
+ * Implements a STAX artifact processor for Widget implementations.
+ *
+ * @version $Rev$ $Date$
  */
 public class WidgetImplementationProcessor implements StAXArtifactProcessor<WidgetImplementation> {
     private static final QName IMPLEMENTATION_WIDGET = new QName(Constants.SCA10_TUSCANY_NS, "implementation.widget");

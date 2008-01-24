@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.widget;
+package org.apache.tuscany.sca.implementation.widget.provider;
 
 import java.util.HashMap;
 import java.util.Map;

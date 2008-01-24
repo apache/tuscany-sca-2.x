@@ -19,16 +19,14 @@
 
 package org.apache.tuscany.sca.binding.http.provider;
 
-import java.io.File;
-import java.net.URL;
+import javax.servlet.Servlet;
 
-import org.apache.tuscany.sca.binding.http.HTTPResourceBinding;
-import org.apache.tuscany.sca.host.http.DefaultResourceServlet;
+import org.apache.tuscany.sca.binding.http.HTTPBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -36,19 +34,19 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
- * Implementation of the Echo binding provider.
+ * Implementation of an HTTP binding provider.
  */
-public class HTTPResourceServiceBindingProvider implements ServiceBindingProvider {
+public class HTTPServiceBindingProvider implements ServiceBindingProvider {
     
     private RuntimeComponentService service;  
-    private HTTPResourceBinding binding;
+    private HTTPBinding binding;
     private MessageFactory messageFactory;
     private ServletHost servletHost;
     private String servletMapping;
     
-    public HTTPResourceServiceBindingProvider(RuntimeComponent component,
+    public HTTPServiceBindingProvider(RuntimeComponent component,
                                               RuntimeComponentService service,
-                                              HTTPResourceBinding binding,
+                                              HTTPBinding binding,
                                               MessageFactory messageFactory,
                                               ServletHost servletHost) {
         this.service = service;
@@ -57,54 +55,31 @@ public class HTTPResourceServiceBindingProvider implements ServiceBindingProvide
         this.servletHost = servletHost;
     }
 
-    public InterfaceContract getBindingInterfaceContract() {
-        return service.getInterfaceContract();
-    }
-    
-    public boolean supportsOneWayInvocation() {
-        return false;
-    }
-
     public void start() {
-
-        // Get the target component implementation, for now we are assuming
-        // that it's an implementation.resource
+        
+        // Get the invokers for the supported operations
         RuntimeComponentService componentService = (RuntimeComponentService) service;
         RuntimeWire wire = componentService.getRuntimeWire(binding);
-        
-        // Get the getLocationURL invoker
-        Invoker getLocationInvoker = null;
+        Servlet servlet = null;
         for (InvocationChain invocationChain : wire.getInvocationChains()) {
-            String operationName = invocationChain.getSourceOperation().getName();
-            if (operationName.equals("getLocationURL")) {
-                getLocationInvoker = invocationChain.getHeadInvoker();
+            Operation operation = invocationChain.getTargetOperation();
+            String operationName = operation.getName();
+            if (operationName.equals("get")) {
+                Invoker getInvoker = invocationChain.getHeadInvoker();
+                servlet = new HTTPGetListenerServlet(getInvoker, messageFactory);
+                break;
+            } else if (operationName.equals("service")) {
+                Invoker serviceInvoker = invocationChain.getHeadInvoker();
+                servlet = new HTTPServiceListenerServlet(serviceInvoker, messageFactory);
+                break;
             }
         }
-        if (getLocationInvoker == null) {
-            throw new IllegalStateException("No getLocationURL operation found on target component");
+        if (servlet == null) {
+            throw new IllegalStateException("No get or service method found on the service");
         }
-
-        // Get the location URL
-        Message message = messageFactory.createMessage();
-        message = getLocationInvoker.invoke(message);
-        URL locationURL = message.getBody();
-        
-        // If resource is a file, register the parent dir
-        try {
-            if( locationURL.getProtocol().equals("file")) {
-                File fileLocation = new File(locationURL.toURI());
-                if (fileLocation.isFile()) {
-                    File parent = new File(fileLocation.getParent());
-                    locationURL = parent.toURL();
-                }                
-            }
-        }catch(Exception e) {
-            throw new IllegalStateException("Invalid getLocationURL, could not retrieve parent folder");
-        }
-        
-        // Register the default resource servlet with the servlet host
-        DefaultResourceServlet resourceServlet = new DefaultResourceServlet(locationURL.toString());
-
+                
+        // Create our HTTP service listener servlet and register it with the
+        // servlet host
         servletMapping = binding.getURI();
         if (!servletMapping.endsWith("/")) {
             servletMapping += "/";
@@ -112,7 +87,7 @@ public class HTTPResourceServiceBindingProvider implements ServiceBindingProvide
         if (!servletMapping.endsWith("*")) {
             servletMapping += "*";
         }
-        servletHost.addServletMapping(servletMapping, resourceServlet);
+        servletHost.addServletMapping(servletMapping, servlet);
         
         // Save the actual binding URI in the binding
         binding.setURI(servletHost.getURLMapping(binding.getURI()).toString());
@@ -120,8 +95,16 @@ public class HTTPResourceServiceBindingProvider implements ServiceBindingProvide
 
     public void stop() {
         
-        // Unregister from the hosting server
+        // Unregister the servlet from the servlet host
         servletHost.removeServletMapping(servletMapping);
+    }
+
+    public InterfaceContract getBindingInterfaceContract() {
+        return null;
+    }
+    
+    public boolean supportsOneWayInvocation() {
+        return false;
     }
 
 }

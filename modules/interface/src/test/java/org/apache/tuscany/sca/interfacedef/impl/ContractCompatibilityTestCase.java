@@ -50,12 +50,12 @@ public class ContractCompatibilityTestCase extends TestCase {
 
     public void testBasic() throws Exception {
         InterfaceContract source = new MockContract("FooContract");
-        Operation opSource1 = new OperationImpl("op1");
+        Operation opSource1 = newOperation("op1");
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
         source.getInterface().getOperations().addAll(sourceOperations.values());
         InterfaceContract target = new MockContract("FooContract");
-        Operation opSource2 = new OperationImpl("op1");
+        Operation opSource2 = newOperation("op1");
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opSource2);
         target.getInterface().getOperations().addAll(targetOperations.values());
@@ -64,12 +64,12 @@ public class ContractCompatibilityTestCase extends TestCase {
 
     public void testBasicIncompatibleOperationNames() throws Exception {
         InterfaceContract source = new MockContract("FooContract");
-        Operation opSource1 = new OperationImpl("op1");
+        Operation opSource1 = newOperation("op1");
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
         source.getInterface().getOperations().addAll(sourceOperations.values());
         InterfaceContract target = new MockContract("FooContract");
-        Operation opSource2 = new OperationImpl("op2");
+        Operation opSource2 = newOperation("op2");
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op2", opSource2);
         target.getInterface().getOperations().addAll(targetOperations.values());
@@ -86,7 +86,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         List<DataType> sourceInputTypes = new ArrayList<DataType>();
         sourceInputTypes.add(new DataTypeImpl<Type>(Object.class, Object.class));
         DataType<List<DataType>> inputType = new DataTypeImpl<List<DataType>>(String.class, sourceInputTypes);
-        Operation opSource1 = new OperationImpl("op1");
+        Operation opSource1 = newOperation("op1");
         opSource1.setInputType(inputType);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
@@ -97,7 +97,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         targetInputTypes.add(new DataTypeImpl<Type>(Object.class, Object.class));
         DataType<List<DataType>> targetInputType = new DataTypeImpl<List<DataType>>(String.class, targetInputTypes);
 
-        Operation opTarget = new OperationImpl("op1");
+        Operation opTarget = newOperation("op1");
         opTarget.setInputType(targetInputType);
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
@@ -110,7 +110,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         List<DataType> sourceInputTypes = new ArrayList<DataType>();
         sourceInputTypes.add(new DataTypeImpl<Type>(Integer.class, Integer.class));
         DataType<List<DataType>> inputType = new DataTypeImpl<List<DataType>>(String.class, sourceInputTypes);
-        Operation opSource1 = new OperationImpl("op1");
+        Operation opSource1 = newOperation("op1");
         opSource1.setInputType(inputType);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
@@ -121,7 +121,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         targetInputTypes.add(new DataTypeImpl<Type>(String.class, String.class));
         DataType<List<DataType>> targetInputType = new DataTypeImpl<List<DataType>>(String.class, targetInputTypes);
 
-        Operation opTarget = new OperationImpl("op1");
+        Operation opTarget = newOperation("op1");
         opTarget.setInputType(targetInputType);
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
@@ -144,7 +144,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         // Object.class));
         // DataType<List<DataType>> inputType = new
         // DataTypeImpl<List<DataType>>(String.class, sourceInputTypes);
-        // Operation opSource1 = new OperationImpl("op1", inputType, null, null,
+        // Operation opSource1 = newOperationImpl("op1", inputType, null, null,
         // false, null);
         // Map<String, Operation> sourceOperations = new HashMap<String,
         // Operation>();
@@ -158,7 +158,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         // DataType<List<DataType>> targetInputType =
         // new DataTypeImpl<List<DataType>>(String.class, targetInputTypes);
         //
-        // Operation opTarget = new OperationImpl("op1", targetInputType, null,
+        // Operation opTarget = newOperationImpl("op1", targetInputType, null,
         // null, false, null);
         // Map<String, Operation> targetOperations = new HashMap<String,
         // Operation>();
@@ -170,7 +170,7 @@ public class ContractCompatibilityTestCase extends TestCase {
     public void testOutputTypes() throws Exception {
         InterfaceContract source = new MockContract("FooContract");
         DataType sourceOutputType = new DataTypeImpl<Type>(String.class, String.class);
-        Operation opSource1 = new OperationImpl("op1");
+        Operation opSource1 = newOperation("op1");
         opSource1.setOutputType(sourceOutputType);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
@@ -178,7 +178,7 @@ public class ContractCompatibilityTestCase extends TestCase {
 
         InterfaceContract target = new MockContract("FooContract");
         DataType targetOutputType = new DataTypeImpl<Type>(String.class, String.class);
-        Operation opTarget = new OperationImpl("op1");
+        Operation opTarget = newOperation("op1");
         opTarget.setOutputType(targetOutputType);
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
@@ -193,7 +193,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         // InterfaceContract source = new MockContract("FooContract");
         // DataType sourceOutputType = new DataTypeImpl<Type>(Object.class,
         // Object.class);
-        // Operation opSource1 = new OperationImpl("op1", null,
+        // Operation opSource1 = newOperationImpl("op1", null,
         // sourceOutputType, null, false, null);
         // Map<String, Operation> sourceOperations = new HashMap<String,
         // Operation>();
@@ -203,7 +203,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         // InterfaceContract target = new MockContract("FooContract");
         // DataType targetOutputType = new DataTypeImpl<Type>(String.class,
         // String.class);
-        // Operation opTarget = new OperationImpl("op1", null, targetOutputType,
+        // Operation opTarget = newOperationImpl("op1", null, targetOutputType,
         // null, false, null);
         // Map<String, Operation> targetOperations = new HashMap<String,
         // Operation>();
@@ -215,7 +215,7 @@ public class ContractCompatibilityTestCase extends TestCase {
     public void testIncompatibleOutputTypes() throws Exception {
         InterfaceContract source = new MockContract("FooContract");
         DataType sourceOutputType = new DataTypeImpl<Type>(String.class, String.class);
-        Operation opSource1 = new OperationImpl("op1");
+        Operation opSource1 = newOperation("op1");
         opSource1.setOutputType(sourceOutputType);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
@@ -223,7 +223,7 @@ public class ContractCompatibilityTestCase extends TestCase {
 
         InterfaceContract target = new MockContract("FooContract");
         DataType targetOutputType = new DataTypeImpl<Type>(Integer.class, Integer.class);
-        Operation opTarget = new OperationImpl("op1");
+        Operation opTarget = newOperation("op1");
         opTarget.setOutputType(targetOutputType);
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
@@ -241,7 +241,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         DataType sourceFaultType = new DataTypeImpl<Type>(String.class, String.class);
         List<DataType> sourceFaultTypes = new ArrayList<DataType>();
         sourceFaultTypes.add(0, sourceFaultType);
-        Operation opSource1 = new OperationImpl("op1");
+        Operation opSource1 = newOperation("op1");
         opSource1.setFaultTypes(sourceFaultTypes);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
@@ -252,7 +252,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         List<DataType> targetFaultTypes = new ArrayList<DataType>();
         targetFaultTypes.add(0, targetFaultType);
 
-        Operation opTarget = new OperationImpl("op1");
+        Operation opTarget = newOperation("op1");
         opTarget.setFaultTypes(targetFaultTypes);
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
@@ -265,14 +265,14 @@ public class ContractCompatibilityTestCase extends TestCase {
         DataType sourceFaultType = new DataTypeImpl<Type>(String.class, String.class);
         List<DataType> sourceFaultTypes = new ArrayList<DataType>();
         sourceFaultTypes.add(0, sourceFaultType);
-        Operation opSource1 = new OperationImpl("op1");
+        Operation opSource1 = newOperation("op1");
         opSource1.setFaultTypes(sourceFaultTypes);
         Map<String, Operation> sourceOperations = new HashMap<String, Operation>();
         sourceOperations.put("op1", opSource1);
         source.getInterface().getOperations().addAll(sourceOperations.values());
 
         InterfaceContract target = new MockContract("FooContract");
-        Operation opTarget = new OperationImpl("op1");
+        Operation opTarget = newOperation("op1");
         Map<String, Operation> targetOperations = new HashMap<String, Operation>();
         targetOperations.put("op1", opTarget);
         target.getInterface().getOperations().addAll(targetOperations.values());
@@ -291,7 +291,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         // Exception.class);
         // List<DataType> sourceFaultTypes = new ArrayList<DataType>();
         // sourceFaultTypes.add(0, sourceFaultType);
-        // Operation opSource1 = new OperationImpl("op1", null, null,
+        // Operation opSource1 = newOperationImpl("op1", null, null,
         // sourceFaultTypes, false, null);
         // Map<String, Operation> sourceOperations = new HashMap<String,
         // Operation>();
@@ -304,7 +304,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         // List<DataType> targetFaultTypes = new ArrayList<DataType>();
         // targetFaultTypes.add(0, targetFaultType);
         //
-        // Operation opTarget = new OperationImpl("op1", null, null,
+        // Operation opTarget = newOperationImpl("op1", null, null,
         // targetFaultTypes, false, null);
         // Map<String, Operation> targetOperations = new HashMap<String,
         // Operation>();
@@ -326,7 +326,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         // List<DataType> sourceFaultTypes = new ArrayList<DataType>();
         // sourceFaultTypes.add(0, sourceFaultType);
         // sourceFaultTypes.add(1, sourceFaultType2);
-        // Operation opSource1 = new OperationImpl("op1", null, null,
+        // Operation opSource1 = newOperationImpl("op1", null, null,
         // sourceFaultTypes, false, null);
         // Map<String, Operation> sourceOperations = new HashMap<String,
         // Operation>();
@@ -339,7 +339,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         // List<DataType> targetFaultTypes = new ArrayList<DataType>();
         // targetFaultTypes.add(0, targetFaultType);
         //
-        // Operation opTarget = new OperationImpl("op1", null, null,
+        // Operation opTarget = newOperationImpl("op1", null, null,
         // targetFaultTypes, false, null);
         // Map<String, Operation> targetOperations = new HashMap<String,
         // Operation>();
@@ -362,4 +362,9 @@ public class ContractCompatibilityTestCase extends TestCase {
         }
     }
 
+    private static Operation newOperation(String name) {
+        Operation operation = new OperationImpl();
+        operation.setName(name);
+        return operation;
+    }
 }

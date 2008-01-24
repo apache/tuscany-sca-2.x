@@ -25,7 +25,9 @@ import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
- * The model representing a resource implementation in an SCA assembly model.
+ * A factory for resource implementation providers.
+ *
+ * @version $Rev$ $Date$
  */
 public class ResourceImplementationProviderFactory implements ImplementationProviderFactory<ResourceImplementation> {
 

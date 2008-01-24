@@ -42,11 +42,11 @@ public class InterfaceContractTestCase {
         contract = new MockInterfaceContract();
         Interface i1 = new MockInterface();
         contract.setInterface(i1);
-        Operation op1 = new OperationImpl("op1");
+        Operation op1 = newOperation("op1");
         i1.getOperations().add(op1);
         Interface i2 = new MockInterface();
         contract.setCallbackInterface(i2);
-        Operation callbackOp1 = new OperationImpl("callbackOp1");
+        Operation callbackOp1 = newOperation("callbackOp1");
         i2.getOperations().add(callbackOp1);
     }
     
@@ -69,4 +69,9 @@ public class InterfaceContractTestCase {
     private static class MockInterface extends InterfaceImpl implements Interface {
     }
 
+    private static Operation newOperation(String name) {
+        Operation operation = new OperationImpl();
+        operation.setName(name);
+        return operation;
+    }
 }

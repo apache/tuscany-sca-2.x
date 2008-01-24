@@ -51,7 +51,7 @@ public class OperationSelectionTestCase {
     @Test
     public void testServiceWithOnlyOneOperationScaOperationNameNotSpecified() throws Exception {
         // Create the operation we should match
-        final Operation expectedOperation = new OperationImpl("myOperation");
+        final Operation expectedOperation = newOperation("myOperation");
 
         // Create the list of operations for the Service
         final List<Operation> operations = new ArrayList<Operation>();
@@ -75,7 +75,7 @@ public class OperationSelectionTestCase {
     @Test
     public void testServiceWithOnlyOneOperationScaOperationNameMatches() throws Exception {
         // Create the operation we should match
-        final Operation expectedOperation = new OperationImpl("myOperation");
+        final Operation expectedOperation = newOperation("myOperation");
 
         // Create the list of operations for the Service
         final List<Operation> operations = new ArrayList<Operation>();
@@ -99,7 +99,7 @@ public class OperationSelectionTestCase {
     @Test
     public void testServiceWithOnlyOneOperationScaOperationNameDifferent() throws Exception {
         // Create the operation we should match
-        final Operation expectedOperation = new OperationImpl("myOperation");
+        final Operation expectedOperation = newOperation("myOperation");
 
         // Create the list of operations for the Service
         final List<Operation> operations = new ArrayList<Operation>();
@@ -125,7 +125,7 @@ public class OperationSelectionTestCase {
         // Create the list of operations for the Service
         final List<Operation> operations = new ArrayList<Operation>();
         for (int i = 0; i < 5; i++) {
-            operations.add(new OperationImpl("operation" + i));
+            operations.add(newOperation("operation" + i));
         }
 
         // Now try and invoke each operation
@@ -151,11 +151,11 @@ public class OperationSelectionTestCase {
         // Create the list of operations for the Service
         final List<Operation> operations = new ArrayList<Operation>();
         for (int i = 0; i < 5; i++) {
-            operations.add(new OperationImpl("operation" + i));
+            operations.add(newOperation("operation" + i));
         }
 
         // Add the onMessage operation to the Service Contract
-        final Operation onMessageOperation = new OperationImpl("onMessage");
+        final Operation onMessageOperation = newOperation("onMessage");
         operations.add(onMessageOperation);
 
         // The name of the Operation in the JMS Message is not set so it will attempt
@@ -226,5 +226,11 @@ public class OperationSelectionTestCase {
         // EasyMock.verify(service);
         // EasyMock.verify(requestJMSMsg);
         // EasyMock.verify(runtimeWire);
+    }
+
+    private static Operation newOperation(String name) {
+        Operation operation = new OperationImpl();
+        operation.setName(name);
+        return operation;
     }
 }

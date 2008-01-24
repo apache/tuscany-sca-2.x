@@ -43,6 +43,8 @@ import org.apache.tuscany.sca.implementation.resource.ResourceImplementationFact
 
 /**
  * Implements a STAX artifact processor for resource implementations.
+ *
+ * @version $Rev$ $Date$
  */
 public class ResourceImplementationProcessor implements StAXArtifactProcessor<ResourceImplementation> {
     private static final QName IMPLEMENTATION_RESOURCE = new QName(Constants.SCA10_TUSCANY_NS, "implementation.resource");

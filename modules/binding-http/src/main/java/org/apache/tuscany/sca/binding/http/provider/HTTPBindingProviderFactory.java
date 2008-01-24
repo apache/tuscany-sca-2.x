@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.binding.http.provider;
 
-import org.apache.tuscany.sca.binding.http.HTTPResourceBinding;
+import org.apache.tuscany.sca.binding.http.HTTPBinding;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
@@ -34,29 +34,29 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 
 /**
- * Implementation of the Echo binding model.
+ * Factory for HTTP binding providers. 
  */
-public class HTTPResourceBindingProviderFactory implements BindingProviderFactory<HTTPResourceBinding> {
+public class HTTPBindingProviderFactory implements BindingProviderFactory<HTTPBinding> {
 
     private MessageFactory messageFactory;
     private ServletHost servletHost;
     
-    public HTTPResourceBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
+    public HTTPBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
         this.servletHost = servletHosts.getServletHosts().get(0);
         ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         messageFactory = modelFactories.getFactory(MessageFactory.class);
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, HTTPResourceBinding binding) {
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, HTTPBinding binding) {
         return null;
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, HTTPResourceBinding binding) {
-        return new HTTPResourceServiceBindingProvider(component, service, binding, messageFactory, servletHost);
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, HTTPBinding binding) {
+        return new HTTPServiceBindingProvider(component, service, binding, messageFactory, servletHost);
     }
     
-    public Class<HTTPResourceBinding> getModelType() {
-        return HTTPResourceBinding.class;
+    public Class<HTTPBinding> getModelType() {
+        return HTTPBinding.class;
     }
 }
