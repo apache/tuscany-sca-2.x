@@ -19,44 +19,18 @@
 
 package org.apache.tuscany.sca.binding.http.impl;
 
-import org.apache.tuscany.sca.binding.http.HTTPResourceBinding;
-
+import org.apache.tuscany.sca.binding.http.HTTPBinding;
+import org.apache.tuscany.sca.binding.http.HTTPBindingFactory;
 
 /**
- * Implementation of the HTTP resource binding model.
+ * Factory for the HTTP binding model.
+ *
+ * @version $Rev$ $Date$
  */
-class HTTPResourceBindingImpl implements HTTPResourceBinding {
-    
-    private String name;
-    private String uri;
+public class HTTPBindingFactoryImpl implements HTTPBindingFactory {
 
-    public String getName() {
-        return name;
+    public HTTPBinding createHTTPResourceBinding() {
+        return new HTTPBindingImpl();
     }
-
-    public String getURI() {
-        return uri;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setURI(String uri) {
-        this.uri = uri;
-    }
-
-    
-    public boolean isUnresolved() {
-        return false;
-    }
-
-    public void setUnresolved(boolean unresolved) {
-        // The sample binding is always resolved
-    }
-    
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }     
 
 }

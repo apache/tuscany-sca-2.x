@@ -51,29 +51,8 @@ public class OperationImpl implements Operation {
      * @param name
      */
     public OperationImpl() {
-        this(null);
-    }
-
-    /**
-     * @param name
-     */
-    public OperationImpl(String name) {
-        this(name, null, null, null);
-    }
-
-    /**
-     * @param name
-     * @param inputType
-     * @param outputType
-     * @param faultTypes
-     */
-    public OperationImpl(String name, DataType<List<DataType>> inputType, DataType outputType, List<DataType> faultTypes) {
-        super();
-        this.name = name;
-        this.inputType = inputType != null ? inputType : new DataTypeImpl<List<DataType>>("idl:input", Object[].class,
-                                                                                          new ArrayList<DataType>());
-        this.outputType = outputType;
-        this.faultTypes = faultTypes != null ? faultTypes : new ArrayList<DataType>();
+        inputType = new DataTypeImpl<List<DataType>>("idl:input", Object[].class, new ArrayList<DataType>());
+        faultTypes = new ArrayList<DataType>();
     }
 
     public String getName() {

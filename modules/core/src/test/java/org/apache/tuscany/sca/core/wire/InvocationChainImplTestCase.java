@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.core.wire;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.core.invocation.InvocationChainImpl;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
@@ -33,7 +34,7 @@ import org.apache.tuscany.sca.invocation.Message;
 public class InvocationChainImplTestCase extends TestCase {
 
     public void testInsertAtEnd() throws Exception {
-        InvocationChain chain = new InvocationChainImpl(new OperationImpl("foo"));
+        InvocationChain chain = new InvocationChainImpl(newOperation("foo"));
         Interceptor inter2 = new MockInterceptor();
         Interceptor inter1 = new MockInterceptor();
         chain.addInterceptor(inter1);
@@ -63,4 +64,9 @@ public class InvocationChainImplTestCase extends TestCase {
 
     }
 
+    private static Operation newOperation(String name) {
+        Operation operation = new OperationImpl();
+        operation.setName(name);
+        return operation;
+    }
 }

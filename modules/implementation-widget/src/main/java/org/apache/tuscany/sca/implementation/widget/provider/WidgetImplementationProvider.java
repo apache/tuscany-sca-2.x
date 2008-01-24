@@ -18,17 +18,12 @@
  */
 package org.apache.tuscany.sca.implementation.widget.provider;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.implementation.widget.WidgetImplementation;
-import org.apache.tuscany.sca.implementation.widget.WidgetComponentServlet;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.osoa.sca.ServiceRuntimeException;
 
 
 /**
@@ -37,21 +32,17 @@ import org.osoa.sca.ServiceRuntimeException;
 class WidgetImplementationProvider implements ImplementationProvider {
     private RuntimeComponent component;
     private WidgetImplementation implementation;
-    private ServletHost servletHost;
-    private String servletMapping;
 
     /**
      * Constructs a new resource implementation provider.
      */
-    WidgetImplementationProvider(RuntimeComponent component, WidgetImplementation implementation, ServletHost servletHost) {
+    WidgetImplementationProvider(RuntimeComponent component, WidgetImplementation implementation) {
         this.component = component;
         this.implementation = implementation;
-        
-        this.servletHost = servletHost;
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
-        WidgetImplementationInvoker invoker = new WidgetImplementationInvoker(implementation.getLocationURL());
+        WidgetImplementationInvoker invoker = new WidgetImplementationInvoker(component, implementation.getLocationURL().toString());
         return invoker;
     }
     
@@ -60,32 +51,9 @@ class WidgetImplementationProvider implements ImplementationProvider {
     }
 
     public void start() {
-
-        // Determine the widget URI
-        String widgetURI = null;
-        for (ComponentService componentService: component.getServices()) {
-            if (componentService.getName().equals("Widget")) {
-                if (componentService.getBindings().size() != 0) {
-                    widgetURI = componentService.getBindings().get(0).getURI();
-                }
-                break;
-            }
-        }
-        if (widgetURI == null) {
-            throw new ServiceRuntimeException("Could not find Widget service");
-        }
-        
-        // Register the widget's ComponentServlet under the same URI as the widget
-        String widgetArtifact = implementation.getLocation();
-        widgetArtifact = widgetArtifact.substring(0, widgetArtifact.lastIndexOf('.'));
-        widgetArtifact = widgetArtifact.substring(widgetArtifact.lastIndexOf('/') + 1);
-        servletMapping = widgetURI + "/" + widgetArtifact + ".js";
-        WidgetComponentServlet widgetComponentServlet = new WidgetComponentServlet(component, servletMapping);
-        servletHost.addServletMapping(servletMapping, widgetComponentServlet);        
     }
 
     public void stop() {
-        servletHost.removeServletMapping(servletMapping);
     }
 
 }

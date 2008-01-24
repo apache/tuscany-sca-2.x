@@ -17,18 +17,15 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.resource;
+package org.apache.tuscany.sca.binding.http;
 
-import java.io.InputStream;
+import org.apache.tuscany.sca.assembly.Binding;
 
-import org.apache.tuscany.sca.implementation.data.collection.Collection;
 
 /**
- * The service interface of resource implementations. This is not an API for application
- * developers. Application developers should use the data collection API to invoke
- * resource components.
+ * HTTP binding model.
  * 
- * @version $Rev: 548609 $ $Date: 2007-06-18 23:31:03 -0700 (Mon, 18 Jun 2007) $
- */
-public interface Resource extends Collection<String, InputStream> {
+ * @version $Rev$ $Date$
+*/
+public interface HTTPBinding extends Binding {
 }

@@ -37,6 +37,8 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 /**
  * The model representing a resource implementation in an SCA assembly model.
+ *
+ * @version $Rev$ $Date$
  */
 class ResourceImplementationImpl implements ResourceImplementation {
 

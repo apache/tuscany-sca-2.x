@@ -61,7 +61,7 @@ public class JavaInterfaceUtilTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        Operation operation = new OperationImpl("foo");
+        Operation operation = newOperation("foo");
         List<DataType> types = new ArrayList<DataType>();
         DataType<List<DataType>> inputType = new DataTypeImpl<List<DataType>>(Object[].class, types);
         operation.setInputType(inputType);
@@ -73,7 +73,7 @@ public class JavaInterfaceUtilTestCase extends TestCase {
         inputType = new DataTypeImpl<List<DataType>>(Object[].class, types);
         DataType type = new DataTypeImpl<Class>(String.class, Object.class);
         types.add(type);
-        operation = new OperationImpl("foo");
+        operation = newOperation("foo");
         operation.setInputType(inputType);
         operations.add(operation);
 
@@ -83,7 +83,7 @@ public class JavaInterfaceUtilTestCase extends TestCase {
         types.add(type);
         types.add(type2);
         inputType = new DataTypeImpl<List<DataType>>(Object[].class, types);
-        operation = new OperationImpl("foo");
+        operation = newOperation("foo");
         operation.setInputType(inputType);
         operations.add(operation);
 
@@ -91,7 +91,7 @@ public class JavaInterfaceUtilTestCase extends TestCase {
         type = new DataTypeImpl<Class>(Integer.class, Object.class);
         types.add(type);
         inputType = new DataTypeImpl<List<DataType>>(Object[].class, types);
-        operation = new OperationImpl("foo");
+        operation = newOperation("foo");
         operation.setInputType(inputType);
         operations.add(operation);
 
@@ -99,7 +99,7 @@ public class JavaInterfaceUtilTestCase extends TestCase {
         type = new DataTypeImpl<Class>(Integer.TYPE, Object.class);
         types.add(type);
         inputType = new DataTypeImpl<List<DataType>>(Object[].class, types);
-        operation = new OperationImpl("foo");
+        operation = newOperation("foo");
         operation.setInputType(inputType);
         operations.add(operation);
 
@@ -111,5 +111,11 @@ public class JavaInterfaceUtilTestCase extends TestCase {
         void foo(String foo);
 
         void foo(int b);
+    }
+
+    private static Operation newOperation(String name) {
+        Operation operation = new OperationImpl();
+        operation.setName(name);
+        return operation;
     }
 }

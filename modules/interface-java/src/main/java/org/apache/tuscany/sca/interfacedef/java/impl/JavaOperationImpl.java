@@ -17,13 +17,28 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.http;
+package org.apache.tuscany.sca.interfacedef.java.impl;
 
-import org.apache.tuscany.sca.assembly.Binding;
+import java.lang.reflect.Method;
 
+import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 
 /**
- * HTTP resource binding model.
+ * Represents a Java operation. 
+ *
+ * @version $Rev$ $Date$
  */
-public interface HTTPResourceBinding extends Binding {
+public class JavaOperationImpl extends OperationImpl implements JavaOperation {
+    
+    private Method method;
+
+    public Method getJavaMethod() {
+        return method;
+    }
+
+    public void setJavaMethod(Method method) {
+        this.method = method;
+    }
+
 }

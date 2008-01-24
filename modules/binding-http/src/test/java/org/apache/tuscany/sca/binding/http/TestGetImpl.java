@@ -19,20 +19,20 @@
 
 package org.apache.tuscany.sca.binding.http;
 
-import java.net.URL;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 /**
- * The service interface of resource implementations.
- * 
+ * Test service implementation that implements a get method.
+ *
  * @version $Rev$ $Date$
  */
-public interface HTTPResource {
+public class TestGetImpl {
     
-    /**
-     * Returns the resource location URL.
-     * 
-     * @return
-     */
-    public URL getLocationURL();
+    public InputStream get(String id) {
+        
+        return new ByteArrayInputStream("<html><body><p>uh oh</body></html>".getBytes());
+        
+    }
 
 }

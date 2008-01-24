@@ -27,13 +27,13 @@ import java.util.Scanner;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Reference;
 
-public class WidgetImplementationIntrospector {
+class WidgetImplementationIntrospector {
     private static final String WEB_REFERENCE_ANNOTATION = "//@Reference";
     
     private AssemblyFactory assemblyFactory;
     private WidgetImplementation widgetImplementation;
     
-    public WidgetImplementationIntrospector(AssemblyFactory assemblyFactory, WidgetImplementation widgetImplementation) {
+    WidgetImplementationIntrospector(AssemblyFactory assemblyFactory, WidgetImplementation widgetImplementation) {
         this.widgetImplementation = widgetImplementation;
         this.assemblyFactory = assemblyFactory;
     }
@@ -43,7 +43,7 @@ public class WidgetImplementationIntrospector {
      * Introspect the References of a given htmlWidget
      * @return
      */
-    public List<Reference> getReferences() {
+    List<Reference> getReferences() {
         List<Reference> references = new ArrayList<Reference>();
         URL htmlWidget = widgetImplementation.getLocationURL();
         

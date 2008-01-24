@@ -39,9 +39,9 @@ import org.apache.tuscany.sca.interfacedef.InvalidOperationException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.OverloadedOperationException;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
-import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.osoa.sca.annotations.Conversational;
@@ -181,12 +181,14 @@ public class JavaInterfaceIntrospectorImpl {
 
             DataType<List<DataType>> inputType =
                 new DataTypeImpl<List<DataType>>(IDL_INPUT, Object[].class, paramDataTypes);
-            Operation operation = new OperationImpl(name);
+            JavaOperation operation = new JavaOperationImpl();
+            operation.setName(name);
             operation.setInputType(inputType);
             operation.setOutputType(returnDataType);
             operation.setFaultTypes(faultDataTypes);
             operation.setConversationSequence(conversationSequence);
             operation.setNonBlocking(nonBlocking);
+            operation.setJavaMethod(method);
             operations.add(operation);
         }
         return operations;

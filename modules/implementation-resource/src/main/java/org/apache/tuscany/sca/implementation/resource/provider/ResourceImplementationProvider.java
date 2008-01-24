@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.implementation.resource.provider;
 import org.apache.tuscany.sca.implementation.resource.ResourceImplementation;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -40,8 +41,23 @@ class ResourceImplementationProvider implements ImplementationProvider {
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
-        ResourceImplementationInvoker invoker = new ResourceImplementationInvoker(implementation.getLocationURL());
-        return invoker;
+        if ("get".equals(operation.getName())) {
+            
+            // Return an instance of our get resource invoker
+            Invoker invoker = new GetResourceInvoker(implementation.getLocationURL().toString());
+            return invoker;
+            
+        } else {
+            
+            // Return a dummy invoker that returns an "unsupported operation"
+            // exception for now
+            return new Invoker() {
+                public Message invoke(Message msg) {
+                    msg.setFaultBody(new UnsupportedOperationException());
+                    return msg;
+                }
+            };
+        }
     }
     
     public boolean supportsOneWayInvocation() {

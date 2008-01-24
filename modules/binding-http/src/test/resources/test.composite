@@ -18,23 +18,29 @@
     * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	targetNamespace="http://sample/resource"
+	targetNamespace="http://sample/test"
 	xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
-	xmlns:sr="http://sample/resource"
-	name="resource">
+	xmlns:sr="http://sample/test"
+	name="test">
 
-	<!--  This works with port 8080 but we can't test this on the build machine
-	as 8080 is already in use -->
-	<!--
     <component name="ResourceServiceComponent">
-        <implementation.resource location="content"/>
-    </component>
-    -->
-
-    <component name="ResourceServiceComponent2">
         <tuscany:implementation.resource location="content"/>
     	<service name="Resource">
     		<tuscany:binding.http uri="http://localhost:8085/webcontent"/>
+    	</service>
+    </component>
+
+    <component name="HTTPServiceComponent">
+        <implementation.java class="org.apache.tuscany.sca.binding.http.TestServiceImpl"/>
+    	<service name="Servlet">
+    		<tuscany:binding.http uri="http://localhost:8085/httpservice"/>
+    	</service>
+    </component>
+
+    <component name="HTTPGetComponent">
+        <implementation.java class="org.apache.tuscany.sca.binding.http.TestGetImpl"/>
+    	<service name="TestGetImpl">
+    		<tuscany:binding.http uri="http://localhost:8085/httpget"/>
     	</service>
     </component>
 

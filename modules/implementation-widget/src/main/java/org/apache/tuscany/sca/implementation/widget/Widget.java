@@ -19,20 +19,16 @@
 
 package org.apache.tuscany.sca.implementation.widget;
 
-import java.net.URL;
+import java.io.InputStream;
+
+import org.apache.tuscany.sca.implementation.data.collection.Collection;
 
 /**
- * The service interface of resource implementations.
+ * The service interface of widget implementations. This is not an API for application
+ * developers. Application developers should use the data collection API to invoke
+ * widget components.
  * 
  * @version $Rev$ $Date$
  */
-public interface Widget {
-    
-    /**
-     * Returns the resource location URL.
-     * 
-     * @return
-     */
-    public URL getLocationURL();
-
+public interface Widget extends Collection<String, InputStream> {
 }

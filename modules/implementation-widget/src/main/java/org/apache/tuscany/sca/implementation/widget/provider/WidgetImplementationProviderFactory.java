@@ -19,8 +19,6 @@
 package org.apache.tuscany.sca.implementation.widget.provider;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.implementation.widget.WidgetImplementation;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
@@ -31,18 +29,14 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  */
 public class WidgetImplementationProviderFactory implements ImplementationProviderFactory<WidgetImplementation> {
 
-    private ServletHost servletHost;
-    
     /**
      * Constructs a resource implementation.
      */
     public WidgetImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
-        ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
-        this.servletHost = servletHosts.getServletHosts().get(0);
     }
 
     public ImplementationProvider createImplementationProvider(RuntimeComponent component, WidgetImplementation implementation) {
-        return new WidgetImplementationProvider(component, implementation, servletHost);
+        return new WidgetImplementationProvider(component, implementation);
     }
     
     public Class<WidgetImplementation> getModelType() {
