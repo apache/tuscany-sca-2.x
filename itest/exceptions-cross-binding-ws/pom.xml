@@ -210,7 +210,8 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <schemaFile>${basedir}/src/main/resources/wsdl.sdo/StockExceptionTest.wsdl</schemaFile>
+                            <schemaFile>${basedir}/src/main/resources/wsdl/StockExceptionTest.wsdl</schemaFile>
+                            
                             <noNotification>true</noNotification>
                             <noContainer>true</noContainer>
                             <noUnsettable>true</noUnsettable>
@@ -228,7 +229,8 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <wsdlFile>${basedir}/src/main/resources/wsdl.sdo/StockExceptionTest.wsdl</wsdlFile>
+                            <wsdlFile>${basedir}/src/main/resources/wsdl/StockExceptionTest.wsdl</wsdlFile>
+                            <javaPackage>com.example.stock.sdo</javaPackage>
                         </configuration>
                         <goals>
                             <goal>generate</goal>
