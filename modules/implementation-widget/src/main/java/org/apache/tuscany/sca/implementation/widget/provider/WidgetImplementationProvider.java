@@ -31,18 +31,24 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 class WidgetImplementationProvider implements ImplementationProvider {
     private RuntimeComponent component;
-    private WidgetImplementation implementation;
+    private String widgetLocationURL;
+    private String widgetFolderURL;
+    private String widgetName;
 
     /**
      * Constructs a new resource implementation provider.
      */
     WidgetImplementationProvider(RuntimeComponent component, WidgetImplementation implementation) {
         this.component = component;
-        this.implementation = implementation;
+        widgetLocationURL = implementation.getLocationURL().toString();
+        int s = widgetLocationURL.lastIndexOf('/');
+        widgetFolderURL = widgetLocationURL.substring(0, s);
+        widgetName = widgetLocationURL.substring(s +1);
+        widgetName = widgetName.substring(0, widgetName.lastIndexOf('.'));
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
-        WidgetImplementationInvoker invoker = new WidgetImplementationInvoker(component, implementation.getLocationURL().toString());
+        WidgetImplementationInvoker invoker = new WidgetImplementationInvoker(component, widgetName, widgetFolderURL, widgetLocationURL);
         return invoker;
     }
     
