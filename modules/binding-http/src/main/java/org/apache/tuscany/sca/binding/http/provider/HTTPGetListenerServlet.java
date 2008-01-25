@@ -58,7 +58,11 @@ public class HTTPGetListenerServlet extends HttpServlet {
         // Get the request path
         String path = request.getPathInfo();
         if (path == null) {
-            path ="/";
+            
+            // Redirect to a URL ending with / to make relative hrefs work
+            // relative to the served resource.
+            response.sendRedirect(request.getRequestURL().append('/').toString());
+            return;
         }
 
         // Invoke the get operation on the service implementation
@@ -81,7 +85,9 @@ public class HTTPGetListenerServlet extends HttpServlet {
                 break;
             os.write(buffer, 0, n);
         }
+        os.flush();
         os.close();
+        
     }
 
 }
