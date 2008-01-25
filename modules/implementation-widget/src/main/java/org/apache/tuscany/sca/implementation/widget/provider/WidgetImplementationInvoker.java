@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.implementation.widget.provider;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -34,7 +35,6 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
-import com.ibm.jvm.util.ByteArrayOutputStream;
 
 /**
  * Implements an invoker for resource component implementations.
