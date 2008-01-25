@@ -41,11 +41,15 @@ import com.ibm.jvm.util.ByteArrayOutputStream;
  */
 class WidgetImplementationInvoker implements Invoker {
     private RuntimeComponent component;
-    private String locationURL;
+    private String widgetName;
+    private String widgetFolderURL;
+    private String widgetLocationURL;
     
-    WidgetImplementationInvoker(RuntimeComponent component, String locationURL) {
+    WidgetImplementationInvoker(RuntimeComponent component, String widgetName, String widgetFolderURL, String widgetLocationURL) {
         this.component = component;
-        this.locationURL = locationURL;
+        this.widgetName = widgetName + ".js";
+        this.widgetFolderURL = widgetFolderURL;
+        this.widgetLocationURL = widgetLocationURL;
     }
     
     public Message invoke(Message msg) {
@@ -54,7 +58,14 @@ class WidgetImplementationInvoker implements Invoker {
         String id = (String)((Object[])msg.getBody())[0];
         try {
             
-            if (id.endsWith(".js")) {
+            if (id.length() == 0) {
+
+                // Return an input stream for the widget resource
+                URL url = new URL(widgetLocationURL);
+                InputStream is = url.openStream();
+                msg.setBody(is);
+                
+            } else if (id.equals(widgetName)) {
                 
                 // Generate Javascript header for use in the Widget
                 InputStream is = generateWidgetCode();
@@ -62,8 +73,9 @@ class WidgetImplementationInvoker implements Invoker {
                 
             } else {
 
-                // Return an input stream for a resource
-                URL url = new URL(locationURL +'/' + id);
+                // Return an input stream for a resource inside the
+                // widget folder
+                URL url = new URL(widgetFolderURL +'/' + id);
                 InputStream is = url.openStream();
                 msg.setBody(is);
             }
