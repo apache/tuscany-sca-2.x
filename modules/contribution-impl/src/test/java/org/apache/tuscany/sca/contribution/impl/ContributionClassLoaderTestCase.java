@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
+import org.apache.tuscany.sca.contribution.impl.DefaultContributionFactory;
 import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.java.JavaImportExportFactory;
@@ -53,7 +53,7 @@ public class ContributionClassLoaderTestCase  {
     
     @Before
     public void setUp() throws Exception {
-        contribFactory = new ContributionFactoryImpl();
+        contribFactory = new DefaultContributionFactory();
         javaImportExportFactory = new JavaImportExportFactoryImpl();
         namespaceImportExportFactory = new NamespaceImportExportFactoryImpl();
     }

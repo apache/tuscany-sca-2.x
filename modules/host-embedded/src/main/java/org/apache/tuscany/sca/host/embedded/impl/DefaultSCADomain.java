@@ -39,11 +39,10 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
@@ -139,7 +138,7 @@ public class DefaultSCADomain extends SCADomain {
         if (composites != null && composites.length > 0 && composites[0].length() > 0) {
             // Include all specified deployable composites in the SCA domain
             Map<String, Composite> compositeArtifacts = new HashMap<String, Composite>();
-            for (DeployedArtifact artifact : contribution.getArtifacts()) {
+            for (Artifact artifact : contribution.getArtifacts()) {
                 if (artifact.getModel() instanceof Composite) {
                     compositeArtifacts.put(artifact.getURI(), (Composite)artifact.getModel());
                 }
@@ -463,7 +462,7 @@ public class DefaultSCADomain extends SCADomain {
 
     public Set<String> getComponentNames() {
         Set<String> componentNames = new HashSet<String>();
-        for (DeployedArtifact artifact : contribution.getArtifacts()) {
+        for (Artifact artifact : contribution.getArtifacts()) {
             if (artifact.getModel() instanceof Composite) {
                 for (Component component : ((Composite)artifact.getModel()).getComponents()) {
                     componentNames.add(component.getName());
@@ -474,7 +473,7 @@ public class DefaultSCADomain extends SCADomain {
     }
 
     public Component getComponent(String componentName) {
-        for (DeployedArtifact artifact : contribution.getArtifacts()) {
+        for (Artifact artifact : contribution.getArtifacts()) {
             if (artifact.getModel() instanceof Composite) {
                 for (Component component : ((Composite)artifact.getModel()).getComponents()) {
                     if (component.getName().equals(componentName)) {

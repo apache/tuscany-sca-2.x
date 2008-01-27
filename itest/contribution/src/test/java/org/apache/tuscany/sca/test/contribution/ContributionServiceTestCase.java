@@ -30,8 +30,8 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
@@ -159,10 +159,10 @@ public class ContributionServiceTestCase extends TestCase {
         Composite composite1 = (Composite)deployables.get(deployables.size() - 1);
         assertEquals("contributionComposite", composite1.getName().toString());
 
-        DeployedArtifact artifact = null;
+        Artifact artifact = null;
         contribution = contributionService.getContribution(contributionId);
         String id = artifactId.toString();
-        for (DeployedArtifact a : contribution.getArtifacts()) {
+        for (Artifact a : contribution.getArtifacts()) {
             if (id.equals(a.getURI())) {
                 artifact = a;
                 break;

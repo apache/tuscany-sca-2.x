@@ -30,7 +30,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
+import org.apache.tuscany.sca.contribution.impl.DefaultContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -85,7 +85,7 @@ public class ReadTestCase extends TestCase {
 
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
-        CompositeProcessor compositeReader = new CompositeProcessor(new ContributionFactoryImpl(), factory, policyFactory, mapper, staxProcessor);
+        CompositeProcessor compositeReader = new CompositeProcessor(new DefaultContributionFactory(), factory, policyFactory, mapper, staxProcessor);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         assertNotNull(compositeReader.read(reader));
         is.close();
@@ -94,7 +94,7 @@ public class ReadTestCase extends TestCase {
 
     public void testReadCompositeAndWireIt() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
-        CompositeProcessor compositeReader = new CompositeProcessor(new ContributionFactoryImpl(), factory, policyFactory, mapper, staxProcessor);
+        CompositeProcessor compositeReader = new CompositeProcessor(new DefaultContributionFactory(), factory, policyFactory, mapper, staxProcessor);
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         assertNotNull(compositeReader.read(reader));
         is.close();

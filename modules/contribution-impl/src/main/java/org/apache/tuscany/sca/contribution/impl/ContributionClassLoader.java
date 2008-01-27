@@ -34,6 +34,8 @@ import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 
+//FIXME Remove that class, or move it out of this module, the base contribution
+// support should not depend on Java classloaders.
 public class ContributionClassLoader extends URLClassLoader {
     
     private Contribution contribution;

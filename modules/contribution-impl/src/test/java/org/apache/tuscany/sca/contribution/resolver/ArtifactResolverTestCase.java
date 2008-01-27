@@ -21,9 +21,9 @@ package org.apache.tuscany.sca.contribution.resolver;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DeployedArtifact;
-import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
+import org.apache.tuscany.sca.contribution.impl.DefaultContributionFactory;
 import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 
 /**
@@ -39,7 +39,7 @@ public class ArtifactResolverTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         resolver = new ModelResolverImpl(getClass().getClassLoader());
-        factory = new ContributionFactoryImpl();
+        factory = new DefaultContributionFactory();
     }
     
     @Override
@@ -74,12 +74,12 @@ public class ArtifactResolverTestCase extends TestCase {
     }
     
     public void testResolvedArtifact() {
-        DeployedArtifact artifact = factory.createDeployedArtifact();
+        Artifact artifact = factory.createArtifact();
         artifact.setURI("foo/bar");
         resolver.addModel(artifact);
-        DeployedArtifact x = factory.createDeployedArtifact();
+        Artifact x = factory.createArtifact();
         x.setURI("foo/bar");
-        x = resolver.resolveModel(DeployedArtifact.class, x);
+        x = resolver.resolveModel(Artifact.class, x);
         assertTrue(x == artifact);
     }
     

@@ -24,20 +24,6 @@ package org.apache.tuscany.sca.contribution;
  *
  * @version $Rev$ $Date$
  */
+@Deprecated
 public interface DeployedArtifact extends Artifact {
-    
-    /**
-     * Get the assembly model associated with this artifact
-     * 
-     * @return The assembly model
-     */
-    Object getModel();
-    
-    /**
-     * Set the assembly model associated with this artifact
-     * 
-     * @param modelObject The assembly model
-     */
-    void setModel(Object modelObject);
-    
 }

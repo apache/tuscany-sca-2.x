@@ -52,7 +52,6 @@ public class NamespaceImportExportListener implements ContributionListener {
         // Initialize the contribution exports
         for (Export export: contribution.getExports()) {
             export.setModelResolver(contribution.getModelResolver());
-            export.setContribution(contribution);
         }
         
         // Initialize the contribution imports
@@ -76,7 +75,7 @@ public class NamespaceImportExportListener implements ContributionListener {
                                     namespaceImport.setModelResolver(namespaceExport.getModelResolver());
                                     
                                     List<Contribution> exportingContributions = new ArrayList<Contribution>();
-                                    exportingContributions.add(namespaceExport.getContribution());
+                                    exportingContributions.add(targetContribution);
                                     import_.setExportContributions(exportingContributions);
                                     
                                     initialized = true;

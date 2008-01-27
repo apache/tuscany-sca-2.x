@@ -25,52 +25,55 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
- * The representation of a deployed contribution
+ * The representation of an SCA contribution.
  *
  * @version $Rev$ $Date$
  */
 public interface Contribution extends Artifact {
+    
     /**
-     * Default location of contribution metadata in a contribution package
+     * Default location of contribution metadata in an SCA contribution.
      */
     String SCA_CONTRIBUTION_META = "META-INF/sca-contribution.xml";
+    
     /**
-     * default location of a generated contribution metadata in a contribution package
+     * Default location of a generated contribution metadata in an SCA contribution.
      */
     String SCA_CONTRIBUTION_GENERATED_META = "META-INF/sca-contribution-generated.xml";
+    
     /**
-     * Default location of deployables in a contribution
+     * Default location of deployable composites in an SCA contribution.
      */
     String SCA_CONTRIBUTION_DEPLOYABLES = "META-INF/sca-deployables/";
 
     
     /**
-     * Get a list of exports based on the Contribution metadata sidefile
+     * Returns a list of exports based on the contribution metadata.
      * 
-     * @return The list of exported artifacts from this contribution
+     * @return The list of exports in this contribution
      */
     List<Export> getExports();
 
     /**
-     * Get a list of imports based on the Contribution metadata sidefile
+     * Returns a list of imports based on the contribution metadata.
      * 
-     * @return The list of imported artifacts on this contribution
+     * @return The list of imports in this contribution
      */
     List<Import> getImports();
     
     /**
-     * Get a list of deployables for the contribution based on the contribution metadata sidefile 
+     * Returns the list of deployable composites in the contribution.
      * 
      * @return The list of deployable composites
      */
     List<Composite> getDeployables();
 
     /**
-     * Get a list of artifacts from the contribution
+     * Returns the list of artifacts in the contribution.
      * 
-     * @return The list of deployed artifacts for the contribution
+     * @return The list of artifacts in the contribution
      */
-    List<DeployedArtifact> getArtifacts();
+    List<Artifact> getArtifacts();
 
     /**
      * Returns the model resolver for the models representing the artifacts
@@ -92,9 +95,11 @@ public interface Contribution extends Artifact {
      * Returns the classloader used to load classes and resources from
      * this contribution
      * 
+     * FIXME Remove this, the base contribution model should not depend
+     * on Java classloaders. 
+     * 
      * @return The contribution classloader
      */
     ClassLoader getClassLoader();
-    
     
 }

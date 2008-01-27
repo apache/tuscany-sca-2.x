@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.assembly.xml.CompositeModelResolver;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.binding.sca.impl.SCABindingFactoryImpl;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
+import org.apache.tuscany.sca.contribution.impl.DefaultContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -91,7 +91,7 @@ public class SCABindingTestCase {
     public void testBuildModel() {
     	try{
 	        InputStream is = getClass().getResourceAsStream("/Calculator.composite");      
-	        CompositeProcessor compositeReader = new CompositeProcessor(new ContributionFactoryImpl(), assemblyFactory, policyFactory, mapper, staxProcessor);
+	        CompositeProcessor compositeReader = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, mapper, staxProcessor);
 	        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
 	        Composite composite = compositeReader.read(reader);
 	        

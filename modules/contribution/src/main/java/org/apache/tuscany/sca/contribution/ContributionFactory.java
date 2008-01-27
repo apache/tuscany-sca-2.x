@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.contribution;
 
 
 /**
- * Contribution model object factory
+ * Contribution model object factory.
  * 
  * @version $Rev$ $Date$
  */
@@ -38,5 +38,13 @@ public interface ContributionFactory {
      * 
      * @return The new deployedArtifact model object
      */
+    @Deprecated
     DeployedArtifact createDeployedArtifact();   
+
+    /**
+     * Create an artifact model object
+     * 
+     * @return The new artifact model object
+     */
+    Artifact createArtifact();   
 }

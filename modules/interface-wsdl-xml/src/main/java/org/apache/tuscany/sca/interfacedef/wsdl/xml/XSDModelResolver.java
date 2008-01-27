@@ -26,8 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
@@ -218,7 +218,7 @@ public class XSDModelResolver implements ModelResolver {
                 if (schemaLocation.startsWith("/")) {
                     // The URI is relative to the contribution
                     String uri = schemaLocation.substring(1);
-                    for (DeployedArtifact a : contribution.getArtifacts()) {
+                    for (Artifact a : contribution.getArtifacts()) {
                         if (a.getURI().equals(uri)) {
                             url = new URL(a.getLocation());
                             break;

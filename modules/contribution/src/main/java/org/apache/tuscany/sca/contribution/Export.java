@@ -44,19 +44,4 @@ public interface Export {
      */
     void setModelResolver(ModelResolver modelResolver);
     
-
-    /**
-     * Returns the exporting contribution 
-     * 
-     * @return The exporting contribution
-     */
-    Contribution getContribution();
-    
-    /**
-     * Sets the exporting contribution
-     * 
-     * @param contribution
-     */
-    void setContribution(Contribution contribution);
-    
 }

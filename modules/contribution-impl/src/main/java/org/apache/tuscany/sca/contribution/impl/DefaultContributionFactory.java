@@ -19,23 +19,31 @@
 
 package org.apache.tuscany.sca.contribution.impl;
 
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 
 
 /**
- * Contribution model object factory
+ * Default implementation of a contribution model factory.
  * 
  * @version $Rev$ $Date$
  */
-public class ContributionFactoryImpl implements ContributionFactory {
+public class DefaultContributionFactory implements ContributionFactory {
     
     public Contribution createContribution() {
         return new ContributionImpl();
     }
 
+    @Deprecated
     public DeployedArtifact createDeployedArtifact() {
+        class DeployedArtifactImpl extends ArtifactImpl implements DeployedArtifact {
+        }
         return new DeployedArtifactImpl();
+    }
+
+    public Artifact createArtifact() {
+        return new ArtifactImpl();
     }
 }

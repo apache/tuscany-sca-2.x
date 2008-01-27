@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.contribution.namespace.impl;
 
-import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceExport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
@@ -29,12 +28,8 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
  * @version $Rev$ $Date$
  */
 public class NamespaceExportImpl implements NamespaceExport {
-    /**
-     * The namespace to be exported
-     */
     private String namespace; 
     private ModelResolver modelResolver;
-    private Contribution contribution;
     
     protected NamespaceExportImpl() {
         super();
@@ -56,11 +51,4 @@ public class NamespaceExportImpl implements NamespaceExport {
         this.modelResolver = modelResolver;
     }
     
-    public Contribution getContribution() {
-        return contribution;
-    }
-
-    public void setContribution(Contribution contribution) {
-        this.contribution = contribution;
-    }
 }

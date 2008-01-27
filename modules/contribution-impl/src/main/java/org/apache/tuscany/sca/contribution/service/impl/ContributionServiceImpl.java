@@ -32,9 +32,9 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -198,7 +198,7 @@ public class ContributionServiceImpl implements ContributionService {
      * Add a composite model to the contribution
      */
     public void addDeploymentComposite(Contribution contribution, Composite composite) throws ContributionException {
-        DeployedArtifact artifact = this.contributionFactory.createDeployedArtifact();
+        Artifact artifact = this.contributionFactory.createArtifact();
         artifact.setURI(composite.getURI());
         artifact.setModel(composite);
 
@@ -335,7 +335,7 @@ public class ContributionServiceImpl implements ContributionService {
         // Add all composites under META-INF/sca-deployables to the
         // list of deployables
         String prefix = Contribution.SCA_CONTRIBUTION_DEPLOYABLES;
-        for (DeployedArtifact artifact : contribution.getArtifacts()) {
+        for (Artifact artifact : contribution.getArtifacts()) {
             if (artifact.getModel() instanceof Composite) {
                 if (artifact.getURI().startsWith(prefix)) {
                     Composite composite = (Composite)artifact.getModel();
@@ -370,7 +370,7 @@ public class ContributionServiceImpl implements ContributionService {
             URL artifactURL = packageProcessor.getArtifactURL(new URL(contribution.getLocation()), a);
 
             // Add the deployed artifact model to the resolver
-            DeployedArtifact artifact = this.contributionFactory.createDeployedArtifact();
+            Artifact artifact = this.contributionFactory.createArtifact();
             artifact.setURI(a.toString());
             artifact.setLocation(artifactURL.toString());
             contribution.getArtifacts().add(artifact);
@@ -400,10 +400,10 @@ public class ContributionServiceImpl implements ContributionService {
      */
     @SuppressWarnings("unchecked")
     private void processResolvePhase(Contribution contribution) throws ContributionException {
-        List<DeployedArtifact> composites = new ArrayList<DeployedArtifact>();
+        List<Artifact> composites = new ArrayList<Artifact>();
 
         // for each artifact that was processed on the contribution
-        for (DeployedArtifact artifact : contribution.getArtifacts()) {
+        for (Artifact artifact : contribution.getArtifacts()) {
             //leave the composites to be resolved at the end
             if (artifact.getURI().endsWith(".composite")) {
                 composites.add(artifact);
@@ -416,7 +416,7 @@ public class ContributionServiceImpl implements ContributionService {
         }
 
         //process each composite file
-        for (DeployedArtifact artifact : composites) {
+        for (Artifact artifact : composites) {
             // resolve the model object
             if (artifact.getModel() != null) {
                 // System.out.println("Processing Resolve Phase : " + artifact.getURI());

@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.node.impl;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URI;
@@ -34,24 +33,20 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.DomainBuilder;
-import org.apache.tuscany.sca.assembly.builder.impl.DomainWireBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -62,7 +57,6 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter.Base64Binary;
 import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
@@ -327,7 +321,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             contributions.put(contributionURI, contribution);
                 
             // remember all the composites that have been found
-            for (DeployedArtifact artifact : contribution.getArtifacts()) {
+            for (Artifact artifact : contribution.getArtifacts()) {
                 if (artifact.getModel() instanceof Composite) {
                     Composite composite = (Composite)artifact.getModel();
                     composites.put(composite.getName(), composite);
@@ -359,7 +353,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             Contribution contribution = contributions.get(contributionURI);
             
             // remove the local record of composites associated with this contribution
-            for (DeployedArtifact artifact : contribution.getArtifacts()) {
+            for (Artifact artifact : contribution.getArtifacts()) {
                 if (artifact.getModel() instanceof Composite) {
                     Composite composite = (Composite)artifact.getModel();
                     composites.remove(composite.getName());

@@ -51,8 +51,8 @@ import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -786,11 +786,11 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             
             for (ComponentProperty componentProperty : component.getProperties()) {
                 if (componentProperty.getFile() != null) {
-                    DeployedArtifact deployedArtifact = contributionFactory.createDeployedArtifact();
-                    deployedArtifact.setURI(componentProperty.getFile());
-                    deployedArtifact = resolver.resolveModel(DeployedArtifact.class, deployedArtifact);
-                    if (deployedArtifact.getLocation() != null) {
-                        componentProperty.setFile(deployedArtifact.getLocation());
+                    Artifact artifact = contributionFactory.createArtifact();
+                    artifact.setURI(componentProperty.getFile());
+                    artifact = resolver.resolveModel(Artifact.class, artifact);
+                    if (artifact.getLocation() != null) {
+                        componentProperty.setFile(artifact.getLocation());
                     }
                 }
             }

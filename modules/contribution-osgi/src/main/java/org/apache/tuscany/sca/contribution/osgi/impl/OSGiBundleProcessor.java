@@ -27,8 +27,8 @@ import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.osgi.BundleReference;
 import org.apache.tuscany.sca.osgi.runtime.OSGiRuntime;
 
@@ -86,8 +86,8 @@ public class OSGiBundleProcessor {
         if (osgiRuntime == null)
             return null;
 
-        List<DeployedArtifact> artifacts = contribution.getArtifacts();
-        for (DeployedArtifact a : artifacts) {
+        List<Artifact> artifacts = contribution.getArtifacts();
+        for (Artifact a : artifacts) {
             if (a.getURI().endsWith(".jar")) {
 
                 InputStream stream;

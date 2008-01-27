@@ -22,9 +22,10 @@ package org.apache.tuscany.sca.interfacedef.wsdl;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.impl.ContributionImpl;
+import org.apache.tuscany.sca.contribution.impl.DefaultContributionFactory;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -47,8 +48,8 @@ public abstract class AbstractWSDLTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        Contribution contribution = new ContributionImpl() {
-        };
+        ContributionFactory contributionFactory = new DefaultContributionFactory();
+        Contribution contribution = contributionFactory.createContribution();
         ModelResolverExtensionPoint modelResolvers = new DefaultModelResolverExtensionPoint();
         ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
         wsdlFactory = new DefaultWSDLFactory();
