@@ -44,9 +44,9 @@ import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
@@ -154,12 +154,12 @@ public class WSDLModelResolver implements ModelResolver {
                     // The URI is relative to the contribution
                     String uri = importLocation.substring(1);
 
-                    DeployedArtifact proxyArtifact = contributionFactory.createDeployedArtifact();
+                    Artifact proxyArtifact = contributionFactory.createArtifact();
                     proxyArtifact.setURI(uri);
 
                     //use contribution resolution (this supports import/export)
-                    DeployedArtifact importedArtifact =
-                        contribution.getModelResolver().resolveModel(DeployedArtifact.class, proxyArtifact);
+                    Artifact importedArtifact =
+                        contribution.getModelResolver().resolveModel(Artifact.class, proxyArtifact);
                     if (importedArtifact.getLocation() != null) {
                         //get the artifact URL
                         url = new URL(importedArtifact.getLocation());

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.Export;
@@ -34,20 +35,64 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
  *
  * @version $Rev$ $Date$
  */
-public class ContributionImpl extends ArtifactImpl implements Contribution {
+class ContributionImpl implements Contribution {
+    private String uri;
+    private String location;
+    private Object model;
     private List<Export> exports = new ArrayList<Export>();
     private List<Import> imports = new ArrayList<Import>();
     private List<Composite> deployables = new ArrayList<Composite>();
+    private List<Artifact> artifacts = new ArrayList<Artifact>();
     private ModelResolver modelResolver;
-    private ContributionClassLoader classLoader;
     
-    /**
-     * A list of artifacts in the contribution
-     */
-    private List<DeployedArtifact> artifacts = new ArrayList<DeployedArtifact>();
+    // FIXME remove this dependency on Java classloaders
+    private ContributionClassLoader classLoader;
 
-    protected ContributionImpl() {
+    ContributionImpl() {
         classLoader = new ContributionClassLoader(this);
+    }
+    
+    public String getLocation() {
+        return this.location;
+    }
+
+    public void setLocation(String location) {
+        String origLocation = location;
+        this.location = location;
+
+        //FIXME remove this code and the dependency on Java classloaders
+        if (origLocation != null)
+            classLoader = new ContributionClassLoader(this);
+        classLoader.setContributionLocation(location);
+    }
+
+    //FIXME Remove dependency on Java classloaders
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public String getURI() {
+        return this.uri;
+    }
+    
+    public void setURI(String uri) {
+        this.uri = uri;
+    }
+
+    public Object getModel() {
+        return model;
+    }
+    
+    public void setModel(Object model) {
+        this.model = model;
+    }
+    
+    public ModelResolver getModelResolver() {
+        return modelResolver;
+    }
+
+    public void setModelResolver(ModelResolver modelResolver) {
+        this.modelResolver = modelResolver;
     }
     
     public List<Export> getExports() {
@@ -62,32 +107,26 @@ public class ContributionImpl extends ArtifactImpl implements Contribution {
         return deployables;
     }
 
-    public List<DeployedArtifact> getArtifacts() {
+    public List<Artifact> getArtifacts() {
         return artifacts;
     }
 
-    public ModelResolver getModelResolver() {
-        return modelResolver;
-    }
-
-    public void setModelResolver(ModelResolver modelResolver) {
-        this.modelResolver = modelResolver;
-    }
-    
-    
-
     @Override
-    public void setLocation(String location) {
-        String origLocation = this.getLocation();
-        super.setLocation(location);
-        
-        if (origLocation != null)
-            classLoader = new ContributionClassLoader(this);
-        classLoader.setContributionLocation(location);
+    public int hashCode() {
+        return uri.hashCode();
     }
-
-    public ClassLoader getClassLoader() {
-        return classLoader;
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        } else {
+            if (obj instanceof Artifact) {
+                return uri.equals(((Artifact)obj).getURI());
+            } else {
+                return false;
+            }
+        }
     }
 
 }

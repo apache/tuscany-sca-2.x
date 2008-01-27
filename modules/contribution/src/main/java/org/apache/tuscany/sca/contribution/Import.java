@@ -51,6 +51,9 @@ public interface Import {
      * Returns the list of exporting contributions that can be used to match 
      * this import.
      * 
+     * FIXME This should be removed, imports and exports should not be
+     * tied together.
+     * 
      * @return List of exporting contributions
      */
     List<Contribution> getExportContributions();
@@ -59,12 +62,19 @@ public interface Import {
      * Sets the list of exporting contributions that can be used to match 
      * this import.
      * 
+     * FIXME This should be removed, imports and exports should not be
+     * tied together.
+     * 
      * @param contributions List of exporting contributions
      */
     void setExportContributions(List<Contribution> contributions);
     
     /**
      * Verify is a specific export is provider of what is being imported
+     * 
+     * FIXME This should be removed, imports and exports should not be
+     * tied together.
+     * 
      * @param export The Exported being verified
      * @return true/false
      */

@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.binding.sca.impl.SCABindingFactoryImpl;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
+import org.apache.tuscany.sca.contribution.impl.DefaultContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -100,7 +100,7 @@ public class OSGiReadImplTestCase extends TestCase {
     }
 
     public void testReadComposite() throws Exception {
-        CompositeProcessor compositeProcessor = new CompositeProcessor(new ContributionFactoryImpl(), assemblyFactory, policyFactory, mapper, staxProcessor);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, mapper, staxProcessor);
         InputStream is = getClass().getClassLoader().getResourceAsStream("osgitest.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);
@@ -112,7 +112,7 @@ public class OSGiReadImplTestCase extends TestCase {
     }
 
     public void testReadAndResolveComposite() throws Exception {
-        CompositeProcessor compositeProcessor = new CompositeProcessor(new ContributionFactoryImpl(), assemblyFactory, policyFactory, mapper, staxProcessor);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, mapper, staxProcessor);
         InputStream is = getClass().getClassLoader().getResourceAsStream("osgitest.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);

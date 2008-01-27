@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.impl.ContributionFactoryImpl;
+import org.apache.tuscany.sca.contribution.impl.DefaultContributionFactory;
 import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionMetadataProcessor;
@@ -65,7 +65,7 @@ public class ContributionMetadataDocumentProcessorTestCase extends TestCase {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(VALID_XML));
 
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        ContributionFactory contributionFactory = new ContributionFactoryImpl();
+        ContributionFactory contributionFactory = new DefaultContributionFactory();
         ContributionMetadataProcessor loader = 
             new ContributionMetadataProcessor(assemblyFactory, contributionFactory, null);
         Contribution contribution = contributionFactory.createContribution();
@@ -78,7 +78,7 @@ public class ContributionMetadataDocumentProcessorTestCase extends TestCase {
     public void testLoadInvalid() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(INVALID_XML));
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        ContributionFactory contributionFactory = new ContributionFactoryImpl();
+        ContributionFactory contributionFactory = new DefaultContributionFactory();
         ContributionMetadataProcessor loader = 
             new ContributionMetadataProcessor(assemblyFactory, contributionFactory, null);
         Contribution contribution = contributionFactory.createContribution();

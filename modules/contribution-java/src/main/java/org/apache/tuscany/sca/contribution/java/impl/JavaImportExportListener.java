@@ -24,9 +24,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -71,20 +71,20 @@ public class JavaImportExportListener implements ContributionListener {
         ModelResolver modelResolver = contribution.getModelResolver();
         
         // Look for META-INF/sca-contribution.xml
-        DeployedArtifact artifact = contributionFactory.createDeployedArtifact();
+        Artifact artifact = contributionFactory.createArtifact();
         artifact.setURI(Contribution.SCA_CONTRIBUTION_META);
-        artifact = modelResolver.resolveModel(DeployedArtifact.class, artifact);
+        artifact = modelResolver.resolveModel(Artifact.class, artifact);
         if (artifact.getLocation() == null) {
 
             // Look for META-INF/sca-contribution-generated.xml
             artifact.setURI(Contribution.SCA_CONTRIBUTION_GENERATED_META);
-            artifact = modelResolver.resolveModel(DeployedArtifact.class, artifact);
+            artifact = modelResolver.resolveModel(Artifact.class, artifact);
             if (artifact.getLocation() == null) {
                 
                 // No contribution metadata file was found, default to export all the
                 // Java packages found in the contribution
                 Set<String> packages = new HashSet<String>();
-                for (DeployedArtifact a: contribution.getArtifacts()) {
+                for (Artifact a: contribution.getArtifacts()) {
                     String uri = a.getURI();
                     if (uri.endsWith(".class")) {
                         uri = uri.substring(0, uri.length() - 6);
@@ -107,7 +107,6 @@ public class JavaImportExportListener implements ContributionListener {
         // Initialize the contribution exports
         for (Export export: contribution.getExports()) {
             export.setModelResolver(contribution.getModelResolver());
-            export.setContribution(contribution);
         }
         
         // Initialize the contribution imports
@@ -130,7 +129,7 @@ public class JavaImportExportListener implements ContributionListener {
                                     javaImport.setModelResolver(javaExport.getModelResolver());
                                     
                                     List<Contribution> exportingContributions = new ArrayList<Contribution>();
-                                    exportingContributions.add(export.getContribution());
+                                    exportingContributions.add(targetContribution);
                                     import_.setExportContributions(exportingContributions);
                                     
                                     initialized = true;

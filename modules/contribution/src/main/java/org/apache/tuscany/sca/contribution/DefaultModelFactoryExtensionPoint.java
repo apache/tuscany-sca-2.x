@@ -35,6 +35,9 @@ public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionP
     
     private HashMap<Class<?>, Object> factories = new HashMap<Class<?>, Object>();
     
+    /**
+     * Constructs a new DefaultModelFactoryExtensionPoint.
+     */
     public DefaultModelFactoryExtensionPoint() {
     }
 
@@ -44,7 +47,7 @@ public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionP
      * @param factory The factory to add
      */
     public void addFactory(Object factory) {
-        Class[] interfaces = factory.getClass().getInterfaces();
+        Class<?>[] interfaces = factory.getClass().getInterfaces();
         if (interfaces.length == 0) {
             Class<?> sc = factory.getClass().getSuperclass();
             if (sc != Object.class) {
@@ -58,12 +61,12 @@ public class DefaultModelFactoryExtensionPoint implements ModelFactoryExtensionP
     }
 
     /**
-     * Remove a model factory extension.
+     * Remove a model factory.
      *  
      * @param factory The factory to remove
      */
     public void removeFactory(Object factory) {
-        Class[] interfaces = factory.getClass().getInterfaces();
+        Class<?>[] interfaces = factory.getClass().getInterfaces();
         if (interfaces.length == 0) {
             Class<?> sc = factory.getClass().getSuperclass();
             if (sc != Object.class) {

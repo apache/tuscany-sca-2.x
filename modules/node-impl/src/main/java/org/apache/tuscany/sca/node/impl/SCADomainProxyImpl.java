@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.contribution.DeployedArtifact;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -50,7 +50,6 @@ import org.apache.tuscany.sca.domain.SCADomainAPIService;
 import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.domain.impl.SCADomainImpl;
 import org.apache.tuscany.sca.domain.impl.SCADummyNodeImpl;
-import org.apache.tuscany.sca.domain.model.CompositeModel;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
@@ -213,7 +212,7 @@ public class SCADomainProxyImpl extends SCADomainImpl {
                 
                 Composite composite = null;
                 
-                for (DeployedArtifact artifact: domainManagementContribution.getArtifacts()) {
+                for (Artifact artifact: domainManagementContribution.getArtifacts()) {
                     if (domainCompositeName.equals(artifact.getURI())) {
                         composite = (Composite)artifact.getModel();
                     }

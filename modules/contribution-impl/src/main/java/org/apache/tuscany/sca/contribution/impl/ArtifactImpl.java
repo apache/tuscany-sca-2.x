@@ -23,19 +23,20 @@ import org.apache.tuscany.sca.contribution.Artifact;
 
 
 /**
- * Base Artifact interface to accomodate common properties between Contribution and Deployed Artifact
+ * Default implementation of the model representing an artifact.
  * 
  * @version $Rev$ $Date$
  */
-public abstract class ArtifactImpl implements Artifact {
+class ArtifactImpl implements Artifact {
     private String uri;
     private String location;
+    private Object model;
 
-    protected ArtifactImpl() {
+    ArtifactImpl() {
     }
     
     public String getLocation() {
-        return this.location;
+        return location;
     }
 
     public void setLocation(String location) {
@@ -43,11 +44,19 @@ public abstract class ArtifactImpl implements Artifact {
     }
     
     public String getURI() {
-        return this.uri;
+        return uri;
     }
     
     public void setURI(String uri) {
         this.uri = uri;
+    }
+    
+    public Object getModel() {
+        return model;
+    }
+    
+    public void setModel(Object model) {
+        this.model = model;
     }
 
     @Override

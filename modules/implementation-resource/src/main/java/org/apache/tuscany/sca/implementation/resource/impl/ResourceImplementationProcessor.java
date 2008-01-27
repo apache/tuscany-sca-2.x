@@ -29,8 +29,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -93,9 +93,9 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
     public void resolve(ResourceImplementation implementation, ModelResolver resolver) throws ContributionResolveException {
         
         // Resolve the resource directory location
-        DeployedArtifact artifact = contributionFactory.createDeployedArtifact();
+        Artifact artifact = contributionFactory.createArtifact();
         artifact.setURI(implementation.getLocation());
-        DeployedArtifact resolved = resolver.resolveModel(DeployedArtifact.class, artifact);
+        Artifact resolved = resolver.resolveModel(Artifact.class, artifact);
         if (resolved.getLocation() != null) {
             try {
                 implementation.setLocationURL(new URL(resolved.getLocation()));

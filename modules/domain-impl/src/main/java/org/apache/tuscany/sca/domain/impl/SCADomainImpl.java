@@ -25,8 +25,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,8 +42,8 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.DomainBuilder;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -216,7 +214,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                 
                 
                 Composite composite = null;
-                for (DeployedArtifact artifact: contribution.getArtifacts()) {
+                for (Artifact artifact: contribution.getArtifacts()) {
                     if (domainCompositeName.equals(artifact.getURI())) {
                         composite = (Composite)artifact.getModel();
                     }
@@ -352,7 +350,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             contributionModel.setContribution(contribution);
             
             // add the composites into the domain model 
-            for (DeployedArtifact artifact : contribution.getArtifacts()) {
+            for (Artifact artifact : contribution.getArtifacts()) {
                 if (artifact.getModel() instanceof Composite) {
                     Composite composite = (Composite)artifact.getModel();
                     CompositeModel compositeModel = domainModelFactory.createComposite();
