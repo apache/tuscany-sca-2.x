@@ -368,7 +368,7 @@
 				<executions>
 					<execution>
 						<id>unpack</id>
-						<phase>test-compile</phase>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>unpack</goal>
 						</goals>
@@ -384,47 +384,6 @@
 								</artifactItem>
 							</artifactItems>
 						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.tuscany.sdo</groupId>
-				<artifactId>tuscany-sdo-plugin</artifactId>
-				<version>1.0-incubating-SNAPSHOT</version>
-				<executions>
-					<execution>
-						<id>generate-bpel-helloworld</id>
-						<phase>generate-sources</phase>
-						<configuration>
-							<schemaFile>${basedir}/src/test/resources/helloworld/helloworld.wsdl</schemaFile>
-							<targetDirectory>${basedir}/target/wsdl2java-source</targetDirectory>
-							<prefix>HelloWorld</prefix>
-							<noNotification>true</noNotification>
-							<noContainer>true</noContainer>
-							<noUnsettable>true</noUnsettable>
-						</configuration>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.tuscany.sca</groupId>
-				<artifactId>tuscany-maven-wsdl2java</artifactId>
-				<version>1.2-incubating-SNAPSHOT</version>
-				<executions>
-					<execution>
-						<configuration>
-							<wsdlFiles>
-								<wsdlFile>
-									<fileName>${basedir}/src/test/resources/helloworld/helloworld.wsdl</fileName>
-								</wsdlFile>
-							</wsdlFiles>
-						</configuration>
-						<goals>
-							<goal>generate</goal>
-						</goals>
 					</execution>
 				</executions>
 			</plugin>

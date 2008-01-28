@@ -23,8 +23,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.transaction.TransactionManager;
 import javax.xml.namespace.QName;
@@ -145,8 +143,8 @@ public class EmbeddedODEServer {
         _bpelServer.setDaoConnectionFactory(_daoCF);
         _bpelServer.setInMemDaoConnectionFactory(new BpelDAOConnectionFactoryImpl(_scheduler));
         // _bpelServer.setEndpointReferenceContext(new EndpointReferenceContextImpl(this));
-         _bpelServer.setMessageExchangeContext(new ODEMessageExchangeContext(this));
-         _bpelServer.setBindingContext(new ODEBindingContext(this));
+        _bpelServer.setMessageExchangeContext(new ODEMessageExchangeContext(this));
+        _bpelServer.setBindingContext(new ODEBindingContext(this));
         _bpelServer.setScheduler(_scheduler);
         if (_config.isDehydrationEnabled()) {
             CountLRUDehydrationPolicy dehy = new CountLRUDehydrationPolicy();
