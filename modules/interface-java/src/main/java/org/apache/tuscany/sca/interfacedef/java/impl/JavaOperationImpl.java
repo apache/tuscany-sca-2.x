@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
  * @version $Rev$ $Date$
  */
 public class JavaOperationImpl extends OperationImpl implements JavaOperation {
-    
+
     private Method method;
 
     public Method getJavaMethod() {
@@ -39,6 +39,35 @@ public class JavaOperationImpl extends OperationImpl implements JavaOperation {
 
     public void setJavaMethod(Method method) {
         this.method = method;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((method == null) ? 0 : method.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final JavaOperationImpl other = (JavaOperationImpl)obj;
+        if (method == null) {
+            if (other.method != null)
+                return false;
+        } else if (!method.equals(other.method))
+            return false;
+        return true;
+    }
+
+    public String toString() {
+        return method == null ? "null" : method.toGenericString();
     }
 
 }

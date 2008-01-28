@@ -44,6 +44,7 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -180,6 +181,15 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
      */
     @SuppressWarnings("unchecked")
     private static boolean match(Operation operation, Method method) {
+        if (!method.getName().equals(operation.getName())) {
+            return false;
+        }
+        if (operation instanceof JavaOperation) {
+            Method m = ((JavaOperation)operation).getJavaMethod();
+            if (method.equals(m)) {
+                return true;
+            }
+        }
         Class<?>[] params = method.getParameterTypes();
         DataType<List<DataType>> inputType = operation.getInputType();
         List<DataType> types = inputType.getLogical();
