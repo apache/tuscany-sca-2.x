@@ -32,11 +32,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.contribution.Artifact;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.ResourceReference;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
@@ -52,9 +53,11 @@ import commonj.sdo.helper.XSDHelper;
  */
 @Deprecated
 public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
+    
+    private ContributionFactory contributionFactory;
 
     public ImportSDOProcessor(ModelFactoryExtensionPoint modelFactories) {
-        super();
+        contributionFactory = modelFactories.getFactory(ContributionFactory.class);
     }
 
     public QName getXMLType() {
@@ -119,20 +122,20 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
         String location = importSDO.getSchemaLocation();
         if (location != null) {
             try {
-                URL wsdlURL = null;
-                ResourceReference reference = new ResourceReference(location);
-                ResourceReference resolved = resolver.resolveModel(ResourceReference.class, reference);
-                if (resolved == null || resolved.isUnresolved()) {
+                Artifact artifact = contributionFactory.createArtifact();
+                artifact.setURI(location);
+                artifact = resolver.resolveModel(Artifact.class, artifact);
+                if (artifact.getLocation() == null) {
                     ContributionResolveException loaderException =
                         new ContributionResolveException("Fail to resolve location: " + location);
                     throw loaderException;
                 }
 
-                wsdlURL = resolved.getResource();
-                InputStream xsdInputStream = wsdlURL.openStream();
+                String wsdlURL = artifact.getLocation();
+                InputStream xsdInputStream = new URL(wsdlURL).openStream();
                 try {
                     XSDHelper xsdHelper = importSDO.getHelperContext().getXSDHelper();
-                    xsdHelper.define(xsdInputStream, wsdlURL.toExternalForm());
+                    xsdHelper.define(xsdInputStream, wsdlURL);
                 } finally {
                     xsdInputStream.close();
                 }

@@ -24,9 +24,8 @@ import java.net.URL;
 /**
  * A resource URL, which should be used to register resources
  * with an ArtifactResolver and resolve these resources later.
- *
- * 
  */
+@Deprecated
 public class ResourceReference {
     
     private URL resourceURL;

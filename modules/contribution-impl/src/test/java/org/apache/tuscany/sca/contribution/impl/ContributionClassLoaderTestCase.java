@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.impl.DefaultContributionFactory;
+import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
 import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.java.JavaImportExportFactory;
@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.contribution.namespace.NamespaceExport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImportExportFactory;
 import org.apache.tuscany.sca.contribution.namespace.impl.NamespaceImportExportFactoryImpl;
+import org.apache.tuscany.sca.contribution.service.impl.ContributionClassLoader;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -47,13 +48,13 @@ import org.junit.Test;
  */
 public class ContributionClassLoaderTestCase  {
     
-    private ContributionFactory contribFactory;
+    private ContributionFactory contributionFactory;
     private JavaImportExportFactory javaImportExportFactory;
     private NamespaceImportExportFactory namespaceImportExportFactory;
     
     @Before
     public void setUp() throws Exception {
-        contribFactory = new DefaultContributionFactory();
+        contributionFactory = new DefaultContributionFactory();
         javaImportExportFactory = new JavaImportExportFactoryImpl();
         namespaceImportExportFactory = new NamespaceImportExportFactoryImpl();
     }
@@ -64,10 +65,11 @@ public class ContributionClassLoaderTestCase  {
     
     private Contribution createContribution(String fileName) throws MalformedURLException {
 
-        Contribution contrib = contribFactory.createContribution();
+        Contribution contrib = contributionFactory.createContribution();
         File contribDir = new File(fileName);        
         contrib.setLocation(contribDir.toURL().toString());
-        
+        //FIXME Remove dependency on classloaders
+        contrib.setClassLoader(new ContributionClassLoader(contrib));
         return contrib;
     }
     

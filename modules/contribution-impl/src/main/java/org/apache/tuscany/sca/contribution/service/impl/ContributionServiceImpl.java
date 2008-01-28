@@ -304,7 +304,9 @@ public class ContributionServiceImpl implements ContributionService {
         contribution.setURI(contributionURI.toString());
         contribution.setLocation(locationURL.toString());
         contribution.setModelResolver(modelResolver);
-
+        //FIXME Remove dependency on classloaders
+        contribution.setClassLoader(new ContributionClassLoader(contribution));
+        
         List<URI> contributionArtifacts = null;
 
         //NOTE: if a contribution is stored on the repository

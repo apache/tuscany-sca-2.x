@@ -30,9 +30,10 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.impl.DefaultContributionFactory;
+import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
 import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
+import org.apache.tuscany.sca.contribution.service.impl.ContributionClassLoader;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionMetadataProcessor;
 
 /**

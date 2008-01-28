@@ -19,13 +19,15 @@
 
 package org.apache.tuscany.sca.contribution;
 
+import org.apache.tuscany.sca.assembly.Base;
+
 
 /**
  * Represents an artifact in an SCA contribution.
  * 
  * @version $Rev$ $Date$
  */
-public interface Artifact {
+public interface Artifact extends Base {
     
     /**
      * Returns the URI that unique identifies the artifact inside the contribution.
@@ -69,5 +71,5 @@ public interface Artifact {
      * @param model The model object
      */
     void setModel(Object model);
-    
+
 }
