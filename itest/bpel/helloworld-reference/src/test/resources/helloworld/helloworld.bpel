@@ -17,32 +17,32 @@
   ~ under the License.
   -->
 <process name="HelloWorld"
-    targetNamespace="http://tuscany.apache.org/implementation/bpel/example/helloworld"
+    targetNamespace="http://helloworld"
     xmlns="http://schemas.xmlsoap.org/ws/2004/03/business-process/"
     xmlns:bpws="http://schemas.xmlsoap.org/ws/2004/03/business-process/"
-    xmlns:tns="http://tuscany.apache.org/implementation/bpel/example/helloworld"    
+    xmlns:tns="http://helloworld"    
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:helloworld="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl"
+    xmlns:helloworld="http://helloworld"
     xmlns:greetings="http://greetings"
     queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"
     expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
 
   <import location="helloworld.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
-     namespace="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl"/>
+     namespace="http://helloworld"/>
 
   <import location="../greetings/greetings.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"
      namespace="http://greetings"/>
 
    <partnerLinks>
       <partnerLink name="helloPartnerLink" partnerLinkType="helloworld:HelloPartnerLinkType" myRole="me" />
-      <partnerLink name="greetingsPartnerLink" partnerLinkType="greetings:GreetingsPartnerLinkType" myRole="processGreetings" initializePartnerRole="yes" />
+      <partnerLink name="greetingsPartnerLink" partnerLinkType="greetings:GreetingsPartnerLinkType" partnerRole="Provider" initializePartnerRole="yes" />
    </partnerLinks>
     
    <variables>
      <variable name="helloMessage" messageType="helloworld:HelloMessage"/>
      <variable name="helloResponse" messageType="helloworld:HelloMessage"/>
      <variable name="greetingsRequest" messageType="greetings:getGreetingsRequest"/>
-     <variable name="greetingsResponse" messageType="helloworld:getGreetingsResponse"/>
+     <variable name="greetingsResponse" messageType="greetings:getGreetingsResponse"/>
    </variables>
 
    <sequence>
@@ -50,14 +50,14 @@
           name="start"
           createInstance="yes"
           operation="hello"
+          variable="helloMessage"
           partnerLink="helloPartnerLink"
-          portType="helloworld:HelloPortType"
-          variable="helloMessage"/>
+          portType="helloworld:HelloWorld" />
 
        <assign name="assignToGreetingsRequest">
           <copy>
               <from>$helloMessage.TestPart</from>
-              <to>$getGreetingsRequest.parameters</to>
+              <to>$greetingsRequest.parameters</to>
           </copy>
        </assign>
 
@@ -70,7 +70,7 @@
 
        <assign name="assignToHelloResponse">
           <copy>
-              <from>$getGreetingsResponse.parameters</from>
+              <from>$greetingsResponse.parameters</from>
               <to>$helloResponse.TestPart</to>
           </copy>
        </assign>
@@ -78,7 +78,7 @@
        <reply name="end"  
               operation="hello"
               partnerLink="helloPartnerLink"
-              portType="helloworld:HelloPortType" 
+              portType="helloworld:HelloWorld" 
               variable="helloResponse"/>
    </sequence>
 </process>

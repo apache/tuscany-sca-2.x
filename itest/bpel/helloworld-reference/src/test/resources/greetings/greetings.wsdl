@@ -76,12 +76,12 @@
     </wsdl:binding>
 
     <wsdl:service name="GreetingsService">
-        <wsdl:port binding="tns:GreetingsSoapBinding" name="GreetingsSoapPort">
+        <wsdl:port name="GreetingsSoapPort" binding="tns:GreetingsSoapBinding">
             <wsdlsoap:address location="http://localhost:8085/GreetingsServiceComponent"/>
         </wsdl:port>
     </wsdl:service>
 
     <plnk:partnerLinkType name="GreetingsPartnerLinkType">
-        <plnk:role name="processGreetings" portType="tns:Greetings"/>
+        <plnk:role name="Provider" portType="tns:Greetings"/>
     </plnk:partnerLinkType>
 </wsdl:definitions>

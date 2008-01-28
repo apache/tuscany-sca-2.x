@@ -19,9 +19,9 @@
   -->
 
 <wsdl:definitions name="helloworld"
-    targetNamespace="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl"
+    targetNamespace="http://helloworld"
     xmlns="http://schemas.xmlsoap.org/wsdl/"
-    xmlns:tns="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl"
+    xmlns:tns="http://helloworld"
     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
     xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -31,7 +31,7 @@
     
     <wsdl:types>
         <schema elementFormDefault="qualified" 
-           targetNamespace="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl" 
+           targetNamespace="http://helloworld" 
            xmlns="http://www.w3.org/2001/XMLSchema">
 
             <element name="hello">
@@ -48,7 +48,7 @@
         <wsdl:part element="tns:hello" name="TestPart"/>
     </wsdl:message>
     
-    <wsdl:portType name="HelloPortType">
+    <wsdl:portType name="HelloWorld">
         <wsdl:operation name="hello">
             <wsdl:input message="tns:HelloMessage" name="TestIn"/>
             <wsdl:output message="tns:HelloMessage" name="TestOut"/>
@@ -56,7 +56,7 @@
     </wsdl:portType>
     
 
-    <wsdl:binding name="HelloSoapBinding" type="tns:HelloPortType">
+    <wsdl:binding name="HelloSoapBinding" type="tns:HelloWorld">
         <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
         <wsdl:operation name="hello">
             <wsdlsoap:operation soapAction=""/>
@@ -69,14 +69,14 @@
         </wsdl:operation>
     </wsdl:binding>    
     
-    <wsdl:service name="HelloService">
-		<wsdl:port name="HelloPort" binding="tns:HelloSoapBinding">
+    <wsdl:service name="HelloWorldService">
+		<wsdl:port name="HelloSoapPort" binding="tns:HelloSoapBinding">
      		<soap:address location="http://localhost:8085/ode/processes/helloWorld"/>
 		</wsdl:port>
     </wsdl:service>
     
    <plnk:partnerLinkType name="HelloPartnerLinkType">
-       <plnk:role name="me" portType="tns:HelloPortType"/>
-       <plnk:role name="you" portType="tns:HelloPortType"/>
+       <plnk:role name="me" portType="tns:HelloWorld"/>
+       <plnk:role name="you" portType="tns:HelloWorld"/>
    </plnk:partnerLinkType>
 </wsdl:definitions>
