@@ -44,8 +44,6 @@ public class ResourceImplementationTestCase extends TestCase {
         scaDomain.close();
     }
     
-    //FIXME Does not work yet as the proxy invocation handler does not handle
-    // generics properly
     public void testResource() throws Exception {
         Resource resource = scaDomain.getService(Resource.class, "ResourceServiceComponent");
         InputStream is = resource.get("test.html");
