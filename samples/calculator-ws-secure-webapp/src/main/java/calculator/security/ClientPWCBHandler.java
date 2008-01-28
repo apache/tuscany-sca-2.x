@@ -37,8 +37,21 @@ public class ClientPWCBHandler implements CallbackHandler {
         	System.out.println("*** Calling Client UserId/Password Handler .... ");
             WSPasswordCallback pwcb = (WSPasswordCallback)callbacks[i];
             System.out.println("User Id = " + pwcb.getIdentifer());
-            pwcb.setPassword("CalculatorUserPasswd");
             System.out.println("Set Password = " + pwcb.getPassword());
+            System.out.println("Usage = " + pwcb.getUsage());
+            if ( pwcb.getUsage() == WSPasswordCallback.USERNAME_TOKEN ) {
+                if ( pwcb.getIdentifer().equals("CalculatorUser")){
+                    pwcb.setPassword("CalculatorUserPasswd");
+                } else {
+                    throw new UnsupportedCallbackException(pwcb, "Authentication Failed : UserId - Password mismatch");
+                }
+            } else if ( pwcb.getUsage() == WSPasswordCallback.SIGNATURE ) {
+                if ( pwcb.getIdentifer().equals("CalculatorUser")) {
+                    pwcb.setPassword("CalculatorUserPasswd");
+                } else {
+                    pwcb.setPassword("CalculatorAdmin");
+                }
+            }
         }
     }
 

@@ -30,7 +30,11 @@
             <binding.ws uri="http://localhost:8080/sample-calculator-ws-secure-webapp/AddServiceComponent"
             			requires="calc:wsAuthentication" />        
         </reference>   
-        <reference name="subtractService" target="SubtractServiceComponent"></reference>
+        <reference name="subtractService">
+        	<interface.java interface="calculator.SubtractService" />        
+            <binding.ws uri="http://localhost:8080/sample-calculator-ws-secure-webapp/SubtractServiceComponent"
+            			requires="calc:wsIntegrity" />
+        </reference>
         <reference name="multiplyService" target="MultiplyServiceComponent"></reference>
         <reference name="divideService" target="DivideServiceComponent"></reference>
     </component>
@@ -45,6 +49,10 @@
 
     <component name="SubtractServiceComponent">
         <implementation.java class="calculator.SubtractServiceImpl"/>
+        <service name="SubtractService">
+             <interface.java interface="calculator.SubtractService" />  
+             <binding.ws requires="integrity"/>
+        </service>
     </component>
 
     <component name="MultiplyServiceComponent">
