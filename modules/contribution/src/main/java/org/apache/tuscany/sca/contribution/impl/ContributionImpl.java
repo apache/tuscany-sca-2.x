@@ -25,7 +25,6 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -35,10 +34,11 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
  *
  * @version $Rev$ $Date$
  */
-class ContributionImpl implements Contribution {
+public class ContributionImpl implements Contribution {
     private String uri;
     private String location;
     private Object model;
+    private boolean unresolved;
     private List<Export> exports = new ArrayList<Export>();
     private List<Import> imports = new ArrayList<Import>();
     private List<Composite> deployables = new ArrayList<Composite>();
@@ -46,10 +46,9 @@ class ContributionImpl implements Contribution {
     private ModelResolver modelResolver;
     
     // FIXME remove this dependency on Java classloaders
-    private ContributionClassLoader classLoader;
+    private ClassLoader classLoader;
 
-    ContributionImpl() {
-        classLoader = new ContributionClassLoader(this);
+    public ContributionImpl() {
     }
     
     public String getLocation() {
@@ -57,20 +56,19 @@ class ContributionImpl implements Contribution {
     }
 
     public void setLocation(String location) {
-        String origLocation = location;
         this.location = location;
-
-        //FIXME remove this code and the dependency on Java classloaders
-        if (origLocation != null)
-            classLoader = new ContributionClassLoader(this);
-        classLoader.setContributionLocation(location);
     }
 
     //FIXME Remove dependency on Java classloaders
     public ClassLoader getClassLoader() {
         return classLoader;
     }
-
+    
+    //FIXME Remove dependency on Java classloaders
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+    
     public String getURI() {
         return this.uri;
     }
@@ -85,6 +83,14 @@ class ContributionImpl implements Contribution {
     
     public void setModel(Object model) {
         this.model = model;
+    }
+    
+    public boolean isUnresolved() {
+        return unresolved;
+    }
+    
+    public void setUnresolved(boolean unresolved) {
+        this.unresolved = unresolved;
     }
     
     public ModelResolver getModelResolver() {

@@ -17,12 +17,10 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.impl;
+package org.apache.tuscany.sca.contribution;
 
-import org.apache.tuscany.sca.contribution.Artifact;
-import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DeployedArtifact;
+import org.apache.tuscany.sca.contribution.impl.ArtifactImpl;
+import org.apache.tuscany.sca.contribution.impl.ContributionImpl;
 
 
 /**

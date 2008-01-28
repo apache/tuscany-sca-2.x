@@ -86,6 +86,8 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
 
                         // Read <contribution>
                         contribution = this.contributionFactory.createContribution();
+                        //FIXME Remove dependency on classloaders
+                        contribution.setClassLoader(new ContributionClassLoader(contribution));
                         
                     } else if (DEPLOYABLE.equals(element)) {
                         

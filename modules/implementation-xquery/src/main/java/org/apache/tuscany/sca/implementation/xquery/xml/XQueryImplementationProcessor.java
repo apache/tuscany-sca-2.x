@@ -27,6 +27,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.contribution.Artifact;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -52,10 +54,12 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
 
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
+    private ContributionFactory contributionFactory;
 
     public XQueryImplementationProcessor(ModelFactoryExtensionPoint modelFactoryExtensionPoint) {
-        this.assemblyFactory = modelFactoryExtensionPoint.getFactory(AssemblyFactory.class);
-        this.javaFactory = modelFactoryExtensionPoint.getFactory(JavaInterfaceFactory.class);
+        assemblyFactory = modelFactoryExtensionPoint.getFactory(AssemblyFactory.class);
+        javaFactory = modelFactoryExtensionPoint.getFactory(JavaInterfaceFactory.class);
+        contributionFactory = modelFactoryExtensionPoint.getFactory(ContributionFactory.class);
     }
 
     public QName getArtifactType() {
@@ -111,13 +115,14 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
      */
     public void resolve(XQueryImplementation xqueryImplementation, ModelResolver resolver)
         throws ContributionResolveException {
-    	
-    	ResourceReference resourceRef = new ResourceReference(xqueryImplementation.getLocation());
-    	resourceRef = resolver.resolveModel(ResourceReference.class, resourceRef);
-    	if (resourceRef.isUnresolved()) {
+
+        Artifact artifact = contributionFactory.createArtifact();
+        artifact.setURI(xqueryImplementation.getLocation());
+    	artifact = resolver.resolveModel(Artifact.class, artifact);
+    	if (artifact.getLocation() == null) {
             throw new ContributionResolveException("Could not locate file: " + xqueryImplementation.getLocation());
         }
-    	xqueryImplementation.setLocationURL(resourceRef.getResource());
+    	xqueryImplementation.setLocationURL(artifact.getLocation());
 
         XQueryIntrospector introspector = new XQueryIntrospector(assemblyFactory, javaFactory);
 

@@ -26,6 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
@@ -68,7 +69,7 @@ public class ImportSDOProcessorTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        loader = new ImportSDOProcessor(null);
+        loader = new ImportSDOProcessor(new DefaultModelFactoryExtensionPoint());
         xmlFactory = XMLInputFactory.newInstance();
     }
 

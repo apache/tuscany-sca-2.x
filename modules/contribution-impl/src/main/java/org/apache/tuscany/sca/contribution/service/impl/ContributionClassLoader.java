@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.impl;
+package org.apache.tuscany.sca.contribution.service.impl;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -54,24 +54,16 @@ public class ContributionClassLoader extends URLClassLoader {
         
         super(new URL[0], Thread.currentThread().getContextClassLoader());
         this.contribution = contribution;
-    }
-
-    
-    /**
-     * Add the URL of the contribution to the classloader search path.
-     * 
-     * @param location Contribution URL
-     */
-    public void setContributionLocation(String location) {
-        
-        try {
-            this.addURL(new URL(contribution.getLocation()));
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+        if (contribution.getLocation() != null) {
+            try {
+                this.addURL(new URL(contribution.getLocation()));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
-    
 
+    
     /* (non-Javadoc)
      * @see java.net.URLClassLoader#findClass(java.lang.String)
      * 

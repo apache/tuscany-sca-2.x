@@ -76,7 +76,8 @@ public class XQueryIntrospector {
         
         String xqExpression = null;
         try {
-            xqExpression = loadXQExpression(xqueryImplementation.getLocationURL());
+            URL url = new URL(xqueryImplementation.getLocationURL());
+            xqExpression = loadXQExpression(url);
         } catch (FileNotFoundException e) {
             throw new ContributionResolveException(e);
         } catch (IOException e) {

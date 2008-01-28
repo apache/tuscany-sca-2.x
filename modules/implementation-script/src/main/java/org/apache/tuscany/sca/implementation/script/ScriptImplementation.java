@@ -18,10 +18,13 @@
  */
 package org.apache.tuscany.sca.implementation.script;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.tuscany.sca.contribution.Artifact;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.ResourceReference;
 import org.apache.tuscany.sca.extension.helper.utils.ResourceHelper;
 
 /**
@@ -77,10 +80,18 @@ public class ScriptImplementation {
     public void resolve(ModelResolver resolver) {
     	
     	if (scriptName != null) {
-    	    ResourceReference resourceRef = new ResourceReference(scriptName);
-    	    resourceRef = resolver.resolveModel(ResourceReference.class, resourceRef);
-    	    if (!resourceRef.isUnresolved())
-    		    scriptURL = resourceRef.getResource();
+    	    //FIXME The contribution factory should be injected
+    	    ContributionFactory contributionFactory = new DefaultContributionFactory();
+            Artifact artifact = contributionFactory.createArtifact();
+            artifact.setURI(scriptName);
+            artifact = resolver.resolveModel(Artifact.class, artifact);
+            if (artifact.getLocation() != null) {
+                try {
+                    scriptURL = new URL(artifact.getLocation());
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
     	}
     }
 }

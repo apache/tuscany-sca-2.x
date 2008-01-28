@@ -27,12 +27,13 @@ import org.apache.tuscany.sca.contribution.Artifact;
  * 
  * @version $Rev$ $Date$
  */
-class ArtifactImpl implements Artifact {
+public class ArtifactImpl implements Artifact {
     private String uri;
     private String location;
     private Object model;
+    private boolean unresolved;
 
-    ArtifactImpl() {
+    public ArtifactImpl() {
     }
     
     public String getLocation() {
@@ -57,6 +58,14 @@ class ArtifactImpl implements Artifact {
     
     public void setModel(Object model) {
         this.model = model;
+    }
+    
+    public boolean isUnresolved() {
+        return unresolved;
+    }
+    
+    public void setUnresolved(boolean unresolved) {
+        this.unresolved = unresolved;
     }
 
     @Override

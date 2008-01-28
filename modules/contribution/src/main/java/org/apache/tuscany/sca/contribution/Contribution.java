@@ -102,4 +102,15 @@ public interface Contribution extends Artifact {
      */
     ClassLoader getClassLoader();
     
+    /**
+     * Sets the classloader used to load classes and resources from
+     * this contribution
+     * 
+     * FIXME Remove this, the base contribution model should not depend
+     * on Java classloaders. 
+     * 
+     * @param classLoader the contribution class loader
+     */
+    void setClassLoader(ClassLoader classLoader);
+    
 }
