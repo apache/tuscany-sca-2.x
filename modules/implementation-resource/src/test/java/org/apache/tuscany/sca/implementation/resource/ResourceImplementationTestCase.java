@@ -26,7 +26,6 @@ import java.io.InputStreamReader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.implementation.data.collection.Collection;
 
 /**
  * @version $Rev$ $Date$
@@ -48,10 +47,10 @@ public class ResourceImplementationTestCase extends TestCase {
     //FIXME Does not work yet as the proxy invocation handler does not handle
     // generics properly
     public void testResource() throws Exception {
-//        Resource resource = scaDomain.getService(Resource.class, "ResourceServiceComponent");
-//        InputStream is = resource.get("test.html");
-//        String document = read(is);
-//        assertTrue(document.indexOf("<body><p>hello</body>") != -1);
+        Resource resource = scaDomain.getService(Resource.class, "ResourceServiceComponent");
+        InputStream is = resource.get("test.html");
+        String document = read(is);
+        assertTrue(document.indexOf("<body><p>hello</body>") != -1);
     }
 
     /**
