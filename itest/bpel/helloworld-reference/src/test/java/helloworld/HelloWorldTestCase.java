@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.host.embedded.SCATestCaseRunner;
 public class HelloWorldTestCase extends TestCase {
     private SCADomain scaDomain;
     
-    private SCATestCaseRunner server;
+    //private SCATestCaseRunner server;
     
     /**
      * @throws java.lang.Exception
@@ -42,8 +42,8 @@ public class HelloWorldTestCase extends TestCase {
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("helloworld/helloworld.composite");
         
-        server =  new SCATestCaseRunner(GreetingsTestServer.class);
-        server.before();
+        //server =  new SCATestCaseRunner(GreetingsTestServer.class);
+        //server.before();
     }
 
     /**
@@ -51,7 +51,7 @@ public class HelloWorldTestCase extends TestCase {
      */
     @Override
     protected void tearDown() throws Exception {
-        server.after();
+        //server.after();
         scaDomain.close();
     }
     

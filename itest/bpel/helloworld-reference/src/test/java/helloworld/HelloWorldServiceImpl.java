@@ -27,7 +27,7 @@ import org.osoa.sca.annotations.Reference;
  */
 public class HelloWorldServiceImpl implements HelloWorldService {
    
-    GreetingsService greetingsService;
+    protected GreetingsService greetingsService;
 
     public GreetingsService getGreetingsService() {
         System.out.println("Got Injected greetingsService");

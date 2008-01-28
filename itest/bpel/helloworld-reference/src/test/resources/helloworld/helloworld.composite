@@ -19,7 +19,7 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	targetNamespace="http://bpel"
-    xmlns:hns="http://tuscany.apache.org/implementation/bpel/example/helloworld"
+    xmlns:hns="http://helloworld"
     name="helloworld">
     
     <!-- component name="BPELHelloWorldServiceComponent">
@@ -27,9 +27,24 @@
     </component -->
     
     <component name="HelloWorldService">
+    	<implementation.bpel process="hns:HelloWorld"/>
+    	<reference name="greetingsService" target="GreetingsServiceComponent"/>
+    </component>
+    
+    <component name="GreetingsServiceComponent">
+        <implementation.java class="greetings.GreetingsServiceImpl" />
+	    <service name="GreetingsService">
+	    	<interface.java interface="greetings.GreetingsService" />
+	    </service>
+    </component>
+        
+    <!-- Simple ws-reference -->
+    <!--   
+    <component name="HelloWorldService">
     	<implementation.java class="helloworld.HelloWorldServiceImpl"/>
     	<reference name="greetingsService">
     		<binding.ws uri="http://localhost:8085/GreetingsService"/>
     	</reference>
     </component>
+    -->
 </composite>
