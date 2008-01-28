@@ -53,6 +53,13 @@
  			 </description>
  </sca:intent>
  
+ <sca:intent name="calc:wsIntegrity" 
+ 			 constrains="sca:binding.ws">
+ 			 <description>
+ 			 	Protect messages from unauthorized reading or modification
+ 			 </description>
+ </sca:intent>
+ 
  <!-- WS Security POLICY SETS -->
   <sca:policySet name="calc:wsAuthenticationPolicy"
  	provides="authentication"
@@ -81,6 +88,192 @@
                </action>
     	</parameter>
  	</tuscany:wsConfigParam>
+ </sca:policySet>
+ 
+ <!-- sca:policySet name="wsIntegrityPolicy"
+ 	provides="integrity"
+ 	appliesTo="sca:binding.ws">
+ 	<tuscany:wsConfigParam>
+ 		<parameter name="InflowSecurity">
+		    <action>
+		        <items>UsernameToken Timestamp Signature</items>
+		        <signaturePropFile>security.properties</signaturePropFile>
+		        <passwordCallbackClass>calculator.security.ServerPWCBHandler</passwordCallbackClass>
+		    </action>
+		</parameter>
+ 		<parameter name="OutflowSecurity">
+      		<action>
+        		<items>Timestamp Signature</items>
+        		<user>CalculatorAdmin</user>
+        		<signaturePropFile>security.properties</signaturePropFile>
+        		<passwordCallbackClass>calculator.security.ServerPWCBHandler</passwordCallbackClass>
+        		<signatureKeyIdentifier>DirectReference</signatureKeyIdentifier>
+      		</action>
+    	</parameter>
+ 	</tuscany:wsConfigParam>
+ </sca:policySet>
+ 
+ <sca:policySet name="wsClientIntegrityPolicy"
+ 	provides="calc:wsIntegrity"
+ 	appliesTo="sca:binding.ws">
+ 	<tuscany:wsConfigParam>
+ 		<parameter name="InflowSecurity">
+		    <action>
+		        <items>Timestamp Signature</items>
+		        <signaturePropFile>security.properties</signaturePropFile>
+		    </action>
+		</parameter>
+ 		<parameter name="OutflowSecurity">
+      		<action>
+        		<items>UsernameToken Timestamp Signature</items>
+        		<user>CalculatorUser</user>
+        		<passwordType>PasswordText</passwordType>
+        		<signaturePropFile>security.properties</signaturePropFile>
+        		<passwordCallbackClass>calculator.security.ClientPWCBHandler</passwordCallbackClass>
+        		<signatureKeyIdentifier>DirectReference</signatureKeyIdentifier>
+      		</action>
+    	</parameter>
+ 	</tuscany:wsConfigParam>
+ </sca:policySet-->
+ 
+ <sca:policySet name="tuscany:wsSecurityPolicyForIntegrity"
+ 	provides="sca:integrity"
+ 	appliesTo="sca:binding.ws">
+ 	<wsp:Policy wsu:Id="SignOnly" 
+ 		xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
+ 		xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:AsymmetricBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:InitiatorToken>
+							<wsp:Policy>
+								<sp:X509Token sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+									<wsp:Policy>
+										<sp:WssX509V3Token10/>
+									</wsp:Policy>
+								</sp:X509Token>
+							</wsp:Policy>
+						</sp:InitiatorToken>
+						<sp:RecipientToken>
+							<wsp:Policy>
+								<sp:X509Token sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/Never">
+									<wsp:Policy>
+										<sp:WssX509V3Token10/>
+									</wsp:Policy>
+								</sp:X509Token>
+							</wsp:Policy>
+						</sp:RecipientToken>
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<sp:TripleDesRsa15/>
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Strict/>
+							</wsp:Policy>
+						</sp:Layout>
+						<sp:IncludeTimestamp/>
+						<sp:OnlySignEntireHeadersAndBody/>
+					</wsp:Policy>
+				</sp:AsymmetricBinding>
+				<sp:Wss10 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:MustSupportRefKeyIdentifier/>
+						<sp:MustSupportRefIssuerSerial/>
+					</wsp:Policy>
+				</sp:Wss10>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+				</sp:SignedParts>
+	
+				<ramp:RampartConfig xmlns:ramp="http://ws.apache.org/rampart/policy"> 
+					<ramp:user>CalculatorAdmin</ramp:user>
+					<ramp:encryptionUser>CalculatorAdmin</ramp:encryptionUser>
+					<ramp:passwordCallbackClass>calculator.security.ServerPWCBHandler</ramp:passwordCallbackClass>
+					
+					<ramp:signatureCrypto>
+						<ramp:crypto provider="org.apache.ws.security.components.crypto.Merlin">
+							<ramp:property name="org.apache.ws.security.crypto.merlin.keystore.type">JKS</ramp:property>
+							<ramp:property name="org.apache.ws.security.crypto.merlin.file">calculatorKeys.jks</ramp:property>
+							<ramp:property name="org.apache.ws.security.crypto.merlin.keystore.password">CalculatorAdmin</ramp:property>
+						</ramp:crypto>
+					</ramp:signatureCrypto>
+				</ramp:RampartConfig>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+ </sca:policySet>
+ 
+ <sca:policySet name="tuscany:wsSecurityPolicyForClientIntegrity"
+ 	provides="calc:wsIntegrity"
+ 	appliesTo="sca:binding.ws">
+ 	<wsp:Policy wsu:Id="SignOnly" 
+ 		xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
+ 		xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:AsymmetricBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:InitiatorToken>
+							<wsp:Policy>
+								<sp:X509Token sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+									<wsp:Policy>
+										<sp:WssX509V3Token10/>
+									</wsp:Policy>
+								</sp:X509Token>
+							</wsp:Policy>
+						</sp:InitiatorToken>
+						<sp:RecipientToken>
+							<wsp:Policy>
+								<sp:X509Token sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/Never">
+									<wsp:Policy>
+										<sp:WssX509V3Token10/>
+									</wsp:Policy>
+								</sp:X509Token>
+							</wsp:Policy>
+						</sp:RecipientToken>
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<sp:TripleDesRsa15/>
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Strict/>
+							</wsp:Policy>
+						</sp:Layout>
+						<sp:IncludeTimestamp/>
+						<sp:OnlySignEntireHeadersAndBody/>
+					</wsp:Policy>
+				</sp:AsymmetricBinding>
+				<sp:Wss10 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:MustSupportRefKeyIdentifier/>
+						<sp:MustSupportRefIssuerSerial/>
+					</wsp:Policy>
+				</sp:Wss10>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+				</sp:SignedParts>
+	
+				<ramp:RampartConfig xmlns:ramp="http://ws.apache.org/rampart/policy"> 
+					<ramp:user>CalculatorAdmin</ramp:user>
+					<ramp:encryptionUser>CalculatorAdmin</ramp:encryptionUser>
+					<ramp:passwordCallbackClass>calculator.security.ClientPWCBHandler</ramp:passwordCallbackClass>
+					
+					<ramp:signatureCrypto>
+						<ramp:crypto provider="org.apache.ws.security.components.crypto.Merlin">
+							<ramp:property name="org.apache.ws.security.crypto.merlin.keystore.type">JKS</ramp:property>
+							<ramp:property name="org.apache.ws.security.crypto.merlin.file">calculatorKeys.jks</ramp:property>
+							<ramp:property name="org.apache.ws.security.crypto.merlin.keystore.password">CalculatorAdmin</ramp:property>
+						</ramp:crypto>
+					</ramp:signatureCrypto>
+				</ramp:RampartConfig>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
  </sca:policySet>
  
  </sca:definitions>
