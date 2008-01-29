@@ -33,24 +33,19 @@ import org.apache.tuscany.sca.contribution.PackageType;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
-import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 
 /**
- * Folder contribution package processor
+ * Folder contribution package processor.
  * 
  * @version $Rev$ $Date$
  */
 public class FolderContributionProcessor implements PackageProcessor {
-    /**
-     * Package-type that this package processor can handle
-     */
-    public static final String PACKAGE_TYPE = PackageType.FOLDER;
 
     public FolderContributionProcessor() {
     }
 
     public String getPackageType() {
-        return PACKAGE_TYPE;
+        return PackageType.FOLDER;
     }
 
     /**
@@ -58,27 +53,24 @@ public class FolderContributionProcessor implements PackageProcessor {
      * 
      * @param fileList
      * @param file
+     * @param root
      * @throws IOException
      */
-    private void traverse(List<URI> fileList, File file, File root) throws IOException {
+    private static void traverse(List<URI> fileList, File file, File root) throws IOException {
         if (file.isFile()) {
             fileList.add(root.toURI().relativize(file.toURI()));
-            
         } else if (file.isDirectory()) {
-            // FIXME: Maybe we should externalize it as a property
-            // Regular expression to exclude .xxx files
-            
             String uri = root.toURI().relativize(file.toURI()).toString();
             if (uri.endsWith("/")) {
                 uri = uri.substring(0, uri.length() - 1);
             }
             fileList.add(URI.create(uri));
             
-            //FIXME Do we really need to use a regexp here to filter out
-            // file names that start one or two dots?
-            File[] files = file.listFiles(FileHelper.getFileFilter("[^\u002e].*", true));
-            for (int i = 0; i < files.length; i++) {
-                traverse(fileList, files[i], root);
+            File[] files = file.listFiles();
+            for (File f: files) {
+                if (!f.getName().startsWith(".")) {
+                    traverse(fileList, f, root);
+                }
             }
         }
     }
@@ -87,12 +79,6 @@ public class FolderContributionProcessor implements PackageProcessor {
         return new URL(sourceURL, artifact.toString());
     }
 
-    /**
-     * Get a list of artifact URI from the folder
-     * 
-     * @return The list of artifact URI for the folder
-     * @throws IOException
-     */
     public List<URI> getArtifacts(URL packageSourceURL, InputStream inputStream) throws ContributionException,
         IOException {
         if (packageSourceURL == null) {
@@ -111,7 +97,7 @@ public class FolderContributionProcessor implements PackageProcessor {
                     throw new ContributionReadException(rootFolder.getAbsolutePath());
                 }
 
-                this.traverse(artifacts, rootFolder, rootFolder);
+                traverse(artifacts, rootFolder, rootFolder);
             }
 
         } catch (URISyntaxException e) {

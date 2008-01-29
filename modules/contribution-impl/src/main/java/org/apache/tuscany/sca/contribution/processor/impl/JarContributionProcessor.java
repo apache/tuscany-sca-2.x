@@ -36,21 +36,17 @@ import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 
 /**
- * Jar Contribution package processor
+ * Jar Contribution package processor.
  * 
  * @version $Rev$ $Date$
  */
 public class JarContributionProcessor implements PackageProcessor {
-    /**
-     * Package-type that this package processor can handle
-     */
-    public static final String PACKAGE_TYPE = PackageType.JAR;
 
     public JarContributionProcessor() {
     }
 
     public String getPackageType() {
-        return PACKAGE_TYPE;
+        return PackageType.JAR;
     }
 
     public URL getArtifactURL(URL sourceURL, URI artifact) throws MalformedURLException {
