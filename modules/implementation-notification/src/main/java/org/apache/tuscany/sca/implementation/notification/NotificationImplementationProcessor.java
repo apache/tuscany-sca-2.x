@@ -32,7 +32,6 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
-import org.apache.tuscany.sca.contribution.service.ContributionWireException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
 /**
@@ -90,9 +89,6 @@ public class NotificationImplementationProcessor implements StAXArtifactProcesso
         }
         impl.setComponentType(componentType);
         impl.setUnresolved(false);
-    }
-        
-    public void wire(NotificationImplementationImpl model) throws ContributionWireException {
     }
         
     public void write(NotificationImplementationImpl model, XMLStreamWriter outputSource)

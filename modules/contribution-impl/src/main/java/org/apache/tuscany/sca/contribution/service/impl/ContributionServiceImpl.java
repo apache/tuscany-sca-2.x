@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
+import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.ExtensibleContributionListener;
@@ -232,7 +233,7 @@ public class ContributionServiceImpl implements ContributionService {
         try {
             metadataDocumentProcessor.read(contributionMetadata);
         } catch (XMLStreamException e) {
-            throw new InvalidContributionMetadataException("Invalid contribution metadata for contribution.");
+            throw new ContributionReadException("Invalid contribution metadata for contribution.");
         }
 
         // For debugging purposes, write it back to XML

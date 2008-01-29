@@ -16,23 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.contribution.processor.impl;
-
-import org.apache.tuscany.sca.contribution.service.ContributionException;
+package org.apache.tuscany.sca.contribution.service;
 
 /**
- * Exception that indicates that the supplied XML Document invalid.
+ * Exception thrown to indicate that a Content-Type is not supported by this SCA Domain.
+ * The Content-Type value supplied will be returned as the message text for this exception.
  *
+ * @version $Rev$ $Date$
  */
-public class InvalidFolderContributionURIException extends ContributionException {
+public class UnsupportedPackageTypeException extends ContributionException {
+    private static final long serialVersionUID = -1831797280021355672L;
 
-    private static final long serialVersionUID = 1564255850052593282L;
+    /**
+     * Constructs a new UnsupportedPackageTypeException.
+     *
+     * @param message
+     */
+    public UnsupportedPackageTypeException(String message) {
+        super(message);
+    }
 
-    protected InvalidFolderContributionURIException(String componentDefinitionLocatoin) {
-        super(componentDefinitionLocatoin);
-    }
-    
-    protected InvalidFolderContributionURIException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

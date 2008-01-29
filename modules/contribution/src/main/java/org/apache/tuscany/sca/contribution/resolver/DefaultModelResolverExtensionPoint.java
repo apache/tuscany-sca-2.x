@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 
 
 /**
- * The default implementation of a model resolver Class registry.
+ * The default implementation of a model resolver extension point.
  * 
  * @version $Rev$ $Date$
  */
@@ -38,7 +38,7 @@ public class DefaultModelResolverExtensionPoint implements ModelResolverExtensio
     private Map<String, ServiceDeclaration> loadedResolvers;
 
     /**
-     * Constructs a new model resolver registry.
+     * Constructs a new DefaultModelResolverExtensionPoint.
      */
     public DefaultModelResolverExtensionPoint() {
     }

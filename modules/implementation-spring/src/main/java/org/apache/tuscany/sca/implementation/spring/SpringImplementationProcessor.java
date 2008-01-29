@@ -35,7 +35,6 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
-import org.apache.tuscany.sca.contribution.service.ContributionWireException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.spring.xml.SpringXMLComponentTypeLoader;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -173,10 +172,6 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
         } // end if
 
     } // end method resolve
-
-    public void wire(SpringImplementation model) throws ContributionWireException {
-        // TODO Auto-generated method stub
-    }
 
     public QName getArtifactType() {
         return IMPLEMENTATION_SPRING_QNAME;
