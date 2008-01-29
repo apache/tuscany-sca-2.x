@@ -59,7 +59,7 @@ public class ContributionTestCase extends TestCase {
         ContributionService contributionService = domain.getContributionService();
 
         helloContribution =
-            contributionService.contribute("http://import-export/export-composite", helloContribution_URL, false);
+            contributionService.contribute("http://contribution-multiple/helloworld", helloContribution_URL, false);
         
         for (Composite deployable : helloContribution.getDeployables()) {
             domain.getDomainComposite().getIncludes().add(deployable);
@@ -71,7 +71,7 @@ public class ContributionTestCase extends TestCase {
         }
 
         helloWorldContribution_one =
-            contributionService.contribute("http://import-export/helloworld_one", helloWorldContribution_one_URL, false);
+            contributionService.contribute("http://contribution-multiple/helloworld_one", helloWorldContribution_one_URL, false);
         for (Composite deployable : helloWorldContribution_one.getDeployables()) {
             domain.getDomainComposite().getIncludes().add(deployable);
             domain.buildComposite(deployable);
@@ -97,8 +97,8 @@ public class ContributionTestCase extends TestCase {
         ContributionService contributionService = domain.getContributionService();
 
         // Remove the contribution from the in-memory repository
-        contributionService.remove("http://import-export/export-composite");
-        contributionService.remove("http://import-export/helloworld_one");
+        contributionService.remove("http://contribution-multiple/helloworld");
+        contributionService.remove("http://contribution-multiple/helloworld_one");
 
         // Stop Components from my composite
         for (Composite deployable : helloWorldContribution_one.getDeployables()) {
