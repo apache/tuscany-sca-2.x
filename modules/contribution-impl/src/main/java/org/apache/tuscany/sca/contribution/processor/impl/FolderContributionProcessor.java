@@ -32,6 +32,7 @@ import java.util.List;
 import org.apache.tuscany.sca.contribution.PackageType;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
+import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 
 /**
@@ -107,14 +108,14 @@ public class FolderContributionProcessor implements PackageProcessor {
             rootFolder = new File(packageSourceURL.toURI());
             if (rootFolder.isDirectory()) {
                 if (!rootFolder.exists()) {
-                    throw new InvalidFolderContributionException(rootFolder.getAbsolutePath());
+                    throw new ContributionReadException(rootFolder.getAbsolutePath());
                 }
 
                 this.traverse(artifacts, rootFolder, rootFolder);
             }
 
         } catch (URISyntaxException e) {
-            throw new InvalidFolderContributionException(packageSourceURL.toExternalForm(), e);
+            throw new ContributionReadException(packageSourceURL.toExternalForm(), e);
         }
 
         return artifacts;
