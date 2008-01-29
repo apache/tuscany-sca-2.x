@@ -37,8 +37,10 @@ public class ModelResolverImpl implements ModelResolver {
     
     private Map<Object, Object> map = new HashMap<Object, Object>();
     
+    //FIXME Remove dependencies on classloaders
     private WeakReference<ClassLoader> classLoader;
     
+    //FIXME Remove dependencies on classloaders
     public ModelResolverImpl(ClassLoader classLoader) {
         this.classLoader = new WeakReference<ClassLoader>(classLoader);
     }
@@ -52,9 +54,12 @@ public class ModelResolverImpl implements ModelResolver {
             
         } else if (unresolved instanceof ClassReference) {
             
+            //FIXME Remove dependencies on classloaders, resolution of classes
+            // should move to the java import support module. 
+            
             // Load a class on demand
             ClassReference classReference = (ClassReference)unresolved;
-            Class clazz;
+            Class<?> clazz;
             try {
                 clazz = Class.forName(classReference.getClassName(), true, classLoader.get());
             } catch (ClassNotFoundException e) {

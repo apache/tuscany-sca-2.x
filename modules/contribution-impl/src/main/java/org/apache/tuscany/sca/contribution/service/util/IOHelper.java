@@ -32,10 +32,6 @@ public class IOHelper {
      */
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
     
-    protected IOHelper() {
-        
-    }
-
     /**
      * Unconditionally close an <code>InputStream</code>.
      * <p>

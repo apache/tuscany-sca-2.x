@@ -44,9 +44,6 @@ public class FileHelper {
      */
     private static final char WINDOWS_SEPARATOR = '\\';
 
-    protected FileHelper() {
-    }
-
     /**
      * Returns the index of the last directory separator character.
      * <p>
