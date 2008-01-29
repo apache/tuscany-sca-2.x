@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
+import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -166,6 +167,7 @@ public class RuntimeWireImpl implements RuntimeWire {
             // It's the service wire
             RuntimeComponentService service = (RuntimeComponentService)wireTarget.getContract();
             RuntimeComponent serviceComponent = wireTarget.getComponent();
+            Binding serviceBinding = wireTarget.getBinding();
             for (Operation operation : sourceContract.getInterface().getOperations()) {
                 Operation targetOperation = interfaceContractMapper.map(targetContract.getInterface(), operation);
                 if (targetOperation == null) {
@@ -176,6 +178,9 @@ public class RuntimeWireImpl implements RuntimeWire {
                         + service.getName());
                 }
                 InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
+                if (operation.isNonBlocking()) {
+                    addNonBlockingInterceptor(service, serviceBinding, chain);
+                }
                 addImplementationInterceptor(serviceComponent, service, chain, targetOperation);
                 chains.add(chain);
             }
@@ -244,6 +249,22 @@ public class RuntimeWireImpl implements RuntimeWire {
         }
     }
 
+    /**
+     * Add a non-blocking interceptor if the service binding needs it
+     *
+     * @param service
+     * @param binding
+     * @param chain
+     */
+    private void addNonBlockingInterceptor(ComponentService service, Binding binding, InvocationChain chain) {
+        ServiceBindingProvider provider = ((RuntimeComponentService)service).getBindingProvider(binding);
+        if (provider != null) {
+            if (!provider.supportsOneWayInvocation()) {
+                chain.addInterceptor(new NonBlockingInterceptor(workScheduler));
+            }
+        }
+    }
+ 
     /**
      * Add the interceptor for a component implementation
      * 
