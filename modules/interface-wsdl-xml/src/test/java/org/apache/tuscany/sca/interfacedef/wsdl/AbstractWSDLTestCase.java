@@ -60,7 +60,7 @@ public abstract class AbstractWSDLTestCase extends TestCase {
         javax.wsdl.factory.WSDLFactory wsdl4jFactory = javax.wsdl.factory.WSDLFactory.newInstance();
         factories.addFactory(wsdlFactory);
         factories.addFactory(wsdl4jFactory);
-        resolver = new ExtensibleModelResolver(contribution, modelResolvers, factories);
+        resolver = new ExtensibleModelResolver(contribution, modelResolvers, factories, null);
         contribution.setModelResolver(resolver);
         modelResolvers.addResolver(WSDLDefinition.class, WSDLModelResolver.class);
         modelResolvers.addResolver(XSDefinition.class, XSDModelResolver.class);

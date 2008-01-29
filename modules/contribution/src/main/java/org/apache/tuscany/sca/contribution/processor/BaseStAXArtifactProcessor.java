@@ -303,13 +303,13 @@ public abstract class BaseStAXArtifactProcessor {
             this(null, name, value);
         }
 
-        public XAttr(String uri, String name, List values) {
+        public XAttr(String uri, String name, List<?> values) {
             this.uri = uri;
             this.name = name;
             this.value = values;
         }
 
-        public XAttr(String name, List values) {
+        public XAttr(String name, List<?> values) {
             this(null, name, values);
         }
 
@@ -410,7 +410,7 @@ public abstract class BaseStAXArtifactProcessor {
             } else if (value instanceof List) {
                 
                 // Write a list of values
-                List values = (List)value;
+                List<?> values = (List<?>)value;
                 if (values.isEmpty()) {
                     return;
                 }
@@ -474,7 +474,7 @@ public abstract class BaseStAXArtifactProcessor {
             } else if (value instanceof List) {
                 
                 // Write prefixes for a list of values
-                for (Object v: (List)value) {
+                for (Object v: (List<?>)value) {
                     if (v instanceof QName) {
                         // Write prefix for a QName value
                         writeQNamePrefix(writer, (QName)v);

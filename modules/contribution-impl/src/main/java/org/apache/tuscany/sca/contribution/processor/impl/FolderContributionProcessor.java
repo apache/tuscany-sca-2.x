@@ -29,7 +29,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.contribution.ContentType;
+import org.apache.tuscany.sca.contribution.PackageType;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
@@ -43,7 +43,7 @@ public class FolderContributionProcessor implements PackageProcessor {
     /**
      * Package-type that this package processor can handle
      */
-    public static final String PACKAGE_TYPE = ContentType.FOLDER;
+    public static final String PACKAGE_TYPE = PackageType.FOLDER;
 
     public FolderContributionProcessor() {
     }

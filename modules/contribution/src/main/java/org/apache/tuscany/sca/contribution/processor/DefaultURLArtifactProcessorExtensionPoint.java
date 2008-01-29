@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
 import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 
 /**
- * The default implementation of a StAX artifact processor registry.
+ * The default implementation of a URL artifact processor extension point.
  * 
  * @version $Rev$ $Date$
  */
@@ -72,7 +72,10 @@ public class DefaultURLArtifactProcessorExtensionPoint
         loadProcessors();
         return super.getProcessor(artifactType);
     }
-    
+
+    /**
+     * Lazily load artifact processors registered in the extension point.
+     */
     private void loadProcessors() {
         if (loaded)
             return;
@@ -110,7 +113,7 @@ public class DefaultURLArtifactProcessorExtensionPoint
         private String modelTypeName;
         private ServiceDeclaration processorDeclaration;
         private URLArtifactProcessor processor;
-        private Class modelType;
+        private Class<?> modelType;
         
         LazyURLArtifactProcessor(ModelFactoryExtensionPoint modelFactories, 
         		String artifactType, 
@@ -144,7 +147,7 @@ public class DefaultURLArtifactProcessorExtensionPoint
             return getProcessor().read(contributionURL, artifactURI, artifactURL);
         }
         
-        public Class getModelType() {
+        public Class<?> getModelType() {
             if (modelType == null) {
                 try {
                     modelType = processorDeclaration.loadClass(modelTypeName);

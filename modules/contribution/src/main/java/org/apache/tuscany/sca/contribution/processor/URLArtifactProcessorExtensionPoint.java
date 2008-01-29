@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.contribution.processor;
 
 /**
- * A registry for Document artifact processors.
+ * An extension point for URL artifact processors.
  * 
  * @version $Rev$ $Date$
  */

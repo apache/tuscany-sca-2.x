@@ -19,71 +19,63 @@
 
 package org.apache.tuscany.sca.contribution.impl;
 
-import org.apache.tuscany.sca.contribution.Artifact;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.Workspace;
 
 /**
- * The model representing an artifact in a contribution.
- * 
+ * WorkspaceImpl
+ *
  * @version $Rev$ $Date$
  */
-class ArtifactImpl implements Artifact {
-    private String uri;
+class WorkspaceImpl implements Workspace {
+    
     private String location;
-    private Object model;
+    private String uri;
     private boolean unresolved;
-
-    ArtifactImpl() {
+    private List<Contribution> contributions = new ArrayList<Contribution>();
+    
+    /**
+     * Constructs a new workspace. 
+     */
+    WorkspaceImpl() {
     }
     
     public String getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public Object getModel() {
+        return null;
     }
-    
+
     public String getURI() {
         return uri;
     }
-    
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setModel(Object model) {
+    }
+
     public void setURI(String uri) {
         this.uri = uri;
     }
-    
-    public Object getModel() {
-        return model;
-    }
-    
-    public void setModel(Object model) {
-        this.model = model;
-    }
-    
+
     public boolean isUnresolved() {
         return unresolved;
     }
-    
+
     public void setUnresolved(boolean unresolved) {
         this.unresolved = unresolved;
     }
 
-    @Override
-    public int hashCode() {
-        return uri.hashCode();
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        } else {
-            if (obj instanceof Artifact) {
-                return uri.equals(((Artifact)obj).getURI());
-            } else {
-                return false;
-            }
-        }
+    public List<Contribution> getContributions() {
+        return contributions;
     }
 
 }

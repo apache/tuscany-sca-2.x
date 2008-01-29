@@ -293,11 +293,9 @@ public class ContributionServiceImpl implements ContributionService {
 
         // Create contribution model resolver
         if (modelResolver == null) {
-            modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
-        }
-
-        if (modelResolver instanceof ExtensibleModelResolver) {
-            ((ExtensibleModelResolver)modelResolver).setDomainResolver(domainResolver);
+            //FIXME Remove this domain resolver, visibility of policy declarations should be handled by
+            // the contribution import/export mechanism instead of this domainResolver hack.
+            modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories, domainResolver);
         }
 
         //set contribution initial information

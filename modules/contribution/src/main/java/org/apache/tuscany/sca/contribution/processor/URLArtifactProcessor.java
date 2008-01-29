@@ -25,7 +25,7 @@ import java.net.URL;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 
 /**
- * An artifact processor that can read models from an InputStream.
+ * An artifact processor that can read models from a URL.
  * 
  * @version $Rev$ $Date$
  */

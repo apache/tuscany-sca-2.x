@@ -27,10 +27,10 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.UnrecognizedElementException;
 
 /**
- * The default implementation of a URL artifact processor.
+ * Implementation of an extensible URL artifact processor.
  * 
- * This implementation has a URLArtifactProcessorExtensionPoint and 
- * it delegate to the proper URLArtifactProcessor by either fileName or fileExtention
+ * Takes a URLArtifactProcessorExtensionPoint and delegates to the proper URLArtifactProcessor
+ * by either fileName or fileExtention
  * 
  * @version $Rev$ $Date$
  */
@@ -40,7 +40,7 @@ public class ExtensibleURLArtifactProcessor
     private URLArtifactProcessorExtensionPoint processors;
 
     /**
-     * Constructs a new URL artifact processor.
+     * Constructs a new ExtensibleURLArtifactProcessor.
      * 
      * @param processors
      */
@@ -88,7 +88,7 @@ public class ExtensibleURLArtifactProcessor
         }
     }
     
-    public <MO> MO read(URL contributionURL, URI artifactURI, URL artifactUrl, Class<MO> type) 
+    public <M> M read(URL contributionURL, URI artifactURI, URL artifactUrl, Class<M> type) 
         throws ContributionReadException {
         Object mo = read(contributionURL, artifactURI, artifactUrl);
         if (type.isInstance(mo)) {
@@ -107,12 +107,13 @@ public class ExtensibleURLArtifactProcessor
     public Class<Object> getModelType() {
         return null;
     }
-    
+
     /**
-     * Utility functions
+     * Returns the file name from a URL.
+     * @param url
+     * @return
      */
-    
-    private String getFileName(URL url){
+    private static String getFileName(URL url){
         String fileName = url.getPath();
         int pos = fileName.lastIndexOf("/");
         

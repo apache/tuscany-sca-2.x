@@ -22,7 +22,7 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.contribution.ContentType;
+import org.apache.tuscany.sca.contribution.PackageType;
 import org.apache.tuscany.sca.contribution.service.impl.PackageTypeDescriberImpl;
 
 public class PackageTypeDescriberImplTestCase extends TestCase {
@@ -30,17 +30,17 @@ public class PackageTypeDescriberImplTestCase extends TestCase {
 
     public void testResolveArchivePackageType() throws Exception {
         URL artifactURL = getClass().getResource("/deployables/sample-calculator.jar");
-        assertEquals(ContentType.JAR, this.packageTypeDescriber.getType(artifactURL, null));
+        assertEquals(PackageType.JAR, this.packageTypeDescriber.getType(artifactURL, null));
     }
 
     public void testResolveFolderPackageType() throws Exception {
         URL artifactURL = getClass().getResource("/deployables/");
-        assertEquals(ContentType.FOLDER, this.packageTypeDescriber.getType(artifactURL, null));
+        assertEquals(PackageType.FOLDER, this.packageTypeDescriber.getType(artifactURL, null));
     }
 
     public void testResolveFolder2PackageType() throws Exception {
         URL artifactURL = getClass().getResource("/deployables");
-        assertEquals(ContentType.FOLDER, this.packageTypeDescriber.getType(artifactURL, null));
+        assertEquals(PackageType.FOLDER, this.packageTypeDescriber.getType(artifactURL, null));
     }
 
     

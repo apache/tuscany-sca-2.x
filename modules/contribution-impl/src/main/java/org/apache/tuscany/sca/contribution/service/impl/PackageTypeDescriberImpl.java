@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.ContentType;
+import org.apache.tuscany.sca.contribution.PackageType;
 import org.apache.tuscany.sca.contribution.service.TypeDescriber;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 
@@ -46,7 +47,7 @@ public class PackageTypeDescriberImpl implements TypeDescriber {
      * Initialize contentType registry with know types based on known file extensions
      */
     private void init() {
-        contentTypeRegistry.put("JAR", ContentType.JAR);
+        contentTypeRegistry.put("JAR", PackageType.JAR);
     }
 
     protected String resolveContentyTypeByExtension(URL resourceURL) {
@@ -73,7 +74,7 @@ public class PackageTypeDescriberImpl implements TypeDescriber {
 
         if (resourceURL.getProtocol().equals("file") && FileHelper.toFile(resourceURL).isDirectory()) {
             // Special case : contribution is a folder
-            contentType = ContentType.FOLDER;
+            contentType = PackageType.FOLDER;
         } else {
             contentType = resolveContentyTypeByExtension(resourceURL);
             if (contentType == null) {

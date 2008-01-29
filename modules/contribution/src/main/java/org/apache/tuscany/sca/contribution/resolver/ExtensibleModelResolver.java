@@ -36,22 +36,28 @@ public class ExtensibleModelResolver implements ModelResolver {
     private final ModelResolverExtensionPoint resolvers;
     private final ModelFactoryExtensionPoint factories;
     private final Contribution contribution;
+    private final ModelResolver defaultResolver;
     private final Map<Class<?>, ModelResolver> resolverInstances = new HashMap<Class<?>, ModelResolver>();
     private Map<Object, Object> map = new HashMap<Object, Object>();
-    private ModelResolver domainResolver = null;
 
     /**
      * Constructs an extensible model resolver
      * 
      * @param resolvers
      * @param contribution
+     * @param factories
      */
     public ExtensibleModelResolver(Contribution contribution,
                                    ModelResolverExtensionPoint resolvers,
-                                   ModelFactoryExtensionPoint factories) {
+                                   ModelFactoryExtensionPoint factories,
+                                   ModelResolver defaultResolver) {
         this.contribution = contribution;
         this.resolvers = resolvers;
         this.factories = factories;
+        //FIXME Remove this default resolver, this is currently used to resolve policy declarations
+        // but they should be handled by the contribution import/export mechanism instead of this
+        // defaultResolver hack.
+        this.defaultResolver = defaultResolver;
     }
 
     /**
@@ -126,12 +132,16 @@ public class ExtensibleModelResolver implements ModelResolver {
         if (resolver != null) {
             return resolver.resolveModel(modelClass, unresolved);
         } else {
-            if (domainResolver != null) {
-                Object resolved = domainResolver.resolveModel(modelClass, unresolved);
+            //FIXME Remove this default resolver, this is currently used to resolve policy declarations
+            // but they should be handled by the contribution import/export mechanism instead of this
+            // defaultResolver hack.
+            if (defaultResolver != null) {
+                Object resolved = defaultResolver.resolveModel(modelClass, unresolved);
                 if (resolved != null && resolved != unresolved) {
                     return modelClass.cast(resolved);
                 }
             }
+            
             Object resolved = map.get(unresolved);
             if (resolved != null) {
                 // Return the resolved object
@@ -142,11 +152,4 @@ public class ExtensibleModelResolver implements ModelResolver {
         return unresolved;
     }
 
-    public ModelResolver getDomainResolver() {
-        return domainResolver;
-    }
-
-    public void setDomainResolver(ModelResolver domainResolver) {
-        this.domainResolver = domainResolver;
-    }
 }

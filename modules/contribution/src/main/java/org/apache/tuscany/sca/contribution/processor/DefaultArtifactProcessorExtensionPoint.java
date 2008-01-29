@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The default implementation of an artifact processor registry.
+ * The default implementation of an artifact processor extension point.
  * 
  * @version $Rev$ $Date$
  */
@@ -33,7 +33,7 @@ abstract class DefaultArtifactProcessorExtensionPoint<P> {
     /**
      * Constructs a new loader registry.
      */
-    public DefaultArtifactProcessorExtensionPoint() {
+    DefaultArtifactProcessorExtensionPoint() {
     }
 
     /**

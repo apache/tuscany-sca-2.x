@@ -20,7 +20,10 @@
 package org.apache.tuscany.sca.contribution.resolver;
 
 /**
- * SCA Assemblies reference many artifacts of a wide variety of types. These
+ * A model resolver, responsible for resolving models in the scope of an
+ * SCA contribution. 
+ * 
+ * SCA Assemblies reference artifacts of a wide variety of types. These
  * include:
  * <ul>
  * <li> Reference from one SCA composite to another SCA composite
@@ -30,10 +33,10 @@ package org.apache.tuscany.sca.contribution.resolver;
  * <li> Reference to any of a wide variety of implementation artifact files,
  * including Java classes, BPEL scripts, C++ DLLs and classes, PHP scripts
  * </ul>
+ * 
  * In the SCA assemblies, these various artifacts are referenced using either
- * QNames or URIs that do not point to a specific entity. Resolution of these
- * references to concrete artifacts is necessary as part of the operation of the
- * SCA domain.
+ * QNames or logical URIs. Model resolvers are used to resolve these references
+ * and get the in-memory models representing the referenced artifacts.
  * 
  * @version $Rev$ $Date$
  */

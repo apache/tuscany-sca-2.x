@@ -21,11 +21,12 @@ package org.apache.tuscany.sca.contribution;
 
 
 /**
- * Contribution model object factory.
+ * A factory for the contribution model.
  * 
  * @version $Rev$ $Date$
  */
 public interface ContributionFactory {
+    
     /**
      * Create a contribution model object
      * 
@@ -46,5 +47,11 @@ public interface ContributionFactory {
      * 
      * @return The new artifact model object
      */
-    Artifact createArtifact();   
+    Artifact createArtifact();
+    
+    /**
+     * Create a new contribution workspace model object. 
+     * @return
+     */
+    Workspace createWorkspace();
 }

@@ -49,14 +49,21 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
     private int level;
     private ValidatorHandler handler;
     
-    public ValidatingXMLStreamReader(XMLStreamReader reader, Schema schema) throws XMLStreamException {
+    /**
+     * Constructs a new ValidatingXMLStreamReader.
+     * 
+     * @param reader
+     * @param schema
+     * @throws XMLStreamException
+     */
+    ValidatingXMLStreamReader(XMLStreamReader reader, Schema schema) throws XMLStreamException {
         super(reader);
         if (schema == null) {
             return;
         }
         
         handler = schema.newValidatorHandler();
-        handler.setDocumentLocator(new LocatorAdaptor());
+        handler.setDocumentLocator(new LocatorAdapter());
         try {
             handler.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
         } catch (SAXException e) {
@@ -201,6 +208,11 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
         }
     }
     
+    /**
+     * Handle a start element event.
+     * 
+     * @throws SAXException
+     */
     private void handleStartElement() throws SAXException {
 
         // send startPrefixMapping events immediately before startElement event
@@ -226,6 +238,11 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
         handler.startElement(qname.getNamespaceURI(), qname.getLocalPart(), rawname, attrs);
     }
 
+    /**
+     * Handle an endElement event.
+     * 
+     * @throws SAXException
+     */
     private void handleEndElement() throws SAXException {
 
         // fire endElement
@@ -288,11 +305,11 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
     }
 
     /**
-     * Adaptor for mapping Locator information.
+     * Adapter for mapping Locator information.
      */
-    private final class LocatorAdaptor implements Locator {
+    private final class LocatorAdapter implements Locator {
 
-        private LocatorAdaptor() {
+        private LocatorAdapter() {
         }
 
         public int getColumnNumber() {

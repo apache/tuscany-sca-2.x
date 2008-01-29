@@ -28,8 +28,10 @@ import java.util.List;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 
 /**
- * Contribution package processors
- * These processors understand the internal format of the contribution and how to process the artifacts
+ * Interface for contribution package processors
+ * 
+ * Package processors understand the format of the contribution and how to get the
+ * artifacts in the contribution.
  * 
  * @version $Rev$ $Date$
  */
@@ -43,7 +45,7 @@ public interface PackageProcessor {
     String getPackageType();
 
     /**
-     * Retrieve a list of artifacts for the specific package type
+     * Returns a list of artifacts in the contribution.
      * 
      * @param packageSourceURL Contribution package location URL
      * @param inputStream Optional content of the package
@@ -55,8 +57,9 @@ public interface PackageProcessor {
 
     /**
      * Return the URL for an artifact in the package.
-     * This is needed in the case of special archives such as jar files that have special 
-     * URL structure for internal artifacts
+     * 
+     * This is needed for archives such as jar files that have specific URL schemes
+     * for the artifacts they contain.
      * 
      * @param packageSourceURL Contribution package location URL
      * @param artifact The relative URI for the artifact
