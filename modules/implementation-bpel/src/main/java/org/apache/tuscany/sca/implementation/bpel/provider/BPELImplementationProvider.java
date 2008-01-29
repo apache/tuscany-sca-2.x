@@ -65,7 +65,7 @@ public class BPELImplementationProvider implements ImplementationProvider {
     }
 
     public Invoker createInvoker(RuntimeComponentService service, Operation operation) {
-        BPELInvoker invoker = new BPELInvoker(operation, odeServer, txMgr);
+        BPELInvoker invoker = new BPELInvoker(component, service, operation, odeServer, txMgr);
         return invoker;
     }
     
