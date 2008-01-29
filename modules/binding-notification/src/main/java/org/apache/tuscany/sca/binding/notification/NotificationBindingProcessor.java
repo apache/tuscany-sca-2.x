@@ -32,7 +32,6 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
-import org.apache.tuscany.sca.contribution.service.ContributionWireException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
@@ -95,6 +94,4 @@ public class NotificationBindingProcessor implements StAXArtifactProcessor<Notif
     public void resolve(NotificationBinding notificationBinding, ModelResolver resolver) throws ContributionResolveException {
     }
 
-    public void wire(NotificationBinding notificationBinding) throws ContributionWireException {
-    }
 }

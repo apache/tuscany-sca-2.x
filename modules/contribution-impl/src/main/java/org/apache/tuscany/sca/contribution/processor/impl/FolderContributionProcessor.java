@@ -114,7 +114,7 @@ public class FolderContributionProcessor implements PackageProcessor {
             }
 
         } catch (URISyntaxException e) {
-            throw new InvalidFolderContributionURIException(packageSourceURL.toExternalForm(), e);
+            throw new InvalidFolderContributionException(packageSourceURL.toExternalForm(), e);
         }
 
         return artifacts;

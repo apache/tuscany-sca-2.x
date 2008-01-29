@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.TypeDescriber;
-import org.apache.tuscany.sca.contribution.service.UnsupportedContentTypeException;
+import org.apache.tuscany.sca.contribution.service.UnsupportedPackageTypeException;
 
 /**
  * Implementation of an extensible package processor.
@@ -50,14 +50,14 @@ public class ExtensiblePackageProcessor implements PackageProcessor {
 
     public List<URI> getArtifacts(URL packageSourceURL, InputStream inputStream) 
         throws ContributionException, IOException {
-        String contentType = this.packageTypeDescriber.getType(packageSourceURL, null);
-        if (contentType == null) {
-            throw new UnsupportedContentTypeException("Unsupported contribution package", packageSourceURL.toString());
+        String packageType = this.packageTypeDescriber.getType(packageSourceURL, null);
+        if (packageType == null) {
+            throw new UnsupportedPackageTypeException("Unsupported contribution package type: " + packageSourceURL.toString());
         }
 
-        PackageProcessor packageProcessor = this.processors.getPackageProcessor(contentType);
+        PackageProcessor packageProcessor = this.processors.getPackageProcessor(packageType);
         if (packageProcessor == null) {
-            throw new UnsupportedContentTypeException(contentType, packageSourceURL.getPath());
+            throw new UnsupportedPackageTypeException("Unsupported contribution package type: " + packageType);
         }
 
         return packageProcessor.getArtifacts(packageSourceURL, inputStream);

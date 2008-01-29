@@ -21,29 +21,22 @@ package org.apache.tuscany.sca.contribution.service;
 /**
  * Exception thrown to indicate that a Content-Type is not supported by this SCA Domain.
  * The Content-Type value supplied will be returned as the message text for this exception.
+ * 
+ * FIXME Don't use as it's deprecated and replaced by UnsupportedPackageTypeException.
  *
  * @version $Rev$ $Date$
  */
+@Deprecated
 public class UnsupportedContentTypeException extends ContributionException {
     private static final long serialVersionUID = -1831797280021355672L;
 
     /**
-     * Constructor specifying the Content-Type value that is not supported.
+     * Constructs a new UnsupportedContentTypeException.
      *
-     * @param contentType the type that is not supported
+     * @param message
      */
-    public UnsupportedContentTypeException(String contentType) {
-        super(contentType);
+    public UnsupportedContentTypeException(String message) {
+        super(message);
     }
 
-    /**
-     * Constructor specifying the Content-Type value that is not supported
-     * and an identifier to use with this exception (typically the resource being processed).
-     *
-     * @param contentType the type that is not supported
-     * @param identifier  an identifier for this exception
-     */
-    public UnsupportedContentTypeException(String contentType, String identifier) {
-        super(contentType, identifier);
-    }
 }

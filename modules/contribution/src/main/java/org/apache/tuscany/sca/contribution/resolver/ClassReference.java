@@ -24,6 +24,9 @@ import java.lang.ref.WeakReference;
 /**
  * A weak reference to a class, which should be used to register classes
  * with an ArtifactResolver and resolve these classes later.
+ * 
+ * FIXME The core contribution model should not have dependencies on classes
+ * and classloaders. This should move to the Java import support module.
  *
  * @version $Rev$ $Date$
  */

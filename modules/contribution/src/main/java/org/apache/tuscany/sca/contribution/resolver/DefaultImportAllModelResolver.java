@@ -58,18 +58,14 @@ public class DefaultImportAllModelResolver implements ModelResolver {
             
             // Go over all exports in the contribution
             for (Export export : contribution.getExports()) {
-                    // If the export matches our namespace, try to the resolve the model object
+                
+                    // If the export matches the export, try to resolve the model object
                     if (import_.match(export)) {
                         Object resolved = export.getModelResolver().resolveModel(modelClass, unresolved);
                         
                         // Return the resolved model object
                         if (resolved instanceof Base) {
                             if (!((Base)resolved).isUnresolved()) {
-                                return modelClass.cast(resolved);
-                            }
-                        }
-                        else if (resolved instanceof org.apache.tuscany.sca.assembly.Base) {
-                            if (!((org.apache.tuscany.sca.assembly.Base)resolved).isUnresolved()) {
                                 return modelClass.cast(resolved);
                             }
                         }
