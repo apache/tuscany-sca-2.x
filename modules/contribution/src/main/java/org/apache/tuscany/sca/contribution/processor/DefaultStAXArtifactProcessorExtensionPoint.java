@@ -78,6 +78,13 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
         return super.getProcessor(artifactType);
     }
 
+    /**
+     * Returns a QName object from a QName expressed as {ns}name
+     * or ns#name.
+     * 
+     * @param qname
+     * @return
+     */
     private static QName getQName(String qname) {
         if (qname == null) {
             return null;
@@ -97,6 +104,9 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
         throw new IllegalArgumentException("Invalid qname: "+qname);
     }
 
+    /**
+     * Lazily load artifact processors registered in the extension point.
+     */
     private void loadArtifactProcessors() {
         if (loaded)
             return;
@@ -145,7 +155,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
         private String factoryName;
         private ServiceDeclaration processorDeclaration;
         private StAXArtifactProcessor processor;
-        private Class modelType;
+        private Class<?> modelType;
 
         LazyStAXArtifactProcessor(ModelFactoryExtensionPoint modelFactories,
                                   QName artifactType,
@@ -226,7 +236,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
             getProcessor().write(model, outputSource);
         }
 
-        public Class getModelType() {
+        public Class<?> getModelType() {
             if (modelType == null) {
                 try {
                     modelType = processorDeclaration.loadClass(modelTypeName);

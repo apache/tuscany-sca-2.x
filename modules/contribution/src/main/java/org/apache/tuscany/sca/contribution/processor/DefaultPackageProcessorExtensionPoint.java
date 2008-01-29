@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
 import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 
 /**
- * Default implementation of ContributionProcessorRegistry
+ * Default implementation of a package processor extension point.
  * 
  * @version $Rev$ $Date$
  */

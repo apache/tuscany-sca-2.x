@@ -22,7 +22,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 
 /**
- * Interface for extensions that can process contributions.
+ * Base interface for artifact processors.
  * 
  * @version $Rev$ $Date$
  */

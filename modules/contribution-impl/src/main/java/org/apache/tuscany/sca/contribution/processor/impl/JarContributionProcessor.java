@@ -31,7 +31,7 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.apache.tuscany.sca.contribution.ContentType;
+import org.apache.tuscany.sca.contribution.PackageType;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 
@@ -44,7 +44,7 @@ public class JarContributionProcessor implements PackageProcessor {
     /**
      * Package-type that this package processor can handle
      */
-    public static final String PACKAGE_TYPE = ContentType.JAR;
+    public static final String PACKAGE_TYPE = PackageType.JAR;
 
     public JarContributionProcessor() {
     }

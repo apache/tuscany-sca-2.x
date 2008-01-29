@@ -17,36 +17,17 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.resolver;
+package org.apache.tuscany.sca.contribution;
 
+import java.util.List;
 
 /**
- * An extension point for model resolvers
- * 
+ * A workspace containing contributions.
+ *
  * @version $Rev$ $Date$
  */
-public interface ModelResolverExtensionPoint {
+public interface Workspace extends Artifact {
 
-    /**
-     * Register a model resolver class using the model type as the key
-     * 
-     * @param modelType The model type
-     * @param resolver The model resolver Class
-     */
-    void addResolver(Class<?> modelType, Class <? extends ModelResolver> resolver);
+    List<Contribution> getContributions();
     
-    /**
-     * Remove the model resolver class for a specific model type
-     * 
-     * @param modelType The model type
-     */
-    void removeResolver(Class<?> modelType);
-    
-    /**
-     * Retrieve a model resolver class for a specific model type
-     * 
-     * @param modelType The model artifact type
-     * @return The model resolver Class
-     */
-    Class <? extends ModelResolver> getResolver(Class<?> modelType);
 }

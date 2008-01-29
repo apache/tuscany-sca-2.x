@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
  *
  * @version $Rev$ $Date$
  */
-public class ContributionImpl implements Contribution {
+class ContributionImpl implements Contribution {
     private String uri;
     private String location;
     private Object model;
@@ -48,7 +48,7 @@ public class ContributionImpl implements Contribution {
     // FIXME remove this dependency on Java classloaders
     private ClassLoader classLoader;
 
-    public ContributionImpl() {
+    ContributionImpl() {
     }
     
     public String getLocation() {

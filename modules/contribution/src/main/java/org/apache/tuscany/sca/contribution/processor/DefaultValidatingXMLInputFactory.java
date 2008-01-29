@@ -47,7 +47,7 @@ import org.xml.sax.SAXParseException;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory {
+public class DefaultValidatingXMLInputFactory extends XMLInputFactory {
     
     private XMLInputFactory inputFactory;
     private ValidationSchemaExtensionPoint schemas;
@@ -65,7 +65,11 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         this.schemas = schemas;
     }
     
-    private void initialize() {
+    /**
+     * Initialize the registered schemas and create an aggregated schema for
+     * validation.
+     */
+    private void initializeSchemas() {
         if (initialized) {
             return;
         }
@@ -133,32 +137,32 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
     }
 
     public XMLStreamReader createXMLStreamReader(InputStream arg0, String arg1) throws XMLStreamException {
-        initialize();
+        initializeSchemas();
         return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema);
     }
 
     public XMLStreamReader createXMLStreamReader(InputStream arg0) throws XMLStreamException {
-        initialize();
+        initializeSchemas();
         return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema);
     }
 
     public XMLStreamReader createXMLStreamReader(Reader arg0) throws XMLStreamException {
-        initialize();
+        initializeSchemas();
         return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema);
     }
 
     public XMLStreamReader createXMLStreamReader(Source arg0) throws XMLStreamException {
-        initialize();
+        initializeSchemas();
         return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema);
     }
 
     public XMLStreamReader createXMLStreamReader(String arg0, InputStream arg1) throws XMLStreamException {
-        initialize();
+        initializeSchemas();
         return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema);
     }
 
     public XMLStreamReader createXMLStreamReader(String arg0, Reader arg1) throws XMLStreamException {
-        initialize();
+        initializeSchemas();
         return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema);
     }
 

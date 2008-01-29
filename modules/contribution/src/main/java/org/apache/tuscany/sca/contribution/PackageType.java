@@ -17,15 +17,23 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.processor;
-
-import javax.xml.stream.XMLInputFactory;
+package org.apache.tuscany.sca.contribution;
 
 /**
- * Marker base class for validating XMLInputFactories.
- *
+ * Constants for the main supported contribution package types.
+ * 
  * @version $Rev$ $Date$
  */
-public abstract class ValidatingXMLInputFactory extends XMLInputFactory {
+public interface PackageType {
+    
+    /**
+     * Java compressed contribution package
+     */
+    String JAR = "application/x-compressed";
+
+    /**
+     * Filesystem folder contribution package
+     */
+    String FOLDER = "application/vnd.tuscany.folder";
 
 }

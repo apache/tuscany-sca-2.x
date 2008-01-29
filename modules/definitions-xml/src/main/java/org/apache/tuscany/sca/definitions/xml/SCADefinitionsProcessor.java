@@ -61,16 +61,6 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
      * Construct a new (sca) definitions processor
      * @param policyFactory
      * @param extensionProcessor 
-     */
-    public SCADefinitionsProcessor(PolicyFactory policyFactory,
-                              StAXArtifactProcessor<Object> extensionProcessor) {
-        this.extensionProcessor = extensionProcessor;
-    }
-    
-    /**
-     * Construct a new (sca) definitions processor
-     * @param policyFactory
-     * @param extensionProcessor 
      * @param modelResolver 
      */
     public SCADefinitionsProcessor(PolicyFactory policyFactory,
@@ -108,10 +98,7 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
                                     definitions.getImplementationTypes().add((IntentAttachPointType)extension);
                                 }
                             } 
-                            
-                            if ( getDefinitionsResolver() != null ) {
-                                getDefinitionsResolver().addModel(extension);
-                            }
+                            definitionsResolver.addModel(extension);
                         }
                         break;
                     }
@@ -186,11 +173,4 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
         return SCADefinitions.class;
     }
 
-    public ModelResolver getDefinitionsResolver() {
-        return definitionsResolver;
-    }
-
-    public void setDefinitionsResolver(ModelResolver definitionsResolver) {
-        this.definitionsResolver = definitionsResolver;
-    }
 }

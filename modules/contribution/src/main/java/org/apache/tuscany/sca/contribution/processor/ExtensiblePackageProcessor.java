@@ -31,20 +31,16 @@ import org.apache.tuscany.sca.contribution.service.TypeDescriber;
 import org.apache.tuscany.sca.contribution.service.UnsupportedContentTypeException;
 
 /**
- * Default implementation of PackageProcessor.
+ * Implementation of an extensible package processor.
  * 
- * This implementation has a packageProcessorExtensionPoint 
- * and it delegates to the proper package processor based on content type
+ * Takes a package processor extension point and delegates to the proper package
+ * processor from the extension point based on the package's content type.
  * 
  * @version $Rev$ $Date$
  */
 public class ExtensiblePackageProcessor implements PackageProcessor {
 
     private PackageProcessorExtensionPoint processors;
-
-    /**
-     * Helper method to describe contentType for each artifact
-     */
     private TypeDescriber packageTypeDescriber;
 
     public ExtensiblePackageProcessor(PackageProcessorExtensionPoint processors, TypeDescriber packageTypeDescriber) {

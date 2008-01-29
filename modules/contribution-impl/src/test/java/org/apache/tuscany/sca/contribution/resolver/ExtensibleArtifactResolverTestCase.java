@@ -45,7 +45,7 @@ public class ExtensibleArtifactResolverTestCase extends TestCase {
         
         ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
         
-        resolver = new ExtensibleModelResolver(null, resolvers, factories);
+        resolver = new ExtensibleModelResolver(null, resolvers, factories, null);
 
         factory = new DefaultContributionFactory();
     }

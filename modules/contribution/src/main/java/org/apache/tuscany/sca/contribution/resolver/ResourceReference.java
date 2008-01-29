@@ -24,6 +24,8 @@ import java.net.URL;
 /**
  * A resource URL, which should be used to register resources
  * with an ArtifactResolver and resolve these resources later.
+ * 
+ * FIXME Don't use as its deprecated, use Artifact instead.
  */
 @Deprecated
 public class ResourceReference {

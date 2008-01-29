@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
 import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 
 /**
- * DefaultValidationSchemaExtensionPoint
+ * Default implementation of an extension point for XML schemas. 
  *
  * @version $Rev$ $Date$
  */

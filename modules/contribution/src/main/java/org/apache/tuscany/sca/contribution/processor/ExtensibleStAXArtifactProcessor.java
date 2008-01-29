@@ -39,10 +39,10 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.service.UnrecognizedElementException;
 
 /**
- * The default implementation of a StAX artifact processor registry.
+ * Implementation of an extensible StAX artifact processor.
  * 
- * This implementation has a StAXArtifactProcessorExtensionPoint and 
- * it delegates to the proper StAXArtifactProcessor by element QName
+ * Takes a StAXArtifactProcessorExtensionPoint and delegates to the proper
+ * StAXArtifactProcessor by element QName
  * 
  * @version $Rev$ $Date$
  */
@@ -55,7 +55,8 @@ public class ExtensibleStAXArtifactProcessor
     private StAXArtifactProcessorExtensionPoint processors;
 
     /**
-     * Constructs a new loader registry.
+     * Constructs a new ExtensibleStAXArtifactProcessor.
+     * @param processors
      * @param inputFactory
      * @param outputFactory
      */
@@ -117,7 +118,7 @@ public class ExtensibleStAXArtifactProcessor
      * @return The model
      * @throws ContributionReadException
      */
-    public <MO> MO read(InputStream is, Class<MO> type) throws ContributionReadException {
+    public <M> M read(InputStream is, Class<M> type) throws ContributionReadException {
         try {
             XMLStreamReader reader;
             try {

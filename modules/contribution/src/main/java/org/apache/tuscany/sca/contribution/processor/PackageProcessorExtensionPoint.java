@@ -26,14 +26,14 @@ package org.apache.tuscany.sca.contribution.processor;
 public interface PackageProcessorExtensionPoint {
     
     /**
-     * Register a PackageProcessor using the package type as the key
+     * Register a PackageProcessor using the package type as the key.
      * 
      * @param processor The package processor
      */
     void addPackageProcessor(PackageProcessor processor);
     
     /**
-     * Unregister a PackageProcessor
+     * Unregister a PackageProcessor.
      * 
      * @param processor The package processor
      */
