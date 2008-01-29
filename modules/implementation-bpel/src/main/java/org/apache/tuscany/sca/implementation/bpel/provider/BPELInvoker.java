@@ -32,12 +32,16 @@ import org.apache.ode.bpel.iapi.MyRoleMessageExchange;
 import org.apache.ode.bpel.iapi.MessageExchange.Status;
 import org.apache.ode.utils.DOMUtils;
 import org.apache.ode.utils.GUID;
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.implementation.bpel.impl.ThreadRuntimeComponentContext;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -53,13 +57,17 @@ public class BPELInvoker implements Invoker {
     private EmbeddedODEServer odeServer;
     private TransactionManager txMgr;
     
+    private RuntimeComponent component;
+    private RuntimeComponentService service;
     private Operation operation;
     private QName bpelServiceName;
     private String bpelOperationName;
     private Part bpelOperationInputPart;
     private Part bpelOperationOutputPart;
     
-    public BPELInvoker(Operation operation, EmbeddedODEServer odeServer, TransactionManager txMgr) {
+    public BPELInvoker(RuntimeComponent component, RuntimeComponentService service, Operation operation, EmbeddedODEServer odeServer, TransactionManager txMgr) {
+        this.component = component;
+        this.service = service;
         this.operation = operation;
         this.bpelOperationName = operation.getName();
         this.odeServer = odeServer;
@@ -101,6 +109,10 @@ public class BPELInvoker implements Invoker {
         if(! (operation.getInterface() instanceof WSDLInterface)) {
             throw new InvocationTargetException(null,"Unsupported service contract");
         }
+        
+        System.out.println(">>> Set ThreadLocal with runtime component !");
+
+        ThreadRuntimeComponentContext.setRuntimeComponent(component);
         
         org.apache.ode.bpel.iapi.MyRoleMessageExchange mex = null;
         Future onhold = null;
