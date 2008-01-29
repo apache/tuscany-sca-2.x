@@ -35,29 +35,27 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * 
  * Service discovery for Tuscany based on J2SE Jar service provider spec.
  * Services are described using configuration files in META-INF/services.
  * Service description specifies a classname followed by optional properties.
- * 
- * Multi-classloader environments are supported through a classloader registration API
- * 
+ * Multi-classloader environments are supported through a classloader
+ * registration API
  */
 public class ServiceDiscovery {
     private final static Logger logger = Logger.getLogger(ServiceDiscovery.class.getName());
-    
+
     private static ServiceDiscovery instance;
-    
+
     private HashSet<ClassLoader> registeredClassLoaders;
-    
+
     /**
-     * Get an instance of Service discovery, one instance is created per 
+     * Get an instance of Service discovery, one instance is created per
      * classloader that this class is loaded from
      * 
      * @return
      */
     public static ServiceDiscovery getInstance() {
-        
+
         if (instance == null) {
             instance = new ServiceDiscovery();
             instance.registeredClassLoaders = new HashSet<ClassLoader>();
@@ -67,15 +65,14 @@ public class ServiceDiscovery {
     }
 
     /**
-     * Register a classloader with this discovery mechanism. Tuscany
-     * extension classloaders are registered here.
+     * Register a classloader with this discovery mechanism. Tuscany extension
+     * classloaders are registered here.
      * 
      * @param classLoader
      */
     public void registerClassLoader(ClassLoader classLoader) {
         registeredClassLoaders.add(classLoader);
     }
-    
 
     /**
      * Get all service declarations for this name
@@ -84,17 +81,16 @@ public class ServiceDiscovery {
      * @return set of service declarations
      * @throws IOException
      */
-    public Set<ServiceDeclaration> getServiceDeclarations(String name) 
-        throws IOException {
-        
+    public Set<ServiceDeclaration> getServiceDeclarations(String name) throws IOException {
+
         Set<ServiceDeclaration> classSet = new HashSet<ServiceDeclaration>();
-        
+
         for (ClassLoader classLoader : registeredClassLoaders) {
             getServiceClasses(classLoader, name, classSet, true);
         }
         return classSet;
     }
-    
+
     /**
      * Get all service declarations for this interface
      * 
@@ -102,10 +98,9 @@ public class ServiceDiscovery {
      * @return set of service declarations
      * @throws IOException
      */
-    public Set<ServiceDeclaration> getServiceDeclarations(Class<?> serviceInterface) 
-        throws IOException {
-    
-    	return getServiceDeclarations(serviceInterface.getName());
+    public Set<ServiceDeclaration> getServiceDeclarations(Class<?> serviceInterface) throws IOException {
+
+        return getServiceDeclarations(serviceInterface.getName());
     }
 
     /**
@@ -116,51 +111,51 @@ public class ServiceDiscovery {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public  Class<?> loadFirstServiceClass(Class<?> serviceInterface)
-        throws IOException, ClassNotFoundException {
-    	
-    	 Set<ServiceDeclaration> classSet = new HashSet<ServiceDeclaration>();
-         
-         for (ClassLoader classLoader : registeredClassLoaders) {
-             getServiceClasses(classLoader, serviceInterface.getName(), classSet, false);
-             if (classSet.size() > 0)
-            	 break;
-         }
-         if (classSet.size() > 0)
-        	 return classSet.iterator().next().loadClass();
-         else
-        	 return null;
-    
+    public Class<?> loadFirstServiceClass(Class<?> serviceInterface) throws IOException, ClassNotFoundException {
+
+        Set<ServiceDeclaration> classSet = new HashSet<ServiceDeclaration>();
+
+        for (ClassLoader classLoader : registeredClassLoaders) {
+            getServiceClasses(classLoader, serviceInterface.getName(), classSet, false);
+            if (classSet.size() > 0)
+                break;
+        }
+        if (classSet.size() > 0)
+            return classSet.iterator().next().loadClass();
+        else
+            return null;
+
     }
-    
+
     /**
      * Returns a unique list of resource URLs of name META-INF/services/<name>
-     * Each URL is associated with the first classloader that it was visible from
+     * Each URL is associated with the first classloader that it was visible
+     * from
      * 
      * @param name Name of resource
      * @return Table of URLs with associated classloaders
      * @throws IOException
      */
     public Hashtable<ClassLoader, Set<URL>> getServiceResources(String name) throws IOException {
-    	
-    	Hashtable<ClassLoader, Set<URL>> resourceTable = new Hashtable<ClassLoader, Set<URL>>();
-    	
-    	HashSet<URL> allURLs = new HashSet<URL>();
-    	for (ClassLoader classLoader : registeredClassLoaders) {
-    		HashSet<URL> urls = new HashSet<URL>();
-    		resourceTable.put(classLoader, urls);
-    		boolean debug = logger.isLoggable(Level.FINE);
+
+        Hashtable<ClassLoader, Set<URL>> resourceTable = new Hashtable<ClassLoader, Set<URL>>();
+
+        HashSet<URL> allURLs = new HashSet<URL>();
+        for (ClassLoader classLoader : registeredClassLoaders) {
+            HashSet<URL> urls = new HashSet<URL>();
+            resourceTable.put(classLoader, urls);
+            boolean debug = logger.isLoggable(Level.FINE);
             if (debug) {
                 logger.fine("Discovering service resources using class loader " + classLoader);
             }
             for (URL url : Collections.list(classLoader.getResources("META-INF/services/" + name))) {
                 if (allURLs.contains(url))
-                	continue;
+                    continue;
                 urls.add(url);
             }
             allURLs.addAll(urls);
-    	}
-    	return resourceTable;
+        }
+        return resourceTable;
     }
 
     /**
@@ -193,15 +188,15 @@ public class ServiceDiscovery {
      * 
      * @param classLoader
      * @param name The name of the service class
-     * @param classSet Populate this set with classes extends/implements the service class 
+     * @param classSet Populate this set with classes extends/implements the
+     *                service class
      * @throws IOException
      */
-    private void getServiceClasses(ClassLoader classLoader, 
-    		String name, 
-    		Set<ServiceDeclaration> classSet,
-    		boolean findAllClasses) 
-        throws IOException {
-        
+    private void getServiceClasses(ClassLoader classLoader,
+                                   String name,
+                                   Set<ServiceDeclaration> classSet,
+                                   boolean findAllClasses) throws IOException {
+
         boolean debug = logger.isLoggable(Level.FINE);
         if (debug) {
             logger.fine("Discovering service providers using class loader " + classLoader);
@@ -224,13 +219,14 @@ public class ServiceDiscovery {
                         if (debug) {
                             logger.fine("Registering service provider: " + reg);
                         }
-                        
+
                         Map<String, String> attributes = parseServiceDeclaration(reg);
                         String className = attributes.get("class");
                         ServiceDeclaration serviceClass = new ServiceDeclaration(className, classLoader, attributes);
                         classSet.add(serviceClass);
-                        
-                        if (!findAllClasses) break;
+
+                        if (!findAllClasses)
+                            break;
                     }
                 }
             } finally {
@@ -243,10 +239,9 @@ public class ServiceDiscovery {
                     }
                 }
             }
-            if (!findAllClasses && classSet.size() > 0) break;
+            if (!findAllClasses && classSet.size() > 0)
+                break;
         }
     }
-    
-    
-    
+
 }
