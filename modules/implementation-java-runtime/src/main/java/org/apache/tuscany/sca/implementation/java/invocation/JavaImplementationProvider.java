@@ -112,46 +112,6 @@ public class JavaImplementationProvider implements ScopedImplementationProvider 
         
     }
     
-
-    /*private void loadPolicyHandlers(JavaImplementation javaImpl) throws Exception {
-        if ( policyHandlerClassNames == null ) {
-            Hashtable<ClassLoader, Set<URL>> policySetResources = 
-        		ServiceDiscovery.getInstance().getServiceResources(POLICY_HANDLERS_STORE_FILE);
-            policyHandlerClassNames = new HashMap<ClassLoader, Map<QName, String>>();
-            for (ClassLoader classLoader : policySetResources.keySet()) {
-            	policyHandlerClassNames.put(classLoader, PolicySetHandlerUtil.getPolicyHandlers(
-            			classLoader, policySetResources.get(classLoader)));
-            }
-        }
-        
-        
-        if ( implementation instanceof PolicySetAttachPoint ) {
-            loadHandlerClasses(javaImpl);
-        }
-            
-            
-    }*/
-    
-    /*private void loadHandlerClasses(JavaImplementation javaImpl) throws Exception {
-        String handlerClassName = null;
-        PolicyHandler aHandler = null;
-        for (ClassLoader classLoader : policyHandlerClassNames.keySet()) {
-            Map<QName, String> policyHandlerClassnamesMap = policyHandlerClassNames.get(classLoader);
-            for ( QName policySetName : policyHandlerClassnamesMap.keySet() ) {
-                handlerClassName = policyHandlerClassnamesMap.get(policySetName);
-                if ( handlerClassName != null ) {
-                    aHandler = 
-                        (PolicyHandler)Class.forName(handlerClassName, true, classLoader).newInstance();
-                    if ( aHandler != null ) {
-                        javaImpl.getPolicyHandlers().put(policySetName, aHandler);
-                    } 
-                }
-            }
-        }
-        
-    }*/
-    
-
     private void handleResources(JavaImplementation componentType, ProxyFactory proxyService) {
         for (JavaResourceImpl resource : componentType.getResources().values()) {
             String name = resource.getName();

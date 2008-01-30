@@ -96,6 +96,9 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
+import org.apache.tuscany.sca.policy.util.PolicyHandler;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerUtils;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -116,6 +119,7 @@ public class Axis2ServiceProvider {
     private ConfigurationContext configContext;
     private JMSSender jmsSender;
     private JMSListener jmsListener;
+    private Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames = null;
 
     public static final QName QNAME_WSA_ADDRESS =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_ADDRESS);
@@ -135,19 +139,21 @@ public class Axis2ServiceProvider {
                                 AbstractContract contract,
                                 WebServiceBinding wsBinding,
                                 ServletHost servletHost,
-                                MessageFactory messageFactory) {
+                                MessageFactory messageFactory,
+                                Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames) {
 
         this.contract = contract; 
         this.wsBinding = wsBinding;
         this.servletHost = servletHost;
         this.messageFactory = messageFactory;
+        this.policyHandlerClassnames = policyHandlerClassnames;
 
         
         try {
             TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
             configContext = tuscanyAxisConfigurator.getConfigurationContext();
             //deployRampartModule();
-            configureSecurity();
+            //configureSecurity();
         } catch (AxisFault e) {
             throw new RuntimeException(e); // TODO: better exception
         } catch ( Exception e ) {
@@ -226,6 +232,8 @@ public class Axis2ServiceProvider {
         try {
             AxisService axisService = createAxisService();
             configContext.getAxisConfiguration().addService( axisService );
+            
+            setupPolicies(configContext);
           
             String endpointURL = axisService.getEndpointURL();
             if ( endpointURL.startsWith( "http://")  || endpointURL.startsWith("/")) {
@@ -276,6 +284,12 @@ public class Axis2ServiceProvider {
                 jmsListener.start();
             }
         } catch (AxisFault e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -648,7 +662,23 @@ public class Axis2ServiceProvider {
         return returnPolicySet;
     } 
     
-    private void configureSecurity() throws AxisFault {
+    private void setupPolicies(ConfigurationContext configContext) throws IllegalAccessException, 
+                                                                          InstantiationException,
+                                                                          ClassNotFoundException {
+        if ( wsBinding instanceof PolicySetAttachPoint ) {
+            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding; 
+            PolicyHandler policyHandler = null;
+            for ( PolicySet policySet : policiedBinding.getPolicySets() ) {
+                policyHandler = PolicyHandlerUtils.findPolicyHandler(policySet, policyHandlerClassnames);
+                    if ( policyHandler != null ) {
+                        policyHandler.setApplicablePolicySet(policySet);
+                        policyHandler.setUp(configContext);
+                    }
+            }
+        }
+    }
+    
+    /*private void configureSecurity() throws AxisFault {
         if ( wsBinding instanceof PolicySetAttachPoint ) {
             PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding; 
             Parameter configParam = null;
@@ -670,7 +700,7 @@ public class Axis2ServiceProvider {
                 }
             }
         }
-    }
+    }*/
     
     private void deployRampartModule()  throws DeploymentException, AxisFault {
     	ClassLoader tccl = (ClassLoader) org.apache.axis2.java.security.AccessController

@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
@@ -27,6 +30,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.java2wsdl.Java2WSDLHelper;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -40,7 +44,8 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
                                          RuntimeComponentReference reference,
                                          WebServiceBinding wsBinding,
                                          ServletHost servletHost,
-                                         MessageFactory messageFactory) {
+                                         MessageFactory messageFactory,
+                                         Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames) {
 
         this.wsBinding = wsBinding;
 
@@ -78,7 +83,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
         // Set to use the Axiom data binding
         contract.getInterface().resetDataBinding(OMElement.class.getName());
 
-        axisClient = new Axis2ServiceClient(component, reference, wsBinding, servletHost, messageFactory);
+        axisClient = new Axis2ServiceClient(component, reference, wsBinding, servletHost, messageFactory, policyHandlerClassnames);
     }
 
     public void start() {

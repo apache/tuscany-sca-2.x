@@ -28,8 +28,7 @@ import org.apache.tuscany.sca.policy.util.PolicyHandler;
  */
 
 /**
- * Policy handler to handle PolicySet related to Logging with the QName
- * {http://tuscany.apache.org/xmlns/sca/1.0/impl/java}LoggingPolicy
+ * Policy handler to handle PolicySet containing JaasAuthenticationPolicy instances
  */
 public class JaasAuthenticationPolicyHandler implements PolicyHandler {
     private static final String jaasPolicy = "JaasPolicy";
