@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.itest.generate;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.util.List;
@@ -98,7 +99,10 @@ public class Generate {
                 context.put("template", template);
             	String tmp = template.getTemplateName();
             	String filename = projectBuildDir + "/" + template.getTemplateTargetDir() + "/" + tmp.substring(0,tmp.length() - 3);
-                FileWriter fw = new FileWriter(filename);
+            	File f = new File(filename);
+            	// Create folders since the package doesn't exist before the code-gen for the 1st time
+            	f.getParentFile().mkdirs();
+                FileWriter fw = new FileWriter(f);
             	System.out.println(">> Processing " + template.getTemplateName() + " to " + filename);
                 Velocity.mergeTemplate(template.getTemplateName(), context, fw );
                 fw.flush();
