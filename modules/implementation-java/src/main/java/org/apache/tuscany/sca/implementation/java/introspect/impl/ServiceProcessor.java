@@ -135,7 +135,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         }        
         for (Service service : type.getServices()) {
             JavaInterface javaInterface = (JavaInterface)service.getInterfaceContract().getCallbackInterface();
-            if (baseType == javaInterface.getJavaClass()) {
+            if (javaInterface != null && baseType == javaInterface.getJavaClass()) {
                 callbackService = service;
             }
         }
