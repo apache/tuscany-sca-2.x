@@ -326,27 +326,31 @@
 		<dependency>
 			<groupId>net.sf.saxon</groupId>
 			<artifactId>saxon-dom</artifactId>
-            <version>8.7</version>
-            <!--version>9.0.0.2</version-->
+			<version>8.7</version>
+			<!--version>9.0.0.2</version-->
 		</dependency>
 		<dependency>
 			<groupId>net.sf.saxon</groupId>
 			<artifactId>saxon-xpath</artifactId>
-            <version>8.7</version>
-            <!--version>9.0.0.2</version-->
+			<version>8.7</version>
+			<!--version>9.0.0.2</version-->
 		</dependency>
-		
-        <dependency>
-           <groupId>commons-codec</groupId>
-           <artifactId>commons-codec</artifactId>
-           <version>1.3</version>
-           <exclusions>
-               <exclusion>
-                   <groupId>commons-codec</groupId>
-                   <artifactId>commons-codec</artifactId>
-               </exclusion>
-           </exclusions>
-        </dependency>		
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.3</version>
+			<exclusions>
+			    <exclusion>
+			    <groupId>commons-codec</groupId>
+			    <artifactId>commons-codec</artifactId>
+			    </exclusion>
+			</exclusions>
+		</dependency>		
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.13</version>
+		</dependency>
 	</dependencies>
 	
 	<build>
