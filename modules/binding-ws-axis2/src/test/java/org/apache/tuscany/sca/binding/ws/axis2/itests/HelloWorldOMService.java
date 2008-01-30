@@ -26,6 +26,7 @@ import org.apache.axiom.om.OMFactory;
 public class HelloWorldOMService implements HelloWorldOM {
 
     public OMElement getGreetings(OMElement requestOM) {
+        System.out.println(" **** getGreetings **** ");
         String name = requestOM.getFirstElement().getText();
 
         OMFactory omFactory = OMAbstractFactory.getOMFactory();

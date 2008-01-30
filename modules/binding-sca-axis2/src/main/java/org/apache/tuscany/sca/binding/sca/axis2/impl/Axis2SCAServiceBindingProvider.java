@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.axiom.om.OMElement;
@@ -33,6 +35,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.java2wsdl.Java2WSDLHelper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
@@ -60,7 +63,8 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
                                           RuntimeComponentService service,
                                           DistributedSCABinding binding,
                                           ServletHost servletHost,
-                                          MessageFactory messageFactory) {
+                                          MessageFactory messageFactory,
+                                          Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames) {
      	this.nodeFactory = nodeFactory;
         this.binding = binding.getSCABinding();
         wsBinding = (new DefaultWebServiceBindingFactory()).createWebServiceBinding();
@@ -83,7 +87,8 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
                                                    this.binding,
                                                    wsBinding,
                                                    servletHost,
-                                                   messageFactory);
+                                                   messageFactory,
+                                                   policyHandlerClassnames);
         
         this.binding.setURI(wsBinding.getURI());
         

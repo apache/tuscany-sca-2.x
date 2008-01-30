@@ -19,12 +19,16 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceProvider;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
@@ -54,13 +58,15 @@ public class Axis2SCAServiceProvider extends Axis2ServiceProvider {
                                    SCABinding binding,
                                    WebServiceBinding wsBinding,
                                    ServletHost servletHost,
-                                   MessageFactory messageFactory)  {
+                                   MessageFactory messageFactory,
+                                   Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames)  {
         
         super(component, 
                 service, 
                 wsBinding, 
                 servletHost,
-                messageFactory);
+                messageFactory,
+                policyHandlerClassnames);
 
         this.binding = binding;
     }

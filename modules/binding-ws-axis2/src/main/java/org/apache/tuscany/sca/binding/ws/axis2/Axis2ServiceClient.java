@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.ws.axis2;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import javax.wsdl.Binding;
 import javax.wsdl.BindingOperation;
@@ -70,6 +71,9 @@ import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
+import org.apache.tuscany.sca.policy.util.PolicyHandler;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerUtils;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 
@@ -77,15 +81,19 @@ public class Axis2ServiceClient {
 
     private WebServiceBinding wsBinding;
     private ServiceClient serviceClient;
+    Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames = null;
     private static final QName SOAP12_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0", "soap12");
+    
 
     public Axis2ServiceClient(RuntimeComponent component,
                               AbstractContract contract,
                               WebServiceBinding wsBinding,
                               ServletHost servletHost,
-                              MessageFactory messageFactory) {
+                              MessageFactory messageFactory, 
+                              Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames) {
 
         this.wsBinding = wsBinding;
+        this.policyHandlerClassnames = policyHandlerClassnames;
     }
 
     protected void start() {
@@ -106,7 +114,8 @@ public class Axis2ServiceClient {
             TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
             ConfigurationContext configContext = tuscanyAxisConfigurator.getConfigurationContext();
 
-            configureSecurity(configContext);
+            //configureSecurity(configContext);
+            setupPolicies(configContext);
             
             Definition wsdlDefinition = wsBinding.getWSDLDefinition().getDefinition();
             setServiceAndPort(wsBinding);
@@ -137,6 +146,12 @@ public class Axis2ServiceClient {
            
         } catch (AxisFault e) {
             throw new RuntimeException(e); // TODO: better exception
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
     
@@ -382,7 +397,23 @@ public class Axis2ServiceClient {
         return null;
     }
     
-    private void configureSecurity(ConfigurationContext configContext) throws AxisFault {
+    private void setupPolicies(ConfigurationContext configContext) throws IllegalAccessException,
+        InstantiationException, ClassNotFoundException {
+        if (wsBinding instanceof PolicySetAttachPoint) {
+            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding;
+            PolicyHandler policyHandler = null;
+            for (PolicySet policySet : policiedBinding.getPolicySets()) {
+                policyHandler =
+                    PolicyHandlerUtils.findPolicyHandler(policySet, policyHandlerClassnames);
+                if (policyHandler != null) {
+                    policyHandler.setApplicablePolicySet(policySet);
+                    policyHandler.setUp(configContext);
+                }
+            }
+        }
+    }
+    
+    /*private void configureSecurity(ConfigurationContext configContext) throws AxisFault {
         if ( wsBinding instanceof PolicySetAttachPoint ) {
             PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding;
             Parameter configParam = null;
@@ -404,7 +435,7 @@ public class Axis2ServiceClient {
                 }
             }
         }
-    }
+    }*/
 
 
 }

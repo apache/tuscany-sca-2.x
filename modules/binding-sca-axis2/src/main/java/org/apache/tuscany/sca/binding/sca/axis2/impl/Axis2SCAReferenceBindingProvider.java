@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.binding.sca.axis2.impl;
 
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,6 +42,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.java2wsdl.Java2WSDLHelper;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -71,7 +74,8 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
                                             RuntimeComponentReference reference,
                                             DistributedSCABinding binding,
                                             ServletHost servletHost,
-                                            MessageFactory messageFactory) {
+                                            MessageFactory messageFactory,
+                                            Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames) {
     	this.nodeFactory = nodeFactory;
         this.component = component;
         this.reference = reference;
@@ -94,7 +98,8 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
                                                                          reference,
                                                                          wsBinding,
                                                                          servletHost,
-                                                                         messageFactory);
+                                                                         messageFactory,
+                                                                         policyHandlerClassnames);
     }
 
     public InterfaceContract getBindingInterfaceContract() {

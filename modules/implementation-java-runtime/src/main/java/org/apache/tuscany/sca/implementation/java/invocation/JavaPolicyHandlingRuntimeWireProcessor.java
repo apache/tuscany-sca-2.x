@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerUtils;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -65,7 +66,8 @@ public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProces
                 try {
                     //for ( PolicySet policySet : policiedImpl.getPolicySets() ) {
                     for ( PolicySet policySet : component.getPolicySets() ) {
-                        policyHandler = getPolicyHandler(policySet, javaImpl.getPolicyHandlerClassNames());
+                        policyHandler = 
+                            PolicyHandlerUtils.findPolicyHandler(policySet, javaImpl.getPolicyHandlerClassNames());
                         if ( policyHandler != null ) {
                             policyHandler.setUp(javaImpl);
                             implPolicyHandlers.add(policyHandler);
@@ -85,7 +87,8 @@ public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProces
                             for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
                                 if ( confOp.getName().equals(operationName)) {
                                     for ( PolicySet policySet : confOp.getPolicySets() ) {
-                                        policyHandler = getPolicyHandler(policySet, javaImpl.getPolicyHandlerClassNames());
+                                        policyHandler = 
+                                            PolicyHandlerUtils.findPolicyHandler(policySet, javaImpl.getPolicyHandlerClassNames());
                                         policyHandler.setUp(javaImpl);
                                         applicablePolicyHandlers.add(policyHandler);
                                     }
@@ -119,33 +122,4 @@ public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProces
             }
         }
     }
-    
-    private PolicyHandler getPolicyHandler(PolicySet policySet, 
-                                           Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames) 
-                                throws IllegalAccessException, ClassNotFoundException, InstantiationException {
-        
-        PolicyHandler handler = null;
-        
-        for (ClassLoader classLoader : policyHandlerClassNames.keySet()) {
-            for ( PolicyHandlerTuple handlerTuple : policyHandlerClassNames.get(classLoader) ) {
-                for ( Intent intent : policySet.getProvidedIntents() ) {
-                    if ( intent.getName().equals(handlerTuple.getProvidedIntentName())) {
-                        for ( Object policy : policySet.getPolicies() ) {
-                            if ( policy.getClass().getName().equals(handlerTuple.getPolicyModelClassName())) {
-                                handler = 
-                                    (PolicyHandler)Class.forName(handlerTuple.getPolicyHandlerClassName(), 
-                                                                 true, 
-                                                                 classLoader).newInstance();
-                                    handler.setApplicablePolicySet(policySet);
-                                    return handler;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        return handler;
-    }
-                            
 }
