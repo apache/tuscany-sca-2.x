@@ -32,6 +32,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.tuscany.sca.host.webapp.junit.WebTestRunner;
+
 /**
  * A servlet filter that forwards service requests to the servlets registered with
  * the Tuscany ServletHost.
@@ -41,34 +43,41 @@ public class TuscanyServletFilter implements Filter {
     //private static final Logger logger = Logger.getLogger(WebAppServletHost.class.getName());
 
     private WebAppServletHost servletHost;
+    private WebTestRunner testRunner = new WebTestRunner();
 
     public void init(final FilterConfig config) throws ServletException {
+        testRunner.init(config);
 
         // TODO: must be a better way to get this than using a static
         servletHost = WebAppServletHost.getInstance();
-        
+
         // Initialize the servlet host
         servletHost.init(new ServletConfig() {
             public String getInitParameter(String name) {
                 return config.getInitParameter(name);
             }
+
             public Enumeration getInitParameterNames() {
                 return config.getInitParameterNames();
             }
+
             public ServletContext getServletContext() {
                 return config.getServletContext();
             }
+
             public String getServletName() {
                 return config.getFilterName();
             }
         });
     }
-    
+
     public void destroy() {
+        testRunner.destroy();
         WebAppServletHost.getInstance().destroy();
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, javax.servlet.FilterChain chain) throws IOException ,ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, javax.servlet.FilterChain chain)
+        throws IOException, ServletException {
 
         // Get the servlet path
         HttpServletRequest httpRequest = (HttpServletRequest)request;
@@ -79,19 +88,29 @@ public class TuscanyServletFilter implements Filter {
         if (path == null) {
             path = "/";
         }
-        
+
+        if (testRunner.isJunitEnabled()) {
+            // This request is to run the test cases
+            // The path is /junit or /junit?<testCaseClassName>
+            if (path.equals("/junit")) {
+                testRunner.doFilter(request, response, chain);
+                return;
+            }
+        }
+
         // Get a request dispatcher for the servlet mapped to that path
         RequestDispatcher dispatcher = servletHost.getRequestDispatcher(path);
         if (dispatcher != null) {
 
             // Let the dispatcher forward the request to the servlet 
             dispatcher.forward(request, response);
-            
+
         } else {
-            
+
             // Proceed down the filter chain
             chain.doFilter(request, response);
-            
+
         }
     }
+
 }
