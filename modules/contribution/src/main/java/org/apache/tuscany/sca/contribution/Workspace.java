@@ -28,6 +28,10 @@ import java.util.List;
  */
 public interface Workspace extends Artifact {
 
+    /**
+     * Returns the list of contributions in the workspace. 
+     * @return the list of contributions
+     */
     List<Contribution> getContributions();
     
 }
