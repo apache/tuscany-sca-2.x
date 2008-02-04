@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -74,6 +75,10 @@ public class WebJUnitMojo extends AbstractMojo {
     private int maxRetries = 3;
 
     public void execute() throws MojoExecutionException {
+        if (project.getPackaging().equals("pom")) {
+            return;
+        }
+
         reset();
 
         if (url == null) {
@@ -84,25 +89,24 @@ public class WebJUnitMojo extends AbstractMojo {
 
         int runs = 0, errors = 0, failures = 0;
         String xml = "";
-        
+
         try {
             HttpClient client = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url);
 
             // Execute HTTP request
             HttpResponse response = client.execute(httpget);
-            String header = response.getFirstHeader("junit.errors").getValue();
-            errors = header == null ? 0 : Integer.parseInt(header);
-            header = response.getFirstHeader("junit.failures").getValue();
-            failures = header == null ? 0 : Integer.parseInt(header);
-            header = response.getFirstHeader("junit.runs").getValue();
-            runs = header == null ? 0 : Integer.parseInt(header);
+            Header header = response.getFirstHeader("junit.errors");
+            errors = header == null ? 0 : Integer.parseInt(header.getValue());
+            header = response.getFirstHeader("junit.failures");
+            failures = header == null ? 0 : Integer.parseInt(header.getValue());
+            header = response.getFirstHeader("junit.runs");
+            runs = header == null ? 0 : Integer.parseInt(header.getValue());
             getLog().info("Runs: " + runs + ", Failures: " + failures + ", Errors: " + errors);
 
             // Get hold of the response entity
             HttpEntity entity = response.getEntity();
 
-            
             // If the response does not enclose an entity, there is no need
             // to bother about connection release
             if (entity != null) {
