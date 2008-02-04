@@ -48,6 +48,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.ExtensibleContributionListener;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
+import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 
 /**

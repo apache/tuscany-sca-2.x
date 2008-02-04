@@ -17,13 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.resolver;
+package org.apache.tuscany.sca.contribution.xml;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
  * A test implementation of a model resolver, based on a map.

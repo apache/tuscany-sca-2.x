@@ -35,17 +35,10 @@ import org.apache.tuscany.sca.contribution.processor.impl.FolderContributionProc
 public class FolderContributionPackageProcessorTestCase extends TestCase {
     private static final String FOLDER_CONTRIBUTION = ".";
     
-    private File contributionRoot;
-
-    @Override
-    protected void setUp() throws Exception {
-        this.contributionRoot = new File(FOLDER_CONTRIBUTION);
-    }
-    
     public final void testProcessPackageArtifacts() throws Exception {
         FolderContributionProcessor folderProcessor = new FolderContributionProcessor();
 
-        List<URI> artifacts = folderProcessor.getArtifacts(contributionRoot.toURL(), null);
+        List<URI> artifacts = folderProcessor.getArtifacts(new File(FOLDER_CONTRIBUTION).toURL(), null);
         assertNotNull(artifacts);
     }
 }

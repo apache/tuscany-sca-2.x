@@ -27,11 +27,11 @@ import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
 import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 
 /**
- * Test DefaultArtifactResolver.
+ * Test the default model resolver implementation.
  *
  * @version $Rev$ $Date$
  */
-public class ArtifactResolverTestCase extends TestCase {
+public class DefaultModelResolverTestCase extends TestCase {
     
     private ModelResolver resolver;
     private ContributionFactory factory;
@@ -40,10 +40,6 @@ public class ArtifactResolverTestCase extends TestCase {
     protected void setUp() throws Exception {
         resolver = new ModelResolverImpl(getClass().getClassLoader());
         factory = new DefaultContributionFactory();
-    }
-    
-    @Override
-    protected void tearDown() throws Exception {
     }
     
     public void testResolved() {

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.services;
+package org.apache.tuscany.sca.contribution.xml;
 
 import java.io.StringReader;
 
@@ -31,12 +31,11 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
-import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
-import org.apache.tuscany.sca.contribution.service.impl.ContributionClassLoader;
-import org.apache.tuscany.sca.contribution.service.impl.ContributionMetadataProcessor;
 
 /**
+ * Test the contribution metadata processor.
+ * 
  * @version $Rev$ $Date$
  */
 
@@ -70,7 +69,7 @@ public class ContributionMetadataDocumentProcessorTestCase extends TestCase {
         ContributionMetadataProcessor loader = 
             new ContributionMetadataProcessor(assemblyFactory, contributionFactory, null);
         Contribution contribution = contributionFactory.createContribution();
-        contribution.setModelResolver(new ModelResolverImpl(getClass().getClassLoader()));
+        contribution.setModelResolver(new TestModelResolver(contribution, null));
         contribution = loader.read(reader);
         assertNotNull(contribution);
         assertEquals(2, contribution.getDeployables().size());
@@ -83,7 +82,7 @@ public class ContributionMetadataDocumentProcessorTestCase extends TestCase {
         ContributionMetadataProcessor loader = 
             new ContributionMetadataProcessor(assemblyFactory, contributionFactory, null);
         Contribution contribution = contributionFactory.createContribution();
-        contribution.setModelResolver(new ModelResolverImpl(getClass().getClassLoader()));
+        contribution.setModelResolver(new TestModelResolver(contribution, null));
         try {
             loader.read(reader);
             fail("InvalidException should have been thrown");

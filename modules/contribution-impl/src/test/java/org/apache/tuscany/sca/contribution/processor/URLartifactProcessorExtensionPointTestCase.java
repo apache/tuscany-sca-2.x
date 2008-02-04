@@ -36,7 +36,8 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
  * @version $Rev$ $Date$
  */
 public class URLartifactProcessorExtensionPointTestCase extends TestCase {
-    URLArtifactProcessorExtensionPoint artifactProcessors;
+    
+    private URLArtifactProcessorExtensionPoint artifactProcessors;
     
     @Override
     protected void setUp() throws Exception {
@@ -47,23 +48,13 @@ public class URLartifactProcessorExtensionPointTestCase extends TestCase {
     
     
     public final void testFileTypeProcessor() {
-        URLArtifactProcessor processor = null;
-        
-        processor = artifactProcessors.getProcessor(".m1");
-        assertNotNull(processor);
+        assertNotNull(artifactProcessors.getProcessor(".m1"));
     }
     
     
     public final void testFileNameProcessor() {
-        URLArtifactProcessor processor = null;
+        assertNotNull(artifactProcessors.getProcessor("file.m2"));
         
-        processor = artifactProcessors.getProcessor("file.m2");
-        assertNotNull(processor);
-        
-    }
-    
-    @Override
-    protected void tearDown() throws Exception {
     }
     
     /**
@@ -71,15 +62,13 @@ public class URLartifactProcessorExtensionPointTestCase extends TestCase {
      *
      */
     
-    class M1 {
-        
+    private class M1 {
     }
     
-    class M2 {
-        
+    private class M2 {
     }
     
-    class FileTypeArtifactProcessor implements URLArtifactProcessor<M1> {
+    private class FileTypeArtifactProcessor implements URLArtifactProcessor<M1> {
         public FileTypeArtifactProcessor() {
         }
 
@@ -88,7 +77,6 @@ public class URLartifactProcessorExtensionPointTestCase extends TestCase {
         }
         
         public void resolve(M1 m1, ModelResolver resolver) throws ContributionResolveException {
-            //stub
         }
 
         public String getArtifactType() {
@@ -100,7 +88,7 @@ public class URLartifactProcessorExtensionPointTestCase extends TestCase {
         }        
     }
     
-    class FileNameArtifactProcessor implements URLArtifactProcessor<M2> {
+    private class FileNameArtifactProcessor implements URLArtifactProcessor<M2> {
         public FileNameArtifactProcessor() {
         }
 
@@ -109,7 +97,6 @@ public class URLartifactProcessorExtensionPointTestCase extends TestCase {
         }
         
         public void resolve(M2 m2, ModelResolver resolver) throws ContributionResolveException {
-            //stub
         }
 
         public String getArtifactType() {
