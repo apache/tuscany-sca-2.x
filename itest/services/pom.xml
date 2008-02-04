@@ -115,23 +115,6 @@
                             </execution>
                         </executions>
                     </plugin>
-
-                    <plugin>
-                        <groupId>org.apache.tuscany.sca</groupId>
-                        <artifactId>tuscany-maven-web-junit</artifactId>
-                        <version>1.2-incubating-SNAPSHOT</version>
-                        <executions>
-                            <execution>
-                                <configuration>
-                                    <url>http://localhost:8085/${project.build.finalName}/junit</url>
-                                </configuration>
-                                <phase>integration-test</phase>
-                                <goals>
-                                    <goal>test</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -144,6 +127,30 @@
             </activation>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-maven-web-junit</artifactId>
+                        <version>1.2-incubating-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <id>generate-web-xml</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>web-junit-test</id>
+                                <configuration>
+                                    <url>http://localhost:8085/${project.build.finalName}/junit</url>
+                                </configuration>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.codehaus.cargo</groupId>
                         <artifactId>cargo-maven2-plugin</artifactId>
@@ -205,6 +212,33 @@
 
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-maven-web-junit</artifactId>
+                        <version>1.2-incubating-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <id>generate-web-xml</id>
+                                <configuration>
+                                    <geronimo>true</geronimo>
+                                </configuration>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>web-junit-test</id>
+                                <configuration>
+                                    <url>http://localhost:8080/${project.build.finalName}/junit</url>
+                                </configuration>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.geronimo.plugins</groupId>
                         <artifactId>geronimo-maven-plugin</artifactId>
