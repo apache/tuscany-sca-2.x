@@ -103,7 +103,7 @@ public class NodeImplementationProcessor extends BaseStAXArtifactProcessor imple
 
     public void write(NodeImplementation implementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         
-        // Write <implementation.resource>
+        // Write <implementation.node>
         Composite composite = implementation.getComposite();
         QName qname;
         if (composite != null) {
