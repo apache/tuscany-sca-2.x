@@ -632,15 +632,12 @@ public class CompositeWireBuilderImpl {
     public void wireCompositeReferences(Composite composite) {
     
         // Process nested composites recursively
-        // [rfeng] I comment out the following loop as there's no need to do the recursive wiring.
-        /*
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
                 wireCompositeReferences((Composite)implementation);
             }
         }
-        */
     
         // Process composite references declared in this composite
         for (Reference reference : composite.getReferences()) {
