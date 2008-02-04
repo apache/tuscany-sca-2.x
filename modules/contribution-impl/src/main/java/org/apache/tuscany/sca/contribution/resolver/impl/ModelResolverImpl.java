@@ -90,6 +90,8 @@ public class ModelResolverImpl implements ModelResolver {
         return map.remove(resolved);
     }
     
+    //FIXME This method is a hack and should be removed, it's not even on
+    // the ModelResolver interface
     public Collection<Object> getModels() {
         return map.values();
     }

@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
  *
  * @version $Rev$ $Date$
  */
-public class ExtensibleArtifactResolverTestCase extends TestCase {
+public class ExtensibleModelResolverTestCase extends TestCase {
     private ExtensibleModelResolver resolver;
     
     private ContributionFactory factory;
@@ -48,10 +48,6 @@ public class ExtensibleArtifactResolverTestCase extends TestCase {
         resolver = new ExtensibleModelResolver(null, resolvers, factories, null);
 
         factory = new DefaultContributionFactory();
-    }
-    
-    @Override
-    protected void tearDown() throws Exception {
     }
     
     public void testResolvedDefault() {
@@ -92,7 +88,7 @@ public class ExtensibleArtifactResolverTestCase extends TestCase {
         assertTrue(x == artifact);
     }
     
-    class Model {
+    private class Model {
         private String name;
         
         Model(String name) {
@@ -110,7 +106,7 @@ public class ExtensibleArtifactResolverTestCase extends TestCase {
         }
     }
 
-    class OtherModel {
+    private class OtherModel {
         private String name;
         
         OtherModel(String name) {

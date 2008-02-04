@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.contribution.service.impl;
+package org.apache.tuscany.sca.contribution.xml;
 
 import java.io.IOException;
 import java.io.InputStream;

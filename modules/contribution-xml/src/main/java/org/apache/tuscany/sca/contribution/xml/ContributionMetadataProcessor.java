@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.contribution.service.impl;
+package org.apache.tuscany.sca.contribution.xml;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
@@ -86,8 +86,6 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
 
                         // Read <contribution>
                         contribution = this.contributionFactory.createContribution();
-                        //FIXME Remove dependency on classloaders
-                        contribution.setClassLoader(new ContributionClassLoader(contribution));
                         
                     } else if (DEPLOYABLE.equals(element)) {
                         
