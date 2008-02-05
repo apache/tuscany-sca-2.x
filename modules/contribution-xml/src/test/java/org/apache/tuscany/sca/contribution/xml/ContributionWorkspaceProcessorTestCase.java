@@ -22,16 +22,14 @@ package org.apache.tuscany.sca.contribution.xml;
 import java.io.StringReader;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
-import org.apache.tuscany.sca.contribution.service.ContributionReadException;
+import org.apache.tuscany.sca.contribution.Workspace;
 
 /**
  * Test the contribution metadata processor.
@@ -39,21 +37,23 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
  * @version $Rev$ $Date$
  */
 
-public class ContributionMetadataDocumentProcessorTestCase extends TestCase {
+public class ContributionWorkspaceProcessorTestCase extends TestCase {
 
     private static final String VALID_XML =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
-            + "<deployable composite=\"ns:Composite1\"/>"
-            + "<deployable composite=\"ns:Composite2\"/>"
-            + "</contribution>";
+            + "<workspace xmlns=\"http://tuscany.apache.org/xmlns/sca/1.0\">"
+            + "<contribution uri=\"uri1\" location=\"location1\"/>"
+            + "<contribution uri=\"uri2\" location=\"location2\"/>"
+            + "</workspace>";
 
     private static final String INVALID_XML =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
-            + "<deployable composite=\"ns:Composite1\"/>"
-            + "<deployable/>"
-            + "</contribution>";
+            + "<workspace xmlns=\"http://tuscany.apache.org/xmlns/sca/1.0\">"
+            + "<contribution uri=\"uri1\" location=\"location1\"/>"
+            + "<contribution uri=\"uri2\" location=\"location2\"/>"
+            + "</contribution>"
+            + "</workspace>";
+
     private XMLInputFactory xmlFactory;
 
     @Override
@@ -61,33 +61,29 @@ public class ContributionMetadataDocumentProcessorTestCase extends TestCase {
         xmlFactory = XMLInputFactory.newInstance();
     }
 
-    public void testLoad() throws Exception {
+    public void testRead() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(VALID_XML));
 
-        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         ContributionFactory contributionFactory = new DefaultContributionFactory();
-        ContributionMetadataProcessor loader = 
-            new ContributionMetadataProcessor(assemblyFactory, contributionFactory, null);
-        Contribution contribution = contributionFactory.createContribution();
-        contribution.setModelResolver(new TestModelResolver(contribution, null));
-        contribution = loader.read(reader);
-        assertNotNull(contribution);
-        assertEquals(2, contribution.getDeployables().size());
+        ContributionWorkspaceProcessor processor = 
+            new ContributionWorkspaceProcessor(contributionFactory, null);
+        Workspace workspace = processor.read(reader);
+        assertNotNull(workspace);
+        assertEquals(2, workspace.getContributions().size());
+        assertEquals("uri2", workspace.getContributions().get(1).getURI());
+        assertEquals("location2", workspace.getContributions().get(1).getLocation());
   }
 
-    public void testLoadInvalid() throws Exception {
+    public void testReadInvalid() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(INVALID_XML));
-        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         ContributionFactory contributionFactory = new DefaultContributionFactory();
-        ContributionMetadataProcessor loader = 
-            new ContributionMetadataProcessor(assemblyFactory, contributionFactory, null);
-        Contribution contribution = contributionFactory.createContribution();
-        contribution.setModelResolver(new TestModelResolver(contribution, null));
+        ContributionWorkspaceProcessor processor = 
+            new ContributionWorkspaceProcessor(contributionFactory, null);
         try {
-            loader.read(reader);
+            processor.read(reader);
             fail("InvalidException should have been thrown");
-        } catch (ContributionReadException e) {
+        } catch (XMLStreamException e) {
             assertTrue(true);
         }
-    }    
+    }
 }

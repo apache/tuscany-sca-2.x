@@ -225,7 +225,17 @@ public abstract class BaseStAXArtifactProcessor {
         }
         writeAttributes(writer, attrs);
     }
-
+    
+    /**
+     * Start an element.
+     * @param qname
+     * @param attrs
+     * @throws XMLStreamException
+     */
+    protected void writeStart(XMLStreamWriter writer, QName qname, XAttr... attrs) throws XMLStreamException {
+        writeStart(writer, qname.getNamespaceURI(), qname.getLocalPart(), attrs);
+    }
+    
     /**
      * End an element. 
      * @param writer
@@ -245,6 +255,17 @@ public abstract class BaseStAXArtifactProcessor {
         writer.setDefaultNamespace(uri);
         writeStart(writer, uri, name, attrs);
         writer.writeDefaultNamespace(uri);
+    }
+
+    /**
+     * Start a document.
+     * @param writer
+     * @param qname
+     * @param attrs
+     * @throws XMLStreamException
+     */
+    protected void writeStartDocument(XMLStreamWriter writer, QName qname, XAttr... attrs) throws XMLStreamException {
+        writeStartDocument(writer, qname.getNamespaceURI(), qname.getLocalPart(), attrs);
     }
 
     /**
