@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.contribution.processor;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -37,8 +38,9 @@ public class FolderContributionPackageProcessorTestCase extends TestCase {
     
     public final void testProcessPackageArtifacts() throws Exception {
         FolderContributionProcessor folderProcessor = new FolderContributionProcessor();
+        URL contributionURL = new File(FOLDER_CONTRIBUTION).toURL().toURI().toURL();
 
-        List<URI> artifacts = folderProcessor.getArtifacts(new File(FOLDER_CONTRIBUTION).toURL(), null);
+        List<URI> artifacts = folderProcessor.getArtifacts(contributionURL, null);
         assertNotNull(artifacts);
     }
 }
