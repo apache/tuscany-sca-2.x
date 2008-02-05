@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -66,13 +67,7 @@ public class WebJUnitMojo extends AbstractMojo {
      * Timeout for the http connection
      * @parameter
      */
-    private int timeout = 60000; // 1 minute
-
-    /**
-     * Maximum number of retries
-     * @parameter
-     */
-    private int maxRetries = 3;
+    private int timeout = 300000; // 5 minutes
 
     public void execute() throws MojoExecutionException {
         if (project.getPackaging().equals("pom")) {
@@ -85,6 +80,20 @@ public class WebJUnitMojo extends AbstractMojo {
             url = "http://localhost:8080/" + project.getBuild().getFinalName() + "/junit";
         }
 
+        if (testCases != null) {
+            StringBuffer buf = new StringBuffer(url);
+            for (int i = 0; i < testCases.length; i++) {
+                if (i == 0) {
+                    buf.append('?');
+                }
+                buf.append(testCases[i]);
+                if (i != testCases.length - 1) {
+                    buf.append(',');
+                }
+            }
+            url = buf.toString();
+        }
+
         getLog().info("Connecting to " + url);
 
         int runs = 0, errors = 0, failures = 0;
@@ -93,9 +102,14 @@ public class WebJUnitMojo extends AbstractMojo {
         try {
             HttpClient client = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url);
+            httpget.getParams().setParameter("http.socket.timeout", new Integer(timeout));
 
             // Execute HTTP request
             HttpResponse response = client.execute(httpget);
+
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                throw new MojoExecutionException(response.getStatusLine().getReasonPhrase());
+            }
             Header header = response.getFirstHeader("junit.errors");
             errors = header == null ? 0 : Integer.parseInt(header.getValue());
             header = response.getFirstHeader("junit.failures");
