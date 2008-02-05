@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
 /**
- * Processor responsible for loading particular elements from contribution metadata file
+ * Processor for contribution metadata
  * 
  * @version $Rev$ $Date$
  */
@@ -48,8 +48,8 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
     
     private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     
-    private static final QName CONTRIBUTION = new QName(SCA10_NS, "contribution");
-    private static final QName DEPLOYABLE = new QName(SCA10_NS, "deployable");
+    private static final QName CONTRIBUTION_QNAME = new QName(SCA10_NS, "contribution");
+    private static final QName DEPLOYABLE_QNAME = new QName(SCA10_NS, "deployable");
     
     private final AssemblyFactory assemblyFactory;
     private final ContributionFactory contributionFactory;
@@ -57,7 +57,6 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
     private final StAXArtifactProcessor<Object> extensionProcessor;
 
     public ContributionMetadataProcessor(AssemblyFactory assemblyFactory, ContributionFactory contributionFactory, StAXArtifactProcessor<Object> extensionProcessor) {
-        super();
         this.assemblyFactory = assemblyFactory;
         this.contributionFactory = contributionFactory;
         this.extensionProcessor = extensionProcessor;
@@ -65,7 +64,7 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
     
     
     public QName getArtifactType() {
-        return CONTRIBUTION;
+        return CONTRIBUTION_QNAME;
     }
 
     public Class<Contribution> getModelType() {
@@ -74,20 +73,20 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
 
     public Contribution read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         Contribution contribution = null;
+        QName name = null;
         
-        QName element = null;
         while (reader.hasNext()) {
             int event = reader.getEventType();
             switch (event) {
                 case START_ELEMENT:
-                    element = reader.getName();
+                    name = reader.getName();
                     
-                    if (CONTRIBUTION.equals(element)) {
+                    if (CONTRIBUTION_QNAME.equals(name)) {
 
                         // Read <contribution>
                         contribution = this.contributionFactory.createContribution();
                         
-                    } else if (DEPLOYABLE.equals(element)) {
+                    } else if (DEPLOYABLE_QNAME.equals(name)) {
                         
                         
                         // Read <deployable>
@@ -118,7 +117,7 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
                     break;
                     
                 case XMLStreamConstants.END_ELEMENT:
-                    if (CONTRIBUTION.equals(reader.getName())) {
+                    if (CONTRIBUTION_QNAME.equals(reader.getName())) {
                         return contribution;
                     }
                     break;        
@@ -136,21 +135,21 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
     public void write(Contribution contribution, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         
         // Write <contribution>
-        writeStartDocument(writer, CONTRIBUTION.getNamespaceURI(), CONTRIBUTION.getLocalPart());
+        writeStartDocument(writer, CONTRIBUTION_QNAME.getNamespaceURI(), CONTRIBUTION_QNAME.getLocalPart());
 
-        // Write imports
+        // Write <import>
         for (Import imp: contribution.getImports()) {
             extensionProcessor.write(imp, writer);
         }
         
-        // Write exports
+        // Write <export>
         for (Export export: contribution.getExports()) {
             extensionProcessor.write(export, writer);
         }
     
-        // Write <deployable> elements
+        // Write <deployable>
         for (Composite deployable: contribution.getDeployables()) {
-            writeStart(writer, DEPLOYABLE.getNamespaceURI(), DEPLOYABLE.getLocalPart(),
+            writeStart(writer, DEPLOYABLE_QNAME.getNamespaceURI(), DEPLOYABLE_QNAME.getLocalPart(),
                        new XAttr("composite", deployable.getName()));
             writeEnd(writer);
         }
