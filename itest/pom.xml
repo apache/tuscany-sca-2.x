@@ -107,37 +107,6 @@
             </modules>
         </profile>
         
-        <!--
-        Multiple configuration properties based on OS
-        -->
-        <profile>
-            <id>win32</id>
-            <activation>
-                <os>
-                    <family>windows</family>
-                </os>
-            </activation>
-           <properties>
-               <webserver.url>http://localhost:8080</webserver.url>
-               <cargo.servlet.port>8080</cargo.servlet.port>
-               <geronimo.home>C:\Apache\geronimo-tomcat6-jee5-2.0.2</geronimo.home>
-           </properties>
-        </profile>
-
-        <profile>
-            <id>unix</id>
-            <activation>
-                <os>
-                    <family>unix</family>
-                </os>
-            </activation>
-           <properties>
-               <webserver.url>http://localhost.localdomain:8080</webserver.url>
-               <cargo.servlet.port>8080</cargo.servlet.port>
-               <geronimo.home>/opt/geronimo-jetty6-jee5-2.0.2</geronimo.home>
-           </properties>
-        </profile>
-
         <!-- 
         This profile handles generation of jar/war artifacts to be used in executing tests in a web-container
         -->
@@ -229,9 +198,18 @@
             <id>jetty</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
+                <!--
+                <file>
+                    <exists>src</exists>
+                </file>
+                -->
             </activation>
+           <properties>
+               <http.port>8085</http.port>
+               <http.base>http://127.0.0.1:${http.port}</http.base>
+           </properties>
+
             <build>
-            <pluginManagement>
                 <plugins>
                     <plugin>
                         <groupId>org.codehaus.cargo</groupId>
@@ -265,12 +243,12 @@
                             <wait>false</wait>
                             <configuration>
                                 <properties>
-                                    <cargo.servlet.port>8085</cargo.servlet.port>
+                                    <cargo.servlet.port>${http.port}</cargo.servlet.port>
                                 </properties>
                                 <deployables>
                                     <deployable>
                                         <location>${project.build.directory}/${project.build.finalName}.war</location>
-                                        <pingURL>${webserver.url}/${project.build.finalName}/junit</pingURL>
+                                        <pingURL>${http.base}/${project.build.finalName}/junit</pingURL>
                                         <type>war</type>
                                     </deployable>
                                 </deployables>
@@ -278,7 +256,6 @@
                         </configuration>
                     </plugin>
                 </plugins>
-            </pluginManagement>
             </build>
         </profile>
 
@@ -286,10 +263,18 @@
             <id>geronimo</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
+                <!--
                 <file>
-                    <exists>src</exists>
+                    <exists>${geronimo.home}</exists>
                 </file>
+                -->
             </activation>
+            <properties>
+                <http.port>8080</http.port>
+                <http.base>http://127.0.0.1:${http.port}</http.base>
+                <geronimo.home>${env.GERONIMO_HOME}</geronimo.home>
+            </properties>
+
             <build>
                 <plugins>
                     <!-- Generate web-xml and geronimo deployment descriptor -->
@@ -311,7 +296,7 @@
                             <execution>
                                 <id>web-junit-test</id>
                                 <configuration>
-                                    <url>http://localhost:8080/${project.build.finalName}/junit</url>
+                                    <url>${http.base}/${project.build.finalName}/junit</url>
                                 </configuration>
                                 <phase>integration-test</phase>
                                 <goals>
