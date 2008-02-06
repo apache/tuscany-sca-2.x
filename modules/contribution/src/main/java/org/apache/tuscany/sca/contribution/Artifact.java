@@ -72,4 +72,15 @@ public interface Artifact extends Base {
      */
     void setModel(Object model);
 
+    /**
+     * Returns the contents of the artifact cached here.
+     * @return the contents of the artifact
+     */
+    byte[] getContents();
+    
+    /**
+     * Sets the contents of the artifact.
+     * @param contents the contents of the artifact
+     */
+    void setContents(byte[] contents);
 }

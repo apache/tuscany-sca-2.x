@@ -38,6 +38,7 @@ class ContributionImpl implements Contribution {
     private String uri;
     private String location;
     private Object model;
+    private byte[] contents;
     private boolean unresolved;
     private List<Export> exports = new ArrayList<Export>();
     private List<Import> imports = new ArrayList<Import>();
@@ -83,6 +84,14 @@ class ContributionImpl implements Contribution {
     
     public void setModel(Object model) {
         this.model = model;
+    }
+    
+    public byte[] getContents() {
+        return contents;
+    }
+    
+    public void setContents(byte[] contents) {
+        this.contents = contents;
     }
     
     public boolean isUnresolved() {

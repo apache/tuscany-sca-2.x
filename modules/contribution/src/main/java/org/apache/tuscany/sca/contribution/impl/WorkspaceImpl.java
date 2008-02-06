@@ -34,6 +34,8 @@ class WorkspaceImpl implements Workspace {
     
     private String location;
     private String uri;
+    private Object model;
+    private byte[] contents;
     private boolean unresolved;
     private List<Contribution> contributions = new ArrayList<Contribution>();
     
@@ -48,7 +50,7 @@ class WorkspaceImpl implements Workspace {
     }
 
     public Object getModel() {
-        return null;
+        return model;
     }
 
     public String getURI() {
@@ -60,8 +62,17 @@ class WorkspaceImpl implements Workspace {
     }
 
     public void setModel(Object model) {
+        this.model = model;
     }
 
+    public byte[] getContents() {
+        return contents;
+    }
+    
+    public void setContents(byte[] contents) {
+        this.contents = contents;
+    }
+    
     public void setURI(String uri) {
         this.uri = uri;
     }
