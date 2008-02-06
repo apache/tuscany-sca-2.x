@@ -35,7 +35,6 @@ import java.util.regex.Pattern;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -56,16 +55,16 @@ public class WebTestRunner implements Filter {
     private static final String TESTCASE_PATTERN = ".*TestCase";
     private static final String TESTS_JAR = "/WEB-INF/test-lib/junit-tests.jar";
 
-    private ServletContext context;
+    private FilterConfig config;
     private boolean junitEnabled = true;
 
     private List<String> findTestCases(String testJarPath) throws IOException {
-        String filter = context.getInitParameter(JUNIT_TESTS_PATTERN);
+        String filter = config.getInitParameter(JUNIT_TESTS_PATTERN);
         if (filter == null) {
             filter = TESTCASE_PATTERN;
         }
         Pattern pattern = Pattern.compile(filter);
-        InputStream in = context.getResourceAsStream(testJarPath);
+        InputStream in = config.getServletContext().getResourceAsStream(testJarPath);
         List<String> tests = new ArrayList<String>();
         if (in != null) {
             JarInputStream jar = new JarInputStream(in);
@@ -105,11 +104,11 @@ public class WebTestRunner implements Filter {
     private void init() throws IOException {
         testClassLoader = Thread.currentThread().getContextClassLoader();
         allTestCases = new ArrayList<String>();
-        String testsJar = context.getInitParameter(JUNIT_TESTS_JAR);
+        String testsJar = config.getInitParameter(JUNIT_TESTS_JAR);
         if (testsJar == null) {
             testsJar = TESTS_JAR;
         }
-        URL url = context.getResource(testsJar);
+        URL url = config.getServletContext().getResource(testsJar);
         if (url != null) {
             allTestCases = findTestCases(testsJar);
             if (!testsJar.startsWith("/WEB-INF/lib/")) {
@@ -177,9 +176,9 @@ public class WebTestRunner implements Filter {
     }
 
     public void init(FilterConfig config) throws ServletException {
-        context = config.getServletContext();
+        this.config = config;
         // Check if the /junit path should be allowed
-        String param = context.getInitParameter(JUNIT_ENABLED);
+        String param = config.getInitParameter(JUNIT_ENABLED);
         if (param != null && param.trim().equals("false")) {
             junitEnabled = false;
         }
