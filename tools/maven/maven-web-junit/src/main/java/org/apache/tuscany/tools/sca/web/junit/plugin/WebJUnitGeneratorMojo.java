@@ -100,9 +100,7 @@ public class WebJUnitGeneratorMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         File base =
             new File(project.getBasedir(), "target" + File.separator
-                + project.getArtifactId()
-                + "-"
-                + project.getVersion()
+                + project.getBuild().getFinalName()
                 + File.separator
                 + "WEB-INF");
         base.mkdirs();
