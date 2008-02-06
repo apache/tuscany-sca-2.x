@@ -98,12 +98,18 @@ public class WebJUnitGeneratorMojo extends AbstractMojo {
     private MavenProject project;
 
     public void execute() throws MojoExecutionException {
-        File webxml =
-            new File(project.getBasedir(), "target/" + project.getArtifactId() + "-" + project.getVersion() + "/WEB-INF/web.xml".replace('/', File.separatorChar));
+        File base =
+            new File(project.getBasedir(), "target" + File.separator
+                + project.getArtifactId()
+                + "-"
+                + project.getVersion()
+                + File.separator
+                + "WEB-INF");
+        base.mkdirs();
+        File webxml = new File(base, "web.xml");
         getLog().info("Generating " + webxml.toString());
         String content = setParameter(WEB_XML, "display.name", project.getName());
         try {
-            webxml.getParentFile().mkdirs();
             FileWriter writer = new FileWriter(webxml);
             writer.append(content);
             writer.close();
@@ -112,9 +118,7 @@ public class WebJUnitGeneratorMojo extends AbstractMojo {
         }
 
         if (geronimo) {
-            File geronimoxml =
-                new File(project.getBasedir(), "target/" + project.getArtifactId() + "-" + project.getVersion() + "/WEB-INF/geronimo-web.xml".replace('/',
-                                                                                                  File.separatorChar));
+            File geronimoxml = new File(base, "geronimo-web.xml");
             getLog().info("Generating " + geronimoxml.toString());
             content = setParameter(GERONIMO_WEB_XML, "groupId", project.getGroupId());
             content = setParameter(content, "artifactId", project.getArtifactId());
