@@ -115,7 +115,7 @@ public class WebJUnitGeneratorMojo extends AbstractMojo {
         base.mkdirs();
         File webxml = new File(base, "web.xml");
         getLog().info("Generating " + webxml.toString());
-        String content = setParameter(WEB_XML, "display.name", project.getName());
+        String content = setParameter(WEB_XML, "display-name", project.getName());
 
         if (testsJar == null) {
             testsJar = "/WEB-INF/lib/junit-tests.jar";
