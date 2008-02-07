@@ -22,7 +22,7 @@
     name="TestService">
 
     <service name="TrnInqService" promote="TransactionInquiryComponent">
-        <interface.java class="org.apache.tuscany.sca.itest.trninq.TrnInqInterface" />
+        <interface.java interface="org.apache.tuscany.sca.itest.trninq.TrninqInterface" />
         <binding.ws wsdlElement="http://trninq#wsdl.port(TrnInqSvc/TrnInqSvcPort)" />
     </service>
     <component name="TransactionInquiryComponent">
@@ -30,7 +30,7 @@
     </component>
 
     <reference name="TrnInqReference" promote="TransactionInquiryClientComponent/transactionInquiryService">
-        <interface.java class="org.apache.tuscany.sca.itest.trninq.TrnInqInterface" />
+        <interface.java interface="org.apache.tuscany.sca.itest.trninq.TrninqInterface" />
         <binding.ws wsdlElement="http://trninq#wsdl.port(TrnInqSvc/TrnInqSvcPort)" />
     </reference>
     <component name="TransactionInquiryClientComponent">
