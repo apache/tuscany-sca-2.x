@@ -77,8 +77,8 @@ public class WebJUnitGeneratorMojo extends AbstractMojo {
             + "\n           <filter-name>tuscany</filter-name>"
             + "\n           <filter-class>org.apache.tuscany.sca.host.webapp.TuscanyServletFilter</filter-class>"
             + "\n           <init-param>"
-            + "\n               <param-name>junit.tests.jar</param-name>"
-            + "\n               <param-value>${junit.tests.jar}</param-value>"
+            + "\n               <param-name>junit.tests.path</param-name>"
+            + "\n               <param-value>${junit.tests.path}</param-value>"
             + "\n           </init-param>"
             + "\n       </filter>"
             + "\n       <filter-mapping>"
@@ -90,7 +90,7 @@ public class WebJUnitGeneratorMojo extends AbstractMojo {
     /**
      * @parameter
      */
-    private String testsJar;
+    private String testsPath;
 
     /**
      * @parameter
@@ -115,12 +115,17 @@ public class WebJUnitGeneratorMojo extends AbstractMojo {
         base.mkdirs();
         File webxml = new File(base, "web.xml");
         getLog().info("Generating " + webxml.toString());
-        String content = setParameter(WEB_XML, "display-name", project.getName());
-
-        if (testsJar == null) {
-            testsJar = "/WEB-INF/lib/junit-tests.jar";
+        
+        String name = project.getName();
+        if (name == null) {
+            name = project.getGroupId() + "-" + project.getArtifactId();
         }
-        content = setParameter(content, "junit.tests.jar", testsJar);
+        String content = setParameter(WEB_XML, "display-name", name);
+
+        if (testsPath == null) {
+            testsPath = "/WEB-INF/classes/";
+        }
+        content = setParameter(content, "junit.tests.path", testsPath);
 
         try {
             FileWriter writer = new FileWriter(webxml);

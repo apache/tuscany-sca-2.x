@@ -26,7 +26,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -49,7 +48,7 @@ import org.apache.tuscany.sca.host.http.ServletMappingException;
  */
 public class WebAppServletHost implements ServletHost {
     private static final Logger logger = Logger.getLogger(WebAppServletHost.class.getName());
-    
+
     private static final String SCA_DOMAIN_ATTRIBUTE = "org.apache.tuscany.sca.SCADomain";
 
     private static final WebAppServletHost instance = new WebAppServletHost();
@@ -62,11 +61,11 @@ public class WebAppServletHost implements ServletHost {
     private WebAppServletHost() {
         servlets = new HashMap<String, Servlet>();
     }
-    
+
     public void setDefaultPort(int port) {
         defaultPortNumber = port;
     }
-    
+
     public int getDefaultPort() {
         return defaultPortNumber;
     }
@@ -79,15 +78,15 @@ public class WebAppServletHost implements ServletHost {
         if (!suri.startsWith("/")) {
             suri = '/' + suri;
         }
-        
+
         if (!suri.startsWith(contextPath)) {
             suri = contextPath + suri;
-        } 
-                
+        }
+
         // In a webapp just use the given path and ignore the host and port
         // as they are fixed by the Web container
         servlets.put(suri, servlet);
-        
+
         logger.info("Added Servlet mapping: " + suri);
     }
 
@@ -99,7 +98,7 @@ public class WebAppServletHost implements ServletHost {
         if (!suri.startsWith("/")) {
             suri = '/' + suri;
         }
-        
+
         if (!suri.startsWith(contextPath)) {
             suri = contextPath + suri;
         }
@@ -113,11 +112,11 @@ public class WebAppServletHost implements ServletHost {
         if (!suri.startsWith("/")) {
             suri = '/' + suri;
         }
-        
+
         if (!suri.startsWith(contextPath)) {
             suri = contextPath + suri;
-        } 
-        
+        }
+
         // Get the servlet mapped to the given path
         Servlet servlet = servlets.get(suri);
         return servlet;
@@ -135,7 +134,7 @@ public class WebAppServletHost implements ServletHost {
         if (portNumber == -1) {
             portNumber = defaultPortNumber;
         }
-        
+
         // Get the host
         String host;
         try {
@@ -143,17 +142,17 @@ public class WebAppServletHost implements ServletHost {
         } catch (UnknownHostException e) {
             host = "localhost";
         }
-        
+
         // Construct the URL
         String path = uri.getPath();
         if (!path.startsWith("/")) {
             path = '/' + path;
         }
-        
+
         if (!path.startsWith(contextPath)) {
             path = contextPath + path;
         }
-        
+
         URL url;
         try {
             url = new URL(scheme, host, portNumber, path);
@@ -162,26 +161,26 @@ public class WebAppServletHost implements ServletHost {
         }
         return url;
     }
-        
+
     public RequestDispatcher getRequestDispatcher(String suri) throws ServletMappingException {
 
         // Make sure that the path starts with a /
         if (!suri.startsWith("/")) {
             suri = '/' + suri;
         }
-        
+
         suri = contextPath + suri;
-        
+
         // Get the servlet mapped to the given path
         Servlet servlet = servlets.get(suri);
         if (servlet != null) {
             return new WebAppRequestDispatcher(suri, servlet);
         }
-        
+
         for (Map.Entry<String, Servlet> entry : servlets.entrySet()) {
             String servletPath = entry.getKey();
             if (servletPath.endsWith("*")) {
-                servletPath = servletPath.substring(0, servletPath.length() -1);
+                servletPath = servletPath.substring(0, servletPath.length() - 1);
                 if (suri.startsWith(servletPath)) {
                     return new WebAppRequestDispatcher(entry.getKey(), entry.getValue());
                 } else {
@@ -191,11 +190,11 @@ public class WebAppServletHost implements ServletHost {
                 }
             }
         }
-        
+
         // No servlet found
         return null;
     }
-    
+
     public static WebAppServletHost getInstance() {
         return instance;
     }
@@ -206,7 +205,7 @@ public class WebAppServletHost implements ServletHost {
 
         // Create an SCA domain object
         ServletContext servletContext = config.getServletContext();
-        String domainURI = "http://localhost/" + servletContext.getServletContextName().replace(' ', '.');
+        String domainURI = "http://localhost/" + contextPath;
         String contributionRoot = null;
         try {
             URL rootURL = servletContext.getResource("/");
@@ -216,16 +215,16 @@ public class WebAppServletHost implements ServletHost {
                 contributionRoot = warRootFile.toURL().toString();
             } else {
                 //this is jetty case
-                contributionRoot  = rootURL.toString();
+                contributionRoot = rootURL.toString();
             }
-        } catch(MalformedURLException mf) {
+        } catch (MalformedURLException mf) {
             //ignore, pass null
         }
         scaDomain = SCADomain.newInstance(domainURI, contributionRoot);
-        
+
         // Store the SCA domain in the servlet context
         servletContext.setAttribute(SCA_DOMAIN_ATTRIBUTE, scaDomain);
-        
+
         // Initialize the registered servlets
         for (Servlet servlet : servlets.values()) {
             servlet.init(config);
@@ -239,27 +238,30 @@ public class WebAppServletHost implements ServletHost {
      */
     @SuppressWarnings("unchecked")
     public void initContextPath(ServletConfig config) {
-        if (Collections.list(config.getInitParameterNames()).contains("contextPath")) {
-            contextPath = config.getInitParameter("contextPath");
-        } else {
-            ServletContext context = config.getServletContext();
+        ServletContext context = config.getServletContext();
+        int version = context.getMajorVersion() * 100 + context.getMinorVersion();
+        if (version >= 205) {
+            // The getContextPath() is introduced since Servlet 2.5
             Method m;
             try {
-                m = context.getClass().getMethod("getContextPath", new Class[]{});
+                m = context.getClass().getMethod("getContextPath", new Class[] {});
                 try {
-                    contextPath = (String)m.invoke(context, new Object[]{});
+                    contextPath = (String)m.invoke(context, new Object[] {});
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             } catch (NoSuchMethodException e) {
-                throw new IllegalStateException("'contextPath' init parameter must be set for pre-2.5 servlet container");
+                throw new IllegalStateException(
+                                                "'contextPath' init parameter must be set for pre-2.5 servlet container");
             }
+        } else {
+            contextPath = config.getInitParameter("contextPath");
         }
         logger.info("initContextPath: " + contextPath);
     }
 
     void destroy() {
-        
+
         // Destroy the registered servlets
         for (Servlet servlet : servlets.values()) {
             servlet.destroy();
@@ -276,9 +278,9 @@ public class WebAppServletHost implements ServletHost {
     }
 
     public void setContextPath(String path) {
-//        if (!contextPath.equals(path)) {
-//            throw new IllegalArgumentException("invalid context path for webapp, existing context path: " + contextPath + " new contextPath: " + path);
-//        }
+        //        if (!contextPath.equals(path)) {
+        //            throw new IllegalArgumentException("invalid context path for webapp, existing context path: " + contextPath + " new contextPath: " + path);
+        //        }
     }
 
     /**
