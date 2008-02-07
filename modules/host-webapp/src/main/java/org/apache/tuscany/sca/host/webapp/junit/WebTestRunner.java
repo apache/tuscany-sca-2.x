@@ -25,9 +25,9 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.regex.Pattern;
@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -50,7 +51,7 @@ import junit.textui.TestRunner;
  */
 public class WebTestRunner implements Filter {
     private static final String JUNIT_TESTS_PATTERN = "junit.tests.pattern";
-    private static final String JUNIT_TESTS_JAR = "junit.tests.jar";
+    private static final String JUNIT_TESTS_PATH = "junit.tests.path";
     private static final String JUNIT_ENABLED = "junit.enabled";
     private static final String TESTCASE_PATTERN = ".*TestCase";
     private static final String TESTS_JAR = "/WEB-INF/test-lib/junit-tests.jar";
@@ -58,14 +59,25 @@ public class WebTestRunner implements Filter {
     private FilterConfig config;
     private boolean junitEnabled = true;
 
-    private List<String> findTestCases(String testJarPath) throws IOException {
-        String filter = config.getInitParameter(JUNIT_TESTS_PATTERN);
-        if (filter == null) {
-            filter = TESTCASE_PATTERN;
+    private Set<String> findTestCases(String testJarPath) throws IOException {
+        Pattern pattern = getTestCasePattern();
+        if (testJarPath.endsWith(".jar")) {
+            return findTestCasesInJar(testJarPath, pattern);
+        } else {
+            return findTestCasesInDir(testJarPath, pattern);
         }
-        Pattern pattern = Pattern.compile(filter);
+    }
+
+    /**
+     * Search test cases in a JAR
+     * @param testJarPath
+     * @param pattern
+     * @return
+     * @throws IOException
+     */
+    private Set<String> findTestCasesInJar(String testJarPath, Pattern pattern) throws IOException {
         InputStream in = config.getServletContext().getResourceAsStream(testJarPath);
-        List<String> tests = new ArrayList<String>();
+        Set<String> tests = new HashSet<String>();
         if (in != null) {
             JarInputStream jar = new JarInputStream(in);
             try {
@@ -95,25 +107,65 @@ public class WebTestRunner implements Filter {
         return tests;
     }
 
+    private Pattern getTestCasePattern() {
+        String filter = config.getInitParameter(JUNIT_TESTS_PATTERN);
+        if (filter == null) {
+            filter = TESTCASE_PATTERN;
+        }
+        Pattern pattern = Pattern.compile(filter);
+        return pattern;
+    }
+
     public void destroy() {
     }
 
-    private List<String> allTestCases;
+    private Set<String> allTestCases;
     private ClassLoader testClassLoader;
 
     private void init() throws IOException {
         testClassLoader = Thread.currentThread().getContextClassLoader();
-        allTestCases = new ArrayList<String>();
-        String testsJar = config.getInitParameter(JUNIT_TESTS_JAR);
-        if (testsJar == null) {
-            testsJar = TESTS_JAR;
+        allTestCases = new HashSet<String>();
+        String testsPath = config.getInitParameter(JUNIT_TESTS_PATH);
+        if (testsPath == null) {
+            testsPath = TESTS_JAR;
         }
-        URL url = config.getServletContext().getResource(testsJar);
+        URL url = config.getServletContext().getResource(testsPath);
         if (url != null) {
-            allTestCases = findTestCases(testsJar);
-            if (!testsJar.startsWith("/WEB-INF/lib/")) {
+            allTestCases = findTestCases(testsPath);
+            if (!(testsPath.startsWith("/WEB-INF/lib/") || testsPath.startsWith("/WEB-INF/classes/"))) {
                 // Create a new classloader to load the test jar
                 testClassLoader = new URLClassLoader(new URL[] {url}, testClassLoader);
+            }
+        }
+    }
+
+    /**
+     * Search test cases in a directory
+     * @param classesPath
+     * @param pattern
+     * @return
+     */
+    private Set<String> findTestCasesInDir(String classesPath, Pattern pattern) {
+        ServletContext context = config.getServletContext();
+        Set<String> tests = new HashSet<String>();
+        String dir = classesPath;
+        findResources(context, pattern, tests, classesPath, dir);
+        return tests;
+    }
+
+    private void findResources(ServletContext context, Pattern pattern, Set<String> tests, String root, String dir) {
+        Set<String> paths = context.getResourcePaths(dir);
+        if (paths != null) {
+            for (String name : paths) {
+                if (name.endsWith("/")) {
+                    findResources(context, pattern, tests, root, name);
+                }
+                if (name.endsWith(".class")) {
+                    String className = name.substring(root.length(), name.length() - 6).replace('/', '.');
+                    if (pattern.matcher(className).matches()) {
+                        tests.add(className);
+                    }
+                }
             }
         }
     }
@@ -125,13 +177,13 @@ public class WebTestRunner implements Filter {
         String query = req.getQueryString();
         PrintStream ps = new PrintStream(response.getOutputStream());
 
-        List<String> testCases = null;
+        Set<String> testCases = null;
         // ClassLoader cl = Thread.currentThread().getContextClassLoader();
         if (query == null || "ALL".equals(query)) {
             testCases = this.allTestCases;
         } else {
             String[] tests = query.split(",");
-            testCases = Arrays.asList(tests);
+            testCases = new HashSet<String>(Arrays.asList(tests));
         }
 
         int errors = 0;
