@@ -213,6 +213,7 @@
                         <artifactId>maven-war-plugin</artifactId>
                         <version>2.0.2</version>
                         <configuration>
+                            <primaryArtifact>false</primaryArtifact>
                             <!-- Exclude a few jars to avoid conflicts -->
                             <warSourceExcludes>WEB-INF/lib/tuscany-host-tomcat-*.jar,WEB-INF/lib/tuscany-host-jetty-*.jar,servlet-api-*.jar</warSourceExcludes>
                             <webResources>
