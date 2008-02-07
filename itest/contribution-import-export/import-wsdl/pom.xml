@@ -28,7 +28,13 @@
     <artifactId>itest-contribution-import-wsdl</artifactId>
     <name>Apache Tuscany SCA Contribution WSDL Import Integration Tests</name>
 
-<dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>itest-contribution-export-wsdl</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
