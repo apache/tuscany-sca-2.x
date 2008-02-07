@@ -18,10 +18,11 @@
  */
 package org.apache.tuscany.test.contribution;
 
+import hello.Hello;
 import helloworld.HelloWorldService;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 
@@ -53,8 +54,9 @@ public class HelloWorldServerTestCase extends TestCase {
         // Contribute the SCA contribution
         ContributionService contributionService = domain.getContributionService();
 
-        File compositeContribLocation = new File("../export-composite/target/classes");
-        URL compositeContribURL = compositeContribLocation.toURL();
+        // File compositeContribLocation = new File("../export-composite/target/classes");
+        // URL compositeContribURL = compositeContribLocation.toURL();
+        URL compositeContribURL = getContributionURL(Hello.class);
         compositeContribution =
             contributionService.contribute("http://import-export/export-composite", compositeContribURL, false);
         for (Composite deployable : compositeContribution.getDeployables()) {
@@ -62,8 +64,9 @@ public class HelloWorldServerTestCase extends TestCase {
             domain.buildComposite(deployable);
         }
 
-        File helloWorldContribLocation = new File("./target/classes/");
-        URL helloWorldContribURL = helloWorldContribLocation.toURL();
+//        File helloWorldContribLocation = new File("./target/classes/");
+//        URL helloWorldContribURL = helloWorldContribLocation.toURL();
+        URL helloWorldContribURL = getContributionURL(HelloWorldService.class);
         helloWorldContribution =
             contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, false);
         for (Composite deployable : helloWorldContribution.getDeployables()) {
@@ -76,6 +79,18 @@ public class HelloWorldServerTestCase extends TestCase {
             domain.getCompositeActivator().activate(deployable);
             domain.getCompositeActivator().start(deployable);
         }
+    }
+    
+    private URL getContributionURL(Class<?> cls) throws MalformedURLException {
+        String flag = "/" + cls.getName().replace('.', '/') + ".class";
+        URL url = cls.getResource(flag);
+        String root = url.toExternalForm();
+        root = root.substring(0, root.length() - flag.length() + 1);
+        if (root.startsWith("jar:") && root.endsWith("!/")) {
+            root = root.substring(4, root.length() - 2);
+        }
+        url = new URL(root);
+        return url;
     }
 
     public void testPing() throws IOException {

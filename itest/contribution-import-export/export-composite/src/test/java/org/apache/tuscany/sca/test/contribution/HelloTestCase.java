@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.test.contribution;
 
 import hello.Hello;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import junit.framework.TestCase;
@@ -53,8 +53,11 @@ public class HelloTestCase extends TestCase {
         ContributionService contributionService = domain.getContributionService();
 
         ModelResolver helloResolver = new ModelResolverImpl(cl);
-        File helloContrib = new File("./target/classes/");
-        URL helloURL = helloContrib.toURL();
+        
+        URL helloURL = getContributionURL(Hello.class);
+        
+        // File helloContrib = new File("./target/classes/");
+        // URL helloURL = helloContrib.toURL();
         Contribution consumerContribution =
             contributionService.contribute("http://import-export/hello", helloURL, helloResolver, false);
         Composite consumerComposite = consumerContribution.getDeployables().get(0);
@@ -64,6 +67,18 @@ public class HelloTestCase extends TestCase {
         // Start Components from my composite
         domain.getCompositeActivator().activate(consumerComposite);
         domain.getCompositeActivator().start(consumerComposite);
+    }
+
+    private URL getContributionURL(Class<?> cls) throws MalformedURLException {
+        String flag = "/" + cls.getName().replace('.', '/') + ".class";
+        URL url = cls.getResource(flag);
+        String root = url.toExternalForm();
+        root = root.substring(0, root.length() - flag.length() + 1);
+        if (root.startsWith("jar:") && root.endsWith("!/")) {
+            root = root.substring(4, root.length() - 2);
+        }
+        url = new URL(root);
+        return url;
     }
 
     public void testHello() throws IOException {

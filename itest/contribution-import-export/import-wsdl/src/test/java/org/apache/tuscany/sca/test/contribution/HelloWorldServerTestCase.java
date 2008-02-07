@@ -20,8 +20,8 @@ package org.apache.tuscany.sca.test.contribution;
 
 import helloworld.HelloWorldService;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 
@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 /**
  * Tests that the helloworld server is available
  */
-public class HelloWorldServerTestCase extends TestCase{
+public class HelloWorldServerTestCase extends TestCase {
     private ClassLoader cl;
     private EmbeddedSCADomain domain;
     private Contribution wsdlContribution;
@@ -53,35 +53,63 @@ public class HelloWorldServerTestCase extends TestCase{
         // Contribute the SCA contribution
         ContributionService contributionService = domain.getContributionService();
 
-        File wsdlContribLocation = new File("../export-wsdl/target/classes");
-        URL wsdlContribURL = wsdlContribLocation.toURL();
+        //        File wsdlContribLocation = new File("../export-wsdl/target/classes");
+        //        URL wsdlContribURL = wsdlContribLocation.toURL();
+        URL wsdlContribURL = getContributionURL(getClass().getClassLoader(), "helloworld.wsdl");
         wsdlContribution = contributionService.contribute("http://import-export/export-wsdl", wsdlContribURL, false);
-        for (Composite deployable : wsdlContribution.getDeployables() ) {
+        for (Composite deployable : wsdlContribution.getDeployables()) {
             domain.getDomainComposite().getIncludes().add(deployable);
             domain.buildComposite(deployable);
         }
 
-        File helloWorldContribLocation = new File("./target/classes/");
-        URL helloWorldContribURL = helloWorldContribLocation.toURL();
-        consumerContribution = contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, false);
-        for (Composite deployable : consumerContribution.getDeployables() ) {
+        //        File helloWorldContribLocation = new File("./target/classes/");
+        //        URL helloWorldContribURL = helloWorldContribLocation.toURL();
+        URL helloWorldContribURL = getContributionURL(HelloWorldService.class);
+        consumerContribution =
+            contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, false);
+        for (Composite deployable : consumerContribution.getDeployables()) {
             domain.getDomainComposite().getIncludes().add(deployable);
             domain.buildComposite(deployable);
         }
 
         // Start Components from my composite
-        for (Composite deployable : consumerContribution.getDeployables() ) {
+        for (Composite deployable : consumerContribution.getDeployables()) {
             domain.getCompositeActivator().activate(deployable);
             domain.getCompositeActivator().start(deployable);
         }
     }
 
-	public void testPing() throws IOException {
-		new Socket("127.0.0.1", 8085);
-	}
+    public void testPing() throws IOException {
+        new Socket("127.0.0.1", 8085);
+    }
+
+    private URL getContributionURL(Class<?> cls) throws MalformedURLException {
+        String flag = "/" + cls.getName().replace('.', '/') + ".class";
+        URL url = cls.getResource(flag);
+        String root = url.toExternalForm();
+        root = root.substring(0, root.length() - flag.length() + 1);
+        if (root.startsWith("jar:") && root.endsWith("!/")) {
+            root = root.substring(4, root.length() - 2);
+        }
+        url = new URL(root);
+        return url;
+    }
+
+    private URL getContributionURL(ClassLoader cl, String flag) throws MalformedURLException {
+        URL url = cl.getResource(flag);
+        String root = url.toExternalForm();
+        root = root.substring(0, root.length() - flag.length());
+        if (root.startsWith("jar:") && root.endsWith("!/")) {
+            root = root.substring(4, root.length() - 2);
+        }
+        url = new URL(root);
+        // System.out.println(url);
+        return url;
+    }
 
     public void testServiceCall() throws IOException {
-        HelloWorldService helloWorldService = domain.getService(HelloWorldService.class, "HelloWorldServiceComponent/HelloWorldService");
+        HelloWorldService helloWorldService =
+            domain.getService(HelloWorldService.class, "HelloWorldServiceComponent/HelloWorldService");
         assertNotNull(helloWorldService);
 
         assertEquals("Hello Smith", helloWorldService.getGreetings("Smith"));
@@ -96,7 +124,7 @@ public class HelloWorldServerTestCase extends TestCase{
         contributionService.remove("http://import-export/export-wsdl");
 
         // Stop Components from my composite
-        for (Composite deployable : consumerContribution.getDeployables() ) {
+        for (Composite deployable : consumerContribution.getDeployables()) {
             domain.getCompositeActivator().stop(deployable);
             domain.getCompositeActivator().deactivate(deployable);
         }
