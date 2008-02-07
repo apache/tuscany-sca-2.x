@@ -27,6 +27,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -107,8 +108,11 @@ public class WebJUnitMojo extends AbstractMojo {
             // Execute HTTP request
             HttpResponse response = client.execute(httpget);
 
-            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                throw new MojoExecutionException(response.getStatusLine().getReasonPhrase());
+            StatusLine status = response.getStatusLine();
+            if (status.getStatusCode() != HttpStatus.SC_OK) {
+                // throw new MojoExecutionException(response.getStatusLine().getReasonPhrase());
+                getLog().error(status.getStatusCode() + ": " + status.getReasonPhrase());
+                return;
             }
             Header header = response.getFirstHeader("junit.errors");
             errors = header == null ? 0 : Integer.parseInt(header.getValue());
@@ -135,7 +139,7 @@ public class WebJUnitMojo extends AbstractMojo {
                         sb.append(line);
                     }
                     xml = sb.toString();
-                    getLog().info(xml);
+                    getLog().debug(xml);
 
                 } catch (IOException ex) {
 
@@ -160,10 +164,12 @@ public class WebJUnitMojo extends AbstractMojo {
 
             }
         } catch (Exception e) {
-            throw new MojoExecutionException(e.getMessage(), e);
+            // throw new MojoExecutionException(e.getMessage(), e);
+            getLog().error(e);
         }
         if (errors != 0 || failures != 0) {
-            throw new MojoExecutionException(xml);
+            // throw new MojoExecutionException(xml);
+            getLog().error(xml);
         }
 
     }

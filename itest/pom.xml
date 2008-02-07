@@ -34,7 +34,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.2</version>
-            <scope>runtime</scope>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -114,38 +114,79 @@
             <id>webapp</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
+                <!--
                 <file>
                     <exists>src</exists>
                 </file>
+                -->
             </activation>
+            
             <dependencies>
                 <dependency>
 	    	    <groupId>org.apache.tuscany.sca</groupId>
 	    	    <artifactId>tuscany-host-webapp</artifactId>
 	    	    <version>1.2-incubating-SNAPSHOT</version>
+                    <scope>runtime</scope>
 	    	</dependency>
-                <!-- marking dependency as provided to exclude from war file -->
                 <dependency>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                    <version>2.3</version>
+	    	    <groupId>javax.servlet</groupId>
+	    	    <artifactId>servlet-api</artifactId>
+	    	    <version>2.3</version>
                     <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                    <version>4.2</version>
-                    <scope>compile</scope>
-                </dependency>	    	    
+	    	</dependency>
 	    </dependencies>    
 
             <modules>
-                <module>component-type</module>
+                <module>callback-api</module>
+                <module>callback-basic</module>
+                <!--
+                <module>callback-complex-type</module>
+                -->
+                <module>callback-id</module>
+                <module>callback-multiple-wires</module>
+                <module>callback-set-callback</module>
+                <module>callback-set-conversation</module>
+                <!--
+                <module>contribution</module>
+                <module>contribution-multiple</module>
+                <module>contribution-import-export</module>
+                <module>contribution-classloader</module>
+                -->
+                <module>conversations</module>
+                <module>exceptions</module>
+                <module>exceptions-cross-binding</module>
+                <module>extended-api</module>
+                <module>oneway</module>
+                <module>operation-overloading</module>
+                <!--
+                <module>properties</module>
+                <module>recursive</module>
+                -->
+                <module>references</module>
                 <module>services</module>
+                <module>component-type</module>
+                <module>interfaces</module>
+                <module>wires</module>
+                <module>scopes</module>
             </modules>
 
             <build>
+                <pluginManagement>
+                    <plugins>
+                        <!-- Skip local junit test cases -->
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <version>2.3.1</version>
+                            <configuration>
+                                <skip>true</skip>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+
                 <plugins>
+
                     <!-- Create jar containing the jUnit tests -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -170,15 +211,27 @@
                         <artifactId>maven-war-plugin</artifactId>
                         <version>2.0.2</version>
                         <configuration>
+                            <!-- Exclude a few jars to avoid conflicts -->
+                            <warSourceExcludes>WEB-INF/lib/tuscany-host-tomcat-*.jar,WEB-INF/lib/tuscany-host-jetty-*.jar,servlet-api-*.jar</warSourceExcludes>
                             <webResources>
+                                <!-- Add the tests jar into the WAR -->
                                 <resource>
-                                    <!-- this is relative to the pom.xml directory -->
                                     <directory>${project.build.directory}</directory>
                                     <includes>
                                         <include>*-tests.jar</include>
                                     </includes>
-                                    <targetPath>WEB-INF/test-lib</targetPath>
+                                    <targetPath>WEB-INF/lib</targetPath>
                                 </resource>
+
+                                <!-- Add the junit -->
+                                <resource>
+                                    <directory>${settings.localRepository}/junit/junit/4.2</directory>
+                                    <includes>
+                                        <include>junit-4.2.jar</include>
+                                    </includes>
+                                    <targetPath>WEB-INF/lib</targetPath>
+                                </resource>
+
                             </webResources>
                         </configuration>
                         <executions>
