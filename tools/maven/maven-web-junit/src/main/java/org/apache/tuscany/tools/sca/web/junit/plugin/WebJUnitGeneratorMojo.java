@@ -76,12 +76,21 @@ public class WebJUnitGeneratorMojo extends AbstractMojo {
             + "\n       <filter>"
             + "\n           <filter-name>tuscany</filter-name>"
             + "\n           <filter-class>org.apache.tuscany.sca.host.webapp.TuscanyServletFilter</filter-class>"
+            + "\n           <init-param>"
+            + "\n               <param-name>junit.tests.jar</param-name>"
+            + "\n               <param-value>${junit.tests.jar}</param-value>"
+            + "\n           </init-param>"
             + "\n       </filter>"
             + "\n       <filter-mapping>"
             + "\n           <filter-name>tuscany</filter-name>"
             + "\n           <url-pattern>/*</url-pattern>"
             + "\n       </filter-mapping>"
             + "\n</web-app>\n";
+
+    /**
+     * @parameter
+     */
+    private String testsJar;
 
     /**
      * @parameter
@@ -107,6 +116,12 @@ public class WebJUnitGeneratorMojo extends AbstractMojo {
         File webxml = new File(base, "web.xml");
         getLog().info("Generating " + webxml.toString());
         String content = setParameter(WEB_XML, "display.name", project.getName());
+
+        if (testsJar == null) {
+            testsJar = "/WEB-INF/lib/junit-tests.jar";
+        }
+        content = setParameter(content, "junit.tests.jar", testsJar);
+
         try {
             FileWriter writer = new FileWriter(webxml);
             writer.append(content);
