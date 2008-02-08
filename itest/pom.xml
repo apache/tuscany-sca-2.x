@@ -259,6 +259,100 @@
         </profile>
 
         <profile>
+            <id>tomcat</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <!--
+                <file>
+                    <exists>src</exists>
+                </file>
+                -->
+            </activation>
+           <properties>
+               <http.port>8085</http.port>
+               <http.base>http://127.0.0.1:${http.port}</http.base>
+               <tomcat.home>${env.CATALINA_HOME}</tomcat.home>
+           </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-maven-web-junit</artifactId>
+                        <version>1.2-incubating-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <id>generate-web-xml</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>web-junit-test</id>
+                                <configuration>
+                                    <url>${http.base}/${project.build.finalName}/junit</url>
+                                </configuration>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven2-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>start-container</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop-container</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <container>
+                                <containerId>tomcat5x</containerId>
+                                <type>installed</type>
+                                <home>${tomcat.home}</home>
+                                <systemProperties>
+                                    <org.apache.commons.logging.Log>
+                                        org.apache.commons.logging.impl.SimpleLog
+                                    </org.apache.commons.logging.Log>
+                                </systemProperties>
+                            </container>
+                            <wait>false</wait>
+                            <configuration>
+                                <properties>
+                                    <cargo.servlet.port>${http.port}</cargo.servlet.port>
+                                </properties>
+                                <deployables>
+                                    <deployable>
+                                        <location>${project.build.directory}/${project.build.finalName}.war</location>
+                                        <pingURL>${http.base}/${project.build.finalName}/junit</pingURL>
+                                        <type>war</type>
+                                    </deployable>
+                                </deployables>
+                                <home>${project.build.directory}/cargo-tomcat</home>
+                            </configuration>
+                        </configuration>
+
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+        <profile>
             <id>jetty</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
