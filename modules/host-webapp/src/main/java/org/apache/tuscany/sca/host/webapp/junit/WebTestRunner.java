@@ -58,6 +58,8 @@ public class WebTestRunner implements Filter {
 
     private FilterConfig config;
     private boolean junitEnabled = true;
+    private Set<String> allTestCases;
+    private ClassLoader testClassLoader;
 
     private Set<String> findTestCases(String testJarPath) throws IOException {
         Pattern pattern = getTestCasePattern();
@@ -118,9 +120,6 @@ public class WebTestRunner implements Filter {
 
     public void destroy() {
     }
-
-    private Set<String> allTestCases;
-    private ClassLoader testClassLoader;
 
     private void init() throws IOException {
         testClassLoader = Thread.currentThread().getContextClassLoader();
@@ -233,6 +232,7 @@ public class WebTestRunner implements Filter {
         String param = config.getInitParameter(JUNIT_ENABLED);
         if (param != null && param.trim().equals("false")) {
             junitEnabled = false;
+            return;
         }
         try {
             init();
