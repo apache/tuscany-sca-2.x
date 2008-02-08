@@ -54,6 +54,7 @@
                 <module>calculator-rmi-service</module>
                 <module>calculator-script</module>
                 <module>calculator-webapp</module>
+                <module>calculator-ws-secure-webapp</module>
                 <module>calculator-ws-webapp</module>
                 <module>callback-ws-client</module>
                 <module>callback-ws-service</module>
