@@ -43,10 +43,15 @@ public class TuscanyServletFilter implements Filter {
     //private static final Logger logger = Logger.getLogger(WebAppServletHost.class.getName());
 
     private WebAppServletHost servletHost;
-    private WebTestRunner testRunner = new WebTestRunner();
+    private WebTestRunner testRunner;
 
     public void init(final FilterConfig config) throws ServletException {
-        testRunner.init(config);
+        try {
+            testRunner = new WebTestRunner();
+            testRunner.init(config);
+        } catch (NoClassDefFoundError e) {
+            // Ignore the error
+        }
 
         // TODO: must be a better way to get this than using a static
         servletHost = WebAppServletHost.getInstance();
@@ -72,7 +77,9 @@ public class TuscanyServletFilter implements Filter {
     }
 
     public void destroy() {
-        testRunner.destroy();
+        if (testRunner != null) {
+            testRunner.destroy();
+        }
         WebAppServletHost.getInstance().destroy();
     }
 
@@ -89,7 +96,7 @@ public class TuscanyServletFilter implements Filter {
             path = "/";
         }
 
-        if (testRunner.isJunitEnabled()) {
+        if (testRunner != null && testRunner.isJunitEnabled()) {
             // This request is to run the test cases
             // The path is /junit or /junit?<testCaseClassName>
             if (path.equals("/junit")) {
