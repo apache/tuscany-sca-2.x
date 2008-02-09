@@ -49,7 +49,7 @@ import junit.textui.TestRunner;
 /**
  * @version $Rev$ $Date$
  */
-public class WebTestRunner implements Filter {
+public class JUnitServletFilter implements Filter {
     private static final String JUNIT_TESTS_PATTERN = "junit.tests.pattern";
     private static final String JUNIT_TESTS_PATH = "junit.tests.path";
     private static final String JUNIT_ENABLED = "junit.enabled";
@@ -172,7 +172,19 @@ public class WebTestRunner implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
         ServletException {
 
+        if(!junitEnabled) {
+            chain.doFilter(request, response);
+            return;
+        }
+        
         HttpServletRequest req = (HttpServletRequest)request;
+        String path = req.getServletPath();
+        
+        if(!"/junit".equals(path)) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         String query = req.getQueryString();
         PrintStream ps = new PrintStream(response.getOutputStream());
 

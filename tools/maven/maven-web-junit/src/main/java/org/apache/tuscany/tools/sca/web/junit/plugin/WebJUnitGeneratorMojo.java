@@ -76,15 +76,23 @@ public class WebJUnitGeneratorMojo extends AbstractMojo {
             + "\n       <filter>"
             + "\n           <filter-name>tuscany</filter-name>"
             + "\n           <filter-class>org.apache.tuscany.sca.host.webapp.TuscanyServletFilter</filter-class>"
+            + "\n       </filter>"
+            + "\n       <filter-mapping>"
+            + "\n           <filter-name>tuscany</filter-name>"
+            + "\n           <url-pattern>/*</url-pattern>"
+            + "\n       </filter-mapping>"
+            + "\n       <filter>"
+            + "\n           <filter-name>junit</filter-name>"
+            + "\n           <filter-class>org.apache.tuscany.sca.host.webapp.junit.JUnitServletFilter</filter-class>"
             + "\n           <init-param>"
             + "\n               <param-name>junit.tests.path</param-name>"
             + "\n               <param-value>${junit.tests.path}</param-value>"
             + "\n           </init-param>"
             + "\n       </filter>"
             + "\n       <filter-mapping>"
-            + "\n           <filter-name>tuscany</filter-name>"
-            + "\n           <url-pattern>/*</url-pattern>"
-            + "\n       </filter-mapping>"
+            + "\n           <filter-name>junit</filter-name>"
+            + "\n           <url-pattern>/junit</url-pattern>"
+            + "\n       </filter-mapping>"            
             + "\n</web-app>\n";
 
     /**
@@ -115,7 +123,7 @@ public class WebJUnitGeneratorMojo extends AbstractMojo {
         base.mkdirs();
         File webxml = new File(base, "web.xml");
         getLog().info("Generating " + webxml.toString());
-        
+
         String name = project.getName();
         if (name == null) {
             name = project.getGroupId() + "-" + project.getArtifactId();
@@ -151,6 +159,10 @@ public class WebJUnitGeneratorMojo extends AbstractMojo {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
         }
+
+        // Workaround: maven-war-plugin doesn't like non-existing folders
+        // create target/test-classes
+        new File(project.getBasedir(), "target" + File.separator + "test-classes").mkdirs();
 
     }
 

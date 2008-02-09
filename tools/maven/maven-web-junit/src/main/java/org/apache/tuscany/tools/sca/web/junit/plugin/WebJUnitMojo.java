@@ -70,6 +70,12 @@ public class WebJUnitMojo extends AbstractMojo {
      */
     private int timeout = 300000; // 5 minutes
 
+    /**
+     * To avoid throwing exceptions because we want the stop container plugin to be executed
+     * @parameter
+     */
+    private boolean ignoreErrors = true;
+
     public void execute() throws MojoExecutionException {
         if (project.getPackaging().equals("pom")) {
             return;
@@ -110,7 +116,9 @@ public class WebJUnitMojo extends AbstractMojo {
 
             StatusLine status = response.getStatusLine();
             if (status.getStatusCode() != HttpStatus.SC_OK) {
-                // throw new MojoExecutionException(response.getStatusLine().getReasonPhrase());
+                if (!ignoreErrors) {
+                    throw new MojoExecutionException(status.getStatusCode() + ": " + status.getReasonPhrase());
+                }
                 getLog().error(status.getStatusCode() + ": " + status.getReasonPhrase());
                 return;
             }
@@ -164,11 +172,15 @@ public class WebJUnitMojo extends AbstractMojo {
 
             }
         } catch (Exception e) {
-            // throw new MojoExecutionException(e.getMessage(), e);
+            if (!ignoreErrors) {
+                throw new MojoExecutionException(e.getMessage(), e);
+            }
             getLog().error(e);
         }
         if (errors != 0 || failures != 0) {
-            // throw new MojoExecutionException(xml);
+            if (!ignoreErrors) {
+                throw new MojoExecutionException(xml);
+            }
             getLog().error(xml);
         }
 
