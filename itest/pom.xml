@@ -176,6 +176,7 @@
                 <module>scopes</module>
             </modules>
 
+
             <build>
                 <pluginManagement>
                     <plugins>
@@ -551,6 +552,119 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>websphere</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <http.port>8080</http.port>
+                <http.base>http://127.0.0.1:${http.port}</http.base>
+                <websphere.home>${env.WAS_HOME}</websphere.home>
+            </properties>
+
+            <build>
+                <plugins>
+                    <!-- Generate web-xml and geronimo deployment descriptor -->
+                    <plugin>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-maven-web-junit</artifactId>
+                        <version>1.2-incubating-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <id>generate-web-xml</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>web-junit-test</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <url>${http.base}/${project.build.finalName}/junit</url>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+		    <!--WAS ant integration -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.1</version>
+                        <executions>
+                            <!-- start Websphere server -->
+                            <execution>
+                                <id>start-container</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+	                        <configuration>
+	                            <tasks>
+	                                <ant antfile="../build-was-integration.xml" target="startServer"/>
+	                            </tasks>
+	                        </configuration>
+	                    </execution>
+                            <!-- Deploy war application -->
+                            <execution>
+                                <id>deploy-war</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+	                        <configuration>
+	                            <tasks>
+	                                <ant antfile="../build-was-integration.xml" target="installApplication">
+                                            <property name="application.war" value="${project.build.directory}/${project.build.finalName}.war"/>
+                                            <property name="application.name" value="${project.build.finalName}.war"/>
+                                            <property name="application.contextRoot" value="${project.build.finalName}"/>
+                                            <property name="application.server" value="server1"/>
+                                        </ant>
+	                            </tasks>
+	                        </configuration>
+                            </execution>
+                            <!-- unDeploy war application -->
+                            <execution>
+                                <id>undeploy-war</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+	                        <configuration>
+	                            <tasks>
+	                                <ant antfile="../build-was-integration.xml" target="uninstallApplication">
+                                            <property name="application.name" value="${project.build.finalName}.war"/>
+                                        </ant>
+	                            </tasks>
+	                        </configuration>
+                            </execution>
+                            <!-- Stop Websphere server -->
+                            <execution>
+                                <id>stop-container</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+	                        <configuration>
+	                            <tasks>
+	                                <ant antfile="../build-was-integration.xml" target="stopServer"/>
+	                            </tasks>
+	                        </configuration>
+                            </execution>
+
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
     </profiles>
 
 </project>
