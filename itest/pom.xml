@@ -129,6 +129,12 @@
                     <scope>runtime</scope>
 	    	</dependency>
                 <dependency>
+	    	    <groupId>org.apache.tuscany.sca</groupId>
+	    	    <artifactId>tuscany-host-webapp-junit</artifactId>
+	    	    <version>1.2-incubating-SNAPSHOT</version>
+                    <scope>runtime</scope>
+	    	</dependency>
+                <dependency>
 	    	    <groupId>javax.servlet</groupId>
 	    	    <artifactId>servlet-api</artifactId>
 	    	    <version>2.3</version>
@@ -365,6 +371,7 @@
            <properties>
                <http.port>8085</http.port>
                <http.base>http://127.0.0.1:${http.port}</http.base>
+               <jetty.home>${env.JETTY_HOME}</jetty.home>
            </properties>
 
             <build>
@@ -416,6 +423,7 @@
                             <container>
                                 <containerId>jetty6x</containerId>
                                 <type>embedded</type>
+                                <home>${jetty.home}</home>
                                 <systemProperties>
                                     <org.apache.commons.logging.Log>
                                         org.apache.commons.logging.impl.SimpleLog
@@ -434,6 +442,7 @@
                                         <type>war</type>
                                     </deployable>
                                 </deployables>
+                                <home>${project.build.directory}/cargo-jetty</home>
                             </configuration>
                         </configuration>
                     </plugin>

@@ -32,8 +32,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.tuscany.sca.host.webapp.junit.WebTestRunner;
-
 /**
  * A servlet filter that forwards service requests to the servlets registered with
  * the Tuscany ServletHost.
@@ -43,16 +41,8 @@ public class TuscanyServletFilter implements Filter {
     //private static final Logger logger = Logger.getLogger(WebAppServletHost.class.getName());
 
     private WebAppServletHost servletHost;
-    private WebTestRunner testRunner;
 
     public void init(final FilterConfig config) throws ServletException {
-        try {
-            testRunner = new WebTestRunner();
-            testRunner.init(config);
-        } catch (NoClassDefFoundError e) {
-            // Ignore the error
-        }
-
         // TODO: must be a better way to get this than using a static
         servletHost = WebAppServletHost.getInstance();
 
@@ -77,9 +67,6 @@ public class TuscanyServletFilter implements Filter {
     }
 
     public void destroy() {
-        if (testRunner != null) {
-            testRunner.destroy();
-        }
         WebAppServletHost.getInstance().destroy();
     }
 
@@ -94,15 +81,6 @@ public class TuscanyServletFilter implements Filter {
         }
         if (path == null) {
             path = "/";
-        }
-
-        if (testRunner != null && testRunner.isJunitEnabled()) {
-            // This request is to run the test cases
-            // The path is /junit or /junit?<testCaseClassName>
-            if (path.equals("/junit")) {
-                testRunner.doFilter(request, response, chain);
-                return;
-            }
         }
 
         // Get a request dispatcher for the servlet mapped to that path
