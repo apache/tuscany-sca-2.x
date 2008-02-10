@@ -78,6 +78,7 @@ import org.apache.tuscany.sca.core.scope.ScopeContainerFactory;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
 import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.definitions.xml.SCADefinitionsDocumentProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -174,7 +175,8 @@ public class ReallySmallRuntimeBuilder {
                                                                 ContributionFactory contributionFactory,
                                                                 AssemblyFactory assemblyFactory,
                                                                 PolicyFactory policyFactory,
-                                                                InterfaceContractMapper mapper)
+                                                                InterfaceContractMapper mapper,
+                                                                SCADefinitions scaDefinitions)
         throws ActivationException {
 
         // Create a new XML input factory
@@ -250,7 +252,8 @@ public class ReallySmallRuntimeBuilder {
         ContributionService contributionService =
             new ContributionServiceImpl(repository, packageProcessor, documentProcessor, staxProcessor,
                                         contributionListener, domainModelResolver, modelResolvers, modelFactories,
-                                        assemblyFactory, contributionFactory, inputFactory);
+                                        assemblyFactory, contributionFactory, inputFactory,
+                                        scaDefinitions);
         return contributionService;
     }
 

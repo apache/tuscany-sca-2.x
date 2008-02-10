@@ -55,6 +55,7 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private IntentAttachPointType intentAttachPointType;
     private List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
     
     private String location;
     private Binding binding;
@@ -282,5 +283,9 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
 
     public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
         this.configuredOperations = configuredOperations;
+    }
+
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
     }
 }

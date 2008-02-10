@@ -42,6 +42,11 @@ class AtomBindingImpl implements AtomBinding, OptimizableBinding, PolicySetAttac
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private IntentAttachPointType intentAttachPointType;
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
+
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
+    }
 
     public String getName() {
         return name;

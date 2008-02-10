@@ -19,6 +19,7 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+           xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
            name="endpoint3">
            
     <!-- 

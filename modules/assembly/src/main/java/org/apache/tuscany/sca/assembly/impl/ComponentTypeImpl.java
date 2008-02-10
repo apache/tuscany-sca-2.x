@@ -33,12 +33,13 @@ import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
-/**
+/** 
  * Represents a component type.
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, Cloneable, PolicySetAttachPoint, OperationsConfigurator {
+public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, Cloneable,
+    PolicySetAttachPoint, OperationsConfigurator {
     private String uri;
     private ConstrainingType constrainingType;
     private List<Property> properties = new ArrayList<Property>();
@@ -47,37 +48,38 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private IntentAttachPointType type = null;
-    private List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
-    
+    private List<ConfiguredOperation> configuredOperations = new ArrayList<ConfiguredOperation>();
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
+
     /**
      * Constructs a new component type.
      */
     protected ComponentTypeImpl() {
     }
-    
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         ComponentTypeImpl clone = (ComponentTypeImpl)super.clone();
-        
+
         clone.services = new ArrayList<Service>();
-        for (Service service: getServices()) {
+        for (Service service : getServices()) {
             clone.services.add((Service)service.clone());
         }
         clone.references = new ArrayList<Reference>();
-        for (Reference reference: getReferences()) {
+        for (Reference reference : getReferences()) {
             clone.references.add((Reference)reference.clone());
         }
         clone.properties = new ArrayList<Property>();
-        for (Property property: getProperties()) {
+        for (Property property : getProperties()) {
             clone.properties.add((Property)property.clone());
         }
         return clone;
     }
-    
+
     public String getURI() {
         return uri;
     }
-    
+
     public void setURI(String uri) {
         this.uri = uri;
     }
@@ -109,7 +111,7 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
     public List<PolicySet> getPolicySets() {
         return policySets;
     }
-    
+
     public IntentAttachPointType getType() {
         return type;
     }
@@ -117,20 +119,20 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
     public void setType(IntentAttachPointType type) {
         this.type = type;
     }
-    
+
     public void setPolicySets(List<PolicySet> policySets) {
-        this.policySets = policySets; 
+        this.policySets = policySets;
     }
 
     public void setRequiredIntents(List<Intent> intents) {
         this.requiredIntents = intents;
     }
-    
+
     @Override
     public int hashCode() {
         return String.valueOf(getURI()).hashCode();
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -154,5 +156,9 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
 
     public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
         this.configuredOperations = configuredOperations;
+    }
+
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
     }
 }

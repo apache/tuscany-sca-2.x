@@ -39,7 +39,7 @@ public class CallbackImpl extends ExtensibleImpl implements Callback {
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
-    
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>(); 
 
     public List<PolicySet> getPolicySets() {
         return policySets;
@@ -73,6 +73,10 @@ public class CallbackImpl extends ExtensibleImpl implements Callback {
     
     public List<ConfiguredOperation> getConfiguredOperations() {
         return configuredOperations;
+    }
+
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
     }
 
 }

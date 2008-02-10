@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 public class ConfiguredOperationImpl extends BaseImpl implements ConfiguredOperation {
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
     
     private String name;
     private String contractName;
@@ -81,4 +82,10 @@ public class ConfiguredOperationImpl extends BaseImpl implements ConfiguredOpera
 
     public void setType(IntentAttachPointType type) {
     }
+
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
+    }
+    
+    
 }

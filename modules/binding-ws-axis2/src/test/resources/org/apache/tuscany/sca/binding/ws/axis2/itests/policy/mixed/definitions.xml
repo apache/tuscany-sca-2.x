@@ -34,7 +34,7 @@
  <!-- WS Security POLICY SETS -->
   <sca:policySet name="tuscany:wsAuthenticationPolicy"
  	provides="sca:authentication"
- 	appliesTo="sca:binding.ws"
+ 	appliesTo="//sca:binding.ws"
  	>
  	<tuscany:wsConfigParam>
  		<parameter name="InflowSecurity">
@@ -48,7 +48,7 @@
  
  <sca:policySet name="tuscany:wsClientAuthenticationPolicy"
  	provides="tuscany:wsAuthentication"
- 	appliesTo="sca:binding.ws">
+ 	appliesTo="//sca:binding.ws">
  	<tuscany:wsConfigParam>
  		<parameter name="OutflowSecurity">
  			<action>
@@ -63,7 +63,7 @@
  
  <sca:policySet name="tuscany:wsMixedReceiverIntegrityPolicy"
  	provides="sca:integrity"
- 	appliesTo="sca:binding.ws">
+ 	appliesTo="//sca:binding.ws">
  	<tuscany:wsConfigParam>
  		<parameter name="InflowSecurity">
 		    <action>
@@ -76,7 +76,7 @@
  
  <sca:policySet name="tuscany:wsMixedSenderIntegrityPolicy"
  	provides="sca:integrity"
- 	appliesTo="sca:binding.ws">
+ 	appliesTo="//sca:binding.ws">
  	<tuscany:wsConfigParam>
  		<parameter name="OutflowSecurity">
       		<action>
@@ -92,7 +92,7 @@
  
  <sca:policySet name="tuscany:wsServerAuthenticationIntegrityPolicy"
  	provides="sca:authentication sca:integrity"
- 	appliesTo="sca:binding.ws"
+ 	appliesTo="//sca:binding.ws"
  	>
  	<tuscany:wsConfigParam>
  		<parameter name="InflowSecurity">
@@ -116,7 +116,7 @@
  
  <sca:policySet name="tuscany:wsClientAuthenticationIntegrityPolicy"
  	provides="tuscany:wsAuthentication"
- 	appliesTo="sca:binding.ws">
+ 	appliesTo="//sca:binding.ws">
  	<tuscany:wsConfigParam>
  		<parameter name="InflowSecurity">
 		    <action>
@@ -139,7 +139,7 @@
  
  <sca:policySet name="tuscany:clientWsPolicyForAuthentication"
  	provides="sca:authentication"
- 	appliesTo="sca:binding.ws"
+ 	appliesTo="//sca:binding.ws"
  	>
  	<wsp:Policy wsu:Id="UTOverTransport" 
  		xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
@@ -164,7 +164,7 @@
  
  <sca:policySet name="tuscany:serverWsPolicyForAuthentication"
  	provides="sca:authentication"
- 	appliesTo="sca:binding.ws"
+ 	appliesTo="//sca:binding.ws"
  	>
  	<wsp:Policy wsu:Id="UTOverTransport" 
  		xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
@@ -188,7 +188,7 @@
   <!-- A policyset that uses WS Policy --> 
  <sca:policySet name="tuscany:serverWsPolicyForIntegrity"
  	provides="sca:integrity"
- 	appliesTo="sca:binding.ws">
+ 	appliesTo="//sca:binding.ws">
  	<wsp:Policy wsu:Id="SignOnly" 
  		xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
  		xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">

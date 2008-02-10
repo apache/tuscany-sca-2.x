@@ -36,7 +36,12 @@ public class ServiceImpl extends AbstractServiceImpl implements Service, Cloneab
     private List<Binding> bindings = new ArrayList<Binding>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private Callback callback;
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
     
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
+    }
+
     /**
      * Constructs a new service.
      */

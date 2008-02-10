@@ -167,7 +167,7 @@ public abstract class PolicyComputer {
         }
     }
     
-    protected List<PolicySet> computeInheritablePolicySets(Base parent,
+    /*protected List<PolicySet> computeInheritablePolicySets(Base parent,
                                                            IntentAttachPointType attachPointType,
                                                            List<PolicySet> inheritablePolicySets) 
                                                                throws PolicyValidationException {
@@ -188,6 +188,24 @@ public abstract class PolicyComputer {
                 
         }
         return validInheritablePolicySets;
+    }*/
+    
+    protected List<PolicySet> computeInheritablePolicySets(PolicySetAttachPoint policySetAttachPoint,
+                                                           List<PolicySet> inheritablePolicySets) 
+                                                               throws PolicyValidationException {
+        List<PolicySet> validInheritablePolicySets = new ArrayList<PolicySet>();
+        for (PolicySet policySet : inheritablePolicySets) {
+            if ( !policySet.isUnresolved() ) { 
+                if ( policySetAttachPoint.getApplicablePolicySets().contains(policySet) ) {
+                    validInheritablePolicySets.add(policySet);
+                }
+            } else {
+                throw new PolicyValidationException("Policy Set '" + policySet.getName()
+                        + "' is not defined in this domain  ");
+            }
+        }
+        
+        return validInheritablePolicySets;
     }
     
     protected void computePolicySets(PolicySetAttachPoint policySetAttachPoint ) {
@@ -206,23 +224,23 @@ public abstract class PolicyComputer {
         }
     }
     
-    protected void computePolicySetsForOperations(Base parent, 
+    protected void computePolicySetsForOperations(List<PolicySet> applicablePolicySets,
                                                   PolicySetAttachPoint policySetAttachPoint) 
                                                                         throws PolicyValidationException {
         if ( policySetAttachPoint instanceof OperationsConfigurator ) {
-            computePolicySetsForOperations(parent, 
+            computePolicySetsForOperations(applicablePolicySets, 
                                            (OperationsConfigurator)policySetAttachPoint, 
                                            policySetAttachPoint);
         }
         
     }
     
-    protected void computePolicySetsForOperations(Base parent, 
+    protected void computePolicySetsForOperations(List<PolicySet> applicablePolicySets, 
                                                   OperationsConfigurator opConfigurator,
                                                   PolicySetAttachPoint policySetAttachPoint) 
                                                                         throws PolicyValidationException {
-        String appliesTo = null;
-        String scdlFragment = "";
+        //String appliesTo = null;
+        //String scdlFragment = "";
         HashMap<QName, PolicySet> policySetTable = new HashMap<QName, PolicySet>();
         IntentAttachPointType attachPointType = policySetAttachPoint.getType();
         
@@ -230,9 +248,10 @@ public abstract class PolicyComputer {
             //validate policysets specified for the attachPoint
             for (PolicySet policySet : confOp.getPolicySets()) {
                 if ( !policySet.isUnresolved() ) {
-                    appliesTo = policySet.getAppliesTo();
+                    //appliesTo = policySet.getAppliesTo();
         
-                    if (!PolicyValidationUtils.isPolicySetApplicable(scdlFragment, appliesTo, attachPointType)) {
+                    //if (!PolicyValidationUtils.isPolicySetApplicable(scdlFragment, appliesTo, attachPointType)) {
+                    if (!applicablePolicySets.contains(policySet)) {
                         throw new PolicyValidationException("Policy Set '" + policySet.getName() 
                                 + " specified for operation " + confOp.getName()  
                             + "' does not constrain extension type  "
@@ -268,13 +287,14 @@ public abstract class PolicyComputer {
         }
     }
     
-    protected void determineApplicableDomainPolicySets(Base parentElement,
+    protected void determineApplicableDomainPolicySets(List<PolicySet> applicablePolicySets,
                                                      PolicySetAttachPoint policySetAttachPoint,
                                                      IntentAttachPointType intentAttachPointType) {
-        String scdlFragment = null; //write parentelement as scdl fragment and store it here
+        //String scdlFragment = null; //write parentelement as scdl fragment and store it here
         if (policySetAttachPoint.getRequiredIntents().size() > 0) {
             for (PolicySet policySet : domainPolicySets) {
-                if (PolicyValidationUtils.isPolicySetApplicable(scdlFragment, policySet.getAppliesTo(), intentAttachPointType)) {
+                //if (PolicyValidationUtils.isPolicySetApplicable(scdlFragment, policySet.getAppliesTo(), intentAttachPointType)) {
+                if ( applicablePolicySets.contains(policySet)) {
                     int prevSize = policySetAttachPoint.getRequiredIntents().size();
                     trimProvidedIntents(policySetAttachPoint.getRequiredIntents(), policySet);
                     // if any intent was trimmed off, then this policyset must
@@ -283,7 +303,7 @@ public abstract class PolicyComputer {
                         policySetAttachPoint.getPolicySets().add(policySet);
                     }
                 }
-            }
+            } 
         }
     }
     

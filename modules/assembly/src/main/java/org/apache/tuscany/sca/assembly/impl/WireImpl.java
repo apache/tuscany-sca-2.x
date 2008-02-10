@@ -38,6 +38,11 @@ public class WireImpl extends ExtensibleImpl implements Wire, Cloneable {
     private ComponentService target;
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
+
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
+    }
 
     /**
      * Constructs a new wire.
