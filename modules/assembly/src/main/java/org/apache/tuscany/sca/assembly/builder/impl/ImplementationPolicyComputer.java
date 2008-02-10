@@ -60,13 +60,12 @@ public class ImplementationPolicyComputer extends PolicyComputer {
                                         parent.getRequiredIntents());
             
             
-            List<PolicySet> prunedPolicySets = computeInheritablePolicySets(parent, 
-                                                                            policiedImplementation.getType(), 
+            List<PolicySet> prunedPolicySets = computeInheritablePolicySets(policiedImplementation, 
                                                                             parent.getPolicySets());
             parent.getPolicySets().clear();
             parent.getPolicySets().addAll(prunedPolicySets);
             computePolicySets(parent);
-            computePolicySetsForOperations(parent, 
+            computePolicySetsForOperations(parent.getApplicablePolicySets(), 
                                            (OperationsConfigurator)parent, 
                                            (PolicySetAttachPoint)implementation);
             
@@ -92,7 +91,7 @@ public class ImplementationPolicyComputer extends PolicyComputer {
                     trimProvidedIntents(confOp.getRequiredIntents(), component.getPolicySets());
                     
                     if (domainPolicySets != null) {
-                        determineApplicableDomainPolicySets(component.getImplementation(), 
+                        determineApplicableDomainPolicySets(component.getApplicablePolicySets(), 
                                                             confOp,
                                                             policiedImplementation.getType());
     
@@ -120,7 +119,7 @@ public class ImplementationPolicyComputer extends PolicyComputer {
             //TODO: resolved to domain policy registry and attach suitable policy sets to the implementation
             //...for now using the SCA Definitions instead of registry
             if ( domainPolicySets != null)  {
-                determineApplicableDomainPolicySets(component, 
+                determineApplicableDomainPolicySets(component.getApplicablePolicySets(), 
                                                     component,
                                                     policiedImplementation.getType());
                                                     

@@ -83,7 +83,7 @@ public class ReallySmallRuntime {
     private WorkScheduler workScheduler;
     private ScopeRegistry scopeRegistry;
     private ProxyFactory proxyFactory;
-    private SCADefinitions scaDefinitions = null;
+    private SCADefinitions scaDefinitions = new SCADefinitionsImpl();
 
     public ReallySmallRuntime(ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -131,7 +131,8 @@ public class ReallySmallRuntime {
                                                                                   contributionFactory,
                                                                                   assemblyFactory,
                                                                                   policyFactory,
-                                                                                  mapper);
+                                                                                  mapper,
+                                                                                  scaDefinitions);
         
         // Create the ScopeRegistry
         scopeRegistry = ReallySmallRuntimeBuilder.createScopeRegistry(registry); 
@@ -262,7 +263,6 @@ public class ReallySmallRuntime {
         URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         SCADefinitionsDocumentProcessor definitionsProcessor = (SCADefinitionsDocumentProcessor)documentProcessors.getProcessor(SCADefinitions.class);
         
-        scaDefinitions = new SCADefinitionsImpl();
         try {
             Map<ClassLoader, Set<URL>> scaDefinitionFiles = 
             ServiceDiscovery.getInstance().getServiceResources("definitions.xml");

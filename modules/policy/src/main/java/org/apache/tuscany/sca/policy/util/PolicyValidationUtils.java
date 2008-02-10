@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPointType;
  * @version $Rev$ $Date$
  */
 public class PolicyValidationUtils {
-    public static boolean isPolicySetApplicable(String scdlFragment,
+    /*public static boolean isPolicySetApplicable(String scdlFragment,
                                                 String xpath,
                                                 IntentAttachPointType attachPointType) {
         
@@ -48,6 +48,6 @@ public class PolicyValidationUtils {
         } else if (parent instanceof CompositeReference) {
 
         }
-        return true;*/
-    }
+        return true;
+    }*/
 }

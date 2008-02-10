@@ -48,7 +48,7 @@ public class BindingPolicyComputer extends PolicyComputer {
     
     public void computeBindingIntentsAndPolicySets(Contract contract)  throws PolicyValidationException {
         computeIntents(contract.getBindings(), contract.getRequiredIntents());
-        computePolicySets(contract, contract.getBindings(), contract.getPolicySets());
+        computePolicySets(contract.getApplicablePolicySets(), contract.getBindings(), contract.getPolicySets());
         
         for ( Binding binding : contract.getBindings() ) {
             if ( binding instanceof IntentAttachPoint ) {
@@ -56,14 +56,15 @@ public class BindingPolicyComputer extends PolicyComputer {
             }
             
             if ( binding instanceof PolicySetAttachPoint ) {
-                computePolicySetsForOperations(contract, (PolicySetAttachPoint)binding);
+                computePolicySetsForOperations(((PolicySetAttachPoint)binding).getApplicablePolicySets(), 
+                                               (PolicySetAttachPoint)binding);
             }
         }
         
         if ( contract.getCallback() != null ) {
             computeIntents(contract.getCallback().getBindings(), 
                            contract.getCallback().getRequiredIntents());
-            computePolicySets(contract, 
+            computePolicySets(contract.getApplicablePolicySets(), 
                               contract.getCallback().getBindings(), 
                               contract.getCallback().getPolicySets());
         }
@@ -88,19 +89,18 @@ public class BindingPolicyComputer extends PolicyComputer {
         }
     }
     
-    private void computePolicySets(Base parent,
+    private void computePolicySets(List<PolicySet> applicablePolicySets,
                                    List<Binding> bindings,
                                    List<PolicySet> inheritedPolicySets) throws PolicyValidationException {
         for (Binding binding : bindings) {
             if ( binding instanceof PolicySetAttachPoint ) {
                 PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
                 
-                List<PolicySet> prunedPolicySets = computeInheritablePolicySets(parent, 
-                                                                                policiedBinding.getType(), 
+                List<PolicySet> prunedPolicySets = computeInheritablePolicySets(policiedBinding,
                                                                                 inheritedPolicySets);
                 policiedBinding.getPolicySets().addAll(prunedPolicySets);
                 computePolicySets(policiedBinding);
-                computePolicySetsForOperations(parent, policiedBinding);
+                computePolicySetsForOperations(applicablePolicySets, policiedBinding);
 
             }
         }
@@ -113,6 +113,8 @@ public class BindingPolicyComputer extends PolicyComputer {
                 PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)aBinding;
                 IntentAttachPointType bindingType = policiedBinding.getType();
 
+                
+                intentsCopy = new ArrayList<Intent>(policiedBinding.getRequiredIntents());
                 // add the target component's intents to the reference binding
                 if (target != null) {
                     for (Intent intent : target.getRequiredIntents()) {
@@ -136,7 +138,7 @@ public class BindingPolicyComputer extends PolicyComputer {
                     OperationsConfigurator opConfigurator = (OperationsConfigurator)aBinding;
                     
                     for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
-                        intentsCopy = new ArrayList<Intent>(confOp.getRequiredIntents());
+                        List<Intent> opsIntentsCopy = new ArrayList<Intent>(confOp.getRequiredIntents());
                         
                         trimInherentlyProvidedIntents(policiedBinding.getType(), 
                                                       confOp.getRequiredIntents());
@@ -144,7 +146,7 @@ public class BindingPolicyComputer extends PolicyComputer {
                         trimProvidedIntents(confOp.getRequiredIntents(), policiedBinding.getPolicySets());
                         
                         if (domainPolicySets != null) {
-                            determineApplicableDomainPolicySets(aBinding, 
+                            determineApplicableDomainPolicySets(policiedBinding.getApplicablePolicySets(), 
                                                                 confOp,
                                                                 policiedBinding.getType());
         
@@ -158,12 +160,11 @@ public class BindingPolicyComputer extends PolicyComputer {
                         //the intents list could have been trimmed when matching for policysets
                         //since the bindings may need the original set of intents we copy that back
                         confOp.getRequiredIntents().clear();
-                        confOp.getRequiredIntents().addAll(intentsCopy);
+                        confOp.getRequiredIntents().addAll(opsIntentsCopy);
                         
                     }
                 }
 
-                intentsCopy = new ArrayList<Intent>(policiedBinding.getRequiredIntents());
                 trimInherentlyProvidedIntents(policiedBinding.getType(), 
                                               policiedBinding.getRequiredIntents());
                 trimProvidedIntents(policiedBinding.getRequiredIntents(), policiedBinding
@@ -190,7 +191,7 @@ public class BindingPolicyComputer extends PolicyComputer {
                                                      PolicySetAttachPoint policiedBinding) 
                                                             throws PolicyComputationException {
         if ( domainPolicySets != null) {
-            determineApplicableDomainPolicySets(contract, 
+            determineApplicableDomainPolicySets(policiedBinding.getApplicablePolicySets(), 
                                                 policiedBinding,
                                                 policiedBinding.getType());
             

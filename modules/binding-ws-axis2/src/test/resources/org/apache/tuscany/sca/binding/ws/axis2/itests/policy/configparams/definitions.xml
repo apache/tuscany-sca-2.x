@@ -32,7 +32,7 @@
  <!-- WS Security POLICY SETS -->
   <sca:policySet name="tuscany:wsAuthenticationPolicy"
  	provides="sca:authentication"
- 	appliesTo="sca:binding.ws"
+ 	appliesTo="//sca:binding.ws"
  	>
  	<tuscany:wsConfigParam>
  		<parameter name="InflowSecurity">
@@ -46,7 +46,7 @@
  
  <sca:policySet name="tuscany:wsClientAuthenticationPolicy"
  	provides="tuscany:wsAuthentication"
- 	appliesTo="sca:binding.ws">
+ 	appliesTo="//sca:binding.ws">
  	<tuscany:wsConfigParam>
  		<parameter name="OutflowSecurity">
  			<action>
@@ -61,7 +61,7 @@
  
  <sca:policySet name="tuscany:wsIntegrityPolicy"
  	provides="sca:integrity"
- 	appliesTo="sca:binding.ws">
+ 	appliesTo="//sca:binding.ws">
  	<tuscany:wsConfigParam>
  		<parameter name="InflowSecurity">
 		    <action>
@@ -83,7 +83,7 @@
 
  <sca:policySet name="tuscany:wsConfidentialityPolicy"
  	provides="sca:confidentiality"
- 	appliesTo="sca:binding.ws">
+ 	appliesTo="//sca:binding.ws">
  	<tuscany:wsConfigParam>
  		<parameter name="InflowSecurity">
       		<action>

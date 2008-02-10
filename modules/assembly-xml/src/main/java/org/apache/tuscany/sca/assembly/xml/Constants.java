@@ -75,7 +75,8 @@ public interface Constants {
     String LOCAL = "local";
     String AUTOWIRE = "autowire";
     String REQUIRES = "requires";
-    String POLICY_SETS = "policySets";    
+    String POLICY_SETS = "policySets"; 
+    String APPLICABLE_POLICY_SETS = "applicablePolicySets";
     String PROMOTE = "promote";
     String TARGET = "target";
     String WIRED_BY_IMPL = "wiredByImpl";

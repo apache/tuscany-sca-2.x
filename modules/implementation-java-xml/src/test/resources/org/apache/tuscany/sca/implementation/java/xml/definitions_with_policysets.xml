@@ -80,21 +80,21 @@
  
  <sca:policySet name="tuscanyPolicySet_1"
  	provides="tuscanyIntent_1 tuscanyIntent_2 tuscanyIntent_3"
- 	appliesTo="sca:binding.ws sca:implementation.java"
+ 	appliesTo="/sca:composite/sca:component"
  	xmlns="http://test"
  	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
  </sca:policySet>
  
  <sca:policySet name="tuscanyPolicySet_2"
  	provides="tuscanyIntent_4 tuscanyIntent_5"
- 	appliesTo="sca:binding.ws sca:implementation.java"
+ 	appliesTo="/sca:composite/sca:component"
  	xmlns="http://test"
  	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
  </sca:policySet>
  
  <sca:policySet name="tuscanyPolicySet_3"
  	provides="tuscanyIntent_6"
- 	appliesTo="sca:binding.ws sca:implementation.java"
+ 	appliesTo="/sca:composite/sca:component"
  	xmlns="http://test"
  	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
  	<sca:intentMap provides="tuscanyIntent_6" default="qualified1">
@@ -113,7 +113,7 @@
  
  <sca:policySet name="tuscanyPolicySet_4"
  	provides="tuscanyIntent_6"
- 	appliesTo="sca:binding.ws sca:implementation.java"
+ 	appliesTo="/sca:composite/sca:component"
  	xmlns="http://test"
  	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
  	<sca:intentMap provides="tuscanyIntent_6" default="qualified2">

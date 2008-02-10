@@ -749,14 +749,18 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
         //to child elements as and when the child elements are being resolved
         List<Intent> compositeIntents = null;
         List<PolicySet> compositePolicySets = null;
+        List<PolicySet> compositeApplicablePolicySets = null;
         if (composite instanceof PolicySetAttachPoint) { 
             resolveIntents(((PolicySetAttachPoint)composite).getRequiredIntents(), resolver);
             resolvePolicySets(((PolicySetAttachPoint)composite).getPolicySets(), resolver);
+            resolvePolicySets(((PolicySetAttachPoint)composite).getApplicablePolicySets(), resolver);
             compositeIntents = ((PolicySetAttachPoint)composite).getRequiredIntents();
             compositePolicySets = ((PolicySetAttachPoint)composite).getPolicySets();
+            compositeApplicablePolicySets = ((PolicySetAttachPoint)composite).getApplicablePolicySets();
         } else {
             compositeIntents = new ArrayList<Intent>();
             compositePolicySets = new ArrayList<PolicySet>();
+            compositeApplicablePolicySets = new ArrayList<PolicySet>();
         }
         
         //Resolve composite services and references
@@ -775,10 +779,12 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             //to child elements as and when the child elements are being resolved
             resolveIntents(component.getRequiredIntents(), resolver);
             resolvePolicySets(component.getPolicySets(), resolver);
+            resolvePolicySets(component.getApplicablePolicySets(), resolver);
             
             //inherit composite intents and policysets
             addInheritedIntents(compositeIntents, component.getRequiredIntents());
             addInheritedPolicySets(compositePolicySets, component.getPolicySets());
+            addInheritedPolicySets(compositeApplicablePolicySets, component.getApplicablePolicySets());
 
             //resolve component services and references 
             resolveContracts(component, component.getServices(), resolver);
@@ -821,11 +827,13 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
         if (implementation instanceof PolicySetAttachPoint) {
             resolveIntents(((PolicySetAttachPoint)implementation).getRequiredIntents(), resolver);
             resolvePolicySets(((PolicySetAttachPoint)implementation).getPolicySets(), resolver);
+            resolvePolicySets(((PolicySetAttachPoint)implementation).getApplicablePolicySets(), resolver);
             validatePolicySets(component, (PolicySetAttachPoint)implementation);
             //add implementation policies into component... since implementation instance are 
             //reused and its likely that this implementation instance will not hold after its resolution
             component.getRequiredIntents().addAll(((PolicySetAttachPoint)implementation).getRequiredIntents());
             component.getPolicySets().addAll(((PolicySetAttachPoint)implementation).getPolicySets());
+            component.getApplicablePolicySets().addAll(((PolicySetAttachPoint)implementation).getApplicablePolicySets());
             if ( implementation instanceof OperationsConfigurator ) {
                 boolean notFound;
                 List<ConfiguredOperation> opsFromImplementation = new ArrayList<ConfiguredOperation>();
@@ -833,11 +841,13 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     notFound = true;
                     resolveIntents(implConfOp.getRequiredIntents(), resolver);
                     resolvePolicySets(implConfOp.getPolicySets(), resolver);
+                    resolvePolicySets(implConfOp.getApplicablePolicySets(), resolver);
                     for ( ConfiguredOperation compConfOp : ((OperationsConfigurator)component).getConfiguredOperations() ) {
                         if ( implConfOp.getName().equals(compConfOp.getName()) ) {
                             notFound = false;
                             addInheritedIntents(implConfOp.getRequiredIntents(), compConfOp.getRequiredIntents());
                             addInheritedPolicySets(implConfOp.getPolicySets(), compConfOp.getPolicySets());
+                            addInheritedPolicySets(implConfOp.getApplicablePolicySets(), compConfOp.getApplicablePolicySets());
                             notFound = false;
                         }
                     }
@@ -850,6 +860,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             }
             ((PolicySetAttachPoint)implementation).getRequiredIntents().clear();
             ((PolicySetAttachPoint)implementation).getPolicySets().clear();
+            ((PolicySetAttachPoint)implementation).getApplicablePolicySets().clear();
+            
         }
     }
     

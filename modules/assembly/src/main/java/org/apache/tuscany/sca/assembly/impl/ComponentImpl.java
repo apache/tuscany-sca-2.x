@@ -52,6 +52,7 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
     private Boolean autowire;
     private IntentAttachPointType type;
     private List<ConfiguredOperation>  configuredImplOperations = new ArrayList<ConfiguredOperation>();
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
 
     /**
      * Constructs a new component.
@@ -167,32 +168,9 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
     public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
         this.configuredImplOperations = configuredOperations;
     }
-
     
-    private class PolicySetAttachPointImpl implements PolicySetAttachPoint {
-        private List<Intent> requiredIntents = new ArrayList<Intent>();
-        private List<PolicySet> policySets = new ArrayList<PolicySet>();
-        
-        public List<PolicySet> getPolicySets() {
-            return policySets;
-        }
-
-        public void setPolicySets(List<PolicySet> policySets) {
-        }
-
-        public List<Intent> getRequiredIntents() {
-            return requiredIntents;
-        }
-
-        public IntentAttachPointType getType() {
-            return null;
-        }
-
-        public void setRequiredIntents(List<Intent> intents) {
-        }
-
-        public void setType(IntentAttachPointType type) {
-        }
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
     }
 
 }

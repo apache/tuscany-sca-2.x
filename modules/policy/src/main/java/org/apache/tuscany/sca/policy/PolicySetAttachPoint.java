@@ -33,4 +33,14 @@ public interface PolicySetAttachPoint extends IntentAttachPoint {
      * @return a list of policy sets.
      */
     List<PolicySet> getPolicySets();
+    
+    
+    /**
+     * Returns a list of policy sets defined in the domain, that are applicable to this
+     * PolicySetAttachPoint. An applicable PolicySet is one that include this PolicySetAttachPoint
+     * as part of its 'appliesTo' xpath attribute.
+     * 
+     * @return a list of policy sets applicable to this PolicySetAttachPoint
+     */
+    List<PolicySet> getApplicablePolicySets();
 }

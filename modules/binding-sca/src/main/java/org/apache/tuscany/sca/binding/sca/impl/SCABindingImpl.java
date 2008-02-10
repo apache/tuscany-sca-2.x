@@ -48,7 +48,12 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPo
     private Component targetComponent;
     private ComponentService targetComponentService;
     private Binding targetBinding;
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
     
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
+    }
+
     /**
      * Constructs a new SCA binding.
      */

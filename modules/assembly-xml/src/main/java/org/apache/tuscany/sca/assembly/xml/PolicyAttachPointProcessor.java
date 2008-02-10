@@ -120,6 +120,22 @@ public class PolicyAttachPointProcessor extends BaseStAXArtifactProcessor implem
                 policySets.add(policySet);
             }
         }
+        
+        value = reader.getAttributeValue(SCA10_TUSCANY_NS, APPLICABLE_POLICY_SETS);
+        if (value != null) {
+            List<PolicySet> applicablePolicySets = policySetAttachPoint.getApplicablePolicySets();
+            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
+                QName qname = getQNameValue(reader, tokens.nextToken());
+                PolicySet policySet = policyFactory.createPolicySet();
+                policySet.setName(qname);
+                if (operation != null) {
+                    //FIXME Don't we need to handle policySet specification
+                    // on an operation basis?
+                    //policySet.getOperations().add(operation);
+                }
+                applicablePolicySets.add(policySet);
+            }
+        }
     }
     
     /**

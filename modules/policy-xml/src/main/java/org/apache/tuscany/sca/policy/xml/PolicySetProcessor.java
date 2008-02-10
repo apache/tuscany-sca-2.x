@@ -72,7 +72,17 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
     public PolicySet read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         PolicySet policySet = policyFactory.createPolicySet();
         policySet.setName(getQName(reader, NAME));
-        policySet.setAppliesTo(reader.getAttributeValue(null, APPLIES_TO));
+        String appliesTo = reader.getAttributeValue(null, APPLIES_TO);
+        
+        //TODO: with 1.0 version of specs the applies to xpath is given related to the immediate
+        //parent whereas the runtime evaluates the xpath aginst the composite element.  What the runtime
+        //is doing is what the future version of the specs could be tending towards.  When that happens
+        //this 'if' must be deleted
+        if ( appliesTo != null && !appliesTo.startsWith("/") ) {
+            appliesTo = "//" + appliesTo;
+        }
+        
+        policySet.setAppliesTo(appliesTo);
         readProvidedIntents(policySet, reader);
         
         int event = reader.getEventType();

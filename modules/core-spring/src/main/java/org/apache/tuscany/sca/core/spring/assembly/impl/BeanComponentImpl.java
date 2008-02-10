@@ -40,6 +40,8 @@ import org.springframework.beans.factory.support.ChildBeanDefinition;
  *  @version $Rev$ $Date$
  */
 public class BeanComponentImpl extends ChildBeanDefinition implements Component, Cloneable {
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
+    
     public IntentAttachPointType getType() {
         // TODO Auto-generated method stub
         return null;
@@ -217,6 +219,10 @@ public class BeanComponentImpl extends ChildBeanDefinition implements Component,
 
     public void setRequiredIntents(List<Intent> intents) {
         this.requiredIntents = intents;
+    }
+
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
     }
 
 }

@@ -284,16 +284,19 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
             //child binding elements
             resolveIntents(contract.getRequiredIntents(), resolver);
             resolvePolicySets(contract.getPolicySets(), resolver);
+            resolvePolicySets(contract.getApplicablePolicySets(), resolver);
             
             //inherit the composite / component level policy intents and policysets
             if ( parent != null && parent instanceof PolicySetAttachPoint )  {
                 addInheritedIntents(((PolicySetAttachPoint)parent).getRequiredIntents(), contract.getRequiredIntents());
                 addInheritedPolicySets(((PolicySetAttachPoint)parent).getPolicySets(), contract.getPolicySets());
+                addInheritedPolicySets(((PolicySetAttachPoint)parent).getApplicablePolicySets(), contract.getApplicablePolicySets());
             }
             
             for ( ConfiguredOperation confOp : contract.getConfiguredOperations() ) {
                 resolveIntents(confOp.getRequiredIntents(), resolver);
                 resolvePolicySets(confOp.getPolicySets(), resolver);
+                resolvePolicySets(confOp.getApplicablePolicySets(), resolver);
             }
                             
             // Resolve the interface contract
@@ -314,6 +317,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                     PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
                     resolvePolicySets(policiedBinding.getPolicySets(), resolver);
                     //validate if attached policysets apply to the binding
+                    resolvePolicySets(policiedBinding.getApplicablePolicySets(), resolver);
                     validatePolicySets(contract, policiedBinding);
                 }
                 if (binding instanceof OperationsConfigurator) {
@@ -321,6 +325,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                     for (ConfiguredOperation confOp : opConfigurator.getConfiguredOperations()) {
                         resolveIntents(confOp.getRequiredIntents(), resolver);
                         resolvePolicySets(confOp.getPolicySets(), resolver);
+                        resolvePolicySets(confOp.getApplicablePolicySets(), resolver);
                     }
                 }
             }
@@ -329,9 +334,11 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
             if (contract.getCallback() != null) {
                 resolveIntents(contract.getCallback().getRequiredIntents(), resolver);
                 resolvePolicySets(contract.getCallback().getPolicySets(), resolver);
+                resolvePolicySets(contract.getCallback().getApplicablePolicySets(), resolver);
                 //inherit the contract's policy intents and policysets
                 addInheritedIntents(contract.getRequiredIntents(), contract.getCallback().getRequiredIntents());
                 addInheritedPolicySets(contract.getPolicySets(), contract.getCallback().getPolicySets());
+                addInheritedPolicySets(contract.getApplicablePolicySets(), contract.getCallback().getApplicablePolicySets());
                 
                 for (int i = 0, n = contract.getCallback().getBindings().size(); i < n; i++) {
                     Binding binding = contract.getCallback().getBindings().get(i);
@@ -344,6 +351,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                     if (binding instanceof PolicySetAttachPoint) {
                         PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
                         resolvePolicySets(policiedBinding.getPolicySets(), resolver);
+                        resolvePolicySets(policiedBinding.getApplicablePolicySets(), resolver);
                         validatePolicySets(contract.getCallback(), policiedBinding);
                     }
                     if (binding instanceof OperationsConfigurator) {
@@ -351,6 +359,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                         for (ConfiguredOperation confOp : opConfigurator.getConfiguredOperations()) {
                             resolveIntents(confOp.getRequiredIntents(), resolver);
                             resolvePolicySets(confOp.getPolicySets(), resolver);
+                            resolvePolicySets(confOp.getApplicablePolicySets(), resolver);
                         }
                     }
                 }
@@ -667,7 +676,26 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
     }
     
     protected void validatePolicySets(Base parent, PolicySetAttachPoint policySetAttachPoint) throws ContributionResolveException {
-        String appliesTo = null;
+        //Since the applicablePolicySets in a policySetAttachPoint will already have the 
+        //list of policysets that might ever be applicable to this attachPoint, just check
+        //if the defined policysets feature in the list of applicable policysets
+        IntentAttachPointType attachPointType = policySetAttachPoint.getType();
+        for ( PolicySet definedPolicySet : policySetAttachPoint.getPolicySets() ) {
+            if ( !definedPolicySet.isUnresolved() ) {
+                if ( !policySetAttachPoint.getApplicablePolicySets().contains(definedPolicySet)) {
+                    throw new ContributionResolveException("Policy Set '" + definedPolicySet.getName()
+                                                           + "' does not apply to binding type  "
+                                                           + attachPointType.getName());
+                }
+            } else {
+                throw new ContributionResolveException("Policy Set '" + definedPolicySet.getName()
+                                                       + "' is not defined in this domain  ");
+                                                
+            
+            }
+        }
+        
+        /*String appliesTo = null;
         IntentAttachPointType attachPointType = policySetAttachPoint.getType();
         String scdlFragment = ""; //need to write the 'parent' as scdl xml string
         
@@ -688,8 +716,6 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                     
                 }
             }
-        }
+        }*/
     }
-
-
 }

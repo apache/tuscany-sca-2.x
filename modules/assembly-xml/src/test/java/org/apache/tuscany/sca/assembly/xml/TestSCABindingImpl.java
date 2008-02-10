@@ -53,6 +53,7 @@ public class TestSCABindingImpl implements SCABinding, OptimizableBinding, Polic
     List<PolicySet> policySets = new ArrayList<PolicySet>();
     IntentAttachPointType bindingType = new TestSCABindingType();
     List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
 
     /**
      * Constructs a new SCA binding.
@@ -204,5 +205,9 @@ public class TestSCABindingImpl implements SCABinding, OptimizableBinding, Polic
 
     public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
         this.configuredOperations = configuredOperations;
+    }
+
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
     }
 }
