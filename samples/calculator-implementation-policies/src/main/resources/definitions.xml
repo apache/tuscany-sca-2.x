@@ -53,9 +53,8 @@
  	provides="tuscany:logging"
  	appliesTo="sca:implementation.java"
  	xmlns="http://www.osoa.org/xmlns/sca/1.0">
- 	<tuscany:jdkLogger xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0" name="calculator">
+ 	<tuscany:jdkLogger name="calculator">
 		<logLevel>FINER</logLevel>
 	</tuscany:jdkLogger>
 </policySet>
-
 </definitions>

@@ -38,6 +38,7 @@ public class EchoBindingImpl implements EchoBinding, PolicySetAttachPoint {
     private String uri;
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
     private IntentAttachPointType bindingType = null;
 
     public IntentAttachPointType getType() {
@@ -95,5 +96,9 @@ public class EchoBindingImpl implements EchoBinding, PolicySetAttachPoint {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }    
+    
+    public List<PolicySet> getApplicablePolicySets() {
+        return this.applicablePolicySets;
+    }
 
 }

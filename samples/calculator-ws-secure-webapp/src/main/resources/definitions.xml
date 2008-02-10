@@ -24,46 +24,10 @@
  			xmlns:calc="http://calculator">
 
  
- <sca:intent name="authentication" 
- 			 constrains="sca:binding.ws">
- 			 <description>
- 			 Communitcation thro this binding required Authentication.
- 			 </description>
- </sca:intent>
- 
- <sca:intent name="integrity" 
- 			 constrains="sca:binding.ws">
- 			 <description>
- 			 	Protect messages from unauthorized reading or modification
- 			 </description>
- </sca:intent>
- 
- <sca:intent name="confidentiality" 
- 			 constrains="sca:binding.ws">
- 			 <description>
- 			 	Communitcation thro this binding must prevent
-	 			 unauthorized users from reading the messages.
- 			 </description>
- </sca:intent>
- 
- <sca:intent name="calc:wsAuthentication" 
- 			 constrains="sca:binding.ws">
- 			 <description>
- 			 Communitcation thro this binding required Authentication.
- 			 </description>
- </sca:intent>
- 
- <sca:intent name="calc:wsIntegrity" 
- 			 constrains="sca:binding.ws">
- 			 <description>
- 			 	Protect messages from unauthorized reading or modification
- 			 </description>
- </sca:intent>
- 
  <!-- WS Security POLICY SETS -->
   <sca:policySet name="calc:wsAuthenticationPolicy"
- 	provides="authentication"
- 	appliesTo="sca:binding.ws"
+ 	provides="sca:authentication"
+ 	appliesTo="sca:service/sca:binding.ws"
  	>
  	<tuscany:wsConfigParam>
  		<parameter name="InflowSecurity">
@@ -76,8 +40,8 @@
  </sca:policySet>
  
  <sca:policySet name="calc:wsClientAuthenticationPolicy"
- 	provides="calc:wsAuthentication"
- 	appliesTo="sca:binding.ws">
+ 	provides="sca:authentication"
+ 	appliesTo="sca:reference/sca:binding.ws">
  	<tuscany:wsConfigParam>
  		<parameter name="OutflowSecurity">
  			<action>
@@ -90,55 +54,10 @@
  	</tuscany:wsConfigParam>
  </sca:policySet>
  
- <!-- sca:policySet name="wsIntegrityPolicy"
- 	provides="integrity"
- 	appliesTo="sca:binding.ws">
- 	<tuscany:wsConfigParam>
- 		<parameter name="InflowSecurity">
-		    <action>
-		        <items>UsernameToken Timestamp Signature</items>
-		        <signaturePropFile>security.properties</signaturePropFile>
-		        <passwordCallbackClass>calculator.security.ServerPWCBHandler</passwordCallbackClass>
-		    </action>
-		</parameter>
- 		<parameter name="OutflowSecurity">
-      		<action>
-        		<items>Timestamp Signature</items>
-        		<user>CalculatorAdmin</user>
-        		<signaturePropFile>security.properties</signaturePropFile>
-        		<passwordCallbackClass>calculator.security.ServerPWCBHandler</passwordCallbackClass>
-        		<signatureKeyIdentifier>DirectReference</signatureKeyIdentifier>
-      		</action>
-    	</parameter>
- 	</tuscany:wsConfigParam>
- </sca:policySet>
- 
- <sca:policySet name="wsClientIntegrityPolicy"
- 	provides="calc:wsIntegrity"
- 	appliesTo="sca:binding.ws">
- 	<tuscany:wsConfigParam>
- 		<parameter name="InflowSecurity">
-		    <action>
-		        <items>Timestamp Signature</items>
-		        <signaturePropFile>security.properties</signaturePropFile>
-		    </action>
-		</parameter>
- 		<parameter name="OutflowSecurity">
-      		<action>
-        		<items>UsernameToken Timestamp Signature</items>
-        		<user>CalculatorUser</user>
-        		<passwordType>PasswordText</passwordType>
-        		<signaturePropFile>security.properties</signaturePropFile>
-        		<passwordCallbackClass>calculator.security.ClientPWCBHandler</passwordCallbackClass>
-        		<signatureKeyIdentifier>DirectReference</signatureKeyIdentifier>
-      		</action>
-    	</parameter>
- 	</tuscany:wsConfigParam>
- </sca:policySet-->
  
  <sca:policySet name="tuscany:wsSecurityPolicyForIntegrity"
  	provides="sca:integrity"
- 	appliesTo="sca:binding.ws">
+ 	appliesTo="sca:service/sca:binding.ws">
  	<wsp:Policy wsu:Id="SignOnly" 
  		xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
  		xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
@@ -207,8 +126,8 @@
  </sca:policySet>
  
  <sca:policySet name="tuscany:wsSecurityPolicyForClientIntegrity"
- 	provides="calc:wsIntegrity"
- 	appliesTo="sca:binding.ws">
+ 	provides="sca:integrity"
+ 	appliesTo="sca:reference/sca:binding.ws">
  	<wsp:Policy wsu:Id="SignOnly" 
  		xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
  		xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
