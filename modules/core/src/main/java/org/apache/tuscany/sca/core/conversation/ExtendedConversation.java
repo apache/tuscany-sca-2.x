@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.core.conversation;
 
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.osoa.sca.Conversation;
 
 /**
@@ -34,17 +35,32 @@ public interface ExtendedConversation extends Conversation {
     ConversationState getState();
 
     /**
-     * Mark the conversation expired
-     */
-    void expire();
-
-    /**
      * @param state the state to set
      */
-    public void setState(ConversationState state);
+    void setState(ConversationState state);
 
     /**
      * @param conversationID the conversationID to set
      */
-    public void setConversationID(Object conversationID);
+    void setConversationID(Object conversationID);
+    
+    
+    /**
+     * will check whether this conversation has expired and update state if it has 
+     * @return true if it has expired
+     */
+    boolean isExpired();
+    
+    /**
+     * updates the last time this conversation was referenced
+     */
+    void updateLastReferencedTime();
+    
+    public void initializeConversationAttributes(RuntimeComponent targetComponent);
+
+    
+    /**
+     * @return true if the conversational attributes have been initialized
+     */
+    public boolean conversationalAttributesInitialized();
 }

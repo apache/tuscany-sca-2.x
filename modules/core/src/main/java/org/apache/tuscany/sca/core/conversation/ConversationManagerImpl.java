@@ -25,15 +25,80 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.tuscany.sca.core.scope.ScopedImplementationProvider;
+import org.apache.tuscany.sca.provider.ImplementationProvider;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 
 /**
  * @version $Rev$ $Date$
  */
 public class ConversationManagerImpl implements ConversationManager {
+	
     private List<ConversationListener> listeners = Collections.synchronizedList(new ArrayList<ConversationListener>());
-    private Map<Object, ExtendedConversation> converations = new ConcurrentHashMap<Object, ExtendedConversation>();
+    private Map<Object, ExtendedConversation> conversations = new ConcurrentHashMap<Object, ExtendedConversation>();
 
+    /**
+     * the default max age. this is set to 1 hour
+     */
+    private static final long DEFAULT_MAX_AGE = 60 * 60 * 1000; ;
+    
+    /**
+     * the default max idle time. this is set to 1 hour
+     */
+    private static final long DEFAULT_MAX_IDLE_TIME = 60 * 60 * 1000; 
+    
+    /**
+     * the globally used max age
+     */
+    private final long maxAge;
+
+    /**
+     * the globally used max idle time
+     */
+    private final long maxIdleTime; 
+
+    /**
+     * the reaper thread
+     */
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    
+    /**
+     * constructor
+     */
+    public ConversationManagerImpl()
+    {
+    	long mit = DEFAULT_MAX_IDLE_TIME;
+    	long ma = DEFAULT_MAX_AGE;
+    	
+    	String aProperty;
+    	aProperty = System.getProperty("org.apache.tuscany.sca.core.scope.ConversationalScopeContainer.MaxIdleTime");
+    	if (aProperty != null) {
+    		try {
+    			mit = (new Long(aProperty) * 1000);
+    		} catch (NumberFormatException nfe) {
+    			// Ignore
+    		}
+    	}
+
+        aProperty = System.getProperty("org.apache.tuscany.sca.core.scope.ConversationalScopeContainer.MaxAge");
+        if (aProperty != null) {
+            try {
+                ma = (new Long(aProperty) * 1000);
+            } catch (NumberFormatException nfe) {
+                // Ignore
+            }
+        }
+
+        maxAge = ma;
+        maxIdleTime = mit;
+    }
+    
     /**
      * @see org.apache.tuscany.sca.core.conversation.ConversationManager#addListener(org.apache.tuscany.sca.core.conversation.ConversationListener)
      */
@@ -52,7 +117,7 @@ public class ConversationManagerImpl implements ConversationManager {
                 listener.conversationEnded(conv);
             }
             conv.setConversationID(null);
-            converations.remove(conversationID);
+            conversations.remove(conversationID);
         } else {
             throw new IllegalStateException("Conversation " + conversationID + " doesn't exist.");
         }
@@ -61,10 +126,10 @@ public class ConversationManagerImpl implements ConversationManager {
     public void expireConversation(Object conversationID) {
         ExtendedConversation conv = getConversation(conversationID);
         if (conv != null) {
-            ((ExtendedConversationImpl)conv).setState(ConversationState.EXPIRED);
             for (ConversationListener listener : listeners) {
                 listener.conversationExpired(conv);
             }
+            conversations.remove(conversationID);
         } else {
             throw new IllegalStateException("Conversation " + conversationID + " doesn't exist.");
         }
@@ -75,7 +140,7 @@ public class ConversationManagerImpl implements ConversationManager {
      * @see org.apache.tuscany.sca.core.conversation.ConversationManager#getConversation(java.lang.Object)
      */
     public ExtendedConversation getConversation(Object conversationID) {
-        return converations.get(conversationID);
+        return conversations.get(conversationID);
     }
 
     /**
@@ -86,9 +151,29 @@ public class ConversationManagerImpl implements ConversationManager {
     }
 
     /**
+     * starts the reaper thread
+     */
+    public void scheduleConversation(ExtendedConversationImpl aConversation, long time)
+    {
+    	this.scheduler.schedule(aConversation, time, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * stops the reaper thread
+     */
+    public synchronized void stopReaper() {
+
+        // Prevent the scheduler from submitting any additional reapers, 
+    	// initiate an orderly shutdown if a reaper task is in progress. 
+    	this.scheduler.shutdown();
+    }
+    
+
+    /**
      * @see org.apache.tuscany.sca.core.conversation.ConversationManager#startConversation(java.lang.Object)
      */
     public ExtendedConversation startConversation(Object conversationID) {
+    	
         if (conversationID == null) {
             conversationID = UUID.randomUUID().toString();
         }
@@ -96,12 +181,30 @@ public class ConversationManagerImpl implements ConversationManager {
         if (conversation != null && conversation.getState() != ConversationState.ENDED) {
             throw new IllegalStateException(conversation + " already exists.");
         }
-        conversation = new ExtendedConversationImpl(this, conversationID, ConversationState.STARTED);
-        converations.put(conversationID, conversation);
+                
+        conversation = new ExtendedConversationImpl(
+        		this, conversationID, ConversationState.STARTED);
+        conversations.put(conversationID, conversation);
         for (ConversationListener listener : listeners) {
             listener.conversationStarted(conversation);
         }
         return conversation;
     }
 
+    /**
+     * return the default max idle time
+     * @param impProvider the implementation Provider to extract any ConversationAttribute details
+     */
+    public long getMaxIdleTime()
+    {
+        return maxIdleTime;
+    }
+    
+    /**
+     * returns the default max age
+     * @param impProvider the implementation Provider to extract any ConversationAttribute details
+     */
+    public long getMaxAge(){
+        return maxAge;
+    } 
 }

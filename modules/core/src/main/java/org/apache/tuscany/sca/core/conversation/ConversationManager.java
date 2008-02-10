@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.core.conversation;
 
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
+
 /**
  * The manager of conversations
  * 
@@ -58,4 +61,14 @@ public interface ConversationManager {
      * @param listener
      */
     void removeListener(ConversationListener listener);
+    
+    /**
+     * @return the default max age for a conversation
+     */
+    long getMaxAge();
+    
+    /**
+     * @return the default max idle time for a conversation
+     */
+    long getMaxIdleTime();
 }

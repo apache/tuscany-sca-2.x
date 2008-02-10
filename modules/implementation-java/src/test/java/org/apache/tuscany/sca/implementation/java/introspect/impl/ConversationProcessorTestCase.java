@@ -58,6 +58,7 @@ public class ConversationProcessorTestCase extends TestCase {
         assertEquals(org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl.CONVERSATION, type.getJavaScope());
     }
 
+    /* TUSCANY-1999 - apply conversation properties to all scopes
     public void testBadFooScope() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
         try {
@@ -67,6 +68,7 @@ public class ConversationProcessorTestCase extends TestCase {
             // expected
         }
     }
+    */
 
     public void testBadFooBoth() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();

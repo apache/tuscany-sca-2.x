@@ -44,6 +44,7 @@ import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.osoa.sca.ConversationEndedException;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
 
@@ -207,7 +208,15 @@ public class RuntimeWireInvoker {
             
             if (conversation == null || conversation.getState() == ConversationState.ENDED) {
                 conversation = conversationManager.startConversation(conversationID);
+                conversation.initializeConversationAttributes(wire.getTarget().getComponent());
+            } else if (conversation.conversationalAttributesInitialized() == false) {
+                conversation.initializeConversationAttributes(wire.getTarget().getComponent());
             }
+            else if (conversation.isExpired()){
+            	throw new ConversationEndedException("Conversation has expired.");
+            }
+            
+            conversation.updateLastReferencedTime();
     
             parameters.setConversationID(conversation.getConversationID());
         }
