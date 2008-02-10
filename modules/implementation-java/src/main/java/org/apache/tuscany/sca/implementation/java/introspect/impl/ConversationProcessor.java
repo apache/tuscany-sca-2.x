@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.ConversationID;
+import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.Scope;
 
 /**
@@ -45,6 +46,7 @@ public class ConversationProcessor extends BaseJavaClassVisitor {
     @Override
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
 
+    	
         ConversationAttributes conversation = clazz.getAnnotation(ConversationAttributes.class);
         if (conversation == null) {
             return;
@@ -53,10 +55,6 @@ public class ConversationProcessor extends BaseJavaClassVisitor {
         if (scope == null) {
             // implicitly assume conversation
             type.setJavaScope(org.apache.tuscany.sca.implementation.java.impl.JavaScopeImpl.CONVERSATION);
-        } else if (scope != null && !"CONVERSATION".equals(scope.value().toUpperCase())) {
-            throw new InvalidConversationalImplementation(
-                                                          "Service is marked with @ConversationAttributes but the scope is not @Scope(\"CONVERSATION\")"
-                                                        );
         } else if (conversation != null) {
             long maxAge;
             long maxIdleTime;

@@ -49,11 +49,13 @@ import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
+import org.osoa.sca.ConversationEndedException;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
 
@@ -332,15 +334,23 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             // Not conversational or the conversation has been started
             return;
         }
+        
         ConversationManager conversationManager = ((RuntimeWireImpl)wire).getConversationManager();
+        
         if (conversation == null || conversation.getState() == ConversationState.ENDED) {
+     
             conversation = conversationManager.startConversation(getConversationID());
+            conversation.initializeConversationAttributes(wire.getTarget().getComponent());
             if (callableReference != null) {
                 ((CallableReferenceImpl)callableReference).attachConversation(conversation);
             }
         }
-        // TODO - assuming that the conversation ID is a string here when
-        //       it can be any object that is serializable to XML
+        else if (conversation.isExpired()){
+        	throw new ConversationEndedException("Conversation has expired.");
+        }
+        
+        conversation.updateLastReferencedTime();
+        
         msg.getFrom().getReferenceParameters().setConversationID(conversation.getConversationID());
 
     }
