@@ -191,12 +191,14 @@ public class Java2WSDLHelper {
         while (parent instanceof Element) {
             Element root = (Element)parent;
             NamedNodeMap nodeMap = root.getAttributes();
-            for (int i = 0; i < nodeMap.getLength(); i++) {
-                Attr attr = (Attr)nodeMap.item(i);
-                String name = attr.getName();
-                if ("xmlns".equals(name) || name.startsWith("xmlns:")) {
-                    if (schema.getAttributeNode(name) == null) {
-                        schema.setAttributeNodeNS((Attr)doc.importNode(attr, true));
+            if (nodeMap != null) {  // nodename: #document value: null
+                for (int i = 0; i < nodeMap.getLength(); i++) {
+                    Attr attr = (Attr)nodeMap.item(i);
+                    String name = attr.getName();
+                    if ("xmlns".equals(name) || name.startsWith("xmlns:")) {
+                        if (schema.getAttributeNode(name) == null) {
+                            schema.setAttributeNodeNS((Attr)doc.importNode(attr, true));
+                        }
                     }
                 }
             }
