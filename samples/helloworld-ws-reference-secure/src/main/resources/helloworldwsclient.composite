@@ -20,6 +20,7 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	targetNamespace="http://helloworld"
 	xmlns:hw="http://helloworld"
+	xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
 	name="helloworldwsclient">
     
     <!-- A component with an embedded reference definition connecting to an external webservice 
@@ -27,7 +28,7 @@
      -->
     <component name="HelloTuscanyServiceComponent">
       <implementation.java class="helloworld.HelloWorldServiceComponent"/>
-      <reference name="helloWorldService" requires="hw:wsAuthentication">
+      <reference name="helloWorldService" requires="authentication">
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
       </reference>
     </component>
@@ -43,13 +44,13 @@
     </component>
     
     <reference name="HelloWorldService" promote="HelloWorldServiceComponent/helloWorldService" 
-    			requires="hw:wsAuthentication">
+    			requires="authentication">
         <interface.java interface="helloworld.HelloWorldService" />
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)"/>
     </reference>
     
     <reference name="HelloWorldWsPolicyService" promote="HelloWorldWsPolicyServiceComponent/helloWorldService"
-    			requires="hw:wsIntegrity">
+    			requires="integrity">
         <interface.java interface="helloworld.HelloWorldService" />
         <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldWsPolicyService/HelloWorldSoapPort)"/>
     </reference>

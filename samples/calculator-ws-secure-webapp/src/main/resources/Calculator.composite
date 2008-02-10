@@ -18,6 +18,7 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
            targetNamespace="http://sample"
            xmlns:sample="http://sample"
            xmlns:calc="http://calculator"
@@ -28,12 +29,12 @@
         <reference name="addService" >
            <interface.java interface="calculator.AddService" />        
             <binding.ws uri="http://localhost:8080/sample-calculator-ws-secure-webapp/AddServiceComponent"
-            			requires="calc:wsAuthentication" />        
+            			requires="authentication" />        
         </reference>   
         <reference name="subtractService">
         	<interface.java interface="calculator.SubtractService" />        
             <binding.ws uri="http://localhost:8080/sample-calculator-ws-secure-webapp/SubtractServiceComponent"
-            			requires="calc:wsIntegrity" />
+            			requires="integrity" />
         </reference>
         <reference name="multiplyService" target="MultiplyServiceComponent"></reference>
         <reference name="divideService" target="DivideServiceComponent"></reference>

@@ -23,49 +23,6 @@
  			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
  			xmlns:hw="http://helloworld">
 
- <sca:intent name="soap"  
- 			 constrains="sca:binding.ws">
- 			 <sca:description>
- 			 Communitcation thro this binding requires SOAP 
- 			 </sca:description>
- </sca:intent>
-
- <sca:intent name="soap11"  
- 			 constrains="sca:binding.ws">
- 			 <sca:description>
- 			 Communitcation thro this binding requires SOAP 1.1
- 			 </sca:description>
- </sca:intent>
-
- <sca:intent name="soap12"  
- 			 constrains="sca:binding.ws">
- 			 <sca:description>
- 			 Communitcation thro this binding requires SOAP 1.2
- 			 </sca:description>
- </sca:intent>
- 
- <sca:intent name="authentication" 
- 			 constrains="sca:binding.ws">
- 			 <description>
- 			 Communitcation thro this binding required Authentication.
- 			 </description>
- </sca:intent>
- 
- <sca:intent name="integrity" 
- 			 constrains="sca:binding.ws">
- 			 <description>
- 			 	Protect messages from unauthorized reading or modification
- 			 </description>
- </sca:intent>
- 
- <sca:intent name="confidentiality" 
- 			 constrains="sca:binding.ws">
- 			 <description>
- 			 	Communitcation thro this binding must prevent
-	 			 unauthorized users from reading the messages.
- 			 </description>
- </sca:intent>
- 
  <!-- WS Security POLICY SETS -->
   <sca:policySet name="hw:wsAuthenticationPolicy"
  	provides="authentication"

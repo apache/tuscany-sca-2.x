@@ -53,7 +53,7 @@
 
  <sca:policySet name="wsJMSTransportPolicy"
  	provides="transport.jms"
- 	appliesTo="sca:binding.ws">
+ 	appliesTo="binding.ws">
  	<tuscany:wsConfigParam>
         <parameter name="TuscanyQueueConnectionFactory">
             <parameter name="java.naming.factory.initial">org.apache.activemq.jndi.ActiveMQInitialContextFactory</parameter>
