@@ -240,7 +240,8 @@ public class WebAppServletHost implements ServletHost {
     public void initContextPath(ServletConfig config) {
         ServletContext context = config.getServletContext();
         int version = context.getMajorVersion() * 100 + context.getMinorVersion();
-        if (version >= 205) {
+        //FIXME Do we really need this ? Servlet 2.4 Spec does mention getContextPath
+        //if (version >= 205) {
             // The getContextPath() is introduced since Servlet 2.5
             Method m;
             try {
@@ -254,9 +255,9 @@ public class WebAppServletHost implements ServletHost {
                 throw new IllegalStateException(
                                                 "'contextPath' init parameter must be set for pre-2.5 servlet container");
             }
-        } else {
-            contextPath = config.getInitParameter("contextPath");
-        }
+        //} else {
+        //    contextPath = config.getInitParameter("contextPath");
+        //}
         logger.info("initContextPath: " + contextPath);
     }
 
