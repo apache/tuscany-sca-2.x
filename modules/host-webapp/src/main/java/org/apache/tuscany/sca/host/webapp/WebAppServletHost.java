@@ -240,24 +240,29 @@ public class WebAppServletHost implements ServletHost {
     public void initContextPath(ServletConfig config) {
         ServletContext context = config.getServletContext();
         int version = context.getMajorVersion() * 100 + context.getMinorVersion();
-        //FIXME Do we really need this ? Servlet 2.4 Spec does mention getContextPath
-        //if (version >= 205) {
-            // The getContextPath() is introduced since Servlet 2.5
-            Method m;
+
+        Method m;
+        try {
+            m = context.getClass().getMethod("getContextPath", new Class[] {});
             try {
-                m = context.getClass().getMethod("getContextPath", new Class[] {});
-                try {
-                    contextPath = (String)m.invoke(context, new Object[] {});
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            } catch (NoSuchMethodException e) {
-                throw new IllegalStateException(
-                                                "'contextPath' init parameter must be set for pre-2.5 servlet container");
+                contextPath = (String)m.invoke(context, new Object[] {});
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-        //} else {
-        //    contextPath = config.getInitParameter("contextPath");
-        //}
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException("'contextPath' init parameter must be set for pre-2.5 servlet container");
+        }
+        
+        // Fall back for containers using old Servlet APIs
+        if (contextPath == null) {
+        	contextPath = config.getInitParameter("contextPath");
+        }
+        
+        // contextPath == null => throw proper exception
+        if (contextPath == null) {
+        	throw new IllegalArgumentException("Could not retrieve webapp contextPath either from servletContext or init Parameter");
+        }
+        
         logger.info("initContextPath: " + contextPath);
     }
 
