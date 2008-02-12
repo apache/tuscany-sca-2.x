@@ -51,7 +51,7 @@ import org.apache.tuscany.sca.host.http.ServletMappingException;
 public class WebAppServletHost implements ServletHost {
     private static final Logger logger = Logger.getLogger(WebAppServletHost.class.getName());
 
-    private static final String SCA_DOMAIN_ATTRIBUTE = "org.apache.tuscany.sca.SCADomain";
+    public static final String SCA_DOMAIN_ATTRIBUTE = "org.apache.tuscany.sca.SCADomain";
 
     private static final WebAppServletHost instance = new WebAppServletHost();
 
