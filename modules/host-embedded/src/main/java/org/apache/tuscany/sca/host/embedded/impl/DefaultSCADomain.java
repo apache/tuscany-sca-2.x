@@ -19,10 +19,14 @@
 
 package org.apache.tuscany.sca.host.embedded.impl;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -73,7 +77,7 @@ public class DefaultSCADomain extends SCADomain {
     private String uri;
     private String[] composites;
     private Composite domainComposite;
-    private Contribution contribution;
+    private List<Contribution> contributions = new ArrayList<Contribution>();
     private Map<String, Component> components = new HashMap<String, Component>();
     private ReallySmallRuntime runtime;
     private ComponentManager componentManager;
@@ -101,8 +105,6 @@ public class DefaultSCADomain extends SCADomain {
             throw new ServiceRuntimeException(e);
         }
         
-        
-
         // Contribute the given contribution to an in-memory repository
         ContributionService contributionService = runtime.getContributionService();
         URL contributionURL;
@@ -117,14 +119,26 @@ public class DefaultSCADomain extends SCADomain {
         }
 
         try {
-            String contributionURI = FileHelper.getName(contributionURL.getPath());
-            if (contributionURI == null || contributionURI.length() == 0) {
-                contributionURI = contributionURL.toString();
+            File contributionFile = new File(contributionURL.toURI());
+            if (contributionFile.isDirectory()) {
+                String[] contributions = contributionFile.list(new FilenameFilter() {
+                    public boolean accept(File dir, String name) {
+                        return name.endsWith(".jar");
+                    }
+                });
+                if (contributions != null && contributions.length > 0 && contributions.length == contributionFile.list().length) {
+                    for (String contribution : contributions) {
+                        addContribution(contributionService, new File(contributionFile, contribution).toURL());
+                    }
+                } else {
+                    addContribution(contributionService, contributionURL);
+                }
+            } else {
+                addContribution(contributionService, contributionURL);
             }
-            contribution = contributionService.contribute(contributionURI, contributionURL, false);
-        } catch (ContributionException e) {
-            throw new ServiceRuntimeException(e);
         } catch (IOException e) {
+            throw new ServiceRuntimeException(e);
+        } catch (URISyntaxException e) {
             throw new ServiceRuntimeException(e);
         }
 
@@ -138,9 +152,11 @@ public class DefaultSCADomain extends SCADomain {
         if (composites != null && composites.length > 0 && composites[0].length() > 0) {
             // Include all specified deployable composites in the SCA domain
             Map<String, Composite> compositeArtifacts = new HashMap<String, Composite>();
-            for (Artifact artifact : contribution.getArtifacts()) {
-                if (artifact.getModel() instanceof Composite) {
-                    compositeArtifacts.put(artifact.getURI(), (Composite)artifact.getModel());
+            for (Contribution contribution : contributions) {
+                for (Artifact artifact : contribution.getArtifacts()) {
+                    if (artifact.getModel() instanceof Composite) {
+                        compositeArtifacts.put(artifact.getURI(), (Composite)artifact.getModel());
+                    }
                 }
             }
             for (String compositePath : composites) {
@@ -152,10 +168,11 @@ public class DefaultSCADomain extends SCADomain {
             }
         } else {
             // in this case, a sca-contribution.xml should have been specified
-            for (Composite composite : contribution.getDeployables()) {
-                domainComposite.getIncludes().add(composite);
+            for (Contribution contribution : contributions) {
+                for (Composite composite : contribution.getDeployables()) {
+                    domainComposite.getIncludes().add(composite);
+                }
             }
-
         }
         
         //update the runtime for all SCA Definitions processed from the contribution..
@@ -226,6 +243,18 @@ public class DefaultSCADomain extends SCADomain {
     
     }
 
+    protected void addContribution(ContributionService contributionService, URL contributionURL) throws IOException {
+        try {
+            String contributionURI = FileHelper.getName(contributionURL.getPath());
+            if (contributionURI == null || contributionURI.length() == 0) {
+                contributionURI = contributionURL.toString();
+            }
+            contributions.add(contributionService.contribute(contributionURI, contributionURL, false));
+        } catch (ContributionException e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
     @Override
     public void close() {
 
@@ -252,10 +281,12 @@ public class DefaultSCADomain extends SCADomain {
 
         // Remove the contribution from the in-memory repository
         ContributionService contributionService = runtime.getContributionService();
-        try {
-            contributionService.remove(contribution.getURI());
-        } catch (ContributionException e) {
-            throw new ServiceRuntimeException(e);
+        for (Contribution contribution : contributions) {
+            try {
+                contributionService.remove(contribution.getURI());
+            } catch (ContributionException e) {
+                throw new ServiceRuntimeException(e);
+            }
         }
 
         // Stop the runtime
@@ -351,6 +382,7 @@ public class DefaultSCADomain extends SCADomain {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
         return (R)runtime.getProxyFactory().cast(target);
     }
@@ -462,10 +494,12 @@ public class DefaultSCADomain extends SCADomain {
 
     public Set<String> getComponentNames() {
         Set<String> componentNames = new HashSet<String>();
-        for (Artifact artifact : contribution.getArtifacts()) {
-            if (artifact.getModel() instanceof Composite) {
-                for (Component component : ((Composite)artifact.getModel()).getComponents()) {
-                    componentNames.add(component.getName());
+        for (Contribution contribution : contributions) {
+            for (Artifact artifact : contribution.getArtifacts()) {
+                if (artifact.getModel() instanceof Composite) {
+                    for (Component component : ((Composite)artifact.getModel()).getComponents()) {
+                        componentNames.add(component.getName());
+                    }
                 }
             }
         }
@@ -473,11 +507,13 @@ public class DefaultSCADomain extends SCADomain {
     }
 
     public Component getComponent(String componentName) {
-        for (Artifact artifact : contribution.getArtifacts()) {
-            if (artifact.getModel() instanceof Composite) {
-                for (Component component : ((Composite)artifact.getModel()).getComponents()) {
-                    if (component.getName().equals(componentName)) {
-                        return component;
+        for (Contribution contribution : contributions) {
+            for (Artifact artifact : contribution.getArtifacts()) {
+                if (artifact.getModel() instanceof Composite) {
+                    for (Component component : ((Composite)artifact.getModel()).getComponents()) {
+                        if (component.getName().equals(componentName)) {
+                            return component;
+                        }
                     }
                 }
             }
