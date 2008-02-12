@@ -18,6 +18,7 @@
  * under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
 	xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
 	targetNamespace="http://bigbank"
 	xmlns:bb="http://bigbank"
@@ -38,7 +39,7 @@
         <!-- reference name="accountDataService" target="AccountDataServiceComponent"/-->
         <reference name="savingsAcService" target="SavingsAccountServiceComponent"/>
         
-        <reference name="checkingAcService" requires="tuscany:wsAuthentication">
+        <reference name="checkingAcService" requires="authentication">
 	        <binding.ws uri="http://localhost:8085/services/CheckingAcWebService"/>
         </reference>
         
