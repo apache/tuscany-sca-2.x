@@ -159,6 +159,13 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
             jmsBinding.setJndiURL(jndiURL);
         }
 
+        // Read message processor class name
+        String messageProcessorName = reader.getAttributeValue(null, "messageProcessor");
+        if (messageProcessorName != null && messageProcessorName.length() > 0) {
+            jmsBinding.setRequestMessageProcessorName(messageProcessorName);
+            jmsBinding.setResponseMessageProcessorName(messageProcessorName);
+        }
+
         // Read requestConnection
         // TODO
         // Read reponseConnection
