@@ -27,6 +27,7 @@ import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 import org.apache.catalina.Container;
 import org.apache.catalina.LifecycleException;
@@ -75,7 +76,7 @@ public class TuscanyHost extends StandardHost {
         stopRuntime();
     }
 
-    private Launcher initTuscany() {
+    private Launcher initTuscany() throws ServletException {
         StandardContext tc = new TuscanyContext();
         tc.setPath(contextPath);
         super.addChild(tc);
