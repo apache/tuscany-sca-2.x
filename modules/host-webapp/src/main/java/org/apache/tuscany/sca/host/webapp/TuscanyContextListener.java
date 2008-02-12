@@ -19,27 +19,44 @@
 
 package org.apache.tuscany.sca.host.webapp;
 
+import java.util.Enumeration;
+
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.ServletException;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * A ServletContextListener to create and close the SCADomain
  * when the webapp is initialized or destroyed.
- * 
- * @deprecated Not needed anymore, TuscanyServletFilter is sufficient
  */
-@Deprecated
 public class TuscanyContextListener implements ServletContextListener {
 
     public void contextInitialized(ServletContextEvent event) {
-        ServletContext servletContext = event.getServletContext();
+        final ServletContext servletContext = event.getServletContext();
         try {
-            SCADomainHelper.initSCADomain(servletContext);
-        } catch (Throwable e) {
-            servletContext.log("exception initializing SCADomain", e);
+            WebAppServletHost.getInstance().init(new ServletConfig() {
+                public String getInitParameter(String name) {
+                    return servletContext.getInitParameter(name);
+                }
+
+                public Enumeration getInitParameterNames() {
+                    return servletContext.getInitParameterNames();
+                }
+
+                public ServletContext getServletContext() {
+                    return servletContext;
+                }
+
+                public String getServletName() {
+                    return null;
+                }
+            });
+        } catch (ServletException e) {
+            throw new RuntimeException(e);
         }
     }
 

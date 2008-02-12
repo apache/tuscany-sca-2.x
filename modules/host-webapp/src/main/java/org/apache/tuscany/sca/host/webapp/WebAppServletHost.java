@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -149,7 +151,7 @@ public class WebAppServletHost implements ServletHost {
             path = '/' + path;
         }
 
-        if (!path.startsWith(contextPath)) {
+        if (contextPath != null && !path.startsWith(contextPath)) {
             path = contextPath + path;
         }
 
@@ -199,36 +201,53 @@ public class WebAppServletHost implements ServletHost {
         return instance;
     }
 
-    void init(ServletConfig config) throws ServletException {
-
-        initContextPath(config);
-
-        // Create an SCA domain object
+    public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
-        String domainURI = "http://localhost/" + contextPath;
-        String contributionRoot = null;
-        try {
-            URL rootURL = servletContext.getResource("/");
-            if (rootURL.getProtocol().equals("jndi")) {
-                //this is tomcat case, we should use getRealPath
-                File warRootFile = new File(servletContext.getRealPath("/"));
-                contributionRoot = warRootFile.toURL().toString();
-            } else {
-                //this is jetty case
-                contributionRoot = rootURL.toString();
-            }
-        } catch (MalformedURLException mf) {
-            //ignore, pass null
-        }
-        scaDomain = SCADomain.newInstance(domainURI, contributionRoot);
 
-        // Store the SCA domain in the servlet context
-        servletContext.setAttribute(SCA_DOMAIN_ATTRIBUTE, scaDomain);
+        initContextPath(servletContext);
+
+        if (servletContext.getAttribute(SCA_DOMAIN_ATTRIBUTE) == null) {
+            String domainURI = "http://localhost/" + contextPath;
+            String contributionRoot = getContributionLocation(servletContext);
+            this.scaDomain = SCADomain.newInstance(domainURI, contributionRoot);
+            servletContext.setAttribute(SCA_DOMAIN_ATTRIBUTE, scaDomain);
+        }
 
         // Initialize the registered servlets
         for (Servlet servlet : servlets.values()) {
             servlet.init(config);
         }
+    }
+
+    protected String getContributionLocation(ServletContext servletContext) {
+        String contributionRoot = null;
+        try {
+
+            InitialContext ic = new InitialContext();
+            URL repoURL = (URL) ic.lookup("java:comp/env/url/contributions");
+
+            contributionRoot = repoURL.toString();
+
+        } catch (NamingException e) {
+
+            // ignore exception and use default location
+
+            try {
+                URL rootURL = servletContext.getResource("/");
+                if (rootURL.getProtocol().equals("jndi")) {
+                    //this is tomcat case, we should use getRealPath
+                    File warRootFile = new File(servletContext.getRealPath("/"));
+                    contributionRoot  = warRootFile.toURL().toString();
+                } else {
+                    //this is jetty case
+                    contributionRoot = rootURL.toString();
+                }
+            } catch (MalformedURLException mf) {
+                //ignore, pass null
+            }
+        }
+
+        return contributionRoot;
     }
 
     /**
@@ -237,8 +256,7 @@ public class WebAppServletHost implements ServletHost {
      * containers use an init parameter.
      */
     @SuppressWarnings("unchecked")
-    public void initContextPath(ServletConfig config) {
-        ServletContext context = config.getServletContext();
+    public void initContextPath(ServletContext context) {
         // The getContextPath() is introduced since Servlet 2.5
         Method m;
         try {
@@ -286,6 +304,8 @@ public class WebAppServletHost implements ServletHost {
      *    can't use setContextPath as NodeImpl calls that later
      */
     public void setContextPath2(String path) {
-        this.contextPath = path;
+        if (path != null && path.length() > 0) {
+            this.contextPath = path;
+        }
     }
 }

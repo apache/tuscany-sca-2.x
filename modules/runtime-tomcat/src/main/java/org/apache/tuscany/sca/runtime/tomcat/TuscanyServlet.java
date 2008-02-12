@@ -44,9 +44,9 @@ public class TuscanyServlet extends HttpServlet {
     private transient WebAppServletHost servletHost;
 
     @Override
-    public void init(ServletConfig config) {
+    public void init(ServletConfig config) throws ServletException {
         servletHost = WebAppServletHost.getInstance();
-        servletHost.initContextPath(config);
+        servletHost.init(config);
     }
 
     @Override
