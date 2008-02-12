@@ -264,7 +264,7 @@ public class WebAppServletHost implements ServletHost {
             m = context.getClass().getMethod("getContextPath", new Class[] {});
             contextPath = (String)m.invoke(context, new Object[] {});
         } catch (Exception e) {
-            contextPath = config.getInitParameter("contextPath");
+            contextPath = context.getInitParameter("contextPath");
             if (contextPath == null) {
                 logger.warning("Servlet level is: " + context.getMajorVersion() + "." + context.getMinorVersion());
                 throw new IllegalStateException(
