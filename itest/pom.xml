@@ -104,7 +104,8 @@
                 <module>ws-void-args-return</module>
                 <module>transaction</module>
                 <module>bpel</module>
-            </modules>
+                <module>spring</module>
+           </modules>
         </profile>
         
         <!-- 
