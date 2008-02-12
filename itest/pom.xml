@@ -298,7 +298,7 @@
                             <execution>
                                 <id>web-junit-test</id>
                                 <configuration>
-                                    <url>${http.base}/${project.build.finalName}/junit</url>
+                                    <url>${http.base}/${project.build.finalName}/junit?op=runAll</url>
                                 </configuration>
                                 <phase>integration-test</phase>
                                 <goals>
@@ -345,7 +345,7 @@
                                 <deployables>
                                     <deployable>
                                         <location>${project.build.directory}/${project.build.finalName}.war</location>
-                                        <pingURL>${http.base}/${project.build.finalName}/junit</pingURL>
+                                        <pingURL>${http.base}/${project.build.finalName}/junit?op=list</pingURL>
                                         <type>war</type>
                                     </deployable>
                                 </deployables>
@@ -392,7 +392,7 @@
                             <execution>
                                 <id>web-junit-test</id>
                                 <configuration>
-                                    <url>${http.base}/${project.build.finalName}/junit</url>
+                                    <url>${http.base}/${project.build.finalName}/junit?op=runAll</url>
                                 </configuration>
                                 <phase>integration-test</phase>
                                 <goals>
@@ -439,7 +439,7 @@
                                 <deployables>
                                     <deployable>
                                         <location>${project.build.directory}/${project.build.finalName}.war</location>
-                                        <pingURL>${http.base}/${project.build.finalName}/junit</pingURL>
+                                        <pingURL>${http.base}/${project.build.finalName}/junit?op=list</pingURL>
                                         <type>war</type>
                                     </deployable>
                                 </deployables>
@@ -488,7 +488,7 @@
                             <execution>
                                 <id>web-junit-test</id>
                                 <configuration>
-                                    <url>${http.base}/${project.build.finalName}/junit</url>
+                                    <url>${http.base}/${project.build.finalName}/junit?op=runAll</url>
                                 </configuration>
                                 <phase>integration-test</phase>
                                 <goals>
@@ -586,7 +586,7 @@
                                     <goal>test</goal>
                                 </goals>
                                 <configuration>
-                                    <url>${http.base}/${project.build.finalName}/junit</url>
+                                    <url>${http.base}/${project.build.finalName}/junit?op=runAll</url>
                                 </configuration>
                             </execution>
                         </executions>

@@ -84,7 +84,7 @@ public class WebJUnitMojo extends AbstractMojo {
         reset();
 
         if (url == null) {
-            url = "http://localhost:8080/" + project.getBuild().getFinalName() + "/junit";
+            url = "http://localhost:8080/" + project.getBuild().getFinalName() + "/junit?op=runAll";
         }
 
         if (testCases != null) {
