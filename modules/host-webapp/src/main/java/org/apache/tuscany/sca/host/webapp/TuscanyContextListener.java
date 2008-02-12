@@ -62,7 +62,7 @@ public class TuscanyContextListener implements ServletContextListener {
 
     public void contextDestroyed(ServletContextEvent event) {
         ServletContext servletContext = event.getServletContext();
-        SCADomain scaDomain = (SCADomain) servletContext.getAttribute(SCADomainHelper.SCA_DOMAIN_ATTRIBUTE);
+        SCADomain scaDomain = (SCADomain) servletContext.getAttribute(WebAppServletHost.SCA_DOMAIN_ATTRIBUTE);
         if (scaDomain != null) {
             scaDomain.close();
         }
