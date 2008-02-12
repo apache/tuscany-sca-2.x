@@ -239,31 +239,22 @@ public class WebAppServletHost implements ServletHost {
     @SuppressWarnings("unchecked")
     public void initContextPath(ServletConfig config) {
         ServletContext context = config.getServletContext();
-        int version = context.getMajorVersion() * 100 + context.getMinorVersion();
-
+        // The getContextPath() is introduced since Servlet 2.5
         Method m;
         try {
+            // Try to get the method anyway since some ServletContext impl has this method even before 2.5
             m = context.getClass().getMethod("getContextPath", new Class[] {});
-            try {
-                contextPath = (String)m.invoke(context, new Object[] {});
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            contextPath = (String)m.invoke(context, new Object[] {});
+        } catch (Exception e) {
+            contextPath = config.getInitParameter("contextPath");
+            if (contextPath == null) {
+                logger.warning("Servlet level is: " + context.getMajorVersion() + "." + context.getMinorVersion());
+                throw new IllegalStateException(
+                                                "'contextPath' init parameter must be set for pre-2.5 servlet container");
             }
-        } catch (NoSuchMethodException e) {
-            throw new IllegalStateException("'contextPath' init parameter must be set for pre-2.5 servlet container");
         }
-        
-        // Fall back for containers using old Servlet APIs
-        if (contextPath == null) {
-        	contextPath = config.getInitParameter("contextPath");
-        }
-        
-        // contextPath == null => throw proper exception
-        if (contextPath == null) {
-        	throw new IllegalArgumentException("Could not retrieve webapp contextPath either from servletContext or init Parameter");
-        }
-        
-        logger.info("initContextPath: " + contextPath);
+
+        logger.info("ContextPath: " + contextPath);
     }
 
     void destroy() {

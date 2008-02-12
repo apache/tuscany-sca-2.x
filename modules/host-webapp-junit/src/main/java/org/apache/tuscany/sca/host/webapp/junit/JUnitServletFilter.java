@@ -172,15 +172,15 @@ public class JUnitServletFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
         ServletException {
 
-        if(!junitEnabled) {
+        if (!junitEnabled) {
             chain.doFilter(request, response);
             return;
         }
-        
+
         HttpServletRequest req = (HttpServletRequest)request;
         String path = req.getServletPath();
-        
-        if(!"/junit".equals(path)) {
+
+        if (!"/junit".equals(path)) {
             chain.doFilter(request, response);
             return;
         }
@@ -190,11 +190,38 @@ public class JUnitServletFilter implements Filter {
 
         Set<String> testCases = null;
         // ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        if (query == null || "ALL".equals(query)) {
-            testCases = this.allTestCases;
+        String op = req.getParameter("op");
+        if (query == null || op == null || "list".equalsIgnoreCase(op)) {
+            response.setContentType("text/html");
+            ps.println("<html><body>");
+            ps.println("<h2>Available Test Cases</h2><p>");
+            ps.println("<form method=\"get\" action=\"junit\">");
+            ps.println("<table border=\"1\">");
+            for (String s : this.allTestCases) {
+                ps.print("<tr><td>");
+                ps.print("<input type=\"checkbox\" name=\"test\" value=\"" + s
+                    + "\"/><a href=\"junit?op=runSelected&test="
+                    + s
+                    + "\">"
+                    + s
+                    + "</a>");
+                ps.println("</td></tr>");
+            }
+            ps.println("</table>");
+            ps.println("<p><input type=\"submit\" name=\"op\" value=\"RunSelected\"/>");
+            ps.println("<input type=\"submit\" name=\"op\" value=\"RunAll\"/>");
+            ps.println("</form></body></html>");
+            return;
         } else {
-            String[] tests = query.split(",");
-            testCases = new HashSet<String>(Arrays.asList(tests));
+            if ("runAll".equalsIgnoreCase(op)) {
+                testCases = this.allTestCases;
+            } else {
+                String[] tests = req.getParameterValues("test");
+                if (tests == null) {
+                    tests = new String[0];
+                }
+                testCases = new HashSet<String>(Arrays.asList(tests));
+            }
         }
 
         int errors = 0;
