@@ -28,17 +28,16 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 import junit.framework.AssertionFailedError;
-import junit.framework.Test;
-import junit.framework.TestFailure;
-import junit.framework.TestListener;
-import junit.framework.TestResult;
+
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 
 /**
  * Format the test results in XML.
  *
  * @version $Id: XMLFormatter.java 239169 2005-05-05 09:21:54Z vmassol $
  */
-public class XMLFormatter implements TestListener {
+public class XMLFormatter {
     /**
      * Errors attribute for testsuite elements
      */
@@ -83,6 +82,13 @@ public class XMLFormatter implements TestListener {
                       "java.lang.reflect.Method.invoke("};
 
     /**
+     * The number format used to convert durations into strings. Don't use the
+     * default locale for that, because the resulting string needs to use 
+     * dotted decimal notation for an XSLT transformation to work correctly.
+     */
+    private static NumberFormat durationFormat = NumberFormat.getInstance(Locale.US);
+
+    /**
      * The error element (for a test case)
      */
     public static final String ERROR = "error";
@@ -103,9 +109,24 @@ public class XMLFormatter implements TestListener {
     public static final String TESTSUITE = "testsuite";
 
     /**
-     * Root element for all test suites.
+     * Escapes reserved XML characters.
+     *
+     * @param theString the string to escape
+     * @return the escaped string
      */
-    public static final String TESTSUITES = "testsuites";
+    public static String escape(String theString) {
+        String newString;
+
+        // It is important to replace the "&" first as the other replacements
+        // also introduces "&" chars ...
+        newString = theString.replace("&", "&amp;");
+
+        newString = newString.replace("<", "&lt;");
+        newString = newString.replace(">", "&gt;");
+        newString = newString.replace("\"", "&quot;");
+
+        return newString;
+    }
 
     /**
      * Returns the stack trace of an exception as String.
@@ -131,7 +152,7 @@ public class XMLFormatter implements TestListener {
     public static String exceptionToString(Throwable theThrowable, String[] theFilterPatterns) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
-    
+
         theThrowable.printStackTrace(pw);
         String stackTrace = sw.toString();
         return filterStackTrace(stackTrace, theFilterPatterns);
@@ -165,12 +186,12 @@ public class XMLFormatter implements TestListener {
         if ((theFilterPatterns == null) || (theFilterPatterns.length == 0) || (theStackTrace == null)) {
             return theStackTrace;
         }
-    
+
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
         StringReader stringReader = new StringReader(theStackTrace);
         BufferedReader bufferedReader = new BufferedReader(stringReader);
-    
+
         String line;
         try {
             while ((line = bufferedReader.readLine()) != null) {
@@ -185,257 +206,80 @@ public class XMLFormatter implements TestListener {
     }
 
     /**
-     * Replaces a character in a string by a substring.
-     *
-     * @param theBaseString the base string in which to perform replacements
-     * @param theChar the char to look for
-     * @param theNewString the string with which to replace the char
-     * @return the string with replacements done or null if the input string
-     *          was null
-     */
-    public static String replace(String theBaseString, char theChar, String theNewString) {
-        if (theBaseString == null) {
-            return null;
-        }
-    
-        int pos = theBaseString.indexOf(theChar);
-        if (pos < 0) {
-            return theBaseString;
-        }
-    
-        int lastPos = 0;
-        StringBuffer result = new StringBuffer();
-        while (pos > -1) {
-            result.append(theBaseString.substring(lastPos, pos));
-            result.append(theNewString);
-    
-            lastPos = pos + 1;
-            pos = theBaseString.indexOf(theChar, lastPos);
-        }
-    
-        if (lastPos < theBaseString.length()) {
-            result.append(theBaseString.substring(lastPos));
-        }
-    
-        return result.toString();
-    }
-
-    /**
-     * Escapes reserved XML characters.
-     *
-     * @param theString the string to escape
-     * @return the escaped string
-     */
-    public static String escape(String theString) {
-        String newString;
-
-        // It is important to replace the "&" first as the other replacements
-        // also introduces "&" chars ...
-        newString = replace(theString, '&', "&amp;");
-
-        newString = replace(newString, '<', "&lt;");
-        newString = replace(newString, '>', "&gt;");
-        newString = replace(newString, '\"', "&quot;");
-
-        return newString;
-    }
-
-    /**
-     * XML string containing executed test case results
-     */
-    private StringBuffer currentTestCaseResults = new StringBuffer();
-
-    /**
-     * Current test failure (XML string) : failure or error.
-     */
-    private String currentTestFailure;
-
-    /**
-     * Time current test was started
-     */
-    private long currentTestStartTime;
-
-    /**
-     * The number format used to convert durations into strings. Don't use the
-     * default locale for that, because the resulting string needs to use 
-     * dotted decimal notation for an XSLT transformation to work correctly.
-     */
-    private NumberFormat durationFormat = NumberFormat.getInstance(Locale.US);
-
-    /**
-     * The name of the test suite class.
-     */
-    private String suiteClassName;
-
-    /**
-     * Duration it took to execute all the tests.
-     */
-    private long totalDuration;
-
-    /**
-     * Event called by the base test runner when the test fails with an error.
-     *
-     * @param theTest the test object that failed
-     * @param theThrowable the exception that was thrown
-     */
-    public void addError(Test theTest, Throwable theThrowable) {
-        TestFailure failure = new TestFailure(theTest, theThrowable);
-        StringBuffer xml = new StringBuffer();
-
-        xml.append("<" + XMLFormatter.ERROR
-            + " "
-            + XMLFormatter.ATTR_MESSAGE
-            + "=\""
-            + escape(failure.thrownException().getMessage())
-            + "\" "
-            + XMLFormatter.ATTR_TYPE
-            + "=\""
-            + failure.thrownException().getClass().getName()
-            + "\">");
-        xml.append(escape(XMLFormatter.exceptionToString(failure.thrownException(), DEFAULT_STACK_FILTER_PATTERNS)));
-        xml.append("</" + XMLFormatter.ERROR + ">");
-
-        this.currentTestFailure = xml.toString();
-    }
-
-    /**
-     * Event called by the base test runner when the test fails with a failure.
-     *
-     * @param theTest the test object that failed
-     * @param theError the exception that was thrown
-     */
-    public void addFailure(Test theTest, AssertionFailedError theError) {
-        TestFailure failure = new TestFailure(theTest, theError);
-        StringBuffer xml = new StringBuffer();
-
-        xml.append("<" + XMLFormatter.FAILURE
-            + " "
-            + XMLFormatter.ATTR_MESSAGE
-            + "=\""
-            + escape(failure.thrownException().getMessage())
-            + "\" "
-            + XMLFormatter.ATTR_TYPE
-            + "=\""
-            + failure.thrownException().getClass().getName()
-            + "\">");
-        xml.append(escape(XMLFormatter.exceptionToString(failure.thrownException(), DEFAULT_STACK_FILTER_PATTERNS)));
-        xml.append("</" + XMLFormatter.FAILURE + ">");
-
-        this.currentTestFailure = xml.toString();
-    }
-
-    /**
-     * Event called by the base test runner when the test ends.
-     *
-     * @param theTest the test object being executed
-     */
-    public void endTest(Test theTest) {
-        StringBuffer xml = new StringBuffer();
-        String duration = getDurationAsString(System.currentTimeMillis() - this.currentTestStartTime);
-
-        xml.append("<" + XMLFormatter.TESTCASE + " " + XMLFormatter.ATTR_NAME + "=\"" + theTest + "\" " + XMLFormatter.ATTR_TIME + "=\"" + duration + "\">");
-
-        if (this.currentTestFailure != null) {
-            xml.append(this.currentTestFailure);
-        }
-
-        xml.append("</" + XMLFormatter.TESTCASE + ">");
-
-        this.currentTestCaseResults.append(xml.toString());
-    }
-
-    /**
      * Comvert a duration expressed as a long into a string.
      *
      * @param theDuration the duration to convert to string
      * @return the total duration as a string
      */
-    private String getDurationAsString(long theDuration) {
+    public static String getDurationAsString(long theDuration) {
         return durationFormat.format((double)theDuration / 1000);
     }
 
-    /**
-     * @return the suite class name
-     */
-    public String getSuiteClassName() {
-        return this.suiteClassName;
-    }
+    public static String toXML(Failure failure) {
+        StringBuffer xml = new StringBuffer();
+        Throwable ex = failure.getException();
+        String tag = (ex instanceof AssertionFailedError) ? FAILURE : ERROR;
+        xml.append("<" + tag
+            + " "
+            + ATTR_MESSAGE
+            + "=\""
+            + escape(ex.getMessage())
+            + "\" "
+            + ATTR_TYPE
+            + "=\""
+            + ex.getClass().getName()
+            + "\">");
+        xml.append(escape(exceptionToString(ex, DEFAULT_STACK_FILTER_PATTERNS)));
+        xml.append("</" + tag + ">");
 
-    /**
-     * @return the total duration as a string
-     */
-    public String getTotalDurationAsString() {
-        return getDurationAsString(this.totalDuration);
-    }
-
-    /**
-     * Sets the suite class name that was executed.
-     *
-     * @param theSuiteClassName the suite class name
-     */
-    public void setSuiteClassName(String theSuiteClassName) {
-        this.suiteClassName = theSuiteClassName;
-    }
-
-    /**
-     * Sets the duration it took to execute all the tests.
-     *
-     * @param theDuration the time it took
-     */
-    public void setTotalDuration(long theDuration) {
-        this.totalDuration = theDuration;
-    }
-
-    /**
-     * Event called by the base test runner when the test starts.
-     *
-     * @param theTest the test object being executed
-     */
-    public void startTest(Test theTest) {
-        this.currentTestStartTime = System.currentTimeMillis();
-        this.currentTestFailure = null;
+        return xml.toString();
     }
 
     /**
      * Formats the test result as an XML string.
      *
-     * @param theResult the test result object
+     * @param result the test result object
      * @return the XML string representation of the test results
      */
-    public String toXML(TestResult theResult) {
+    public static String toXML(Result result, Class<?> cls) {
+        int failures = 0, errors = 0;
+        for (Failure f : result.getFailures()) {
+            if (f.getException() instanceof AssertionFailedError) {
+                failures++;
+            } else {
+                errors++;
+            }
+        }
         StringBuffer xml = new StringBuffer();
 
-        // xml.append("<?xml version=\"1.0\" encoding=\"" + getEncoding() + "\"?>");
-
-        // xml.append("<" + TESTSUITES + ">");
-
-        xml.append("<" + XMLFormatter.TESTSUITE
+        xml.append("<" + TESTCASE
             + " "
-            + XMLFormatter.ATTR_NAME
+            + ATTR_NAME
             + "=\""
-            + getSuiteClassName()
+            + cls.getName()
             + "\" "
-            + XMLFormatter.ATTR_TESTS
+            + ATTR_TESTS
             + "=\""
-            + theResult.runCount()
+            + result.getRunCount()
             + "\" "
-            + XMLFormatter.ATTR_FAILURES
+            + ATTR_FAILURES
             + "=\""
-            + theResult.failureCount()
+            + failures
             + "\" "
-            + XMLFormatter.ATTR_ERRORS
+            + ATTR_ERRORS
             + "=\""
-            + theResult.errorCount()
+            + errors
             + "\" "
-            + XMLFormatter.ATTR_TIME
+            + ATTR_TIME
             + "=\""
-            + getTotalDurationAsString()
+            + getDurationAsString(result.getRunTime())
             + "\">");
 
-        xml.append(this.currentTestCaseResults.toString());
+        for (Failure f : result.getFailures()) {
+            xml.append(toXML(f));
+        }
 
-        xml.append("</" + XMLFormatter.TESTSUITE + ">");
-        // xml.append("</" + TESTSUITES + ">");
+        xml.append("</" + TESTCASE + ">");
 
         return xml.toString();
     }

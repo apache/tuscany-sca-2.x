@@ -23,13 +23,18 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
@@ -42,14 +47,19 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import junit.framework.JUnit4TestAdapter;
-import junit.framework.TestResult;
-import junit.textui.TestRunner;
+import junit.framework.AssertionFailedError;
+
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Request;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 
 /**
  * @version $Rev$ $Date$
  */
 public class JUnitServletFilter implements Filter {
+    private static final Logger logger = Logger.getLogger(JUnitServletFilter.class.getName());
+
     private static final String JUNIT_TESTS_PATTERN = "junit.tests.pattern";
     private static final String JUNIT_TESTS_PATH = "junit.tests.path";
     private static final String JUNIT_ENABLED = "junit.enabled";
@@ -136,6 +146,9 @@ public class JUnitServletFilter implements Filter {
                 testClassLoader = new URLClassLoader(new URL[] {url}, testClassLoader);
             }
         }
+        
+        // Configure the SCADomain implementation class
+        config.getServletContext().setAttribute("SCADomain.Implementation", "org.apache.tuscany.sca.host.webapp.WebSCADomain");
     }
 
     /**
@@ -152,6 +165,7 @@ public class JUnitServletFilter implements Filter {
         return tests;
     }
 
+    @SuppressWarnings("unchecked")
     private void findResources(ServletContext context, Pattern pattern, Set<String> tests, String root, String dir) {
         Set<String> paths = context.getResourcePaths(dir);
         if (paths != null) {
@@ -178,9 +192,10 @@ public class JUnitServletFilter implements Filter {
         }
 
         HttpServletRequest req = (HttpServletRequest)request;
-        String path = req.getServletPath();
+        HttpServletResponse resp = (HttpServletResponse)response;
 
-        if (!"/junit".equals(path)) {
+        if (!req.getRequestURI().equals(req.getContextPath() + "/junit")) {
+            // Intercept the /junit call
             chain.doFilter(request, response);
             return;
         }
@@ -193,6 +208,7 @@ public class JUnitServletFilter implements Filter {
         String op = req.getParameter("op");
         if (query == null || op == null || "list".equalsIgnoreCase(op)) {
             response.setContentType("text/html");
+            resp.setStatus(HttpServletResponse.SC_OK);
             ps.println("<html><body>");
             ps.println("<h2>Available Test Cases</h2><p>");
             ps.println("<form method=\"get\" action=\"junit\">");
@@ -211,6 +227,7 @@ public class JUnitServletFilter implements Filter {
             ps.println("<p><input type=\"submit\" name=\"op\" value=\"RunSelected\"/>");
             ps.println("<input type=\"submit\" name=\"op\" value=\"RunAll\"/>");
             ps.println("</form></body></html>");
+            resp.flushBuffer();
             return;
         } else {
             if ("runAll".equalsIgnoreCase(op)) {
@@ -224,16 +241,28 @@ public class JUnitServletFilter implements Filter {
             }
         }
 
+        response.setContentType("application/xml");
+        ps.println("<?xml version=\"1.0\" encoding=\"" + "UTF-8" + "\"?>");
+
+        ServletContext context = config.getServletContext();
+        Object domain = context.getAttribute("org.apache.tuscany.sca.SCADomain");
+        URL contribution = context.getResource("/META-INF/sca-contribution.xml");
+
+        long duration = 0L;
         int errors = 0;
         int failures = 0;
         int runs = 0;
-        response.setContentType("application/xml");
-        ps.println("<?xml version=\"1.0\" encoding=\"" + "UTF-8" + "\"?>");
-        ps.println("<" + XMLFormatter.TESTSUITES + ">");
+        List<Class<?>> testClasses = new ArrayList<Class<?>>();
+        List<Result> results = new ArrayList<Result>();
         for (String testClass : testCases) {
             Class<?> test = null;
             try {
                 test = Class.forName(testClass, false, testClassLoader);
+                if (domain != null && contribution != null) {
+                    // Inject the SCADomain
+                    inject(test, domain);
+                }
+                testClasses.add(test);
             } catch (ClassNotFoundException e) {
                 String st = XMLFormatter.exceptionToString(e);
                 st = XMLFormatter.escape(st);
@@ -241,28 +270,69 @@ public class JUnitServletFilter implements Filter {
                 // ps.close();
                 throw new ServletException(e);
             }
-            final XMLFormatter formatter = new XMLFormatter();
-            TestRunner runner = new TestRunner() {
-                protected TestResult createTestResult() {
-                    TestResult result = new TestResult();
-                    result.addListener(formatter);
-                    return result;
+
+            JUnitCore core = new JUnitCore();
+            Result result = core.run(Request.aClass(test));
+            results.add(result);
+
+            duration += result.getRunTime();
+            runs += result.getRunCount();
+
+            for (Failure f : result.getFailures()) {
+                if (f.getException() instanceof AssertionFailedError) {
+                    failures++;
+                } else {
+                    errors++;
                 }
-            };
-            long startTime = System.currentTimeMillis();
-            TestResult result = runner.doRun(new JUnit4TestAdapter(test));
-            runs += result.runCount();
-            failures += result.failureCount();
-            errors += result.errorCount();
-            long endTime = System.currentTimeMillis();
-            formatter.setTotalDuration(endTime - startTime);
-            ps.println(formatter.toXML(result));
+            }
         }
-        ps.println("</" + XMLFormatter.TESTSUITES + ">");
-        ((HttpServletResponse)response).addIntHeader("junit.errors", errors);
-        ((HttpServletResponse)response).addIntHeader("junit.failures", failures);
-        ((HttpServletResponse)response).addIntHeader("junit.runs", runs);
+
+        ps.println("<" + XMLFormatter.TESTSUITE
+            + " "
+            + XMLFormatter.ATTR_TESTS
+            + "=\""
+            + runs
+            + "\" "
+            + XMLFormatter.ATTR_FAILURES
+            + "=\""
+            + failures
+            + "\" "
+            + XMLFormatter.ATTR_ERRORS
+            + "=\""
+            + errors
+            + "\" "
+            + XMLFormatter.ATTR_TIME
+            + "=\""
+            + XMLFormatter.getDurationAsString(duration)
+            + "\">");
+        for (int i = 0; i < testClasses.size(); i++) {
+            ps.println(XMLFormatter.toXML(results.get(i), testClasses.get(i)));
+        }
+        ps.println("</" + XMLFormatter.TESTSUITE + ">");
+
+        resp.addIntHeader("junit.errors", errors);
+        resp.addIntHeader("junit.failures", failures);
+        resp.addIntHeader("junit.runs", runs);
+        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.flushBuffer();
         // ps.close();    
+    }
+
+    private boolean inject(Class<?> cls, Object target) {
+        for (Field f : cls.getDeclaredFields()) {
+            if (Modifier.isStatic(f.getModifiers()) && f.getType().isInstance(target)) {
+                f.setAccessible(true);
+                try {
+                    f.set(null, target);
+                    return true;
+                } catch (IllegalArgumentException e) {
+                    return false;
+                } catch (IllegalAccessException e) {
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 
     public void init(FilterConfig config) throws ServletException {
