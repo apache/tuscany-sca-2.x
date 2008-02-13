@@ -181,6 +181,7 @@
                 <module>interfaces</module>
                 <module>wires</module>
                 <module>scopes</module>
+                <module>large-sdo-ws</module>
             </modules>
 
 

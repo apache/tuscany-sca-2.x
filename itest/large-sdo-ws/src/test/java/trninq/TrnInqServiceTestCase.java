@@ -39,12 +39,14 @@ import org.junit.Assert;
  */
 public class TrnInqServiceTestCase extends TestCase {
 
-    private SCADomain scaDomain;
+    private static SCADomain scaDomain;
     private TrninqInterface trnInq;
 
     @Override
     protected void setUp() throws Exception {
-        scaDomain = SCADomain.newInstance("trnInq.composite");
+        if (scaDomain == null) {
+            scaDomain = SCADomain.newInstance("trnInq.composite");
+        }
         trnInq = scaDomain.getService(TrninqInterface.class, "TransactionInquiryClientComponent");
     }
 
