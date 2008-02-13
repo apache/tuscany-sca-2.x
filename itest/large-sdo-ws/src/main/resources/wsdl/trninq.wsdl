@@ -51,7 +51,7 @@
     </binding>
     <service name="TrnInqSvc">
         <port name="TrnInqSvcPort" binding="tns:trninq">
-            <soap:address location="http://localhost:8085/TestService/services/TrnInqService" />
+            <soap:address location="http://localhost:8085/itest-large-sdo-ws/TrnInqService" />
         </port>
     </service>
 </definitions>
