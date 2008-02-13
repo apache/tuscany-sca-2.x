@@ -215,7 +215,7 @@
                     </plugin>
                     -->
 
-                    <!-- Create war and include jUnit test jar -->
+                    <!-- Create war and include jUnit test classes -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-war-plugin</artifactId>
@@ -223,7 +223,7 @@
                         <configuration>
                             <primaryArtifact>false</primaryArtifact>
                             <!-- Exclude a few jars to avoid conflicts -->
-                            <warSourceExcludes>WEB-INF/lib/tuscany-host-tomcat-*.jar,WEB-INF/lib/tuscany-host-jetty-*.jar,servlet-api-*.jar</warSourceExcludes>
+                            <warSourceExcludes>WEB-INF/lib/tuscany-host-tomcat-*.jar,WEB-INF/lib/tuscany-host-jetty-*.jar,servlet-api-*.jar, WEB-INF/classes/META-INF/sca-contribution*.xml</warSourceExcludes>
                             <webResources>
                                 <!-- Add the tests jar into the WAR -->
                                 <!--
@@ -241,6 +241,13 @@
                                     <targetPath>WEB-INF/classes</targetPath>
                                 </resource>
 
+                                <resource>
+                                    <directory>${project.build.directory}/classes/META-INF</directory>
+                                    <includes>
+                                        <include>sca-contribution*.xml</include>
+                                    </includes>
+                                    <targetPath>META-INF</targetPath>
+                                </resource>
 
                                 <!-- Add the junit -->
                                 <resource>

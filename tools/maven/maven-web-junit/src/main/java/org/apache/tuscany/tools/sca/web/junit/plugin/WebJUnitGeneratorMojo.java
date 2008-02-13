@@ -92,7 +92,7 @@ public class WebJUnitGeneratorMojo extends AbstractMojo {
             + "\n       <filter-mapping>"
             + "\n           <filter-name>junit</filter-name>"
             + "\n           <url-pattern>/junit/*</url-pattern>"
-            + "\n       </filter-mapping>"            
+            + "\n       </filter-mapping>"
             + "\n</web-app>\n";
 
     /**
@@ -121,6 +121,8 @@ public class WebJUnitGeneratorMojo extends AbstractMojo {
                 + File.separator
                 + "WEB-INF");
         base.mkdirs();
+        // Create the dir to work around the complaint from maven-war-plugin on non-existent folders
+        new File(project.getBasedir(), "target/classes/META-INF".replace('/', File.separatorChar)).mkdirs();
         File webxml = new File(base, "web.xml");
         getLog().info("Generating " + webxml.toString());
 
