@@ -33,7 +33,9 @@ public class ServicesTestCase {
 
     @BeforeClass
     public static void init() throws Exception {
-        domain = SCADomain.newInstance("ServicesTest.composite");
+        if (domain == null) {
+            domain = SCADomain.newInstance("ServicesTest.composite");
+        }
     }
 
     @AfterClass
