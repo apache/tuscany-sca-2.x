@@ -81,6 +81,10 @@ public class DefaultSCADomain extends SCADomain {
     private Map<String, Component> components = new HashMap<String, Component>();
     private ReallySmallRuntime runtime;
     private ComponentManager componentManager;
+    private ClassLoader runtimeClassLoader;
+    private ClassLoader applicationClassLoader;
+    private String domainURI;
+    private String contributionLocation;
 
     /**
      * Constructs a new domain facade.
@@ -96,7 +100,17 @@ public class DefaultSCADomain extends SCADomain {
                             String... composites) {
         this.uri = domainURI;
         this.composites = composites;
+        this.runtimeClassLoader = runtimeClassLoader;
+        this.applicationClassLoader = applicationClassLoader;
+        this.domainURI = domainURI;
+        this.contributionLocation = contributionLocation;
+        this.composites = composites;
 
+        init();
+    
+    }
+
+    protected void init() {
         runtime = new ReallySmallRuntime(runtimeClassLoader);
         try {
             runtime.start();
@@ -240,7 +254,6 @@ public class DefaultSCADomain extends SCADomain {
 //                e.printStackTrace();
 //            }
 //        }
-    
     }
 
     protected void addContribution(ContributionService contributionService, URL contributionURL) throws IOException {
@@ -307,7 +320,7 @@ public class DefaultSCADomain extends SCADomain {
      * @return
      * @throws MalformedURLException
      */
-    private URL getContributionLocation(ClassLoader classLoader, String contributionPath, String[] composites)
+    protected URL getContributionLocation(ClassLoader classLoader, String contributionPath, String[] composites)
         throws MalformedURLException {
         if (contributionPath != null && contributionPath.length() > 0) {
             //encode spaces as they would cause URISyntaxException
