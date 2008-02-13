@@ -45,6 +45,12 @@
         </dependency>
     </dependencies>
 
+    <properties>
+        <was.ant.script>${basedir}/build-was-integration.xml</was.ant.script>
+        <was.python.script>${basedir}/wasAdmin.py</was.python.script>
+    </properties>
+
+
     <profiles>
         <profile>
             <id>default</id>
@@ -214,6 +220,22 @@
                         </executions>
                     </plugin>
                     -->
+
+                    <!-- Generate web-xml -->
+                    <plugin>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-maven-web-junit</artifactId>
+                        <version>1.2-incubating-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <id>generate-web-xml</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
 
                     <!-- Create war and include jUnit test classes -->
                     <plugin>
@@ -615,7 +637,7 @@
                                 </goals>
 	                        <configuration>
 	                            <tasks>
-	                                <ant antfile="../build-was-integration.xml" target="startServer"/>
+	                                <ant antfile="${was.ant.script}" target="startServer"/>
 	                            </tasks>
 	                        </configuration>
 	                    </execution>
@@ -628,7 +650,8 @@
                                 </goals>
 	                        <configuration>
 	                            <tasks>
-	                                <ant antfile="../build-was-integration.xml" target="installApplication">
+	                                <ant antfile="${was.ant.script}" target="installApplication">
+                                            <property name="was.python.script" value="${was.python.script}"/>
                                             <property name="application.war" value="${project.build.directory}/${project.build.finalName}.war"/>
                                             <property name="application.name" value="${project.build.finalName}.war"/>
                                             <property name="application.contextRoot" value="${project.build.finalName}"/>
@@ -646,7 +669,8 @@
                                 </goals>
 	                        <configuration>
 	                            <tasks>
-	                                <ant antfile="../build-was-integration.xml" target="uninstallApplication">
+	                                <ant antfile="${was.ant.script}" target="uninstallApplication">
+                                            <property name="was.python.script" value="${was.python.script}"/>
                                             <property name="application.name" value="${project.build.finalName}.war"/>
                                         </ant>
 	                            </tasks>
@@ -661,7 +685,7 @@
                                 </goals>
 	                        <configuration>
 	                            <tasks>
-	                                <ant antfile="../build-was-integration.xml" target="stopServer"/>
+	                                <ant antfile="${was.ant.script}" target="stopServer"/>
 	                            </tasks>
 	                        </configuration>
                             </execution>

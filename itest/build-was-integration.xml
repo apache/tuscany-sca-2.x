@@ -48,14 +48,14 @@
   <target name="installApplication">
     <echo>Installing war ${application.war} on ${application.server} using name ${application.name} and context root ${application.contextRoot} </echo>
     <exec dir="." executable="${env.WAS_HOME}/bin/wsadmin.sh">
-       <arg line="-conntype SOAP -lang jython -f ../wasAdmin.py installApplicationOnServer ${application.war} ${application.name} ${application.contextRoot} ${application.server}" />
+       <arg line="-conntype SOAP -lang jython -f ${was.python.script} installApplicationOnServer ${application.war} ${application.name} ${application.contextRoot} ${application.server}" />
     </exec>
    </target>
 
   <target name="uninstallApplication">
     <echo>Uninstalling ${application.name} </echo>
     <exec dir="." executable="${env.WAS_HOME}/bin/wsadmin.sh">
-       <arg line="-conntype SOAP -lang jython -f ../wasAdmin.py uninstallApplicationOnServer ${application.name}" />
+       <arg line="-conntype SOAP -lang jython -f ${was.python.script} uninstallApplicationOnServer ${application.name}" />
     </exec>
    </target>
 
