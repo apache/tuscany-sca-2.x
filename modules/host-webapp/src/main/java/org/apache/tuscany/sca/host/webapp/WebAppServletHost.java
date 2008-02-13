@@ -209,6 +209,11 @@ public class WebAppServletHost implements ServletHost {
         if (servletContext.getAttribute(SCA_DOMAIN_ATTRIBUTE) == null) {
             String domainURI = "http://localhost/" + contextPath;
             String contributionRoot = getContributionLocation(servletContext);
+            // logger.info("Contribution: " + contributionRoot);
+            String implClass = (String) servletContext.getAttribute("SCADomain.Implementation");
+            if(implClass!=null) {
+                System.setProperty(SCADomain.class.getName(), WebSCADomain.class.getName());
+            }
             this.scaDomain = SCADomain.newInstance(domainURI, contributionRoot);
             servletContext.setAttribute(SCA_DOMAIN_ATTRIBUTE, scaDomain);
         }
@@ -224,7 +229,7 @@ public class WebAppServletHost implements ServletHost {
         try {
 
             InitialContext ic = new InitialContext();
-            URL repoURL = (URL) ic.lookup("java:comp/env/url/contributions");
+            URL repoURL = (URL)ic.lookup("java:comp/env/url/contributions");
 
             contributionRoot = repoURL.toString();
 
@@ -233,11 +238,12 @@ public class WebAppServletHost implements ServletHost {
             // ignore exception and use default location
 
             try {
-                URL rootURL = servletContext.getResource("/");
+                String root = "/";
+                URL rootURL = servletContext.getResource(root);
                 if (rootURL.getProtocol().equals("jndi")) {
                     //this is tomcat case, we should use getRealPath
-                    File warRootFile = new File(servletContext.getRealPath("/"));
-                    contributionRoot  = warRootFile.toURL().toString();
+                    File warRootFile = new File(servletContext.getRealPath(root));
+                    contributionRoot = warRootFile.toURL().toString();
                 } else {
                     //this is jetty case
                     contributionRoot = rootURL.toString();
@@ -285,6 +291,9 @@ public class WebAppServletHost implements ServletHost {
         // Close the SCA domain
         if (scaDomain != null) {
             scaDomain.close();
+            if (scaDomain instanceof WebSCADomain) {
+                ((WebSCADomain)scaDomain).destroy();
+            }
         }
     }
 
