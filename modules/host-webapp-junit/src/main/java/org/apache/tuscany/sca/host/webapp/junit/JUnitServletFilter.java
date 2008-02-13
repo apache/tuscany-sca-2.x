@@ -315,7 +315,8 @@ public class JUnitServletFilter implements Filter {
         resp.addIntHeader("junit.runs", runs);
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.flushBuffer();
-        // ps.close();    
+        
+        ps.close();    
     }
 
     private boolean inject(Class<?> cls, Object target) {
