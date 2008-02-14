@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.work.WorkScheduler;
 
 /**
  * A factory from creating the JMS binding provider.
@@ -38,12 +39,14 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 public class JMSBindingProviderFactory implements BindingProviderFactory<JMSBinding> {
 
     private JMSHost jmsHost;
+    private WorkScheduler workScheduler;
 
     public JMSBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         jmsHost = extensionPoints.getExtensionPoint(JMSHost.class);
         if (jmsHost == null) {
             throw new JMSBindingException("No JMSHost extension point registered");
         }
+        workScheduler = extensionPoints.getExtensionPoint(WorkScheduler.class);
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
@@ -55,7 +58,7 @@ public class JMSBindingProviderFactory implements BindingProviderFactory<JMSBind
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
                                                                RuntimeComponentService service,
                                                                JMSBinding binding) {
-        return new JMSBindingServiceBindingProvider(component, service, binding, jmsHost);
+        return new JMSBindingServiceBindingProvider(component, service, binding, jmsHost, workScheduler);
     }
 
     public Class<JMSBinding> getModelType() {

@@ -49,7 +49,7 @@ public interface JMSBindingConstants {
     public final static String DEFAULT_CONNECTION_FACTORY_NAME = "ConnectionFactory";
     public final static String DEFAULT_CONTEXT_FACTORY_NAME = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
     public final static String DEFAULT_JNDI_URL = "tcp://localhost:61616";
-    public final static int DEFAULT_TIME_TO_LIVE = 10000; // in milli seconds
+    public final static int DEFAULT_TIME_TO_LIVE = 20000; // in milli seconds
     public final static int DEFAULT_PRIORITY = 1;
     public final static String DEFAULT_RF_CLASSNAME = "org.apache.tuscany.sca.host.jms.activemq.JMSResourceFactoryImpl";
     public final static String DEFAULT_MP_CLASSNAME = JMSMessageProcessorImpl.class.getName();
