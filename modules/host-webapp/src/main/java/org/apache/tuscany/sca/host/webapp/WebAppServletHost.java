@@ -59,6 +59,7 @@ public class WebAppServletHost implements ServletHost {
     private SCADomain scaDomain;
     private String contextPath = "/";
     private int defaultPortNumber = 8080;
+    private String contributionRoot;
 
     private WebAppServletHost() {
         servlets = new HashMap<String, Servlet>();
@@ -208,7 +209,7 @@ public class WebAppServletHost implements ServletHost {
 
         if (servletContext.getAttribute(SCA_DOMAIN_ATTRIBUTE) == null) {
             String domainURI = "http://localhost/" + contextPath;
-            String contributionRoot = getContributionLocation(servletContext);
+            contributionRoot = getContributionRoot(servletContext);
             // logger.info("Contribution: " + contributionRoot);
             String implClass = (String) servletContext.getAttribute("SCADomain.Implementation");
             if(implClass!=null) {
@@ -224,7 +225,7 @@ public class WebAppServletHost implements ServletHost {
         }
     }
 
-    protected String getContributionLocation(ServletContext servletContext) {
+    protected String getContributionRoot(ServletContext servletContext) {
         String contributionRoot = null;
         try {
 
@@ -316,5 +317,9 @@ public class WebAppServletHost implements ServletHost {
         if (path != null && path.length() > 0) {
             this.contextPath = path;
         }
+    }
+
+    public String getContributionRoot() {
+        return contributionRoot;
     }
 }
