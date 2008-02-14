@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 public class CallBackApiTestCase extends TestCase {
 
-    private SCADomain domain;
+    private static SCADomain domain;
     private CallBackApiClient aCallBackClient;
 
     public void testCallBackBasic() {
@@ -33,7 +33,9 @@ public class CallBackApiTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        domain = SCADomain.newInstance("CallBackApiTest.composite");
+    	if( domain==null ) {
+    		domain = SCADomain.newInstance("CallBackApiTest.composite");
+    	}
 
         aCallBackClient = domain.getService(CallBackApiClient.class, "CallBackApiClient");
     }
