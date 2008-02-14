@@ -26,13 +26,6 @@
       <implementation.java class="helloworld.HelloWorldClient"/>
       <reference name="helloWorldService">
           <interface.java interface="helloworld.HelloWorldService"/>
-          <!-- binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory"
-                       jndiURL="tcp://localhost:61619">
-              <destination name="RequestQueue" create="always"/>
-              <response>
-                  <destination name="ResponseQueue" create="always"/>
-              </response> 
-          </binding.jms -->
           <binding.jms>
               <destination name="RequestQueue"/>
               <response>
@@ -46,13 +39,6 @@
         <implementation.java class="helloworld.HelloWorldServiceImpl" />
 	    <service name="HelloWorldService">
                 <interface.java interface="helloworld.HelloWorldService"/>
-                <!-- binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory"
-                             jndiURL="tcp://localhost:61619">
-                    <destination name="RequestQueue" create="always"/>
-                    <response>
-                        <destination name="ResponseQueue" create="always"/>
-                    </response> 
-                </binding.jms -->
                 <binding.jms>
                     <destination name="RequestQueue"/>
                 </binding.jms>
