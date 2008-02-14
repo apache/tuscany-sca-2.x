@@ -22,8 +22,8 @@
  			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
  			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
  			
-	<sca:bindingType type="sca:binding.ws" alwaysProvides="" 
-									mayProvide=""/>			
+	<sca:bindingType type="sca:binding.ws"  mayProvide="soap soap11 soap12" alwaysProvides="" 
+									/>	 		
 
 	<!-- PolicyIntents defined by the SCA Runtime Extension for WS Binding Axis 2 -->
 	 <sca:intent name="soap"  
