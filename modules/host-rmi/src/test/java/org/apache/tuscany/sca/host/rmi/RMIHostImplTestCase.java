@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.host.rmi;
 
+import java.io.Serializable;
 import java.rmi.Remote;
 
 import junit.framework.TestCase;
@@ -39,8 +40,17 @@ public class RMIHostImplTestCase extends TestCase {
 
     public void testRegisterService1() throws RMIHostRuntimeException, RMIHostException {
         DefaultRMIHost host = new DefaultRMIHost();
-        host.registerService("foo1", new MockRemote());
-        host.unregisterService("foo1");
+        host.registerService("foo1", 9996, new MockRemote());
+        host.unregisterService("foo1", 9996);
+    }
+
+    public void testExistingRegistry() throws RMIHostRuntimeException, RMIHostException {
+        DefaultRMIHost host1 = new DefaultRMIHost();
+        host1.registerService("foo1", 9995, new MockRemote());
+        DefaultRMIHost host2 = new DefaultRMIHost();
+        host2.registerService("foo2", 9995, new MockRemote());
+        host2.unregisterService("foo1", 9995);
+        host2.unregisterService("foo2", 9995);
     }
 
     public void testRegisterService2() throws RMIHostRuntimeException, RMIHostException {
@@ -65,11 +75,11 @@ public class RMIHostImplTestCase extends TestCase {
         try {
             host.unregisterService("bar3", 9998);
             fail();
-        } catch (RMIHostException e) {
+        } catch (RMIHostRuntimeException e) {
             // expected
         }
     }
 
-    private static class MockRemote implements Remote {
+    private static class MockRemote implements Remote, Serializable {
     }
 }
