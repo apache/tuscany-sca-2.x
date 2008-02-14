@@ -83,7 +83,7 @@ if len(sys.argv) < 1:
 if(sys.argv[0] == 'installApplicationOnServer'):
     installApplicationOnServer(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
 elif(sys.argv[0] == 'startApplicationOnServer'):
-    installApplicationOnServer(sys.argv[1], sys.argv[2])
+    startApplicationOnServer(sys.argv[1], sys.argv[2])
 elif(sys.argv[0] == 'uninstallApplicationOnServer'):
     uninstallApplicationOnServer(sys.argv[1])
 else:
