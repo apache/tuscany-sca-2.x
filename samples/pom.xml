@@ -65,6 +65,7 @@
                 <module>feed-aggregator-webapp</module>
                 <module>helloworld-bpel</module>
                 <module>helloworld-dojo-webapp</module>
+                <module>helloworld-jms-webapp</module>
                 <module>helloworld-jsonrpc-webapp</module>
                 <module>helloworld-reference-jms</module>
                 <module>helloworld-service-jms</module>
