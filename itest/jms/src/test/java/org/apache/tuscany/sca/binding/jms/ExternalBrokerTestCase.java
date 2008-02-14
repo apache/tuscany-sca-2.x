@@ -36,7 +36,7 @@ public class ExternalBrokerTestCase {
 
     @Before
     public void init() throws Exception {
-        startBroker();
+        // startBroker();
         scaDomain = SCADomain.newInstance("http://localhost", "/", "external/client.composite", "external/service.composite");
     }
 

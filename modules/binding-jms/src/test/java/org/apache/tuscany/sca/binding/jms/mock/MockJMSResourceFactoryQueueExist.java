@@ -45,6 +45,10 @@ public class MockJMSResourceFactoryQueueExist extends MockJMSResourceFactory {
         return d;
     }
 
-    public void startBroker() {
+    public Object startBroker() {
+        return null;
+    }
+    
+    public void stopBroker(Object broker) {
     }
 }

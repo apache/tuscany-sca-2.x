@@ -22,8 +22,6 @@ package helloworld;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.host.embedded.SCATestCaseRunner;
-import org.apache.tuscany.sca.host.jms.activemq.ActiveMQModuleActivator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public class HelloWorldJmsClientTestCase {
     @Before
     public void startClient() throws Exception {
         try {
-            ActiveMQModuleActivator.startBroker();
+            // ActiveMQModuleActivator.startBroker();
             scaServiceDomain = SCADomain.newInstance("helloworldjmsservice.composite");
             scaClientDomain = SCADomain.newInstance("helloworldjmsreference.composite");
             helloWorldService = scaClientDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent");

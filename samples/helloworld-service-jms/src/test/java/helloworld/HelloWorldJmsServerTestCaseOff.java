@@ -24,7 +24,6 @@ import static junit.framework.Assert.assertNotNull;
 import java.io.IOException;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.host.jms.activemq.ActiveMQModuleActivator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,21 +31,22 @@ import org.junit.Test;
 /**
  * Tests that the helloworld server is available
  */
-public class HelloWorldJmsServerTestCaseOff{
+public class HelloWorldJmsServerTestCaseOff {
 
     private SCADomain scaDomain;
 
     @Before
     public void startServer() throws Exception {
-    ActiveMQModuleActivator.startBroker();
-            scaDomain = SCADomain.newInstance("helloworldjmsservice.composite");
+        // ActiveMQModuleActivator.startBroker();
+        scaDomain = SCADomain.newInstance("helloworldjmsservice.composite");
     }
 
     @Test
     public void testServiceCall() throws IOException {
-        HelloWorldService helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent/HelloWorldService");
+        HelloWorldService helloWorldService =
+            scaDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent/HelloWorldService");
         assertNotNull(helloWorldService);
-        
+
         assertEquals("Hello Smith", helloWorldService.getGreetings("Smith"));
     }
 

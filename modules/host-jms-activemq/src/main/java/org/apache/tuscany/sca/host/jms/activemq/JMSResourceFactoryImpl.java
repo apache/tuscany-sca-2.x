@@ -40,7 +40,7 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
     private String initialContextFactoryName = DEFAULT_ICFN;
     private String connectionFactoryName = "ConnectionFactory";
     private String jndiURL = ActiveMQBroker.CONNECTOR_URL;
-    
+
     private Connection connection;
     private Context context;
     private boolean isConnectionStarted;
@@ -103,10 +103,17 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
         }
     }
 
-    public void startBroker() {
+    public Object startBroker() {
         if (isEmbedded()) {
             // ensure the broker has been started
-            ActiveMQModuleActivator.startBroker();
+            return ActiveMQModuleActivator.startBroker(jndiURL);
+        }
+        return null;
+    }
+    
+    public void stopBroker(Object broker) {
+        if(broker instanceof ActiveMQBroker) {
+            ((ActiveMQBroker) broker).stop();
         }
     }
 
@@ -115,34 +122,36 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
      * for now it always starts it if the activemq icf is being used with our default jndiurl
      */
     protected boolean isEmbedded() {
-        return DEFAULT_ICFN.equals(initialContextFactoryName) && ActiveMQBroker.CONNECTOR_URL.equals(jndiURL);
+        try {
+            getConnection();
+            return false;
+        } catch (Exception e) {
+            return true;
+        }
+        // return DEFAULT_ICFN.equals(initialContextFactoryName) && ActiveMQBroker.CONNECTOR_URL.equals(jndiURL);
     }
 
     private void createConnection() throws NamingException, JMSException {
-        if (context == null) {
-            createInitialContext();
-        }
-        ConnectionFactory connectionFactory = (ConnectionFactory)context.lookup(connectionFactoryName);
+        ConnectionFactory connectionFactory = (ConnectionFactory)getInitialContext().lookup(connectionFactoryName);
         connection = connectionFactory.createConnection();
     }
 
-    private void createInitialContext() throws NamingException {
-        Properties props = new Properties();
-        props.setProperty(Context.INITIAL_CONTEXT_FACTORY, initialContextFactoryName);
-        props.setProperty(Context.PROVIDER_URL, jndiURL);
+    private synchronized Context getInitialContext() throws NamingException {
+        if (context == null) {
+            Properties props = new Properties();
+            props.setProperty(Context.INITIAL_CONTEXT_FACTORY, initialContextFactoryName);
+            props.setProperty(Context.PROVIDER_URL, jndiURL);
 
-        context = new InitialContext(props);
+            context = new InitialContext(props);
+        }
+        return context;
     }
 
     public Destination lookupDestination(String jndiName) throws NamingException {
-        if (context == null) {
-            createInitialContext();
-        }
-
         Destination dest = null;
 
         try {
-            dest = (Destination)context.lookup(jndiName);
+            dest = (Destination)getInitialContext().lookup(jndiName);
         } catch (NamingException ex) {
 
         }

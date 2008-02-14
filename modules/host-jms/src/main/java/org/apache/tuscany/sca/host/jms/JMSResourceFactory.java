@@ -42,5 +42,15 @@ public interface JMSResourceFactory {
 
     Destination createDestination(String jndiName) throws NamingException;
 
-    void startBroker();
+    /**
+     * Start a new message broker
+     * @return The newly created message broker, null if no broker is created
+     */
+    Object startBroker();
+
+    /**
+     * Stop the message broker
+     * @param broker
+     */
+    void stopBroker(Object broker);
 }
