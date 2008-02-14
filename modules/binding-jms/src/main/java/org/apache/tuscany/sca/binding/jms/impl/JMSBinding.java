@@ -58,8 +58,8 @@ public class JMSBinding implements Binding {
     // operationProperties="QName"? Not yet implemented in binding
     // ...>
     private String correlationScheme = JMSBindingConstants.CORRELATE_MSG_ID;
-    private String initialContextFactoryName = JMSBindingConstants.DEFAULT_CONTEXT_FACTORY_NAME;
-    private String jndiURL = JMSBindingConstants.DEFAULT_JNDI_URL;
+    private String initialContextFactoryName;
+    private String jndiURL;
     // private String requestConnection = null;
     // private String responseConnection = null;
     // private String operationProperties = null;

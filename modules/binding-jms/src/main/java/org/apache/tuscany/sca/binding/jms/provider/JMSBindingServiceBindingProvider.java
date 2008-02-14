@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.binding.jms.provider;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.naming.NamingException;
@@ -35,6 +36,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.work.WorkScheduler;
 
 /**
  * Implementation of the JMS service binding provider.
@@ -48,12 +50,16 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
     private JMSResourceFactory jmsResourceFactory;
     private Object broker;
     private MessageConsumer consumer;
+    private WorkScheduler workScheduler;
+    private boolean running;
 
     public JMSBindingServiceBindingProvider(RuntimeComponent component,
                                             RuntimeComponentService service,
-                                            JMSBinding binding, JMSHost jmsHost) {
+                                            JMSBinding binding, JMSHost jmsHost,
+                                            WorkScheduler workScheduler) {
         this.service = service;
         this.jmsBinding = binding;
+        this.workScheduler = workScheduler;
 
         jmsResourceFactory = jmsHost.createJMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
 
@@ -96,6 +102,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
     }
 
     public void start() {
+        this.running = true;
         this.broker = jmsResourceFactory.startBroker();
 
         try {
@@ -106,6 +113,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
     }
 
     public void stop() {
+        this.running = false;
         try {
             consumer.close();
             jmsResourceFactory.closeConnection();
@@ -124,10 +132,34 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
 
         consumer = session.createConsumer(destination);
 
-        consumer.setMessageListener(new JMSBindingListener(jmsBinding, jmsResourceFactory, service));
+        final JMSBindingListener listener = new JMSBindingListener(jmsBinding, jmsResourceFactory, service);
+        try {
 
-        jmsResourceFactory.startConnection();
+            consumer.setMessageListener(listener);
+            jmsResourceFactory.startConnection();
 
+        } catch (javax.jms.IllegalStateException e) {
+
+            jmsResourceFactory.startConnection();
+            workScheduler.scheduleWork(new Runnable() {
+                public void run() {
+                    try {
+                        while (running) {
+                           final Message msg = consumer.receive();
+                           workScheduler.scheduleWork(new Runnable() {
+                               public void run() {
+                                   try {
+                                       listener.onMessage(msg);
+                                   } catch (Exception e) {
+                                       e.printStackTrace();
+                                   }
+                               }});
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }});
+        }
     }
 
     /**
