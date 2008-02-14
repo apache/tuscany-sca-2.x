@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://helloworld"
+	xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+	xmlns:ns="http://helloworld/xsd" 
+	xmlns:axis2="http://helloworld">
+	<wsdl:types>
+		<xs:schema attributeFormDefault="qualified"
+			elementFormDefault="qualified"
+			targetNamespace="http://helloworld/xsd"
+			xmlns:xs="http://www.w3.org/2001/XMLSchema">
+			<xs:element name="getGreetingsCallback">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="param0" nillable="true"
+							type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+            <xs:element name="getGreetingsCallbackResponse">
+                <xs:complexType/>
+            </xs:element>			
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="getGreetingsCallbackMessage">
+		<wsdl:part name="part1" element="ns:getGreetingsCallback">
+		</wsdl:part>
+	</wsdl:message>
+    <wsdl:message name="getGreetingsCallbackResponseMessage">
+        <wsdl:part name="part1" element="ns:getGreetingsCallbackResponse">
+        </wsdl:part>
+    </wsdl:message>	
+	<wsdl:portType name="HelloWorldCallbackPortType">
+		<wsdl:operation name="getGreetingsCallback">
+			<wsdl:input message="axis2:getGreetingsCallbackMessage">
+			</wsdl:input>
+            <wsdl:output message="axis2:getGreetingsCallbackResponseMessage">
+            </wsdl:output>			
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="HelloWorldCallbackSOAP11Binding"
+		type="axis2:HelloWorldCallbackPortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="getGreetingsCallback">
+			<soap:operation soapAction="urn:getGreetingsCallback"
+				style="document" />
+			<wsdl:input>
+				<soap:body use="literal" namespace="http://helloworld" />
+			</wsdl:input>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:binding name="HelloWorldCallbackSOAP12Binding"
+		type="axis2:HelloWorldCallbackPortType">
+		<soap12:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="getGreetingsCallback">
+			<soap12:operation soapAction="urn:getGreetingsCallback"
+				style="document" />
+			<wsdl:input>
+				<soap12:body use="literal" namespace="http://helloworld" />
+			</wsdl:input>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="HelloWorldCallback">
+		<wsdl:port name="HelloWorldCallbackSOAP11port"
+			binding="axis2:HelloWorldCallbackSOAP11Binding">
+			<soap:address
+				location="http://localhost:8080/axis2/services/HelloWorldCallback" />
+		</wsdl:port>
+		<wsdl:port name="HelloWorldCallbackSOAP12port"
+			binding="axis2:HelloWorldCallbackSOAP12Binding">
+			<soap12:address
+				location="http://localhost:8080/axis2/services/HelloWorldCallback" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
