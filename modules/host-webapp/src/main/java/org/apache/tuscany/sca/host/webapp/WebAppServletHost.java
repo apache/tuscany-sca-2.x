@@ -211,10 +211,7 @@ public class WebAppServletHost implements ServletHost {
             String domainURI = "http://localhost/" + contextPath;
             contributionRoot = getContributionRoot(servletContext);
             // logger.info("Contribution: " + contributionRoot);
-            String implClass = (String) servletContext.getAttribute("SCADomain.Implementation");
-            if(implClass!=null) {
-                System.setProperty(SCADomain.class.getName(), WebSCADomain.class.getName());
-            }
+            System.setProperty(SCADomain.class.getName(), WebSCADomain.class.getName());
             this.scaDomain = SCADomain.newInstance(domainURI, contributionRoot);
             servletContext.setAttribute(SCA_DOMAIN_ATTRIBUTE, scaDomain);
         }
