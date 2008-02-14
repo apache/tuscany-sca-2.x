@@ -42,4 +42,9 @@
             <scope>runtime</scope>
         </dependency>
     </dependencies>
+
+    <properties>
+        <was.ant.script>${basedir}/../build-was-integration.xml</was.ant.script>
+        <was.python.script>${basedir}/../wasAdmin.py</was.python.script>
+    </properties>
 </project>
