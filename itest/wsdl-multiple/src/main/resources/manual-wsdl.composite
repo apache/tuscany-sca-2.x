@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" 
+           xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
+           name="manualhelloworldws">
+    
+  <component name="HelloWorldClientComponent">
+    <implementation.java class="helloworld.HelloWorldClientImpl"/>
+    <reference name="helloWorldService">
+      <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldServiceSOAP11port)"/>
+      <callback>
+        <binding.ws wsdlElement="http://helloworld#wsdl.binding(HelloWorldCallbackSOAP11Binding)"/>        
+      </callback>
+    </reference>
+  </component>
+  
+  <component name="HelloWorldServiceComponent">
+    <implementation.java class="helloworld.HelloWorldServiceImpl"/>
+    <service name="HelloWorldService">
+      <interface.java interface="helloworld.HelloWorldService" callbackInterface="helloworld.HelloWorldCallback"/>
+      <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldServiceSOAP11port)"/>
+      <callback>
+        <binding.ws wsdlElement="http://helloworld#wsdl.binding(HelloWorldCallbackSOAP11Binding)"/>        
+      </callback>
+    </service>
+  </component>
+</composite>
