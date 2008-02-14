@@ -31,7 +31,7 @@ public class RMIHostImplTestCase extends TestCase {
 
     public void testFindServiceBadHost() throws RMIHostRuntimeException, RMIHostException {
         try {
-            new DefaultRMIHost().findService(null, "0", null);
+            new DefaultRMIHost().findService(null, "9994", "$BAD$");
             fail();
         } catch (RMIHostRuntimeException e) {
             // expected
