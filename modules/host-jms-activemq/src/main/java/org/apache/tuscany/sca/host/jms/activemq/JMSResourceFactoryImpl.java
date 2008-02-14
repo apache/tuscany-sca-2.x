@@ -36,20 +36,19 @@ import org.apache.tuscany.sca.host.jms.JMSResourceFactory;
  */
 public class JMSResourceFactoryImpl implements JMSResourceFactory {
 
-    private static final String DEFAULT_ICFN = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
-    private String initialContextFactoryName = DEFAULT_ICFN;
+    private String initialContextFactoryName;
     private String connectionFactoryName = "ConnectionFactory";
-    private String jndiURL = ActiveMQBroker.CONNECTOR_URL;
+    private String jndiURL;
 
     private Connection connection;
     private Context context;
     private boolean isConnectionStarted;
 
     public JMSResourceFactoryImpl(String connectionFactoryName, String initialContextFactoryName, String jndiURL) {
-        if (connectionFactoryName != null) {
+        if (connectionFactoryName != null && connectionFactoryName.trim().length() > 0) {
             this.connectionFactoryName = connectionFactoryName.trim();
         }
-        if (initialContextFactoryName != null) {
+        if (initialContextFactoryName != null && initialContextFactoryName.trim().length() > 0) {
             this.initialContextFactoryName = initialContextFactoryName.trim();
         }
         if (jndiURL != null) {
@@ -128,7 +127,6 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
         } catch (Exception e) {
             return true;
         }
-        // return DEFAULT_ICFN.equals(initialContextFactoryName) && ActiveMQBroker.CONNECTOR_URL.equals(jndiURL);
     }
 
     private void createConnection() throws NamingException, JMSException {
@@ -139,9 +137,12 @@ public class JMSResourceFactoryImpl implements JMSResourceFactory {
     private synchronized Context getInitialContext() throws NamingException {
         if (context == null) {
             Properties props = new Properties();
-            props.setProperty(Context.INITIAL_CONTEXT_FACTORY, initialContextFactoryName);
-            props.setProperty(Context.PROVIDER_URL, jndiURL);
-
+            if (initialContextFactoryName != null) {
+                props.setProperty(Context.INITIAL_CONTEXT_FACTORY, initialContextFactoryName);
+            }
+            if (jndiURL != null) {
+                props.setProperty(Context.PROVIDER_URL, jndiURL);
+            }
             context = new InitialContext(props);
         }
         return context;
