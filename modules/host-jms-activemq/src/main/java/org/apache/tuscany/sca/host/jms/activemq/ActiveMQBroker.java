@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.host.jms.activemq;
 
+import java.io.File;
+import java.util.UUID;
+
 import org.apache.activemq.broker.BrokerService;
 
 /**
@@ -25,22 +28,33 @@ import org.apache.activemq.broker.BrokerService;
 public class ActiveMQBroker {
 
     public static final String CONNECTOR_URL = "tcp://localhost:61619";
+    public static final String BROKER_NAME = "ActiveMQ";
+
     private BrokerService broker;
+    private String url = CONNECTOR_URL;
 
     public ActiveMQBroker() {
     }
 
+    public ActiveMQBroker(String url) {
+        this.url = url;
+    }
+
     public void start() {
         broker = new BrokerService();
+        String uuid = UUID.randomUUID().toString();
+        broker.setBrokerName(BROKER_NAME + "-" + uuid);
+        broker.setDataDirectory(new File("target/activemq-data/" + uuid));
         try {
-            broker.addConnector(CONNECTOR_URL);
+            broker.addConnector(url);
+            broker.setUseJmx(false);
             broker.start();
-        } catch ( Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
-    
+
     public void stop() {
         if (broker != null) {
             try {
@@ -49,9 +63,12 @@ public class ActiveMQBroker {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
-            broker = null; 
+            broker = null;
         }
     }
 
-    
+    public boolean isStarted() {
+        return broker != null && broker.isStarted();
+    }
+
 }

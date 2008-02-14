@@ -19,27 +19,39 @@
 
 package org.apache.tuscany.sca.host.jms.activemq;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 
 public class ActiveMQModuleActivator implements ModuleActivator {
 
-    private static ActiveMQBroker activeMQHost;
+    private static List<ActiveMQBroker> brokers = new ArrayList<ActiveMQBroker>();
 
     public void start(ExtensionPointRegistry registry) {
     }
 
     public void stop(ExtensionPointRegistry registry) {
-        if (activeMQHost != null) {
-            activeMQHost.stop();
-            activeMQHost = null;
+        for (ActiveMQBroker b : brokers) {
+            if (b.isStarted()) {
+                b.stop();
+            }
         }
+        brokers.clear();
     }
 
-    public static void startBroker() {
-        if (activeMQHost == null) {
-            activeMQHost = new ActiveMQBroker();
-            activeMQHost.start();
-        }
+    public synchronized static ActiveMQBroker startBroker(String url) {
+        ActiveMQBroker broker = new ActiveMQBroker(url);
+        broker.start();
+        brokers.add(broker);
+        return broker;
+    }
+
+    public synchronized static ActiveMQBroker startBroker() {
+        ActiveMQBroker broker = new ActiveMQBroker();
+        broker.start();
+        brokers.add(broker);
+        return broker;
     }
 }

@@ -46,6 +46,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
     private RuntimeComponentService service;
     private JMSBinding jmsBinding;
     private JMSResourceFactory jmsResourceFactory;
+    private Object broker;
     private MessageConsumer consumer;
 
     public JMSBindingServiceBindingProvider(RuntimeComponent component,
@@ -55,7 +56,6 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
         this.jmsBinding = binding;
 
         jmsResourceFactory = jmsHost.createJMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
-        jmsResourceFactory.startBroker();
 
         // if the default destination queue names is set
         // set the destinate queue name to the reference name
@@ -96,6 +96,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
     }
 
     public void start() {
+        this.broker = jmsResourceFactory.startBroker();
 
         try {
             registerListerner();
@@ -108,6 +109,9 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
         try {
             consumer.close();
             jmsResourceFactory.closeConnection();
+            if(this.broker!=null) {
+                jmsResourceFactory.stopBroker(this.broker);
+            }
         } catch (Exception e) {
             throw new JMSBindingException("Error stopping JMSServiceBinding", e);
         }

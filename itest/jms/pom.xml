@@ -47,7 +47,7 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
-            <scope>test</scope>
+            <scope>runtime</scope>
         </dependency> 
 
         <dependency>
