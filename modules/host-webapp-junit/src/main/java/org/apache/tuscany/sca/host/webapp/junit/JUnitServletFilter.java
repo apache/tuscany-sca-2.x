@@ -146,9 +146,6 @@ public class JUnitServletFilter implements Filter {
                 testClassLoader = new URLClassLoader(new URL[] {url}, testClassLoader);
             }
         }
-        
-        // Configure the SCADomain implementation class
-        config.getServletContext().setAttribute("SCADomain.Implementation", "org.apache.tuscany.sca.host.webapp.WebSCADomain");
     }
 
     /**
