@@ -50,6 +50,11 @@
     <exec dir="." executable="${env.WAS_HOME}/bin/wsadmin.sh">
        <arg line="-conntype SOAP -lang jython -f ${was.python.script} installApplicationOnServer ${application.war} ${application.name} ${application.contextRoot} ${application.server}" />
     </exec>
+
+    <echo>Starting application ${application.name} on ${application.server}</echo>
+    <exec dir="." executable="${env.WAS_HOME}/bin/wsadmin.sh">
+       <arg line="-conntype SOAP -lang jython -f ${was.python.script} startApplicationOnServer ${application.name} ${application.server}" />
+    </exec>
    </target>
 
   <target name="uninstallApplication">
