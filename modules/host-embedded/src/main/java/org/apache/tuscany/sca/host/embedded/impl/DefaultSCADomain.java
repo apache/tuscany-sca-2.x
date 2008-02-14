@@ -77,8 +77,8 @@ public class DefaultSCADomain extends SCADomain {
     private String uri;
     private String[] composites;
     private Composite domainComposite;
-    private List<Contribution> contributions = new ArrayList<Contribution>();
-    private Map<String, Component> components = new HashMap<String, Component>();
+    private List<Contribution> contributions;
+    private Map<String, Component> components;
     private ReallySmallRuntime runtime;
     private ComponentManager componentManager;
     private ClassLoader runtimeClassLoader;
@@ -110,7 +110,9 @@ public class DefaultSCADomain extends SCADomain {
     
     }
 
-    protected void init() {
+    public void init() {
+        contributions = new ArrayList<Contribution>();
+        components = new HashMap<String, Component>();
         runtime = new ReallySmallRuntime(runtimeClassLoader);
         try {
             runtime.start();
