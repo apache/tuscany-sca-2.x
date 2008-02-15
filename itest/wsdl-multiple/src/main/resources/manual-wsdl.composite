@@ -8,7 +8,8 @@
     <reference name="helloWorldService">
       <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldServiceSOAP11port)"/>
       <callback>
-        <binding.ws wsdlElement="http://helloworld#wsdl.binding(HelloWorldCallbackSOAP11Binding)"/>        
+        <binding.ws uri="http://localhost:8085/HelloWorldClientComponent/helloWorldService" 
+                    wsdlElement="http://helloworld#wsdl.binding(HelloWorldCallbackSOAP11Binding)"/>        
       </callback>
     </reference>
   </component>
@@ -19,7 +20,8 @@
       <interface.java interface="helloworld.HelloWorldService" callbackInterface="helloworld.HelloWorldCallback"/>
       <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldServiceSOAP11port)"/>
       <callback>
-        <binding.ws wsdlElement="http://helloworld#wsdl.binding(HelloWorldCallbackSOAP11Binding)"/>        
+        <binding.ws uri="http://localhost:8085/HelloWorldClientComponent/helloWorldService"
+                    wsdlElement="http://helloworld#wsdl.binding(HelloWorldCallbackSOAP11Binding)"/>        
       </callback>
     </service>
   </component>
