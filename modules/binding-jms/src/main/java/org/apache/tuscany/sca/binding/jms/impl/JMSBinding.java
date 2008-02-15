@@ -503,21 +503,6 @@ public class JMSBinding implements Binding {
          * first fix up anything now the model has been read
          */
 
-        if (getDestinationName().equals(JMSBindingConstants.DEFAULT_DESTINATION_NAME)) {
-            /*
-             * No desitnation name has been set so make sure that the runtime is able to create one automatically
-             */
-            setDestinationCreate(JMSBindingConstants.CREATE_IF_NOT_EXIST);
-        }
-
-        if (getResponseDestinationName().equals(JMSBindingConstants.DEFAULT_RESPONSE_DESTINATION_NAME)) {
-            /*
-             * No repsonse desitination name has been set so make sure that the runtime is able to create one
-             * automatically
-             */
-            setResponseDestinationCreate(JMSBindingConstants.CREATE_IF_NOT_EXIST);
-        }
-
         /*
          * Now some cross field validation
          */
