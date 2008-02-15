@@ -46,7 +46,7 @@ public abstract class SCADomain {
      * Static variable to hold the most recent instance of SCADomain
      */
     // TODO: Temporary support for SCADomain.connect() API
-    private static SCADomain theDomain;
+    protected static SCADomain theDomain;
 
     
     /**
