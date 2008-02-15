@@ -137,7 +137,11 @@ public class JMSMessageProcessorImpl implements JMSMessageProcessor {
             if (o instanceof OMElement) {
                 message.setText(o.toString());
             } else {
-                message.setText(((Object[])o)[0].toString());
+                if (o instanceof Object[]) {
+                    message.setText(((Object[])o)[0].toString());
+                } else {
+                    message.setText(String.valueOf(o));
+                }
             }
 
             return message;

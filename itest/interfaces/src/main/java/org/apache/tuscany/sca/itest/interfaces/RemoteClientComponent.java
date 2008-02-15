@@ -47,6 +47,7 @@ import org.osoa.sca.annotations.Remotable;
 public interface RemoteClientComponent {
 
     String foo1(ParameterObject po);
+    String foo3(ParameterObject po);
 
     String foo2(int i, String str1) throws Exception;
 

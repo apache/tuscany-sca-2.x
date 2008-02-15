@@ -19,10 +19,8 @@
 
 package org.apache.tuscany.sca.core.databinding.wire;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -30,7 +28,6 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 
@@ -57,7 +54,7 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
         if (source == target) {
             return false;
         }
-        
+
         // Output type can be null
         if (source == null && target == null) {
             return false;
@@ -80,7 +77,7 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
         if (source == target) {
             return false;
         }
-        
+
         if (source.isWrapperStyle() != target.isWrapperStyle()) {
             return true;
         }
@@ -148,8 +145,8 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
             } else {
                 // assume pass-by-values copies are required if interfaces are remotable and there is no data binding
                 // transformation, i.e. a transformation will result in a copy so another pass-by-value copy is unnecessary
-                if (requiresCopy(wire, sourceOperation, targetOperation)) {
-                    interceptor = new PassByValueInterceptor(dataBindings, targetOperation);
+                if (isRemotable(chain, sourceOperation, targetOperation)) {
+                    interceptor = new PassByValueInterceptor(dataBindings, chain, targetOperation);
                 }
             }
             if (interceptor != null) {
@@ -163,58 +160,14 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
      * Pass-by-value copies are required if the interfaces are remotable unless the
      * implementation uses the @AllowsPassByReference annotation.
      */
-    protected boolean requiresCopy(RuntimeWire wire, Operation sourceOperation, Operation targetOperation) {
+    protected boolean isRemotable(InvocationChain chain, Operation sourceOperation, Operation targetOperation) {
         if (!sourceOperation.getInterface().isRemotable()) {
             return false;
         }
         if (!targetOperation.getInterface().isRemotable()) {
             return false;
         }
-
-        if (allowsPassByReference(wire.getSource().getComponent(), sourceOperation)) {
-            return false;
-        }
-        
-        if (allowsPassByReference(wire.getTarget().getComponent(), sourceOperation)) {
-            return false;
-        }
-
         return true;
-    }
-
-    /**
-     * Does the implementation use the @AllowsPassByReference annotation for the operation.
-     * Uses reflection to avoid a dependency on JavaImplementation because the isAllowsPassByReference
-     * and getAllowsPassByReference methods are not on the Implementation interface.
-     * TODO: move isAllowsPassByReference/getAllowsPassByReference to Implementation interface 
-     */
-    protected boolean allowsPassByReference(RuntimeComponent component, Operation operation) {
-        if (component == null || component.getImplementation() == null) {
-            return true; // err on the side of no copies
-        }
-        Implementation impl = component.getImplementation();
-        try {
-
-            Method m = impl.getClass().getMethod("isAllowsPassByReference", new Class[] {});
-            if ((Boolean)m.invoke(impl, new Object[]{})) {
-                return true;
-            }
-
-            m = impl.getClass().getMethod("getAllowsPassByReferenceMethods", new Class[] {});
-            List<Method> ms = (List<Method>)m.invoke(impl, new Object[]{});
-            if (ms != null) {
-                for (Method m2 : ms) {
-                    // simple name matching is ok as its a remote operation so no overloading 
-                    if (operation.getName().equals(m2.getName()))
-                        return true;
-                }
-            }
-            
-        } catch (Exception e) {
-            // ignore, assume the impl has no isAllowsPassByReference method
-        }
-
-        return false;
     }
 
 }

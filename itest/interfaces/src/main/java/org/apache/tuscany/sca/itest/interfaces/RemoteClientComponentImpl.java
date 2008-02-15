@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.itest.interfaces;
 
+import org.osoa.sca.annotations.AllowsPassByReference;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
@@ -35,6 +36,12 @@ public class RemoteClientComponentImpl implements RemoteClientComponent, RemoteC
         return "BComponent";
     }
 
+    @AllowsPassByReference
+    public String foo3(ParameterObject po) {
+        po.field1 = "BComponent";
+        return "BComponent";
+    }
+    
     public String foo2(int i, String str) throws Exception {
         return str + "BComponent" + i;
     }

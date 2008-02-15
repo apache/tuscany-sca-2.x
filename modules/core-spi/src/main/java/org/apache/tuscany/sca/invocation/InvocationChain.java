@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  *
  * @version $Rev$ $Date$
  */
-public interface InvocationChain {
+public interface InvocationChain extends PassByValueAware {
     /**
      * Returns the target operation for this invocation chain.
      *

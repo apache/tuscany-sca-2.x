@@ -97,6 +97,7 @@ public interface RuntimeComponentService extends ComponentService {
     /**
      * Get the invoker for the given binding and operation
      * @param binding The assembly model binding 
+     * @param interfaceContract the client interface contract
      * @param operation The assembly model operation
      * @return The runtime invoker
      */
@@ -108,5 +109,14 @@ public interface RuntimeComponentService extends ComponentService {
      * @param operation The assembly model operation
      * @return The runtime invocation chain
      */
-    InvocationChain getInvocationChain(Binding binding, Operation operation);    
+    InvocationChain getInvocationChain(Binding binding, Operation operation);  
+    
+    /**
+     * Get the invocation chain for the given binding and operation
+     * @param binding The assembly model binding 
+     * @param operation The assembly model operation
+     * @param interfaceContract the client interface contract
+     * @return The runtime invocation chain
+     */
+    InvocationChain getInvocationChain(Binding binding, InterfaceContract interfaceContract, Operation operation);  
 }

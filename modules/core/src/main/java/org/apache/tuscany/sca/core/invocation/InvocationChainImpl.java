@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.PassByValueAware;
 
 /**
  * Default implementation of an invocation chain
@@ -113,6 +114,20 @@ public class InvocationChainImpl implements InvocationChain {
             Invoker after = invokers.get(index + 1);
             interceptor.setNext(after);
         }
+    }
+
+    public boolean allowsPassByReference() {
+        // Check if any of the invokers allows pass-by-reference
+        boolean allowsPBR = false;
+        for (Invoker i : invokers) {
+            if (i instanceof PassByValueAware) {
+                if (((PassByValueAware)i).allowsPassByReference()) {
+                    allowsPBR = true;
+                    break;
+                }
+            }
+        }
+        return allowsPBR;
     }
 
 }
