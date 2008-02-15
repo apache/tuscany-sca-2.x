@@ -121,12 +121,15 @@ public class JMSBindingInvoker implements Invoker {
             queueName = jmsBinding.getResponseDestinationName();
             queueType = "JMS Response Destination ";
             qCreateMode = jmsBinding.getResponseDestinationCreate();
+            if (JMSBindingConstants.CREATE_ALWAYS.equals(qCreateMode) && JMSBindingConstants.DEFAULT_RESPONSE_DESTINATION_NAME.equals(queueName)) {
+                return null;
+            }
         } else {
             queueName = jmsBinding.getDestinationName();
             queueType = "JMS Destination ";
             qCreateMode = jmsBinding.getDestinationCreate();
         }
-
+        
         Destination dest = jmsResourceFactory.lookupDestination(queueName);
 
         if (qCreateMode.equals(JMSBindingConstants.CREATE_ALWAYS)) {
