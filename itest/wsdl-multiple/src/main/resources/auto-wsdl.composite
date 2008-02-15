@@ -6,9 +6,9 @@
   <component name="HelloWorldClientComponent">
     <implementation.java class="helloworld.HelloWorldClientImpl"/>
     <reference name="helloWorldService">
-      <binding.ws uri="http://localhost:8080/HelloWorldServiceComponent"/>
+      <binding.ws uri="http://localhost:8085/HelloWorldServiceComponent"/>
       <callback>
-        <binding.ws/>        
+        <binding.ws uri="http://localhost:8085/HelloWorldClientComponent/helloWorldService"/>        
       </callback>
     </reference>
   </component>
@@ -17,9 +17,9 @@
     <implementation.java class="helloworld.HelloWorldServiceImpl"/>
     <service name="HelloWorldService">
       <interface.java interface="helloworld.HelloWorldService" callbackInterface="helloworld.HelloWorldCallback"/>
-      <binding.ws/>
+      <binding.ws uri="http://localhost:8085/HelloWorldServiceComponent"/>
       <callback>
-        <binding.ws/>        
+        <binding.ws uri="http://localhost:8085/HelloWorldClientComponent/helloWorldService"/>        
       </callback>
     </service>
   </component>
