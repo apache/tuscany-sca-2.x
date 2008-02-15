@@ -187,6 +187,11 @@ public class Axis2ServiceClient {
      * @return
      */
     private static Definition getDefinition(Definition definition, QName serviceName) {
+        
+        if (serviceName == null){
+            return definition;
+        }
+        
         if (definition == null) {
             return null;
         }
@@ -203,7 +208,7 @@ public class Axis2ServiceClient {
                 }
             }
         }
-        return definition;
+        return null;
     }
     
     /**
