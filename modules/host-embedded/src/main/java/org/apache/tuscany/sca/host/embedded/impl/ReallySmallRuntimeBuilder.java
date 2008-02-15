@@ -120,13 +120,9 @@ public class ReallySmallRuntimeBuilder {
             registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
         RuntimeWireProcessor wireProcessor = new ExtensibleWireProcessor(wireProcessors);
 
-        // Add the SCABindingProcessor extension
-        PolicyFactory policyFactory = registry.getExtensionPoint(PolicyFactory.class);
-        SCABindingProcessor scaBindingProcessor =
-            new SCABindingProcessor(assemblyFactory, policyFactory, scaBindingFactory);
+        // Retireve the processors extension point
         StAXArtifactProcessorExtensionPoint processors =
-            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        processors.addArtifactProcessor(scaBindingProcessor);
+            registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);        
 
         // Create a provider factory extension point
         ProviderFactoryExtensionPoint providerFactories =

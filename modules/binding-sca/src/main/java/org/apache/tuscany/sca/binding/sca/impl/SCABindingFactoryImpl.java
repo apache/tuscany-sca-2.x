@@ -28,6 +28,10 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
  * @version $Rev$ $Date$
  */
 public class SCABindingFactoryImpl implements SCABindingFactory {
+    
+    public SCABindingFactoryImpl (){
+        
+    }
 
     public SCABinding createSCABinding() {
         return new SCABindingImpl();

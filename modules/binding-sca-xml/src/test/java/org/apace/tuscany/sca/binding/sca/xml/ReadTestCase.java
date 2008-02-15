@@ -82,9 +82,7 @@ public class ReadTestCase extends TestCase {
         SCABindingFactory scaFactory = new SCABindingFactoryImpl();
         factories.addFactory(scaFactory);
         
-        SCABindingProcessor wsdlProcessor = new SCABindingProcessor(assemblyFactory,
-        		                                                    policyFactory,
-        		                                                    scaFactory);
+        SCABindingProcessor wsdlProcessor = new SCABindingProcessor(factories);
         staxProcessors.addArtifactProcessor(wsdlProcessor);
     }
 

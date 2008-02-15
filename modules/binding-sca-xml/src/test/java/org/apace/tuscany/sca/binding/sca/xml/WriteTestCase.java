@@ -80,9 +80,7 @@ public class WriteTestCase extends TestCase {
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
 
-        SCABindingProcessor scaProcessor = new SCABindingProcessor(factory,
-        		                                                   policyFactory,
-                                                                   scaFactory);
+        SCABindingProcessor scaProcessor = new SCABindingProcessor(factories);
         staxProcessors.addArtifactProcessor(scaProcessor);
     }
 

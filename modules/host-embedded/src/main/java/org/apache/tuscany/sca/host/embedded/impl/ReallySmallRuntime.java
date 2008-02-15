@@ -117,6 +117,13 @@ public class ReallySmallRuntime {
         factories.addFactory(assemblyFactory);
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         factories.addFactory(policyFactory);
+        
+        // Load the runtime modules
+        modules = loadModules(registry);
+        
+        // Start the runtime modules
+        startModules(registry, modules);
+        
         SCABindingFactory scaBindingFactory = factories.getFactory(SCABindingFactory.class);
         IntentAttachPointTypeFactory intentAttachPointTypeFactory = new DefaultIntentAttachPointTypeFactory();
         factories.addFactory(intentAttachPointTypeFactory);
@@ -144,31 +151,9 @@ public class ReallySmallRuntime {
                                                                                 scopeRegistry,
                                                                                 workScheduler);
 
-        
-        // Load the runtime modules
-        modules = loadModules(registry);
-        
-        // Start the runtime modules
-        startModules(registry, modules);
-
         // Load the definitions.xml
         loadSCADefinitions(registry);
         
-        //Create a composite builder
-        /*compositeBuilder = ReallySmallRuntimeBuilder.createCompositeBuilder(assemblyFactory,
-                                                                            scaBindingFactory,
-                                                                            intentAttachPointTypeFactory,
-                                                                            mapper,
-                                                                            domainPolicySets);
-        */
-        
-        //Create a domain builder
-        /*domainBuilder = ReallySmallRuntimeBuilder.createDomainBuilder(assemblyFactory,
-                                                                      scaBindingFactory,
-                                                                      intentAttachPointTypeFactory,
-                                                                      mapper,
-                                                                      domainPolicySets);
-        */
         if (logger.isLoggable(Level.FINE)) {
             long end = System.currentTimeMillis();
             logger.fine("The tuscany runtime is started in " + (end - start) + " ms.");
