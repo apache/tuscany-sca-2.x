@@ -25,10 +25,12 @@ import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.scope.Scope;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
+import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.PassByValueAware;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -39,9 +41,10 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaImplementationInvoker implements Invoker {
+public class JavaImplementationInvoker implements Invoker, PassByValueAware {
     protected Operation operation;
-    protected  Method method;
+    protected Method method;
+    protected boolean allowsPBR;
 
     @SuppressWarnings("unchecked")
     protected final ScopeContainer scopeContainer;
@@ -51,6 +54,7 @@ public class JavaImplementationInvoker implements Invoker {
         this.method = method;
         this.operation = operation;
         this.scopeContainer = ((ScopedRuntimeComponent)component).getScopeContainer();
+        this.allowsPBR = ((JavaImplementation)component.getImplementation()).isAllowsPassByReference(method);
     }
 
     @SuppressWarnings("unchecked")
@@ -120,6 +124,10 @@ public class JavaImplementationInvoker implements Invoker {
             msg.setFaultBody(e);
         }
         return msg;
+    }
+
+    public boolean allowsPassByReference() {
+        return allowsPBR;
     }
 
 }

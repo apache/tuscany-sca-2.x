@@ -87,11 +87,16 @@ public class InterfacesTestCase {
         RemoteClientComponent remote = domain.getService(RemoteClientComponent.class, "RemoteClientComponent");
 
         try {
+            // Test Pass By Value
             ParameterObject po = new ParameterObject("NotBComponent");
             assertEquals("BComponent", remote.foo1(po));
             assertEquals("NotBComponent", po.field1);
 
             assertEquals("BBComponent1", remote.foo2(1, "B"));
+
+            // Test allowsPassByReference
+            assertEquals("BComponent", remote.foo3(po));
+            assertEquals("BComponent", po.field1);
         } catch (Exception e) {
             e.printStackTrace();
             fail();

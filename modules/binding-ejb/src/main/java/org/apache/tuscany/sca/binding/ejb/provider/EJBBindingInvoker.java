@@ -24,11 +24,12 @@ import org.apache.tuscany.sca.binding.ejb.util.NamingEndpoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.PassByValueAware;
 
 /**
  * EJBTargetInvoker
  */
-public class EJBBindingInvoker implements Invoker {
+public class EJBBindingInvoker implements Invoker, PassByValueAware {
 
     private Operation operation;
     private String location;
@@ -75,6 +76,11 @@ public class EJBBindingInvoker implements Invoker {
 
     protected NamingEndpoint getNamingEndpoint() {
         return new NamingEndpoint(location);
+    }
+    
+    public boolean allowsPassByReference() {
+        // EJB RMI/IIOP always pass by value
+        return true;
     }
 
 }

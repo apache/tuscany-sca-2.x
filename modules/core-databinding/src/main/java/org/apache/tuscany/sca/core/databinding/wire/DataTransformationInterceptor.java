@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.PassByValueAware;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
@@ -44,7 +45,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  * 
  * @version $Rev$ $Date$
  */
-public class DataTransformationInterceptor implements Interceptor {
+public class DataTransformationInterceptor implements Interceptor, PassByValueAware {
     private Invoker next;
 
     private Operation sourceOperation;
@@ -252,6 +253,10 @@ public class DataTransformationInterceptor implements Interceptor {
 
     public void setNext(Invoker next) {
         this.next = next;
+    }
+    
+    public boolean allowsPassByReference() {
+        return true;
     }
 
 }

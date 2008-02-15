@@ -25,8 +25,9 @@ import java.rmi.Remote;
 import org.apache.tuscany.sca.host.rmi.RMIHost;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.PassByValueAware;
 
-public class RMIReferenceInvoker implements Invoker {
+public class RMIReferenceInvoker implements Invoker, PassByValueAware {
 
     private RMIHost rmiHost;
     private String host;
@@ -72,6 +73,11 @@ public class RMIReferenceInvoker implements Invoker {
         } else {
             return remoteMethod.invoke(proxy, (Object[])payload);
         }
+    }
+
+    public boolean allowsPassByReference() {
+        // RMI always pass by value
+        return true;
     }
 
 }

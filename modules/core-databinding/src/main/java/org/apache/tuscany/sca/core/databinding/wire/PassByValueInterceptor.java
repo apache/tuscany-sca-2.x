@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 
@@ -50,31 +51,33 @@ public class PassByValueInterceptor implements Interceptor {
     private DataBinding jaxbDataBinding;
     private Operation operation;
     private Invoker nextInvoker;
+    private InvocationChain chain;
 
     /**
      * Constructs a new PassByValueInterceptor.
      * @param dataBindings databinding extension point
      * @param operation the intercepted operation
      */
-    public PassByValueInterceptor(DataBindingExtensionPoint dataBindings, Operation operation) {
+    public PassByValueInterceptor(DataBindingExtensionPoint dataBindings, InvocationChain chain, Operation operation) {
+        this.chain = chain;
         this.operation = operation;
-        
+
         // Cache data bindings to use
         this.dataBindings = dataBindings;
         jaxbDataBinding = dataBindings.getDataBinding(JAXBDataBinding.NAME);
         javaBeanDataBinding = dataBindings.getDataBinding(JavaBeansDataBinding.NAME);
-        
+
         // Determine the input databindings
         if (operation.getInputType() != null) {
             List<DataType> inputTypes = operation.getInputType().getLogical();
             inputDataBindings = new DataBinding[inputTypes.size()];
             int i = 0;
-            for (DataType inputType: inputTypes) {
-                String id = inputType.getDataBinding(); 
+            for (DataType inputType : inputTypes) {
+                String id = inputType.getDataBinding();
                 inputDataBindings[i++] = dataBindings.getDataBinding(id);
             }
         }
-        
+
         // Determine the output databinding
         if (operation.getOutputType() != null) {
             String id = operation.getOutputType().getDataBinding();
@@ -83,6 +86,10 @@ public class PassByValueInterceptor implements Interceptor {
     }
 
     public Message invoke(Message msg) {
+        if (chain.allowsPassByReference()) {
+            return nextInvoker.invoke(msg);
+        }
+
         msg.setBody(copy((Object[])msg.getBody(), inputDataBindings));
 
         Message resultMsg = nextInvoker.invoke(msg);
@@ -145,15 +152,15 @@ public class PassByValueInterceptor implements Interceptor {
                 }
             }
             if (dataBinding == null) {
-                
+
                 // Default to the JavaBean databinding
-                dataBinding = javaBeanDataBinding;            
+                dataBinding = javaBeanDataBinding;
             }
         }
-        
+
         // Use the JAXB databinding to copy non-Serializable data
         if (dataBinding == javaBeanDataBinding) {
-            
+
             // If the input data is an array containing non serializable elements
             // use JAXB
             Class<?> clazz = data.getClass();
@@ -172,7 +179,7 @@ public class PassByValueInterceptor implements Interceptor {
                 }
             }
         }
-        
+
         Object copy = dataBinding.copy(data);
         return copy;
     }

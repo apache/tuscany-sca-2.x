@@ -70,7 +70,7 @@ public class TransactionRuntimeWireProcessor implements RuntimeWireProcessor {
 
             TransactionInterceptor interceptor =
                 new TransactionInterceptor(helper, outbound, interactionPolicy, implementationPolicy);
-            chain.addInterceptor(interceptor);
+            chain.addInterceptor(0, interceptor);
         }
 
     }

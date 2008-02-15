@@ -38,12 +38,13 @@ import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.PassByValueAware;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 
 /**
  * Axis2BindingInvoker uses an Axis2 OperationClient to invoke a remote web service
  */
-public class Axis2BindingInvoker implements Invoker {
+public class Axis2BindingInvoker implements Invoker, PassByValueAware {
 
     private Axis2ServiceClient serviceClient;
     private QName wsdlOperationName;
@@ -194,5 +195,9 @@ public class Axis2BindingInvoker implements Invoker {
         operationClient.addMessageContext(requestMC);
 
         return operationClient;
+    }
+    
+    public boolean allowsPassByReference() {
+        return true;
     }
 }

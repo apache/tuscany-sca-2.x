@@ -34,13 +34,14 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.host.jms.JMSResourceFactory;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.PassByValueAware;
 
 /**
  * Interceptor for the JMS binding.
  * 
  * @version $Rev$ $Date$
  */
-public class JMSBindingInvoker implements Invoker {
+public class JMSBindingInvoker implements Invoker, PassByValueAware {
 
     protected Operation operation;
     protected String operationName;
@@ -256,6 +257,11 @@ public class JMSBindingInvoker implements Invoker {
             throw new JMSBindingException("No reply message received on " + replyToDest + " for message id " + requestMsgId);
         }
         return replyMsg;
+    }
+    
+    public boolean allowsPassByReference() {
+        // JMS always pass by value
+        return true;
     }
 
 }
