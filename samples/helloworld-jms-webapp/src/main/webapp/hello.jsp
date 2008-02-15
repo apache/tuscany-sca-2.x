@@ -37,8 +37,7 @@ If this sample is working correctly you should see "Hello World" on the next lin
 If you do not see "Hello World" on the line above then there has been a problem.
 <p>
 The sample requires JMS resources be manually configured in the server environment, these are:
-a JMS connection factory named "ConnectionFactory",
-and two destination queues, one named "RequestQueue" and another named "ResponseQueue".
+a JMS connection factory named "ConnectionFactory", and a destination queues named "RequestQueue".
 See the sample README file for more information.
 
 </body>

@@ -29,7 +29,7 @@
           <binding.jms>
               <destination name="RequestQueue"/>
               <response>
-                  <destination name="ResponseQueue"/>
+                  <destination create="always"/>
               </response> 
           </binding.jms>
       </reference>
