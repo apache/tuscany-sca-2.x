@@ -62,15 +62,6 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, C
         policyProcessor = new PolicyAttachPointProcessor(policyFactory);
         this.intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
     }
-    
-    //FIXME Remove this constructor
-    public SCABindingProcessor(AssemblyFactory assemblyFactory,
-                               PolicyFactory policyFactory,
-                               SCABindingFactory scaBindingFactory) {
-    	this.policyFactory = policyFactory;
-        this.scaBindingFactory = scaBindingFactory;
-        policyProcessor = new PolicyAttachPointProcessor(policyFactory);
-    }
 
     public QName getArtifactType() {
         return BINDING_SCA_QNAME;
