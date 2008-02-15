@@ -107,6 +107,7 @@
                 <module>wsdl</module>
                 <module>wsdlless</module>
                 <module>wsdl2java</module>
+                <module>wsdl-multiple</module>
                 <module>ws-void-args-return</module>
                 <module>transaction</module>
                 <module>bpel</module>

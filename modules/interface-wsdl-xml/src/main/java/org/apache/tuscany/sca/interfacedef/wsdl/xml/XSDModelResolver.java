@@ -192,8 +192,8 @@ public class XSDModelResolver implements ModelResolver {
         aggregated.setUnresolved(false);
 
         // FIXME: [rfeng] This is hacky
-        definitions.clear();
-        definitions.add(aggregated);
+        //definitions.clear();
+        //definitions.add(aggregated);
         return aggregated;
     }
 
