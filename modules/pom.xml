@@ -58,6 +58,7 @@
                 <module>binding-ws-axis2</module>
                 <module>binding-ws-xml</module>
                 <module>contribution</module>
+                <module>contribution-groovy</module>
                 <module>contribution-namespace</module>
                 <module>contribution-java</module>
                 <module>contribution-impl</module>
