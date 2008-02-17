@@ -119,7 +119,7 @@ public class DATAImplementation implements Implementation {
     }
     
     public List<Reference> getReferences() {
-        // The sample DATA implementation does not support properties
+        // The sample DATA implementation does not support references
         return Collections.emptyList();
     }
 
