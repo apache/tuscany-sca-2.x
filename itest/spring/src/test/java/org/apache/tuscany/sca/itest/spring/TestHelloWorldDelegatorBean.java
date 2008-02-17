@@ -16,17 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.tuscany.sca.itest.spring;
 
 /**
- * A basic test case of:
- * 1) A composite containing a component with a Spring implementation
- * 2) The composite has a component with a Java POJO implementation which uses the
- * Spring implementation to satisfy a reference
- * 3) The Spring component delgates function to a second spring bean
+ * A simple test Spring bean which delgates to another bean
  *
  */
-public class SpringHelloWorldTestCase extends AbstractHelloWorldTestCase {
-    // super class does it all getting composite based on this class name
-}
+
+public class TestHelloWorldDelegatorBean implements HelloWorld {
+
+	HelloWorld delegate;
+	
+	public void setDelegate(HelloWorld delegate) {
+		this.delegate = delegate;
+	}
+
+    // Classic "Hello xxx" response to any input message
+    public String sayHello(String message) {
+        System.out.println("TestHelloWorldDelegatorBean - sayHello called");
+        return delegate.sayHello(message);
+    }
+
+} 
