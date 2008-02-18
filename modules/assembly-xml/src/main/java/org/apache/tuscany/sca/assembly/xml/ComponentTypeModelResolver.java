@@ -24,7 +24,9 @@ import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 
 /**
@@ -33,10 +35,11 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
  * @version $Rev$ $Date$
  */
 public class ComponentTypeModelResolver implements ModelResolver {
-
+	private Contribution contribution;
     private Map<String, ComponentType> map = new HashMap<String, ComponentType>();
     
     public ComponentTypeModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
+    	this.contribution = contribution;
     }
 
     public void addModel(Object resolved) {
@@ -49,15 +52,39 @@ public class ComponentTypeModelResolver implements ModelResolver {
     }
     
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
-        
-        // Lookup a definition for the given namespace
+
+    	//get componentType artifact URI
         String uri = ((ComponentType)unresolved).getURI();
+        if (uri == null) {
+        	return (T)unresolved;
+        }
+        
+        //lookup the componentType
         ComponentType resolved = (ComponentType) map.get(uri);
         if (resolved != null) {
             return modelClass.cast(resolved);
-        } else {
-            return (T)unresolved;
+        } 
+        
+        //If not found, delegate the resolution to the imports (in this case based on the java imports)
+        //compute the package name from the componentType URI
+        if (unresolved instanceof ComponentType) {
+            String packageName = uri.substring(0, uri.lastIndexOf("/"));
+            for (Import import_ : this.contribution.getImports()) {
+                if (import_ instanceof JavaImport) {
+                	JavaImport javaImport = (JavaImport)import_;
+                	//check the import location against the computed package name from the componentType URI
+                    if (javaImport.getPackage().equals(packageName)) {
+                        // Delegate the resolution to the import resolver
+                        resolved = javaImport.getModelResolver().resolveModel(ComponentType.class, (ComponentType)unresolved);
+                        if (!resolved.isUnresolved()) {
+                            return modelClass.cast(resolved);
+                        }
+                    }
+                }
+            }        	
         }
+
+        return (T)unresolved;
     }
     
 }
