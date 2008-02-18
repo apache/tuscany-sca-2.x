@@ -244,6 +244,32 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                 if (implementation.isUnresolved()) {
                     extensionProcessor.resolve(implementation, resolver);
                     if (!implementation.isUnresolved()) {
+                        //resolve policies
+                        if ( implementation instanceof PolicySetAttachPoint ) {
+                            PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
+                            resolveIntents(policiedImpl.getRequiredIntents(), resolver);
+                            resolvePolicySets(policiedImpl.getPolicySets(), resolver);
+                            validatePolicySets(policiedImpl);
+                            
+                            for ( Service service : implementation.getServices() ) {
+                                resolveIntents(service.getRequiredIntents(), resolver);
+                                resolvePolicySets(service.getPolicySets(), resolver);
+                                validatePolicySets(service, policiedImpl.getApplicablePolicySets());
+                                
+                                for ( ConfiguredOperation svcOp : service.getConfiguredOperations() ) {
+                                    resolveIntents(svcOp.getRequiredIntents(), resolver);
+                                    resolvePolicySets(svcOp.getPolicySets(), resolver);
+                                    validatePolicySets(svcOp, policiedImpl.getApplicablePolicySets());
+                                }
+                            }
+                            
+                            for ( Reference reference : implementation.getReferences() ) {
+                                resolveIntents(reference.getRequiredIntents(), resolver);
+                                resolvePolicySets(reference.getPolicySets(), resolver);
+                                validatePolicySets(reference, policiedImpl.getApplicablePolicySets());
+                            }
+                        }
+                        
                         resolver.addModel(implementation);
                     }
                 }
@@ -318,7 +344,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                     resolvePolicySets(policiedBinding.getPolicySets(), resolver);
                     //validate if attached policysets apply to the binding
                     resolvePolicySets(policiedBinding.getApplicablePolicySets(), resolver);
-                    validatePolicySets(contract, policiedBinding);
+                    validatePolicySets(policiedBinding);
                 }
                 if (binding instanceof OperationsConfigurator) {
                     OperationsConfigurator opConfigurator = (OperationsConfigurator)binding;
@@ -352,7 +378,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                         PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
                         resolvePolicySets(policiedBinding.getPolicySets(), resolver);
                         resolvePolicySets(policiedBinding.getApplicablePolicySets(), resolver);
-                        validatePolicySets(contract.getCallback(), policiedBinding);
+                        validatePolicySets(policiedBinding);
                     }
                     if (binding instanceof OperationsConfigurator) {
                         OperationsConfigurator opConfigurator = (OperationsConfigurator)binding;
@@ -675,14 +701,22 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
         }
     }
     
-    protected void validatePolicySets(Base parent, PolicySetAttachPoint policySetAttachPoint) throws ContributionResolveException {
+    
+    protected void validatePolicySets(PolicySetAttachPoint policySetAttachPoint) 
+                                                            throws ContributionResolveException {
+        validatePolicySets(policySetAttachPoint, policySetAttachPoint.getApplicablePolicySets());
+    }
+     
+    
+    protected void validatePolicySets(PolicySetAttachPoint policySetAttachPoint,
+                                      List<PolicySet> applicablePolicySets) throws ContributionResolveException {
         //Since the applicablePolicySets in a policySetAttachPoint will already have the 
         //list of policysets that might ever be applicable to this attachPoint, just check
         //if the defined policysets feature in the list of applicable policysets
         IntentAttachPointType attachPointType = policySetAttachPoint.getType();
         for ( PolicySet definedPolicySet : policySetAttachPoint.getPolicySets() ) {
             if ( !definedPolicySet.isUnresolved() ) {
-                if ( !policySetAttachPoint.getApplicablePolicySets().contains(definedPolicySet)) {
+                if ( !applicablePolicySets.contains(definedPolicySet)) {
                     throw new ContributionResolveException("Policy Set '" + definedPolicySet.getName()
                                                            + "' does not apply to binding type  "
                                                            + attachPointType.getName());
