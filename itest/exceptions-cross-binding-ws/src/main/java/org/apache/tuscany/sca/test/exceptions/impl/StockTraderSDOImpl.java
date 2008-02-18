@@ -102,19 +102,36 @@ public class StockTraderSDOImpl implements StockTraderSDO {
         }
     }
 
-    public Object  testNotDeclaredAtSourceTest() {
+    public Object testNotDeclaredAtSourceTest() {
         StockOffer stockOffer = ScatesttoolFactory.INSTANCE.createStockOffer();
 
         // set up for a MarketClosedSDOException
-        stockOffer.setName("testNotDeclaredAtSourceTest");
-        stockOffer.setSymbol("TNDAS");
+        stockOffer.setName("UNDECLARED_SOURCE");
+        stockOffer.setSymbol("XYZ");
         stockOffer.setPrice(Float.NaN); // offer to buy at max $100.00
         try {
-            return  exchangeJaxb.stockQuoteOffer(stockOffer);
-            
+            return exchangeJaxb.stockQuoteOffer(stockOffer);
+
         } catch (Exception e) {
             return e;
-           
+
+        }
+
+    }
+    
+    public Object testNotDeclaredAtTargetTest() {
+        StockOffer stockOffer = ScatesttoolFactory.INSTANCE.createStockOffer();
+
+        // set up for a MarketClosedSDOException
+        stockOffer.setName("UNDECLARED_TARGET");
+        stockOffer.setSymbol("XYZ");
+        stockOffer.setPrice(Float.NaN); // offer to buy at max $100.00
+        try {
+            return exchangeJaxb.stockQuoteOffer(stockOffer);
+
+        } catch (Exception e) {
+            return e;
+
         }
 
     }

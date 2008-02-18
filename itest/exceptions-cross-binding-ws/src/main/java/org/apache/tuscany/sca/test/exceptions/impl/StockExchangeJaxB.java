@@ -23,29 +23,23 @@ import org.apache.tuscany.sca.test.exceptions.impl.jaxb.InvalidSymbolFault;
 import org.apache.tuscany.sca.test.exceptions.impl.jaxb.InvalidSymbolFault_Exception;
 import org.apache.tuscany.sca.test.exceptions.impl.jaxb.MarketClosedFault;
 import org.apache.tuscany.sca.test.exceptions.impl.jaxb.ObjectFactory;
+import org.apache.tuscany.sca.test.exceptions.impl.jaxb.StockExceptionTest;
 import org.apache.tuscany.sca.test.exceptions.impl.jaxb.StockOffer;
 import org.apache.tuscany.sca.test.exceptions.impl.jaxb.TestNotDeclaredAtSourceFault;
 import org.osoa.sca.annotations.Service;
 
 /**
- * 
+ * JAXB version of StockExceptionTest impl
  */
-@Service(StockExceptionTestJAXB.class)
-public class StockExchangeJaxB implements StockExceptionTestJAXB {
+@Service(StockExceptionTest.class)
+public class StockExchangeJaxB implements StockExceptionTest {
 
-    /**
-     * 
-     */
     public StockExchangeJaxB() {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.tuscany.sca.test.exceptions.impl.jaxb.StockExceptionTest#stockQuoteOffer(org.apache.tuscany.sca.test.exceptions.impl.jaxb.StockOffer)
-     */
-    public StockOffer stockQuoteOffer(StockOffer input) throws InvalidSymbolFault_Exception, MarketClosedFault, TestNotDeclaredAtSourceFault{
+    public StockOffer stockQuoteOffer(StockOffer input) throws InvalidSymbolFault_Exception, MarketClosedFault,
+        TestNotDeclaredAtSourceFault {
 
         System.out.println("stockQuoteOffer '" + input + "'");
 
@@ -54,19 +48,20 @@ public class StockExchangeJaxB implements StockExceptionTestJAXB {
             input.setPrice(99.00F);
             return input;
 
-        }
-        else if ("CLOSED".equals(input.getName())) {
+        } else if ("CLOSED".equals(input.getName())) {
             throw new MarketClosedFault("TO LATE!", 3);
-            
-        } else if( "testNotDeclaredAtSourceTest".equals(input.getName())){
-            
+
+        } else if ("UNDECLARED_SOURCE".equals(input.getName())) {
+
             throw new TestNotDeclaredAtSourceFault("not declared", "fault info");
-            
+
+        } else if ("UNDECLARED_TARGET".equals(input.getName())) {
+            throw new IllegalArgumentException("System fault");
         }
         ObjectFactory jaxbOjectFactory = new ObjectFactory();
 
         InvalidSymbolFault faultinfo = jaxbOjectFactory.createInvalidSymbolFault();
-        
+
         faultinfo.setOffer(input);
 
         throw new InvalidSymbolFault_Exception("bad symbol", faultinfo);
