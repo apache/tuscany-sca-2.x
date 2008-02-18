@@ -804,6 +804,13 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             //resolve component implemenation
             Implementation implementation = component.getImplementation();
             if (implementation != null) {
+                //resolve intents and policysets specified on this implementation
+                //before copying them over to the component.  Before that, from the component
+                //copy over the applicablePolicySets alone as it might have to be
+                //used to validate the policysets specified on the implementation
+                
+                resolveImplIntentsAndPolicySets(implementation, component.getApplicablePolicySets(), resolver);
+                
                 copyPoliciesToComponent(component, implementation, resolver);
                 
                 //now resolve the implementation so that even if there is a shared instance
@@ -821,27 +828,46 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
         }
     }
     
+    private void resolveImplIntentsAndPolicySets(Implementation implementation,
+                                                 List<PolicySet> inheritedApplicablePolicySets,
+                                                 ModelResolver resolver) throws ContributionResolveException
+                                                        {
+        if ( implementation instanceof PolicySetAttachPoint ) {
+            PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
+            
+            policiedImpl.getApplicablePolicySets().addAll(inheritedApplicablePolicySets);
+            
+            resolveIntents(policiedImpl.getRequiredIntents(), resolver);
+            resolvePolicySets(policiedImpl.getPolicySets(), resolver);
+            resolvePolicySets(policiedImpl.getApplicablePolicySets(), resolver);
+            validatePolicySets(policiedImpl);
+            
+            if ( implementation instanceof OperationsConfigurator ) {
+                for ( ConfiguredOperation implConfOp : ((OperationsConfigurator)implementation).getConfiguredOperations() ) {
+                    resolveIntents(implConfOp.getRequiredIntents(), resolver);
+                    resolvePolicySets(implConfOp.getPolicySets(), resolver);
+                    resolvePolicySets(implConfOp.getApplicablePolicySets(), resolver);
+                    validatePolicySets(implConfOp, policiedImpl.getApplicablePolicySets());
+                }
+            }
+        }
+    }
+    
     private void copyPoliciesToComponent(Component component, 
                                          Implementation implementation, 
                                          ModelResolver resolver) throws ContributionResolveException {
         if (implementation instanceof PolicySetAttachPoint) {
-            resolveIntents(((PolicySetAttachPoint)implementation).getRequiredIntents(), resolver);
-            resolvePolicySets(((PolicySetAttachPoint)implementation).getPolicySets(), resolver);
-            resolvePolicySets(((PolicySetAttachPoint)implementation).getApplicablePolicySets(), resolver);
-            validatePolicySets(component, (PolicySetAttachPoint)implementation);
             //add implementation policies into component... since implementation instance are 
             //reused and its likely that this implementation instance will not hold after its resolution
             component.getRequiredIntents().addAll(((PolicySetAttachPoint)implementation).getRequiredIntents());
             component.getPolicySets().addAll(((PolicySetAttachPoint)implementation).getPolicySets());
             component.getApplicablePolicySets().addAll(((PolicySetAttachPoint)implementation).getApplicablePolicySets());
+            
             if ( implementation instanceof OperationsConfigurator ) {
                 boolean notFound;
                 List<ConfiguredOperation> opsFromImplementation = new ArrayList<ConfiguredOperation>();
                 for ( ConfiguredOperation implConfOp : ((OperationsConfigurator)implementation).getConfiguredOperations() ) {
                     notFound = true;
-                    resolveIntents(implConfOp.getRequiredIntents(), resolver);
-                    resolvePolicySets(implConfOp.getPolicySets(), resolver);
-                    resolvePolicySets(implConfOp.getApplicablePolicySets(), resolver);
                     for ( ConfiguredOperation compConfOp : ((OperationsConfigurator)component).getConfiguredOperations() ) {
                         if ( implConfOp.getName().equals(compConfOp.getName()) ) {
                             notFound = false;
@@ -860,8 +886,6 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             }
             ((PolicySetAttachPoint)implementation).getRequiredIntents().clear();
             ((PolicySetAttachPoint)implementation).getPolicySets().clear();
-            ((PolicySetAttachPoint)implementation).getApplicablePolicySets().clear();
-            
         }
     }
     
