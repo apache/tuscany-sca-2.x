@@ -34,4 +34,6 @@ public interface StockTraderSDO {
 
     Object testNotDeclaredAtSourceTest();
 
+    Object testNotDeclaredAtTargetTest();
+
 }
