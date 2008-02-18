@@ -62,8 +62,8 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
     static final long serialVersionUID = -521548304761848325L;
     protected transient CompositeActivator compositeActivator;
     protected transient ProxyFactory proxyFactory;
-
     protected transient Class<B> businessInterface;
+    protected transient Object proxy;
 
     // if the wire targets a conversational service this holds the conversation state 
     protected transient ConversationManager conversationManager;
@@ -141,30 +141,12 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         if (wire != null) {
             this.component = wire.getSource().getComponent();
             this.reference = (RuntimeComponentReference)wire.getSource().getContract();
+			System.out.println("$$$ reference = " + this.reference);
             this.binding = wire.getSource().getBinding();
             this.compositeActivator = ((ComponentContextImpl)component.getComponentContext()).getCompositeActivator();
             this.conversationManager = this.compositeActivator.getConversationManager();
             // init(wire);
             initCallbackID();
-        }
-    }
-
-    /**
-     * This method has bugs in it and has been replaced by the initCallbackID
-     * method below.  It is no longer called and will be removed soon.
-     */
-    protected void init(RuntimeWire wire) {
-        EndpointReference target = wire.getTarget();
-
-        // look to see if the target is conversational and if so create a conversation
-        InterfaceContract contract = target.getInterfaceContract();
-        if (contract == null) {
-            contract = reference.getInterfaceContract();
-        }
-        Interface contractInterface = contract.getInterface();
-
-        if (contract.getCallbackInterface() != null) {
-            this.callbackID = createCallbackID();
         }
     }
 
@@ -176,16 +158,26 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
 
     public B getProxy() throws ObjectCreationException {
         try {
-            resolve();
-            //FIXME Can't we just return a single proxy
-            return businessInterface.cast(proxyFactory.createProxy(this));
+			if (proxy == null) {
+                proxy = createProxy(); 
+			}
+            return businessInterface.cast(proxy);
         } catch (Exception e) {
             throw new ObjectCreationException(e);
         }
     }
 
+	public void setProxy(Object proxy) {
+	    this.proxy = proxy;
+	}
+
+    protected Object createProxy() throws Exception {
+        return proxyFactory.createProxy(this);
+	}
+
     public B getService() {
         try {
+            resolve();
             return getProxy();
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);

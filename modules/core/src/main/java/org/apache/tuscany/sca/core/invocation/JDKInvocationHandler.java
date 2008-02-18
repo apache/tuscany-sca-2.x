@@ -98,13 +98,19 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
     protected void init(RuntimeWire wire) {
         if (wire != null) {
+		    /* [scn] no need to clone because the wire doesn't get modified
             try {
                 // Clone the wire so that reference parameters can be changed
                 this.wire = (RuntimeWire)wire.clone();
             } catch (CloneNotSupportedException e) {
                 throw new ServiceRuntimeException(e);
             }
+			[scn] */
+            initConversational(wire);
         }
+    }
+
+    protected void initConversational(RuntimeWire wire) {
         InterfaceContract contract = wire.getSource().getInterfaceContract();
         this.conversational = contract.getInterface().isConversational();
     }

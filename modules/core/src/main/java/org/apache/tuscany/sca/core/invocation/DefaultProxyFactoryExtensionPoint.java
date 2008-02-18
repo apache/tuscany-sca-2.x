@@ -108,6 +108,14 @@ public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionP
         }
     }
 
+    public <T> T createCallbackProxy(CallbackReferenceImpl<T> callbackReference) throws ProxyCreationException {
+        if (callbackReference.getBusinessInterface().isInterface()) {
+            return interfaceFactory.createCallbackProxy(callbackReference);
+        } else {
+            return classFactory.createCallbackProxy(callbackReference);
+        }
+    }
+
     /**
      * @see org.apache.tuscany.sca.core.invocation.ProxyFactory#createProxy(java.lang.Class,
      *      org.apache.tuscany.sca.runtime.RuntimeWire)

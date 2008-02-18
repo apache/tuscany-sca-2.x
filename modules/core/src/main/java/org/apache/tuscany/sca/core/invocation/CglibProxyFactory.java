@@ -28,6 +28,7 @@ import net.sf.cglib.proxy.Factory;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
+import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
@@ -55,11 +56,8 @@ public class CglibProxyFactory implements ProxyFactory {
     }
 
     public <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException {
-        Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(interfaze);
-        enhancer.setCallback(new CglibMethodInterceptor<T>(interfaze, wire));
-        Object proxy = enhancer.create();
-        return interfaze.cast(proxy);
+        ServiceReference<T> serviceReference = new ServiceReferenceImpl(interfaze, wire, this);
+        return createProxy(serviceReference);
     }
 
     /**
@@ -72,6 +70,7 @@ public class CglibProxyFactory implements ProxyFactory {
         enhancer.setSuperclass(interfaze);
         enhancer.setCallback(new CglibMethodInterceptor<T>(callableReference));
         Object proxy = enhancer.create();
+		((CallableReferenceImpl)callableReference).setProxy(proxy);
         return interfaze.cast(proxy);
     }
 
@@ -80,10 +79,21 @@ public class CglibProxyFactory implements ProxyFactory {
      * JDKCallbackInvocationHandler as JDKProxyService.
      */
     public <T> T createCallbackProxy(Class<T> interfaze, final List<RuntimeWire> wires) throws ProxyCreationException {
+        CallbackReferenceImpl<T> callbackReference = new CallbackReferenceImpl(interfaze, this, wires);
+        return createCallbackProxy(callbackReference);
+    }
+
+    /**
+     * create the callback proxy with cglib. use the same
+     * JDKCallbackInvocationHandler as JDKProxyService.
+     */
+    public <T> T createCallbackProxy(CallbackReferenceImpl<T> callbackReference) throws ProxyCreationException {
         Enhancer enhancer = new Enhancer();
+        Class<T> interfaze = callbackReference.getBusinessInterface();
         enhancer.setSuperclass(interfaze);
-        enhancer.setCallback(new CglibMethodInterceptor<T>(interfaze, wires));
+        enhancer.setCallback(new CglibMethodInterceptor<T>(callbackReference));
         Object proxy = enhancer.create();
+		callbackReference.setProxy(proxy);
         return interfaze.cast(proxy);
     }
 
@@ -116,6 +126,11 @@ public class CglibProxyFactory implements ProxyFactory {
             invocationHandler = new JDKInvocationHandler(messageFactory, callableReference);
         }
 
+        public CglibMethodInterceptor(CallbackReferenceImpl<T> callbackReference) {
+            invocationHandler = new JDKCallbackInvocationHandler(messageFactory, callbackReference);
+        }
+
+        /*
         public CglibMethodInterceptor(Class<T> interfaze, RuntimeWire wire) {
             ServiceReference<T> serviceRef = new ServiceReferenceImpl<T>(interfaze, wire, CglibProxyFactory.this);
             invocationHandler = new JDKInvocationHandler(messageFactory, serviceRef);
@@ -125,6 +140,7 @@ public class CglibProxyFactory implements ProxyFactory {
             CallbackReferenceImpl ref = new CallbackReferenceImpl(interfaze, CglibProxyFactory.this, wires);
             invocationHandler = new JDKCallbackInvocationHandler(messageFactory, ref);
         }
+		*/
 
         /**
          * @see net.sf.cglib.proxy.MethodInterceptor#intercept(java.lang.Object, java.lang.reflect.Method, java.lang.Object[], net.sf.cglib.proxy.MethodProxy)

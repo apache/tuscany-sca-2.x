@@ -19,8 +19,10 @@
 package org.apache.tuscany.sca.test.callback;
 
 import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
+import org.osoa.sca.RequestContext;
 
 /**
  * This class implements MyService and uses a callback.
@@ -31,18 +33,13 @@ public class MyServiceImpl implements MyService {
 
     private MyServiceCallback myServiceCallback;
 
-    /**
-     * The setter used by the runtime to set the callback reference 
-     * @param myServiceCallback
-     */
-    @Callback
-    public void setMyServiceCallback(MyServiceCallback myServiceCallback) {
-        this.myServiceCallback = myServiceCallback;
-    }
+    @Context
+	protected RequestContext requestContext;
     
     public void someMethod(String arg) {
         // invoke the callback
         try {
+            myServiceCallback = requestContext.getCallback();
             myServiceCallback.receiveResult(arg + " -> receiveResult");
         } catch(RuntimeException e) {
             System.out.println("RuntimeException invoking receiveResult: " + e.toString());
