@@ -94,7 +94,7 @@ public class RequestContextImpl implements RequestContext {
         Class<CB> javaClass = (Class<CB>)javaInterface.getJavaClass();
         List<RuntimeWire> wires = callbackReference.getRuntimeWires();
         CallbackReferenceImpl ref = new CallbackReferenceImpl(javaClass, proxyFactory, wires);
-        ref.resolveTarget();
+        //ref.resolveTarget();
         ReferenceParameters parameters = msgContext.getFrom().getReferenceParameters();
         ref.attachCallbackID(parameters.getCallbackID());
         if (ref.getConversation() != null) {

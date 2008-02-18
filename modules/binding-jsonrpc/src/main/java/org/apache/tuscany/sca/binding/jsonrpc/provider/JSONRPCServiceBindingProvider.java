@@ -54,6 +54,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
     //       the same for clients using either the ajax or jsonrpc binding
     private static final String SCA_DOMAIN_SCRIPT = "/SCADomain/scaDomain.js";
     
+    private RuntimeComponent component;
     private RuntimeComponentService service;
     private InterfaceContract serviceContract;
     private JSONRPCBinding binding;
@@ -65,6 +66,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
                                          RuntimeComponentService service,
                                          JSONRPCBinding binding,
                                          ServletHost servletHost) {
+        this.component = component;
         this.service = service;
         this.binding = binding;
         this.servletHost = servletHost;
@@ -88,8 +90,6 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
     }
     
     public void start() {
-        RuntimeComponentService componentService = (RuntimeComponentService)service;
-
         // Set default databinding to json
         serviceContract.getInterface().setDefaultDataBinding(JSONDataBinding.NAME);
 
@@ -97,12 +97,11 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         Class<?> serviceInterface = getTargetJavaClass(serviceContract.getInterface());
 
         // Create a Java proxy to the target service
-        ProxyFactory proxyFactory = new JDKProxyFactory();
-        Object proxy = proxyFactory.createProxy(serviceInterface, service.getRuntimeWire(binding));
+		Object proxy = component.getComponentContext().createSelfReference(serviceInterface, service).getService();
 
         // Create and register a servlet for this service
         JSONRPCServiceServlet serviceServlet =
-            new JSONRPCServiceServlet(binding, componentService, serviceContract, serviceInterface, proxy);
+            new JSONRPCServiceServlet(binding, service, serviceContract, serviceInterface, proxy);
         String mapping = binding.getURI();
         if (!mapping.endsWith("/")) {
             mapping += "/";

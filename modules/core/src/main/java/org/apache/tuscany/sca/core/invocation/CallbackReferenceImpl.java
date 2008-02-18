@@ -43,61 +43,49 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
     private RuntimeWire wire;
     private List<RuntimeWire> wires;
     private EndpointReference resolvedEndpoint;
+	private Object convID;
 
     public CallbackReferenceImpl(Class<B> interfaze, ProxyFactory proxyFactory, List<RuntimeWire> wires) {
         super(interfaze, null, proxyFactory);
         this.wires = wires;
+		init();
     }
 
-    public void resolveTarget() {
+    public void init() {
         Message msgContext = ThreadMessageContext.getMessageContext();
         wire = selectCallbackWire(msgContext);
         if (wire == null) {
             //FIXME: need better exception
-            throw new RuntimeException("No callback wire found for " + msgContext.getFrom().getURI());
+            throw new RuntimeException("No callback binding found for " + msgContext.getTo().getURI());
         }
-        this.resolvedEndpoint = getCallbackEndpoint(msgContext);
-        bind(wire);
+        resolvedEndpoint = getCallbackEndpoint(msgContext);
+        convID = msgContext.getFrom().getReferenceParameters().getConversationID();
+        callbackID = msgContext.getFrom().getReferenceParameters().getCallbackID();
     }
 
     @Override
-    public B getProxy() throws ObjectCreationException {
-        if (wire != null) {
-            // wire and endpoint already resolved, so return a pre-wired proxy
-            wire.setTarget(resolvedEndpoint);
-            wire.rebuild();
-            return super.getProxy();
+    protected Object createProxy() throws Exception {
+        return proxyFactory.createCallbackProxy(this);
+	}
+
+    protected RuntimeWire getCallbackWire() {
+        if (resolvedEndpoint == null) {
+            return null;
         } else {
-            // wire not yet selected, so return a proxy that resolves the target dynamically
-            //FIXME: the following call creates a new instance of CallbackReferenceImpl
-            return proxyFactory.createCallbackProxy(businessInterface, wires);
-        }
+            return cloneAndBind(wire);
+		}
     }
 
-    public RuntimeWire selectCallbackWire(Message msgContext) {
-        EndpointReference callbackEPR = getCallbackEndpoint(msgContext);
-        if (callbackEPR == null) {
-            return null;
-        }
+    protected Object getConvID() {
+	    return convID;
+	}
 
-        // first choice is wire with matching destination endpoint
-        for (RuntimeWire wire : wires) {
-            if (callbackEPR.getURI().equals(wire.getTarget().getURI())) {
-                RuntimeWire clonedWire = ((RuntimeWireImpl)wire).lookupCache(callbackEPR);
-                if (clonedWire != null) {
-                    return clonedWire;
-                }
-                try {
-                    clonedWire = (RuntimeWire)wire.clone();
-                    ((RuntimeWireImpl)wire).addToCache(callbackEPR, clonedWire);
-                    return clonedWire;
-                } catch (CloneNotSupportedException e) {
-                    throw new ServiceRuntimeException(e);
-                }
-            }
-        }
+    protected EndpointReference getResolvedEndpoint() {
+	    return resolvedEndpoint;
+	}
 
-        // no exact match, so find callback binding with same name as service binding
+    private RuntimeWire selectCallbackWire(Message msgContext) {
+        // look for callback binding with same name as service binding
         EndpointReference to = msgContext.getTo();
         if (to == null) {
             //FIXME: need better exception
@@ -105,24 +93,14 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
         }
         for (RuntimeWire wire : wires) {
             if (wire.getSource().getBinding().getName().equals(to.getBinding().getName())) {
-                //FIXME: need better way to represent dynamic wire
-                if (wire.getTarget().getURI().equals("/")) { // dynamic wire
-                    //FIXME: avoid doing this for genuine dynamic wires
-                    return cloneAndBind(msgContext, wire);
-                }
-                //FIXME: no dynamic wire, so should attempt to create a static wire 
+			    return wire;
             }
         }
 
-        // no match so far, so find callback binding with same type as service binding
+        // if no match, look for callback binding with same type as service binding
         for (RuntimeWire wire : wires) {
             if (wire.getSource().getBinding().getClass() == to.getBinding().getClass()) {
-                //FIXME: need better way to represent dynamic wire
-                if (wire.getTarget().getURI().equals("/")) { // dynamic wire
-                    //FIXME: avoid doing this for genuine dynamic wires
-                    return cloneAndBind(msgContext, wire);
-                }
-                //FIXME: no dynamic wire, so should attempt to create a static wire 
+			    return wire;
             }
         }
 
@@ -141,32 +119,31 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
         return from.getReferenceParameters().getCallbackReference();
     }
 
-    private RuntimeWire cloneAndBind(Message msgContext, RuntimeWire wire) {
-        EndpointReference callback = getCallbackEndpoint(msgContext);
+    private RuntimeWire cloneAndBind(RuntimeWire wire) {
         RuntimeWire boundWire = null;
-        if (callback != null) {
-            boundWire = ((RuntimeWireImpl)wire).lookupCache(callback);
+        if (resolvedEndpoint != null) {
+            boundWire = ((RuntimeWireImpl)wire).lookupCache(resolvedEndpoint);
             if (boundWire != null) {
                 return boundWire;
             }
             try {
-                Contract contract = callback.getContract();
+                Contract contract = resolvedEndpoint.getContract();
                 RuntimeComponentReference ref = null;
                 if (contract == null) {
                     boundWire = (RuntimeWire)wire.clone();
 
                 } else if (contract instanceof RuntimeComponentReference) {
                     ref = (RuntimeComponentReference)contract;
-                    boundWire = ref.getRuntimeWire(callback.getBinding());
+                    boundWire = ref.getRuntimeWire(resolvedEndpoint.getBinding());
 
                 } else {  // contract instanceof RuntimeComponentService
                     ref = bind((RuntimeComponentReference)wire.getSource().getContract(),
-                               callback.getComponent(),
+                               resolvedEndpoint.getComponent(),
                                (RuntimeComponentService)contract);
                     boundWire = ref.getRuntimeWires().get(0);
                 }
-                configureWire(boundWire, msgContext);
-                ((RuntimeWireImpl)wire).addToCache(callback, boundWire);
+                configureWire(boundWire);
+                ((RuntimeWireImpl)wire).addToCache(resolvedEndpoint, boundWire);
             } catch (CloneNotSupportedException e) {
                 // will not happen
             }
@@ -194,20 +171,19 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
         return ref;
     }
 
-    private void configureWire(RuntimeWire wire, Message msgContext) {
+    private void configureWire(RuntimeWire wire) {
         // need to set the endpoint on the binding also so that when the chains are created next
         // the sca binding can decide whether to provide local or remote invokers. 
         // TODO - there is a problem here though in that I'm setting a target on a 
         //        binding that may possibly be trying to point at two things in the multi threaded 
         //        case. Need to confirm the general model here and how the clone and bind part
         //        is intended to work
-        EndpointReference epr = msgContext.getFrom().getReferenceParameters().getCallbackReference();
-        wire.getSource().getBinding().setURI(epr.getURI());
+        Binding binding = wire.getSource().getBinding();
+        binding.setURI(resolvedEndpoint.getURI());
 
         // also need to set the target contract as it varies for the sca binding depending on 
         // whether it is local or remote
         RuntimeComponentReference ref = (RuntimeComponentReference)wire.getSource().getContract();
-        Binding binding = wire.getSource().getBinding();
         wire.getTarget().setInterfaceContract(ref.getBindingProvider(binding).getBindingInterfaceContract());
     }
 }

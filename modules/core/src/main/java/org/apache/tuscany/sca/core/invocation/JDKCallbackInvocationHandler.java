@@ -55,17 +55,16 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
             return invokeObjectMethod(method, args);
         }
 
-        // wire not pre-selected, so select a wire now to be used for the callback
-        Message msgContext = ThreadMessageContext.getMessageContext();
-        RuntimeWire wire = ((CallbackReferenceImpl)callableReference).selectCallbackWire(msgContext);
+        // obtain a dedicated wire to be used for this callback invocation
+        RuntimeWire wire = ((CallbackReferenceImpl)callableReference).getCallbackWire();
         if (wire == null) {
             //FIXME: need better exception
-            throw new ServiceRuntimeException("No callback wire found for " + msgContext.getFrom().getURI());
+            throw new ServiceRuntimeException("No callback wire found");
         }
 
         // set the conversational state based on the interface that
         // is specified for the reference that this wire belongs to
-        init(wire);
+        initConversational(wire);
 
         // set the conversation id into the conversation object. This is
         // a special case for callbacks as, unless otherwise set manually,
@@ -81,7 +80,7 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
             // create a conversation id if one doesn't exist 
             // already, i.e. the conversation is just starting
             if (convID == null) {
-                convID = msgContext.getFrom().getReferenceParameters().getConversationID();
+                convID = ((CallbackReferenceImpl)callableReference).getConvID();
                 if (convID != null) {
                     conversation = ((RuntimeWireImpl)wire).getConversationManager().getConversation(convID);
                     if (callableReference != null) {
@@ -91,15 +90,8 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
             }
         }
 
-        Object callbackID = msgContext.getFrom().getReferenceParameters().getCallbackID();
-        ((CallbackReferenceImpl)callableReference).attachCallbackID(callbackID);
+        setEndpoint(((CallbackReferenceImpl)callableReference).getResolvedEndpoint());
 
-        EndpointReference epr = msgContext.getFrom().getReferenceParameters().getCallbackReference();
-        setEndpoint(epr);
-
-        // code that was previously here has been moved to CallbackReferenceImpl.configureWire()
-
-        //FIXME: can we use the same code as JDKInvocationHandler to select the chain? 
         InvocationChain chain = getInvocationChain(method, wire);
         if (chain == null) {
             throw new IllegalArgumentException("No matching operation is found: " + method);

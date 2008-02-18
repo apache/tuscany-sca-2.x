@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 public class DWRService implements ComponentLifecycle {
 
+    private RuntimeComponent rc;
     private RuntimeComponentService rcs;
     private Binding binding;
     private ServletHost servletHost;
@@ -37,6 +38,7 @@ public class DWRService implements ComponentLifecycle {
     static final String SERVLET_PATH = "/SCADomain/*";
 
     public DWRService(RuntimeComponent rc, RuntimeComponentService rcs, Binding binding, DWRBinding ab, ServletHost servletHost) {
+        this.rc = rc;
         this.rcs = rcs;
         this.binding = binding;
         this.servletHost = servletHost;
@@ -53,8 +55,7 @@ public class DWRService implements ComponentLifecycle {
         Class<?> type = ((JavaInterface)rcs.getInterfaceContract().getInterface()).getJavaClass();
 
         // Create a Java proxy to the target service
-        ProxyFactory proxyFactory = new JDKProxyFactory();
-        Object proxy = proxyFactory.createProxy(type, rcs.getRuntimeWire(binding));
+		Object proxy = rc.getComponentContext().createSelfReference(type, rcs).getService();
 
         servlet.addService(binding.getName(), type, proxy);
     }
