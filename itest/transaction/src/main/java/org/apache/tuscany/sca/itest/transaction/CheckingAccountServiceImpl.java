@@ -119,7 +119,7 @@ public class CheckingAccountServiceImpl extends AccountServiceImpl {
             conn.start();
             ActiveMQSession session = (ActiveMQSession)conn.createSession(true, Session.AUTO_ACKNOWLEDGE);
             MessageConsumer consumer = session.createConsumer(queue, "accountNumber = '" + accountNumber + "'");
-            Message msg = consumer.receiveNoWait();
+            Message msg = consumer.receive(1000);
             if (msg == null) {
                 conn.close();
                 throw new AccountNotFoundException(accountNumber);
