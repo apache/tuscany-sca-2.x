@@ -27,7 +27,7 @@
 
     <reference name="serviceA" promote="OneWayClient/serviceA">
         <interface.java interface="org.apache.tuscany.sca.binding.jms.OneWayService" />
-        <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory" jndiURL="tcp://localhost:61619">
+        <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory" jndiURL="vm://localhost" >
             <destination name="DestQueueA"/>
         </binding.jms>  
     </reference>
