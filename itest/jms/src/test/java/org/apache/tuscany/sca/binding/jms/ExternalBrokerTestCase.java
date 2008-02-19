@@ -36,7 +36,7 @@ public class ExternalBrokerTestCase {
 
     @Before
     public void init() throws Exception {
-        // startBroker();
+        startBroker();
         scaDomain = SCADomain.newInstance("http://localhost", "/", "external/client.composite", "external/service.composite");
     }
 
@@ -56,6 +56,8 @@ public class ExternalBrokerTestCase {
 
     protected void startBroker() throws Exception {
         broker = new BrokerService();
+        broker.setPersistent(false);
+        broker.setUseJmx(false);
         broker.addConnector("tcp://localhost:61616");
         broker.start();
     }
