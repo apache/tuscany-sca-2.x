@@ -20,9 +20,7 @@
 package org.apache.tuscany.sca.binding.jms.provider;
 
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
-import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.host.jms.JMSHost;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -38,27 +36,22 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  */
 public class JMSBindingProviderFactory implements BindingProviderFactory<JMSBinding> {
 
-    private JMSHost jmsHost;
     private WorkScheduler workScheduler;
 
     public JMSBindingProviderFactory(ExtensionPointRegistry extensionPoints) {
-        jmsHost = extensionPoints.getExtensionPoint(JMSHost.class);
-        if (jmsHost == null) {
-            throw new JMSBindingException("No JMSHost extension point registered");
-        }
         workScheduler = extensionPoints.getExtensionPoint(WorkScheduler.class);
     }
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
                                                                    RuntimeComponentReference reference,
                                                                    JMSBinding binding) {
-        return new JMSBindingReferenceBindingProvider(component, reference, binding, jmsHost);
+        return new JMSBindingReferenceBindingProvider(component, reference, binding);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
                                                                RuntimeComponentService service,
                                                                JMSBinding binding) {
-        return new JMSBindingServiceBindingProvider(component, service, binding, jmsHost, workScheduler);
+        return new JMSBindingServiceBindingProvider(component, service, binding, workScheduler);
     }
 
     public Class<JMSBinding> getModelType() {

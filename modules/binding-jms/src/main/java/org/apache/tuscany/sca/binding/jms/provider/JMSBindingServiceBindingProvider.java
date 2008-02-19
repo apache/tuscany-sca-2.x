@@ -29,8 +29,6 @@ import javax.naming.NamingException;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
-import org.apache.tuscany.sca.host.jms.JMSHost;
-import org.apache.tuscany.sca.host.jms.JMSResourceFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -55,13 +53,13 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
 
     public JMSBindingServiceBindingProvider(RuntimeComponent component,
                                             RuntimeComponentService service,
-                                            JMSBinding binding, JMSHost jmsHost,
+                                            JMSBinding binding,
                                             WorkScheduler workScheduler) {
         this.service = service;
         this.jmsBinding = binding;
         this.workScheduler = workScheduler;
 
-        jmsResourceFactory = jmsHost.createJMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
+        jmsResourceFactory = new JMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
 
         // if the default destination queue names is set
         // set the destinate queue name to the reference name

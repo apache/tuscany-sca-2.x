@@ -22,11 +22,7 @@ import junit.framework.Assert;
 
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
-import org.apache.tuscany.sca.binding.jms.mock.MockJMSResourceFactoryQueueExist;
-import org.apache.tuscany.sca.binding.jms.mock.MockJMSResourceFactoryQueueNotExist;
 import org.apache.tuscany.sca.core.assembly.RuntimeComponentServiceImpl;
-import org.apache.tuscany.sca.host.jms.JMSHost;
-import org.apache.tuscany.sca.host.jms.JMSResourceFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.junit.Test;
 
@@ -129,26 +125,21 @@ public class JMSBindingServiceQueueCreateModeTestCaseFIXME {
         // Create a JMS Binding with the required test parameters
         JMSBinding jmsBinding = new JMSBinding();
         jmsBinding.setDestinationCreate(createMode);
-        if (preCreateQueue) {
-            jmsBinding.setJmsResourceFactoryName(MockJMSResourceFactoryQueueExist.class.getName());
-        } else {
-            jmsBinding.setJmsResourceFactoryName(MockJMSResourceFactoryQueueNotExist.class.getName());
-        }
+//        if (preCreateQueue) {
+//            jmsBinding.setJmsResourceFactoryName(MockJMSResourceFactoryQueueExist.class.getName());
+//        } else {
+//            jmsBinding.setJmsResourceFactoryName(MockJMSResourceFactoryQueueNotExist.class.getName());
+//        }
         jmsBinding.setDestinationName(destinationName);
         jmsBinding.setName(jmsBindingName);
 
         RuntimeComponentService service = new RuntimeComponentServiceImpl();
         service.setName(serviceName);
 
-        JMSHost jmsHost = new JMSHost(){
-            public JMSResourceFactory createJMSResourceFactory(String connectionFactoryName, String initialContextFactoryName, String jndiURL) {
-                return null;
-            }};
-        
         // Try and create the JMS Binding Service for the JMS Binding
         try {
             JMSBindingServiceBindingProvider jmsService =
-                new JMSBindingServiceBindingProvider(null, service, jmsBinding, jmsHost, null);
+                new JMSBindingServiceBindingProvider(null, service, jmsBinding, null);
             jmsService.start();
 
             // Check whether we were expecting an exception
