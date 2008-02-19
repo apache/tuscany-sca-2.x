@@ -141,7 +141,6 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         if (wire != null) {
             this.component = wire.getSource().getComponent();
             this.reference = (RuntimeComponentReference)wire.getSource().getContract();
-			System.out.println("$$$ reference = " + this.reference);
             this.binding = wire.getSource().getBinding();
             this.compositeActivator = ((ComponentContextImpl)component.getComponentContext()).getCompositeActivator();
             this.conversationManager = this.compositeActivator.getConversationManager();
