@@ -38,7 +38,7 @@ public class OSGiRetailerWithQueryComponentImpl implements Retailer, RetailerQue
     }
     
     protected void unsetWarehouse(Warehouse warehouse) {
-    	this.warehouse = null;
+    	// this.warehouse = null;
     }
     
     protected void setWarehouseQuery(WarehouseQuery warehouseQuery) {
@@ -46,7 +46,7 @@ public class OSGiRetailerWithQueryComponentImpl implements Retailer, RetailerQue
     }
     
     protected void unsetWarehouseQuery(WarehouseQuery warehouse) {
-        this.warehouseQuery = null;
+        // this.warehouseQuery = null;
     }
     
     public void submitOrder(String order) {

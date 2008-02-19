@@ -29,11 +29,6 @@ import conversation.client.ConversationalCallback;
 import conversation.client.ConversationalClient;
 import conversation.client.ConversationalClientStatefulImpl;
 import conversation.client.ConversationalClientStatelessImpl;
-import conversation.referenceclient.ConversationalReferenceClient;
-import conversation.referenceclient.ConversationalReferenceClientImpl;
-import conversation.service.ConversationalService;
-import conversation.service.ConversationalServiceStatefulImpl;
-import conversation.service.ConversationalServiceStatelessImpl;
 
 /*
  * OSGi bundle activator for conversation tests
