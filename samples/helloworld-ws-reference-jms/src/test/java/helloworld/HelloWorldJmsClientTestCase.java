@@ -21,9 +21,8 @@ package helloworld;
 
 import junit.framework.Assert;
 
+import org.apache.activemq.broker.BrokerService;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.host.embedded.SCATestCaseRunner;
-import org.apache.tuscany.sca.host.jms.activemq.ActiveMQModuleActivator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,14 +37,15 @@ public class HelloWorldJmsClientTestCase {
     private HelloWorldService helloTuscanyService;
     private SCADomain scaClientDomain;
     private SCADomain scaServiceDomain;
+    private BrokerService jmsBroker;
    
 
     @Before
     public void startClient() throws Exception {
         try {
-        	ActiveMQModuleActivator.startBroker();
-        	scaServiceDomain = SCADomain.newInstance("helloworldwsjms.composite");
-        	scaClientDomain = SCADomain.newInstance("helloworldwsjmsclient.composite");
+            startBroker();
+            scaServiceDomain = SCADomain.newInstance("helloworldwsjms.composite");
+            scaClientDomain = SCADomain.newInstance("helloworldwsjmsclient.composite");
             helloWorldService = scaClientDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
             helloTuscanyService = scaClientDomain.getService(HelloWorldService.class, "HelloTuscanyServiceComponent");
     
@@ -69,6 +69,16 @@ public class HelloWorldJmsClientTestCase {
     public void stopClient() throws Exception {
         scaServiceDomain.close();
         scaClientDomain.close();
+        if (jmsBroker != null) {
+            jmsBroker.stop();
+        }
     }
 
+    protected void startBroker() throws Exception {
+        jmsBroker = new BrokerService(); 
+        jmsBroker.setPersistent(false);
+        jmsBroker.setUseJmx(false);
+        jmsBroker.addConnector("tcp://localhost:61619");
+        jmsBroker.start();
+    }
 }
