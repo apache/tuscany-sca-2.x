@@ -21,6 +21,7 @@ package helloworld;
 
 import junit.framework.Assert;
 
+import org.apache.activemq.broker.BrokerService;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.After;
 import org.junit.Before;
@@ -36,11 +37,13 @@ public class HelloWorldJmsClientTestCase {
     private HelloWorldService helloTuscanyService;
     private SCADomain scaClientDomain;
     private SCADomain scaServiceDomain;
+    private BrokerService jmsBroker;
    
 
     @Before
     public void startClient() throws Exception {
         try {
+            startBroker();
             scaServiceDomain = SCADomain.newInstance("helloworldjmsservice.composite");
             scaClientDomain = SCADomain.newInstance("helloworldjmsreference.composite");
             helloWorldService = scaClientDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
@@ -61,8 +64,17 @@ public class HelloWorldJmsClientTestCase {
     @After
     public void stopClient() throws Exception {
         scaServiceDomain.close();
-        // TODO - causes problems on shudown
-        //scaClientDomain.close();
+        scaClientDomain.close();
+        if (jmsBroker != null) {
+            jmsBroker.stop();
+        }
     }
 
+    protected void startBroker() throws Exception {
+        jmsBroker = new BrokerService(); 
+        jmsBroker.setPersistent(false);
+        jmsBroker.setUseJmx(false);
+        jmsBroker.addConnector("tcp://localhost:61619");
+        jmsBroker.start();
+    }
 }
