@@ -23,8 +23,8 @@ import static junit.framework.Assert.assertNotNull;
 
 import java.io.IOException;
 
+import org.apache.activemq.broker.BrokerService;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.host.jms.activemq.ActiveMQModuleActivator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,14 +35,22 @@ import org.junit.Test;
 public class HelloWorldJmsPolicyServerTestCase{
 
     private SCADomain scaDomain;
+    private BrokerService jmsBroker;
 
     @Before
     public void startServer() throws Exception {
-    	ActiveMQModuleActivator.startBroker();
+    	startBroker();
         scaDomain = SCADomain.newInstance("helloworldwsjmspolicy.composite");
     }
 
-    
+    protected void startBroker() throws Exception {
+        jmsBroker = new BrokerService(); 
+        jmsBroker.setPersistent(false);
+        jmsBroker.setUseJmx(false);
+        jmsBroker.addConnector("tcp://localhost:61619");
+        jmsBroker.start();
+    }
+
     @Test
     public void testServiceCall() throws IOException {
         HelloWorldService helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent/HelloWorldService");
@@ -53,5 +61,8 @@ public class HelloWorldJmsPolicyServerTestCase{
     @After
     public void stopServer() throws Exception {
         scaDomain.close();
+        if (jmsBroker != null) {
+            jmsBroker.stop();
+        }
     }
 }

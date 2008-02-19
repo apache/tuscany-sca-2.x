@@ -41,7 +41,6 @@ public class HelloWorldJmsClientTestCase {
     @Before
     public void startClient() throws Exception {
         try {
-            // ActiveMQModuleActivator.startBroker();
             scaServiceDomain = SCADomain.newInstance("helloworldjmsservice.composite");
             scaClientDomain = SCADomain.newInstance("helloworldjmsreference.composite");
             helloWorldService = scaClientDomain.getService(HelloWorldService.class, "HelloWorldServiceComponent");
