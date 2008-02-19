@@ -22,10 +22,6 @@ import junit.framework.Assert;
 
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
-import org.apache.tuscany.sca.binding.jms.mock.MockJMSResourceFactoryQueueExist;
-import org.apache.tuscany.sca.binding.jms.mock.MockJMSResourceFactoryQueueNotExist;
-import org.apache.tuscany.sca.host.jms.JMSHost;
-import org.apache.tuscany.sca.host.jms.JMSResourceFactory;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.junit.Test;
@@ -284,9 +280,9 @@ public class JMSBindingReferenceQueueCreateModeTestCaseFIXME {
         jmsBinding.setDestinationCreate(requestCreateMode);
         jmsBinding.setResponseDestinationCreate(responseCreateMode);
         if (preCreateQueue) {
-            jmsBinding.setJmsResourceFactoryName(MockJMSResourceFactoryQueueExist.class.getName());
+//            jmsBinding.setJmsResourceFactoryName(new JMSResourceFactory(null, null, null));
         } else {
-            jmsBinding.setJmsResourceFactoryName(MockJMSResourceFactoryQueueNotExist.class.getName());
+//            jmsBinding.setJmsResourceFactoryName(MockJMSResourceFactoryQueueNotExist.class.getName());
         }
         jmsBinding.setDestinationName(requestDestinationName);
         jmsBinding.setResponseDestinationName(responseDestinationName);

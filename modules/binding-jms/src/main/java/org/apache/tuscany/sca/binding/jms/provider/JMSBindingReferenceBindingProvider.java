@@ -25,8 +25,6 @@ import java.util.List;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
-import org.apache.tuscany.sca.host.jms.JMSHost;
-import org.apache.tuscany.sca.host.jms.JMSResourceFactory;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -49,10 +47,10 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
 
     public JMSBindingReferenceBindingProvider(RuntimeComponent component,
                                               RuntimeComponentReference reference,
-                                              JMSBinding binding, JMSHost jmsHost) {
+                                              JMSBinding binding) {
         this.reference = reference;
         this.jmsBinding = binding;
-        jmsResourceFactory = jmsHost.createJMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
+        jmsResourceFactory = new JMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
 
         if (jmsBinding.getXMLFormat()) {
             setXMLDataBinding(reference);
