@@ -18,12 +18,16 @@
  */
 package org.apache.tuscany.sca.core.work;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.apache.tuscany.sca.work.NotificationListener;
 import org.apache.tuscany.sca.work.WorkScheduler;
 import org.apache.tuscany.sca.work.WorkSchedulerException;
 
 import commonj.work.WorkEvent;
 import commonj.work.WorkListener;
+import commonj.work.WorkManager;
 
 /**
  * A work scheduler implementation based on a JSR 237 work manager.
@@ -39,7 +43,7 @@ public class Jsr237WorkScheduler implements WorkScheduler {
     /**
      * Underlying JSR-237 work manager
      */
-    private ThreadPoolWorkManager jsr237WorkManager;
+    private WorkManager jsr237WorkManager;
 
     /**
      * Initializes the JSR 237 work manager.
@@ -47,7 +51,16 @@ public class Jsr237WorkScheduler implements WorkScheduler {
      * @param jsr237WorkManager JSR 237 work manager.
      */
     public Jsr237WorkScheduler() {
-        jsr237WorkManager = new ThreadPoolWorkManager(10);
+        
+        try {
+            InitialContext ctx  = new InitialContext();
+            jsr237WorkManager = (WorkManager) ctx.lookup("java:comp/env/wm/TuscanyWorkManager");
+        } catch (NamingException e) {
+            // ignore
+        }
+        if (jsr237WorkManager == null) {
+            jsr237WorkManager = new ThreadPoolWorkManager(10);
+        }
     }
 
     /**
@@ -94,7 +107,9 @@ public class Jsr237WorkScheduler implements WorkScheduler {
     }
 
     public void destroy() {
-        jsr237WorkManager.destroy();
+        if (jsr237WorkManager instanceof ThreadPoolWorkManager) {
+            ((ThreadPoolWorkManager)jsr237WorkManager).destroy();
+        }
     }
 
     /*
