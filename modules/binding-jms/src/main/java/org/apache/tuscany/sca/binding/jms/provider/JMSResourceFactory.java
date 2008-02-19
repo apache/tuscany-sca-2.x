@@ -36,7 +36,7 @@ public class JMSResourceFactory {
 
     private String initialContextFactoryName;
     private String connectionFactoryName = "ConnectionFactory";
-    private String jndiURL = "vm://localhost";
+    private String jndiURL;
 
     private Connection connection;
     private Context context;
