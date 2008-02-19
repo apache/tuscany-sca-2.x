@@ -38,4 +38,11 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
     <welcome-file>hello.jsp</welcome-file>
   </welcome-file-list>
 
+  <resource-ref>
+     <res-ref-name>wm/TuscanyWorkManager</res-ref-name>
+     <res-type>commonj.work.WorkManager</res-type>
+     <res-auth>Container</res-auth>
+     <res-sharing-scope>Shareable</res-sharing-scope>
+  </resource-ref>
+
 </web-app>
