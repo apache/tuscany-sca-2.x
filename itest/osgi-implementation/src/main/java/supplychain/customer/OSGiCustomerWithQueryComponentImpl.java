@@ -47,7 +47,7 @@ public class OSGiCustomerWithQueryComponentImpl implements Customer {
     }
     
     protected void unsetRetailer(Retailer retailer) {
-    	this.retailer = null;
+    	// this.retailer = null;
     }
     
     
@@ -56,7 +56,7 @@ public class OSGiCustomerWithQueryComponentImpl implements Customer {
     }
     
     protected void unsetRetailerQuery(RetailerQuery retailerQuery) {
-        this.retailerQuery = null;
+        // this.retailerQuery = null;
     }
     
     public void purchaseBooks() {

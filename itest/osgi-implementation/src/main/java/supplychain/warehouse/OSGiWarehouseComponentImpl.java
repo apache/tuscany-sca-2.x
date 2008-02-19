@@ -36,7 +36,7 @@ public class OSGiWarehouseComponentImpl implements Warehouse {
     }
     
     protected void unsetShipper(Shipper shipper) {
-    	this.shipper = null;
+    	// this.shipper = null;
     }
     
     public void fulfillOrder(String order) {

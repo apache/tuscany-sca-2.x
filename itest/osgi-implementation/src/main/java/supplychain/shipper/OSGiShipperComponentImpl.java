@@ -36,7 +36,7 @@ public class OSGiShipperComponentImpl implements Shipper {
     }
     
     protected void unsetCustomer(Customer customer) {
-    	this.customer = null;
+    	// this.customer = null;
     }
     
     public void processShipment(String order) {

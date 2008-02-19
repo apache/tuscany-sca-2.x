@@ -44,7 +44,7 @@ public class ConversationalServiceFactory implements ServiceFactory {
     }
 
     public void ungetService(Bundle bundle, ServiceRegistration reg, Object obj) {
-        bundle.getBundleContext().ungetService(reg.getReference());
+    	
     }
     
    

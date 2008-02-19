@@ -36,7 +36,7 @@ public class OSGiCustomerComponentImpl implements Customer {
     private Retailer retailer2;
     private Retailer retailer3;
     
-    private ArrayList<String> outstandingOrders = new ArrayList<String>();
+    private static ArrayList<String> outstandingOrders = new ArrayList<String>();
     
     public OSGiCustomerComponentImpl() {
         System.out.println("Created OSGiCustomerComponentImpl " + this);
@@ -47,7 +47,7 @@ public class OSGiCustomerComponentImpl implements Customer {
     }
     
     protected void unsetRetailer1(Retailer retailer1) {
-    	this.retailer1 = null;
+    	// this.retailer1 = null;
     }
     
     
@@ -56,32 +56,34 @@ public class OSGiCustomerComponentImpl implements Customer {
     }
     
     protected void unsetRetailer2(Retailer retailer2) {
-    	this.retailer2 = null;
+    	// this.retailer2 = null;
     }
     
-    protected void setRetailer3(Retailer retailer2) {
-        this.retailer3 = retailer2;
+    protected void setRetailer3(Retailer retailer3) {
+        this.retailer3 = retailer3;
     }
     
-    protected void unsetRetailer3(Retailer retailer2) {
-        this.retailer3 = null;
+    protected void unsetRetailer3(Retailer retailer3) {
+        // this.retailer3 = null;
     }
-   
+    
+
     public void purchaseBooks() {
-    	System.out.println("OSGiCustomerComponentImpl.purchaseBooks");
+    	System.out.println("OSGiCustomerComponentImpl.purchaseBooks, retailer1 is " + retailer1);
         outstandingOrders.add("Order, submitted (amazon.com), fulfilled, shipped (ParcelForce)");
         retailer1.submitOrder("Order");
     }
     
     public void purchaseGames() {
-        System.out.println("OSGiCustomerComponentImpl.purchaseGames");
+        System.out.println("OSGiCustomerComponentImpl.purchaseGames, retailer2 is " + retailer2);
         outstandingOrders.add("Order, submitted (play.com), fulfilled, shipped (ParcelForce)");
         
         retailer2.submitOrder("Order");
     }
     
     public void purchaseGoods() {
-        retailer3.submitOrder("Order");
+    	System.out.println("OSGiCustomerComponentImpl.purchaseGames, retailer3 is " + retailer3);
+    	retailer3.submitOrder("Order");
     }
     
     public void notifyShipment(String order) {

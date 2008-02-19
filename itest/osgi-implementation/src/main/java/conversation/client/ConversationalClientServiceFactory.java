@@ -108,7 +108,7 @@ public class ConversationalClientServiceFactory implements ServiceFactory {
     }
 
     public void ungetService(Bundle bundle, ServiceRegistration reg, Object obj) {
-        bundle.getBundleContext().ungetService(reg.getReference());
+    	
     }
     
     private ServiceReference getServiceReference(String name, String filter) throws Exception {

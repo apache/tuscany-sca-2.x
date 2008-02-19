@@ -121,11 +121,10 @@ public class OSGiInstanceWrapper<T> implements InstanceWrapper<T> {
         }
         
         InstanceInfo<T> instanceInfo = new InstanceInfo<T>();
-        
-        instanceInfo.osgiServiceReference = provider.getOSGiServiceReference(service);        
+               
         instanceInfo.refBundleContext = refBundle.getBundleContext();
 
-        instanceInfo.osgiInstance = getInstanceObject(instanceInfo);
+        instanceInfo.osgiInstance = getInstanceObject(instanceInfo, service);
         
         try {
 
@@ -196,8 +195,23 @@ public class OSGiInstanceWrapper<T> implements InstanceWrapper<T> {
     }
     
     @SuppressWarnings("unchecked")
-    private T getInstanceObject(InstanceInfo<T> instanceInfo) {
-        return (T)instanceInfo.refBundleContext.getService(instanceInfo.osgiServiceReference);
+    private T getInstanceObject(InstanceInfo<T> instanceInfo, ComponentService service) {
+
+    	/** 
+    	 * Since implementation.osgi is not well integrated with the OSGi lifecycle
+    	 * it is possible that the service is deactivated before the service instance
+    	 * is obtained when using declarative services. Retry in this case.  
+    	 */
+    	int maxRetries = 10;
+    	for (int i = 0; i < maxRetries; i++) {
+          instanceInfo.osgiServiceReference = provider.getOSGiServiceReference(service); 
+          if (instanceInfo.osgiServiceReference == null)
+        	  return null;
+          T obj = (T)instanceInfo.refBundleContext.getService(instanceInfo.osgiServiceReference);
+          if (obj != null)
+        	  return obj;
+    	}
+    	return null;
     }
     
     private Bundle getDummyReferenceBundle() throws TargetInitializationException {

@@ -36,7 +36,7 @@ public class OSGiRetailerComponentImpl implements Retailer {
     }
     
     protected void unsetWarehouse(Warehouse warehouse) {
-    	this.warehouse = null;
+    	// this.warehouse = null;
     }
     
     public void submitOrder(String order) {

@@ -90,6 +90,7 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
                 "org.osgi.service.packageadmin; version=1.2.0, " +
                 "org.osgi.service.startlevel; version=1.0.0, " +
                 "org.osgi.service.url; version=1.0.0, " +
+                "org.osgi.util.tracker; version=1.3.2, " +
                 "org.osoa.sca.annotations; version=1.0.0, " +
                 "org.osoa.sca; version=1.0.0");
         
@@ -97,6 +98,12 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
         try {
             Constructor felixConstructor = felixClass.getConstructor(Map.class, List.class);
             List<BundleActivator> activators = new ArrayList<BundleActivator>();
+
+            Class<?> autoActivatorClass = cl.loadClass("org.apache.felix.main.AutoActivator");
+            Constructor autoActivatorConstructor = autoActivatorClass.getConstructor(Map.class);
+            BundleActivator autoActivator = (BundleActivator)autoActivatorConstructor.newInstance(props);            
+            activators.add(autoActivator);
+
             felix = felixConstructor.newInstance(props, activators);
             ((Bundle)felix).start();
             bundleContext = ((Bundle)felix).getBundleContext();
