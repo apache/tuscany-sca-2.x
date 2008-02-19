@@ -77,6 +77,9 @@
                 <exclude>company-das-webapp/**/*</exclude>
                 <exclude>helloworld-dojo-webapp/src/main/webapp/dojo</exclude>
                 <exclude>helloworld-dojo-webapp/src/main/webapp/dojo/**/*</exclude>
+                <exclude>helloworld-jms-webapp</exclude>
+                <exclude>helloworld-jms-webapp/**/*</exclude>
+                <exclude>helloworld-jms-webapp/work</exclude>
                 <exclude>helloworld-ws-deep-webapp</exclude>
                 <exclude>helloworld-ws-deep-webapp/**/*</exclude>
                 <exclude>helloworld-ws-deep-webapp/work</exclude>
@@ -109,6 +112,9 @@
                 <exclude>calculator-webapp/target/sample-calculator-webapp/**/*</exclude>
                 <exclude>calculator-ws-webapp/target/sample-calculator-ws-webapp</exclude>
                 <exclude>calculator-ws-webapp/target/sample-calculator-ws-webapp/**/*</exclude>
+                <exclude>calculator-ws-secure-webapp</exclude>
+                <exclude>calculator-ws-secure-webapp/**/*</exclude>
+                <exclude>calculator-ws-secure-webapp/work</exclude>
                 <exclude>callback-ws-client/work</exclude>
                 <exclude>callback-ws-client/work/**/*</exclude>
                 <exclude>callback-ws-service/work</exclude>
