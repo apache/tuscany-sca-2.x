@@ -28,7 +28,6 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadFactory;
 
 import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Property;
 
 import commonj.work.Work;
 import commonj.work.WorkEvent;
