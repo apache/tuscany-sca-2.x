@@ -89,8 +89,6 @@
                 <module>host-webapp</module>
                 <module>host-webapp-junit</module>
                 <module>host-jetty</module>
-                <module>host-jms</module>
-                <module>host-jms-activemq</module>
                 <module>host-tomcat</module>
                 <module>interface</module>
                 <module>interface-java</module>
