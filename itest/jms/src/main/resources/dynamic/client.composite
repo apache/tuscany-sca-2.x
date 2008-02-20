@@ -27,7 +27,7 @@
 
     <reference name="serviceA" promote="HelloWorldClient/serviceA">
         <interface.java interface="org.apache.tuscany.sca.binding.jms.HelloWorldService" />
-        <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory" jndiURL="vm://localhost">
+        <binding.jms>
             <destination name="DestQueueA"/>
             <response>
                <destination create="always"/>  <!-- create always with no name will create a temporary queue -->
