@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.binding.jms.impl;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.util.StringTokenizer;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -131,9 +133,8 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
 
         // Read binding URI
         String uri = reader.getAttributeValue(null, "uri");
-        if (uri != null) {
-            jmsBinding.setURI(uri);
-            System.err.println("JMS Binding doesn't process uri yet");
+        if (uri != null && uri.length() > 0) {
+            parseURI(uri, jmsBinding);
         }
 
         // Read correlation scheme
@@ -210,6 +211,27 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
         jmsBinding.validate();
 
         return jmsBinding;
+    }
+
+    protected void parseURI(String uri, JMSBinding jmsBinding) {
+        if (!uri.startsWith("jms:")) {
+            throw new JMSBindingException("uri must start with the scheme 'jms:' for uri: " + uri);
+        }
+        int i = uri.indexOf('?');
+        if (i < 0) {
+            jmsBinding.setDestinationName(uri.substring(4));
+        } else {
+            jmsBinding.setDestinationName(uri.substring(4, i));
+            StringTokenizer st = new StringTokenizer(uri.substring(i+1),"&");
+            while (st.hasMoreTokens()) {
+                String s = st.nextToken();
+                if (s.startsWith("connectionFactoryName=")) {
+                    jmsBinding.setConnectionFactoryName(s.substring(22));
+                } else {
+                    throw new JMSBindingException("unknown token '" + s + "' in uri: " + uri);
+                }
+            }
+        }
     }
 
     public void resolve(JMSBinding model, ModelResolver resolver) throws ContributionResolveException {
