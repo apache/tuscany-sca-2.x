@@ -121,7 +121,7 @@ public class JMSBindingInvoker implements Invoker, PassByValueAware {
             queueName = jmsBinding.getResponseDestinationName();
             queueType = "JMS Response Destination ";
             qCreateMode = jmsBinding.getResponseDestinationCreate();
-            if (JMSBindingConstants.CREATE_ALWAYS.equals(qCreateMode) && JMSBindingConstants.DEFAULT_RESPONSE_DESTINATION_NAME.equals(queueName)) {
+            if (JMSBindingConstants.DEFAULT_RESPONSE_DESTINATION_NAME.equals(queueName)) {
                 return null;
             }
         } else {
