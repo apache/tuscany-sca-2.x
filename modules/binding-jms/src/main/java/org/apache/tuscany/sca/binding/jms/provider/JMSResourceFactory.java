@@ -128,7 +128,7 @@ public class JMSResourceFactory {
     }
 
     private void createConnection() throws NamingException, JMSException {
-        ConnectionFactory connectionFactory = (ConnectionFactory)getInitialContext().lookup(connectionFactoryName);
+        ConnectionFactory connectionFactory = (ConnectionFactory)jndiLookUp(connectionFactoryName);
         connection = connectionFactory.createConnection();
     }
 
@@ -148,14 +148,7 @@ public class JMSResourceFactory {
     }
 
     public Destination lookupDestination(String jndiName) throws NamingException {
-        Destination dest = null;
-
-        try {
-            dest = (Destination)getInitialContext().lookup(jndiName);
-        } catch (NamingException ex) {
-
-        }
-        return dest;
+        return (Destination)jndiLookUp(jndiName);
     }
 
     /**
@@ -164,5 +157,22 @@ public class JMSResourceFactory {
      */
     public Destination createDestination(String jndiName) throws NamingException {
         return lookupDestination("dynamicQueues/" + jndiName);
+    }
+    
+    protected Object jndiLookUp(String name) {
+        Object o = null;
+        try {
+            o = getInitialContext().lookup("java:comp/env/" + name);
+        } catch (NamingException ex) {
+            // ignore
+        }
+        if (o == null) {
+            try {
+                o = getInitialContext().lookup(name);
+            } catch (NamingException ex) {
+                // ignore
+            }
+        }
+        return o;
     }
 }
