@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.sca.binding.feed.collection;
 
+import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.Feed;
 import org.osoa.sca.annotations.Remotable;
-
-import com.sun.syndication.feed.atom.Entry;
 
 /**
  * Provides access to a collection of resources using Atom.
@@ -36,7 +36,7 @@ public interface Collection {
      * @param uri the uri of the feed
      * @return the RSS or Atom feed
      */
-    com.sun.syndication.feed.atom.Feed getFeed();
+    Feed getFeed();
 
     /**
      * Creates a new entry.
