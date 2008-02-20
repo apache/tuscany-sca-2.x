@@ -29,9 +29,7 @@
         <interface.java interface="org.apache.tuscany.sca.binding.jms.HelloWorldService" />
         <binding.jms>
             <destination name="DestQueueA"/>
-            <response>
-               <destination create="always"/>  <!-- create always with no name will create a temporary queue -->
-            </response>
+            <!-- No response destination defined means a temporary queue will be used -->
         </binding.jms>  
     </reference>
 
