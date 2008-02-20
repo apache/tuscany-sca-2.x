@@ -56,8 +56,10 @@ public class ShoppingCartImpl implements Cart, Total {
         }
     }
 
-    public String post(Item item) {
-        String key = "cart-" + UUID.randomUUID().toString();
+    public String post(String key, Item item) {
+        if (key == null) {
+            key ="cart-" + UUID.randomUUID().toString();
+        }
         cart.put(key, item);
         return key;
     }
