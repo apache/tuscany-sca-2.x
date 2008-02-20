@@ -45,10 +45,11 @@ public interface Collection <K, D> {
     /**
      * Creates a new item.
      * 
+     * @param key
      * @param item
      * @return
      */
-    K post(D item);
+    K post(K key, D item);
 
     /**
      * Retrieves an item.
