@@ -223,7 +223,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                         feed = new Feed();
                         feed.setTitle("Feed");
                         for (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry: collection) {
-                            Entry feedEntry = createFeedEntry(entry.getKey(), entry.getData());
+                            Entry feedEntry = createFeedEntry(entry);
                             feed.getEntries().add(feedEntry);
                         }
                     }
@@ -265,7 +265,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                     
                     // The service implementation only returns a data item, create an entry
                     // from it
-                    feedEntry = createFeedEntry(id, responseMessage.getBody());
+                    feedEntry = createFeedEntry(new org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>(id, responseMessage.getBody()));
                 }
 
                 // Write the Atom entry
@@ -319,7 +319,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                         feed = new Feed();
                         feed.setTitle("Feed");
                         for (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry: collection) {
-                            Entry feedEntry = createFeedEntry(entry.getKey(), entry.getData());
+                            Entry feedEntry = createFeedEntry(entry);
                             feed.getEntries().add(feedEntry);
                         }
                     }
@@ -347,12 +347,13 @@ class FeedBindingListenerServlet extends HttpServlet {
     }
 
     /**
-     * Create an Atom entry for a key and item from a collection.
-     * @param key
-     * @param item
+     * Create an Atom entry from a data collection entry.
+     * @param entry 
      * @return
      */
-    private Entry createFeedEntry(Object key, Object data) {
+    private Entry createFeedEntry(org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry) {
+        Object key = entry.getKey();
+        Object data = entry.getData();
         if (data instanceof Item) {
             Item item = (Item)data;
             
@@ -423,16 +424,16 @@ class FeedBindingListenerServlet extends HttpServlet {
     }
 
     /**
-     * Create a data item from an Atom entry.
-     * @param key
-     * @param item
+     * Create a data collection entry from an Atom entry.
+     * @param feedEntry
      * @return
      */
-    private Object createItem(Entry feedEntry) {
+    private org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> createEntry(Entry feedEntry) {
         if (feedEntry != null) {
             if (itemClassType.getPhysical() == Item.class) {
-                Item item = new Item();
+                String key = feedEntry.getId();
                 
+                Item item = new Item();
                 item.setTitle(feedEntry.getTitle());
                 
                 List<?> contents = feedEntry.getContents();
@@ -452,9 +453,10 @@ class FeedBindingListenerServlet extends HttpServlet {
                 
                 item.setDate(feedEntry.getCreated());
                 
-                return item;
+                return new org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>(key, item);
                 
             } else {
+                String key = feedEntry.getId();
                 
                 // Create the item from XML
                 List<?> contents = feedEntry.getContents();
@@ -465,7 +467,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                 String value = content.getValue();
                 Object data = mediator.mediate(value, itemXMLType, itemClassType, null);
 
-                return data;
+                return new org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>(key, data);
             }
         } else {
             return null;
@@ -518,14 +520,14 @@ class FeedBindingListenerServlet extends HttpServlet {
                     
                     // The service implementation does not support feed entries, pass the data item to it
                     Message requestMessage = messageFactory.createMessage();
-                    Object item = createItem(feedEntry);
-                    requestMessage.setBody(new Object[] {item});
+                    org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry = createEntry(feedEntry);
+                    requestMessage.setBody(new Object[] {entry.getKey(), entry.getData()});
                     Message responseMessage = postInvoker.invoke(requestMessage);
                     if (responseMessage.isFault()) {
                         throw new ServletException((Throwable)responseMessage.getBody());
                     }
-                    Object key = responseMessage.getBody();
-                    createdFeedEntry = createFeedEntry(key, item);
+                    entry.setKey(responseMessage.getBody());
+                    createdFeedEntry = createFeedEntry(entry);
                 }
 
             } else if (contentType != null) {
@@ -632,8 +634,8 @@ class FeedBindingListenerServlet extends HttpServlet {
                     
                     // The service implementation does not support feed entries, pass the data item to it
                     Message requestMessage = messageFactory.createMessage();
-                    Object item = createItem(feedEntry);
-                    requestMessage.setBody(new Object[] {id, item});
+                    org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry = createEntry(feedEntry);
+                    requestMessage.setBody(new Object[] {entry.getKey(), entry.getData()});
                     Message responseMessage = putInvoker.invoke(requestMessage);
                     if (responseMessage.isFault()) {
                         Object body = responseMessage.getBody();
