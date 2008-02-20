@@ -80,8 +80,10 @@ public class ShoppingCartTableImpl implements Cart, Total {
         }
     }
 
-    public String post(Item item) {
-        String key = "cart-" + UUID.randomUUID().toString();
+    public String post(String key, Item item) {
+        if (key == null) {
+            key = "cart-" + UUID.randomUUID().toString();
+        }
         try {
             Statement statement = connection.createStatement();
             String query = "insert into Cart values ('" + key + "', '" + item.getName() + "', '" + item.getPrice() + "')";
