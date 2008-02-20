@@ -49,9 +49,4 @@ public interface ContributionFactory {
      */
     Artifact createArtifact();
     
-    /**
-     * Create a new contribution workspace model object. 
-     * @return
-     */
-    Workspace createWorkspace();
 }

@@ -23,7 +23,6 @@ import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
-import org.apache.tuscany.sca.contribution.Workspace;
 
 
 /**
@@ -44,10 +43,6 @@ public class ContributionFactoryImpl implements ContributionFactory {
         return new ArtifactImpl();
     }
     
-    public Workspace createWorkspace() {
-        return new WorkspaceImpl();
-    }
-
     @Deprecated
     public DeployedArtifact createDeployedArtifact() {
         class DeployedArtifactImpl extends ArtifactImpl implements DeployedArtifact {
