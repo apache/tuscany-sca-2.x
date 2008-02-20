@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +36,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.sca.databinding.Mediator;
+import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -352,14 +352,51 @@ class FeedBindingListenerServlet extends HttpServlet {
      * @param item
      * @return
      */
-    private Entry createFeedEntry(Object key, Object item) {
-        if (item != null) {
+    private Entry createFeedEntry(Object key, Object data) {
+        if (data instanceof Item) {
+            Item item = (Item)data;
+            
+            Entry feedEntry = new Entry();
+            feedEntry.setId(key.toString());
+            feedEntry.setTitle(item.getTitle());
+    
+            String value = item.getContents();
+            if (value != null) {
+                Content content = new Content();
+                content.setType("text/xml");
+                content.setValue(value);
+                List<Content> contents = new ArrayList<Content>();
+                contents.add(content);
+                feedEntry.setContents(contents);
+            }
+    
+            String href = item.getLink();
+            if (href == null) {
+                href = key.toString();
+            }
+            Link link = new Link();
+            link.setRel("edit");
+            link.setHref(href);
+            feedEntry.getOtherLinks().add(link);
+            link = new Link();
+            link.setRel("alternate");
+            link.setHref(href);
+            feedEntry.getAlternateLinks().add(link);
+    
+            Date date = item.getDate();
+            if (date == null) {
+                date = new Date();
+            }
+            feedEntry.setCreated(date);
+            return feedEntry;
+            
+        } else if (data != null) {
             Entry feedEntry = new Entry();
             feedEntry.setId(key.toString());
             feedEntry.setTitle("item");
     
             // Convert the item to XML
-            String value = mediator.mediate(item, itemClassType, itemXMLType, null).toString();
+            String value = mediator.mediate(data, itemClassType, itemXMLType, null).toString();
             value = value.substring(value.indexOf('>') +1);
             
             Content content = new Content();
@@ -393,17 +430,43 @@ class FeedBindingListenerServlet extends HttpServlet {
      */
     private Object createItem(Entry feedEntry) {
         if (feedEntry != null) {
-            List<?> contents = feedEntry.getContents();
-            if (contents.isEmpty()) {
-                return null;
-            }
-            Content content = (Content)contents.get(0);
-    
-            // Create the item from XML
-            String value = content.getValue();
-            Object item = mediator.mediate(value, itemXMLType, itemClassType, null);
+            if (itemClassType.getPhysical() == Item.class) {
+                Item item = new Item();
+                
+                item.setTitle(feedEntry.getTitle());
+                
+                List<?> contents = feedEntry.getContents();
+                if (!contents.isEmpty()) {
+                    Content content = (Content)contents.get(0);
+                    String value = content.getValue();
+                    item.setContents(value);
+                }
+                
+                for (Object l : feedEntry.getOtherLinks()) {
+                    Link link = (Link)l;
+                    if (link.getRel() == null || "edit".equals(link.getRel())) {
+                        item.setLink(link.getHref());
+                        break;
+                    }
+                }
+                
+                item.setDate(feedEntry.getCreated());
+                
+                return item;
+                
+            } else {
+                
+                // Create the item from XML
+                List<?> contents = feedEntry.getContents();
+                if (contents.isEmpty()) {
+                    return null;
+                }
+                Content content = (Content)contents.get(0);
+                String value = content.getValue();
+                Object data = mediator.mediate(value, itemXMLType, itemClassType, null);
 
-            return item;
+                return data;
+            }
         } else {
             return null;
         }
