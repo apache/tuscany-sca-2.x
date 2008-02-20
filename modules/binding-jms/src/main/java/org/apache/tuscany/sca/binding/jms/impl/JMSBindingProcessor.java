@@ -145,7 +145,6 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
             } else {
                 throw new JMSBindingException("invalid correlationScheme: " + correlationScheme);
             }
-            System.err.println("JMS Binding doesn't process correlationScheme yet");
         }
 
         // Read initial context factory
