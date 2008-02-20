@@ -77,17 +77,17 @@ public class SupplyChain {
     
     public SupplyChain() throws Exception {
         
-        customerContribURL = new File(folderName + "/" + customerJarName + ".jar").toURL();
-        retailerContribURL = new File(folderName + "/" + retailerJarName + ".jar").toURL();
-        warehouseContribURL = new File(folderName + "/" + warehouseJarName + ".jar").toURL();
-        shipperContribURL = new File(folderName + "/" + shipperJarName + ".jar").toURL();
-        supplyChainContribURL = new File(folderName + "/" + supplychainJarName + ".jar").toURL();
-        illegalSupplyChain1ContribURL = new File(folderName + "/" + illegalSupplyChain1JarName + ".jar").toURL();
-        illegalSupplyChain2ContribURL = new File(folderName + "/" + illegalSupplyChain2JarName + ".jar").toURL();
-        illegalCustomerContribURL = new File(folderName + "/" + illegalCustomerJarName + ".jar").toURL();
-        completeSupplyChainContribURL = new File(folderName + "/" + completeSupplychainJarName + ".jar").toURL();
-        customerInterfaceContribURL = new File(folderName + "/" + customerInterfaceJarName + ".jar").toURL();
-        customerImplContribURL = new File(folderName + "/" + customerImplJarName + ".jar").toURL();
+        customerContribURL = new File(folderName + "/" + customerJarName + ".jar").toURI().toURL();
+        retailerContribURL = new File(folderName + "/" + retailerJarName + ".jar").toURI().toURL();
+        warehouseContribURL = new File(folderName + "/" + warehouseJarName + ".jar").toURI().toURL();
+        shipperContribURL = new File(folderName + "/" + shipperJarName + ".jar").toURI().toURL();
+        supplyChainContribURL = new File(folderName + "/" + supplychainJarName + ".jar").toURI().toURL();
+        illegalSupplyChain1ContribURL = new File(folderName + "/" + illegalSupplyChain1JarName + ".jar").toURI().toURL();
+        illegalSupplyChain2ContribURL = new File(folderName + "/" + illegalSupplyChain2JarName + ".jar").toURI().toURL();
+        illegalCustomerContribURL = new File(folderName + "/" + illegalCustomerJarName + ".jar").toURI().toURL();
+        completeSupplyChainContribURL = new File(folderName + "/" + completeSupplychainJarName + ".jar").toURI().toURL();
+        customerInterfaceContribURL = new File(folderName + "/" + customerInterfaceJarName + ".jar").toURI().toURL();
+        customerImplContribURL = new File(folderName + "/" + customerImplJarName + ".jar").toURI().toURL();
     }
     
     public void setUp(ClassLoader parentClassLoader) throws Exception  {

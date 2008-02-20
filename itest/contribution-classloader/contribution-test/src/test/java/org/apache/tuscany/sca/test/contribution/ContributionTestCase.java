@@ -65,7 +65,7 @@ public class ContributionTestCase {
         Contribution customerContribution = supplyChain.getContribution("Customer");
         ClassReference customerClassRef = new ClassReference("supplychain.customer.Customer");
         customerClassRef = customerContribution.getModelResolver().resolveModel(ClassReference.class, customerClassRef);
-        Class customerClass = customerClassRef.getJavaClass();
+        Class<?> customerClass = customerClassRef.getJavaClass();
         
         Class customerClassFromContribution = customerContribution.getClassLoader().loadClass("supplychain.customer.Customer");
         Assert.assertEquals(customerClass, customerClassFromContribution);
@@ -312,7 +312,7 @@ public class ContributionTestCase {
         Contribution customerContribution = supplyChain.getContribution("Customer");
         ClassReference customerClassRef = new ClassReference("supplychain.customer.Customer");
         customerClassRef = customerContribution.getModelResolver().resolveModel(ClassReference.class, customerClassRef);
-        Class customerClass = customerClassRef.getJavaClass();
+        Class<?> customerClass = customerClassRef.getJavaClass();
         
         Object customer = supplyChain.getCustomer(customerClass);
                 

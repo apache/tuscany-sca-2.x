@@ -30,7 +30,6 @@ import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensio
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
-import org.apache.tuscany.sca.contribution.service.impl.ContributionClassLoader;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLDocumentProcessor;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLModelResolver;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.XSDModelResolver;
@@ -51,8 +50,6 @@ public abstract class AbstractWSDLTestCase extends TestCase {
         super.setUp();
         ContributionFactory contributionFactory = new DefaultContributionFactory();
         Contribution contribution = contributionFactory.createContribution();
-        //FIXME Remove dependency on classloaders
-        contribution.setClassLoader(new ContributionClassLoader(contribution));
         ModelResolverExtensionPoint modelResolvers = new DefaultModelResolverExtensionPoint();
         ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
         wsdlFactory = new DefaultWSDLFactory();

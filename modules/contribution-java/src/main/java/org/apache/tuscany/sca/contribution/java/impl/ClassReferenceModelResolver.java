@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
  */
 public class ClassReferenceModelResolver implements ModelResolver {
     private Contribution contribution;
-    protected WeakReference<ClassLoader> classLoader;
+    private WeakReference<ClassLoader> classLoader;
     private Map<String, ClassReference> map = new HashMap<String, ClassReference>();
 
     private ModelResolver osgiResolver;
@@ -44,14 +44,19 @@ public class ClassReferenceModelResolver implements ModelResolver {
     public ClassReferenceModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
         if (this.contribution != null) {
-            this.classLoader = new WeakReference<ClassLoader>(this.contribution.getClassLoader());
+        	ClassLoader cl = contribution.getClassLoader();
+        	if (contribution.getClassLoader() == null) {
+                cl = new ContributionClassLoader(contribution, null);
+                contribution.setClassLoader(cl);
+        	}
+            this.classLoader = new WeakReference<ClassLoader>(cl);
         } else {
             // This path should be used only for unit testing.
             this.classLoader = new WeakReference<ClassLoader>(this.getClass().getClassLoader());
         }
 
         try {
-            Class osgiResolverClass =
+            Class<?> osgiResolverClass =
                 Class.forName("org.apache.tuscany.sca.contribution.osgi.impl.OSGiClassReferenceModelResolver");
             if (osgiResolverClass != null) {
                 Constructor constructor =
@@ -111,6 +116,7 @@ public class ClassReferenceModelResolver implements ModelResolver {
 
     }
 
+    
     /***************
      * Helper methods
      ***************/
@@ -119,4 +125,5 @@ public class ClassReferenceModelResolver implements ModelResolver {
         int pos = clazz.getClassName().lastIndexOf(".");
         return clazz.getClassName().substring(0, pos - 1);
     }
+    
 }
