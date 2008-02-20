@@ -22,7 +22,7 @@ import java.io.InputStream;
 
 import org.osoa.sca.annotations.Remotable;
 
-import com.sun.syndication.feed.atom.Entry;
+import org.apache.abdera.model.Entry;
 
 /**
  * Provides access to a collection of resources using Atom.
