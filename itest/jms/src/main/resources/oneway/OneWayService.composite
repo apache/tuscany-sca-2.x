@@ -23,7 +23,7 @@
     <component name="OneWayService">
         <implementation.java class="org.apache.tuscany.sca.binding.jms.OneWayServiceImpl"/>
         <service name="OneWayService">
-            <binding.jms initialContextFactory="org.apache.activemq.jndi.ActiveMQInitialContextFactory" jndiURL="vm://localhost?broker.persistent=false">
+            <binding.jms>
                <destination name="DestQueueA" create="always"/>
             </binding.jms>  
         </service> 
