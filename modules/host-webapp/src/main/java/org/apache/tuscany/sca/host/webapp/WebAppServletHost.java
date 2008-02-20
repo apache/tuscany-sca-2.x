@@ -236,7 +236,11 @@ public class WebAppServletHost implements ServletHost {
             // ignore exception and use default location
 
             try {
-                String root = "/";
+                
+                String root = servletContext.getInitParameter("contributionRoot");
+                if (root == null || root.length() < 1) {
+                    root = "/";
+                }
                 URL rootURL = servletContext.getResource(root);
                 if (rootURL.getProtocol().equals("jndi")) {
                     //this is tomcat case, we should use getRealPath
@@ -246,6 +250,7 @@ public class WebAppServletHost implements ServletHost {
                     //this is jetty case
                     contributionRoot = rootURL.toString();
                 }
+
             } catch (MalformedURLException mf) {
                 //ignore, pass null
             }
