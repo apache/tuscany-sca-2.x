@@ -18,11 +18,10 @@
  */
 package org.apache.tuscany.sca.test.callback;
 
-import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.RequestContext;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
-import org.osoa.sca.RequestContext;
 
 /**
  * This class implements MyService and uses a callback.
@@ -34,14 +33,15 @@ public class MyServiceImpl implements MyService {
     private MyServiceCallback myServiceCallback;
 
     @Context
-	protected RequestContext requestContext;
-    
-    public void someMethod(String arg) {
+    protected RequestContext requestContext;
+
+    // [rfeng] It's important to synchonize on this method as two clients call it concurrently
+    public synchronized void someMethod(String arg) {
         // invoke the callback
         try {
             myServiceCallback = requestContext.getCallback();
             myServiceCallback.receiveResult(arg + " -> receiveResult");
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             System.out.println("RuntimeException invoking receiveResult: " + e.toString());
         }
     }
