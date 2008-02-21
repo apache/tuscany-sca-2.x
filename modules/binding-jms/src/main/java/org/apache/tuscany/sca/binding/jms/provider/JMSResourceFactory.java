@@ -94,36 +94,9 @@ public class JMSResourceFactory {
      * 
      * @see org.apache.tuscany.binding.jms.JMSResourceFactory#closeConnection()
      */
-    public void closeConnection() throws JMSException, NamingException {
+    public void closeConnection() throws JMSException {
         if (connection != null) {
             connection.close();
-        }
-    }
-
-    public Object startBroker() {
-//        if (isEmbedded()) {
-//            // ensure the broker has been started
-//            return ActiveMQModuleActivator.startBroker(jndiURL);
-//        }
-        return null;
-    }
-    
-    public void stopBroker(Object broker) {
-//        if(broker instanceof ActiveMQBroker) {
-//            ((ActiveMQBroker) broker).stop();
-//        }
-    }
-
-    /**
-     * TODO: need to find a way to determine whether or not need to start the embedded broker
-     * for now it always starts it if the activemq icf is being used with our default jndiurl
-     */
-    protected boolean isEmbedded() {
-        try {
-            getConnection();
-            return false;
-        } catch (Exception e) {
-            return true;
         }
     }
 

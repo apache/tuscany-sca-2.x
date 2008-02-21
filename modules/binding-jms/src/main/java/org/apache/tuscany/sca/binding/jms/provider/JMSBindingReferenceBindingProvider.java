@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.binding.jms.provider;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jms.JMSException;
+
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
@@ -131,12 +133,9 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
 
     public void stop() {
         try {
-            for (JMSBindingInvoker invoker : jmsBindingInvokers) {
-                invoker.stop();
-
-            }
-        } catch (Exception e) {
-            throw new JMSBindingException("Error stopping JMSReferenceBinding", e);
+            jmsResourceFactory.closeConnection();
+        } catch (JMSException e) {
+            throw new JMSBindingException(e);
         }
     }
 

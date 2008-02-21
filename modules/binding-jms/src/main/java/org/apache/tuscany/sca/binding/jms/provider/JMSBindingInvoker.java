@@ -218,10 +218,6 @@ public class JMSBindingInvoker implements Invoker, PassByValueAware {
         }
     }
 
-    public void stop() throws NamingException, JMSException {
-        jmsResourceFactory.closeConnection();
-    }
-
     protected Message sendRequest(Object payload, Session session, Destination replyToDest) throws JMSException {
 
         Message requestMsg = requestMessageProcessor.insertPayloadIntoJMSMessage(session, payload);

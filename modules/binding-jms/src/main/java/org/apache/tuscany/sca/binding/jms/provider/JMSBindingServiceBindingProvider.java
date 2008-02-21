@@ -46,7 +46,6 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
     private RuntimeComponentService service;
     private JMSBinding jmsBinding;
     private JMSResourceFactory jmsResourceFactory;
-    private Object broker;
     private MessageConsumer consumer;
     private WorkScheduler workScheduler;
     private boolean running;
@@ -61,12 +60,9 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
 
         jmsResourceFactory = new JMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
 
-        // if the default destination queue names is set
-        // set the destinate queue name to the reference name
-        // so that any wires can be assured a unique endpoint.
         if (jmsBinding.getDestinationName().equals(JMSBindingConstants.DEFAULT_DESTINATION_NAME)) {
-            // jmsBinding.setDestinationName(service.getName());
-            throw new JMSBindingException("No destination specified for service " + service.getName());
+            // use the SCA service name as the default destination name
+            jmsBinding.setDestinationName(service.getName());
         }
 
         if (jmsBinding.getXMLFormat()) {
@@ -101,7 +97,6 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
 
     public void start() {
         this.running = true;
-        this.broker = jmsResourceFactory.startBroker();
 
         try {
             registerListerner();
@@ -115,9 +110,6 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
         try {
             consumer.close();
             jmsResourceFactory.closeConnection();
-            if(this.broker!=null) {
-                jmsResourceFactory.stopBroker(this.broker);
-            }
         } catch (Exception e) {
             throw new JMSBindingException("Error stopping JMSServiceBinding", e);
         }
@@ -137,6 +129,8 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
             jmsResourceFactory.startConnection();
 
         } catch (javax.jms.IllegalStateException e) {
+            
+            // setMessageListener not allowed in JEE container so use Tuscany threads
 
             jmsResourceFactory.startConnection();
             workScheduler.scheduleWork(new Runnable() {
