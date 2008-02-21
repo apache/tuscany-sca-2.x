@@ -167,15 +167,25 @@ public class ServiceDiscovery {
      */
     private Map<String, String> parseServiceDeclaration(String declaration) {
         Map<String, String> attributes = new HashMap<String, String>();
+        int index = declaration.indexOf(';');
+        if (index != -1) {
+            attributes.put("class", declaration.substring(0, index).trim());
+            declaration = declaration.substring(index);
+        } else {
+            int j = declaration.indexOf('=');
+            if (j == -1) {
+                attributes.put("class", declaration.trim());
+                return attributes;
+            } else {
+                declaration = ";" + declaration;
+            }
+        }
         StringTokenizer tokens = new StringTokenizer(declaration);
-        String className = tokens.nextToken(";");
-        if (className != null)
-            attributes.put("class", className);
         for (; tokens.hasMoreTokens();) {
-            String key = tokens.nextToken("=").substring(1);
+            String key = tokens.nextToken("=").substring(1).trim();
             if (key == null)
                 break;
-            String value = tokens.nextToken(",").substring(1);
+            String value = tokens.nextToken(",").substring(1).trim();
             if (value == null)
                 break;
             attributes.put(key, value);
