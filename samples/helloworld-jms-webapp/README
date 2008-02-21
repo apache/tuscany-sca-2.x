@@ -24,7 +24,7 @@ Configuring the JMS resources
 The sample requires JMS resources be manually configured in the server environment, these are: 
 
 - a JMS connection factory named "ConnectionFactory"
-- a JMS queue named "RequestQueue"
+- a JMS queue named "HelloWorldService"
 
 See the following for how to define these resources depending on the application server being used:
 
@@ -62,7 +62,7 @@ Click Add destination
 
 For JMS Destination Type choose javax.jms.Queue and click Next	
 	
-Enter "RequestQueue" for both Message Destination Name and PhysicalName and click Next 	
+Enter "HelloWorldService" for both Message Destination Name and PhysicalName and click Next 	
 
 Click Deploy Now
 
@@ -106,10 +106,10 @@ On the Left hand menu in JMS click on Queues
 
 In the Queues panel click New, accept the defaults and click OK
 
-Enter "RequestQueue" for the Name and JNDI name and in the Bus name in the Connection pane choose MyBus,
+Enter "HelloWorldService" for the Name and JNDI name and in the Bus name in the Connection pane choose MyBus,
 and then in the Queue name drop down list choose "Create SIB destination"
 
-In the Set queue attributes panel enter "RequestQueue" for the Identifier and click Next, Next, and Finish
+In the Set queue attributes panel enter "HelloWorldService" for the Identifier and click Next, Next, and Finish
 
 That should take you back to the Queues panel where you can click OK to create the new JMS queue.
 
