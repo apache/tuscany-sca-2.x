@@ -19,13 +19,18 @@
 
 package org.apache.tuscany.sca.binding.http.provider;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -75,7 +80,9 @@ public class HTTPServiceListenerServlet implements Servlet {
         if (responseMessage.isFault()) {
             
             // Turn a fault into an exception
-            throw new ServletException((Throwable)responseMessage.getBody());
+            //throw new ServletException((Throwable)responseMessage.getBody());
+            Throwable e = (Throwable)responseMessage.getBody();
+            ((HttpServletResponse)response).sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
         }
     }
 
