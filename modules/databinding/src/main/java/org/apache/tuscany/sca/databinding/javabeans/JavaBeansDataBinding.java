@@ -72,8 +72,23 @@ public class JavaBeansDataBinding extends BaseDataBinding {
                 oos.close();
                 bos.close();
 
+                // Work out which ClassLoader to use for deserializing arg
+                // We want to use:
+                //   * The ClassLoader of arg if it is not the System ClassLoader
+                //   * The ThreadContext ClassLoader if the ClassLoader of arg is the System ClassLoader
+                //     because Collection classes are loaded by the System ClassLoader but their contents
+                //     may be loaded from another ClassLoader
+                // 
+                ClassLoader classLoaderToUse = clazz.getClassLoader();
+                if (classLoaderToUse == null)
+                {
+                    // ClassLoader of arg is the System ClassLoader so we will use the ThreadContext ClassLoader
+                    // instead
+                    classLoaderToUse = Thread.currentThread().getContextClassLoader();
+                }
+                
                 ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-                ObjectInputStream ois = getObjectInputStream(bis, clazz.getClassLoader());
+                ObjectInputStream ois = getObjectInputStream(bis, classLoaderToUse);
                 Object objectCopy = ois.readObject();
                 ois.close();
                 bis.close();
