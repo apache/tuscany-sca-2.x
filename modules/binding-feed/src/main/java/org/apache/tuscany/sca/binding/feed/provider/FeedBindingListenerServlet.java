@@ -446,7 +446,11 @@ class FeedBindingListenerServlet extends HttpServlet {
                 for (Object l : feedEntry.getOtherLinks()) {
                     Link link = (Link)l;
                     if (link.getRel() == null || "edit".equals(link.getRel())) {
-                        item.setLink(link.getHref());
+                        String href = link.getHref();
+                        if (href.startsWith("null/")) {
+                            href = href.substring(5);
+                        }
+                        item.setLink(href);
                         break;
                     }
                 }
