@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.itest.domain;
 
 
-import java.lang.reflect.UndeclaredThrowableException;
-
 import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
@@ -29,14 +27,13 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainFactory;
 import org.apache.tuscany.sca.domain.impl.SCADomainImpl;
-import org.apache.tuscany.sca.node.SCADomainFinder;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.osoa.sca.ServiceRuntimeException;
 
-import calculator.AddService;
 import calculator.CalculatorService;
 
 /**
@@ -117,10 +114,8 @@ public class DomainAPITestCase {
             try {
                 calculatorService.add(3, 2);
                 Assert.fail();
-            } catch (UndeclaredThrowableException ex){
+            } catch (ServiceRuntimeException ex){
                 // do nothing
-                
-                // TODO - can't this be a better exception than undeclared throwable
             }
             
             domain.start();
@@ -133,7 +128,7 @@ public class DomainAPITestCase {
             try {
                 calculatorService.add(3, 2);
                 Assert.fail();
-            } catch (UndeclaredThrowableException ex){
+            } catch (ServiceRuntimeException ex){
                 // do nothing
             }            
             
