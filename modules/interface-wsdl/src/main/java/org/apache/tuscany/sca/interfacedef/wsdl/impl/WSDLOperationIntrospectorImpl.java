@@ -180,8 +180,8 @@ public class WSDLOperationIntrospectorImpl {
                     throw new InvalidWSDLException("The fault message MUST have a single part");
                 }
                 Part part = (Part)faultParts.get(0);
-                WSDLPart wsdlPart = new WSDLPart(part, FaultException.class);
-                faultTypes.add(wsdlPart.getDataType());
+                WSDLPart wsdlPart = new WSDLPart(part, Object.class);
+                faultTypes.add(new DataTypeImpl<DataType>(FaultException.class, wsdlPart.getDataType()));
             }
         }
         return faultTypes;

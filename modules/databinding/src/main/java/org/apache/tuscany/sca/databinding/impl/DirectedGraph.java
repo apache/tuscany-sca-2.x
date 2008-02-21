@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.databinding.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,7 +33,7 @@ import java.util.Set;
  * @param <V> The type of vertex object
  * @param <E> The type of edge object
  */
-public class DirectedGraph<V, E> {
+public class DirectedGraph<V, E> implements Cloneable {
     private final Map<V, Vertex> vertices = new HashMap<V, Vertex>();
 
     /**
@@ -82,6 +83,7 @@ public class DirectedGraph<V, E> {
         // TODO: Do we want to support multiple edges for a vertex pair? If so,
         // we should use a List instead of Map
         private Map<Vertex, Edge> outEdges = new HashMap<Vertex, Edge>();
+        private Map<Vertex, Edge> inEdges = new HashMap<Vertex, Edge>();
 
         private Vertex(V value) {
             this.value = value;
@@ -98,6 +100,10 @@ public class DirectedGraph<V, E> {
 
         public Map<Vertex, Edge> getOutEdges() {
             return outEdges;
+        }
+
+        public Map<Vertex, Edge> getInEdges() {
+            return inEdges;
         }
 
     }
@@ -200,6 +206,11 @@ public class DirectedGraph<V, E> {
         }
         Edge edge = new Edge(s, t, edgeValue, weight, publicEdge);
         s.outEdges.put(t, edge);
+        t.inEdges.put(s, edge);
+    }
+
+    public void addEdge(V soure, V target) {
+        addEdge(soure, target, null, 0, true);
     }
 
     public Vertex getVertex(V source) {
@@ -218,8 +229,23 @@ public class DirectedGraph<V, E> {
             return false;
         }
 
-        return s.outEdges.remove(t) != null;
+        return s.outEdges.remove(t) != null && t.inEdges.remove(s) != null;
 
+    }
+
+    public void removeEdge(Edge edge) {
+        edge.sourceVertex.outEdges.remove(edge.targetVertex);
+        edge.targetVertex.inEdges.remove(edge.sourceVertex);
+    }
+
+    public void removeVertex(Vertex vertex) {
+        vertices.remove(vertex.getValue());
+        for (Edge e : new ArrayList<Edge>(vertex.outEdges.values())) {
+            removeEdge(e);
+        }
+        for (Edge e : new ArrayList<Edge>(vertex.inEdges.values())) {
+            removeEdge(e);
+        }
     }
 
     public Edge getEdge(Vertex source, Vertex target) {
@@ -380,5 +406,40 @@ public class DirectedGraph<V, E> {
                 addEdge(e.sourceVertex.value, e.targetVertex.value, e.value, e.weight, true);
             }
         }
+    }
+
+    private Vertex getFirst() {
+        for (Vertex v : vertices.values()) {
+            if (v.inEdges.isEmpty()) {
+                return v;
+            }
+        }
+        if (!vertices.isEmpty()) {
+            throw new IllegalArgumentException("Circular ordering has been detected: " + toString());
+        } else {
+            return null;
+        }
+    }
+
+    public List<V> topologicalSort(boolean readOnly) {
+        DirectedGraph<V, E> graph = (!readOnly) ? this : (DirectedGraph<V, E>)clone();
+        List<V> list = new ArrayList<V>();
+        while (true) {
+            Vertex v = graph.getFirst();
+            if (v == null) {
+                break;
+            }
+            list.add(v.getValue());
+            graph.removeVertex(v);
+        }
+
+        return list;
+    }
+
+    @Override
+    public Object clone() {
+        DirectedGraph<V, E> copy = new DirectedGraph<V, E>();
+        copy.addGraph(this);
+        return copy;
     }
 }

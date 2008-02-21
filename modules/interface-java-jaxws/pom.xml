@@ -177,6 +177,25 @@
                     <xnocompile>true</xnocompile>
                 </configuration>
             </plugin>
+            <!-- 
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>1.9</version>
+                <configuration>
+                    <sei>org.apache.tuscany.sca.interfacedef.java.jaxws.MyServiceImpl</sei>
+                    <genWsdl>true</genWsdl>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>wsgen-test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
         </plugins>
     </build>
 

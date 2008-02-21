@@ -29,7 +29,7 @@ import javax.xml.namespace.QName;
 public class FaultException extends Exception {
     private static final long serialVersionUID = -8002583655240625792L;
     private Object faultInfo;
-    private QName logical;
+    private QName faultName;
 
     /**
      * @param message
@@ -57,23 +57,23 @@ public class FaultException extends Exception {
         return faultInfo;
     }
 
-    public QName getLogical() {
-        return logical;
+    public QName getFaultName() {
+        return faultName;
     }
 
-    public void setLogical(QName logical) {
-        this.logical = logical;
+    public void setFaultName(QName logical) {
+        this.faultName = logical;
     }
 
     public boolean isMatchingType(Object type) {
-        if (logical == null) {
+        if (faultName == null) {
             return false;
         }
 
-        if ((type instanceof QName) && logical.equals(type)) {
+        if ((type instanceof QName) && faultName.equals(type)) {
             return true;
         }
-        if (type instanceof XMLType && logical.equals(((XMLType)type).getElementName())) {
+        if (type instanceof XMLType && faultName.equals(((XMLType)type).getElementName())) {
             return true;
         }
         return false;

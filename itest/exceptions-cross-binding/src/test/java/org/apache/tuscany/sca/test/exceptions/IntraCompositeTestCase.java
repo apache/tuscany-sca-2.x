@@ -20,10 +20,10 @@ package org.apache.tuscany.sca.test.exceptions;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.test.exceptions.impl.StockTraderSDO;
 import org.apache.tuscany.sca.test.exceptions.sdohandgen.InvalidSymbolSDOException;
+import org.osoa.sca.ServiceRuntimeException;
 
 import stockexceptiontestservice.scatesttool.InvalidSymbolFault;
 import stockexceptiontestservice.scatesttool.StockOffer;
@@ -73,7 +73,7 @@ public class IntraCompositeTestCase extends TestCase {
 
         assertNotNull(ret);
 
-        assertEquals(TransformationException.class, ret.getClass());
+        assertEquals(ServiceRuntimeException.class, ret.getClass());
 
     }
 

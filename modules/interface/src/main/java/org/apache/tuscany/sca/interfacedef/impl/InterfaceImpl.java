@@ -135,6 +135,11 @@ public class InterfaceImpl implements Interface {
                         if (d.getDataBinding() == null) {
                             d.setDataBinding(dataBinding);
                         }
+                        DataType ft = (DataType) d.getLogical();
+                        if (ft.getDataBinding() == null) {
+                            ft.setDataBinding(dataBinding);
+                        }
+
                     }
                 }
                 if (op.isWrapperStyle()) {
@@ -183,6 +188,7 @@ public class InterfaceImpl implements Interface {
             if (faultTypes != null) {
                 for (DataType d : faultTypes) {
                     setDataBinding(d, dataBinding);
+                    setDataBinding((DataType) d.getLogical(), dataBinding);
                 }
             }
             if (op.isWrapperStyle()) {

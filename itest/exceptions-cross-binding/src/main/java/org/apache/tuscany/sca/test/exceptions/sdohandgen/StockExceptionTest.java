@@ -40,7 +40,6 @@ public interface StockExceptionTest {
      * 
      * @param param0
      */
-    StockOffer stockQuoteOffer(StockOffer param0)
-        throws java.rmi.RemoteException, InvalidSymbolSDOException, MarketClosedSDOException;
+    StockOffer stockQuoteOffer(StockOffer param0) throws InvalidSymbolSDOException, MarketClosedSDOException;
 
 }

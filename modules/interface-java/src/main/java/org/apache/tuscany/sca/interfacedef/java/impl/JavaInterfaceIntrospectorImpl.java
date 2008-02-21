@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,7 +68,7 @@ public class JavaInterfaceIntrospectorImpl {
 
     public void introspectInterface(JavaInterface javaInterface, Class<?> clazz) throws InvalidInterfaceException {
         javaInterface.setJavaClass(clazz);
-        
+
         boolean remotable = clazz.isAnnotationPresent(Remotable.class);
         javaInterface.setRemotable(remotable);
 
@@ -90,7 +91,7 @@ public class JavaInterfaceIntrospectorImpl {
             extension.visitInterface(javaInterface);
         }
     }
-    
+
     private Class<?>[] getActualTypes(Type[] types, Class<?>[] rawTypes, Map<String, Type> typeBindings) {
         Class<?>[] actualTypes = new Class<?>[types.length];
         for (int i = 0; i < actualTypes.length; i++) {
@@ -98,7 +99,7 @@ public class JavaInterfaceIntrospectorImpl {
         }
         return actualTypes;
     }
-    
+
     private Class<?> getActualType(Type type, Class<?> rawType, Map<String, Type> typeBindings) {
         if (type instanceof TypeVariable<?>) {
             TypeVariable<?> typeVariable = (TypeVariable<?>)type;
@@ -112,10 +113,10 @@ public class JavaInterfaceIntrospectorImpl {
 
     private <T> List<Operation> getOperations(Class<T> clazz, boolean remotable, boolean conversational, String ns)
         throws InvalidInterfaceException {
-        
+
         Type[] genericInterfaces = clazz.getGenericInterfaces();
         Map<String, Type> typeBindings = new HashMap<String, Type>();
-        for (Type genericInterface: genericInterfaces) {
+        for (Type genericInterface : genericInterfaces) {
             if (genericInterface instanceof ParameterizedType) {
                 ParameterizedType parameterizedType = (ParameterizedType)genericInterface;
                 TypeVariable<?>[] typeVariables = ((Class<?>)parameterizedType.getRawType()).getTypeParameters();
@@ -125,7 +126,7 @@ public class JavaInterfaceIntrospectorImpl {
                 }
             }
         }
-        
+
         Method[] methods = clazz.getMethods();
         List<Operation> operations = new ArrayList<Operation>(methods.length);
         Set<String> names = remotable ? new HashSet<String>() : null;
@@ -143,9 +144,11 @@ public class JavaInterfaceIntrospectorImpl {
             }
 
             Class<?> returnType = getActualType(method.getGenericReturnType(), method.getReturnType(), typeBindings);
-            Class<?>[] parameterTypes = getActualTypes(method.getGenericParameterTypes(), method.getParameterTypes(), typeBindings);
-            Class<?>[] faultTypes = getActualTypes(method.getGenericExceptionTypes(), method.getExceptionTypes(), typeBindings);
-            
+            Class<?>[] parameterTypes =
+                getActualTypes(method.getGenericParameterTypes(), method.getParameterTypes(), typeBindings);
+            Class<?>[] faultTypes =
+                getActualTypes(method.getGenericExceptionTypes(), method.getExceptionTypes(), typeBindings);
+
             boolean nonBlocking = method.isAnnotationPresent(OneWay.class);
             ConversationSequence conversationSequence = ConversationSequence.CONVERSATION_NONE;
             if (method.isAnnotationPresent(EndsConversation.class)) {
@@ -173,9 +176,12 @@ public class JavaInterfaceIntrospectorImpl {
             List<DataType> faultDataTypes = new ArrayList<DataType>(faultTypes.length);
             for (Class<?> faultType : faultTypes) {
                 // Only add checked exceptions
-                if (Exception.class.isAssignableFrom(faultType) && (!RuntimeException.class.isAssignableFrom(faultType))) {
+                // JAXWS Spec v2.1 section 3.7 says RemoteException should not be mapped
+                if (Exception.class.isAssignableFrom(faultType) && (!RuntimeException.class.isAssignableFrom(faultType))
+                    && (!RemoteException.class.isAssignableFrom(faultType))) {
                     XMLType xmlFaultType = new XMLType(new QName(ns, faultType.getSimpleName()), null);
-                    faultDataTypes.add(new DataTypeImpl<XMLType>(UNKNOWN_DATABINDING, faultType, xmlFaultType));
+                    DataType<XMLType> faultDataType = new DataTypeImpl<XMLType>(faultType, xmlFaultType);
+                    faultDataTypes.add(new DataTypeImpl<DataType>(UNKNOWN_DATABINDING, faultType, faultDataType));
                 }
             }
 

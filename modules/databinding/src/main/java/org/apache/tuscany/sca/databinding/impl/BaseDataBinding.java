@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.databinding.impl;
 import java.lang.annotation.Annotation;
 
 import org.apache.tuscany.sca.databinding.DataBinding;
-import org.apache.tuscany.sca.databinding.ExceptionHandler;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -111,10 +110,6 @@ public abstract class BaseDataBinding implements DataBinding {
      * @see org.apache.tuscany.sca.databinding.DataBinding#getWrapperHandler()
      */
     public WrapperHandler getWrapperHandler() {
-        return null;
-    }
-
-    public ExceptionHandler getExceptionHandler() {
         return null;
     }
 

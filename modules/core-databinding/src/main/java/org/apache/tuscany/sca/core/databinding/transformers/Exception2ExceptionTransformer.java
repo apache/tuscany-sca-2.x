@@ -20,22 +20,28 @@
 package org.apache.tuscany.sca.core.databinding.transformers;
 
 import org.apache.tuscany.sca.databinding.DataBinding;
-import org.apache.tuscany.sca.databinding.ExceptionHandler;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.interfacedef.DataType;
-import org.osoa.sca.annotations.Reference;
+import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 
 /**
  * This is a special transformer to transform the exception from one IDL to the
  * other one
  */
 public class Exception2ExceptionTransformer extends BaseTransformer<Object[], Object[]> implements
-    PullTransformer<Exception, Exception> {
+    PullTransformer<Throwable, Throwable> {
 
     protected Mediator mediator;
+    protected FaultExceptionMapper faultExceptionMapper;
+
+    public Exception2ExceptionTransformer(Mediator mediator, FaultExceptionMapper faultExceptionMapper) {
+        super();
+        this.mediator = mediator;
+        this.faultExceptionMapper = faultExceptionMapper;
+    }
 
     public Exception2ExceptionTransformer() {
         super();
@@ -54,7 +60,6 @@ public class Exception2ExceptionTransformer extends BaseTransformer<Object[], Ob
     /**
      * @param mediator the mediator to set
      */
-    @Reference
     public void setMediator(Mediator mediator) {
         this.mediator = mediator;
     }
@@ -64,7 +69,7 @@ public class Exception2ExceptionTransformer extends BaseTransformer<Object[], Ob
      */
     @Override
     protected Class getSourceType() {
-        return Exception.class;
+        return Throwable.class;
     }
 
     /**
@@ -72,7 +77,7 @@ public class Exception2ExceptionTransformer extends BaseTransformer<Object[], Ob
      */
     @Override
     protected Class getTargetType() {
-        return Exception.class;
+        return Throwable.class;
     }
 
     /**
@@ -84,41 +89,24 @@ public class Exception2ExceptionTransformer extends BaseTransformer<Object[], Ob
     }
 
     @SuppressWarnings("unchecked")
-    public Exception transform(Exception source, TransformationContext context) {
+    public Throwable transform(Throwable source, TransformationContext context) {
         DataType<DataType> sourceType = context.getSourceDataType();
 
         DataType<DataType> targetType = context.getTargetDataType();
 
-        ExceptionHandler exceptionHandler = getExceptionHandler(sourceType);
-        if (exceptionHandler == null) {
-            return source;
-        }
-
-        Object sourceFaultInfo = exceptionHandler.getFaultInfo(source);
+        Object sourceFaultInfo = faultExceptionMapper.getFaultInfo(source, sourceType.getLogical().getPhysical());
         Object targetFaultInfo =
             mediator.mediate(sourceFaultInfo, sourceType.getLogical(), targetType.getLogical(), context.getMetadata());
 
-        ExceptionHandler targetHandler = getExceptionHandler(targetType);
-
-        if (targetHandler != null) {
-            Exception targetException =
-                targetHandler.createException(targetType, source.getMessage(), targetFaultInfo, source.getCause());
-            return targetException;
-        }
+        Throwable targetException =
+            faultExceptionMapper.wrapFaultInfo(targetType, source.getMessage(), targetFaultInfo, source.getCause());
 
         // FIXME
-        return source;
+        return targetException == null ? source : targetException;
 
     }
 
-    private ExceptionHandler getExceptionHandler(DataType<DataType> targetType) {
-        DataType targetFaultType = (DataType)targetType.getLogical();
-        DataBinding targetDataBinding =
-            mediator.getDataBindings().getDataBinding(targetFaultType.getDataBinding());
-        if (targetDataBinding == null) {
-            return null;
-        }
-        ExceptionHandler targetHandler = targetDataBinding.getExceptionHandler();
-        return targetHandler;
+    public void setFaultExceptionMapper(FaultExceptionMapper faultExceptionMapper) {
+        this.faultExceptionMapper = faultExceptionMapper;
     }
 }

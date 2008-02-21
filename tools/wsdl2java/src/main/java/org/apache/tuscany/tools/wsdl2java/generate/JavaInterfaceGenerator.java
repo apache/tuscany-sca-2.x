@@ -295,8 +295,12 @@ public class JavaInterfaceGenerator {
             stream.println();
             stream.println("package " + packageName + ";");
             stream.println();
-            stream.println("import javax.xml.namespace.QName; ");
+            stream.println("import javax.xml.ws.WebFault;");
             stream.println();
+            stream.println("@WebFault(name=\"" + faultMsgPartElementQName.getLocalPart()
+                + "\", targetNamespace=\""
+                + faultMsgPartElementQName.getNamespaceURI()
+                + "\")");
             stream.println("public class " + faultWrapperClassName  + " extends Exception {");
             stream.println();
             stream.println("    private " + faultClassName + " fault;");
@@ -310,9 +314,6 @@ public class JavaInterfaceGenerator {
             stream.println("        super(message, cause);");
             stream.println("        this.fault = fault;");
             stream.println("    }");
-            stream.println();
-            stream.println("    public static QName FAULT_ELEMENT = new QName(\"" + faultMsgPartElementQName.getNamespaceURI() + 
-                    "\",\"" + faultMsgPartElementQName.getLocalPart() + "\");");
             stream.println();
             stream.println("    public " + faultClassName + " getFaultInfo() {");
             stream.println("        return this.fault;");

@@ -19,18 +19,17 @@
 
 package org.apache.tuscany.sca.test.exceptions.sdohandgen;
 
-import javax.xml.namespace.QName;
+import javax.xml.ws.WebFault;
 
 import stockexceptiontestservice.scatesttool.InvalidSymbolFault;
 
 /**
  * 
  */
+@WebFault(name="InvalidSymbolFault", targetNamespace="http://scatesttool.stockexceptiontestservice")
 public class InvalidSymbolSDOException extends Exception {
     private static final long serialVersionUID = -3824848763300476741L;
     
-    public static final QName FAULT_ELEMENT = new QName("http://scatesttool.stockexceptiontestservice", "InvalidSymbolFault");
-
     /**
      * 
      */

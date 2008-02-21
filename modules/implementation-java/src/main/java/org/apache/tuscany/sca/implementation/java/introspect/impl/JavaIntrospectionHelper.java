@@ -32,8 +32,10 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -61,7 +63,6 @@ public final class JavaIntrospectionHelper {
     public static Set<Field> getAllPublicAndProtectedFields(Class clazz, boolean validating) {
         return getAllPublicAndProtectedFields(clazz, new HashSet<Field>(), validating);
     }
-    
 
     private static void checkInvalidAnnotations(AnnotatedElement element) {
         for (Annotation a : element.getAnnotations()) {
@@ -87,7 +88,7 @@ public final class JavaIntrospectionHelper {
                 field.setAccessible(true); // ignore Java accessibility
                 fields.add(field);
             } else {
-                if(validating) {
+                if (validating) {
                     checkInvalidAnnotations(field);
                 }
             }
@@ -119,7 +120,7 @@ public final class JavaIntrospectionHelper {
         for (Method declaredMethod : declaredMethods) {
             int modifiers = declaredMethod.getModifiers();
             if ((!Modifier.isPublic(modifiers) && !Modifier.isProtected(modifiers)) || Modifier.isStatic(modifiers)) {
-                if(validating) {
+                if (validating) {
                     checkInvalidAnnotations(declaredMethod);
                 }
                 continue;
@@ -168,8 +169,9 @@ public final class JavaIntrospectionHelper {
             if (field.getName().equals(name)) {
                 if (field.getType().equals(type)) {
                     return field; // exact match
-                } else if (field.getType().isAssignableFrom(type) 
-                    || (field.getType().isPrimitive() && primitiveAssignable(field.getType(), type))) {
+                } else if (field.getType().isAssignableFrom(type) || (field.getType().isPrimitive() && primitiveAssignable(field
+                                                                                                                               .getType(),
+                                                                                                                           type))) {
                     // We could have the situation where a field parameter is a
                     // primitive and the demarshalled value is
                     // an object counterpart (e.g. Integer and int)
@@ -273,10 +275,10 @@ public final class JavaIntrospectionHelper {
 
     public static boolean isImmutable(Class clazz) {
         return String.class == clazz || clazz.isPrimitive()
-               || Number.class.isAssignableFrom(clazz)
-               || Boolean.class.isAssignableFrom(clazz)
-               || Character.class.isAssignableFrom(clazz)
-               || Byte.class.isAssignableFrom(clazz);
+            || Number.class.isAssignableFrom(clazz)
+            || Boolean.class.isAssignableFrom(clazz)
+            || Character.class.isAssignableFrom(clazz)
+            || Byte.class.isAssignableFrom(clazz);
     }
 
     /**
@@ -343,7 +345,7 @@ public final class JavaIntrospectionHelper {
             return cls;
         }
     }
-    
+
     public static Type getParameterType(Type type) {
         if (type instanceof ParameterizedType) {
             // Collection<BaseType>
@@ -354,7 +356,7 @@ public final class JavaIntrospectionHelper {
             return Object.class;
         }
     }
-    
+
     public static Class<?> getBusinessInterface(Class<?> cls, Type callableReferenceType) {
         if (CallableReference.class.isAssignableFrom(cls) && callableReferenceType instanceof ParameterizedType) {
             // Collection<BaseType>
@@ -491,7 +493,7 @@ public final class JavaIntrospectionHelper {
             getAllInterfaces(superClass, implemented);
         }
     }
-    
+
     public static boolean isSetter(Method method) {
         return (void.class == method.getReturnType() && method.getParameterTypes().length == 1 && method.getName()
             .startsWith("set"));
@@ -500,5 +502,36 @@ public final class JavaIntrospectionHelper {
     public static boolean isGetter(Method method) {
         return (void.class != method.getReturnType() && method.getParameterTypes().length == 0 && method.getName()
             .startsWith("get"));
-    }    
+    }
+
+    private final static Map<Class, String> signatures = new HashMap<Class, String>();
+    static {
+        signatures.put(boolean.class, "Z");
+        signatures.put(byte.class, "B");
+        signatures.put(char.class, "C");
+        signatures.put(short.class, "S");
+        signatures.put(int.class, "I");
+        signatures.put(long.class, "J");
+        signatures.put(float.class, "F");
+        signatures.put(double.class, "D");
+    };
+
+    public static String getSignature(Class<?> cls) {
+        if (cls.isPrimitive()) {
+            return signatures.get(cls);
+        }
+        if (cls.isArray()) {
+            return "[" + getSignature(cls.getComponentType());
+        }
+        return "L" + cls.getName().replace('.', '/') + ";";
+    }
+
+    public static Class<?> getArrayType(Class<?> componentType, int dims) throws ClassNotFoundException {
+        StringBuffer buf = new StringBuffer();
+        for (int i = 0; i < dims; i++) {
+            buf.append('[');
+        }
+        buf.append(getSignature(componentType));
+        return Class.forName(buf.toString(), false, componentType.getClassLoader());
+    }
 }

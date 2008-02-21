@@ -90,9 +90,6 @@ public class StockTraderSDOImpl implements StockTraderSDO {
         try {
             StockOffer stockOfferAccepted = exchangeJaxb.stockQuoteOffer(stockOffer);
             stockOfferAccepted.getPrice(); // the price actually bought.
-        } catch (RemoteException e) {
-
-            e.printStackTrace();
         } catch (InvalidSymbolSDOException e) {
 
             e.printStackTrace();

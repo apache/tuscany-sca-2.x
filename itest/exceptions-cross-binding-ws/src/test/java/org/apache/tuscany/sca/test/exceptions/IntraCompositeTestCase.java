@@ -18,13 +18,12 @@
  */
 package org.apache.tuscany.sca.test.exceptions;
 
-import java.lang.reflect.UndeclaredThrowableException;
-
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.test.exceptions.impl.StockTraderSDO;
 import org.apache.tuscany.sca.test.exceptions.sdohandgen.InvalidSymbolSDOException;
+import org.osoa.sca.ServiceRuntimeException;
 
 import stockexceptiontestservice.scatesttool.InvalidSymbolFault;
 import stockexceptiontestservice.scatesttool.StockOffer;
@@ -73,7 +72,7 @@ public class IntraCompositeTestCase extends TestCase {
 
         assertNotNull(ret);
 
-        assertEquals(UndeclaredThrowableException.class, ret.getClass());
+        assertEquals(ServiceRuntimeException.class, ret.getClass());
 
     }
     
@@ -83,7 +82,7 @@ public class IntraCompositeTestCase extends TestCase {
 
         assertNotNull(ret);
 
-        assertEquals(UndeclaredThrowableException.class, ret.getClass());
+        assertEquals(ServiceRuntimeException.class, ret.getClass());
 
     }
 

@@ -26,10 +26,9 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.databinding.DataBinding;
-import org.apache.tuscany.sca.databinding.ExceptionHandler;
 import org.apache.tuscany.sca.databinding.Mediator;
-import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
@@ -39,6 +38,7 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.PassByValueAware;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * An interceptor to transform data accross databindings on the wire
@@ -53,16 +53,19 @@ public class DataTransformationInterceptor implements Interceptor, PassByValueAw
     private Operation targetOperation;
     private RuntimeWire wire;
     private Mediator mediator;
+    private FaultExceptionMapper faultExceptionMapper;
 
     public DataTransformationInterceptor(RuntimeWire wire,
                                          Operation sourceOperation,
                                          Operation targetOperation,
-                                         Mediator mediator) {
+                                         Mediator mediator,
+                                         FaultExceptionMapper faultExceptionMapper) {
         super();
         this.sourceOperation = sourceOperation;
         this.targetOperation = targetOperation;
         this.mediator = mediator;
         this.wire = wire;
+        this.faultExceptionMapper = faultExceptionMapper;
     }
 
     public Invoker getNext() {
@@ -107,7 +110,8 @@ public class DataTransformationInterceptor implements Interceptor, PassByValueAw
                 for (DataType exType : targetOperation.getFaultTypes()) {
                     if (((Class)exType.getPhysical()).isInstance(result)) {
                         if (result instanceof FaultException) {
-                            if (((FaultException)result).isMatchingType(exType.getLogical())) {
+                            DataType faultType = (DataType)exType.getLogical();
+                            if (((FaultException)result).isMatchingType(faultType.getLogical())) {
                                 targetDataType = exType;
                                 break;
                             }
@@ -118,14 +122,18 @@ public class DataTransformationInterceptor implements Interceptor, PassByValueAw
                     }
                 }
 
+                /*
                 if (targetDataType == null) {
                     // Not a business exception
                     return resultMsg;
                 }
+                */
 
                 DataType targetFaultType = getFaultType(targetDataType);
                 if (targetFaultType == null) {
-                    throw new TransformationException("Target fault type cannot be resolved: " + targetDataType);
+                    throw new ServiceRuntimeException("Target fault type cannot be resolved: " + targetDataType,
+                                                      (Throwable)result);
+                    // throw new TransformationException("Target fault type cannot be resolved: " + targetDataType);
                 }
 
                 // FIXME: How to match a source fault type to a target fault
@@ -143,7 +151,9 @@ public class DataTransformationInterceptor implements Interceptor, PassByValueAw
                 }
 
                 if (sourceFaultType == null) {
-                    throw new TransformationException("No matching source fault type is found: " + targetFaultType);
+                    throw new ServiceRuntimeException("No matching source fault type is found: " + targetFaultType,
+                                                      (Throwable)result);
+                    // throw new TransformationException("No matching source fault type is found: " + targetFaultType);
                 }
 
                 Object newResult =
@@ -177,16 +187,7 @@ public class DataTransformationInterceptor implements Interceptor, PassByValueAw
     }
 
     private DataType getFaultType(DataType exceptionType) {
-        // FIXME: We cannot assume the exception will have a databinding set
-        DataBinding targetDataBinding = mediator.getDataBindings().getDataBinding(exceptionType.getDataBinding());
-        if (targetDataBinding == null) {
-            return null;
-        }
-        ExceptionHandler targetHandler = targetDataBinding.getExceptionHandler();
-        if (targetHandler == null) {
-            return null;
-        }
-        return targetHandler.getFaultType(exceptionType);
+        return exceptionType == null ? null : (DataType)exceptionType.getLogical();
     }
 
     private boolean typesMatch(Object first, Object second) {
@@ -196,7 +197,7 @@ public class DataTransformationInterceptor implements Interceptor, PassByValueAw
         if (first instanceof XMLType && second instanceof XMLType) {
             XMLType t1 = (XMLType)first;
             XMLType t2 = (XMLType)second;
-            return matches(t1.getElementName(), t2.getElementName()) && matches(t1.getTypeName(), t2.getTypeName());
+            return matches(t1.getElementName(), t2.getElementName()) || matches(t1.getTypeName(), t2.getTypeName());
         }
         return false;
     }
@@ -254,7 +255,7 @@ public class DataTransformationInterceptor implements Interceptor, PassByValueAw
     public void setNext(Invoker next) {
         this.next = next;
     }
-    
+
     public boolean allowsPassByReference() {
         return true;
     }

@@ -71,14 +71,16 @@ public class Axis2BindingInvoker implements Invoker, PassByValueAware {
         this.soapFactory = soapFactory;
     }
 
+    private final static QName EXCEPTION = new QName("", "Exception");
+    
     public Message invoke(Message msg) {
         try {
             Object resp = invokeTarget(msg);
             msg.setBody(resp);
         } catch (AxisFault e) {
-            if (e.getDetail() != null) {
-                FaultException f = new FaultException(e.getMessage(), e.getDetail());
-                f.setLogical(e.getDetail().getQName());
+            if (e.getDetail() != null ) {
+                FaultException f = new FaultException(e.getMessage(), e.getDetail(), e);
+                f.setFaultName(e.getDetail().getQName());
                 msg.setFaultBody(f);
             } else {
                 msg.setFaultBody(e);
