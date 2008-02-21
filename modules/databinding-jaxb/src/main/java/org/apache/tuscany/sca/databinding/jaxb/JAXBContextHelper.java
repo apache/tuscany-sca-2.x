@@ -112,7 +112,7 @@ public class JAXBContextHelper {
         Class type = dataType.getPhysical();
         if (JAXBElement.class.isAssignableFrom(type)) {
             type = Object.class;
-        } 
+        }
         if (type == Object.class && dataType.getLogical() instanceof XMLType) {
             XMLType xType = (XMLType)dataType.getLogical();
             Class javaType = SimpleTypeMapperImpl.getJavaType(xType.getTypeName());
@@ -124,6 +124,10 @@ public class JAXBContextHelper {
     }
 
     public static XMLType getXmlTypeName(Class<?> javaType) {
+        if (javaType.isInterface()) {
+            // JAXB doesn't support interfaces
+            return null;
+        }
         String namespace = null;
         String name = null;
         Package pkg = javaType.getPackage();
@@ -133,41 +137,46 @@ public class JAXBContextHelper {
                 namespace = schema.namespace();
             }
         }
+
+        QName elementQName = null;
+        QName typeQName = null;
+        XmlRootElement rootElement = javaType.getAnnotation(XmlRootElement.class);
+        if (rootElement != null) {
+            String elementName = rootElement.name();
+            String elementNamespace = rootElement.namespace();
+            if (elementNamespace.equals("##default")) {
+                elementNamespace = namespace;
+            }
+            if (elementName.equals("##default")) {
+                elementName = Introspector.decapitalize(javaType.getSimpleName());
+            }
+            elementQName = new QName(elementNamespace, elementName);
+        }
         XmlType type = javaType.getAnnotation(XmlType.class);
         if (type != null) {
             String typeNamespace = type.namespace();
             String typeName = type.name();
 
-            if (typeNamespace.equals("##default") && typeName.equals("")) {
-                XmlRootElement rootElement = javaType.getAnnotation(XmlRootElement.class);
-                if (rootElement != null) {
-                    namespace = rootElement.namespace();
-                } else {
-                    // FIXME: The namespace should be from the referencing
-                    // property
-                    namespace = null;
-                }
-            } else if (typeNamespace.equals("##default")) {
+            if (typeNamespace.equals("##default")) {
                 // namespace is from the package
-            } else {
-                namespace = typeNamespace;
+                typeNamespace = namespace;
             }
 
             if (typeName.equals("##default")) {
-                name = Introspector.decapitalize(javaType.getSimpleName());
-            } else {
-                name = typeName;
+                typeName = Introspector.decapitalize(javaType.getSimpleName());
             }
+            typeQName = new QName(typeNamespace, typeName);
         } else {
             XmlEnum xmlEnum = javaType.getAnnotation(XmlEnum.class);
             if (xmlEnum != null) {
                 name = Introspector.decapitalize(javaType.getSimpleName());
+                typeQName = new QName(namespace, name);
             }
         }
-        if (name == null) {
+        if (elementQName == null && typeQName == null) {
             return null;
         }
-        return new XMLType(null, new QName(namespace, name));
+        return new XMLType(elementQName, typeQName);
     }
 
 }

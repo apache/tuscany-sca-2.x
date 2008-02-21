@@ -92,6 +92,7 @@
                 <module>host-tomcat</module>
                 <module>interface</module>
                 <module>interface-java</module>
+                <module>interface-java-jaxws</module>
                 <module>interface-java-xml</module>
                 <module>interface-wsdl</module>
                 <module>interface-wsdl-java2wsdl</module>

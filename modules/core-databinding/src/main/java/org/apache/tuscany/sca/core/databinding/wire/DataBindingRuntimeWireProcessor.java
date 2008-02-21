@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -40,11 +41,15 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
     private Mediator mediator;
     private DataBindingExtensionPoint dataBindings;
+    private FaultExceptionMapper faultExceptionMapper;
 
-    public DataBindingRuntimeWireProcessor(Mediator mediator, DataBindingExtensionPoint dataBindings) {
+    public DataBindingRuntimeWireProcessor(Mediator mediator,
+                                           DataBindingExtensionPoint dataBindings,
+                                           FaultExceptionMapper faultExceptionMapper) {
         super();
         this.mediator = mediator;
         this.dataBindings = dataBindings;
+        this.faultExceptionMapper = faultExceptionMapper;
     }
 
     public boolean isTransformationRequired(DataType source, DataType target) {
@@ -141,7 +146,9 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
             if (isTransformationRequired(sourceContract, sourceOperation, targetContract, targetOperation)) {
                 // Add the interceptor to the source side because multiple
                 // references can be wired to the same service
-                interceptor = new DataTransformationInterceptor(wire, sourceOperation, targetOperation, mediator);
+                interceptor =
+                    new DataTransformationInterceptor(wire, sourceOperation, targetOperation, mediator,
+                                                      faultExceptionMapper);
             } else {
                 // assume pass-by-values copies are required if interfaces are remotable and there is no data binding
                 // transformation, i.e. a transformation will result in a copy so another pass-by-value copy is unnecessary

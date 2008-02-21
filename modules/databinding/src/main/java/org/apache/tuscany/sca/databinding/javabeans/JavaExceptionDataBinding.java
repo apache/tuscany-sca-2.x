@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.databinding.javabeans;
 
-import org.apache.tuscany.sca.databinding.ExceptionHandler;
 
 /**
  * DataBinding for Java Exceptions
@@ -31,10 +30,4 @@ public class JavaExceptionDataBinding extends JavaBeansDataBinding {
     public JavaExceptionDataBinding() {
         super(NAME, null);
     }
-
-    @Override
-    public ExceptionHandler getExceptionHandler() {
-        return new JavaExceptionExceptionHandler();
-    }
-
 }

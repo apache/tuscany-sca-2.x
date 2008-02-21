@@ -175,10 +175,6 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             return aliases;
         }
 
-        public ExceptionHandler getExceptionHandler() {
-            return getDataBinding().getExceptionHandler();
-        }
-
         public String getName() {
             return name;
         }
@@ -230,6 +226,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             // which is java.lang.Object. Default to this only if no databinding
             // results
             if (!binding.getName().equals(JavaBeansDataBinding.NAME)) {
+                /*
                 if (isException) {
                     // Next look to see if the DB's exceptionHandler handles this exception
                     ExceptionHandler excHandler = binding.getExceptionHandler();
@@ -243,7 +240,9 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
                             return true;
                         }
                     }
-                } else {
+                } else
+                */ 
+                {
                     if (binding.introspect(dataType, annotations)) {
                         return true;
                     }

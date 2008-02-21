@@ -39,7 +39,7 @@ public @interface DataBinding {
      * Indicate the effective databinding that controls the WSDL/Java mapping of the 
      * interface/operation
      * 
-     * @return the unique name of the data binding
+     * @return the data binding with the MIME media type syntax
      */
     String value();
     

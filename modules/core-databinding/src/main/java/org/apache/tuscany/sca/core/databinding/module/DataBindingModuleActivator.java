@@ -32,7 +32,10 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 import org.apache.tuscany.sca.databinding.impl.Group2GroupTransformer;
 import org.apache.tuscany.sca.databinding.impl.MediatorImpl;
+import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSFaultExceptionMapper;
+import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 
 /**
@@ -43,6 +46,8 @@ public class DataBindingModuleActivator implements ModuleActivator {
     public void start(ExtensionPointRegistry registry) {
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
+        FaultExceptionMapper faultExceptionMapper = new JAXWSFaultExceptionMapper(dataBindings);
+        registry.addExtensionPoint(faultExceptionMapper);
         
         MediatorImpl mediator = new MediatorImpl(dataBindings, transformers);
         Input2InputTransformer input2InputTransformer = new Input2InputTransformer();
@@ -53,9 +58,8 @@ public class DataBindingModuleActivator implements ModuleActivator {
         output2OutputTransformer.setMediator(mediator);
         transformers.addTransformer(output2OutputTransformer, true);
 
-        Exception2ExceptionTransformer exception2ExceptionTransformer = new Exception2ExceptionTransformer();
-        exception2ExceptionTransformer.setMediator(mediator);
-        transformers.addTransformer(exception2ExceptionTransformer, true);
+        Exception2ExceptionTransformer exception2ExceptionTransformer = new Exception2ExceptionTransformer(mediator, faultExceptionMapper);
+        transformers.addTransformer(exception2ExceptionTransformer, false);
         
         Array2ArrayTransformer array2ArrayTransformer = new Array2ArrayTransformer();
         array2ArrayTransformer.setMediator(mediator);
@@ -67,13 +71,18 @@ public class DataBindingModuleActivator implements ModuleActivator {
 
         ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+
+        // [rfeng] The JAX-WS processor should come before the Databinding processor to make sure @WebService
+        // is honored as Remoteable
+        javaFactory.addInterfaceVisitor(new JAXWSJavaInterfaceProcessor(faultExceptionMapper));
+
         javaFactory.addInterfaceVisitor(new DataBindingJavaInterfaceProcessor(dataBindings));
 
         RuntimeWireProcessorExtensionPoint wireProcessorExtensionPoint = registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
         if (wireProcessorExtensionPoint != null) {
-            wireProcessorExtensionPoint.addWireProcessor(new DataBindingRuntimeWireProcessor(mediator, dataBindings));
+            wireProcessorExtensionPoint.addWireProcessor(new DataBindingRuntimeWireProcessor(mediator, dataBindings, faultExceptionMapper));
         }
-
+        
     }
 
     public void stop(ExtensionPointRegistry registry) {

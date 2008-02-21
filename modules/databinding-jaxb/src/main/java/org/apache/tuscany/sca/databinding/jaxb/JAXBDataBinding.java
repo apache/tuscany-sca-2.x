@@ -27,7 +27,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.databinding.ExceptionHandler;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -50,11 +49,7 @@ public class JAXBDataBinding extends BaseDataBinding {
 
     @Override
     public boolean introspect(DataType dataType, Annotation[] annotations) {
-        Object physical = dataType.getPhysical();
-        if (!(physical instanceof Class)) {
-            return false;
-        }
-        Class javaType = (Class)physical;
+        Class javaType = dataType.getPhysical();
         if (JAXBElement.class.isAssignableFrom(javaType)) {
             Type type = javaType.getGenericSuperclass();
             if (type instanceof ParameterizedType) {
@@ -65,7 +60,7 @@ public class JAXBDataBinding extends BaseDataBinding {
                     if (actualType instanceof Class) {
                         XMLType xmlType = JAXBContextHelper.getXmlTypeName((Class)actualType);
                         dataType.setLogical(xmlType);
-                        dataType.setDataBinding(getName());
+                        dataType.setDataBinding(NAME);
                         return true;
                     }
                 }
@@ -73,7 +68,7 @@ public class JAXBDataBinding extends BaseDataBinding {
             if (dataType.getLogical() == null) {
                 dataType.setLogical(XMLType.UNKNOWN);
             }
-            dataType.setDataBinding(getName());
+            dataType.setDataBinding(NAME);
             return true;
         }
 
@@ -82,7 +77,7 @@ public class JAXBDataBinding extends BaseDataBinding {
             return false;
         }
         dataType.setLogical(xmlType);
-        dataType.setDataBinding(getName());
+        dataType.setDataBinding(NAME);
         return true;
     }
 
@@ -106,11 +101,6 @@ public class JAXBDataBinding extends BaseDataBinding {
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
-    }
-
-    @Override
-    public ExceptionHandler getExceptionHandler() {
-        return new JAXBExceptionHandler();
     }
 
 }

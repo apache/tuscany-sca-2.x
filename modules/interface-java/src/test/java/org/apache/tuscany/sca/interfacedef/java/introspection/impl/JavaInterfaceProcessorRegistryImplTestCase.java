@@ -72,10 +72,10 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
 
         List<DataType> faultTypes = baseInt.getFaultTypes();
         assertEquals(1, faultTypes.size());
-        DataType<XMLType> fault0 = faultTypes.get(0);
+        DataType<DataType<XMLType>> fault0 = faultTypes.get(0);
         assertEquals(IOException.class, fault0.getPhysical());
         element = new QName("http://impl.introspection.java.interfacedef.sca.tuscany.apache.org/", "IOException");
-        assertEquals(element, fault0.getLogical().getElementName());
+        assertEquals(element, fault0.getLogical().getLogical().getElementName());
     }
 
     public void testUnregister() throws Exception {

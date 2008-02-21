@@ -23,7 +23,6 @@ import java.lang.annotation.Annotation;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.databinding.ExceptionHandler;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
@@ -116,11 +115,6 @@ public class SDODataBinding extends BaseDataBinding {
         } else {
             return super.copy(arg);
         }
-    }
-
-    @Override
-    public ExceptionHandler getExceptionHandler() {
-        return new SDOExceptionHandler();
     }
 
 }

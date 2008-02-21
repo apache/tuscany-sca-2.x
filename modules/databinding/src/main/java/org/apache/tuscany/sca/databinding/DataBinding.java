@@ -88,12 +88,4 @@ public interface DataBinding {
      * @return The databinding-specific simple type mapper
      */
     SimpleTypeMapper getSimpleTypeMapper();
-    
-    /**
-     * Get the handler that can handle exceptions/faults in the
-     * databinding-specific way
-     * 
-     * @return An instance of the exception handler
-     */
-    ExceptionHandler getExceptionHandler();
 }

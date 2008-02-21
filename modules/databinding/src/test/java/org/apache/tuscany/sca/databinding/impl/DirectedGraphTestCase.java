@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.databinding.impl;
 
+import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -33,6 +34,9 @@ public class DirectedGraphTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         graph = new DirectedGraph<String, Object>();
+    }
+
+    public void testGraph() {
         graph.addEdge("a", "b", null, 3, true);
         graph.addEdge("b", "c", null, 1, true);
         // graph.addEdge("a", "c", null, 8, true);
@@ -49,11 +53,6 @@ public class DirectedGraphTestCase extends TestCase {
         graph.addEdge("g", "j", null, 2, false);
         graph.addEdge("j", "i", null, 2, true);
         graph.addEdge("h", "i", null, 8, true);
-
-    }
-
-    public void testGraph() {
-        // System.out.println(graph);
 
         Vertex vertex = graph.getVertex("a");
         Assert.assertNotNull(vertex);
@@ -89,6 +88,29 @@ public class DirectedGraphTestCase extends TestCase {
         DirectedGraph<String, Object>.Path path5 = graph.getShortestPath("f", "i");
         Assert.assertTrue(path5.getWeight() == 16 && path5.getEdges().size() == 2);
 
+    }
+
+    public void testSort() {
+        graph.addEdge("a", "b");
+        graph.addEdge("a", "c");
+        graph.addEdge("c", "d");
+        graph.addEdge("b", "c");
+        List<String> order = graph.topologicalSort(true);
+        assertEquals(Arrays.asList("a", "b", "c", "d"), order);
+        assertTrue(!graph.getVertices().isEmpty());
+
+        graph.addEdge("d", "a");
+        try {
+            order = graph.topologicalSort(true);
+            assertTrue("Should have failed", false);
+        } catch (IllegalArgumentException e) {
+            assertTrue(true);
+        }
+
+        graph.removeEdge("d", "a");
+        order = graph.topologicalSort(false);
+        assertEquals(Arrays.asList("a", "b", "c", "d"), order);
+        assertTrue(graph.getVertices().isEmpty());
     }
 
     @Override

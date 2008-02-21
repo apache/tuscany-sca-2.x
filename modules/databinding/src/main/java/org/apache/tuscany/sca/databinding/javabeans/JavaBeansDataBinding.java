@@ -29,7 +29,6 @@ import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.io.Serializable;
 
-import org.apache.tuscany.sca.databinding.ExceptionHandler;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 
 /**
@@ -87,11 +86,6 @@ public class JavaBeansDataBinding extends BaseDataBinding {
         } catch (Exception e) {
             throw new IllegalArgumentException("Pass-by-value is not supported for the given object", e);
         }
-    }
-
-    @Override
-    public ExceptionHandler getExceptionHandler() {
-        return new JavaBeansExceptionHandler();
     }
 
     protected ObjectOutputStream getObjectOutputStream(OutputStream os) throws IOException {

@@ -36,6 +36,8 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
 
+import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
@@ -51,6 +53,12 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  */
 public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
     private static final String JAXB_DATABINDING = "javax.xml.bind.JAXBElement";
+    private FaultExceptionMapper faultExceptionMapper;
+
+    public JAXWSJavaInterfaceProcessor(FaultExceptionMapper faultExceptionMapper) {
+        super();
+        this.faultExceptionMapper = faultExceptionMapper;
+    }
 
     public JAXWSJavaInterfaceProcessor() {
         super();
@@ -79,6 +87,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
         }
         for (Method method : clazz.getMethods()) {
             Operation operation = operations.get(method.getName());
+            introspectFaultTypes(operation);
 
             // SOAP binding (doc/lit/wrapped|bare or rpc/lit)
             SOAPBinding methodSOAPBinding = method.getAnnotation(SOAPBinding.class);
@@ -92,7 +101,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
             // WebMethod
             WebMethod webMethod = method.getAnnotation(WebMethod.class);
             if (webMethod == null) {
-                return;
+                continue;
             }
 
             // Is one way?
@@ -102,7 +111,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 assert method.getReturnType() == void.class;
                 operation.setNonBlocking(true);
             }
-            
+
             // Handle BARE mapping
             if (!operation.isWrapperStyle()) {
                 for (int i = 0; i < method.getParameterTypes().length; i++) {
@@ -130,7 +139,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
             RequestWrapper requestWrapper = method.getAnnotation(RequestWrapper.class);
             ResponseWrapper responseWrapper = method.getAnnotation(ResponseWrapper.class);
             if (requestWrapper == null) {
-                return;
+                continue;
             }
 
             String ns = getValue(requestWrapper.targetNamespace(), tns);
@@ -159,6 +168,14 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                                 inputElements, outputElements);
             operation.setWrapper(wrapperInfo);
             // operation.setDataBinding(JAXB_DATABINDING); // could be JAXB or SDO
+
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void introspectFaultTypes(Operation operation) {
+        for (DataType exceptionType : operation.getFaultTypes()) {
+            faultExceptionMapper.introspectFaultDataType(exceptionType);
         }
     }
 

@@ -58,7 +58,14 @@
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
-        
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-java-jaxws</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+                
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
