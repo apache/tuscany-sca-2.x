@@ -25,14 +25,14 @@
     <component name="HelloWorldClient">
         <implementation.java class="helloworld.HelloWorldClient"/>
         <reference name="helloWorldService">
-            <binding.jms uri="jms:RequestQueue"/>
+            <binding.jms uri="jms:HelloWorldService"/>
         </reference>
     </component>
 
     <component name="HelloWorldServiceComponent">
         <implementation.java class="helloworld.HelloWorldServiceImpl" />
 	    <service name="HelloWorldService">
-            <binding.jms uri="jms:RequestQueue"/>
+            <binding.jms />
         </service>
     </component>
 
