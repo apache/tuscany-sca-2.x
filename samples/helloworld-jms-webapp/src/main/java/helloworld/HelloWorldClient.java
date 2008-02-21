@@ -23,15 +23,15 @@ package helloworld;
  */
 public class HelloWorldClient implements HelloWorldService {
    
-    HelloWorldService helloWorldService;
+    HelloWorldService helloWorldRef;
 
     public String sayHello(String name) {
         System.out.println("HelloWorldClient.sayHello " + name);
-        return helloWorldService.sayHello(name);
+        return helloWorldRef.sayHello(name);
     }
 
-    public void setHelloWorldService(HelloWorldService helloWorldService) {
-        System.out.println("HelloWorldClient .setHelloWorldService " + helloWorldService);        
-        this.helloWorldService = helloWorldService;
+    public void setHelloWorldRef(HelloWorldService helloWorldRef) {
+        System.out.println("HelloWorldClient .setHelloWorldService " + helloWorldRef);        
+        this.helloWorldRef = helloWorldRef;
     }
 }
