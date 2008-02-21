@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.context.ComponentContextFactory;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.util.PolicyHandlerDefinitionsLoader;
 import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
 import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -125,12 +126,8 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         RequestContextFactory requestContextFactory = contextFactories.getFactory(RequestContextFactory.class);
 
         Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames = null;
-        try {
-            policyHandlerClassNames = loadPolicyHandlerClassnames();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        policyHandlerClassNames = PolicyHandlerDefinitionsLoader.loadPolicyHandlerClassnames();
+        
         JavaImplementationProviderFactory javaImplementationProviderFactory =
             new JavaImplementationProviderFactory(proxyFactory, dataBindings, factory, componentContextFactory,
                                                   requestContextFactory, policyHandlerClassNames);
@@ -151,67 +148,4 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
 
     public void stop(ExtensionPointRegistry registry) {
     }
-
-    private static QName getQName(String qname) {
-        if (qname == null) {
-            return null;
-        }
-        qname = qname.trim();
-        if (qname.startsWith("{")) {
-            int h = qname.indexOf('}');
-            if (h != -1) {
-                return new QName(qname.substring(1, h), qname.substring(h + 1));
-            }
-        } else {
-            int h = qname.indexOf('#');
-            if (h != -1) {
-                return new QName(qname.substring(0, h), qname.substring(h + 1));
-            }
-        }
-        throw new IllegalArgumentException("Invalid qname: " + qname);
-    }
-
-    private Map<ClassLoader, List<PolicyHandlerTuple>> loadPolicyHandlerClassnames() throws IOException {
-        // Get the processor service declarations
-        Set<ServiceDeclaration> sds;
-        try {
-            sds = ServiceDiscovery.getInstance().getServiceDeclarations(PolicyHandler.class);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        
-        Map<ClassLoader, List<PolicyHandlerTuple>> handlerTuples = new Hashtable<ClassLoader, List<PolicyHandlerTuple>>();
-        for (ServiceDeclaration sd : sds) {
-            ClassLoader cl = sd.getClassLoader();
-            
-            List<PolicyHandlerTuple> handlerTupleList = handlerTuples.get(cl);
-            if ( handlerTupleList == null ) {
-                handlerTupleList = new ArrayList<PolicyHandlerTuple>();
-                handlerTuples.put(cl, handlerTupleList);
-            }
-            Map<String, String> attributes = sd.getAttributes();
-            String intentName = attributes.get("intent");
-            QName intentQName = getQName(intentName);
-            String policyModelClassName = attributes.get("model");
-            handlerTupleList.add(new PolicyHandlerTuple(sd.getClassName(), intentQName, policyModelClassName));
-        }
-
-        /*Map<ClassLoader, Map<QName, String>> policyHandlerClassNames = new HashMap<ClassLoader, Map<QName, String>>();
-
-        for (ServiceDeclaration sd : sds) {
-            Map<String, String> attributes = sd.getAttributes();
-            String qname = attributes.get("qname");
-            QName name = getQName(qname);
-            ClassLoader cl = sd.getClassLoader();
-            Map<QName, String> map = policyHandlerClassNames.get(cl);
-            if (map == null) {
-                map = new HashMap<QName, String>();
-                policyHandlerClassNames.put(cl, map);
-            }
-            map.put(name, sd.getClassName());
-        }
-        */
-        return handlerTuples;
-    }
-
 }

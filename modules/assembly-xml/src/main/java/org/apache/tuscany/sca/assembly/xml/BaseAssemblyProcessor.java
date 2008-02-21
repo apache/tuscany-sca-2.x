@@ -251,6 +251,15 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                             resolvePolicySets(policiedImpl.getPolicySets(), resolver);
                             validatePolicySets(policiedImpl);
                             
+                            if ( implementation instanceof OperationsConfigurator ) {
+                                OperationsConfigurator opsConfigurator = (OperationsConfigurator)implementation;
+                                for ( ConfiguredOperation implOp : opsConfigurator.getConfiguredOperations() ) {
+                                    resolveIntents(implOp.getRequiredIntents(), resolver);
+                                    resolvePolicySets(implOp.getPolicySets(), resolver);
+                                    validatePolicySets(implOp, policiedImpl.getApplicablePolicySets());
+                                }
+                            }
+                            
                             for ( Service service : implementation.getServices() ) {
                                 resolveIntents(service.getRequiredIntents(), resolver);
                                 resolvePolicySets(service.getPolicySets(), resolver);

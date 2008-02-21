@@ -19,22 +19,27 @@
 package org.apache.tuscany.sca.binding.ws.axis2;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractInMessageReceiver;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
 public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
 
     protected Operation operation;
 
     private Axis2ServiceProvider provider;
+    
+    private List<PolicyHandler> policyHandlerList = null;
 
-    public Axis2ServiceInMessageReceiver(Axis2ServiceProvider provider, Operation operation) {
+    public Axis2ServiceInMessageReceiver(Axis2ServiceProvider provider, Operation operation, List<PolicyHandler> policyHandlerList) {
         this.provider = provider;
         this.operation = operation;
+        this.policyHandlerList = policyHandlerList;
     }
 
     public Axis2ServiceInMessageReceiver() {
@@ -45,7 +50,16 @@ public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
         try {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
+            
+            for ( PolicyHandler policyHandler : policyHandlerList ) {
+                policyHandler.beforeInvoke(operation, args, inMC);
+            }
+            
             provider.invokeTarget(operation, args, inMC);
+            
+            for ( PolicyHandler policyHandler : policyHandlerList ) {
+                policyHandler.afterInvoke(operation, args, inMC);
+            }
 
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();

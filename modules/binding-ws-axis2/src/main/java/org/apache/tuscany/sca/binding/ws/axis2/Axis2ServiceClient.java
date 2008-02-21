@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.binding.ws.axis2;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,6 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.description.AxisEndpoint;
 import org.apache.axis2.description.AxisService;
-import org.apache.axis2.description.Parameter;
 import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
 import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.transport.http.HTTPConstants;
@@ -58,7 +58,6 @@ import org.apache.axis2.util.threadpool.ThreadPool;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
-import org.apache.neethi.Policy;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
@@ -70,7 +69,6 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerUtils;
@@ -83,6 +81,8 @@ public class Axis2ServiceClient {
     private ServiceClient serviceClient;
     Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames = null;
     private static final QName SOAP12_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0", "soap12");
+    private List<PolicyHandler> policyHandlerList = new ArrayList<PolicyHandler>();
+
     
 
     public Axis2ServiceClient(RuntimeComponent component,
@@ -113,9 +113,8 @@ public class Axis2ServiceClient {
         try {
             TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
             ConfigurationContext configContext = tuscanyAxisConfigurator.getConfigurationContext();
-
-            //configureSecurity(configContext);
-            setupPolicies(configContext);
+            createPolicyHandlers();
+            setupPolicyHandlers(policyHandlerList, configContext);
             
             Definition wsdlDefinition = wsBinding.getWSDLDefinition().getDefinition();
             setServiceAndPort(wsBinding);
@@ -318,9 +317,9 @@ public class Axis2ServiceClient {
 
         Axis2BindingInvoker invoker;
         if (operation.isNonBlocking()) {
-            invoker = new Axis2OneWayBindingInvoker(this, wsdlOperationQName, options, soapFactory);
+            invoker = new Axis2OneWayBindingInvoker(this, wsdlOperationQName, options, soapFactory, policyHandlerList);
         } else {
-            invoker = new Axis2BindingInvoker(this, wsdlOperationQName, options, soapFactory);
+            invoker = new Axis2BindingInvoker(this, wsdlOperationQName, options, soapFactory, policyHandlerList);
         }
         return invoker;
     }
@@ -402,8 +401,9 @@ public class Axis2ServiceClient {
         return null;
     }
     
-    private void setupPolicies(ConfigurationContext configContext) throws IllegalAccessException,
-        InstantiationException, ClassNotFoundException {
+    
+    private void createPolicyHandlers() throws IllegalAccessException, InstantiationException,
+        ClassNotFoundException {
         if (wsBinding instanceof PolicySetAttachPoint) {
             PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding;
             PolicyHandler policyHandler = null;
@@ -412,35 +412,15 @@ public class Axis2ServiceClient {
                     PolicyHandlerUtils.findPolicyHandler(policySet, policyHandlerClassnames);
                 if (policyHandler != null) {
                     policyHandler.setApplicablePolicySet(policySet);
-                    policyHandler.setUp(configContext);
+                    policyHandlerList.add(policyHandler);
                 }
             }
         }
     }
-    
-    /*private void configureSecurity(ConfigurationContext configContext) throws AxisFault {
-        if ( wsBinding instanceof PolicySetAttachPoint ) {
-            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding;
-            Parameter configParam = null;
-            Axis2ConfigParamPolicy axis2ConfigParamPolicy = null;
-            for ( PolicySet policySet : policiedBinding.getPolicySets() ) {
-                for ( Object policy : policySet.getPolicies() ) {
-                    if ( policy instanceof Axis2ConfigParamPolicy ) {
-                        axis2ConfigParamPolicy = (Axis2ConfigParamPolicy)policy;
-                        for ( String paramName : axis2ConfigParamPolicy.getParamElements().keySet() ) {
-                            configParam = new Parameter(paramName, 
-                                                        axis2ConfigParamPolicy.getParamElements().get(paramName).getFirstElement());
-                            configParam.setParameterElement(axis2ConfigParamPolicy.getParamElements().get(paramName));
-                            configContext.getAxisConfiguration().addParameter(configParam);
-                        }
-                    } else if ( policy instanceof Policy ) {
-                        Policy wsPolicy = (Policy)policy;
-                        configContext.getAxisConfiguration().applyPolicy(wsPolicy);
-                    }
-                }
-            }
+
+    private void setupPolicyHandlers(List<PolicyHandler> policyHandlers, ConfigurationContext configContext)  {
+        for ( PolicyHandler aHandler : policyHandlers ) {
+            aHandler.setUp(configContext);
         }
-    }*/
-
-
+    }
 }

@@ -28,13 +28,24 @@ public class PolicyHandlerTuple {
     private String policyHandlerClassName;
     private QName providedIntentName;
     private String policyModelClassName;
+    private String appliesTo;
     
+    public String getAppliesTo() {
+        return appliesTo;
+    }
+
+    public void setAppliesTo(String appliesTo) {
+        this.appliesTo = appliesTo;
+    }
+
     public PolicyHandlerTuple(String handlerClassName,
                               QName providedIntentName,
-                              String policyModelClassName) {
+                              String policyModelClassName,
+                              String appliesTo) {
         this.policyHandlerClassName = handlerClassName;
         this.providedIntentName = providedIntentName;
         this.policyModelClassName = policyModelClassName;
+        this.appliesTo = appliesTo;
     }
     
     public String getPolicyHandlerClassName() {
@@ -55,4 +66,9 @@ public class PolicyHandlerTuple {
     public void setProvidedIntentName(QName providedIntentName) {
         this.providedIntentName = providedIntentName;
     }
+    
+    public String toString() {
+        return policyHandlerClassName + ", " + providedIntentName + ", " + policyModelClassName + ", " + appliesTo;
+    }
+    
 }

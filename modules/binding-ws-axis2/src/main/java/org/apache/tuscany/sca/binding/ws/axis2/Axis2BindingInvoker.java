@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
@@ -39,6 +41,7 @@ import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.PassByValueAware;
+import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 
 /**
@@ -60,22 +63,34 @@ public class Axis2BindingInvoker implements Invoker, PassByValueAware {
         new QName(Constants.SCA10_TUSCANY_NS, "CallbackID", TUSCANY_PREFIX);
     public static final QName CONVERSATION_ID_REFPARM_QN =
         new QName(Constants.SCA10_TUSCANY_NS, "ConversationID", TUSCANY_PREFIX);
+    
+    private List<PolicyHandler> policyHandlerList = null;
 
     public Axis2BindingInvoker(Axis2ServiceClient serviceClient,
                                QName wsdlOperationName,
                                Options options,
-                               SOAPFactory soapFactory) {
+                               SOAPFactory soapFactory,
+                               List<PolicyHandler> policyHandlerList) {
         this.serviceClient = serviceClient;
         this.wsdlOperationName = wsdlOperationName;
         this.options = options;
         this.soapFactory = soapFactory;
+        this.policyHandlerList = policyHandlerList;
     }
 
     private final static QName EXCEPTION = new QName("", "Exception");
     
     public Message invoke(Message msg) {
         try {
+            for ( PolicyHandler policyHandler : policyHandlerList ) {
+                policyHandler.beforeInvoke(msg);
+            }
+            
             Object resp = invokeTarget(msg);
+            
+            for ( PolicyHandler policyHandler : policyHandlerList ) {
+                policyHandler.afterInvoke(msg);
+            }
             msg.setBody(resp);
         } catch (AxisFault e) {
             if (e.getDetail() != null ) {

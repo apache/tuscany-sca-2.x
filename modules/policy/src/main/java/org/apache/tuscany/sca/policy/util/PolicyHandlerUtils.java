@@ -37,16 +37,28 @@ public class PolicyHandlerUtils {
         
         for (ClassLoader classLoader : policyHandlerClassNames.keySet()) {
             for ( PolicyHandlerTuple handlerTuple : policyHandlerClassNames.get(classLoader) ) {
+                //System.out.println(handlerTuple);
                 for ( Intent intent : policySet.getProvidedIntents() ) {
                     if ( intent.getName().equals(handlerTuple.getProvidedIntentName())) {
                         for ( Object policy : policySet.getPolicies() ) {
                             if ( policy.getClass().getName().equals(handlerTuple.getPolicyModelClassName())) {
-                                handler = 
-                                    (PolicyHandler)Class.forName(handlerTuple.getPolicyHandlerClassName(), 
-                                                                 true, 
-                                                                 classLoader).newInstance();
-                                    handler.setApplicablePolicySet(policySet);
-                                    return handler;
+                                if ( handlerTuple.getAppliesTo() != null  ) {
+                                    if ( handlerTuple.getAppliesTo().equals(policySet.getAppliesTo() )) {
+                                        handler = 
+                                            (PolicyHandler)Class.forName(handlerTuple.getPolicyHandlerClassName(), 
+                                                                         true, 
+                                                                         classLoader).newInstance();
+                                            handler.setApplicablePolicySet(policySet);
+                                            return handler;
+                                    }
+                                } else {
+                                    handler = 
+                                        (PolicyHandler)Class.forName(handlerTuple.getPolicyHandlerClassName(), 
+                                                                     true, 
+                                                                     classLoader).newInstance();
+                                        handler.setApplicablePolicySet(policySet);
+                                        return handler;
+                                }
                             }
                         }
                     }
