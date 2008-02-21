@@ -21,6 +21,11 @@ package org.apache.tuscany.sca.binding.feed.provider;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 
+import org.apache.abdera.Abdera;
+import org.apache.abdera.model.Document;
+import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.Feed;
+import org.apache.abdera.parser.Parser;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -32,11 +37,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.osoa.sca.ServiceRuntimeException;
-
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.io.WireFeedInput;
-import com.sun.syndication.io.XmlReader;
 
 /**
  * Invoker for the Atom binding.
@@ -78,6 +78,7 @@ class AtomBindingInvoker implements Invoker {
         @Override
         public Message invoke(Message msg) {
 
+        	/*
             // Get an entry
             String id = (String)((Object[])msg.getBody())[0];
 
@@ -107,6 +108,9 @@ class AtomBindingInvoker implements Invoker {
             }
 
             return msg;
+            */
+        	
+        	throw new UnsupportedOperationException("Not yet converted");
         }
     }
 
@@ -122,6 +126,7 @@ class AtomBindingInvoker implements Invoker {
         @Override
         public Message invoke(Message msg) {
 
+        	/*
             // Post an entry
             Entry feedEntry = (Entry)((Object[])msg.getBody())[0];
 
@@ -159,6 +164,9 @@ class AtomBindingInvoker implements Invoker {
             }
 
             return msg;
+            */
+        	
+        	throw new UnsupportedOperationException("Not yet converted");
         }
     }
 
@@ -174,6 +182,7 @@ class AtomBindingInvoker implements Invoker {
         @Override
         public Message invoke(Message msg) {
 
+        	/*
             // Put an entry
             Object[] args = (Object[])msg.getBody();
             String id = (String)args[0];
@@ -217,6 +226,9 @@ class AtomBindingInvoker implements Invoker {
             }
 
             return msg;
+            */
+        	
+        	throw new UnsupportedOperationException("Not yet converted");
         }
     }
 
@@ -285,8 +297,10 @@ class AtomBindingInvoker implements Invoker {
 
                 // Read the Atom feed
                 if (status == 200) {
-                    WireFeedInput input = new WireFeedInput();
-                    Feed feed = (Feed)input.build(new XmlReader(getMethod.getResponseBodyAsStream()));
+                	Parser parser = Abdera.getNewParser();
+                    Document<Feed> doc = parser.parse(new InputStreamReader(getMethod.getResponseBodyAsStream()));
+                    Feed feed = doc.getRoot();
+
                     msg.setBody(feed);
 
                 } else if (status == 404) {

@@ -21,24 +21,13 @@ package org.apache.tuscany.sca.binding.feed.provider;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
+import javax.servlet.ServletException;
 
-import com.sun.syndication.feed.atom.Content;
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.io.FeedException;
-import com.sun.syndication.io.WireFeedInput;
-import com.sun.syndication.io.WireFeedOutput;
+import org.apache.abdera.model.Entry;
+import org.apache.abdera.parser.ParseException;
+
 
 /**
  * Utility methods to read/write Atom entries.
@@ -57,8 +46,9 @@ class AtomFeedEntryUtil {
      * @throws FeedException
      * @throws IllegalArgumentException
      */
-    static Entry readFeedEntry(String feedType, Reader reader) throws JDOMException, IOException, IllegalArgumentException,
-        FeedException {
+    static Entry readFeedEntry(String feedType, Reader reader) throws IOException, IllegalArgumentException,  ParseException {
+    	
+    	/*
         SAXBuilder builder = new SAXBuilder();
         Document document = builder.build(reader);
         Element root = document.getRootElement();
@@ -85,6 +75,9 @@ class AtomFeedEntryUtil {
             }
         }
         return feedEntry;
+        */
+    	
+    	return null;
     }
 
     /**
@@ -97,8 +90,8 @@ class AtomFeedEntryUtil {
      * @throws IOException
      * @throws ServletException
      */
-    static void writeFeedEntry(Entry feedEntry, String feedType, Writer writer) throws IllegalArgumentException, FeedException,
-        IOException {
+    static void writeFeedEntry(Entry feedEntry, String feedType, Writer writer) throws IOException, IllegalArgumentException,  ParseException {
+    	/*
         Feed feed = new Feed();
         feed.setFeedType(feedType);
         List<Entry> feedEntries = new ArrayList<Entry>();
@@ -112,6 +105,7 @@ class AtomFeedEntryUtil {
         XMLOutputter outputter = new XMLOutputter();
         outputter.setFormat(Format.getPrettyFormat());
         outputter.output(element, writer);
+        */
     }
 
 }
