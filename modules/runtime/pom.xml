@@ -347,6 +347,11 @@
             <artifactId>commons-io</artifactId>
             <version>1.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-core</artifactId>
+            <version>4.1.1</version>
+        </dependency>
     </dependencies>
 
     <build>

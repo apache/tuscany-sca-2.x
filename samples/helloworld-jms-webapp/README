@@ -35,8 +35,11 @@ Tuscany with embedded ActiveMQ broker
 Apache Tomcat
 -------------
 
-Tomcat doesn't by default include a JMS broker so first install Apache ActiveMQ into Tomcat:
+No configuration is necessary for Tomcat as the sample WAR includes everything pre-configured to run 
+an ActiveMQ embedded JMS broker and to configure the JMS resources in JNDI.
 
+The JNDI resources are configured in the META-INF/comtext.xml file, for more information on running
+ActiveMQ in Tomcat see: http://activemq.apache.org/tomcat.html
 
 
 Apache Geronimo
