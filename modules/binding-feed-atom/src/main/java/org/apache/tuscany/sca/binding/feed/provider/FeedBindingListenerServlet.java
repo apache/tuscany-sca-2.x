@@ -22,20 +22,21 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.codec.binary.Base64;
+import org.apache.abdera.Abdera;
+import org.apache.abdera.factory.Factory;
+import org.apache.abdera.model.Collection;
+import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.Service;
+import org.apache.abdera.model.Workspace;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -43,25 +44,12 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Namespace;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
 
-import com.sun.syndication.feed.atom.Content;
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.feed.atom.Link;
-import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.feed.synd.SyndFeedImpl;
-import com.sun.syndication.io.FeedException;
-import com.sun.syndication.io.SyndFeedOutput;
-import com.sun.syndication.io.WireFeedOutput;
+import org.apache.commons.codec.binary.Base64;
+
+
 
 /**
  * A resource collection binding listener, implemented as a servlet and
@@ -71,8 +59,8 @@ class FeedBindingListenerServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(FeedBindingListenerServlet.class.getName());
     private static final long serialVersionUID = 1L;
 
-    private final static Namespace APP_NS = Namespace.getNamespace("app", "http://purl.org/atom/app#");
-    private final static Namespace ATOM_NS = Namespace.getNamespace("atom", "http://www.w3.org/2005/Atom");
+    //private final static Namespace APP_NS = Namespace.getNamespace("app", "http://purl.org/atom/app#");
+    //private final static Namespace ATOM_NS = Namespace.getNamespace("atom", "http://www.w3.org/2005/Atom");
 
     private RuntimeWire wire;
     private Invoker getFeedInvoker;
@@ -158,192 +146,149 @@ class FeedBindingListenerServlet extends HttpServlet {
         if (requestFeedType == null)
             requestFeedType = feedType;
 
+        if (! requestFeedType.startsWith("atom_")) {
+        	throw new UnsupportedOperationException(requestFeedType + " Not supported !");
+        }
+        
         logger.info(">>> FeedEndPointServlet (" + requestFeedType + ") " + request.getRequestURI());
 
         // Handle an Atom request
-        if (requestFeedType.startsWith("atom_")) {
+        if (path != null && path.equals("/atomsvc")) {
+        	/*
+             <?xml version='1.0' encoding='UTF-8'?>
+             <service xmlns="http://www.w3.org/2007/app" xmlns:atom="http://www.w3.org/2005/Atom">
+                <workspace>
+                   <atom:title type="text">resource</atom:title>
+                   <collection href="http://luck.ibm.com:8084/customer">
+                      <atom:title type="text">entries</atom:title>
+                      <accept>application/atom+xml;type=entry</accept>
+                      <categories />
+                   </collection>
+                </workspace>
+             </service>
+        	 */
+        	
+            // Return the Atom service document
+            response.setContentType("application/atomsvc+xml; charset=utf-8");
+            
+            Abdera abdera = new Abdera();
+            Factory factory = abdera.getFactory();
+            Service service = factory.newService();
+            //service.setText("service");
+            
+            Workspace workspace = factory.newWorkspace();
+            workspace.setTitle("resource");
 
-            if (path != null && path.equals("/atomsvc")) {
+            String href = request.getRequestURL().toString();
+            href = href.substring(0, href.length() - "/atomsvc".length());
+            
+            Collection collection = workspace.addCollection("collection", "atom/feed");
+            collection.setTitle("entries");
+            collection.setAttributeValue("href", href);
+            collection.setAccept("entry");
+            collection.addCategories().setFixed(false);
+            
+            workspace.addCollection(collection);
 
-                // Return the Atom service document
-                response.setContentType("application/atomsvc+xml; charset=utf-8");
-                Document document = new Document();
-                Element service = new Element("service", APP_NS);
-                document.setRootElement(service);
+            service.addWorkspace(workspace);
+            
 
-                Element workspace = new Element("workspace", APP_NS);
-                Element title = new Element("title", ATOM_NS);
-                title.setText("resource");
-                workspace.addContent(title);
-                service.addContent(workspace);
+            service.getDocument().writeTo(response.getOutputStream());
 
-                Element collection = new Element("collection", APP_NS);
-                String href = request.getRequestURL().toString();
-                href = href.substring(0, href.length() - "/atomsvc".length());
-                collection.setAttribute("href", href);
-                Element collectionTitle = new Element("title", ATOM_NS);
-                collectionTitle.setText("entries");
-                collection.addContent(collectionTitle);
-                workspace.addContent(collection);
+        } else if (path == null || path.length() == 0 || path.equals("/")) {
 
-                XMLOutputter outputter = new XMLOutputter();
-                Format format = Format.getPrettyFormat();
-                format.setEncoding("UTF-8");
-                outputter.setFormat(format);
-                outputter.output(document, getWriter(response));
+        	/*
+            // Return a feed containing the entries in the collection
+            Feed feed = null;
+            if (supportsFeedEntries) {
 
-            } else if (path == null || path.length() == 0 || path.equals("/")) {
-
-                // Return a feed containing the entries in the collection
-                Feed feed = null;
-                if (supportsFeedEntries) {
-
-                    // The service implementation supports feed entries, invoke its getFeed operation
-                    Message requestMessage = messageFactory.createMessage();
-                    Message responseMessage = getFeedInvoker.invoke(requestMessage);
-                    if (responseMessage.isFault()) {
-                        throw new ServletException((Throwable)responseMessage.getBody());
-                    }
-                    feed = (Feed)responseMessage.getBody();
-                    
-                } else {
-
-                    // The service implementation does not support feed entries,
-                    // invoke its getAll operation to get the data item collection, then create
-                    // feed entries from the items
-                    Message requestMessage = messageFactory.createMessage();
-                    Message responseMessage = getAllInvoker.invoke(requestMessage);
-                    if (responseMessage.isFault()) {
-                        throw new ServletException((Throwable)responseMessage.getBody());
-                    }
-                    org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>[] collection =
-                        (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>[])responseMessage.getBody();
-                    if (collection != null) {
-                        // Create the feed
-                        feed = new Feed();
-                        feed.setTitle("Feed");
-                        for (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry: collection) {
-                            Entry feedEntry = createFeedEntry(entry.getKey(), entry.getData());
-                            feed.getEntries().add(feedEntry);
-                        }
-                    }
-                }
-                if (feed != null) {
-                    
-                    // Write the Atom feed
-                    response.setContentType("application/atom+xml; charset=utf-8");
-                    feed.setFeedType(requestFeedType);
-                    WireFeedOutput feedOutput = new WireFeedOutput();
-                    try {
-                        feedOutput.output(feed, getWriter(response));
-                    } catch (FeedException e) {
-                        throw new ServletException(e);
-                    }
-                } else {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                }
-                
-            } else if (path.startsWith("/")) {
-
-                // Return a specific entry in the collection
-                Entry feedEntry;
-
-                // Invoke the get operation on the service implementation
+                // The service implementation supports feed entries, invoke its getFeed operation
                 Message requestMessage = messageFactory.createMessage();
-                String id = path.substring(1);
-                requestMessage.setBody(new Object[] {id});
-                Message responseMessage = getInvoker.invoke(requestMessage);
+                Message responseMessage = getFeedInvoker.invoke(requestMessage);
                 if (responseMessage.isFault()) {
                     throw new ServletException((Throwable)responseMessage.getBody());
                 }
-                if (supportsFeedEntries) {
-                    
-                    // The service implementation returns a feed entry 
-                    feedEntry = responseMessage.getBody();
-                    
-                } else {
-                    
-                    // The service implementation only returns a data item, create an entry
-                    // from it
-                    feedEntry = createFeedEntry(id, responseMessage.getBody());
-                }
-
-                // Write the Atom entry
-                if (feedEntry != null) {
-                    response.setContentType("application/atom+xml; charset=utf-8");
-                    try {
-                        AtomFeedEntryUtil.writeFeedEntry(feedEntry, feedType, getWriter(response));
-                    } catch (FeedException e) {
-                        throw new ServletException(e);
-                    }
-                } else {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                }
-
+                feed = (Feed)responseMessage.getBody();
+                
             } else {
 
-                // Path doesn't match any known pattern
+                // The service implementation does not support feed entries,
+                // invoke its getAll operation to get the data item collection, then create
+                // feed entries from the items
+                Message requestMessage = messageFactory.createMessage();
+                Message responseMessage = getAllInvoker.invoke(requestMessage);
+                if (responseMessage.isFault()) {
+                    throw new ServletException((Throwable)responseMessage.getBody());
+                }
+                org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>[] collection =
+                    (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>[])responseMessage.getBody();
+                if (collection != null) {
+                    // Create the feed
+                    feed = new Feed();
+                    feed.setTitle("Feed");
+                    for (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry: collection) {
+                        Entry feedEntry = createFeedEntry(entry.getKey(), entry.getData());
+                        feed.getEntries().add(feedEntry);
+                    }
+                }
+            }
+            if (feed != null) {
+                
+                // Write the Atom feed
+                response.setContentType("application/atom+xml; charset=utf-8");
+                feed.setFeedType(requestFeedType);
+                WireFeedOutput feedOutput = new WireFeedOutput();
+                try {
+                    feedOutput.output(feed, getWriter(response));
+                } catch (FeedException e) {
+                    throw new ServletException(e);
+                }
+            } else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
+            
+        } else if (path.startsWith("/")) {
+
+            // Return a specific entry in the collection
+            Entry feedEntry;
+
+            // Invoke the get operation on the service implementation
+            Message requestMessage = messageFactory.createMessage();
+            String id = path.substring(1);
+            requestMessage.setBody(new Object[] {id});
+            Message responseMessage = getInvoker.invoke(requestMessage);
+            if (responseMessage.isFault()) {
+                throw new ServletException((Throwable)responseMessage.getBody());
+            }
+            if (supportsFeedEntries) {
+                
+                // The service implementation returns a feed entry 
+                feedEntry = responseMessage.getBody();
+                
+            } else {
+                
+                // The service implementation only returns a data item, create an entry
+                // from it
+                feedEntry = createFeedEntry(id, responseMessage.getBody());
+            }
+
+            // Write the Atom entry
+            if (feedEntry != null) {
+                response.setContentType("application/atom+xml; charset=utf-8");
+                try {
+                    AtomFeedEntryUtil.writeFeedEntry(feedEntry, feedType, getWriter(response));
+                } catch (FeedException e) {
+                    throw new ServletException(e);
+                }
+            } else {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            }
+			*/
         } else {
-
-            // Handle an RSS request
-            if (path == null || path.length() == 0 || path.equals("/")) {
-
-                // Return an RSS feed containing the entries in the collection
-                Feed feed = null;
-                if (supportsFeedEntries) {
-
-                    // The service implementation supports feed entries, invoke its getFeed operation
-                    Message requestMessage = messageFactory.createMessage();
-                    Message responseMessage = getFeedInvoker.invoke(requestMessage);
-                    if (responseMessage.isFault()) {
-                        throw new ServletException((Throwable)responseMessage.getBody());
-                    }
-                    feed = (Feed)responseMessage.getBody();
-                    
-                } else {
-
-                    // The service implementation does not support feed entries, invoke its
-                    // getAll operation to get the data item collection. then create feed entries
-                    // from the data items
-                    Message requestMessage = messageFactory.createMessage();
-                    Message responseMessage = getAllInvoker.invoke(requestMessage);
-                    if (responseMessage.isFault()) {
-                        throw new ServletException((Throwable)responseMessage.getBody());
-                    }
-                    org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>[] collection =
-                        (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>[])responseMessage.getBody();
-                    if (collection != null) {
-                        // Create the feed
-                        feed = new Feed();
-                        feed.setTitle("Feed");
-                        for (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry: collection) {
-                            Entry feedEntry = createFeedEntry(entry.getKey(), entry.getData());
-                            feed.getEntries().add(feedEntry);
-                        }
-                    }
-                }
-
-                // Convert to an RSS feed
-                if (feed != null) {
-                    response.setContentType("application/rss+xml; charset=utf-8");
-                    feed.setFeedType("atom_1.0");
-                    SyndFeed syndFeed = new SyndFeedImpl(feed);
-                    syndFeed.setFeedType(requestFeedType);
-                    SyndFeedOutput syndOutput = new SyndFeedOutput();
-                    try {
-                        syndOutput.output(syndFeed, getWriter(response));
-                    } catch (FeedException e) {
-                        throw new ServletException(e);
-                    }
-                } else {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                }
-            } else {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            }
+            // Path doesn't match any known pattern
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
+        
     }
 
     /**
@@ -354,6 +299,7 @@ class FeedBindingListenerServlet extends HttpServlet {
      */
     private Entry createFeedEntry(Object key, Object item) {
         if (item != null) {
+        	/*
             Entry feedEntry = new Entry();
             feedEntry.setId(key.toString());
             feedEntry.setTitle("item");
@@ -380,6 +326,8 @@ class FeedBindingListenerServlet extends HttpServlet {
     
             feedEntry.setCreated(new Date());
             return feedEntry;
+            */
+        	return null;
         } else {
             return null;
         }
@@ -392,6 +340,7 @@ class FeedBindingListenerServlet extends HttpServlet {
      * @return
      */
     private Object createItem(Entry feedEntry) {
+    	/*
         if (feedEntry != null) {
             List<?> contents = feedEntry.getContents();
             if (contents.isEmpty()) {
@@ -407,6 +356,8 @@ class FeedBindingListenerServlet extends HttpServlet {
         } else {
             return null;
         }
+        */
+    	return null;
     }
 
     @Override
@@ -420,6 +371,7 @@ class FeedBindingListenerServlet extends HttpServlet {
             return;
         }
 
+        /*
         // Get the request path
         String path = request.getPathInfo();
 
@@ -513,6 +465,7 @@ class FeedBindingListenerServlet extends HttpServlet {
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
+        */
     }
 
     private Writer getWriter(HttpServletResponse response) throws UnsupportedEncodingException, IOException {
@@ -530,6 +483,7 @@ class FeedBindingListenerServlet extends HttpServlet {
             return;
         }
 
+        /*
         // Get the request path
         String path = request.getPathInfo();
 
@@ -639,6 +593,8 @@ class FeedBindingListenerServlet extends HttpServlet {
                 throw new ServletException((Throwable)responseMessage.getBody());
             }
         }
+        
+        */
     }
 
     /**
@@ -687,8 +643,7 @@ class FeedBindingListenerServlet extends HttpServlet {
     private boolean authenticate(String user, String password) {
 
         // TODO Handle this using SCA security policies
-        //FIXME Why are we using endsWith instead of equals here??
-        return ("admin".endsWith(user) && "admin".equals(password));
+        return ("admin".equals(user) && "admin".equals(password));
     }
 
     /**

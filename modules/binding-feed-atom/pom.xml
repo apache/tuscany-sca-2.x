@@ -76,7 +76,13 @@
             <groupId>org.apache.abdera</groupId>
             <artifactId>abdera-core</artifactId>
             <version>0.3.0-incubating</version> 
-        </dependency>
+        </dependency>    
+        
+        <dependency>
+        	<groupId>org.apache.abdera</groupId>
+      		<artifactId>abdera-parser</artifactId>
+      		<version>0.3.0-incubating</version>
+	    </dependency>           
                 
         <dependency>
             <groupId>javax.servlet</groupId>
