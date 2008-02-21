@@ -43,9 +43,10 @@ function AtomClient(uri) {
 				}
 			}
 		}
-		xhr.open("GET", uri + id, true);
+		xhr.open("GET", uri + '/' + id, true);
 		xhr.send(null);
 	}	
+
 	this.post = function (entry, responseFunction) {
 		var xhr = this.createXMLHttpRequest();
 		xhr.onreadystatechange = function() {
@@ -66,6 +67,7 @@ function AtomClient(uri) {
 		xhr.setRequestHeader("Content-Type", "application/atom+xml");
 		xhr.send(entry);
 	}	
+
 	this.put = function (id, entry, responseFunction) {
 		var xhr = this.createXMLHttpRequest();
 		xhr.onreadystatechange = function() {
@@ -82,10 +84,11 @@ function AtomClient(uri) {
 				}
 			}
 		}
-		xhr.open("PUT", uri + id, true);
+		xhr.open("PUT", uri + '/' + id, true);
 		xhr.setRequestHeader("Content-Type", "application/atom+xml");
 		xhr.send(entry);
 	}	
+
 	this.del = function (id, responseFunction) {       
 		var xhr = this.createXMLHttpRequest();
 		xhr.onreadystatechange = function() {
@@ -97,7 +100,7 @@ function AtomClient(uri) {
 				}
 			}
 		}
-		xhr.open("DELETE", uri + id, true);		
+		xhr.open("DELETE", uri + '/' + id, true);		
 		xhr.send(null);
 	}
 	this.createXMLHttpRequest = function () {
@@ -132,4 +135,5 @@ function AtomClient(uri) {
       }
    }
 }
+
 bindingatom = "loaded";
