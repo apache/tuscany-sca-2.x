@@ -131,6 +131,12 @@
                 <module>runtime-tomcat</module>
                 <module>runtime-war</module>
                 <module>sca-api</module>
+                <module>workspace</module>
+                <!--
+                <module>workspace-admin</module>
+                -->
+                <module>workspace-impl</module>
+                <module>workspace-xml</module>
                 <module>definitions</module>
                 <module>definitions-xml</module>
             </modules>
