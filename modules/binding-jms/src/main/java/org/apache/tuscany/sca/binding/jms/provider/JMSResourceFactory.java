@@ -29,6 +29,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+
 /**
  * Abstracts away any JMS provide specific feature from the JMS binding
  */
@@ -102,6 +104,9 @@ public class JMSResourceFactory {
 
     private void createConnection() throws NamingException, JMSException {
         ConnectionFactory connectionFactory = (ConnectionFactory)jndiLookUp(connectionFactoryName);
+        if (connectionFactory == null) {
+            throw new JMSBindingException("connection factory not found: " + connectionFactoryName);
+        }
         connection = connectionFactory.createConnection();
     }
 
