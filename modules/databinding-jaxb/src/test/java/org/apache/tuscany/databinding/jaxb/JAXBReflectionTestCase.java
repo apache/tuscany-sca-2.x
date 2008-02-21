@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.interfacedef.java.jaxws;
+package org.apache.tuscany.databinding.jaxb;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -25,36 +25,37 @@ import java.util.Collections;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.SchemaOutputResolver;
+import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.dom.DOMResult;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.databinding.xml.Node2String;
 import org.jvnet.jaxb.reflection.model.annotation.RuntimeInlineAnnotationReader;
 import org.jvnet.jaxb.reflection.model.core.Ref;
 import org.jvnet.jaxb.reflection.model.impl.RuntimeModelBuilder;
+import org.jvnet.jaxb.reflection.model.runtime.RuntimeClassInfo;
 import org.jvnet.jaxb.reflection.model.runtime.RuntimeTypeInfoSet;
 import org.jvnet.jaxb.reflection.runtime.IllegalAnnotationsException;
 import org.jvnet.jaxb.reflection.runtime.JAXBContextImpl;
 import org.w3c.dom.Node;
 
-import com.example.stock.StockOffer;
+import com.example.ipo.jaxb.PurchaseOrderType;
+import com.example.ipo.jaxb.USAddress;
 
 
 /**
  * @version $Rev$ $Date$
  */
-public class SEITestCase extends TestCase {
-    // public void testMetadata() {
-    // ServiceDescription service =
-    // DescriptionFactory.createServiceDescription(AWSECommerceServicePortType.class);
-    // }
+public class JAXBReflectionTestCase extends TestCase {
 
     public void testGenerateSchema() throws Exception {
-        JAXBContext context = JAXBContext.newInstance("com.example.stock");
+        JAXBContext context = JAXBContext.newInstance("com.example.ipo.jaxb");
         SchemaOutputResolverImpl resolver = new SchemaOutputResolverImpl();
         context.generateSchema(resolver);
-        System.out.println(resolver.getSchema());
+        System.out.println(new Node2String().transform(resolver.getSchema(), null));
     }
 
     public static class SchemaOutputResolverImpl extends SchemaOutputResolver {
@@ -74,6 +75,13 @@ public class SEITestCase extends TestCase {
 
     }
     
+    /**
+     * This is a workaround for the NPE bug in jaxb-reflection
+     * @param classes
+     * @return
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked")
     private static RuntimeTypeInfoSet create(Class... classes) throws Exception {
         IllegalAnnotationsException.Builder errorListener = new IllegalAnnotationsException.Builder();
         RuntimeInlineAnnotationReader reader = new RuntimeInlineAnnotationReader();
@@ -91,8 +99,10 @@ public class SEITestCase extends TestCase {
     }
 
     public void testReflection() throws Exception {
-        org.jvnet.jaxb.reflection.model.runtime.RuntimeTypeInfoSet model = create(StockOffer.class);
-        model.getTypeInfo(StockOffer.class);
-
+        org.jvnet.jaxb.reflection.model.runtime.RuntimeTypeInfoSet model = create(PurchaseOrderType.class);
+        RuntimeClassInfo type = (RuntimeClassInfo) model.getTypeInfo(PurchaseOrderType.class);
+        Assert.assertEquals(new QName("http://www.example.com/IPO", "PurchaseOrderType"), type.getTypeName());
+        type = (RuntimeClassInfo) model.getTypeInfo(USAddress.class);
+        Assert.assertEquals(new QName("http://www.example.com/IPO", "USAddress"), type.getTypeName());
     }
 }
