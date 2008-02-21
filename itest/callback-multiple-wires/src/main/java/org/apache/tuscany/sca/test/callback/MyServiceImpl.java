@@ -30,18 +30,15 @@ import org.osoa.sca.annotations.Service;
 @Scope("COMPOSITE")
 public class MyServiceImpl implements MyService {
 
-    private MyServiceCallback myServiceCallback;
-
     @Context
     protected RequestContext requestContext;
-
-    // [rfeng] It's important to synchonize on this method as two clients call it concurrently
-    public synchronized void someMethod(String arg) {
+    
+    public void someMethod(String arg) {
         // invoke the callback
         try {
-            myServiceCallback = requestContext.getCallback();
+            MyServiceCallback myServiceCallback = requestContext.getCallback();
             myServiceCallback.receiveResult(arg + " -> receiveResult");
-        } catch (RuntimeException e) {
+        } catch(RuntimeException e) {
             System.out.println("RuntimeException invoking receiveResult: " + e.toString());
         }
     }
