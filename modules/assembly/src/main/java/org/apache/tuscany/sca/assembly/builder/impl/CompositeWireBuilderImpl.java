@@ -969,7 +969,7 @@ public class CompositeWireBuilderImpl {
                 }
                 
                 try {
-                    //compute the intents for operations under service element
+                    //compute the intents for operations under reference element
                     bindingPolicyComputer.computeIntentsForOperations(componentReference);
                     //compute intents and policyset for each binding
                     addInheritedOpConfOnBindings(componentReference);

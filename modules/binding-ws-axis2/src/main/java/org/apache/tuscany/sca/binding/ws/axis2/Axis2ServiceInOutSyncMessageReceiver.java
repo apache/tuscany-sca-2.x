@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.binding.ws.axis2;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,18 +31,21 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractInOutSyncMessageReceiver;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
+import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.osoa.sca.ServiceRuntimeException;
 
 public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
     private static final Logger logger = Logger.getLogger(Axis2ServiceInOutSyncMessageReceiver.class.getName());
 	
     protected Operation operation;
+    private List<PolicyHandler> policyHandlerList = null;
 
     private Axis2ServiceProvider provider;
 
-    public Axis2ServiceInOutSyncMessageReceiver(Axis2ServiceProvider provider, Operation operation) {
+    public Axis2ServiceInOutSyncMessageReceiver(Axis2ServiceProvider provider, Operation operation, List<PolicyHandler> policyHandlerList) {
         this.provider = provider;
         this.operation = operation;
+        this.policyHandlerList = policyHandlerList;
     }
 
     public Axis2ServiceInOutSyncMessageReceiver() {
@@ -56,7 +60,16 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             if (requestOM != null) {
             	args = new Object[] {requestOM};
             }
+            
+            for ( PolicyHandler policyHandler : policyHandlerList ) {
+                policyHandler.beforeInvoke(operation, args, inMC);
+            }
+            
             OMElement responseOM = (OMElement)provider.invokeTarget(operation, args, inMC);
+            
+            for ( PolicyHandler policyHandler : policyHandlerList ) {
+                policyHandler.afterInvoke(operation, args, inMC, responseOM);
+            }
 
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
             if (null != responseOM ) {

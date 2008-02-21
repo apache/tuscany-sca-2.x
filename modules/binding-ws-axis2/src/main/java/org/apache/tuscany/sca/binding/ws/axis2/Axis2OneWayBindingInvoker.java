@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.soap.SOAPFactory;
@@ -28,15 +30,17 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
 public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
 
     public Axis2OneWayBindingInvoker(Axis2ServiceClient serviceClient,
                                      QName wsdlOperationName,
                                      Options options,
-                                     SOAPFactory soapFactory) {
+                                     SOAPFactory soapFactory,
+                                     List<PolicyHandler> policyHandlerList) {
 
-        super(serviceClient, wsdlOperationName, options, soapFactory);
+        super(serviceClient, wsdlOperationName, options, soapFactory, policyHandlerList);
     }
 
     @Override

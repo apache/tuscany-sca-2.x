@@ -21,23 +21,18 @@ package org.apache.tuscany.sca.implementation.java.invocation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
-import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
-import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerUtils;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 
@@ -89,8 +84,12 @@ public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProces
                                     for ( PolicySet policySet : confOp.getPolicySets() ) {
                                         policyHandler = 
                                             PolicyHandlerUtils.findPolicyHandler(policySet, javaImpl.getPolicyHandlerClassNames());
-                                        policyHandler.setUp(javaImpl);
-                                        applicablePolicyHandlers.add(policyHandler);
+                                        if ( policyHandler != null ) {
+                                            policyHandler.setUp(javaImpl);
+                                            applicablePolicyHandlers.add(policyHandler);
+                                        } else {
+                                            System.out.println("WARNING : No PolicyHandler registered for " + policySet);
+                                        }
                                     }
                                     break;
                                 }

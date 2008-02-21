@@ -191,12 +191,13 @@ public abstract class PolicyComputer {
     }*/
     
     protected List<PolicySet> computeInheritablePolicySets(PolicySetAttachPoint policySetAttachPoint,
-                                                           List<PolicySet> inheritablePolicySets) 
+                                                           List<PolicySet> inheritablePolicySets,
+                                                           List<PolicySet> applicablePolicySets) 
                                                                throws PolicyValidationException {
         List<PolicySet> validInheritablePolicySets = new ArrayList<PolicySet>();
         for (PolicySet policySet : inheritablePolicySets) {
             if ( !policySet.isUnresolved() ) { 
-                if ( policySetAttachPoint.getApplicablePolicySets().contains(policySet) ) {
+                if ( applicablePolicySets.contains(policySet) ) {
                     validInheritablePolicySets.add(policySet);
                 }
             } else {

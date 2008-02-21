@@ -96,8 +96,10 @@ public class BindingPolicyComputer extends PolicyComputer {
             if ( binding instanceof PolicySetAttachPoint ) {
                 PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
                 
+                policiedBinding.getApplicablePolicySets().addAll(applicablePolicySets);
                 List<PolicySet> prunedPolicySets = computeInheritablePolicySets(policiedBinding,
-                                                                                inheritedPolicySets);
+                                                                                inheritedPolicySets,
+                                                                                applicablePolicySets);
                 policiedBinding.getPolicySets().addAll(prunedPolicySets);
                 computePolicySets(policiedBinding);
                 computePolicySetsForOperations(applicablePolicySets, policiedBinding);

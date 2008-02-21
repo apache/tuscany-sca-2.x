@@ -30,6 +30,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.util.PolicyHandlerDefinitionsLoader;
 import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
 import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -66,7 +67,7 @@ public class Axis2SCABindingProviderFactory implements BindingProviderFactory<Di
         ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         this.messageFactory = modelFactories.getFactory(MessageFactory.class);
         nodeFactory = modelFactories.getFactory(NodeFactory.class);
-        policyHandlerClassnames = loadPolicyHandlerClassnames();
+        policyHandlerClassnames = PolicyHandlerDefinitionsLoader.loadPolicyHandlerClassnames();
     }    
 
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
@@ -84,51 +85,4 @@ public class Axis2SCABindingProviderFactory implements BindingProviderFactory<Di
     public Class<DistributedSCABinding> getModelType() {
         return DistributedSCABinding.class;
     }  
-    
-    private static QName getQName(String qname) { 
-        if (qname == null) {
-            return null;
-        }
-        qname = qname.trim();
-        if (qname.startsWith("{")) {
-            int h = qname.indexOf('}');
-            if (h != -1) {
-                return new QName(qname.substring(1, h), qname.substring(h + 1));
-            }
-        } else {
-            int h = qname.indexOf('#');
-            if (h != -1) {
-                return new QName(qname.substring(0, h), qname.substring(h + 1));
-            }
-        }
-        throw new IllegalArgumentException("Invalid qname: " + qname);
-    }
-    
-    private Map<ClassLoader, List<PolicyHandlerTuple>> loadPolicyHandlerClassnames() {
-        // Get the processor service declarations
-        Set<ServiceDeclaration> sds;
-        try {
-            sds = ServiceDiscovery.getInstance().getServiceDeclarations(PolicyHandler.class);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        
-        Map<ClassLoader, List<PolicyHandlerTuple>> handlerTuples = new Hashtable<ClassLoader, List<PolicyHandlerTuple>>();
-        for (ServiceDeclaration sd : sds) {
-            ClassLoader cl = sd.getClassLoader();
-            
-            List<PolicyHandlerTuple> handlerTupleList = handlerTuples.get(cl);
-            if ( handlerTupleList == null ) {
-                handlerTupleList = new ArrayList<PolicyHandlerTuple>();
-                handlerTuples.put(cl, handlerTupleList);
-            }
-            Map<String, String> attributes = sd.getAttributes();
-            String intentName = attributes.get("intent");
-            QName intentQName = getQName(intentName);
-            String policyModelClassName = attributes.get("model");
-            handlerTupleList.add(new PolicyHandlerTuple(sd.getClassName(), intentQName, policyModelClassName));
-        }
-        return handlerTuples;
-    }
-
 }

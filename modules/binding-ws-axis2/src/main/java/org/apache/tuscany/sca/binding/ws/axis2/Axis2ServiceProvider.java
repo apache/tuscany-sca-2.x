@@ -27,6 +27,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -120,6 +121,7 @@ public class Axis2ServiceProvider {
     private JMSSender jmsSender;
     private JMSListener jmsListener;
     private Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames = null;
+    private List<PolicyHandler> policyHandlerList = new ArrayList<PolicyHandler>();
 
     public static final QName QNAME_WSA_ADDRESS =
         new QName(AddressingConstants.Final.WSA_NAMESPACE, AddressingConstants.EPR_ADDRESS);
@@ -230,10 +232,11 @@ public class Axis2ServiceProvider {
         // service for every port
 
         try {
+            createPolicyHandlers();
             AxisService axisService = createAxisService();
             configContext.getAxisConfiguration().addService( axisService );
             
-            setupPolicies(configContext);
+            setupPolicyHandlers(policyHandlerList, configContext);
           
             String endpointURL = axisService.getEndpointURL();
             if ( endpointURL.startsWith( "http://")  || endpointURL.startsWith("/")) {
@@ -544,9 +547,9 @@ public class Axis2ServiceProvider {
 
                 MessageReceiver msgrec = null;
                 if (op.isNonBlocking()) {
-                    msgrec = new Axis2ServiceInMessageReceiver(this, op);
+                    msgrec = new Axis2ServiceInMessageReceiver(this, op, policyHandlerList);
                 } else {
-                    msgrec = new Axis2ServiceInOutSyncMessageReceiver(this, op);
+                    msgrec = new Axis2ServiceInOutSyncMessageReceiver(this, op, policyHandlerList);
                 }
                 axisOp.setMessageReceiver(msgrec);
             }
@@ -667,45 +670,29 @@ public class Axis2ServiceProvider {
         return returnPolicySet;
     } 
     
-    private void setupPolicies(ConfigurationContext configContext) throws IllegalAccessException, 
-                                                                          InstantiationException,
-                                                                          ClassNotFoundException {
-        if ( wsBinding instanceof PolicySetAttachPoint ) {
-            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding; 
-            PolicyHandler policyHandler = null;
-            for ( PolicySet policySet : policiedBinding.getPolicySets() ) {
-                policyHandler = PolicyHandlerUtils.findPolicyHandler(policySet, policyHandlerClassnames);
-                    if ( policyHandler != null ) {
-                        policyHandler.setApplicablePolicySet(policySet);
-                        policyHandler.setUp(configContext);
-                    }
-            }
+    private void setupPolicyHandlers(List<PolicyHandler> policyHandlers, ConfigurationContext configContext)  {
+        for ( PolicyHandler aHandler : policyHandlers ) {
+            aHandler.setUp(configContext);
         }
     }
     
-    /*private void configureSecurity() throws AxisFault {
-        if ( wsBinding instanceof PolicySetAttachPoint ) {
-            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding; 
-            Parameter configParam = null;
-            Axis2ConfigParamPolicy axis2ConfigParamPolicy = null;
-            for ( PolicySet policySet : policiedBinding.getPolicySets() ) {
-                for ( Object policy : policySet.getPolicies() ) {
-                    if ( policy instanceof Axis2ConfigParamPolicy ) {
-                        axis2ConfigParamPolicy = (Axis2ConfigParamPolicy)policy;
-                        for ( String paramName : axis2ConfigParamPolicy.getParamElements().keySet() ) {
-                            configParam = new Parameter(paramName, 
-                                                        axis2ConfigParamPolicy.getParamElements().get(paramName).getFirstElement());
-                            configParam.setParameterElement(axis2ConfigParamPolicy.getParamElements().get(paramName));
-                            configContext.getAxisConfiguration().addParameter(configParam);
-                        }
-                    } else if ( policy instanceof Policy ) {
-                        Policy wsPolicy = (Policy)policy;
-                        configContext.getAxisConfiguration().applyPolicy(wsPolicy);
-                    }
+    private void createPolicyHandlers() throws IllegalAccessException,
+                                                              InstantiationException, 
+                                                              ClassNotFoundException {
+        if (wsBinding instanceof PolicySetAttachPoint) {
+            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding;
+            PolicyHandler policyHandler = null;
+            for (PolicySet policySet : policiedBinding.getPolicySets()) {
+                policyHandler =
+                    PolicyHandlerUtils.findPolicyHandler(policySet, policyHandlerClassnames);
+                if (policyHandler != null) {
+                    policyHandler.setApplicablePolicySet(policySet);
+                    policyHandlerList.add(policyHandler);
                 }
             }
         }
-    }*/
+    }
+     
     
     private void deployRampartModule()  throws DeploymentException, AxisFault {
     	ClassLoader tccl = (ClassLoader) org.apache.axis2.java.security.AccessController
