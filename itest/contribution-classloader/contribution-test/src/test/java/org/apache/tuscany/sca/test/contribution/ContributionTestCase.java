@@ -365,5 +365,7 @@ public class ContributionTestCase {
         supplyChain.setUp(this.getClass().getClassLoader(), SupplyChain.SUPPLYCHAIN_SPLITPACKAGE);
         
         staticClassLoadingTestForVisibleClasses();
+        
+        dynamicClassLoadingTestForNonImportedClasses();
     }
 }
