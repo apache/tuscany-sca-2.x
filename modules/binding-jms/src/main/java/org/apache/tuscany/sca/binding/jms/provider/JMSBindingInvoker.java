@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.PassByValueAware;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Interceptor for the JMS binding.
@@ -182,6 +183,16 @@ public class JMSBindingInvoker implements Invoker, PassByValueAware {
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setFaultBody(e.getCause());
+        } catch (ServiceRuntimeException e) {
+            if (e.getCause() instanceof InvocationTargetException) {
+                if ((e.getCause().getCause() instanceof RuntimeException)) {
+                    msg.setFaultBody(e.getCause());
+                } else {
+                    msg.setFaultBody(e.getCause().getCause());
+                }
+            } else {
+                msg.setFaultBody(e);
+            }
         } catch (Throwable e) {
             msg.setFaultBody(e);
         }
