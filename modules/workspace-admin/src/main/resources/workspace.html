@@ -1,0 +1,108 @@
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<html>
+<head>
+<title>SCA Contributions</title>
+
+<script type="text/javascript" src="workspace.js"></script>
+
+<script language="JavaScript">
+
+	//@Reference
+	var workspace = new Reference("workspace");
+	
+	function getContributions() {
+		workspace.get("", getContributionsResponse);
+	}
+	
+	function getContributionsResponse(feed) {
+		if (feed != null) {
+			var entries = feed.getElementsByTagName("entry");              
+			var contributions = "";
+			for (var i=0; i<entries.length; i++) {
+				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
+				var uri = entries[i].getElementsByTagName("link")[0].getAttribute("href");
+				contributions += '<input name="contributions" type="checkbox" value="' + id + '">' +
+											'<a href=\"' + uri + '\">' + id + '</a><br/>';
+			}
+			document.getElementById("contributions").innerHTML = contributions;
+		}
+	}				
+
+	function deleteContribution() {
+		var contributions  = document.workspaceForm.contributions;
+		for (var i=0; i < contributions.length; i++) {
+			if (contributions[i].checked) {
+			    var id = contributions[i].value;
+				workspace.del(id, deleteContributionResponse);
+			}
+		}
+	}
+
+	function deleteContributionResponse() {
+	    getContributions();
+	}	
+
+	function addContribution() {
+		var id  = document.newContributionForm.contributionID.value;
+		var location  = document.newContributionForm.contributionLocation.value;
+		var entry = '<entry xmlns="http://www.w3.org/2005/Atom">' +
+				'<title>Contribution - ' + id +'</title>' +
+              	'<id>' + id + '</id>' +
+              	'<link rel="alternate" href="' + location + '" />' +
+              	'<link rel="edit" href="' + location + '" />' +
+               	'</entry>';
+		workspace.post(entry, addContributionResponse);
+	}
+
+	function addContributionResponse() {
+		document.newContributionForm.contributionID.value = "";
+		document.newContributionForm.contributionLocation.value = "";
+	    getContributions();
+	}	
+
+	getContributions();
+</script>
+
+</head>
+
+<body>
+  <h2>SCA Contributions</h2>
+  <div id="workspace">
+  <form name="workspaceForm">
+    <div id="contributions" ></div>
+    <br/>
+    <input type="button" onClick="deleteContribution()"  value="Delete" />
+    <a href="/workspace/">(feed)</a>
+  </form>
+  <br/>
+  
+  <h2>Add Contribution</h2>
+  <form name="newContributionForm">
+    <table border="0">
+    <tr><td>Id:</td><td><input type="text" name="contributionID" /></td></tr> 
+    <tr><td>Location:</td><td><input type="file" name="contributionLocation" /></td></tr>
+    </table>
+    <br/>
+    <input type="button" onClick="addContribution()" value="Add" />
+  </form>
+  
+  </div>
+</body>
+</html>
