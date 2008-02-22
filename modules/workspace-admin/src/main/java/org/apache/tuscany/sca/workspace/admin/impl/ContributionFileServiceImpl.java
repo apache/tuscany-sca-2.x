@@ -75,7 +75,7 @@ public class ContributionFileServiceImpl extends HttpServlet {
             response.sendRedirect("/ui/files");
         }
         catch (Exception e) {
-            throw new IOException(e);
+            throw new IOException(e.toString());
         }
     }
     

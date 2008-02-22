@@ -181,9 +181,12 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
     }
 
     public Entry<String, Item>[] query(String queryString) {
-        
-        //TODO Implement later
-        return null;
+        if (queryString.startsWith("importedBy=")) {
+            //FIXME Invoke the ContributionDependency code from workspace-impl
+            return getAll();
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
     
     /**

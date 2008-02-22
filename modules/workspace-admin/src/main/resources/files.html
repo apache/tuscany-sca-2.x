@@ -37,9 +37,9 @@
 			var list = "";
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
-				var uri = entries[i].getElementsByTagName("link")[0].getAttribute("href");
+				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
 				list += '<input name="files" type="checkbox" value="' + id + '">' +
-											'<a href=\"' + uri + '\">' + id + '</a><br/>';
+											'<a href=\"' + location + '\">' + id + '</a><br/>';
 			}
 			document.getElementById("files").innerHTML = list;
 		}
@@ -79,7 +79,7 @@
   </form>
   <br/>
   
-  <h2>Upload SCA Contribution File</h2>
+  <b>Upload SCA Contribution File</b>
   <form method="post" name="uploadFileForm" enctype='multipart/form-data' action='/files'>
     <table border="0">
     <tr><td>File:</td><td><input type="file" name="file" /></td></tr>
