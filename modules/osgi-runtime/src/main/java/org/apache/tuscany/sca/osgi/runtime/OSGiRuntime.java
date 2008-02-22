@@ -35,7 +35,7 @@ public abstract class OSGiRuntime {
 
     public abstract boolean supportsBundleFragments();
     
-    protected abstract BundleContext startRuntime() throws Exception;
+    protected abstract BundleContext startRuntime(boolean tuscanyRunningInOSGiContainer) throws Exception;
        
     private static OSGiRuntime instance;
     
@@ -51,26 +51,20 @@ public abstract class OSGiRuntime {
      * 
      * @throws BundleException
      */
-    public synchronized static OSGiRuntime getRuntime() throws Exception {
+    public synchronized static OSGiRuntime findRuntime() throws Exception {
+
         if (instance != null) {
         	
-        	if (instance.bundleContext == null) {
-        		instance.startRuntime();
-        		instance.initialize();
-        	}
             return instance;
         }
         String runtimeClassName = System.getProperty(OSGiRuntime.class.getName());
         
-        if (instance != null)
-        	return instance;
 
         if (runtimeClassName != null) {
             try {
                 Class<?> runtimeClass = OSGiRuntime.class.getClassLoader().loadClass(runtimeClassName);
                 Method method = runtimeClass.getMethod("getInstance");
                 instance = (OSGiRuntime) method.invoke(null);
-                instance.initialize();
                 return instance;
                 
             } catch (Exception e) {
@@ -81,7 +75,6 @@ public abstract class OSGiRuntime {
         try {
             
             instance = EquinoxRuntime.getInstance();
-            instance.initialize();
             return instance;
             
         } catch (ClassNotFoundException e) {
@@ -93,7 +86,6 @@ public abstract class OSGiRuntime {
         try {
 
             instance = FelixRuntime.getInstance();
-            instance.initialize();
             return instance;
  
         } catch (ClassNotFoundException e) {
@@ -105,7 +97,6 @@ public abstract class OSGiRuntime {
         try {
        
             instance = KnopflerfishRuntime.getInstance();
-            instance.initialize();
             return instance;
             
         } catch (ClassNotFoundException e) {
@@ -118,13 +109,37 @@ public abstract class OSGiRuntime {
     }
 
 
+    public synchronized static OSGiRuntime getRuntime() throws Exception {
+    	return getRuntime(false);
+    }
+
+    public synchronized static OSGiRuntime getRuntime(boolean tuscanyRunningInOSGiContainer) throws Exception {
+    	
+    	instance = findRuntime();
+    	
+        if (instance != null) {
+        	
+        	if (instance.bundleContext == null) {
+        		instance.startRuntime(tuscanyRunningInOSGiContainer);
+        		instance.initialize();
+        	}
+            return instance;
+        }
+        return instance;
+    }
+
+
     public void shutdown() throws Exception {
     	
     	bundleContext = null;
     	packageAdmin = null;
     }
+
+    protected void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
     
-    private void initialize() {
+    protected void initialize() {
     	
         bundleContext = getBundleContext();
 

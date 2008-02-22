@@ -36,14 +36,14 @@ public class KnopflerfishRuntime extends OSGiRuntime  {
     private static KnopflerfishRuntime instance;
     
 
-    private static Class frameworkClass;
+    private static Class<?> frameworkClass;
     
     private static Object framework;
     
     public static OSGiRuntime getInstance() throws Exception {
         if (instance == null) {
+            frameworkClass = KnopflerfishRuntime.class.getClassLoader().loadClass("org.knopflerfish.framework.Framework");
             KnopflerfishRuntime runtime = new KnopflerfishRuntime();
-            runtime.startRuntime();
             instance = runtime;
         }
         return instance;
@@ -58,7 +58,7 @@ public class KnopflerfishRuntime extends OSGiRuntime  {
     //        the classpath which contains framework.jar. The entries in init.xargs starting with
     //        -install are assumed to be single-line entries with full bundle location.
     //
-    protected BundleContext startRuntime() throws Exception {
+    protected BundleContext startRuntime(boolean tuscanyRunningInOSGiContainer) throws Exception {
         
         if (bundleContext != null)
             return bundleContext;
@@ -67,7 +67,6 @@ public class KnopflerfishRuntime extends OSGiRuntime  {
         
         System.setProperty("org.knopflerfish.framework.bundlestorage", "memory");
                     
-        frameworkClass = KnopflerfishRuntime.class.getClassLoader().loadClass("org.knopflerfish.framework.Framework");
         Constructor frameworkConstructor = frameworkClass.getConstructor(Object.class);
         framework = frameworkConstructor.newInstance(new KnopflerfishRuntime());
         Method launchMethod = frameworkClass.getMethod("launch", long.class);
