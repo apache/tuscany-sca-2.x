@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  *
  * @version $Rev$ $Date$
  */
-public interface InvocationChain extends PassByValueAware {
+public interface InvocationChain {
     /**
      * Returns the target operation for this invocation chain.
      *
@@ -86,5 +86,11 @@ public interface InvocationChain extends PassByValueAware {
      * @param interceptor The interceptor to add
      */
     void addInterceptor(int index, Interceptor interceptor);
-
+    
+    /**
+     * Indicate if the data can be passed in by reference as they won't be mutated.
+     * @return true if pass-by-reference is allowed
+     */
+    boolean allowsPassByReference();
+    void setAllowsPassByReference(boolean allowsPBR);
 }

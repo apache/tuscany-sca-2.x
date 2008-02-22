@@ -36,6 +36,7 @@ public class InvocationChainImpl implements InvocationChain {
     private Operation sourceOperation;
     private Operation targetOperation;
     private List<Invoker> invokers = new ArrayList<Invoker>();
+    private boolean allowsPassByReference;
 
     public InvocationChainImpl(Operation operation) {
         assert operation != null;
@@ -117,6 +118,10 @@ public class InvocationChainImpl implements InvocationChain {
     }
 
     public boolean allowsPassByReference() {
+        if(allowsPassByReference) {
+            // No need to check the invokers
+            return true;
+        }
         // Check if any of the invokers allows pass-by-reference
         boolean allowsPBR = false;
         for (Invoker i : invokers) {
@@ -128,6 +133,10 @@ public class InvocationChainImpl implements InvocationChain {
             }
         }
         return allowsPBR;
+    }
+
+    public void setAllowsPassByReference(boolean allowsPBR) {
+        this.allowsPassByReference = allowsPBR;
     }
 
 }

@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.core.databinding.wire;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +31,15 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
+import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Implementation of an interceptor that enforces pass-by-value semantics
@@ -45,6 +50,8 @@ import org.apache.tuscany.sca.invocation.Message;
 public class PassByValueInterceptor implements Interceptor {
 
     private DataBindingExtensionPoint dataBindings;
+    private FaultExceptionMapper faultExceptionMapper;
+
     private DataBinding[] inputDataBindings;
     private DataBinding outputDataBinding;
     private DataBinding javaBeanDataBinding;
@@ -58,12 +65,17 @@ public class PassByValueInterceptor implements Interceptor {
      * @param dataBindings databinding extension point
      * @param operation the intercepted operation
      */
-    public PassByValueInterceptor(DataBindingExtensionPoint dataBindings, InvocationChain chain, Operation operation) {
+    public PassByValueInterceptor(DataBindingExtensionPoint dataBindings,
+                                  FaultExceptionMapper faultExceptionMapper,
+                                  InvocationChain chain,
+                                  Operation operation) {
         this.chain = chain;
         this.operation = operation;
 
         // Cache data bindings to use
         this.dataBindings = dataBindings;
+        this.faultExceptionMapper = faultExceptionMapper;
+
         jaxbDataBinding = dataBindings.getDataBinding(JAXBDataBinding.NAME);
         javaBeanDataBinding = dataBindings.getDataBinding(JavaBeansDataBinding.NAME);
 
@@ -97,7 +109,26 @@ public class PassByValueInterceptor implements Interceptor {
         if (!msg.isFault() && operation.getOutputType() != null) {
             resultMsg.setBody(copy(resultMsg.getBody(), outputDataBinding));
         }
+
+        if (msg.isFault()) {
+            msg.setFaultBody(copyFault(msg.getBody()));
+        }
         return resultMsg;
+    }
+
+    private Object copyFault(Object fault) {
+        if (faultExceptionMapper == null) {
+            return fault;
+        }
+        Throwable ex = (Throwable)fault;
+        DataType<DataType> exType =
+            new DataTypeImpl<DataType>(ex.getClass(), new DataTypeImpl<XMLType>(ex.getClass(), XMLType.UNKNOWN));
+        faultExceptionMapper.introspectFaultDataType(exType);
+        DataType faultType = exType.getLogical();
+        Object faultInfo = faultExceptionMapper.getFaultInfo(ex, faultType.getPhysical());
+        faultInfo = copy(faultInfo, dataBindings.getDataBinding(faultType.getDataBinding()));
+        fault = faultExceptionMapper.wrapFaultInfo(exType, ex.getMessage(), faultInfo, ex.getCause());
+        return fault;
     }
 
     /**
@@ -176,6 +207,20 @@ public class PassByValueInterceptor implements Interceptor {
                 // If the input data is not serializable use JAXB
                 if (!(data instanceof Serializable)) {
                     dataBinding = jaxbDataBinding;
+                }
+                
+                if(data instanceof Cloneable) {
+                    Method clone;
+                    try {
+                        clone = data.getClass().getMethod("clone", (Class[]) null);
+                        try {
+                            return clone.invoke(data, (Object[]) null);
+                        } catch (Exception e) {
+                            throw new ServiceRuntimeException(e);
+                        } 
+                    } catch (NoSuchMethodException e) {
+                        // Ignore it
+                    }
                 }
             }
         }

@@ -153,7 +153,8 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
                 // assume pass-by-values copies are required if interfaces are remotable and there is no data binding
                 // transformation, i.e. a transformation will result in a copy so another pass-by-value copy is unnecessary
                 if (isRemotable(chain, sourceOperation, targetOperation)) {
-                    interceptor = new PassByValueInterceptor(dataBindings, chain, targetOperation);
+                    interceptor =
+                        new PassByValueInterceptor(dataBindings, faultExceptionMapper, chain, targetOperation);
                 }
             }
             if (interceptor != null) {
