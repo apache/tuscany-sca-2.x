@@ -38,11 +38,29 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
     <welcome-file>hello.jsp</welcome-file>
   </welcome-file-list>
 
+  <!-- Uncomment this to use an appserver thread pool
   <resource-ref>
      <res-ref-name>wm/TuscanyWorkManager</res-ref-name>
      <res-type>commonj.work.WorkManager</res-type>
      <res-auth>Container</res-auth>
      <res-sharing-scope>Shareable</res-sharing-scope>
   </resource-ref>
+  -->
 
+  <!-- Uncomment these to use local jndi name aliases
+  <resource-ref>
+     <res-ref-name>ConnectionFactory</res-ref-name>
+     <res-type>javax.jms.ConnectionFactory</res-type>
+     <res-auth>Container</res-auth>
+     <res-sharing-scope>Shareable</res-sharing-scope>
+  </resource-ref>
+
+  <resource-ref>
+     <res-ref-name>HelloWorldService</res-ref-name>
+     <res-type>javax.jms.Queue</res-type>
+     <res-auth>Container</res-auth>
+     <res-sharing-scope>Shareable</res-sharing-scope>
+  </resource-ref>
+  -->
+  
 </web-app>
