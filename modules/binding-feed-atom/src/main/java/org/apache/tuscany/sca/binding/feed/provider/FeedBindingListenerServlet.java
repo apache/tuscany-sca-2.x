@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
@@ -32,11 +34,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
 import org.apache.abdera.Abdera;
-import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Collection;
+import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.Feed;
+import org.apache.abdera.model.Link;
 import org.apache.abdera.model.Service;
 import org.apache.abdera.model.Workspace;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -44,10 +49,11 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
-import org.apache.commons.codec.binary.Base64;
+import com.sun.xml.bind.v2.schemagen.xmlschema.List;
 
 
 
@@ -62,6 +68,8 @@ class FeedBindingListenerServlet extends HttpServlet {
     //private final static Namespace APP_NS = Namespace.getNamespace("app", "http://purl.org/atom/app#");
     //private final static Namespace ATOM_NS = Namespace.getNamespace("atom", "http://www.w3.org/2005/Atom");
 
+    private final Abdera abdera = new Abdera();
+    
     private RuntimeWire wire;
     private Invoker getFeedInvoker;
     private Invoker getAllInvoker;
@@ -171,12 +179,10 @@ class FeedBindingListenerServlet extends HttpServlet {
             // Return the Atom service document
             response.setContentType("application/atomsvc+xml; charset=utf-8");
             
-            Abdera abdera = new Abdera();
-            Factory factory = abdera.getFactory();
-            Service service = factory.newService();
+            Service service = this.abdera.getFactory().newService();
             //service.setText("service");
             
-            Workspace workspace = factory.newWorkspace();
+            Workspace workspace = this.abdera.getFactory().newWorkspace();
             workspace.setTitle("resource");
 
             String href = request.getRequestURL().toString();
@@ -191,13 +197,16 @@ class FeedBindingListenerServlet extends HttpServlet {
             workspace.addCollection(collection);
 
             service.addWorkspace(workspace);
-            
 
-            service.getDocument().writeTo(response.getOutputStream());
+            //FIXME add prettyPrint support
+            try {
+            	service.getDocument().writeTo(response.getOutputStream());
+            } catch (IOException ioe) {
+            	throw new ServletException(ioe);
+            }
 
         } else if (path == null || path.length() == 0 || path.equals("/")) {
 
-        	/*
             // Return a feed containing the entries in the collection
             Feed feed = null;
             if (supportsFeedEntries) {
@@ -224,7 +233,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                     (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>[])responseMessage.getBody();
                 if (collection != null) {
                     // Create the feed
-                    feed = new Feed();
+                    feed = this.abdera.getFactory().newFeed();
                     feed.setTitle("Feed");
                     for (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry: collection) {
                         Entry feedEntry = createFeedEntry(entry.getKey(), entry.getData());
@@ -236,12 +245,10 @@ class FeedBindingListenerServlet extends HttpServlet {
                 
                 // Write the Atom feed
                 response.setContentType("application/atom+xml; charset=utf-8");
-                feed.setFeedType(requestFeedType);
-                WireFeedOutput feedOutput = new WireFeedOutput();
                 try {
-                    feedOutput.output(feed, getWriter(response));
-                } catch (FeedException e) {
-                    throw new ServletException(e);
+                	 feed.getDocument().writeTo(response.getOutputStream());
+                } catch (IOException ioe) {
+                    throw new ServletException(ioe);
                 }
             } else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -260,13 +267,11 @@ class FeedBindingListenerServlet extends HttpServlet {
             if (responseMessage.isFault()) {
                 throw new ServletException((Throwable)responseMessage.getBody());
             }
+            
             if (supportsFeedEntries) {
-                
-                // The service implementation returns a feed entry 
+            	// The service implementation returns a feed entry 
                 feedEntry = responseMessage.getBody();
-                
             } else {
-                
                 // The service implementation only returns a data item, create an entry
                 // from it
                 feedEntry = createFeedEntry(id, responseMessage.getBody());
@@ -277,13 +282,12 @@ class FeedBindingListenerServlet extends HttpServlet {
                 response.setContentType("application/atom+xml; charset=utf-8");
                 try {
                     AtomFeedEntryUtil.writeFeedEntry(feedEntry, feedType, getWriter(response));
-                } catch (FeedException e) {
-                    throw new ServletException(e);
+                } catch (IOException ioe) {
+                    throw new ServletException(ioe);
                 }
             } else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
-			*/
         } else {
             // Path doesn't match any known pattern
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -299,35 +303,28 @@ class FeedBindingListenerServlet extends HttpServlet {
      */
     private Entry createFeedEntry(Object key, Object item) {
         if (item != null) {
-        	/*
-            Entry feedEntry = new Entry();
+
+            Entry feedEntry = abdera.getFactory().newEntry();
             feedEntry.setId(key.toString());
             feedEntry.setTitle("item");
-    
+            
+            
             // Convert the item to XML
             String value = mediator.mediate(item, itemClassType, itemXMLType, null).toString();
             value = value.substring(value.indexOf('>') +1);
             
-            Content content = new Content();
-            content.setType("text/xml");
+            Content content = this.abdera.getFactory().newContent();
+            content.setContentType(Content.Type.XML);
             content.setValue(value);
-            List<Content> contents = new ArrayList<Content>();
-            contents.add(content);
-            feedEntry.setContents(contents);
+            
+            feedEntry.setContentElement(content);
+
+            feedEntry.addLink(key.toString(), "edit");
+            feedEntry.addLink(key.toString(), "alternate");
     
-            Link link = new Link();
-            link.setRel("edit");
-            link.setHref(key.toString());
-            feedEntry.getOtherLinks().add(link);
-            link = new Link();
-            link.setRel("alternate");
-            link.setHref(key.toString());
-            feedEntry.getAlternateLinks().add(link);
-    
-            feedEntry.setCreated(new Date());
+            feedEntry.setUpdated(new Date());
+
             return feedEntry;
-            */
-        	return null;
         } else {
             return null;
         }
