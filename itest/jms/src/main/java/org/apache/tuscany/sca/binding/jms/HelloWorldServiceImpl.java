@@ -21,6 +21,9 @@ package org.apache.tuscany.sca.binding.jms;
 public class HelloWorldServiceImpl implements HelloWorldService {
 
     public String sayHello(String name) {
+        if ("bang".equals(name)) {
+            throw new RuntimeException("blem wit");
+        }
         return "jmsHello " + name;
     }
 
