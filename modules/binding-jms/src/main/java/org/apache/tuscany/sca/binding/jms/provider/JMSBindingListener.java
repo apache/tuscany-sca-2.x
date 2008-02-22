@@ -59,9 +59,9 @@ public class JMSBindingListener implements MessageListener {
     public void onMessage(Message requestJMSMsg) {
         try {
             Object responsePayload = invokeService(requestJMSMsg);
-            sendReply(requestJMSMsg, responsePayload);
-        } catch (Exception e) {
-            sendFaultReply(requestJMSMsg, e);
+            sendReply(requestJMSMsg, responsePayload, false);
+        } catch (Throwable e) {
+            sendReply(requestJMSMsg, e, true);
         }
     }
 
@@ -112,7 +112,7 @@ public class JMSBindingListener implements MessageListener {
 
     }
 
-    protected void sendReply(Message requestJMSMsg, Object responsePayload) {
+    protected void sendReply(Message requestJMSMsg, Object responsePayload, boolean isFault) {
         try {
 
             if (requestJMSMsg.getJMSReplyTo() == null) {
@@ -121,7 +121,12 @@ public class JMSBindingListener implements MessageListener {
             }
 
             Session session = jmsResourceFactory.createSession();
-            Message replyJMSMsg = responseMessageProcessor.insertPayloadIntoJMSMessage(session, responsePayload);
+            Message replyJMSMsg;
+            if (isFault) {
+                replyJMSMsg = responseMessageProcessor.createFaultMessage(session, (Throwable)responsePayload);
+            } else {
+                replyJMSMsg = responseMessageProcessor.insertPayloadIntoJMSMessage(session, responsePayload);
+            }
 
             replyJMSMsg.setJMSDeliveryMode(requestJMSMsg.getJMSDeliveryMode());
             replyJMSMsg.setJMSPriority(requestJMSMsg.getJMSPriority());
@@ -145,10 +150,6 @@ public class JMSBindingListener implements MessageListener {
         } catch (NamingException e) {
             throw new JMSBindingException(e);
         }
-    }
-
-    protected void sendFaultReply(Message requestJMSMsg, Exception e) {
-        sendReply(requestJMSMsg, new JMSBindingException("exception invoking JMS service", e));
     }
 
 }

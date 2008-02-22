@@ -45,4 +45,9 @@ public interface JMSMessageProcessor {
      * Create a JMS Message containing the payload
      */
     public abstract Message insertPayloadIntoJMSMessage(Session session, Object payload);
+
+    /**
+     * Create a JMS Message for reporting an exception
+     */
+    public abstract Message createFaultMessage(Session session, Throwable responsePayload);
 }
