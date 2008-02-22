@@ -25,7 +25,6 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * This shows how to test the JMS binding using a simple HelloWorld application.
@@ -37,18 +36,28 @@ public class ExceptionsTestCase {
     @Before
     public void init() {
         scaDomain =
-            SCADomain.newInstance("http://localhost", "/", "simple/client.composite", "simple/service.composite");
-        // scaDomain = SCADomain.newInstance("http://localhost", "/", "simple/client.composite");
+            SCADomain.newInstance("http://localhost", "/", "exceptions/client.composite", "exceptions/service.composite");
     }
 
     @Test
-    public void testHelloWorldCreate() throws Exception {
-        HelloWorldService helloWorldService = scaDomain.getService(HelloWorldService.class, "HelloWorldClient");
+    public void testChecked() {
+        ExceptionService service = scaDomain.getService(ExceptionService.class, "ExceptionServiceClient");
         try {
-            helloWorldService.sayHello("bang");
+            service.throwChecked();
             fail();
-        } catch (ServiceRuntimeException e) {
-            assertEquals("blem wit", e.getCause().getMessage());
+        } catch (CheckedExcpetion e) {
+            assertEquals("foo", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUnChecked() {
+        ExceptionService service = scaDomain.getService(ExceptionService.class, "ExceptionServiceClient");
+        try {
+            service.throwUnChecked();
+            fail();
+        } catch (Exception e) {
+            assertEquals("bla", e.getCause().getCause().getMessage());
         }
     }
 
