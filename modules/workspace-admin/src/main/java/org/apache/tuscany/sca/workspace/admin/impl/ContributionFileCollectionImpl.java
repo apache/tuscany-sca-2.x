@@ -92,12 +92,6 @@ public class ContributionFileCollectionImpl implements ContributionFileCollectio
     }
 
     public Entry<String, Item>[] query(String queryString) {
-        if (queryString.startsWith("importedBy=")) {
-            //FIXME Invoke the ContributionDependency code from workspace-impl
-            
-        } else if (queryString.startsWith("imports=")) {
-            //FIXME Invoke the ContributionDependency code from workspace-impl
-        }
         throw new UnsupportedOperationException();
     }
 

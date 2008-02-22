@@ -37,9 +37,11 @@
 			var contributions = "";
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
-				var uri = entries[i].getElementsByTagName("link")[0].getAttribute("href");
+				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
 				contributions += '<input name="contributions" type="checkbox" value="' + id + '">' +
-											'<a href=\"' + uri + '\">' + id + '</a><br/>';
+											'<a href=\"' + location + '\">' + id + '</a>&nbsp;';
+				contributions += '<a href=\"/workspace/?importedBy=' + id + '\">dependencies</a>';
+				contributions += '<br/>';
 			}
 			document.getElementById("contributions").innerHTML = contributions;
 		}
@@ -93,11 +95,11 @@
   </form>
   <br/>
   
-  <h2>Add Contribution</h2>
+  <b>Add Contribution</b>
   <form name="newContributionForm">
     <table border="0">
     <tr><td>Id:</td><td><input type="text" name="contributionID" /></td></tr> 
-    <tr><td>Location:</td><td><input type="file" name="contributionLocation" /></td></tr>
+    <tr><td>Address:</td><td><input type="text" name="contributionLocation" /></td></tr>
     </table>
     <br/>
     <input type="button" onClick="addContribution()" value="Add" />
