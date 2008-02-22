@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
@@ -38,7 +37,6 @@ import org.apache.abdera.model.Collection;
 import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
-import org.apache.abdera.model.Link;
 import org.apache.abdera.model.Service;
 import org.apache.abdera.model.Workspace;
 import org.apache.commons.codec.binary.Base64;
@@ -52,8 +50,6 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-
-import com.sun.xml.bind.v2.schemagen.xmlschema.List;
 
 
 
@@ -103,6 +99,7 @@ class FeedBindingListenerServlet extends HttpServlet {
         // Get the invokers for the supported operations
         Operation getOperation = null;
         for (InvocationChain invocationChain : this.wire.getInvocationChains()) {
+            invocationChain.setAllowsPassByReference(true);
             Operation operation = invocationChain.getTargetOperation();
             String operationName = operation.getName();
             if (operationName.equals("getFeed")) {
