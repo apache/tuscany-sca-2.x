@@ -19,18 +19,16 @@
 
 package org.apache.tuscany.sca.binding.feed;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.apache.abdera.Abdera;
+import org.apache.abdera.model.Content;
+import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.Feed;
 import org.apache.tuscany.sca.binding.feed.collection.Collection;
 import org.osoa.sca.annotations.Reference;
 
-import com.sun.syndication.feed.atom.Content;
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
-
 public class CustomerClientImpl implements CustomerClient {
 
+	protected final Abdera abdera = new Abdera();
     @Reference
     public Collection resourceCollection;
 
@@ -47,15 +45,15 @@ public class CustomerClientImpl implements CustomerClient {
         System.out.println("<<< post id=" + newEntry.getId() + " entry=" + newEntry.getTitle());
 
         System.out.println(">>> get id=" + newEntry.getId());
-        Entry entry = resourceCollection.get(newEntry.getId());
+        Entry entry = resourceCollection.get(newEntry.getId().toString());
         System.out.println("<<< get id=" + entry.getId() + " entry=" + entry.getTitle());
 
         System.out.println(">>> put id=" + newEntry.getId() + " entry=" + entry.getTitle());
-        resourceCollection.put(entry.getId(), updateEntry(entry, "James Bond"));
+        resourceCollection.put(entry.getId().toString(), updateEntry(entry, "James Bond"));
         System.out.println("<<< put id=" + entry.getId() + " entry=" + entry.getTitle());
 
         System.out.println(">>> delete id=" + entry.getId());
-        resourceCollection.delete(entry.getId());
+        resourceCollection.delete(entry.getId().toString());
         System.out.println("<<< delete id=" + entry.getId());
 
         System.out.println(">>> get collection");
@@ -69,15 +67,14 @@ public class CustomerClientImpl implements CustomerClient {
 
     private Entry newEntry(String value) {
 
-        Entry entry = new Entry();
+        Entry entry = this.abdera.newEntry();
         entry.setTitle("customer " + value);
 
-        Content content = new Content();
+        Content content = this.abdera.getFactory().newContent();
+        content.setContentType(Content.Type.TEXT);
         content.setValue(value);
-        content.setType(Content.TEXT);
-        List<Object> list = new ArrayList<Object>();
-        list.add(content);
-        entry.setContents(list);
+        
+        entry.setContentElement(content);
 
         return entry;
     }
@@ -85,12 +82,12 @@ public class CustomerClientImpl implements CustomerClient {
     private Entry updateEntry(Entry entry, String value) {
 
         entry.setTitle("customer " + value);
-        Content content = new Content();
+
+        Content content = this.abdera.getFactory().newContent();
+        content.setContentType(Content.Type.TEXT);
         content.setValue(value);
-        content.setType(Content.TEXT);
-        List<Object> list = new ArrayList<Object>();
-        list.add(content);
-        entry.setContents(list);
+
+        entry.setContentElement(content);
 
         return entry;
     }

@@ -19,56 +19,47 @@
 
 package org.apache.tuscany.sca.binding.feed;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.abdera.Abdera;
+import org.apache.abdera.model.Content;
+import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.Feed;
 import org.apache.tuscany.sca.binding.feed.collection.Collection;
 import org.osoa.sca.annotations.Scope;
 
-import com.sun.syndication.feed.atom.Content;
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.feed.atom.Link;
+
 
 @Scope("COMPOSITE")
 public class CustomerCollectionImpl implements Collection {
-
+	private final Abdera abdera = new Abdera();
     private Map<String, Entry> entries = new HashMap<String, Entry>();
 
+    /**
+     * Default constructor that initializes collection with couple customer entries
+     */
     public CustomerCollectionImpl() {
 
         for (int i = 0; i < 4; i++) {
             String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
-
-            Entry entry = new Entry();
-            entry.setTitle("customer " + "Jane Doe_" + String.valueOf(i));
+            
+            Entry entry = abdera.getFactory().newEntry();
             entry.setId(id);
-
-            Content content = new Content();
+            entry.setTitle("customer " + "Jane Doe_" + String.valueOf(i));
+            
+            Content content = this.abdera.getFactory().newContent();
+            content.setContentType(Content.Type.TEXT);
             content.setValue("Jane Doe_" + String.valueOf(i));
-            content.setType(Content.TEXT);
-            entry.setContents(Collections.singletonList(content));
-
-            List<Link> links = new ArrayList<Link>();
-            Link link = new Link();
-            link.setRel("edit");
-            link.setHref("" + id);
-            links.add(link);
-            entry.setOtherLinks(links);
-
-            links = new ArrayList<Link>();
-            link = new Link();
-            link.setRel("alternate");
-            link.setHref("" + id);
-            links.add(link);
-            entry.setAlternateLinks(links);
-
-            entry.setCreated(new Date());
+            
+            entry.setContentElement(content);
+            
+            entry.addLink("" + id, "edit");
+            entry.addLink("" + id, "alternate");
+    
+            entry.setUpdated(new Date());
 
             entries.put(id, entry);
             System.out.println(">>> id=" + id);
@@ -81,23 +72,13 @@ public class CustomerCollectionImpl implements Collection {
         String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
         entry.setId(id);
 
-        List<Link> links = new ArrayList<Link>();
-        Link link = new Link();
-        link.setRel("edit");
-        link.setHref("" + id);
-        links.add(link);
-        entry.setOtherLinks(links);
+        entry.addLink("" + id, "edit");
+        entry.addLink("" + id, "alternate");
 
-        links = new ArrayList<Link>();
-        link = new Link();
-        link.setRel("alternate");
-        link.setHref("" + id);
-        links.add(link);
-        entry.setAlternateLinks(links);
-
-        entry.setCreated(new Date());
+        entry.setUpdated(new Date());
 
         entries.put(id, entry);
+
         System.out.println(">>> ResourceCollectionImpl.post return id=" + id);
 
         return entry;
@@ -124,12 +105,19 @@ public class CustomerCollectionImpl implements Collection {
     public Feed getFeed() {
         System.out.println(">>> ResourceCollectionImpl.get collection");
 
-        Feed feed = new Feed();
+        Feed feed = this.abdera.getFactory().newFeed();
         feed.setTitle("customers");
-        Content subtitle = new Content();
-        subtitle.setValue("This is a sample feed");
-        feed.setSubtitle(subtitle);
-        feed.getEntries().addAll(entries.values());
+        feed.setSubtitle("This is a sample feed");
+        feed.setUpdated(new Date());
+        feed.addLink("");
+        feed.addLink("","self");
+        
+        
+
+        for (Entry entry : entries.values()) {
+        	feed.addEntry(entry);
+        }
+
         return feed;
     }
 

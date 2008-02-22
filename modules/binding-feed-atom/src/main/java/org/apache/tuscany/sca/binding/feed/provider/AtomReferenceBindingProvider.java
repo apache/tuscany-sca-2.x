@@ -75,17 +75,13 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
         } else if (operationName.equals("put")) {
             return new AtomBindingInvoker.PutInvoker(operation, binding.getURI(), httpClient, authorizationHeader);
         } else if (operationName.equals("delete")) {
-            return new AtomBindingInvoker.DeleteInvoker(operation, binding.getURI(), httpClient,
-                                                        authorizationHeader);
+            return new AtomBindingInvoker.DeleteInvoker(operation, binding.getURI(), httpClient, authorizationHeader);
         } else if (operationName.equals("getFeed") || operationName.equals("getAll")) {
-            return new AtomBindingInvoker.GetAllInvoker(operation, binding.getURI(), httpClient,
-                                                               authorizationHeader);
+            return new AtomBindingInvoker.GetAllInvoker(operation, binding.getURI(), httpClient, authorizationHeader);
         } else if (operationName.equals("postMedia")) {
-            return new AtomBindingInvoker.PostMediaInvoker(operation, binding.getURI(), httpClient,
-                                                           authorizationHeader);
+            return new AtomBindingInvoker.PostMediaInvoker(operation, binding.getURI(), httpClient, authorizationHeader);
         } else if (operationName.equals("putMedia")) {
-            return new AtomBindingInvoker.PutMediaInvoker(operation, binding.getURI(), httpClient,
-                                                          authorizationHeader);
+            return new AtomBindingInvoker.PutMediaInvoker(operation, binding.getURI(), httpClient, authorizationHeader);
         }
 
         return new AtomBindingInvoker(operation, binding.getURI(), httpClient, authorizationHeader);
@@ -105,6 +101,7 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
     }
 
     public void stop() {
+    	
     }
     
     public boolean supportsOneWayInvocation() {
