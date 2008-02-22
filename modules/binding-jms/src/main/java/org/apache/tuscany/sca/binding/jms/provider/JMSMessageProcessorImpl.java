@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.binding.jms.provider;
 
 import java.io.Serializable;
 import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -33,7 +34,9 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
+import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
+import org.osoa.sca.ServiceRuntimeException;
 
 public class JMSMessageProcessorImpl implements JMSMessageProcessor {
 
@@ -94,6 +97,13 @@ public class JMSMessageProcessorImpl implements JMSMessageProcessor {
      * @see org.apache.tuscany.binding.jms.OperationAndDataBinding#extractPayload(javax.jms.Message)
      */
     public Object extractPayloadFromJMSMessage(Message msg) {
+        try {
+            if (msg.getBooleanProperty(JMSBindingConstants.FAULT_PROPERTY)) {
+                throw new ServiceRuntimeException("remote service exception, see nested exception",(Throwable)((ObjectMessage)msg).getObject()); 
+            }
+        } catch (JMSException e) {
+            throw new JMSBindingException(e);
+        }
         if (xmlFormat) {
             return extractXMLPayload(msg);
         } else {
@@ -156,6 +166,23 @@ public class JMSMessageProcessorImpl implements JMSMessageProcessor {
 
             ObjectMessage message = session.createObjectMessage(); // default
             message.setObject((Serializable)o);
+            return message;
+
+        } catch (JMSException e) {
+            throw new JMSBindingException(e);
+        }
+    }
+
+    public Message createFaultMessage(Session session, Throwable o) {
+        try {
+
+            ObjectMessage message = session.createObjectMessage(); 
+            if (o instanceof InvocationTargetException) {
+                message.setObject(((InvocationTargetException)o).getTargetException());
+            } else {
+                message.setObject(o);
+            }
+            message.setBooleanProperty(JMSBindingConstants.FAULT_PROPERTY, true);
             return message;
 
         } catch (JMSException e) {
