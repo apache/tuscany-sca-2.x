@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.binding.jms.provider;
 
 import java.io.Serializable;
 import java.io.StringReader;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -115,12 +114,15 @@ public class JMSMessageProcessorImpl implements JMSMessageProcessor {
         try {
 
             String xml = ((TextMessage)msg).getText();
-
-            XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(xml));
-            StAXOMBuilder builder = new StAXOMBuilder(reader);
-            OMElement omElement = builder.getDocumentElement();
-
-            return new Object[] {omElement};
+            Object o = null;
+            if (xml != null) {
+                XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(xml));
+                StAXOMBuilder builder = new StAXOMBuilder(reader);
+                o = new Object[] { builder.getDocumentElement() };
+            } else {
+                o = new Object[]{};
+            }
+            return o;
 
         } catch (XMLStreamException e) {
             throw new JMSBindingException(e);
@@ -149,7 +151,7 @@ public class JMSMessageProcessorImpl implements JMSMessageProcessor {
             } else {
                 if (o instanceof Object[]) {
                     message.setText(((Object[])o)[0].toString());
-                } else {
+                } else if (o != null) {
                     message.setText(String.valueOf(o));
                 }
             }
@@ -177,11 +179,7 @@ public class JMSMessageProcessorImpl implements JMSMessageProcessor {
         try {
 
             ObjectMessage message = session.createObjectMessage(); 
-            if (o instanceof InvocationTargetException) {
-                message.setObject(((InvocationTargetException)o).getTargetException());
-            } else {
-                message.setObject(o);
-            }
+            message.setObject(o);
             message.setBooleanProperty(JMSBindingConstants.FAULT_PROPERTY, true);
             return message;
 
