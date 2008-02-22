@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SupplyChainClient
+Bundle-SymbolicName: supplychain.SupplyChainClient
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Import-Package: org.osgi.framework, 
+        supplychain.customer, supplychain,
+        org.apache.tuscany.sca.host.embedded,
+        org.apache.tuscany.sca.host.embedded.impl,
+        org.apache.tuscany.sca.assembly,
+        org.apache.tuscany.sca.contribution,
+        org.apache.tuscany.sca.contribution.service,
+        org.apache.tuscany.sca.core.assembly,
+        org.apache.tuscany.sca.assembly.builder,
+        org.osoa.sca,
+        org.osoa.sca.annotations
+Export-Package: supplychain.client
+Bundle-Activator: supplychain.client.SupplyChainClient
+

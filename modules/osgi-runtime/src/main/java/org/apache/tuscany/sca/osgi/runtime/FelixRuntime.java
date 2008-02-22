@@ -36,13 +36,14 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
     
     private static FelixRuntime instance;
     
-    private static Class felixClass;
+    private static Class<?> felixMainClass;
+    private static Class<?> felixClass;
     private static Object felix;
     
     public static OSGiRuntime getInstance() throws Exception {
         if (instance == null) {
+            felixMainClass = FelixRuntime.class.getClassLoader().loadClass("org.apache.felix.main.Main");
             FelixRuntime runtime = new FelixRuntime();
-            runtime.startRuntime();
             instance = runtime;
         }
         return instance;
@@ -62,7 +63,7 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
         
     }
     
-    protected BundleContext startRuntime() throws Exception {
+    protected BundleContext startRuntime(boolean tuscanyRunningInOSGiContainer) throws Exception {
         
         if (bundleContext != null)
             return bundleContext;
@@ -70,7 +71,6 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
                
         ClassLoader cl = FelixRuntime.class.getClassLoader();
         
-        Class felixMainClass = cl.loadClass("org.apache.felix.main.Main");
         felixClass = cl.loadClass("org.apache.felix.framework.Felix");
         Method propsMethod = felixMainClass.getMethod("loadConfigProperties");
         Properties props = (Properties)propsMethod.invoke(null);
@@ -85,15 +85,39 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
         
         props.put("felix.cache.profiledir", profileDir.getAbsolutePath());
         props.put("felix.embedded.execution", "true");
-        props.put("org.osgi.framework.system.packages", 
+
+        String systemPackages =
                 "org.osgi.framework; version=1.3.0," +
                 "org.osgi.service.packageadmin; version=1.2.0, " +
                 "org.osgi.service.startlevel; version=1.0.0, " +
                 "org.osgi.service.url; version=1.0.0, " +
                 "org.osgi.util.tracker; version=1.3.2, " +
-                "org.osoa.sca.annotations; version=1.0.0, " +
-                "org.osoa.sca; version=1.0.0");
+                "javax.xml, " +
+                "javax.xml.datatype, " +
+                "javax.xml.namespace, " +
+                "javax.xml.parsers, " +
+                "javax.xml.transform, " +
+                "javax.xml.transform.dom, " +
+                "javax.xml.transform.sax, " +
+                "javax.xml.transform.stream, " +
+                "javax.xml.validation, " +
+                "javax.xml.xpath, " +
+                "org.apache.xerces.jaxp.datatype, " +
+                "org.w3c.dom, " +
+                "org.xml.sax, " +
+                "org.xml.sax.ext, " +
+                "org.xml.sax.helpers, " +
+                "javax.security.auth, " +
+                "javax.naming, " +
+                "javax.naming.spi, " +
+                "javax.naming.directory, " +
+                "javax.management, " + 
+                "sun.misc";
         
+        
+        if (!tuscanyRunningInOSGiContainer)
+            systemPackages = systemPackages + ", org.osoa.sca.annotations, org.osoa.sca";
+        props.put("org.osgi.framework.system.packages", systemPackages);
         
         try {
             Constructor felixConstructor = felixClass.getConstructor(Map.class, List.class);
@@ -114,8 +138,8 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
             // This is the older Felix API which has been retained temporarily to avoid build break
             // TODO: Remove these once Felix 1.0.0 is released.
             
-            Class propertyResolverClass = cl.loadClass("org.apache.felix.framework.util.MutablePropertyResolver");
-            Class propertyResolverImplClass = cl.loadClass("org.apache.felix.framework.util.MutablePropertyResolverImpl");
+            Class<?> propertyResolverClass = cl.loadClass("org.apache.felix.framework.util.MutablePropertyResolver");
+            Class<?> propertyResolverImplClass = cl.loadClass("org.apache.felix.framework.util.MutablePropertyResolverImpl");
 
             Constructor implConstructor = propertyResolverImplClass.getConstructor(Map.class);
             Object mutableProps = implConstructor.newInstance(props);
@@ -167,6 +191,12 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
     @Override
     public BundleContext getBundleContext() {
         return bundleContext;
+    }
+
+    @Override
+    protected void setBundleContext(BundleContext bundleContext) {
+        super.setBundleContext(bundleContext);
+        FelixRuntime.bundleContext = bundleContext;
     }
 
 

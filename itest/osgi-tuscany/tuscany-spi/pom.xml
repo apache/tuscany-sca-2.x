@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-itest</artifactId>
+        <version>1.2-incubating-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <artifactId>itest-osgi-tuscany-tuscany-spi</artifactId>
+    <name>Apache Tuscany OSGi - Tuscany SPI Bundle</name>
+    <packaging>bundle</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core-spi</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-policy</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-assembly</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-java</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-java-jaxws</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-java-xml</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-wsdl</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-wsdl-xml</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-interface-wsdl-java2wsdl</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>    
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>1.2.1</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Version>1.2.0</Bundle-Version>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.spi</Bundle-SymbolicName>
+                        <Bundle-Description>Apache Tuscany SCA SPI Bundle</Bundle-Description>
+                        <Embed-StripVersion>true</Embed-StripVersion>
+                        <Embed-StripGroup>true</Embed-StripGroup>
+                        <Embed-Dependency>tuscany*</Embed-Dependency>
+                        <_exportcontents>
+                            org.apache.tuscany.sca.assembly,
+                            org.apache.tuscany.sca.assembly.builder,
+                            org.apache.tuscany.sca.assembly.builder.impl,
+                            org.apache.tuscany.sca.assembly.impl,
+                            org.apache.tuscany.sca.context,
+                            org.apache.tuscany.sca.core,
+                            org.apache.tuscany.sca.event,
+                            org.apache.tuscany.sca.invocation,
+                            org.apache.tuscany.sca.management,
+                            org.apache.tuscany.sca.provider,
+                            org.apache.tuscany.sca.runtime,
+                            org.apache.tuscany.sca.store,
+                            org.apache.tuscany.sca.work,
+                            org.apache.tuscany.sca.contribution,
+                            org.apache.tuscany.sca.contribution.impl,
+                            org.apache.tuscany.sca.contribution.processor,
+                            org.apache.tuscany.sca.contribution.resolver,
+                            org.apache.tuscany.sca.contribution.service,
+                            org.apache.tuscany.sca.contribution.util,
+                            org.apache.tuscany.sca.policy,
+                            org.apache.tuscany.sca.policy.impl,
+                            org.apache.tuscany.sca.policy.util,
+                            org.apache.tuscany.sca.interfacedef*,
+                            org.apache.tuscany.sca.databinding,
+                            org.apache.tuscany.sca.databinding.annotation,
+                            org.apache.tuscany.sca.databinding.externalizable,
+                            org.apache.tuscany.sca.databinding.impl,
+                            org.apache.tuscany.sca.databinding.javabeans,
+                            org.apache.tuscany.sca.databinding.xml
+                        </_exportcontents>
+                    </instructions>
+                </configuration>
+            </plugin> 
+        </plugins>
+    </build>
+
+</project>

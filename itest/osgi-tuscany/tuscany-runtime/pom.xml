@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>tuscany-itest</artifactId>
+        <version>1.2-incubating-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <artifactId>itest-osgi-tuscany-runtime</artifactId>
+    <name>Apache Tuscany OSGi - Tuscany Runtime Bundle</name>
+    <packaging>bundle</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-assembly-xsd</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core-databinding</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution-impl</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution-xml</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution-java</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution-namespace</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution-osgi</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-domain-api</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-domain</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-domain-impl</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node-api</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node-impl</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-assembly-xml</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-policy-xml</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-definitions</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-definitions-xml</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-osgi-runtime</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>    
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>1.2.1</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Version>1.2.0</Bundle-Version>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.runtime</Bundle-SymbolicName>
+                        <Bundle-Description>Apache Tuscany SCA Runtime Bundle</Bundle-Description>
+                        <Bundle-Activator>org.apache.tuscany.sca.osgi.runtime.OSGiBundleActivator</Bundle-Activator>
+                        <DynamicImport-Package>org.apache.felix.main</DynamicImport-Package>
+                        <Embed-StripVersion>true</Embed-StripVersion>
+                        <Embed-StripGroup>true</Embed-StripGroup>
+                        <Embed-Dependency>tuscany*</Embed-Dependency>
+                        <_exportcontents>
+                            !org.apache.tuscany.sca.core,
+                            org.apache.tuscany.sca.core.*,
+                            org.apache.tuscany.sca.contribution.*.impl,
+                            org.apache.tuscany.sca.contribution.service.util,
+                            org.apache.tuscany.sca.contribution.xml,
+                            org.apache.tuscany.sca.contribution.java,
+                            org.apache.tuscany.sca.contribution.namespace,
+                            org.apache.tuscany.sca.contribution.osgi,
+                            org.apache.tuscany.sca.domain*,
+                            org.apache.tuscany.sca.node*,
+                            org.apache.tuscany.sca.assembly.xml,
+                            org.apache.tuscany.sca.policy.xml,
+                            org.apache.tuscany.sca.definitions*,
+                            org.apache.tuscany.sca.osgi.runtime
+                        </_exportcontents>
+                    </instructions>
+                </configuration>
+            </plugin> 
+        </plugins>
+    </build>
+
+</project>

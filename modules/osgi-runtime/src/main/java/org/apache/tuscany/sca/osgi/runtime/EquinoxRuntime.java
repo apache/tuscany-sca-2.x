@@ -30,24 +30,23 @@ public class EquinoxRuntime extends OSGiRuntime  {
     
     private static EquinoxRuntime instance;
     
-    private static Class eclipseStarterClass;
+    private static Class<?> eclipseStarterClass;
     
     public static OSGiRuntime getInstance() throws Exception {
         if (instance == null) {
+            eclipseStarterClass = EquinoxRuntime.class.getClassLoader().loadClass("org.eclipse.core.runtime.adaptor.EclipseStarter");
             EquinoxRuntime runtime = new EquinoxRuntime();
-            runtime.startRuntime();
             instance = runtime;
         }
         return instance;
     }
     
     
-    protected BundleContext startRuntime() throws Exception {
+    protected BundleContext startRuntime(boolean tuscanyRunningInOSGiContainer) throws Exception {
         
         if (bundleContext != null)
             return bundleContext;
                     
-        eclipseStarterClass = EquinoxRuntime.class.getClassLoader().loadClass("org.eclipse.core.runtime.adaptor.EclipseStarter");
         Method startupMethod = eclipseStarterClass.getMethod("startup", String [].class, Runnable.class);
         
         // Equinox version 3.2 upwards have a startup method which returns BundleContext
