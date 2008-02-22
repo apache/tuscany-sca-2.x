@@ -1,0 +1,93 @@
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<html>
+<head>
+<title>SCA Contribution File Server</title>
+
+<script type="text/javascript" src="files.js"></script>
+
+<script language="JavaScript">
+
+	//@Reference
+	var files = new Reference("files");
+	
+	function getFiles() {
+		files.get("", getFilesResponse);
+	}
+	
+	function getFilesResponse(feed) {
+		if (feed != null) {
+			var entries = feed.getElementsByTagName("entry");              
+			var list = "";
+			for (var i=0; i<entries.length; i++) {
+				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
+				var uri = entries[i].getElementsByTagName("link")[0].getAttribute("href");
+				list += '<input name="files" type="checkbox" value="' + id + '">' +
+											'<a href=\"' + uri + '\">' + id + '</a><br/>';
+			}
+			document.getElementById("files").innerHTML = list;
+		}
+	}				
+
+	function deleteFile() {
+		var list = document.filesForm.files;
+		for (var i=0; i < list.length; i++) {
+			if (list[i].checked) {
+			    var id = list[i].value;
+				files.del(id, deleteFileResponse);
+			}
+		}
+	}
+
+	function deleteFileResponse() {
+	    getFiles();
+	}
+
+	function uploadFile() {
+		document.uploadFileForm.submit();
+	}
+	
+	getFiles();
+</script>
+
+</head>
+
+<body>
+  <h2>SCA Contribution Files</h2>
+  <div id="fileServer">
+  <form name="filesForm">
+    <div id="files" ></div>
+    <br/>
+    <input type="button" onClick="deleteFile()"  value="Delete" />
+    <a href="/feed/files/">(feed)</a>
+  </form>
+  <br/>
+  
+  <h2>Upload SCA Contribution File</h2>
+  <form method="post" name="uploadFileForm" enctype='multipart/form-data' action='/files'>
+    <table border="0">
+    <tr><td>File:</td><td><input type="file" name="file" /></td></tr>
+    </table>
+    <br/>
+    <input type="button" onClick="uploadFile()" value="Upload" />
+  </form>    
+      
+  </div>
+</body>
+</html>
