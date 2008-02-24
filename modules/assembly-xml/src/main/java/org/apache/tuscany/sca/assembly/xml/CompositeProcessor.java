@@ -141,7 +141,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
 
                         // Read an <include>
                         include = assemblyFactory.createComposite();
-                        include.setName(getQName(reader, "name"));
+                        include.setName(getQName(reader, NAME));
+                        include.setURI(getString(reader, URI));
                         include.setUnresolved(true);
                         composite.getIncludes().add(include);
 
@@ -453,6 +454,16 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                            new XAttr(NAME, composite.getName().getLocalPart()),
                            new XAttr(AUTOWIRE, composite.getAutowire()),
                            policyProcessor.writePolicies(composite));
+
+        // Write <include> elements
+        for (Composite include : composite.getIncludes()) {
+            String uri = include.isUnresolved()? include.getURI() : null;
+            writeStart(writer,
+                       INCLUDE,
+                       new XAttr(NAME, include.getName()),
+                       new XAttr(URI, uri));
+            writeEnd(writer);
+        }
 
         // Write <service> elements
         for (Service service : composite.getServices()) {
