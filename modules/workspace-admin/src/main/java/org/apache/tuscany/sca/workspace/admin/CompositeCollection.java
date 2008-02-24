@@ -17,21 +17,18 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.workspace.admin.launch;
+package org.apache.tuscany.sca.workspace.admin;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.implementation.data.collection.Collection;
+import org.apache.tuscany.sca.implementation.data.collection.Item;
+import org.osoa.sca.annotations.Remotable;
 
 /**
- * Default launcher for the workspace admin application. 
+ * The composite collection service interface.
  *
  * @version $Rev$ $Date$
  */
-public class WorkspaceAdminLauncher {
-    
-    public static void main(String[] args) throws Exception {
-        SCADomain.newInstance("WorkspaceAdmin.composite");
-        System.out.println("WorkspaceAdmin started...");
-        System.in.read();
-    }
+@Remotable
+public interface CompositeCollection extends Collection<String, Item>{
 
 }

@@ -1,0 +1,112 @@
+<!--
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
+-->
+<html>
+<head>
+<title>SCA Node Cloud</title>
+
+<script type="text/javascript" src="cloud.js"></script>
+
+<script language="JavaScript">
+
+	//@Reference
+	var cloudComposite = new Reference("cloudComposite");
+	
+	function getComposites() {
+		cloudComposite.get("", getCompositesResponse);
+	}
+	
+	function getCompositesResponse(feed) {
+		if (feed != null) {
+			var entries = feed.getElementsByTagName("entry");              
+			var composites = "";
+			composites += '<table border="0">';
+			for (var i=0; i<entries.length; i++) {
+				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
+				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
+				composites += '<tr>'
+				composites += '<td><input name="composites" type="checkbox" value="' + id + '">' +
+											'<a href=\"' + location + '\">' + id + '</a></td>';
+				composites += '</tr>';
+			}
+			composites += '</table>';
+			document.getElementById("composites").innerHTML = composites;
+		}
+	}
+
+	function deleteComposite() {
+		var composites  = document.cloudCompositeForm.composites;
+		for (var i = 0; i < composites.length; i++) {
+			if (composites[i].checked) {
+			    var id = composites[i].value;
+				cloudComposite.del(id, deleteCompositeResponse);
+			}
+		}
+	}
+
+	function deleteCompositeResponse() {
+	    getComposites();
+	}	
+
+	function addComposite() {
+		var id  = document.newCompositeForm.compositeQName.value;
+		var location  = document.newCompositeForm.compositeLocation.value;
+		var entry = '<entry xmlns="http://www.w3.org/2005/Atom">' +
+				'<title>Contribution - ' + id +'</title>' +
+              	'<id>' + id + '</id>' +
+              	'<link rel="alternate" href="' + location + '" />' +
+              	'<link rel="edit" href="' + location + '" />' +
+               	'</entry>';
+		cloudComposite.post(entry, addCompositeResponse);
+	}
+
+	function addCompositeResponse() {
+		document.newCompositeForm.compositeQName.value = "";
+		document.newCompositeForm.compositeLocation.value = "";
+	    getComposites();
+	}	
+
+	getComposites();
+</script>
+
+</head>
+
+<body>
+  <h2>SCA Node Cloud</h2>
+  <div id="cloudComposite">
+  <form name="cloudCompositeForm">
+    <div id="composites" ></div>
+    <br/>
+    <input type="button" onClick="deleteComposite()"  value="Delete" />
+    <a href="/cloud/">(feed)</a>
+  </form>
+  <br/>
+  
+  <b>Add Composite</b>
+  <form name="newCompositeForm">
+    <table border="0">
+    <tr><td>QName:</td><td><input type="text" name="compositeQName" /></td></tr> 
+    <tr><td>Address:</td><td><input type="text" name="compositeLocation" /></td></tr>
+    </table>
+    <br/>
+    <input type="button" onClick="addComposite()" value="Add" />
+  </form>
+  
+  </div>
+</body>
+</html>

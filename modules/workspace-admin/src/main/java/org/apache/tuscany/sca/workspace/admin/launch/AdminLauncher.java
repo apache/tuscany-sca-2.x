@@ -17,18 +17,21 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.workspace.admin;
+package org.apache.tuscany.sca.workspace.admin.launch;
 
-import org.apache.tuscany.sca.implementation.data.collection.Collection;
-import org.apache.tuscany.sca.implementation.data.collection.Item;
-import org.osoa.sca.annotations.Remotable;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
- * The contribution file store service interface.
+ * Simple launcher for the administration application. 
  *
  * @version $Rev$ $Date$
  */
-@Remotable
-public interface ContributionFileCollection extends Collection<String, Item>{
+public class AdminLauncher {
+    
+    public static void main(String[] args) throws Exception {
+        SCADomain.newInstance("Admin.composite");
+        System.out.println("Admin started...");
+        System.in.read();
+    }
 
 }
