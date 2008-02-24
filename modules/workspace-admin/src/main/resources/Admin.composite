@@ -20,7 +20,7 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
 	targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
-    name="WorkspaceAdmin">
+    name="Admin">
 
     <component name="WorkspaceUI">
         <t:implementation.widget location="workspace.html"/>
@@ -38,6 +38,26 @@
         	<t:binding.http uri="http://localhost:9990/ui/files"/>
         </service>
 		 <reference name="files" target="ContributionFileCollectionComponent">
+		 	<t:binding.atom/>
+		 </reference>
+    </component>
+    
+    <component name="DomainCompositeUI">
+        <t:implementation.widget location="composite.html"/>
+        <service name="Widget">
+        	<t:binding.http uri="http://localhost:9990/ui/composite"/>
+        </service>
+		 <reference name="domainComposite" target="DomainCompositeCollectionComponent">
+		 	<t:binding.atom/>
+		 </reference>
+    </component>
+
+    <component name="CloudUI">
+        <t:implementation.widget location="cloud.html"/>
+        <service name="Widget">
+        	<t:binding.http uri="http://localhost:9990/ui/cloud"/>
+        </service>
+		 <reference name="cloudComposite" target="CloudCollectionComponent">
 		 	<t:binding.atom/>
 		 </reference>
     </component>
@@ -60,6 +80,22 @@
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.ContributionFileServiceImpl"/>             
    		<service name="ContributionFileServiceImpl">
    	 		<t:binding.http uri="http://localhost:9990/files"/>
+   		</service>
+    </component>
+
+    <component name="DomainCompositeCollectionComponent">
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.CompositeCollectionImpl"/>
+        <property name="compositeCollectionName">domain</property>
+   		<service name="CompositeCollection">
+   	 		<t:binding.atom uri="http://localhost:9990/composite"/>
+   		</service>
+    </component>
+
+    <component name="CloudCollectionComponent">
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.CompositeCollectionImpl"/>
+        <property name="compositeCollectionName">cloud</property>
+   		<service name="CompositeCollection">
+   	 		<t:binding.atom uri="http://localhost:9990/cloud"/>
    		</service>
     </component>
 

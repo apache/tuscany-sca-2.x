@@ -32,7 +32,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
 /**
- * Implementation of the contribution workspace administration service component. 
+ * Implementation of a file collection service component. 
  *
  * @version $Rev$ $Date$
  */

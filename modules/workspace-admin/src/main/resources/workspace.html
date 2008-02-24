@@ -35,14 +35,17 @@
 		if (feed != null) {
 			var entries = feed.getElementsByTagName("entry");              
 			var contributions = "";
+			contributions += '<table border="0">';
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
 				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
-				contributions += '<input name="contributions" type="checkbox" value="' + id + '">' +
-											'<a href=\"' + location + '\">' + id + '</a>&nbsp;';
-				contributions += '<a href=\"/workspace/?importedBy=' + id + '\">dependencies</a>';
-				contributions += '<br/>';
+				contributions += '<tr>'
+				contributions += '<td><input name="contributions" type="checkbox" value="' + id + '">' +
+											'<a href=\"' + location + '\">' + id + '</a></td>';
+				contributions += '<td>&nbsp;&nbsp;&nbsp;<a href=\"/workspace/?importedBy=' + id + '\">dependencies</a></td>';
+				contributions += '</tr>';
 			}
+			contributions += '</table>';
 			document.getElementById("contributions").innerHTML = contributions;
 		}
 	}				

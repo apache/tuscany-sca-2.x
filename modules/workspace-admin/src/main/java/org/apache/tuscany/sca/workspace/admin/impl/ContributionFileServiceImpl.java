@@ -38,7 +38,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
 /**
- * ContributionUploadServlet
+ * Implementation of a servlet component supporting file upload/download.
  *
  * @version $Rev$ $Date$
  */

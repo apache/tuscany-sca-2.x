@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,7 +39,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -46,30 +51,35 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
-import org.apache.tuscany.sca.workspace.DefaultWorkspaceFactory;
-import org.apache.tuscany.sca.workspace.Workspace;
-import org.apache.tuscany.sca.workspace.WorkspaceFactory;
-import org.apache.tuscany.sca.workspace.admin.WorkspaceCollection;
-import org.apache.tuscany.sca.workspace.xml.WorkspaceProcessor;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
+import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.workspace.admin.CompositeCollection;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
 import org.w3c.dom.Document;
 
 /**
- * Implementation of a contribution workspace service component. 
+ * Implementation of a composite collection service. 
  *
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-public class WorkspaceCollectionImpl implements WorkspaceCollection {
+public class CompositeCollectionImpl implements CompositeCollection {
+    
+    @Property
+    public String compositeCollectionName;
 
+    private AssemblyFactory assemblyFactory;
     private ContributionFactory contributionFactory;
-    private WorkspaceFactory workspaceFactory;
-    private Workspace workspace;
-    private WorkspaceProcessor workspaceProcessor;
+    private PolicyFactory policyFactory;
+    private InterfaceContractMapper contractMapper;
+    private Composite compositeCollection;
+    private CompositeProcessor compositeProcessor;
     private XMLOutputFactory outputFactory;
     private DocumentBuilder documentBuilder;
     
@@ -81,33 +91,35 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
         
         // Create factories
         contributionFactory = new DefaultContributionFactory();
-        workspaceFactory = new DefaultWorkspaceFactory();
+        assemblyFactory = new DefaultAssemblyFactory();
+        policyFactory = new DefaultPolicyFactory();
         outputFactory = XMLOutputFactory.newInstance();
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         
-        // Read workspace.xml
-        workspaceProcessor = new WorkspaceProcessor(workspaceFactory, contributionFactory, null);
-        File file = new File("workspace.xml");
+        // Read domain.composite
+        compositeProcessor = new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, contractMapper, null);
+        File file = new File(compositeCollectionName + ".composite");
         if (file.exists()) {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
             FileInputStream is = new FileInputStream(file);
             XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-            workspace = workspaceProcessor.read(reader);
+            compositeCollection = compositeProcessor.read(reader);
         } else {
-            workspace = workspaceFactory.createWorkspace();
+            compositeCollection = assemblyFactory.createComposite();
+            compositeCollection.setName(new QName(Constants.SCA10_TUSCANY_NS, compositeCollectionName));
         }
     }
     
     public Entry<String, Item>[] getAll() {
-        // Return all the contributions
+        // Return all the composites in the domain composite
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
-        for (Contribution contribution: workspace.getContributions()) {
+        for (Composite composite: compositeCollection.getIncludes()) {
             Entry<String, Item> entry = new Entry<String, Item>();
-            entry.setKey(contribution.getURI());
+            entry.setKey(name(composite.getName()));
             Item item = new Item();
-            item.setTitle(contribution.getURI());
-            item.setLink(contribution.getLocation());
+            item.setTitle(name(composite.getName()));
+            item.setLink(composite.getURI());
             entry.setData(item);
             entries.add(entry);
         }
@@ -116,12 +128,12 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
 
     public Item get(String key) throws NotFoundException {
 
-        // Returns the contribution with the given URI key
-        for (Contribution contribution: workspace.getContributions()) {
-            if (key.equals(contribution.getURI())) {
+        // Returns the composite with the given name key
+        for (Composite composite: compositeCollection.getIncludes()) {
+            if (key.equals(name(composite.getName()))) {
                 Item item = new Item();
-                item.setTitle(contribution.getURI());
-                item.setLink(contribution.getLocation());
+                item.setTitle(name(composite.getName()));
+                item.setLink(composite.getURI());
                 return item;
             }
         }
@@ -130,13 +142,14 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
 
     public String post(String key, Item item) {
         
-        // Adds a new contribution to the workspace
-        Contribution contribution = contributionFactory.createContribution();
-        contribution.setURI(key);
-        contribution.setLocation(item.getLink());
-        workspace.getContributions().add(contribution);
+        // Adds a new composite to the domain composite
+        Composite composite = assemblyFactory.createComposite();
+        composite.setName(qname(key));
+        composite.setURI(item.getLink());
+        composite.setUnresolved(true);
+        compositeCollection.getIncludes().add(composite);
         
-        // Write the workspace
+        // Write the domain composite
         write();
         
         return key;
@@ -144,16 +157,17 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
 
     public void put(String key, Item item) throws NotFoundException {
         
-        // Update a contribution already in the workspace
-        Contribution newContribution = contributionFactory.createContribution();
-        newContribution.setURI(key);
-        newContribution.setLocation(item.getLink());
-        List<Contribution> contributions = workspace.getContributions();
-        for (int i = 0, n = contributions.size(); i < n; i++) {
-            if (contributions.get(i).getURI().equals(key)) {
-                contributions.set(i, newContribution);
+        // Update a composite already in the domain composite
+        Composite newComposite = assemblyFactory.createComposite();
+        newComposite.setName(qname(key));
+        newComposite.setURI(item.getLink());
+        newComposite.setUnresolved(true);
+        List<Composite> composites = compositeCollection.getIncludes();
+        for (int i = 0, n = composites.size(); i < n; i++) {
+            if (name(composites.get(i).getName()).equals(key)) {
+                composites.set(i, newComposite);
                 
-                // Write the workspace
+                // Write the domain composite
                 write();
                 
                 return;
@@ -164,13 +178,13 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
 
     public void delete(String key) throws NotFoundException {
         
-        // Delete a contribution from the workspace
-        List<Contribution> contributions = workspace.getContributions();
-        for (int i = 0, n = contributions.size(); i < n; i++) {
-            if (contributions.get(i).getURI().equals(key)) {
-                contributions.remove(i);
+        // Delete a composite from the domain composite
+        List<Composite> composites = compositeCollection.getIncludes();
+        for (int i = 0, n = composites.size(); i < n; i++) {
+            if (name(composites.get(i).getName()).equals(key)) {
+                composites.remove(i);
 
-                // Write the workspace
+                // Write the domain composite
                 write();
                 
                 return;
@@ -180,8 +194,8 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
     }
 
     public Entry<String, Item>[] query(String queryString) {
-        if (queryString.startsWith("importedBy=")) {
-            //FIXME Invoke the ContributionDependency code from workspace-impl
+        if (queryString.startsWith("usedBy=")) {
+            //FIXME Invoke the Composite processing code from workspace-impl
             return getAll();
         } else {
             throw new UnsupportedOperationException();
@@ -189,14 +203,14 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
     }
     
     /**
-     * Write the workspace back to disk
+     * Write the domain composite back to disk
      */
     private void write() {
         try {
             // First write to a byte stream
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
-            workspaceProcessor.write(workspace, writer);
+            compositeProcessor.write(compositeCollection, writer);
             
             // Parse again to pretty format the document
             Document document = documentBuilder.parse(new ByteArrayInputStream(bos.toByteArray()));
@@ -204,8 +218,8 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
             format.setIndenting(true);
             format.setIndent(2);
             
-            // Write to workspace.xml
-            FileOutputStream os = new FileOutputStream("workspace.xml");
+            // Write to domain.composite
+            FileOutputStream os = new FileOutputStream(compositeCollectionName + ".composite");
             XMLSerializer serializer = new XMLSerializer(os, format);
             serializer.serialize(document);
             
@@ -217,6 +231,34 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
             throw new ServiceRuntimeException(e);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Returns a qname object from its expression as namespace#localpart.
+     * @param name
+     * @return
+     */
+    private static QName qname(String name) {
+        int i = name.indexOf('}');
+        if (i != -1) {
+            return new QName(name.substring(1, i), name.substring(i + 1));
+        } else {
+            return new QName(name);
+        }
+    }
+    
+    /**
+     * Returns a qname expressed as namespace#localpart.
+     * @param qname
+     * @return
+     */
+    private static String name(QName qname) {
+        String ns = qname.getNamespaceURI();
+        if (ns != null) {
+            return '{' + ns + '}' + qname.getLocalPart();
+        } else {
+            return qname.getLocalPart();
         }
     }
 }
