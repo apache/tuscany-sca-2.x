@@ -35,6 +35,7 @@
             <url>http://people.apache.org/repo/m2-incubating-repository</url>
         </repository>
     </repositories>
+
     <profiles>
         <profile>
             <id>default</id>
@@ -94,7 +95,6 @@
                 <module>web-resource</module>
             </modules>
         </profile>
-
     </profiles>
     
 </project>
