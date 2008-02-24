@@ -38,11 +38,12 @@ public class CalculatorTestCase extends TestCase {
         try {
             Configuration secConf = Configuration.getConfiguration();
         } catch ( java.lang.SecurityException e ) {
-            if ( e.getMessage().equals("Unable to locate a login configuration") ) {
+        	//FIXME: We should not compare exception strings as they are localized in various languages
+            //if ( e.getMessage().equals("Unable to locate a login configuration") ) {
                 System.setProperty("java.security.auth.login.config", "target/classes/CalculatorJass.config");
-            } else {
-                throw e;
-            }
+            //} else {
+            //    throw e;
+            //}
         }
         scaDomain = SCADomain.newInstance("Calculator.composite");
         calculatorService = scaDomain.getService(CalculatorService.class, "CalculatorServiceComponent");
