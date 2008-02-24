@@ -58,6 +58,14 @@ WS Security and in a WebApp</name>
             <scope>runtime</scope>
         </dependency>
 
+        <!-- exclude stax 1.0.1 as we're also pulling in javax\xml\stream\stax-api\1.0-2 -->
+        <dependency>
+            <groupId>stax</groupId>
+            <artifactId>stax-api</artifactId>
+            <version>1.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- marking dependency as provided to exclude from war file -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -65,8 +73,7 @@ WS Security and in a WebApp</name>
             <version>2.3</version>
             <scope>provided</scope>
         </dependency>
-
-        <dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.2</version>
