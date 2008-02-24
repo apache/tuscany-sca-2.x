@@ -58,12 +58,6 @@
             <artifactId>geronimo-commonj_1.1_spec</artifactId>
             <version>1.0</version>
         </dependency>
-        
-        <dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
-            <version>1.0.1</version>
-        </dependency>
 
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>

@@ -72,12 +72,5 @@
             <scope>runtime</scope>
             <version>3.2.1</version>
         </dependency>
-
-        <dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-
     </dependencies>
 </project>
