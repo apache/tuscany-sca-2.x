@@ -107,6 +107,7 @@ class FeedBindingListenerServlet extends HttpServlet {
         // Get the invokers for the supported operations
         Operation getOperation = null;
         for (InvocationChain invocationChain : this.wire.getInvocationChains()) {
+            invocationChain.setAllowsPassByReference(true);
             Operation operation = invocationChain.getTargetOperation();
             String operationName = operation.getName();
             if (operationName.equals("getFeed")) {
