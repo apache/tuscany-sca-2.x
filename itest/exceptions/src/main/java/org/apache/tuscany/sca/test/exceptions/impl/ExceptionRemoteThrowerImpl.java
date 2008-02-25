@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,19 +15,30 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
--->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	   xmlns:foo="http://foo" 
-	   targetNamespace="http://foo"
-           name="intracomposite">
-   
-    <component name="main">
-        <implementation.java class="org.apache.tuscany.sca.test.exceptions.impl.ExceptionHandlerImpl"/>
-        <reference name="exceptionThrower" target="exceptionThrower"/>
-    </component>
-    
-    <component name="exceptionThrower">
-        <implementation.java class="org.apache.tuscany.sca.test.exceptions.impl.ExceptionThrowerImpl"/>
-    </component>
-  
-</composite>
+ */
+
+package org.apache.tuscany.sca.test.exceptions.impl;
+
+import org.apache.tuscany.sca.test.exceptions.Checked;
+import org.apache.tuscany.sca.test.exceptions.ExceptionRemoteThrower;
+import org.osoa.sca.annotations.Service;
+
+/**
+ * 
+ * @version $Rev$ $Date$
+ */
+@Service(ExceptionRemoteThrower.class)
+public class ExceptionRemoteThrowerImpl implements ExceptionRemoteThrower {
+    public String theBad() throws Checked {
+        throw BAD;
+    }
+
+    public String theGood() throws Checked {
+        return SO_THEY_SAY;
+    }
+
+    public String theUgly() throws Checked {
+        throw UGLY;
+    }
+
+}
