@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.binding.feed.collection.NotFoundException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.PassByValueAware;
 import org.osoa.sca.ServiceRuntimeException;
 
 import com.sun.syndication.feed.atom.Entry;
@@ -43,7 +44,7 @@ import com.sun.syndication.io.XmlReader;
  * 
  * @version $Rev$ $Date$
  */
-class AtomBindingInvoker implements Invoker {
+class AtomBindingInvoker implements Invoker, PassByValueAware {
 
     Operation operation;
     String uri;
@@ -64,6 +65,10 @@ class AtomBindingInvoker implements Invoker {
         // defined in the ResourceCollection interface, and implemented
         // by specific invoker subclasses
         throw new UnsupportedOperationException(operation.getName());
+    }
+    
+    public boolean allowsPassByReference() {
+        return true;
     }
 
     /**
