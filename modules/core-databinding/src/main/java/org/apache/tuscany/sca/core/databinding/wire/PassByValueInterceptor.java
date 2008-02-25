@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.core.databinding.wire;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -208,16 +209,22 @@ public class PassByValueInterceptor implements Interceptor {
                 if (!(data instanceof Serializable)) {
                     dataBinding = jaxbDataBinding;
                 }
-                
-                if(data instanceof Cloneable) {
+
+                if (data instanceof Cloneable) {
                     Method clone;
                     try {
-                        clone = data.getClass().getMethod("clone", (Class[]) null);
+                        clone = data.getClass().getMethod("clone", (Class[])null);
                         try {
-                            return clone.invoke(data, (Object[]) null);
+                            return clone.invoke(data, (Object[])null);
+                        } catch (InvocationTargetException e) {
+                            if (e.getTargetException() instanceof CloneNotSupportedException) {
+                                // Ignore 
+                            } else {
+                                throw new ServiceRuntimeException(e);
+                            }
                         } catch (Exception e) {
                             throw new ServiceRuntimeException(e);
-                        } 
+                        }
                     } catch (NoSuchMethodException e) {
                         // Ignore it
                     }
