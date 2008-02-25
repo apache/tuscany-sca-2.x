@@ -21,16 +21,17 @@ package org.apache.tuscany.sca.test.exceptions.impl;
 
 import org.apache.tuscany.sca.test.exceptions.Checked;
 import org.apache.tuscany.sca.test.exceptions.ExceptionHandler;
+import org.apache.tuscany.sca.test.exceptions.ExceptionRemoteThrower;
 import org.apache.tuscany.sca.test.exceptions.ExceptionThrower;
 import org.apache.tuscany.sca.test.exceptions.UnChecked;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 
 @Scope("COMPOSITE")
-public class ExceptionHandlerImpl implements ExceptionHandler {
+public class RemoteExceptionHandlerImpl implements ExceptionHandler {
     static final String INIT = "INIT";
 
-    private ExceptionThrower exceptionThrower;
+    private ExceptionRemoteThrower exceptionThrower;
 
     private String theGood;
 
@@ -92,7 +93,7 @@ public class ExceptionHandlerImpl implements ExceptionHandler {
     }
 
     @Reference 
-    public void setExceptionThrower(ExceptionThrower exceptionThrower) {
+    public void setExceptionThrower(ExceptionRemoteThrower exceptionThrower) {
         this.exceptionThrower = exceptionThrower;
     }
 
@@ -108,7 +109,7 @@ public class ExceptionHandlerImpl implements ExceptionHandler {
         return theUgly;
     }
 
-    public ExceptionThrower getExceptionThrower() {
+    public ExceptionRemoteThrower getExceptionThrower() {
         return exceptionThrower;
     }
 

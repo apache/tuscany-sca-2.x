@@ -22,25 +22,45 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-public class IntraCompositeTestCase extends TestCase {
+public class ExceptionsTestCase extends TestCase {
 
     private SCADomain domain;
-    private ExceptionHandler exceptionHandler;
 
-    public void testALL() {
+    /**
+     * Test exception handling over a local interface
+     */
+    public void testLocal() {
+        ExceptionHandler exceptionHandler = domain.getService(ExceptionHandler.class, "main");
         exceptionHandler.testing();
         assertEquals(ExceptionThrower.SO_THEY_SAY, exceptionHandler.getTheGood() );
         assertNotNull(exceptionHandler.getTheBad());
         assertEquals( Checked.class, exceptionHandler.getTheBad().getClass());
+        assertSame(ExceptionThrower.BAD, exceptionHandler.getTheBad());
         assertNotNull(exceptionHandler.getTheUgly());
         assertEquals( UnChecked.class, exceptionHandler.getTheUgly().getClass());
+        assertSame(ExceptionThrower.UGLY, exceptionHandler.getTheUgly());
+    }
+    
+    /**
+     * Test exception handling over a remotable interface
+     */
+    public void testRemote() {
+        ExceptionHandler exceptionHandler = domain.getService(ExceptionHandler.class, "mainRemote");
+        exceptionHandler.testing();
+        assertEquals(ExceptionThrower.SO_THEY_SAY, exceptionHandler.getTheGood() );
+        assertNotNull(exceptionHandler.getTheBad());
+        assertEquals( Checked.class, exceptionHandler.getTheBad().getClass());
+        assertNotSame(ExceptionThrower.BAD, exceptionHandler.getTheBad());
+        assertNotNull(exceptionHandler.getTheUgly());
+        assertEquals( UnChecked.class, exceptionHandler.getTheUgly().getClass());
+        assertNotSame(ExceptionThrower.UGLY, exceptionHandler.getTheUgly());
 
     }
+
 
     @Override
     protected void setUp() throws Exception {
     	domain = SCADomain.newInstance("ExceptionTest.composite");
-        exceptionHandler = domain.getService(ExceptionHandler.class, "main");
     }
     
     @Override

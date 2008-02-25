@@ -21,28 +21,25 @@ package org.apache.tuscany.sca.test.exceptions.impl;
 
 import org.apache.tuscany.sca.test.exceptions.Checked;
 import org.apache.tuscany.sca.test.exceptions.ExceptionThrower;
-import org.apache.tuscany.sca.test.exceptions.UnChecked;
+import org.osoa.sca.annotations.Service;
 
 /**
- *
- *
+ * 
+ * @version $Rev$ $Date$
  */
+@Service(ExceptionThrower.class)
 public class ExceptionThrowerImpl implements ExceptionThrower {
 
     public String theBad() throws Checked {
-
-        throw new Checked("theBad");
-
+        throw BAD;
     }
 
     public String theGood() throws Checked {
-
         return SO_THEY_SAY;
     }
 
     public String theUgly() throws Checked {
-
-        throw new UnChecked("theUgly");
+        throw UGLY;
     }
 
 }
