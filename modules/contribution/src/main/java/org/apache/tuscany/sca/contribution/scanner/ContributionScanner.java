@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.contribution.processor;
+package org.apache.tuscany.sca.contribution.scanner;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
