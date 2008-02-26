@@ -78,7 +78,6 @@ class AtomBindingInvoker implements Invoker {
         @Override
         public Message invoke(Message msg) {
 
-        	/*
             // Get an entry
             String id = (String)((Object[])msg.getBody())[0];
 
@@ -91,8 +90,9 @@ class AtomBindingInvoker implements Invoker {
 
                 // Read the Atom entry
                 if (status == 200) {
-                    Entry feedEntry =
-                        AtomFeedEntryUtil.readFeedEntry("atom_1.0", new InputStreamReader(getMethod.getResponseBodyAsStream()));
+                	Document<Entry> doc = Abdera.getNewParser().parse(new InputStreamReader(getMethod.getResponseBodyAsStream()));
+                    Entry feedEntry = doc.getRoot();
+
                     msg.setBody(feedEntry);
 
                 } else if (status == 404) {
@@ -108,9 +108,6 @@ class AtomBindingInvoker implements Invoker {
             }
 
             return msg;
-            */
-        	
-        	throw new UnsupportedOperationException("Not yet converted");
         }
     }
 
@@ -126,7 +123,6 @@ class AtomBindingInvoker implements Invoker {
         @Override
         public Message invoke(Message msg) {
 
-        	/*
             // Post an entry
             Entry feedEntry = (Entry)((Object[])msg.getBody())[0];
 
@@ -137,7 +133,7 @@ class AtomBindingInvoker implements Invoker {
 
                 // Write the Atom entry
                 StringWriter writer = new StringWriter();
-                AtomFeedEntryUtil.writeFeedEntry(feedEntry, "atom_1.0", writer);
+                feedEntry.writeTo(writer);
                 postMethod.setRequestHeader("Content-type", "application/atom+xml; charset=utf-8");
                 postMethod.setRequestEntity(new StringRequestEntity(writer.toString()));
 
@@ -146,9 +142,9 @@ class AtomBindingInvoker implements Invoker {
 
                 // Read the Atom entry
                 if (status == 200 || status == 201) {
-                    Entry createdEntry =
-                        AtomFeedEntryUtil
-                            .readFeedEntry("atom_1.0", new InputStreamReader(postMethod.getResponseBodyAsStream()));
+                	Document<Entry> doc = Abdera.getNewParser().parse(new InputStreamReader(postMethod.getResponseBodyAsStream()));
+                    Entry createdEntry = doc.getRoot();
+
                     msg.setBody(createdEntry);
 
                 } else if (status == 404) {
@@ -164,9 +160,6 @@ class AtomBindingInvoker implements Invoker {
             }
 
             return msg;
-            */
-        	
-        	throw new UnsupportedOperationException("Not yet converted");
         }
     }
 
@@ -181,8 +174,6 @@ class AtomBindingInvoker implements Invoker {
 
         @Override
         public Message invoke(Message msg) {
-
-        	/*
             // Put an entry
             Object[] args = (Object[])msg.getBody();
             String id = (String)args[0];
@@ -195,7 +186,7 @@ class AtomBindingInvoker implements Invoker {
 
                 // Write the Atom entry
                 StringWriter writer = new StringWriter();
-                AtomFeedEntryUtil.writeFeedEntry(feedEntry, "atom_1.0", writer);
+                feedEntry.writeTo(writer);
                 putMethod.setRequestHeader("Content-type", "application/atom+xml; charset=utf-8");
                 putMethod.setRequestEntity(new StringRequestEntity(writer.toString()));
 
@@ -205,9 +196,9 @@ class AtomBindingInvoker implements Invoker {
                 // Read the Atom entry
                 if (status == 200 || status == 201) {
                     try {
-                        Entry updatedEntry =
-                            AtomFeedEntryUtil.readFeedEntry("atom_1.0", new InputStreamReader(putMethod
-                                .getResponseBodyAsStream()));
+                    	Document<Entry> doc = Abdera.getNewParser().parse(new InputStreamReader(putMethod.getResponseBodyAsStream()));
+                        Entry updatedEntry = doc.getRoot();
+
                         msg.setBody(updatedEntry);
                     } catch (Exception e) {
                         // Returning the updated entry is optional
@@ -226,9 +217,6 @@ class AtomBindingInvoker implements Invoker {
             }
 
             return msg;
-            */
-        	
-        	throw new UnsupportedOperationException("Not yet converted");
         }
     }
 
@@ -297,8 +285,7 @@ class AtomBindingInvoker implements Invoker {
 
                 // Read the Atom feed
                 if (status == 200) {
-                	Parser parser = Abdera.getNewParser();
-                    Document<Feed> doc = parser.parse(new InputStreamReader(getMethod.getResponseBodyAsStream()));
+                    Document<Feed> doc = Abdera.getNewParser().parse(new InputStreamReader(getMethod.getResponseBodyAsStream()));
                     Feed feed = doc.getRoot();
 
                     msg.setBody(feed);

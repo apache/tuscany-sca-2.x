@@ -35,10 +35,13 @@ import javax.xml.namespace.QName;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Collection;
 import org.apache.abdera.model.Content;
+import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
+import org.apache.abdera.model.Link;
 import org.apache.abdera.model.Service;
 import org.apache.abdera.model.Workspace;
+import org.apache.abdera.parser.ParseException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -278,7 +281,7 @@ class FeedBindingListenerServlet extends HttpServlet {
             if (feedEntry != null) {
                 response.setContentType("application/atom+xml; charset=utf-8");
                 try {
-                    AtomFeedEntryUtil.writeFeedEntry(feedEntry, feedType, getWriter(response));
+                	feedEntry.writeTo(getWriter(response));
                 } catch (IOException ioe) {
                     throw new ServletException(ioe);
                 }
@@ -365,7 +368,7 @@ class FeedBindingListenerServlet extends HttpServlet {
             return;
         }
 
-        /*
+
         // Get the request path
         String path = request.getPathInfo();
 
@@ -379,11 +382,10 @@ class FeedBindingListenerServlet extends HttpServlet {
                 // Read the entry from the request
                 Entry feedEntry;
                 try {
-                    feedEntry = AtomFeedEntryUtil.readFeedEntry(feedType, request.getReader());
-                } catch (JDOMException e) {
-                    throw new ServletException(e);
-                } catch (FeedException e) {
-                    throw new ServletException(e);
+                	Document<Entry> doc = Abdera.getNewParser().parse(request.getReader());
+                	feedEntry = doc.getRoot();
+                } catch (ParseException pe) {
+                    throw new ServletException(pe);
                 }
 
                 // Let the component implementation create it
@@ -435,21 +437,18 @@ class FeedBindingListenerServlet extends HttpServlet {
             if (createdFeedEntry != null) {
 
                 // Set location of the created entry in the Location header
-                for (Object l : createdFeedEntry.getOtherLinks()) {
-                    Link link = (Link)l;
-                    if (link.getRel() == null || "edit".equals(link.getRel())) {
-                        response.addHeader("Location", link.getHref());
-                        break;
-                    }
-                }
+            	Link editLink = createdFeedEntry.getEditLink();
+				if (editLink.getRel() == null || "edit".equals(editLink.getRel())) {
+					response.addHeader("Location", editLink.getHref().toString());
+				}
 
                 // Write the created Atom entry
                 response.setStatus(HttpServletResponse.SC_CREATED);
                 response.setContentType("application/atom+xml; charset=utf-8");
                 try {
-                    AtomFeedEntryUtil.writeFeedEntry(createdFeedEntry, feedType, getWriter(response));
-                } catch (FeedException e) {
-                    throw new ServletException(e);
+                	createdFeedEntry.writeTo(getWriter(response));
+                } catch (ParseException pe) {
+                    throw new ServletException(pe);
                 }
 
             } else {
@@ -459,7 +458,6 @@ class FeedBindingListenerServlet extends HttpServlet {
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
-        */
     }
 
     private Writer getWriter(HttpServletResponse response) throws UnsupportedEncodingException, IOException {
@@ -477,7 +475,6 @@ class FeedBindingListenerServlet extends HttpServlet {
             return;
         }
 
-        /*
         // Get the request path
         String path = request.getPathInfo();
 
@@ -491,11 +488,10 @@ class FeedBindingListenerServlet extends HttpServlet {
                 // Read the entry from the request
                 Entry feedEntry;
                 try {
-                    feedEntry = AtomFeedEntryUtil.readFeedEntry(feedType, request.getReader());
-                } catch (JDOMException e) {
-                    throw new ServletException(e);
-                } catch (FeedException e) {
-                    throw new ServletException(e);
+                	Document<Entry> doc = Abdera.getNewParser().parse(request.getReader());
+                	feedEntry = doc.getRoot();
+                } catch (ParseException pe) {
+                    throw new ServletException(pe);
                 }
 
                 // Let the component implementation create it
@@ -587,8 +583,6 @@ class FeedBindingListenerServlet extends HttpServlet {
                 throw new ServletException((Throwable)responseMessage.getBody());
             }
         }
-        
-        */
     }
 
     /**
@@ -635,7 +629,6 @@ class FeedBindingListenerServlet extends HttpServlet {
      * @return
      */
     private boolean authenticate(String user, String password) {
-
         // TODO Handle this using SCA security policies
         return ("admin".equals(user) && "admin".equals(password));
     }
