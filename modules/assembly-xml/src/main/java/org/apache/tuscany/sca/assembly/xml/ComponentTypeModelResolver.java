@@ -68,20 +68,25 @@ public class ComponentTypeModelResolver implements ModelResolver {
         //If not found, delegate the resolution to the imports (in this case based on the java imports)
         //compute the package name from the componentType URI
         if (unresolved instanceof ComponentType) {
-            String packageName = uri.substring(0, uri.lastIndexOf("/"));
-            for (Import import_ : this.contribution.getImports()) {
-                if (import_ instanceof JavaImport) {
-                	JavaImport javaImport = (JavaImport)import_;
-                	//check the import location against the computed package name from the componentType URI
-                    if (javaImport.getPackage().equals(packageName)) {
-                        // Delegate the resolution to the import resolver
-                        resolved = javaImport.getModelResolver().resolveModel(ComponentType.class, (ComponentType)unresolved);
-                        if (!resolved.isUnresolved()) {
-                            return modelClass.cast(resolved);
+            //FIXME The core assembly model now depends on java imports to 
+            // resolve componentTypes of all kinds, this is not right at all!!!
+            int s = uri.lastIndexOf('/');
+            if (s != -1) {
+                String packageName = uri.substring(0, uri.lastIndexOf("/"));
+                for (Import import_ : this.contribution.getImports()) {
+                    if (import_ instanceof JavaImport) {
+                    	JavaImport javaImport = (JavaImport)import_;
+                    	//check the import location against the computed package name from the componentType URI
+                        if (javaImport.getPackage().equals(packageName)) {
+                            // Delegate the resolution to the import resolver
+                            resolved = javaImport.getModelResolver().resolveModel(ComponentType.class, (ComponentType)unresolved);
+                            if (!resolved.isUnresolved()) {
+                                return modelClass.cast(resolved);
+                            }
                         }
                     }
                 }
-            }        	
+            }
         }
 
         return (T)unresolved;
