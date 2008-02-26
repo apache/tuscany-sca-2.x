@@ -399,7 +399,6 @@ class FeedBindingListenerServlet extends HttpServlet {
     
             // Convert the item to XML
             String value = mediator.mediate(data, itemClassType, itemXMLType, null).toString();
-            value = value.substring(value.indexOf('>') +1);
             
             Content content = new Content();
             content.setType("text/xml");
