@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.contribution.processor;
+package org.apache.tuscany.sca.contribution.scanner;
 
 /**
  * An extension point for contribution scanners
