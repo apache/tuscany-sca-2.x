@@ -826,13 +826,12 @@ public class CompositeActivatorImpl implements CompositeActivator {
     }
 
     public Component resolve(Composite composite, String componentURI) {
-        String prefix = componentURI + "/";
         for (Component component : composite.getComponents()) {
             String uri = component.getURI();
             if (uri.equals(componentURI)) {
                 return component;
             }
-            if (componentURI.startsWith(prefix)) {
+            if (componentURI.startsWith(uri)) {
                 Implementation implementation = component.getImplementation();
                 if (!(implementation instanceof Composite)) {
                     return null;
