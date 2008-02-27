@@ -25,6 +25,9 @@
 
     <component name="TestNode">
         <tuscany:implementation.node composite="sc:TestComposite"/>
+       	<service name="Default">
+        	<binding.sca uri="http://localhost:8080"/>
+        </service>
     </component>
 
 </composite>
