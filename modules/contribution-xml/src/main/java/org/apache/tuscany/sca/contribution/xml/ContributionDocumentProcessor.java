@@ -66,7 +66,7 @@ public class ContributionDocumentProcessor implements URLArtifactProcessor<Contr
             XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
             reader.nextTag();
             
-            // Read the composite model
+            // Read the contribution model
             Contribution contribution = (Contribution)staxProcessor.read(reader);
             if (contribution != null) {
                 contribution.setURI(uri.toString());
