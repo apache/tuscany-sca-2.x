@@ -58,7 +58,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-feed</artifactId>
+            <artifactId>tuscany-binding-feed-atom</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
 
