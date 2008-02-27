@@ -44,6 +44,7 @@ import org.apache.abdera.model.Workspace;
 import org.apache.abdera.parser.ParseException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.sca.databinding.Mediator;
+import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -236,8 +237,8 @@ class FeedBindingListenerServlet extends HttpServlet {
                     feed = this.abdera.getFactory().newFeed();
                     feed.setTitle("Feed");
                     for (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry: collection) {
-                        Entry feedEntry = createFeedEntry(entry.getKey(), entry.getData());
-                        feed.getEntries().add(feedEntry);
+                        Entry feedEntry = createFeedEntry(entry);
+                        feed.addEntry(feedEntry);
                     }
                 }
             }
@@ -274,7 +275,7 @@ class FeedBindingListenerServlet extends HttpServlet {
             } else {
                 // The service implementation only returns a data item, create an entry
                 // from it
-                feedEntry = createFeedEntry(id, responseMessage.getBody());
+                feedEntry = createFeedEntry(new org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>(id, responseMessage.getBody()));
             }
 
             // Write the Atom entry
@@ -301,30 +302,57 @@ class FeedBindingListenerServlet extends HttpServlet {
      * @param item
      * @return
      */
-    private Entry createFeedEntry(Object key, Object item) {
-        if (item != null) {
-
+    private Entry createFeedEntry(org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry) {
+        Object key = entry.getKey();
+        Object data = entry.getData();
+        if (data instanceof Item) {
+            Item item = (Item)data;
+            
             Entry feedEntry = abdera.getFactory().newEntry();
-            feedEntry.setId(key.toString());
-            feedEntry.setTitle("item");
-            
-            
-            // Convert the item to XML
-            String value = mediator.mediate(item, itemClassType, itemXMLType, null).toString();
-            value = value.substring(value.indexOf('>') +1);
-            
-            Content content = this.abdera.getFactory().newContent();
-            content.setContentType(Content.Type.XML);
-            content.setValue(value);
-            
-            feedEntry.setContentElement(content);
+            if (key != null) {
+            	feedEntry.setId(key.toString());
+            }
+            feedEntry.setTitle(item.getTitle());
+            feedEntry.setContent(item.getContents());
 
-            feedEntry.addLink(key.toString(), "edit");
-            feedEntry.addLink(key.toString(), "alternate");
-    
-            feedEntry.setUpdated(new Date());
+            String href = item.getLink();
+            if (href == null && key != null) {
+           		href = key.toString();
+            }
 
+            if (href != null) {
+                feedEntry.addLink(href, "edit");
+                feedEntry.addLink(href,"alternate");
+            }
+                
+            Date date = item.getDate();
+            if (date == null) {
+                date = new Date();
+            }
+            feedEntry.setUpdated(date);
             return feedEntry;
+            
+        } else if (data != null) {
+        	 Entry feedEntry = abdera.getFactory().newEntry();
+             feedEntry.setId(key.toString());
+             feedEntry.setTitle("item");
+             
+             
+             // Convert the item to XML
+             String value = mediator.mediate(data, itemClassType, itemXMLType, null).toString();
+             
+             Content content = this.abdera.getFactory().newContent();
+             content.setContentType(Content.Type.XML);
+             content.setValue(value);
+             
+             feedEntry.setContentElement(content);
+
+             feedEntry.addLink(key.toString(), "edit");
+             feedEntry.addLink(key.toString(), "alternate");
+     
+             feedEntry.setUpdated(new Date());
+
+             return feedEntry;
         } else {
             return null;
         }
@@ -336,17 +364,47 @@ class FeedBindingListenerServlet extends HttpServlet {
      * @param item
      * @return
      */
-    private Object createItem(Entry feedEntry) {
+    private org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> createEntry(Entry feedEntry) {
         if (feedEntry != null) {
-        	if (feedEntry.getContentElement().getElements().size() == 0) {
-        		return null;
-        	}
-        	
-            // Create the item from XML
-            String value = feedEntry.getContent();
-            Object item = mediator.mediate(value, itemXMLType, itemClassType, null);
+            if (itemClassType.getPhysical() == Item.class) {
+                String key = feedEntry.getId().toString();
+                
+                Item item = new Item();
+                item.setTitle(feedEntry.getTitle());
+                item.setContents(feedEntry.getContent());
+                
+                for (Link link : feedEntry.getLinks()) {
+                    if (link.getRel() == null || "edit".equals(link.getRel())) {
+                        String href = link.getHref().toString();
+                        if (href.startsWith("null/")) {
+                            href = href.substring(5);
+                        }
+                        item.setLink(href);
+                        break;
+                    }
+                }
+                
+                item.setDate(feedEntry.getUpdated());
+                
+                return new org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>(key, item);
+                
+            } else {
+            	String key = null; 
+            	if ( feedEntry.getId() != null) {
+            		feedEntry.getId().toString();
+            	}
+                
+                
+                // Create the item from XML
+            	if (feedEntry.getContentElement().getElements().size() == 0) {
+            		return null;
+            	}
+            	
+                String value = feedEntry.getContent();
+                Object data = mediator.mediate(value, itemXMLType, itemClassType, null);
 
-            return item;
+                return new org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>(key, data);
+            }
         } else {
             return null;
         }
@@ -398,14 +456,14 @@ class FeedBindingListenerServlet extends HttpServlet {
                     
                     // The service implementation does not support feed entries, pass the data item to it
                     Message requestMessage = messageFactory.createMessage();
-                    Object item = createItem(feedEntry);
-                    requestMessage.setBody(new Object[] {item});
+                    org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry = createEntry(feedEntry);
+                    requestMessage.setBody(new Object[] {entry.getKey(), entry.getData()});
                     Message responseMessage = postInvoker.invoke(requestMessage);
                     if (responseMessage.isFault()) {
                         throw new ServletException((Throwable)responseMessage.getBody());
                     }
-                    Object key = responseMessage.getBody();
-                    createdFeedEntry = createFeedEntry(key, item);
+                    entry.setKey(responseMessage.getBody());
+                    createdFeedEntry = createFeedEntry(entry);
                 }
 
             } else if (contentType != null) {
@@ -508,8 +566,8 @@ class FeedBindingListenerServlet extends HttpServlet {
                     
                     // The service implementation does not support feed entries, pass the data item to it
                     Message requestMessage = messageFactory.createMessage();
-                    Object item = createItem(feedEntry);
-                    requestMessage.setBody(new Object[] {id, item});
+                    org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry = createEntry(feedEntry);
+                    requestMessage.setBody(new Object[] {entry.getKey(), entry.getData()});
                     Message responseMessage = putInvoker.invoke(requestMessage);
                     if (responseMessage.isFault()) {
                         Object body = responseMessage.getBody();
