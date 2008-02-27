@@ -45,14 +45,14 @@ import org.apache.tuscany.sca.workspace.WorkspaceFactory;
  */
 public class WorkspaceProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<Workspace> {
     
-    private WorkspaceFactory workspaceFactory;
-    private ContributionFactory contributionFactory;
-    
     private static final String SCA10_TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
     private static final QName WORKSPACE_QNAME = new QName(SCA10_TUSCANY_NS, "workspace");
     private static final QName CONTRIBUTION_QNAME = new QName(SCA10_TUSCANY_NS, "contribution");
     private static final String URI = "uri";
     private static final String LOCATION = "location";
+    
+    private WorkspaceFactory workspaceFactory;
+    private ContributionFactory contributionFactory;
     
     /**
      * Constructs a new contribution workspace processor.
@@ -80,6 +80,7 @@ public class WorkspaceProcessor extends BaseStAXArtifactProcessor implements StA
 
                         // Read a <workspace>
                         workspace = workspaceFactory.createWorkspace();
+                        workspace.setUnresolved(true);
 
                     } else if (CONTRIBUTION_QNAME.equals(name)) {
 
