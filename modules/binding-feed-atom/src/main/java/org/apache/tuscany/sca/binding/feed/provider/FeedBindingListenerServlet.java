@@ -337,24 +337,19 @@ class FeedBindingListenerServlet extends HttpServlet {
      * @return
      */
     private Object createItem(Entry feedEntry) {
-    	/*
         if (feedEntry != null) {
-            List<?> contents = feedEntry.getContents();
-            if (contents.isEmpty()) {
-                return null;
-            }
-            Content content = (Content)contents.get(0);
-    
+        	if (feedEntry.getContentElement().getElements().size() == 0) {
+        		return null;
+        	}
+        	
             // Create the item from XML
-            String value = content.getValue();
+            String value = feedEntry.getContent();
             Object item = mediator.mediate(value, itemXMLType, itemClassType, null);
 
             return item;
         } else {
             return null;
         }
-        */
-    	return null;
     }
 
     @Override
