@@ -119,7 +119,7 @@ public class CompositeCollectionImpl implements CompositeCollection {
             entry.setKey(name(composite.getName()));
             Item item = new Item();
             item.setTitle(name(composite.getName()));
-            item.setLink(composite.getURI());
+            item.setLink("/workspace/" + composite.getURI());
             entry.setData(item);
             entries.add(entry);
         }

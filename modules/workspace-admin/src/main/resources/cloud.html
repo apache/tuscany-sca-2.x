@@ -65,7 +65,7 @@
 
 	function addComposite() {
 		var id  = document.newCompositeForm.compositeQName.value;
-		var location  = document.newCompositeForm.compositeLocation.value;
+		var location  = document.newCompositeForm.contributionURI.value;
 		var entry = '<entry xmlns="http://www.w3.org/2005/Atom">' +
 				'<title>Contribution - ' + id +'</title>' +
               	'<id>' + id + '</id>' +
@@ -77,7 +77,7 @@
 
 	function addCompositeResponse() {
 		document.newCompositeForm.compositeQName.value = "";
-		document.newCompositeForm.compositeLocation.value = "";
+		document.newCompositeForm.contributionURI.value = "";
 	    getComposites();
 	}	
 
@@ -101,7 +101,7 @@
   <form name="newCompositeForm">
     <table border="0">
     <tr><td>QName:</td><td><input type="text" name="compositeQName" /></td></tr> 
-    <tr><td>Address:</td><td><input type="text" name="compositeLocation" /></td></tr>
+    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" /></td></tr>
     </table>
     <br/>
     <input type="button" onClick="addComposite()" value="Add" />
