@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.contribution.namespace.impl;
 
-import java.util.List;
-
-import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceExport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
@@ -34,7 +31,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
  */
 public class NamespaceImportImpl implements NamespaceImport {
     private ModelResolver modelResolver;
-    private List<Contribution> exportContributions;
+
     /**
      * The namespace to be imported
      */
@@ -74,14 +71,6 @@ public class NamespaceImportImpl implements NamespaceImport {
     }
 
     
-    public List<Contribution> getExportContributions() {
-        return exportContributions;
-    }
-
-    public void setExportContributions(List<Contribution> contributions) {
-        this.exportContributions = contributions;
-    }
-
     /**
      * Match a NamespaceImport to a given NamespaceExport based on :
      *    location is not provided

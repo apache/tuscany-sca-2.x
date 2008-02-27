@@ -17,40 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution;
+package org.apache.tuscany.sca.contribution.namespace;
 
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-
+import org.apache.tuscany.sca.contribution.namespace.impl.NamespaceImportExportFactoryImpl;
 
 /**
- * The representation of an import.
+ * Default Namespace Import/Export model factory implementation
  * 
  * @version $Rev$ $Date$
  */
-public interface Import {
-
-    /**
-     * Returns the model resolver for the models representing artifacts
-     * made available by this import.
-     * 
-     * @return The model resolver
-     */
-    ModelResolver getModelResolver();
-
-    /**
-     * Sets the model resolver for the models representing artifacts
-     * made available by this import.
-     * 
-     * @param modelResolver The model resolver
-     */
-    void setModelResolver(ModelResolver modelResolver);
-    
-    /**
-     * Verify that a specific export actually exports what is being imported.
-     * 
-     * @param export The Exported being verified
-     * @return true/false
-     */
-    boolean match(Export export);
-    
+public class DefaultNamespaceImportExportFactory extends NamespaceImportExportFactoryImpl implements NamespaceImportExportFactory {
 }

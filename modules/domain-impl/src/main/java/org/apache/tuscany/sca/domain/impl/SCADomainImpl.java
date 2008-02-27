@@ -316,7 +316,8 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
     private void findDependentContributions(Contribution contribution, List<Contribution> dependentContributions){
         
         for (Import contribImport : contribution.getImports()) {
-            for (Contribution tmpContribution : contribImport.getExportContributions()) {
+            for (ContributionModel tmpContributionModel : domainModel.getContributions().values()) {
+                Contribution tmpContribution = tmpContributionModel.getContribution();
                 for (Export export : tmpContribution.getExports()) {
                     if (contribImport.match(export)) {
                         if (tmpContribution.getImports().isEmpty()) {
