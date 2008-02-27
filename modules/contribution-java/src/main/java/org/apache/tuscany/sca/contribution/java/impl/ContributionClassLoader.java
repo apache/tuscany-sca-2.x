@@ -95,7 +95,7 @@ public class ContributionClassLoader extends URLClassLoader {
             for (Import import_ : this.contribution.getImports()) {
                 if (classNameMatchesImport(className, import_)) {
                     // Delegate the resolution to the imported contribution
-                    for (Contribution exportingContribution : import_.getExportContributions()) {
+                    for (Contribution exportingContribution : ((JavaImportModelResolver)import_.getModelResolver()).getExportContributions()) {
                                     
                         ClassLoader exportClassLoader = getExportClassLoader(exportingContribution);
                         if (exportClassLoader instanceof ContributionClassLoader) {
@@ -172,7 +172,7 @@ public class ContributionClassLoader extends URLClassLoader {
             for (Import import_ : this.contribution.getImports()) {
                 if (resourceNameMatchesImport(name, import_)) {
                     // Delegate the resolution to the imported contribution
-                    for (Contribution exportingContribution : import_.getExportContributions()) {
+                    for (Contribution exportingContribution : ((JavaImportModelResolver)import_.getModelResolver()).getExportContributions()) {
                                 
                         ClassLoader exportClassLoader = getExportClassLoader(exportingContribution);
                         if (exportClassLoader instanceof ContributionClassLoader) {
@@ -259,9 +259,12 @@ public class ContributionClassLoader extends URLClassLoader {
         addEnumerationToCollection(resources, super.findResources(name));
         
         for (Import import_ : this.contribution.getImports()) {
+            if (!(import_ instanceof JavaImport)) {
+                continue;
+            }
             if (resourceNameMatchesImport(name, import_)) {
                 // Delegate the resolution to the imported contribution
-                for (Contribution exportingContribution : import_.getExportContributions()) {
+                for (Contribution exportingContribution : ((JavaImportModelResolver)import_.getModelResolver()).getExportContributions()) {
                                 
                     ClassLoader exportClassLoader = getExportClassLoader(exportingContribution);
                     if (exportClassLoader instanceof ContributionClassLoader) {

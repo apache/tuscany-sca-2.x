@@ -143,11 +143,11 @@ public class ContributionClassLoaderTestCase  {
         
         JavaImport import_ = javaImportExportFactory.createJavaImport();
         import_.setPackage(this.getClass().getPackage().getName());
-        import_.setExportContributions(exportContribList);
+        import_.setModelResolver(new JavaImportModelResolver(exportContribList, null));
         contribB.getImports().add(import_);
         import_ = javaImportExportFactory.createJavaImport();
         import_.setPackage("calculator");
-        import_.setExportContributions(exportContribList);
+        import_.setModelResolver(new JavaImportModelResolver(exportContribList, null));
         contribB.getImports().add(import_);
         
         JavaExport export = javaImportExportFactory.createJavaExport();
@@ -215,11 +215,11 @@ public class ContributionClassLoaderTestCase  {
         
         JavaImport import_ = javaImportExportFactory.createJavaImport();
         import_.setPackage(this.getClass().getPackage().getName());
-        import_.setExportContributions(exportContribList);
+        import_.setModelResolver(new JavaImportModelResolver(exportContribList, null));
         contribB.getImports().add(import_);
         JavaImport import1_ = javaImportExportFactory.createJavaImport();
         import1_.setPackage("calculator");
-        import1_.setExportContributions(exportContribList);
+        import1_.setModelResolver(new JavaImportModelResolver(exportContribList, null));
         contribB.getImports().add(import1_);
         
         JavaExport export = javaImportExportFactory.createJavaExport();

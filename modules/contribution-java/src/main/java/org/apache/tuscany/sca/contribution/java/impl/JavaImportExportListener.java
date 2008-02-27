@@ -126,12 +126,9 @@ public class JavaImportExportListener implements ContributionListener {
                             if (export instanceof JavaExport) {
                                 JavaExport javaExport = (JavaExport)export;
                                 if (javaImport.getPackage().equals(javaExport.getPackage())) {
-                                    javaImport.setModelResolver(javaExport.getModelResolver());
-                                    
                                     List<Contribution> exportingContributions = new ArrayList<Contribution>();
                                     exportingContributions.add(targetContribution);
-                                    import_.setExportContributions(exportingContributions);
-                                    
+                                    javaImport.setModelResolver(new JavaImportModelResolver(exportingContributions, javaExport.getModelResolver()));
                                     initialized = true;
                                     break;
                                 }
@@ -143,8 +140,7 @@ public class JavaImportExportListener implements ContributionListener {
                 //if no location was specified, try to resolve with any contribution
                 if (!initialized) {
                     //Use a resolver that will consider all contributions
-                    import_.setModelResolver(new DefaultImportAllModelResolver(import_, repository.getContributions()));
-                    import_.setExportContributions(repository.getContributions());
+                    import_.setModelResolver(new JavaImportModelResolver(repository.getContributions(), new DefaultImportAllModelResolver(import_, repository.getContributions())));
                 }
             }
         }
