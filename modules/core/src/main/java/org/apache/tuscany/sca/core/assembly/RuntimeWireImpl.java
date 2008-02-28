@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -156,7 +157,7 @@ public class RuntimeWireImpl implements RuntimeWire {
                         + "#"
                         + reference.getName());
                 }
-                InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
+                InvocationChain chain = new InvocationChainImpl(operation, targetOperation, true);
                 if (operation.isNonBlocking()) {
                     addNonBlockingInterceptor(reference, refBinding, chain);
                 }
@@ -177,7 +178,7 @@ public class RuntimeWireImpl implements RuntimeWire {
                         + "#"
                         + service.getName());
                 }
-                InvocationChain chain = new InvocationChainImpl(operation, targetOperation);
+                InvocationChain chain = new InvocationChainImpl(operation, targetOperation, false);
                 if (operation.isNonBlocking()) {
                     addNonBlockingInterceptor(service, serviceBinding, chain);
                 }
@@ -244,7 +245,7 @@ public class RuntimeWireImpl implements RuntimeWire {
         if (provider != null) {
             boolean supportsOneWayInvocation = provider.supportsOneWayInvocation();
             if (!supportsOneWayInvocation) {
-                chain.addInterceptor(new NonBlockingInterceptor(workScheduler));
+                chain.addInterceptor(Phase.REFERENCE, new NonBlockingInterceptor(workScheduler));
             }
         }
     }
@@ -260,7 +261,7 @@ public class RuntimeWireImpl implements RuntimeWire {
         ServiceBindingProvider provider = ((RuntimeComponentService)service).getBindingProvider(binding);
         if (provider != null) {
             if (!provider.supportsOneWayInvocation()) {
-                chain.addInterceptor(new NonBlockingInterceptor(workScheduler));
+                chain.addInterceptor(Phase.SERVICE_BINDING, new NonBlockingInterceptor(workScheduler));
             }
         }
     }

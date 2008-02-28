@@ -1,0 +1,5 @@
+name=implementation.last, stage=implementation, after=*
+name=reference.first, stage=reference, before=*
+name=reference.transaction, stage=reference, after=reference.interface
+name=service.transaction, stage=service, after=service.binding
+name=implementation.transaction, stage=implementation, before=implementation.policies

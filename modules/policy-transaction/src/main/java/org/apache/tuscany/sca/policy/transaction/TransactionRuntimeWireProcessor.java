@@ -21,9 +21,10 @@ package org.apache.tuscany.sca.policy.transaction;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -66,11 +67,15 @@ public class TransactionRuntimeWireProcessor implements RuntimeWireProcessor {
             }
         }
         for (InvocationChain chain : wire.getInvocationChains()) {
-            Operation operation = chain.getSourceOperation();
+            // Operation operation = chain.getSourceOperation();
 
             TransactionInterceptor interceptor =
                 new TransactionInterceptor(helper, outbound, interactionPolicy, implementationPolicy);
-            chain.addInterceptor(0, interceptor);
+            String phase =
+                (wire.getSource().getContract() instanceof ComponentReference) ? Phase.REFERENCE_POLICY
+                    : Phase.SERVICE_POLICY;
+
+            chain.addInterceptor(phase, interceptor);
         }
 
     }

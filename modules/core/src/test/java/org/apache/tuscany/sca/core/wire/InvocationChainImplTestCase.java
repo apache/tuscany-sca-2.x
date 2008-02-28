@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.Phase;
 
 /**
  * @version $Rev$ $Date$
@@ -34,7 +35,8 @@ import org.apache.tuscany.sca.invocation.Message;
 public class InvocationChainImplTestCase extends TestCase {
 
     public void testInsertAtEnd() throws Exception {
-        InvocationChain chain = new InvocationChainImpl(newOperation("foo"));
+        Operation op = newOperation("foo");
+        InvocationChain chain = new InvocationChainImpl(op, op, true);
         Interceptor inter2 = new MockInterceptor();
         Interceptor inter1 = new MockInterceptor();
         chain.addInterceptor(inter1);
@@ -44,6 +46,25 @@ public class InvocationChainImplTestCase extends TestCase {
         assertEquals(inter2, head.getNext());
         assertEquals(inter2, chain.getTailInvoker());
 
+    }
+
+    public void testAddByPhase() throws Exception {
+        Operation op = newOperation("foo");
+        InvocationChain chain = new InvocationChainImpl(op, op, false);
+        Interceptor inter1 = new MockInterceptor();
+        Interceptor inter2 = new MockInterceptor();
+        Interceptor inter3 = new MockInterceptor();
+        Interceptor inter4 = new MockInterceptor();
+        chain.addInterceptor(inter3); // SERVICE
+        chain.addInterceptor(Phase.IMPLEMENTATION_POLICY, inter4);
+        chain.addInterceptor(Phase.SERVICE_POLICY, inter2);
+        chain.addInterceptor(Phase.SERVICE_BINDING, inter1);
+        Interceptor head = (Interceptor)chain.getHeadInvoker();
+        assertEquals(inter1, head);
+        assertEquals(inter2, inter1.getNext());
+        assertEquals(inter3, inter2.getNext());
+        assertEquals(inter4, inter3.getNext());
+        assertEquals(inter4, chain.getTailInvoker());
     }
 
     private class MockInterceptor implements Interceptor {

@@ -20,12 +20,14 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.PassByValueAware;
+import org.apache.tuscany.sca.invocation.Phase;
 
 /**
  * Default implementation of an invocation chain
@@ -35,20 +37,19 @@ import org.apache.tuscany.sca.invocation.PassByValueAware;
 public class InvocationChainImpl implements InvocationChain {
     private Operation sourceOperation;
     private Operation targetOperation;
-    private List<Invoker> invokers = new ArrayList<Invoker>();
+    private List<Node> nodes = new ArrayList<Node>();
+
+    // FIXME: Not a good practice to use static reference
+    private final static PhaseManager phaseManager = new PhaseManager();
+    private boolean forReference;
     private boolean allowsPassByReference;
 
-    public InvocationChainImpl(Operation operation) {
-        assert operation != null;
-        this.targetOperation = operation;
-        this.sourceOperation = operation;
-    }
-
-    public InvocationChainImpl(Operation sourceOperation, Operation targetOperation) {
+    public InvocationChainImpl(Operation sourceOperation, Operation targetOperation, boolean forReference) {
         assert sourceOperation != null;
         assert targetOperation != null;
         this.targetOperation = targetOperation;
         this.sourceOperation = sourceOperation;
+        this.forReference = forReference;
     }
 
     public Operation getTargetOperation() {
@@ -60,33 +61,21 @@ public class InvocationChainImpl implements InvocationChain {
     }
 
     public void addInterceptor(Interceptor interceptor) {
-        invokers.add(interceptor);
-        int index = invokers.size() - 1;
-        if (index - 1 >= 0) {
-            Invoker before = invokers.get(index - 1);
-            if (before instanceof Interceptor) {
-                ((Interceptor)before).setNext(interceptor);
-            }
-        }
+        String phase = forReference ? Phase.REFERENCE : Phase.SERVICE;
+        addInterceptor(phase, interceptor);
     }
 
     public void addInvoker(Invoker invoker) {
-        invokers.add(invoker);
-        int index = invokers.size() - 1;
-        if (index - 1 >= 0) {
-            Invoker before = invokers.get(index - 1);
-            if (before instanceof Interceptor) {
-                ((Interceptor)before).setNext(invoker);
-            }
-        }
+        String phase = forReference ? Phase.REFERENCE_BINDING : Phase.IMPLEMENTATION;
+        addInvoker(phase, invoker);
     }
 
     public Invoker getHeadInvoker() {
-        return invokers.isEmpty() ? null : invokers.get(0);
+        return nodes.isEmpty() ? null : nodes.get(0).getInvoker();
     }
 
     public Invoker getTailInvoker() {
-        return invokers.isEmpty() ? null : invokers.get(invokers.size() - 1);
+        return nodes.isEmpty() ? null : nodes.get(nodes.size() - 1).getInvoker();
     }
 
     /**
@@ -104,29 +93,64 @@ public class InvocationChainImpl implements InvocationChain {
     }
 
     public void addInterceptor(int index, Interceptor interceptor) {
-        invokers.add(index, interceptor);
-        if (index - 1 >= 0) {
-            Invoker before = invokers.get(index - 1);
-            if (before instanceof Interceptor) {
-                ((Interceptor)before).setNext(interceptor);
+        addInterceptor(interceptor);
+    }
+
+    public void addInterceptor(String phase, Interceptor interceptor) {
+        addInvoker(phase, interceptor);
+    }
+
+    private void addInvoker(String phase, Invoker invoker) {
+        int index = phaseManager.getAllPhases().indexOf(phase);
+        if (index == -1) {
+            throw new IllegalArgumentException("Invalid phase name: " + phase);
+        }
+        Node node = new Node(index, invoker);
+        ListIterator<Node> li = nodes.listIterator();
+        Node before = null, after = null;
+        boolean found = false;
+        while (li.hasNext()) {
+            before = after;
+            after = li.next();
+            if (after.getPhaseIndex() > index) {
+                // Move back
+                li.previous();
+                li.add(node);
+                found = true;
+                break;
             }
         }
-        if (index + 1 < invokers.size()) {
-            Invoker after = invokers.get(index + 1);
-            interceptor.setNext(after);
+        if (!found) {
+            // Add to the end
+            nodes.add(node);
+            before = after;
+            after = null;
         }
+
+        // Relink the interceptors
+        if (before != null) {
+            if (before.getInvoker() instanceof Interceptor) {
+                ((Interceptor)before.getInvoker()).setNext(invoker);
+            }
+        }
+        if (after != null) {
+            if (invoker instanceof Interceptor) {
+                ((Interceptor)invoker).setNext(after.getInvoker());
+            }
+        }
+
     }
 
     public boolean allowsPassByReference() {
-        if(allowsPassByReference) {
+        if (allowsPassByReference) {
             // No need to check the invokers
             return true;
         }
         // Check if any of the invokers allows pass-by-reference
         boolean allowsPBR = false;
-        for (Invoker i : invokers) {
-            if (i instanceof PassByValueAware) {
-                if (((PassByValueAware)i).allowsPassByReference()) {
+        for (Node i : nodes) {
+            if (i.getInvoker() instanceof PassByValueAware) {
+                if (((PassByValueAware)i.getInvoker()).allowsPassByReference()) {
                     allowsPBR = true;
                     break;
                 }
@@ -137,6 +161,29 @@ public class InvocationChainImpl implements InvocationChain {
 
     public void setAllowsPassByReference(boolean allowsPBR) {
         this.allowsPassByReference = allowsPBR;
+    }
+
+    private static class Node {
+        private int phaseIndex;
+        private Invoker invoker;
+
+        public Node(int phaseIndex, Invoker invoker) {
+            super();
+            this.phaseIndex = phaseIndex;
+            this.invoker = invoker;
+        }
+
+        public int getPhaseIndex() {
+            return phaseIndex;
+        }
+
+        public Invoker getInvoker() {
+            return invoker;
+        }
+
+        public String toString() {
+            return "(" + phaseIndex + ")" + invoker;
+        }
     }
 
 }
