@@ -117,8 +117,7 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
         contributionProcessor = new ContributionInfoProcessor(contributionFactory, metadataDocumentProcessor);
 
         // Read workspace.xml
-        URI uri = URI.create(workspaceFileName);
-        File file = new File(uri);
+        File file = new File(workspaceFileName);
         if (file.exists()) {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
             FileInputStream is = new FileInputStream(file);
@@ -216,7 +215,7 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
                 URI uri = URI.create(c.getURI());
                 URL url;
                 try {
-                    url = new URL(c.getLocation());
+                    url = url(c.getLocation());
                 } catch (MalformedURLException e) {
                     throw new ServiceRuntimeException();
                 }
@@ -231,8 +230,9 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
             
             // Calculate the contribution dependencies
             String key = queryString.substring(11);
-            for (Contribution contribution: workspace.getContributions()) {
+            for (Contribution contribution: dependencyWorkspace.getContributions()) {
                 if (key.equals(contribution.getURI())) {
+                    entries.add(entry(contribution));
                     
                     ContributionDependencyAnalyzer analyzer = new ContributionDependencyAnalyzer();
                     Set<Contribution> dependencies = analyzer.calculateContributionDependencies(dependencyWorkspace, contribution);
@@ -241,6 +241,7 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
                     for (Contribution dependency: dependencies) {
                         entries.add(entry(dependency));
                     }
+                    break;
                 }
             }
 
@@ -248,6 +249,16 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
             
         } else {
             throw new UnsupportedOperationException();
+        }
+    }
+    
+    private URL url(String location) throws MalformedURLException {
+        URI uri = URI.create(location);
+        if (uri.getScheme() == null) {
+            File file = new File(location);
+            return file.toURI().toURL();
+        } else {
+            return uri.toURL();
         }
     }
 
@@ -284,8 +295,7 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
             format.setIndent(2);
             
             // Write to workspace.xml
-            URI uri = URI.create(workspaceFileName);
-            FileOutputStream os = new FileOutputStream(new File(uri));
+            FileOutputStream os = new FileOutputStream(new File(workspaceFileName));
             XMLSerializer serializer = new XMLSerializer(os, format);
             serializer.serialize(document);
             

@@ -100,7 +100,7 @@ public class CompositeCollectionImpl implements CompositeCollection {
         
         // Read domain.composite
         compositeProcessor = new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, contractMapper, null);
-        File file = new File(URI.create(compositeFileName));
+        File file = new File(compositeFileName);
         if (file.exists()) {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
             FileInputStream is = new FileInputStream(file);
@@ -220,7 +220,7 @@ public class CompositeCollectionImpl implements CompositeCollection {
             format.setIndent(2);
             
             // Write to domain.composite
-            FileOutputStream os = new FileOutputStream(new File(URI.create(compositeFileName)));
+            FileOutputStream os = new FileOutputStream(new File(compositeFileName));
             XMLSerializer serializer = new XMLSerializer(os, format);
             serializer.serialize(document);
             

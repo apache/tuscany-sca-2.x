@@ -18,17 +18,20 @@
  */
 package org.apache.tuscany.sca.workspace.processor.impl;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLClassLoader;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
+import org.apache.tuscany.sca.workspace.scanner.impl.DirectoryContributionScanner;
+import org.apache.tuscany.sca.workspace.scanner.impl.JarContributionScanner;
 
 /**
  * URLArtifactProcessor that handles contribution files and returns a contribution
@@ -60,12 +63,19 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
         contribution.setURI(contributionURI.toString());
         contribution.setUnresolved(true);
 
+        // Create a contribution scanner
+        ContributionScanner scanner;
+        if ("file".equals(contributionURL.getProtocol()) && new File(contributionURL.getFile()).isDirectory()) {
+            scanner = new DirectoryContributionScanner();
+        } else {
+            scanner = new JarContributionScanner();
+        }
+        
         // Read generated and user sca-contribution.xml files
-        URLClassLoader cl = new URLClassLoader(new URL[]{contributionURL}, null);
         for (String path: new String[]{
                                        Contribution.SCA_CONTRIBUTION_GENERATED_META,
                                        Contribution.SCA_CONTRIBUTION_META}) {
-            URL url = cl.getResource(path);
+            URL url = scanner.getArtifactURL(contributionURL, path);
             if (url != null) {
                 Contribution c = metadataProcessor.read(contributionURL, URI.create(path), url);
                 contribution.getImports().addAll(c.getImports());

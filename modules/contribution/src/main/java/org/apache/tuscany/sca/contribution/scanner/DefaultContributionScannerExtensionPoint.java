@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.tuscany.sca.contribution.service.ContributionException;
+import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
 import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 
@@ -98,11 +99,11 @@ public class DefaultContributionScannerExtensionPoint implements ContributionSca
             this.contributionType = contributionType;
         }
 
-        public URL getArtifactURL(URL contributionSourceURL, String artifact) throws MalformedURLException {
+        public URL getArtifactURL(URL contributionSourceURL, String artifact) throws ContributionReadException {
             return getScanner().getArtifactURL(contributionSourceURL, artifact);
         }
 
-        public List<String> getArtifacts(URL contributionSourceURL) throws ContributionException, IOException {
+        public List<String> getArtifacts(URL contributionSourceURL) throws ContributionReadException {
             return getScanner().getArtifacts(contributionSourceURL);
         }
 

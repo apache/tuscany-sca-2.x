@@ -39,7 +39,7 @@
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
 				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
-				composites += '<tr>'
+				composites += '<tr valign="bottom">'
 				composites += '<td><input name="composites" type="checkbox" value="' + id + '">' +
 											'<a href=\"' + location + '\">' + id + '</a></td>';
 				composites += '</tr>';

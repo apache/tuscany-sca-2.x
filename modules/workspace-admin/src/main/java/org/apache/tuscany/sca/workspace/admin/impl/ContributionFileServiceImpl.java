@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -61,7 +60,7 @@ public class ContributionFileServiceImpl extends HttpServlet {
     public void initialize() throws IOException {
         upload = new ServletFileUpload(new DiskFileItemFactory());
         
-        files = new File(URI.create(directoryName));
+        files = new File(directoryName);
         if (!files.exists()) {
             files.mkdirs();
         }

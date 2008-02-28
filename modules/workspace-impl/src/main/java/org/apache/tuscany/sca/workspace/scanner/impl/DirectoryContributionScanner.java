@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
-import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 
 /**
@@ -45,34 +44,28 @@ public class DirectoryContributionScanner implements ContributionScanner {
         return "application/vnd.tuscany.folder";
     }
 
-    public URL getArtifactURL(URL sourceURL, String artifact) throws MalformedURLException {
-        return new URL(sourceURL, artifact);
+    public URL getArtifactURL(URL contributionURL, String artifact) throws ContributionReadException {
+        File directory = directory(contributionURL);
+        File file = new File(directory, artifact);
+        if (file.exists()) {
+            try {
+                return file.toURI().toURL();
+            } catch (MalformedURLException e) {
+                throw new ContributionReadException(e);
+            }
+        } else {
+            return null;
+        }
     }
 
-    public List<String> getArtifacts(URL packageSourceURL) throws ContributionException,
-        IOException {
-        if (packageSourceURL == null) {
-            throw new IllegalArgumentException("Invalid null package source URL.");
-        }
-
+    public List<String> getArtifacts(URL contributionURL) throws ContributionReadException {
+        File directory = directory(contributionURL);
         List<String> artifacts = new ArrayList<String>();
-
-        // Assume the root is a directory
-        File rootFolder;
-
         try {
-            rootFolder = new File(packageSourceURL.toURI());
-        } catch (URISyntaxException e) {
-            throw new ContributionException(e);
+            traverse(artifacts, directory, directory);
+        } catch (IOException e) {
+            throw new ContributionReadException(e);
         }
-        if (rootFolder.isDirectory()) {
-            if (!rootFolder.exists()) {
-                throw new ContributionReadException(rootFolder.getAbsolutePath());
-            }
-
-            traverse(artifacts, rootFolder, rootFolder);
-        }
-
         return artifacts;
     }
 
@@ -102,5 +95,17 @@ public class DirectoryContributionScanner implements ContributionScanner {
             }
         }
     }
-    
+
+    private static File directory(URL url) throws ContributionReadException {
+        File file;
+        try {
+            file = new File(url.toURI());
+        } catch (URISyntaxException e) {
+            throw new ContributionReadException(e);
+        }
+        if (!file.exists() || !file.isDirectory()) {
+            throw new ContributionReadException(url.toString());
+        }
+        return file;
+    }
 }
