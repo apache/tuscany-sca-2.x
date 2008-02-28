@@ -40,13 +40,17 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
-import org.apache.tuscany.sca.workspace.DefaultWorkspaceFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.admin.WorkspaceCollection;
@@ -71,7 +75,8 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
     private Workspace workspace;
     private WorkspaceProcessor workspaceProcessor;
     private XMLOutputFactory outputFactory;
-    private DocumentBuilder documentBuilder;
+    private XMLInputFactory inputFactory;
+    private ContributionMetadataDocumentProcessor contributionMetadataProcessor; 
     
     /**
      * Initialize the workspace administration component.
@@ -79,15 +84,26 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
     @Init
     public void init() throws IOException, ContributionReadException, XMLStreamException, ParserConfigurationException {
         
-        // Create factories
-        contributionFactory = new DefaultContributionFactory();
-        workspaceFactory = new DefaultWorkspaceFactory();
-        outputFactory = XMLOutputFactory.newInstance();
-        outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
-        documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        // Create Tuscany extension point registry
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+
+        // Get extension points
+        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         
-        // Read workspace.xml
+        // Create factories
+        contributionFactory = factories.getFactory(ContributionFactory.class);
+        workspaceFactory = factories.getFactory(WorkspaceFactory.class);
+        inputFactory = factories.getFactory(XMLInputFactory.class);
+        outputFactory = factories.getFactory(XMLOutputFactory.class);
+        outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+
+        // Create artifact processors
         workspaceProcessor = new WorkspaceProcessor(workspaceFactory, contributionFactory, null);
+        ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
+        contributionMetadataProcessor = new ContributionMetadataDocumentProcessor(staxProcessor, inputFactory);
+
+        // Read workspace.xml
         File file = new File("workspace.xml");
         if (file.exists()) {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -100,6 +116,7 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
     }
     
     public Entry<String, Item>[] getAll() {
+
         // Return all the contributions
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
         for (Contribution contribution: workspace.getContributions()) {
@@ -137,7 +154,7 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
         workspace.getContributions().add(contribution);
         
         // Write the workspace
-        write();
+        writeWorkspace();
         
         return key;
     }
@@ -154,7 +171,7 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
                 contributions.set(i, newContribution);
                 
                 // Write the workspace
-                write();
+                writeWorkspace();
                 
                 return;
             }
@@ -171,7 +188,7 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
                 contributions.remove(i);
 
                 // Write the workspace
-                write();
+                writeWorkspace();
                 
                 return;
             }
@@ -181,8 +198,10 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
 
     public Entry<String, Item>[] query(String queryString) {
         if (queryString.startsWith("importedBy=")) {
-            //FIXME Invoke the ContributionDependency code from workspace-impl
-            return getAll();
+            
+            // Read the contribution metadata documents
+            return null;
+            
         } else {
             throw new UnsupportedOperationException();
         }
@@ -191,7 +210,7 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
     /**
      * Write the workspace back to disk
      */
-    private void write() {
+    private void writeWorkspace() {
         try {
             // First write to a byte stream
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -199,6 +218,7 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
             workspaceProcessor.write(workspace, writer);
             
             // Parse again to pretty format the document
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = documentBuilder.parse(new ByteArrayInputStream(bos.toByteArray()));
             OutputFormat format = new OutputFormat();
             format.setIndenting(true);
