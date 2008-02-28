@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
+import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
@@ -165,13 +165,13 @@ public class HotUpdatableSCADomain extends SCADomain {
      *       and ContributionService APIs should make all this easier?
      */
     protected void initContributions(EmbeddedSCADomain scaDomain,  ClassLoader cl, URL[] contributionJars) {
-        ModelResolverImpl modelResolver = new ModelResolverImpl(cl);
+    	Contribution contribution = null;
         ContributionService contributionService = scaDomain.getContributionService();
         for (URL jar : contributionJars) {
             InputStream is = null;
             try {
                 is = jar.openStream();
-                contributionService.contribute(jar.toString(), jar, is , modelResolver);
+                contribution = contributionService.contribute(jar.toString(), jar, is);
             } catch (Exception e) {
                 System.err.println("exception adding contribution: " + jar);
                 e.printStackTrace();
@@ -185,28 +185,24 @@ public class HotUpdatableSCADomain extends SCADomain {
             }
         }
         
-        try {
+        if (contribution != null ) {
+            try {
 
-            for (Object m : modelResolver.getModels()) {
-                if (m instanceof Composite) {
-                    Composite composite = (Composite)m;
+                for (Composite composite : contribution.getDeployables()) {
                     scaDomain.getDomainComposite().getIncludes().add(composite);
                     scaDomain.getCompositeBuilder().build(composite);
                     scaDomain.getCompositeActivator().activate(composite);
                 }
-            }
 
-            for (Object m : modelResolver.getModels()) {
-                if (m instanceof Composite) {
-                    Composite composite = (Composite)m;
-                    scaDomain.getCompositeActivator().start(composite);
+                for (Composite composite : contribution.getDeployables()) {
+                     scaDomain.getCompositeActivator().start(composite);
                 }
-            }
 
-        } catch (ActivationException e) {
-            throw new RuntimeException(e);
-        } catch (CompositeBuilderException e) {
-            throw new RuntimeException(e);
+            } catch (ActivationException e) {
+                throw new RuntimeException(e);
+            } catch (CompositeBuilderException e) {
+                throw new RuntimeException(e);
+            }        	
         }
         
     }
