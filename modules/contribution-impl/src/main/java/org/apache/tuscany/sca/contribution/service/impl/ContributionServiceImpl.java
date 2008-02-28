@@ -20,11 +20,9 @@ package org.apache.tuscany.sca.contribution.service.impl;
 
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringBufferInputStream;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -81,7 +79,6 @@ import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -268,21 +265,26 @@ public class ContributionServiceImpl implements ContributionService {
      * @throws ContributionException
      */
     private Contribution readContributionMetadata(URL sourceURL) throws ContributionException {
-        Contribution contributionMetadata = null;
-
-        URL[] clUrls = {sourceURL};
-        URLClassLoader cl = new URLClassLoader(clUrls, null);
+        Contribution contributionMetadata = contributionFactory.createContribution();
 
         ContributionMetadataDocumentProcessor metadataDocumentProcessor =
-            new ContributionMetadataDocumentProcessor(cl, staxProcessor, assemblyFactory, contributionFactory,
-                                                      xmlFactory);
-        contributionMetadata = contributionFactory.createContribution();
-        try {
-            metadataDocumentProcessor.read(contributionMetadata);
-        } catch (XMLStreamException e) {
-            throw new ContributionReadException("Invalid contribution metadata for contribution.");
+            new ContributionMetadataDocumentProcessor(staxProcessor, xmlFactory);
+        
+        URL[] urls = {sourceURL};
+        URLClassLoader cl = new URLClassLoader(urls, null);
+        
+        for (String path: new String[]{
+                                       Contribution.SCA_CONTRIBUTION_GENERATED_META,
+                                       Contribution.SCA_CONTRIBUTION_META}) {
+            URL url = cl.getResource(path);
+            if (url != null) {
+                Contribution contribution = metadataDocumentProcessor.read(sourceURL, URI.create(path), url);
+                contributionMetadata.getImports().addAll(contribution.getImports());
+                contributionMetadata.getExports().addAll(contribution.getExports());
+                contributionMetadata.getDeployables().addAll(contribution.getDeployables());
+            }
         }
-
+        
         // For debugging purposes, write it back to XML
         //        if (contributionMetadata != null) {
         //            try {
