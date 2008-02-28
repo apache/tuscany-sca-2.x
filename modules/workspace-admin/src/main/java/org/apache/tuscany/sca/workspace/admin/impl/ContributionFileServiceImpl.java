@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -35,6 +36,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
 
 /**
@@ -46,6 +48,9 @@ import org.osoa.sca.annotations.Scope;
 public class ContributionFileServiceImpl extends HttpServlet {
     private static final long serialVersionUID = -4560385595481971616L;
     
+    @Property
+    public String directoryName;
+    
     private ServletFileUpload upload;
     private File files;
     
@@ -56,7 +61,7 @@ public class ContributionFileServiceImpl extends HttpServlet {
     public void initialize() throws IOException {
         upload = new ServletFileUpload(new DiskFileItemFactory());
         
-        files = new File("contributions");
+        files = new File(URI.create(directoryName));
         if (!files.exists()) {
             files.mkdirs();
         }

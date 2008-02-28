@@ -26,8 +26,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -38,27 +42,32 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
-import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.admin.WorkspaceCollection;
+import org.apache.tuscany.sca.workspace.dependency.impl.ContributionDependencyAnalyzer;
+import org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor;
 import org.apache.tuscany.sca.workspace.xml.WorkspaceProcessor;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
 import org.w3c.dom.Document;
 
@@ -70,13 +79,17 @@ import org.w3c.dom.Document;
 @Scope("COMPOSITE")
 public class WorkspaceCollectionImpl implements WorkspaceCollection {
 
+    @Property
+    public String workspaceFileName;
+    
     private ContributionFactory contributionFactory;
+    private AssemblyFactory assemblyFactory;
     private WorkspaceFactory workspaceFactory;
     private Workspace workspace;
     private WorkspaceProcessor workspaceProcessor;
     private XMLOutputFactory outputFactory;
     private XMLInputFactory inputFactory;
-    private ContributionMetadataDocumentProcessor contributionMetadataProcessor; 
+    private ContributionInfoProcessor contributionProcessor;
     
     /**
      * Initialize the workspace administration component.
@@ -84,27 +97,28 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
     @Init
     public void init() throws IOException, ContributionReadException, XMLStreamException, ParserConfigurationException {
         
-        // Create Tuscany extension point registry
-        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
-
-        // Get extension points
-        ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
-        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        
-        // Create factories
-        contributionFactory = factories.getFactory(ContributionFactory.class);
-        workspaceFactory = factories.getFactory(WorkspaceFactory.class);
+        // Create extension points
+        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
+        StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(factories);
         inputFactory = factories.getFactory(XMLInputFactory.class);
         outputFactory = factories.getFactory(XMLOutputFactory.class);
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+        ExtensibleStAXArtifactProcessor extensionProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
+        
+        // Create factories
+        contributionFactory = factories.getFactory(ContributionFactory.class);
+        assemblyFactory = factories.getFactory(AssemblyFactory.class);
+        workspaceFactory = factories.getFactory(WorkspaceFactory.class);
 
-        // Create artifact processors
-        workspaceProcessor = new WorkspaceProcessor(workspaceFactory, contributionFactory, null);
-        ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
-        contributionMetadataProcessor = new ContributionMetadataDocumentProcessor(staxProcessor, inputFactory);
+        // Create workspace and contribution artifact processors
+        workspaceProcessor = new WorkspaceProcessor(workspaceFactory, contributionFactory, extensionProcessor);
+        ContributionMetadataProcessor metadataProcessor = new ContributionMetadataProcessor(assemblyFactory, contributionFactory, extensionProcessor);
+        ContributionMetadataDocumentProcessor metadataDocumentProcessor = new ContributionMetadataDocumentProcessor(metadataProcessor, inputFactory); 
+        contributionProcessor = new ContributionInfoProcessor(contributionFactory, metadataDocumentProcessor);
 
         // Read workspace.xml
-        File file = new File("workspace.xml");
+        URI uri = URI.create(workspaceFileName);
+        File file = new File(uri);
         if (file.exists()) {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
             FileInputStream is = new FileInputStream(file);
@@ -120,13 +134,7 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
         // Return all the contributions
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
         for (Contribution contribution: workspace.getContributions()) {
-            Entry<String, Item> entry = new Entry<String, Item>();
-            entry.setKey(contribution.getURI());
-            Item item = new Item();
-            item.setTitle(contribution.getURI());
-            item.setLink(contribution.getLocation());
-            entry.setData(item);
-            entries.add(entry);
+            entries.add(entry(contribution));
         }
         return entries.toArray(new Entry[entries.size()]);
     }
@@ -199,12 +207,63 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
     public Entry<String, Item>[] query(String queryString) {
         if (queryString.startsWith("importedBy=")) {
             
-            // Read the contribution metadata documents
-            return null;
+            // Return the collection of dependencies of the specified contribution
+            List<Entry<String, Item>> entries = new ArrayList<Entry<String,Item>>();
+            
+            // Read the contribution metadata into a temporary workspace
+            Workspace dependencyWorkspace = workspaceFactory.createWorkspace();
+            for (Contribution c: workspace.getContributions()) {
+                URI uri = URI.create(c.getURI());
+                URL url;
+                try {
+                    url = new URL(c.getLocation());
+                } catch (MalformedURLException e) {
+                    throw new ServiceRuntimeException();
+                }
+                Contribution contribution;
+                try {
+                    contribution = contributionProcessor.read(null, uri, url);
+                } catch (ContributionReadException e) {
+                    throw new ServiceRuntimeException(e);
+                }
+                dependencyWorkspace.getContributions().add(contribution);
+            }
+            
+            // Calculate the contribution dependencies
+            String key = queryString.substring(11);
+            for (Contribution contribution: workspace.getContributions()) {
+                if (key.equals(contribution.getURI())) {
+                    
+                    ContributionDependencyAnalyzer analyzer = new ContributionDependencyAnalyzer();
+                    Set<Contribution> dependencies = analyzer.calculateContributionDependencies(dependencyWorkspace, contribution);
+                    
+                    // Build the collection of dependencies
+                    for (Contribution dependency: dependencies) {
+                        entries.add(entry(dependency));
+                    }
+                }
+            }
+
+            return entries.toArray(new Entry[entries.size()]);
             
         } else {
             throw new UnsupportedOperationException();
         }
+    }
+
+    /**
+     * Returns an entry representing a contribution
+     * @param contribution
+     * @return
+     */
+    private static Entry<String, Item> entry(Contribution contribution) {
+        Entry<String, Item> entry = new Entry<String, Item>();
+        entry.setKey(contribution.getURI());
+        Item item = new Item();
+        item.setTitle(contribution.getURI());
+        item.setLink(contribution.getLocation());
+        entry.setData(item);
+        return entry;
     }
     
     /**
@@ -225,7 +284,8 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
             format.setIndent(2);
             
             // Write to workspace.xml
-            FileOutputStream os = new FileOutputStream("workspace.xml");
+            URI uri = URI.create(workspaceFileName);
+            FileOutputStream os = new FileOutputStream(new File(uri));
             XMLSerializer serializer = new XMLSerializer(os, format);
             serializer.serialize(document);
             
