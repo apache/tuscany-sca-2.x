@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.itest.conversational.impl;
 import org.apache.tuscany.sca.itest.conversational.Constants;
 import org.apache.tuscany.sca.itest.conversational.DService;
 import org.osoa.sca.annotations.ConversationID;
+import org.osoa.sca.annotations.EndsConversation;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
@@ -35,15 +36,8 @@ public class DServiceImpl implements DService {
     /**
      * The state for this service
      */
-    private String state = Constants.B_INITIAL_VALUE;
+    private String state = "Initial state value";
 
-    /**
-     * Constructor
-     */
-    public DServiceImpl() {
-        System.out.println("---> DServiceImpl constructor for " + this);
-    }
-    
     /**
      * Returns the state for this service.
      * 
@@ -68,6 +62,11 @@ public class DServiceImpl implements DService {
      */
     @ConversationID
     public void setConversationID(String id) {
-        System.out.println("Conversation ID for " + this + " is set to " + id);
+        System.out.println ("Setting conversation ID");
+    }
+    
+    @EndsConversation
+    public void endConversationViaAnnotatedMethod() {
+        System.out.println ("Annotated Ends Conversation");
     }
 }

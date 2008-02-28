@@ -26,39 +26,15 @@ import org.osoa.sca.annotations.Conversational;
 @Conversational
 public interface CService {
 
-    /**
-     * Returns the state for this service.
-     * 
-     * @return The state for this service
-     */
     String getState();
 
-    /**
-     * Returns the state for the other service that this service is using
-     * 
-     * @return The state for the other service that this service is using
-     */
-    String getStateOnD();
-
-    /**
-     * Sets the state for this service.
-     * 
-     * @param aState The state for this service
-     */
     void setState(String aState);
-
-    /**
-     * Sets the state for the other service that this service is using
-     * 
-     * @param aState The state for the other service that this service is using
-     */
-    void setStateOnD(String aState);
     
-    Object getConversationIDWithD();
+    Object getConversationID();
+        
+    void setConversationID(String theID);
     
-    Object getUserConversationIDWithD();
+    void endConversation();
     
-    void setUserConversationIDWithD(String theID);
-    
-    void endConversationWithD();
+    void endConversationViaAnnotatedMethod();
 }
