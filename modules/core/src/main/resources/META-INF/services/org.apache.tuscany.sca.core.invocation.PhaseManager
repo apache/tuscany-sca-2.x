@@ -1,4 +1,0 @@
-name=implementation, stage=implementation, after=*
-name=reference, stage=reference, before=*
-name=service, stage=service
-name=implementation.transaction, stage=implementation, before=implementation

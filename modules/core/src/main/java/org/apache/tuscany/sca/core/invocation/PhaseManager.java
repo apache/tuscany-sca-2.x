@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
 import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
+import org.apache.tuscany.sca.invocation.Phase;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
@@ -43,9 +44,17 @@ public class PhaseManager {
     public static final String STAGE_REFERENCE = "reference";
     public static final String STAGE_SERVICE = "service";
     public static final String STAGE_IMPLEMENTATION = "implementation";
-    private static final String[] STAGES = new String[] {STAGE_REFERENCE, STAGE_SERVICE, STAGE_IMPLEMENTATION};
+    private final static String[] SYSTEM_REFERENCE_PHASES =
+        {Phase.REFERENCE, Phase.REFERENCE_INTERFACE, Phase.REFERENCE_POLICY, Phase.REFERENCE_BINDING};
 
+    private final static String[] SYSTEM_SERVICE_PHASES =
+        {Phase.SERVICE_BINDING, Phase.SERVICE_POLICY, Phase.SERVICE_INTERFACE, Phase.SERVICE};
+
+    private final static String[] SYSTEM_IMPLEMENTATION_PHASES = {Phase.IMPLEMENTATION_POLICY, Phase.IMPLEMENTATION};
+
+    private String pattern = Phase.class.getName();
     private Map<String, Stage> stages;
+    private List<String> phases;
 
     public class Stage {
         private String name;
@@ -84,29 +93,51 @@ public class PhaseManager {
         }
     }
 
+    // For unit test purpose
+    PhaseManager(String pattern) {
+        super();
+        this.pattern = pattern;
+    }
+
     public PhaseManager() {
     }
 
-    public static void main(String[] args) {
-        System.out.println(new PhaseManager().getStages());
-    }
-
-    public List<String> getPhases(String stage) {
+    private List<String> getPhases(String stage) {
         Stage s = getStages().get(stage);
         return s == null ? null : s.getPhases();
+    }
+
+    public List<String> getReferencePhases() {
+        return getPhases(STAGE_REFERENCE);
+    }
+
+    public List<String> getServicePhases() {
+        return getPhases(STAGE_SERVICE);
+    }
+
+    public List<String> getImplementationPhases() {
+        return getPhases(STAGE_IMPLEMENTATION);
+    }
+
+    public List<String> getAllPhases() {
+        if (phases == null) {
+            phases = new ArrayList<String>();
+            phases.addAll(getReferencePhases());
+            phases.addAll(getServicePhases());
+            phases.addAll(getImplementationPhases());
+        }
+        return phases;
     }
 
     public synchronized Map<String, Stage> getStages() {
         if (stages != null) {
             return stages;
         }
-        stages = new HashMap<String, Stage>();
-        for (String s : STAGES) {
-            stages.put(s, new Stage(s));
-        }
+        init();
+
         Set<ServiceDeclaration> services;
         try {
-            services = ServiceDiscovery.getInstance().getServiceDeclarations(PhaseManager.class);
+            services = ServiceDiscovery.getInstance().getServiceDeclarations(pattern);
         } catch (IOException e) {
             throw new ServiceRuntimeException(e);
         }
@@ -155,16 +186,22 @@ public class PhaseManager {
                 }
             }
             graph.addVertext(name);
+            if(firstSet.size()>1) {
+                log.warning("More than one phases are declared to be first: "+firstSet);
+            }
             for (String s : firstSet) {
                 for (String v : new HashSet<String>(graph.getVertices().keySet())) {
-                    if (!v.equals(s)) {
+                    if (!firstSet.contains(v)) {
                         graph.addEdge(s, v);
                     }
                 }
             }
+            if(lastSet.size()>1) {
+                log.warning("More than one phases are declared to be the last: "+lastSet);
+            }
             for (String s : lastSet) {
                 for (String v : new HashSet<String>(graph.getVertices().keySet())) {
-                    if (!v.equals(s)) {
+                    if (!lastSet.contains(v)) {
                         graph.addEdge(v, s);
                     }
                 }
@@ -183,4 +220,28 @@ public class PhaseManager {
         return stages;
     }
 
+    private void init() {
+        stages = new HashMap<String, Stage>();
+
+        Stage referenceStage = new Stage(STAGE_REFERENCE);
+        for (int i = 1; i < SYSTEM_REFERENCE_PHASES.length; i++) {
+            referenceStage.getSorter().addEdge(SYSTEM_REFERENCE_PHASES[i - 1], SYSTEM_REFERENCE_PHASES[i]);
+        }
+        referenceStage.getLastSet().add(Phase.REFERENCE_BINDING);
+        stages.put(referenceStage.getName(), referenceStage);
+
+        Stage serviceStage = new Stage(STAGE_SERVICE);
+        for (int i = 1; i < SYSTEM_SERVICE_PHASES.length; i++) {
+            serviceStage.getSorter().addEdge(SYSTEM_SERVICE_PHASES[i - 1], SYSTEM_SERVICE_PHASES[i]);
+        }
+        stages.put(serviceStage.getName(), serviceStage);
+
+        Stage implementationStage = new Stage(STAGE_IMPLEMENTATION);
+        for (int i = 1; i < SYSTEM_IMPLEMENTATION_PHASES.length; i++) {
+            implementationStage.getSorter().addEdge(SYSTEM_IMPLEMENTATION_PHASES[i - 1],
+                                                    SYSTEM_IMPLEMENTATION_PHASES[i]);
+        }
+        implementationStage.getLastSet().add(Phase.IMPLEMENTATION);
+        stages.put(implementationStage.getName(), implementationStage);
+    }
 }

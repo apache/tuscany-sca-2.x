@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.core.databinding.wire;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -29,6 +30,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 
@@ -158,7 +160,10 @@ public class DataBindingRuntimeWireProcessor implements RuntimeWireProcessor {
                 }
             }
             if (interceptor != null) {
-                chain.addInterceptor(0, interceptor);
+                String phase =
+                    (wire.getSource().getContract() instanceof ComponentReference) ? Phase.REFERENCE_INTERFACE
+                        : Phase.SERVICE_INTERFACE;
+                chain.addInterceptor(phase, interceptor);
             }
         }
 

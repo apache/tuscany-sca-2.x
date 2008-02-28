@@ -52,7 +52,8 @@ public interface InvocationChain {
     Operation getSourceOperation();
 
     /**
-     * Adds an interceptor to the chain
+     * Adds an interceptor to the chain. For reference side, it will be added to
+     * Phase.REFERENCE. For service side, it will be added to Phase.SERVICE 
      *
      * @param interceptor The interceptor to add
      */
@@ -73,24 +74,39 @@ public interface InvocationChain {
     Invoker getHeadInvoker();
 
     /**
+     * @deprecated This method is not used
      * Returns the last invoker in the chain.
      *
      * @return The last invoker in the chain
      */
+    @Deprecated
     Invoker getTailInvoker();
 
     /**
+     * @deprecated Please use <code>void addInterceptor(String phase, Interceptor interceptor);</code>
      * Adds an interceptor at the given position in the interceptor stack
      *
      * @param index       The position in the interceptor stack to add the interceptor
      * @param interceptor The interceptor to add
      */
+    @Deprecated
     void addInterceptor(int index, Interceptor interceptor);
+    
+    /**
+     * Add an interceptor to the given phase
+     * @param phase
+     * @param interceptor
+     */
+    void addInterceptor(String phase, Interceptor interceptor);
     
     /**
      * Indicate if the data can be passed in by reference as they won't be mutated.
      * @return true if pass-by-reference is allowed
      */
     boolean allowsPassByReference();
+    /**
+     * Force the invocation to allow pass-by-reference
+     * @param allowsPBR
+     */
     void setAllowsPassByReference(boolean allowsPBR);
 }

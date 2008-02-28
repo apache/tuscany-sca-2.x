@@ -22,12 +22,12 @@ package org.apache.tuscany.sca.implementation.java.invocation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
-import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
-import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
@@ -103,16 +103,12 @@ public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProces
                         }
                         
                         if ( !applicablePolicyHandlers.isEmpty() ) {
-                            int index = 0;
-                            Invoker invoker = chain.getHeadInvoker();
-                            while ( invoker != chain.getTailInvoker()) {
-                                if ( invoker instanceof Interceptor ) {
-                                    invoker = ((Interceptor)invoker).getNext();
-                                    ++index;
-                                }
-                            }
-                            chain.addInterceptor(index, new PolicyHandlingInterceptor(chain.getTargetOperation(),
-                                                                                  applicablePolicyHandlers));
+                            String phase =
+                                (wire.getSource().getContract() instanceof ComponentReference)
+                                    ? Phase.REFERENCE_POLICY : Phase.SERVICE_POLICY;
+
+                            chain.addInterceptor(phase, new PolicyHandlingInterceptor(chain.getTargetOperation(),
+                                                                                      applicablePolicyHandlers));
                         }
                     }
                 } catch ( Exception e ) {

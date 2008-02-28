@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.InvocationChain;
+import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
@@ -78,7 +79,7 @@ public class JavaCallbackRuntimeWireProcessor implements RuntimeWireProcessor {
             if (!supportsCallbackInterface(iface, javaImpl)) {
                 // callback to this impl is not possible, so ensure a callback object is set
                 for (InvocationChain chain : wire.getInvocationChains()) {
-                    chain.addInterceptor(0, new CallbackInterfaceInterceptor());
+                    chain.addInterceptor(Phase.REFERENCE, new CallbackInterfaceInterceptor());
                 }
             }
         }
