@@ -39,4 +39,6 @@ public interface DService {
      * @param aState The state for this service
      */
     void setState(String aState);
+    
+    void endConversationViaAnnotatedMethod();
 }
