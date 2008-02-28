@@ -28,8 +28,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 
@@ -52,14 +50,12 @@ public class HelloTestCase extends TestCase {
         // Contribute the SCA contribution
         ContributionService contributionService = domain.getContributionService();
 
-        ModelResolver helloResolver = new ModelResolverImpl(cl);
-        
         URL helloURL = getContributionURL(Hello.class);
         
         // File helloContrib = new File("./target/classes/");
         // URL helloURL = helloContrib.toURL();
         Contribution consumerContribution =
-            contributionService.contribute("http://import-export/hello", helloURL, helloResolver, false);
+            contributionService.contribute("http://import-export/hello", helloURL, false);
         Composite consumerComposite = consumerContribution.getDeployables().get(0);
         domain.getDomainComposite().getIncludes().add(consumerComposite);
         domain.buildComposite(consumerComposite);
