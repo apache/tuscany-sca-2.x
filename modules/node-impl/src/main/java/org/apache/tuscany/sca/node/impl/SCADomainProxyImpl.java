@@ -41,7 +41,6 @@ import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
@@ -196,14 +195,10 @@ public class SCADomainProxyImpl extends SCADomainImpl {
             if ( contributionURL != null ){ 
                 logger.log(Level.INFO, "Domain management configured from " + contributionURL);
                            
-                // set up a model resolver with the classloader for this domain/node
-                ModelResolverImpl modelResolver = new ModelResolverImpl(domainClassLoader);
-                
                 // add node composite to the management domain
                 domainManagementContributionService = domainManagementRuntime.getContributionService();
                 domainManagementContribution = domainManagementContributionService.contribute("nodedomain", 
                                                                                               contributionURL, 
-                                                                                              modelResolver,
                                                                                               false);
                 
                 //update runtime with contribution sca definitions
