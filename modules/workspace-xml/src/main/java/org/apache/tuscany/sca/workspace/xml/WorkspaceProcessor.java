@@ -139,6 +139,8 @@ public class WorkspaceProcessor extends BaseStAXArtifactProcessor implements StA
                 contributions.set(i, resolved);
             }
         }
+        
+        workspace.setUnresolved(false);
     }
     
     public QName getArtifactType() {
