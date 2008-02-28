@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
-import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 
 /**
  * Test the default model resolver implementation.
@@ -38,7 +37,7 @@ public class DefaultModelResolverTestCase extends TestCase {
     
     @Override
     protected void setUp() throws Exception {
-        resolver = new ModelResolverImpl(getClass().getClassLoader());
+        resolver = new DefaultModelResolver();
         factory = new DefaultContributionFactory();
     }
     
@@ -55,20 +54,7 @@ public class DefaultModelResolverTestCase extends TestCase {
         Model y = resolver.resolveModel(Model.class, x);
         assertTrue(x == y);
     }
-    
-    public void testResolveClass() {
-        ClassReference ref = new ClassReference(getClass().getName());
-        ClassReference clazz = resolver.resolveModel(ClassReference.class, ref);
-        assertTrue(clazz.getJavaClass() == getClass());
-    }
-    
-    public void testUnresolvedClass() {
-        ClassReference ref = new ClassReference("NonExistentClass");
-        ClassReference clazz = resolver.resolveModel(ClassReference.class, ref);
-        assertTrue(clazz.isUnresolved());
-        assertTrue(clazz.getJavaClass() == null);
-    }
-    
+        
     public void testResolvedArtifact() {
         Artifact artifact = factory.createArtifact();
         artifact.setURI("foo/bar");
