@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.workspace.scanner.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
-import org.apache.tuscany.sca.contribution.service.ContributionException;
+import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 
 /**
  * JAR Contribution processor.
@@ -46,63 +47,79 @@ public class JarContributionScanner implements ContributionScanner {
         return "application/x-compressed";
     }
 
-    public URL getArtifactURL(URL sourceURL, String artifact) throws MalformedURLException {
-        if (sourceURL.toString().startsWith("jar:")) {
-            return new URL(sourceURL, artifact.toString());
-        } else {
-            return new URL("jar:" + sourceURL.toExternalForm() + "!/" + artifact);
+    public URL getArtifactURL(URL contributionURL, String artifact) throws ContributionReadException {
+        try {
+            URL url;
+            if (contributionURL.toString().startsWith("jar:")) {
+                url = new URL(contributionURL, artifact.toString());
+            } else {
+                url = new URL("jar:" + contributionURL.toExternalForm() + "!/" + artifact);
+            }
+            try {
+                InputStream is = url.openStream();
+                is.close();
+            } catch (IOException e) {
+                return null;
+            }
+            return url;
+        } catch (MalformedURLException e) {
+            throw new ContributionReadException(e);
         }
     }
 
-    public List<String> getArtifacts(URL contributionURL) throws ContributionException, IOException {
+    public List<String> getArtifacts(URL contributionURL) throws ContributionReadException {
 
-        // Assume the root is a jar file
-        JarInputStream jar = new JarInputStream(contributionURL.openStream());
+        // Assume the URL references a JAR file
         try {
-            Set<String> names = new HashSet<String>();
-            while (true) {
-                JarEntry entry = jar.getNextJarEntry();
-                if (entry == null) {
-                    // EOF
-                    break;
-                }
-
-                String name = entry.getName(); 
-                if (!name.startsWith(".")) {
-                    
-                    // Trim trailing /
-                    if (name.endsWith("/")) {
-                        name = name.substring(0, name.length() - 1);
+            JarInputStream jar = new JarInputStream(contributionURL.openStream());
+            try {
+                Set<String> names = new HashSet<String>();
+                while (true) {
+                    JarEntry entry = jar.getNextJarEntry();
+                    if (entry == null) {
+                        // EOF
+                        break;
                     }
 
-                    // Add the entry name
-                    if (!names.contains(name)) {
-                        names.add(name);
+                    String name = entry.getName(); 
+                    if (!name.startsWith(".")) {
                         
-                        // Add parent folder names to the list too
-                        for (;;) {
-                            int s = name.lastIndexOf('/');
-                            if (s == -1) {
-                                name = "";
-                            } else {
-                                name = name.substring(0, s);
-                            }
-                            if (!names.contains(name)) {
-                                names.add(name);
-                            } else {
-                                break;
+                        // Trim trailing /
+                        if (name.endsWith("/")) {
+                            name = name.substring(0, name.length() - 1);
+                        }
+
+                        // Add the entry name
+                        if (!names.contains(name)) {
+                            names.add(name);
+                            
+                            // Add parent folder names to the list too
+                            for (;;) {
+                                int s = name.lastIndexOf('/');
+                                if (s == -1) {
+                                    name = "";
+                                } else {
+                                    name = name.substring(0, s);
+                                }
+                                if (!names.contains(name)) {
+                                    names.add(name);
+                                } else {
+                                    break;
+                                }
                             }
                         }
                     }
                 }
+                
+                // Return list of URIs
+                List<String> artifacts = new ArrayList<String>(names);
+                return artifacts;
+                
+            } finally {
+                jar.close();
             }
-            
-            // Return list of URIs
-            List<String> artifacts = new ArrayList<String>(names);
-            return artifacts;
-            
-        } finally {
-            jar.close();
+        } catch (IOException e) {
+            throw new ContributionReadException(e);
         }
     }
 }

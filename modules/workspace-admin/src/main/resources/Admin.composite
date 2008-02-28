@@ -64,7 +64,7 @@
     
     <component name="WorkspaceCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.WorkspaceCollectionImpl"/>             
-        <property name="workspaceFileName">workspace</property>             
+        <property name="workspaceFileName">workspace.xml</property>             
    		<service name="WorkspaceCollection">
    	 		<t:binding.atom uri="http://localhost:9990/workspace"/>
    		</service>
@@ -88,7 +88,7 @@
 
     <component name="DomainCompositeCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.CompositeCollectionImpl"/>
-        <property name="compositeFileName">domain</property>
+        <property name="compositeFileName">domain.composite</property>
    		<service name="CompositeCollection">
    	 		<t:binding.atom uri="http://localhost:9990/composite"/>
    		</service>
@@ -96,7 +96,7 @@
 
     <component name="CloudCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.CompositeCollectionImpl"/>
-        <property name="compositeFileName">cloud</property>
+        <property name="compositeFileName">cloud.composite</property>
    		<service name="CompositeCollection">
    	 		<t:binding.atom uri="http://localhost:9990/cloud"/>
    		</service>

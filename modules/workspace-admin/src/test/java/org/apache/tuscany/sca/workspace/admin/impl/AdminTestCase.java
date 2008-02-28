@@ -59,7 +59,7 @@ public class AdminTestCase extends TestCase {
         
         // Create a workspace collection component
         workspaceCollection = new WorkspaceCollectionImpl();
-        workspaceCollection.workspaceFileName = url.toString();
+        workspaceCollection.workspaceFileName = url.getFile();
         workspaceCollection.init();
         
         // Populate the workspace with test data
@@ -81,11 +81,15 @@ public class AdminTestCase extends TestCase {
         assertTrue(item.getLink().endsWith("contributions/assets"));
     }
     
-    public void testQuery() {
+    public void testQuery1() {
         Entry<String, Item>[] entries = workspaceCollection.query("importedBy=store");
-        for (Entry<String, Item> entry: entries) {
-            System.out.println(entry.getKey());
-        }
+        assertEquals(2, entries.length);
+    }
+    
+    public void testQuery2() {
+        Entry<String, Item>[] entries = workspaceCollection.query("importedBy=assets");
+        assertEquals(1, entries.length);
+        assertEquals("assets", entries[0].getKey());
     }
     
 }

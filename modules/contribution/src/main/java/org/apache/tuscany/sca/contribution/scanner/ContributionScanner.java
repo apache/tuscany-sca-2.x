@@ -19,11 +19,10 @@
 package org.apache.tuscany.sca.contribution.scanner;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.tuscany.sca.contribution.service.ContributionException;
+import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 
 /**
  * Interface for contribution package scanners
@@ -50,7 +49,7 @@ public interface ContributionScanner {
      * @throws ContributionException
      * @throws IOException
      */
-    List<String> getArtifacts(URL contributionURL) throws ContributionException, IOException;
+    List<String> getArtifacts(URL contributionURL) throws ContributionReadException;
 
     /**
      * Return the URL for an artifact in the contribution.
@@ -62,6 +61,6 @@ public interface ContributionScanner {
      * @param artifact The relative URI for the artifact
      * @return The artifact URL
      */
-    URL getArtifactURL(URL packageSourceURL, String artifact) throws MalformedURLException;
+    URL getArtifactURL(URL contributionURL, String artifact) throws ContributionReadException;
 
 }

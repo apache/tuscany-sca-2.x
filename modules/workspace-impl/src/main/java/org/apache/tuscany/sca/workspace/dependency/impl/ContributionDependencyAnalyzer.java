@@ -51,6 +51,7 @@ public class ContributionDependencyAnalyzer {
         Set<Contribution> dependencies = new HashSet<Contribution>();
 
         addContributionDependencies(workspace, contribution, dependencies);
+        dependencies.remove(contribution);
         
         return dependencies;
     }

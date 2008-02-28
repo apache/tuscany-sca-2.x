@@ -39,7 +39,7 @@
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
 				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
-				contributions += '<tr>'
+				contributions += '<tr valign="bottom">'
 				contributions += '<td><input name="contributions" type="checkbox" value="' + id + '">' +
 											'<a href=\"' + location + '\">' + id + '</a></td>';
 				contributions += '<td>&nbsp;&nbsp;&nbsp;<a href=\"/workspace/?importedBy=' + id + '\">dependencies</a></td>';
@@ -100,7 +100,7 @@
   
   <b>Add Contribution</b>
   <form name="newContributionForm">
-    <table border="0">
+    <table border="0" >
     <tr><td>Contribution URI:</td><td><input type="text" name="contributionID" /></td></tr> 
     <tr><td>Address:</td><td><input type="text" name="contributionLocation" /></td></tr>
     </table>
