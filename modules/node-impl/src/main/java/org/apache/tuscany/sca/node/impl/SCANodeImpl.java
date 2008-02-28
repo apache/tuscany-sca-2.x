@@ -51,7 +51,6 @@ import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.impl.ModelResolverImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
@@ -302,19 +301,13 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
         }
         
         try {          
-            ModelResolver modelResolver = null;
-            
-            // if the contribution is to be resolved using a separate class loader
-            // then create a new model resolver
-            if (contributionClassLoader != null)  {
-                modelResolver = new ModelResolverImpl(contributionClassLoader);
-            }
+
+        	//FIXME What to do when a contribution uses a separate class loader ? (e.g contributionClassLoader != null)
             
             // Add the contribution to the node
             ContributionService contributionService = nodeRuntime.getContributionService();
             Contribution contribution = contributionService.contribute(contributionURI, 
                                                                        contributionURL, 
-                                                                       modelResolver, 
                                                                        false);
             
             // remember the contribution
