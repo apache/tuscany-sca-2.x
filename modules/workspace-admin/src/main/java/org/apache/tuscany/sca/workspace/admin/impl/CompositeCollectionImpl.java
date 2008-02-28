@@ -23,9 +23,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +62,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Implementation of a composite collection service. 
@@ -72,7 +73,7 @@ import org.w3c.dom.Document;
 public class CompositeCollectionImpl implements CompositeCollection {
     
     @Property
-    public String compositeCollectionName;
+    public String compositeFileName;
 
     private AssemblyFactory assemblyFactory;
     private ContributionFactory contributionFactory;
@@ -99,7 +100,7 @@ public class CompositeCollectionImpl implements CompositeCollection {
         
         // Read domain.composite
         compositeProcessor = new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, contractMapper, null);
-        File file = new File(compositeCollectionName + ".composite");
+        File file = new File(URI.create(compositeFileName));
         if (file.exists()) {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
             FileInputStream is = new FileInputStream(file);
@@ -107,7 +108,7 @@ public class CompositeCollectionImpl implements CompositeCollection {
             compositeCollection = compositeProcessor.read(reader);
         } else {
             compositeCollection = assemblyFactory.createComposite();
-            compositeCollection.setName(new QName(Constants.SCA10_TUSCANY_NS, compositeCollectionName));
+            compositeCollection.setName(new QName(Constants.SCA10_TUSCANY_NS, compositeFileName));
         }
     }
     
@@ -219,18 +220,18 @@ public class CompositeCollectionImpl implements CompositeCollection {
             format.setIndent(2);
             
             // Write to domain.composite
-            FileOutputStream os = new FileOutputStream(compositeCollectionName + ".composite");
+            FileOutputStream os = new FileOutputStream(new File(URI.create(compositeFileName)));
             XMLSerializer serializer = new XMLSerializer(os, format);
             serializer.serialize(document);
             
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             throw new ServiceRuntimeException(e);
         } catch (ContributionWriteException e) {
             throw new ServiceRuntimeException(e);
         } catch (XMLStreamException e) {
             throw new ServiceRuntimeException(e);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SAXException e) {
+            throw new ServiceRuntimeException(e);
         }
     }
     

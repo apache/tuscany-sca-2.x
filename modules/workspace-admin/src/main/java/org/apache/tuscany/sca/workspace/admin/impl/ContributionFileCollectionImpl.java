@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.apache.tuscany.sca.workspace.admin.ContributionFileCollection;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
 
 /**
@@ -38,6 +39,9 @@ import org.osoa.sca.annotations.Scope;
  */
 @Scope("COMPOSITE")
 public class ContributionFileCollectionImpl implements ContributionFileCollection {
+    
+    @Property
+    public String directoryName;
 
     private File files;
     
@@ -46,7 +50,7 @@ public class ContributionFileCollectionImpl implements ContributionFileCollectio
      */
     @Init
     public void init() throws IOException {
-        files = new File("contributions");
+        files = new File(directoryName);
         if (!files.exists()) {
             files.mkdirs();
         }

@@ -64,6 +64,7 @@
     
     <component name="WorkspaceCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.WorkspaceCollectionImpl"/>             
+        <property name="workspaceFileName">workspace</property>             
    		<service name="WorkspaceCollection">
    	 		<t:binding.atom uri="http://localhost:9990/workspace"/>
    		</service>
@@ -71,13 +72,15 @@
 
     <component name="ContributionFileCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.ContributionFileCollectionImpl"/>             
+        <property name="directoryName">contributions</property>             
    		<service name="ContributionFileCollection">
    	 		<t:binding.atom uri="http://localhost:9990/feed/files"/>
    		</service>
     </component>
 
     <component name="ContributionFileServiceComponent">
-        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.ContributionFileServiceImpl"/>             
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.ContributionFileServiceImpl"/>
+        <property name="directoryName">contributions</property>             
    		<service name="ContributionFileServiceImpl">
    	 		<t:binding.http uri="http://localhost:9990/files"/>
    		</service>
@@ -85,7 +88,7 @@
 
     <component name="DomainCompositeCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.CompositeCollectionImpl"/>
-        <property name="compositeCollectionName">domain</property>
+        <property name="compositeFileName">domain</property>
    		<service name="CompositeCollection">
    	 		<t:binding.atom uri="http://localhost:9990/composite"/>
    		</service>
@@ -93,7 +96,7 @@
 
     <component name="CloudCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.CompositeCollectionImpl"/>
-        <property name="compositeCollectionName">cloud</property>
+        <property name="compositeFileName">cloud</property>
    		<service name="CompositeCollection">
    	 		<t:binding.atom uri="http://localhost:9990/cloud"/>
    		</service>

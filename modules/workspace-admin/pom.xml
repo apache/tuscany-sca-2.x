@@ -110,7 +110,6 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-contribution-xml</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
         </dependency>
         
         <dependency>
