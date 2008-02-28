@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.workspace.xml;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -127,7 +129,16 @@ public class WorkspaceProcessor extends BaseStAXArtifactProcessor implements StA
     }
     
     public void resolve(Workspace workspace, ModelResolver resolver) throws ContributionResolveException {
-        //TODO Resolve contribution models
+        
+        // Resolve the contributions referenced by the workspace
+        List<Contribution> contributions = workspace.getContributions();
+        for (int i = 0, n = contributions.size(); i < n; i++) {
+            Contribution contribution = contributions.get(i);
+            Contribution resolved = resolver.resolveModel(Contribution.class, contribution);
+            if (resolved != contribution) {
+                contributions.set(i, resolved);
+            }
+        }
     }
     
     public QName getArtifactType() {
