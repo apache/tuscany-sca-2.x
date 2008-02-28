@@ -226,7 +226,13 @@ class FeedBindingListenerServlet extends HttpServlet {
                 // invoke its getAll operation to get the data item collection, then create
                 // feed entries from the items
                 Message requestMessage = messageFactory.createMessage();
-                Message responseMessage = getAllInvoker.invoke(requestMessage);
+                Message responseMessage;
+                if (request.getQueryString() != null) {
+                    requestMessage.setBody(new Object[] {request.getQueryString()});
+                    responseMessage = queryInvoker.invoke(requestMessage);
+                } else {
+                    responseMessage = getAllInvoker.invoke(requestMessage);
+                }
                 if (responseMessage.isFault()) {
                     throw new ServletException((Throwable)responseMessage.getBody());
                 }
