@@ -158,5 +158,6 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
     }
 
     public void resolve(Contribution model, ModelResolver resolver) throws ContributionResolveException {
+        // Nothing to do here
     }
 }

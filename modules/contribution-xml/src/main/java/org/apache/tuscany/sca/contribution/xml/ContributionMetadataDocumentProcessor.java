@@ -20,89 +20,77 @@ package org.apache.tuscany.sca.contribution.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
+import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 
 /**
- * MetadataDocumentProcessor that handles contribution metadata files
+ * URLArtifactProcessor that handles contribution.xml files.
  * 
  * @version $Rev$ $Date$
  */
-public class ContributionMetadataDocumentProcessor {
-    protected final URLClassLoader classLoader;
-    protected final StAXArtifactProcessor staxProcessor;
-    protected final AssemblyFactory assemblyFactory;
-    protected final ContributionFactory contributionFactory;
-    protected final XMLInputFactory inputFactory;
+public class ContributionMetadataDocumentProcessor implements URLArtifactProcessor<Contribution>{
+    private final StAXArtifactProcessor staxProcessor;
+    private final XMLInputFactory inputFactory;
 
-    public ContributionMetadataDocumentProcessor(URLClassLoader classLoader, StAXArtifactProcessor staxProcessor, AssemblyFactory assemblyFactory, ContributionFactory contributionFactory, XMLInputFactory inputFactory) {
-        super();
-        this.classLoader = classLoader;
+    public ContributionMetadataDocumentProcessor(StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory) {
         this.staxProcessor = staxProcessor; 
-        this.assemblyFactory = assemblyFactory;
-        this.contributionFactory = contributionFactory;
         this.inputFactory = inputFactory;
     }
-
-    private Contribution mergeContributionMetadata(Contribution contrib1, Contribution contrib2  ) {
-        contrib1.getDeployables().addAll(contrib2.getDeployables());
-        contrib1.getImports().addAll(contrib2.getImports());
-        contrib1.getExports().addAll(contrib2.getExports());
-        
-        return contrib1;
+    
+    public String getArtifactType() {
+        return null;
     }
     
-    public void read(Contribution contribution) throws XMLStreamException, ContributionReadException {
-        List<URL> artifactList = new ArrayList<URL>(2);
-        //set generated first, as the user created one ovverrides generated information
-        artifactList.add(this.classLoader.getResource(Contribution.SCA_CONTRIBUTION_GENERATED_META));
-        artifactList.add(this.classLoader.getResource(Contribution.SCA_CONTRIBUTION_META));
-        
-        URL artifactURL = null; 
-        InputStream artifactStream = null; 
-        Iterator artifactIterator = artifactList.iterator();
-        while( artifactIterator.hasNext() ){
+    public Class<Contribution> getModelType() {
+        return Contribution.class;
+    }
+    
+    public Contribution read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
+        InputStream urlStream = null;
+        try {
             
+            // Create a stream reader
+            urlStream = url.openStream();
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
+            reader.nextTag();
+            
+            // Read the contribution model
+            Contribution contribution = (Contribution)staxProcessor.read(reader);
+            if (contribution != null) {
+                contribution.setURI(uri.toString());
+            }
+
+            return contribution;
+            
+        } catch (XMLStreamException e) {
+            throw new ContributionReadException(e);
+        } catch (IOException e) {
+            throw new ContributionReadException(e);
+        } finally {
             try {
-                artifactURL = (URL) artifactIterator.next();
-                if( artifactURL != null) {
-                    artifactStream = artifactURL.openStream();
-                    XMLStreamReader reader = inputFactory.createXMLStreamReader(artifactStream);
-                    reader.nextTag();
-                    
-                    Contribution contributionMetadata = (Contribution) staxProcessor.read(reader); 
-                    if (contributionMetadata != null) {
-                        this.mergeContributionMetadata(contribution, contributionMetadata);
-                    }
+                if (urlStream != null) {
+                    urlStream.close();
+                    urlStream = null;
                 }
-                
-            } catch (XMLStreamException e) {
-                throw new ContributionReadException(e);
-            } catch (IOException e) {
-                throw new ContributionReadException(e);
-            } finally {
-                try {
-                    if (artifactStream != null) {
-                        artifactStream.close();
-                        artifactStream = null;
-                    }
-                } catch (IOException ioe) {
-                    //ignore
-                }
+            } catch (IOException ioe) {
+                //ignore
             }
         }
     }
+    
+    public void resolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
+        staxProcessor.resolve(contribution, resolver);
+    }
+
 }
