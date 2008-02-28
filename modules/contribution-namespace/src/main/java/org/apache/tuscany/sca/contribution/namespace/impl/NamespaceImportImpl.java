@@ -78,12 +78,9 @@ public class NamespaceImportImpl implements NamespaceImport {
      */
     public boolean match(Export export) {
         if (export instanceof NamespaceExport) {
-            if (this.getLocation() == null || this.getLocation().length() == 0) {
-                if (this.getNamespace().equals(((NamespaceExport)export).getNamespace())) {
-                    return true;
-                }
+            if (this.getNamespace().equals(((NamespaceExport)export).getNamespace())) {
+                return true;
             }
-            
         }
         return false;
     }
