@@ -158,7 +158,6 @@ public class ContributionProcessor extends BaseStAXArtifactProcessor implements 
     }
 
     public void resolve(Contribution model, ModelResolver resolver) throws ContributionResolveException {
-        //FIXME Add code to resolve imports / exports here using
-        // the given model resolver
+        // Nothing to do here
     }
 }
