@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.itest;
 
+/**
+ * This is an Interface for the services.
+ */
 public interface PropertyService {
 
 }

@@ -25,9 +25,14 @@ import org.osoa.sca.annotations.Remotable;
  *
  */
 public interface CallBackApiCallBack {
-
+    /**
+     * This function is defined in CallBackApiClientImpl
+     */
     public void callBackMessage(String aString);
 
+    /**
+     * This function is defined in CallBackApiClientImpl
+     */
     public void callBackIncrement(String aString);
 
 }

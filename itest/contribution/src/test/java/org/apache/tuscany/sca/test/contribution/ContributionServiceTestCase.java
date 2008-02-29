@@ -50,12 +50,18 @@ public class ContributionServiceTestCase extends TestCase {
     private EmbeddedSCADomain domain;
     private ContributionService contributionService;
 
+    /**
+     * setUp() is a method in JUnit Frame Work which is executed before all others methods in the class extending
+     * unit.framework.TestCase. So this method is used to create a test Embedded SCA Domain, to start the SCA Domain and
+     * to get a reference to the contribution service
+     */
+
     @Override
     protected void setUp() throws Exception {
         //Create a test embedded SCA domain
         cl = getClass().getClassLoader();
         domain = new EmbeddedSCADomain(cl, "http://localhost");
-        
+
         //Start the domain
         domain.start();
 
@@ -63,6 +69,10 @@ public class ContributionServiceTestCase extends TestCase {
         contributionService = domain.getContributionService();
     }
 
+    /**
+     * Method prefixed with 'test' is a test method where testing logic is written using various assert methods. This
+     * test verifies the string assigned to contrututionId with the value retrieved from the SCA runtime.
+     */
     public void testContributeJAR() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         //URL contributionLocation = new URL("file:/D:/dev/Opensource/Apache/Tuscany/source/java/sca/samples/calculator/target/sample-calculator.jar");
@@ -71,6 +81,11 @@ public class ContributionServiceTestCase extends TestCase {
         assertNotNull(contributionService.getContribution(contributionId));
     }
 
+    /**
+     * Method prefixed with 'test' is a test method where testing logic is written using various assert methods. This
+     * test verifies the string assigned to contrututionId with the value retrieved from the SCA runtime using
+     * contributionService.
+     */
     public void testStoreContributionPackageInRepository() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         String contributionId = CONTRIBUTION_001_ID;
@@ -87,6 +102,11 @@ public class ContributionServiceTestCase extends TestCase {
         assertTrue(contributionFile.exists());
     }
 
+    /**
+     * Method prefixed with 'test' is a test method where testing logic is written using various assert methods. This
+     * test verifies the string assigned to contrututionId with the value retrieved from the SCA runtime using
+     * contributionService.
+     */
     public void testStoreContributionStreamInRepository() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         String contributionId = CONTRIBUTION_001_ID;
@@ -109,6 +129,11 @@ public class ContributionServiceTestCase extends TestCase {
         assertTrue(contributionFile.exists());
     }
 
+    /**
+     * Method prefixed with 'test' is a test method where testing logic is written using various assert methods. This
+     * test verifies the string assigned to contributionId1,contributionId2 with the value retrieved from the SCA
+     * runtime using contributionService.
+     */
     public void testStoreDuplicatedContributionInRepository() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         String contributionId1 = CONTRIBUTION_001_ID;
@@ -119,20 +144,30 @@ public class ContributionServiceTestCase extends TestCase {
         assertNotNull(contributionService.getContribution(contributionId2));
     }
 
+    /**
+     * Method prefixed with 'test' is a test method where testing logic is written using various assert methods. This
+     * test verifies the string assigned to contributionId with the value retrieved from the SCA runtime using
+     * contributionService.
+     */
     public void testContributeFolder() throws Exception {
-         File rootContributionFolder = new File(FOLDER_CONTRIBUTION);
-         String contributionId = CONTRIBUTION_001_ID; 
-         //first rename the sca-contribution metadata file 
-         //File calculatorMetadataFile = new File("target/classes/calculator/sca-contribution.xml"); 
-         //File metadataDirectory = new File("target/classes/META-INF/"); 
-         //if (!metadataDirectory.exists()) {
-         //    FileHelper.forceMkdir(metadataDirectory); 
-         //}
-         //FileHelper.copyFileToDirectory(calculatorMetadataFile, metadataDirectory); 
-         contributionService.contribute(contributionId, rootContributionFolder.toURL(), false);
-         assertNotNull(contributionService.getContribution(contributionId));
+        File rootContributionFolder = new File(FOLDER_CONTRIBUTION);
+        String contributionId = CONTRIBUTION_001_ID;
+        //first rename the sca-contribution metadata file 
+        //File calculatorMetadataFile = new File("target/classes/calculator/sca-contribution.xml"); 
+        //File metadataDirectory = new File("target/classes/META-INF/"); 
+        //if (!metadataDirectory.exists()) {
+        //    FileHelper.forceMkdir(metadataDirectory); 
+        //}
+        //FileHelper.copyFileToDirectory(calculatorMetadataFile, metadataDirectory); 
+        contributionService.contribute(contributionId, rootContributionFolder.toURL(), false);
+        assertNotNull(contributionService.getContribution(contributionId));
     }
 
+    /**
+     * Method prefixed with 'test' is a test method where testing logic is written using various assert methods. This
+     * test verifies the string assigned to contributionId, artifactId with the value retrieved from the SCA runtime
+     * using contributionService.
+     */
     public void testAddDeploymentComposites() throws Exception {
         URL contributionLocation = getClass().getResource(JAR_CONTRIBUTION);
         String contributionId = CONTRIBUTION_001_ID;

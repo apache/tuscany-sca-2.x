@@ -26,17 +26,20 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
 /**
- * 
+ * This class Implements the interface OverloadASourceTarget, and gives implementation for all methods which are
+ * declared in the OverloadASourceTarget interface.
  */
 @Service(OverloadASourceTarget.class)
-public class OverloadASource implements OverloadASourceTarget{
+public class OverloadASource implements OverloadASourceTarget {
     public OverloadASourceTarget overloadASourceTarget;
+
     /**
-     * 
+     * This is a default constructor
      */
-    public OverloadASource()  {
-      
+    public OverloadASource() {
+
     }
+
     /**
      * @return
      * @see org.apache.tuscany.sca.test.opoverload.OverloadASourceTarget#operationA()
@@ -47,20 +50,20 @@ public class OverloadASource implements OverloadASourceTarget{
         ret.add(overloadASourceTarget.operationA());
         ret.add(overloadASourceTarget.operationA(11));
         ret.add(overloadASourceTarget.operationA("eleven"));
-        ret.add(overloadASourceTarget.operationA(3,"three"));
-        ret.add(overloadASourceTarget.operationA("four",4));
-        return (String[]) ret.toArray(new String[ret.size()]);
+        ret.add(overloadASourceTarget.operationA(3, "three"));
+        ret.add(overloadASourceTarget.operationA("four", 4));
+        return (String[])ret.toArray(new String[ret.size()]);
     }
- 
-       
+
     /**
      * @return
      * @see org.apache.tuscany.sca.test.opoverload.OverloadASourceTarget#operationA()
      */
     public String operationA() {
         assert overloadASourceTarget != null : "reference overloadASourceTarget is null";
-         return overloadASourceTarget.operationA();
+        return overloadASourceTarget.operationA();
     }
+
     /**
      * @param parm1
      * @return
@@ -70,6 +73,7 @@ public class OverloadASource implements OverloadASourceTarget{
         assert overloadASourceTarget != null : "reference overloadASourceTarget is null";
         return overloadASourceTarget.operationA(parm1);
     }
+
     /**
      * @param parm1
      * @param parm2
@@ -80,10 +84,12 @@ public class OverloadASource implements OverloadASourceTarget{
         assert overloadASourceTarget != null : "reference overloadASourceTarget is null";
         return overloadASourceTarget.operationA(parm1, parm2);
     }
+
     public String operationA(String string) {
         assert overloadASourceTarget != null : "reference overloadASourceTarget is null";
         return overloadASourceTarget.operationA(string);
     }
+
     /**
      * @param parm1
      * @param parm2
@@ -95,6 +101,9 @@ public class OverloadASource implements OverloadASourceTarget{
         return overloadASourceTarget.operationA(parm1, parm2);
     }
 
+    /**
+     * This method which is used by all the overloaded functions to set the source target
+     */
     @Reference
     public void setOverloadASourceTarget(OverloadASourceTarget overloadASourceTarget) {
         assert overloadASourceTarget != null : "reference overloadASourceTarget is set tonull";

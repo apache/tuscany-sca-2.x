@@ -34,6 +34,11 @@ import org.junit.Test;
 
 import commonj.sdo.DataObject;
 
+/**
+ * This is a class which makes user of JUnit Framework, all tests are written using junit notation. These tests are used
+ * to test different property values returned from the SCA Runtime Environment which is intilized with the composite
+ * 'PropertyTest.composite'. It basically tests all types of property values returned from sca runtime environment.
+ */
 public class PropertyTestCase {
     private static SCADomain domain;
     private static ABComponent abService;
@@ -41,66 +46,146 @@ public class PropertyTestCase {
     private static ABCDComponent abcdService;
     private static PropertyComponent propertyService;
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property value obtained using a service from the SCA runtime environment with the expected value 'a'
+     */
     @Test
     public void testA() {
         assertEquals("a", abService.getA());
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property value obtained using a service from the SCA runtime environment with the expected value 'b'
+     */
     @Test
     public void testB() {
         assertEquals("b", abService.getB());
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property value obtained using a service from the SCA runtime environment with the expected value 'c'
+     */
     @Test
     public void testC() {
         assertEquals("c", cdService.getC());
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property value obtained using a service from the SCA runtime environment with the expected value 'c'
+     */
     @Test
     public void testC2() {
         assertEquals("c", cdService.getC2());
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property value obtained using a service from the SCA runtime environment with the expected value 'd'
+     */
     @Test
     public void testD() {
         assertEquals("d", cdService.getD());
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property value obtained using a service from the SCA runtime environment with the expected value 'a'
+     */
     @Test
     public void testF() {
         assertEquals("a", abService.getF());
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property value obtained using a service from the SCA runtime environment with the expected value 'z'
+     */
     @Test
     public void testZ() {
         assertEquals("z", abService.getZ());
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property value obtained using a service from the SCA runtime environment with the expected value 1.
+     */
     @Test
     public void testIntValue() {
         assertEquals(1, abService.getIntValue());
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property value obtained using a service from the SCA runtime environment with the expected value 1.
+     */
     @Test
     public void testDefaultValue() {
         assertEquals(1, abService.getIntValue());
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property value obtained using a service from the SCA runtime environment with the expected value 1.
+     */
     @Test
     public void testDefaultValueOverride() {
         assertEquals(1, cdService.getOverrideValue());
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property value obtained using a service from the SCA runtime environment with the expected value 'aValue'
+     */
     @Test
     public void testNoSource() {
         assertEquals("aValue", cdService.getNoSource());
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property value obtained using a service from the SCA runtime environment with the expected value
+     *       'fileValue'
+     */
     @Test
     public void testFileProperty() {
         assertEquals("fileValue", cdService.getFileProperty());
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property values obtained using a service from the SCA runtime environment with the expected values 4 and
+     *       'fileValueTwo' respectively.
+     */
     @Test
     public void testManyValuesFileProperty() {
         Iterator<String> iterator = cdService.getManyValuesFileProperty().iterator();
@@ -110,6 +195,13 @@ public class PropertyTestCase {
         assertEquals("fileValueTwo", secondValue);
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property values obtained using a service from the SCA runtime environment with the expected values 'a' ,
+     *       'b', 'c' amd 'd' respectively.
+     */
     @Test
     public void testABCD() {
         assertEquals("a", abcdService.getA());
@@ -118,6 +210,13 @@ public class PropertyTestCase {
         assertEquals("d", abcdService.getD());
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property values obtained using a service from the SCA runtime environment with the expected values 'RTP'
+     *       and '2006' respectively
+     */
     @Test
     public void testDefaultProperty() {
         assertEquals("RTP", propertyService.getLocation());
@@ -125,6 +224,13 @@ public class PropertyTestCase {
 
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property values obtained using a service from the SCA runtime environment with the expected values 'Apache' ,
+     *       'Tuscany' and 'Java SCA' respectively .
+     */
     @Test
     public void testManySimpleStringValues() {
         Iterator<String> iterator = abService.getManyStringValues().iterator();
@@ -133,6 +239,13 @@ public class PropertyTestCase {
         assertEquals("Java SCA", iterator.next());
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property values obtained using a service from the SCA runtime environment with the expected values 123, 456
+     *       and 789 respectively.
+     */
     @Test
     public void testManySimpleIntegerValues() {
         Iterator<Integer> iterator = abService.getManyIntegers().iterator();
@@ -141,6 +254,13 @@ public class PropertyTestCase {
         assertEquals(789, iterator.next().intValue());
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property values obtained using a service from the SCA runtime environment with the expected values
+     *       'TestString_1' and 2 respectively.
+     */
     @Test
     public void testComplexPropertyOne() {
         ComplexPropertyBean propBean = propertyService.getComplexPropertyOne();
@@ -149,6 +269,13 @@ public class PropertyTestCase {
         assertEquals(2, propBean.numberSetArray[1].integerNumber);
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property values obtained using a service from the SCA runtime environment with the expected integer number
+     *       and a float number
+     */
     @Test
     public void testComplexPropertyTwo() {
         ComplexPropertyBean propBean = propertyService.getComplexPropertyTwo();
@@ -157,6 +284,13 @@ public class PropertyTestCase {
         assertEquals((float)22, propBean.numberSetArray[1].floatNumber);
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property values obtained using a service from the SCA runtime environment with the expected value first
+     *       elelent in the string array and the float number
+     */
     @Test
     public void testComplexPropertyThree() {
         ComplexPropertyBean propBean = propertyService.getComplexPropertyThree();
@@ -165,6 +299,13 @@ public class PropertyTestCase {
         assertEquals((float)22, propBean.numberSetArray[1].floatNumber);
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       complexy property value obtained using a service from the SCA runtime environment with the expected values
+     *       1, 222.222 and 33 respectively.
+     */
     @Test
     public void testComplexPropertyFour() {
         Object[] propBeanCollection = propertyService.getComplexPropertyFour().toArray();
@@ -173,7 +314,14 @@ public class PropertyTestCase {
         assertEquals(222.222, ((ComplexPropertyBean)propBeanCollection[1]).getDoubleNumber());
         assertEquals(33, ((ComplexPropertyBean)propBeanCollection[2]).getNumberSet().getIntegerNumber());
     }
-    
+
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property values obtained using a service from the SCA runtime environment with the expected string values
+     *       'Firstly Name' , 'Middler Name' and 'Lasting Name' respectively
+     */
     @Test
     public void testSDOProperty1() {
         DataObject dataObject = propertyService.getSdoProperty();
@@ -182,7 +330,14 @@ public class PropertyTestCase {
         assertEquals("Middler Name", dataObject.getString("middleName"));
         assertEquals("Lasting Name", dataObject.getString("lastName"));
     }
-    
+
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property value obtained using a service from the SCA runtime environment with the expected string values
+     *       'Sdo Firstly Name', 'Sdo Middler Name' and 'Sdo Lasting Name' respectively
+     */
     @Test
     public void testSDOProperty2() {
         DataObject dataObject = propertyService.getCustomerSdo();
@@ -191,7 +346,7 @@ public class PropertyTestCase {
         assertEquals("Sdo Middler Name", dataObject.getString("middleName"));
         assertEquals("Sdo Lasting Name", dataObject.getString("lastName"));
     }
-    
+
     @Test
     public void testGetLocationFromComponentContext() {
         String location = propertyService.getLocation();
@@ -200,10 +355,9 @@ public class PropertyTestCase {
         assertNotNull(locationFromCC);
         assertEquals(location, locationFromCC);
     }
-    
+
     @Test
-    public void testGetInjectedStringArrayProperty()
-    {
+    public void testGetInjectedStringArrayProperty() {
         String[] daysOfWeek = propertyService.getDaysOfTheWeek();
         assertNotNull(daysOfWeek);
 
@@ -212,8 +366,7 @@ public class PropertyTestCase {
     }
 
     @Test
-    public void testGetInjectedIntegerArrayProperty()
-    {
+    public void testGetInjectedIntegerArrayProperty() {
         Integer[] numbers = propertyService.getIntegerNumbers();
         assertNotNull(numbers);
 
@@ -222,19 +375,16 @@ public class PropertyTestCase {
     }
 
     @Test
-    public void testGetInjectedIntArrayProperty()
-    {
+    public void testGetInjectedIntArrayProperty() {
         int[] numbers = propertyService.getIntNumbers();
         assertNotNull(numbers);
 
         int[] expected = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
         Assert.assertTrue(Arrays.equals(expected, numbers));
     }
-    
-    
+
     @Test
-    public void testGetInjectedSdoArrayProperty()
-    {
+    public void testGetInjectedSdoArrayProperty() {
         DataObject[] sdos = propertyService.getSdoArrayProperty();
         assertNotNull(sdos);
 
@@ -245,20 +395,33 @@ public class PropertyTestCase {
             assertEquals("Lasting Name " + i, dataObject.getString("lastName"));
         }
     }
-    
-    
+
+    /**
+     * Method annotated with
+     * 
+     * @BeforeClass is used for one time set Up, it executes before every tests. This method is used to create a test
+     *              Embedded SCA Domain, to start the SCA Domain and to get a reference to 4 services namely 'abService'
+     *              service, 'cdService' service, 'abcdService' service and 'propertyService' service
+     */
     @BeforeClass
     public static void init() throws Exception {
         try {
-        domain = SCADomain.newInstance("PropertyTest.composite");
-        } catch ( Exception e ) { e.printStackTrace(); }
+            domain = SCADomain.newInstance("PropertyTest.composite");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         abService = domain.getService(ABComponent.class, "ABComponent");
         cdService = domain.getService(CDComponent.class, "CDComponent");
         abcdService = domain.getService(ABCDComponent.class, "ABCDComponent");
-        propertyService =
-            domain.getService(PropertyComponent.class, "PropertyComponent");
+        propertyService = domain.getService(PropertyComponent.class, "PropertyComponent");
     }
 
+    /**
+     * Method annotated with
+     * 
+     * @AfterClass is used for one time Tear Down, it executes after every tests. This method is used to close the
+     *             domain, close any previously opened connections etc
+     */
     @AfterClass
     public static void destroy() throws Exception {
         domain.close();

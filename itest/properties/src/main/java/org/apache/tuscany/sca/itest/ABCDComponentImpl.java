@@ -22,33 +22,51 @@ package org.apache.tuscany.sca.itest;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 
+/**
+ * This class Implements the interface ABCDComponent and gives implementation for all methods which are declared in that
+ * interface. scope is specified as Composite using
+ * 
+ * @scope annotaiton.
+ */
 @Scope("COMPOSITE")
 public class ABCDComponentImpl implements ABCDComponent {
     private ABComponent abComponent;
     private CDComponent cdComponent;
-    
+
+    /**
+     * It is a method which injects the property value to the variable 'abComponent' from the SCA runtime environment
+     * using
+     * 
+     * @Property Annotations.
+     */
     @Reference
     public void setAb(ABComponent component) {
         this.abComponent = component;
     }
-    
+
+    /**
+     * It is a method which injects the property value to the variable 'cdComponent' from the SCA runtime environment
+     * using
+     * 
+     * @Property Annotations.
+     */
     @Reference
     public void setCd(CDComponent component) {
         this.cdComponent = component;
     }
-    
+
     public String getA() {
         return this.abComponent.getA();
     }
-    
+
     public String getB() {
-        return this.abComponent.getB();       
+        return this.abComponent.getB();
     }
-    
+
     public String getC() {
         return this.cdComponent.getC();
     }
-    
+
     public String getD() {
         return this.cdComponent.getD();
     }

@@ -19,24 +19,43 @@
 
 package org.apache.tuscany.sca.test.opoverload;
 
-
 /**
- * 
+ * This is an Interface which has methods declared but not implemented, These methods will be implemented in
+ * OverloadATarget Class and OverloadASource This class has methods with overloaded parameters.
  */
+
 //@AllowsPassByReference
 public interface OverloadASourceTarget {
     final String opName = "operationA:";
-    
+
+    /**
+     * Method with no parameters
+     */
     String operationA();
-    
+
+    /**
+     * Method with one integer parameter
+     */
     String operationA(int parm1);
-    
+
+    /**
+     * Method with one integer parameter and one string parameter
+     */
     String operationA(int parm1, String parm2);
-    
+
+    /**
+     * Method with one one string parameter and one integer parameter
+     */
     String operationA(String parm1, int parm2);
 
+    /**
+     * Method with one string parameter
+     */
     String operationA(String string);
 
+    /**
+     * Method which throws an illegal argument exception in case of any exceptions.
+     */
     String[] operationAall();
 
 }

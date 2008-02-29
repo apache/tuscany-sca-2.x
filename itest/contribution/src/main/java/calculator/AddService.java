@@ -18,8 +18,15 @@
  */
 package calculator;
 
+/**
+ * It is an Interface which has method declarations. Methods which are to be accessed as a service are declared in this
+ * interface. Implementation for these methods is provided in AddServiceImpl Class
+ */
 public interface AddService {
 
+    /**
+     * This is an add method which takes 2 parameters of double type and returns the sum of two parameters
+     */
     double add(double n1, double n2);
 
 }

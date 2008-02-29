@@ -18,10 +18,33 @@
  */
 package org.apache.tuscany.sca.itest;
 
+/**
+ * It is an Interface which has method declarations. Methods which are to be accessed as a service are declared in this
+ * interface. Implementation for these methods is provided in ABCDComponentImpl Class
+ */
 public interface ABCDComponent {
+
+    /**
+     * This is a method to get a string property value from the sca runtime environment. It is implemented in the class
+     * ABCDComponentImpl
+     */
     String getA();
+
+    /**
+     * This is a method to get a string property value from the sca runtime environment. It is implemented in the class
+     * ABCDComponentImpl
+     */
     String getB();
+
+    /**
+     * This is a method to get a string property value from the sca runtime environment. It is implemented in the class
+     * ABCDComponentImpl
+     */
     String getC();
+
+    /**
+     * This is a method to get a string property value from the sca runtime environment. It is implemented in the class
+     * ABCDComponentImpl
+     */
     String getD();
 }
-

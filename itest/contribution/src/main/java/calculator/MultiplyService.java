@@ -18,8 +18,16 @@
  */
 package calculator;
 
+/**
+ * This is an interface for Multiply Service which has multiply method declared which is implemented in
+ * MultiplyServiceImpl class
+ */
 public interface MultiplyService {
 
+    /**
+     * This is a multiply method which takes 2 parameters of double type and returns the result of multiplication of the
+     * two parameters
+     */
     double multiply(double n1, double n2);
 
 }

@@ -27,6 +27,13 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Service;
 
+/**
+ * This class Implements the interface MyService and gives implementation for all methods which are declared in that
+ * interface. scope is specified as Composite using
+ * 
+ * @scope annotaiton.
+ */
+
 @Service(MyService.class)
 public class MyServiceImpl implements MyService {
 
@@ -39,19 +46,27 @@ public class MyServiceImpl implements MyService {
     @ComponentName
     protected String componentName;
 
-
     private Logger logger;
 
+    /**
+     * @ to print the message in the log
+     */
     public MyServiceImpl() {
         logger = Logger.getAnonymousLogger();
         logger.info("creating service instance...");
     }
 
+    /**
+     * @Init annotation to Start the service. Which is executed all the time
+     */
     @Init
     public void start() {
         logger.info("Start service..");
     }
 
+    /**
+     * @Destroy annotation to stop the service. Which is executed in the end
+     */
     @Destroy
     public void stop() {
         logger.info("Stop service..");

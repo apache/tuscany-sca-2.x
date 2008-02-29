@@ -18,8 +18,15 @@
  */
 package calculator;
 
+/**
+ * This is an interface for Divide Service which has divide method declared which is implemented in DivideServiceImpl
+ * class
+ */
 public interface DivideService {
 
+    /**
+     * This is a divide method which takes 2 parameters of double type and returns the result of division
+     */
     double divide(double n1, double n2);
 
 }

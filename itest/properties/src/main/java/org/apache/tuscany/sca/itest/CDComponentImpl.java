@@ -23,6 +23,10 @@ import java.util.Collection;
 
 import org.osoa.sca.annotations.Property;
 
+/**
+ * This class Implements the interface CDComponent and gives implementation for all methods which are declared in that
+ * interface.
+ */
 public class CDComponentImpl implements CDComponent {
 
     private String cProperty;
@@ -33,65 +37,107 @@ public class CDComponentImpl implements CDComponent {
     private int overrideNumber;
     private String cProperty2;
 
-    @Property(name="nonFileProperty")
+    /**
+     * It is a method which injects the property value to the variable 'cProperty2' from the SCA runtime environment
+     * using
+     * 
+     * @Property Annotations.
+     */
+    @Property(name = "nonFileProperty")
     public void setC2(final String value) {
         this.cProperty2 = value;
     }
-    @Property(name="two")
+
+    /**
+     * It is a method which injects the property value to the variable 'overrideNumber' from the SCA runtime environment
+     * using
+     * 
+     * @Property Annotations.
+     */
+    @Property(name = "two")
     public void setOverrideNumber(final int value) {
         this.overrideNumber = value;
     }
-    
-    @Property(name="fileProperty")
+
+    /**
+     * It is a method which injects the property value to the variable 'fileProperty' from the SCA runtime environment
+     * using
+     * 
+     * @Property Annotations.
+     */
+    @Property(name = "fileProperty")
     public void setFileProp(final String value) {
         this.fileProperty = value;
     }
-    
-    @Property(name="manyValuesFileProperty")
+
+    /**
+     * It is a method which injects the property value to the variable 'manyValuesFileProperty' from the SCA runtime
+     * environment using
+     * 
+     * @Property Annotations.
+     */
+    @Property(name = "manyValuesFileProperty")
     public void setFileManyValueProp(final Collection<String> values) {
         this.manyValuesFileProperty = values;
     }
-    
+
+    /**
+     * It is a method which injects the property value to the variable 'cProperty' from the SCA runtime environment
+     * using
+     * 
+     * @Property Annotations.
+     */
     @Property
     public void setC(final String C) {
         this.cProperty = C;
     }
 
+    /**
+     * It is a method which injects the property value to the variable 'dProperty' from the SCA runtime environment
+     * using
+     * 
+     * @Property Annotations.
+     */
     @Property
     public void setD(final String D) {
         this.dProperty = D;
     }
-    
+
+    /**
+     * It is a method which injects the property value to the variable 'nosource' from the SCA runtime environment using
+     * 
+     * @Property Annotations.
+     */
     @Property
     public void setNosource(final String value) {
         this.nosource = value;
     }
-    
+
     public String getFileProperty() {
         return this.fileProperty;
     }
-    
+
     public String getC() {
         return this.cProperty;
     }
-    
+
     public String getC2() {
         return this.cProperty2;
     }
-    
+
     public String getD() {
         return this.dProperty;
     }
 
     public String getNoSource() {
-       return this.nosource;
+        return this.nosource;
     }
 
     public int getOverrideValue() {
         return this.overrideNumber;
     }
-	public Collection<String> getManyValuesFileProperty() {
-		return this.manyValuesFileProperty;
-	}
-}
 
+    public Collection<String> getManyValuesFileProperty() {
+        return this.manyValuesFileProperty;
+    }
+}
