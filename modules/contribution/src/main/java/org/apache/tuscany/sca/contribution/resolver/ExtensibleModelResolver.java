@@ -47,6 +47,7 @@ public class ExtensibleModelResolver implements ModelResolver {
      * @param contribution
      * @param factories
      */
+    @Deprecated
     public ExtensibleModelResolver(Contribution contribution,
                                    ModelResolverExtensionPoint resolvers,
                                    ModelFactoryExtensionPoint factories,
@@ -58,6 +59,22 @@ public class ExtensibleModelResolver implements ModelResolver {
         // but they should be handled by the contribution import/export mechanism instead of this
         // defaultResolver hack.
         this.defaultResolver = defaultResolver;
+    }
+
+    /**
+     * Constructs an extensible model resolver
+     * 
+     * @param resolvers
+     * @param contribution
+     * @param factories
+     */
+    public ExtensibleModelResolver(Contribution contribution,
+                                   ModelResolverExtensionPoint resolvers,
+                                   ModelFactoryExtensionPoint factories) {
+        this.contribution = contribution;
+        this.resolvers = resolvers;
+        this.factories = factories;
+        this.defaultResolver = null;
     }
 
     /**
