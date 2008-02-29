@@ -28,11 +28,14 @@ public class CallBackApiClientImpl implements CallBackApiClient, CallBackApiCall
 
     @Reference
     protected CallBackApiService aCallBackService;
-    
+
     private static String returnMessage = null;
     private static int callBackCount = 0;
     private static Object monitor = new Object();
 
+    /**
+     * This test calls function test 3a,3a1,3b,3c
+     */
     public void run() {
 
         // This tests basic callback patterns.
@@ -40,7 +43,7 @@ public class CallBackApiClientImpl implements CallBackApiClient, CallBackApiCall
         // Test3a is the basic callback where the target calls back prior to
         // returning to the client.
         test3a();
-        
+
         test3a1();
 
         // Test3b is where the target does not call back to the client.
@@ -51,6 +54,10 @@ public class CallBackApiClientImpl implements CallBackApiClient, CallBackApiCall
 
         return;
     }
+
+    /**
+     * This test is the basic callback where the target calls back prior to returning to the client.
+     */
 
     private void test3a() {
         aCallBackService.knockKnock("Knock Knock");
@@ -73,7 +80,10 @@ public class CallBackApiClientImpl implements CallBackApiClient, CallBackApiCall
         Assert.assertEquals("CallBackApiITest - test3a", "Who's There", this.getReturnMessage());
 
     }
-    
+
+    /**
+     * This test is the basic callback where the target calls back prior to returning to the client.
+     */
     private void test3a1() {
         aCallBackService.knockKnockByRef("Knock Knock");
         int count = 0;
@@ -94,13 +104,20 @@ public class CallBackApiClientImpl implements CallBackApiClient, CallBackApiCall
 
         Assert.assertEquals("CallBackApiITest - test3a", "Who's There", this.getReturnMessage());
 
-    }    
+    }
 
+    /**
+     * This test is the basic callback where the target does not call back to the client
+     */
     private void test3b() {
         aCallBackService.noCallBack("No Reply Desired");
         Assert.assertEquals("CallBackApiITest - test3b", 1, 1);
         return;
     }
+
+    /**
+     * This test is the basic callback where the target calls back multiple times to the client
+     */
 
     private void test3c() {
         aCallBackService.multiCallBack("Call me back 3 times");
@@ -124,22 +141,47 @@ public class CallBackApiClientImpl implements CallBackApiClient, CallBackApiCall
         return;
     }
 
+    /**
+     * This function returns a string
+     * 
+     * @param void
+     * @return String result string
+     */
+
     public String getReturnMessage() {
         return returnMessage;
     }
 
+    /**
+     * This function set the returnMessage string
+     * 
+     * @param String
+     */
     public void setReturnMessage(String aReturnMessage) {
         returnMessage = aReturnMessage;
     }
 
+    /**
+     * This function returns the callBackCount variable
+     * 
+     * @return Integer callBackCount variable
+     */
     public int getCallBackCount() {
         return callBackCount;
     }
 
+    /**
+     * This function increments callBackCount variable by 1
+     */
     public void incrementCallBackCount() {
         callBackCount++;
     }
 
+    /**
+     * This function prints a message synched with setReturnMessage function
+     * 
+     * @param String
+     */
     public void callBackMessage(String aString) {
         System.out.println("Entering callback callBackMessage: " + aString);
         synchronized (monitor) {
@@ -148,6 +190,11 @@ public class CallBackApiClientImpl implements CallBackApiClient, CallBackApiCall
         }
     }
 
+    /**
+     * This function prints a message synched with incrementCallBackCount function
+     * 
+     * @param String
+     */
     public void callBackIncrement(String aString) {
         System.out.println("Entering callback increment: " + aString);
         synchronized (monitor) {

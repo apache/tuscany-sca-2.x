@@ -21,13 +21,51 @@ package org.apache.tuscany.sca.itest;
 
 import java.util.Collection;
 
-public interface CDComponent {  
+/**
+ * It is an Interface which has method declarations. Methods which are to be accessed as a service are declared in this
+ * interface. Implementation for these methods is provided in CDComponentImpl Class
+ */
+public interface CDComponent {
 
+    /**
+     * This is a method to get a property value from the sca runtime environment. It is implemented in the class
+     * CDComponentImpl Class
+     */
     String getC();
+
+    /**
+     * This is a method to get a property value from the sca runtime environment. It is implemented in the class
+     * CDComponentImpl Class
+     */
     String getC2();
+
+    /**
+     * This is a method to get a property value from the sca runtime environment. It is implemented in the class
+     * CDComponentImpl Class
+     */
     String getD();
+
+    /**
+     * This is a method to get a property value from the sca runtime environment. It is implemented in the class
+     * CDComponentImpl Class
+     */
     String getNoSource();
+
+    /**
+     * This is a method to get a property value from the sca runtime environment. It is implemented in the class
+     * CDComponentImpl Class
+     */
     String getFileProperty();
+
+    /**
+     * This is a method to get a property value from the sca runtime environment. It is implemented in the class
+     * CDComponentImpl Class
+     */
     Collection<String> getManyValuesFileProperty();
+
+    /**
+     * This is a method to get a property value from the sca runtime environment. It is implemented in the class
+     * CDComponentImpl Class
+     */
     int getOverrideValue();
 }

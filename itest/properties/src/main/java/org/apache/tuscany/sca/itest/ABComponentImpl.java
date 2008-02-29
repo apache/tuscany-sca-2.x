@@ -23,6 +23,11 @@ import java.util.Collection;
 
 import org.osoa.sca.annotations.Property;
 
+/**
+ * This class Implements the interface ABComponent and gives implementation for all methods which are declared in that
+ * interface.
+ */
+
 public class ABComponentImpl implements ABComponent {
 
     private String aProperty;
@@ -33,66 +38,94 @@ public class ABComponentImpl implements ABComponent {
     private String zProperty;
     private String fProperty;
 
-    @Property(name="xpath")
+    /**
+     * It is a method which injects the property value to the variable 'zProperty' from the SCA runtime environment
+     * using Annotations.
+     */
+    @Property(name = "xpath")
     public void setZProperty(final String value) {
         this.zProperty = value;
     }
-    
-    @Property(name="foobar")
+
+    /**
+     * It is a method which injects collection of property values to the variable 'manyStringValues' from the SCA
+     * runtime environment using Annotations.
+     */
+    @Property(name = "foobar")
     public void setManyStringValues(final Collection<String> value) {
         this.manyStringValues = value;
     }
-    
-    @Property(name="fooInts")
+
+    /**
+     * It is a method which injects collection of integer property values to the variable 'manyIntegerValues' from the
+     * SCA runtime environment using Annotations.
+     */
+    @Property(name = "fooInts")
     public void setManyIntegers(final Collection<Integer> value) {
         this.manyIntegerValues = value;
     }
-    
+
+    /**
+     * It is a method which injects the property value to the variable 'aProperty' from the SCA runtime environment
+     * using Annotations.
+     */
     @Property
     public void setA(final String A) {
         this.aProperty = A;
     }
 
+    /**
+     * It is a method which injects the property value to the variable 'bProperty' from the SCA runtime environment
+     * using Annotations.
+     */
     @Property
     public void setB(final String B) {
         this.bProperty = B;
     }
-    
-    @Property 
+
+    /**
+     * It is a method which injects the property value to the variable 'fProperty' from the SCA runtime environment
+     * using Annotations.
+     */
+    @Property
     public void setF(final String F) {
         this.fProperty = F;
     }
-    
+
+    /**
+     * It is a method which injects integer property value to the variable 'intValue' from the SCA runtime environment
+     * using Annotations.
+     */
     @Property
     public void setOne(final int value) {
         this.intValue = value;
     }
-    
+
     public String getA() {
         return this.aProperty;
     }
-    
+
     public String getB() {
         return this.bProperty;
     }
-    
+
     public int getIntValue() {
         return this.intValue;
     }
-    
+
     public String getZ() {
         return this.zProperty;
     }
-    
+
     public String getF() {
         return this.fProperty;
     }
 
-	public Collection<String> getManyStringValues() {
-		return manyStringValues;
-	}
-	
-	public Collection<Integer> getManyIntegers() {
-		return manyIntegerValues;
-	}
+    public Collection<String> getManyStringValues() {
+        return manyStringValues;
+    }
+
+    public Collection<Integer> getManyIntegers() {
+        return manyIntegerValues;
+    }
 }

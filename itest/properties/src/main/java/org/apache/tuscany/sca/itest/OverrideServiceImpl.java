@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.itest;
 
+/**
+ * An implementation for the interface OverrideService.
+ */
+
 public class OverrideServiceImpl implements OverrideService {
 
 }

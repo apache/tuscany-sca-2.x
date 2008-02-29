@@ -23,13 +23,14 @@ import org.apache.tuscany.sca.test.opoverload.OverloadASourceTarget;
 import org.osoa.sca.annotations.Service;
 
 /**
- * 
+ * This class Implements the interface OverloadASourceTarget, and gives implementation for all methods which are
+ * declared in the OverloadASourceTarget interface.
  */
 @Service(OverloadASourceTarget.class)
 public class OverloadATarget implements OverloadASourceTarget {
 
     /**
-     * 
+     * This is a default Constructor
      */
     public OverloadATarget() {
 
@@ -50,8 +51,7 @@ public class OverloadATarget implements OverloadASourceTarget {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.tuscany.sca.test.opoverload.OverloadASourceTarget#operationA(int,
-     *      java.lang.String)
+     * @see org.apache.tuscany.sca.test.opoverload.OverloadASourceTarget#operationA(int, java.lang.String)
      */
     public String operationA(int parm1, String parm2) {
         final String ret = opName + parm1 + parm2;
@@ -83,6 +83,9 @@ public class OverloadATarget implements OverloadASourceTarget {
         return ret;
     }
 
+    /**
+     * This method is used to print the message returned by all the overloaded functions
+     */
     private void out(String msg) {
 
         java.lang.System.out.println(msg);
@@ -90,7 +93,7 @@ public class OverloadATarget implements OverloadASourceTarget {
 
     public String[] operationAall() {
         throw new IllegalArgumentException("not supported");
-       
+
     }
 
 }

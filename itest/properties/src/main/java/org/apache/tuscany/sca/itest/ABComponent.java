@@ -22,14 +22,54 @@ package org.apache.tuscany.sca.itest;
 import java.util.Collection;
 
 import org.osoa.sca.annotations.Remotable;
+
+/**
+ * It is an Interface which has method declarations. Methods which are to be accessed as a service are declared in this
+ * interface. Implementation for these methods is provided in ABComponentImpl Class
+ */
 @Remotable
-public interface ABComponent {  
+public interface ABComponent {
+
+    /**
+     * This is a method to get a string property value from the sca runtime environment. It is implemented in the class
+     * ABComponentImpl
+     */
 
     String getA();
+
+    /**
+     * This is a method to get a string property value from the sca runtime environment. It is implemented in the class
+     * ABComponentImpl
+     */
     String getB();
+
+    /**
+     * This is a method to get a string property value from the sca runtime environment. It is implemented in the class
+     * ABComponentImpl
+     */
     String getZ();
+
+    /**
+     * This is a method to get an integer property value from the sca runtime environment. It is implemented in the
+     * class ABComponentImpl
+     */
     int getIntValue();
+
+    /**
+     * This is a method to get a string property value from the sca runtime environment. It is implemented in the class
+     * ABComponentImpl
+     */
     String getF();
+
+    /**
+     * This is a method to get collectioon of property values from the sca runtime environment. It is implemented in the
+     * class ABComponentImpl
+     */
     Collection<String> getManyStringValues();
+
+    /**
+     * This is a method to get collection of property value from the sca runtime environment. It is implemented in the
+     * class ABComponentImpl
+     */
     Collection<Integer> getManyIntegers();
 }

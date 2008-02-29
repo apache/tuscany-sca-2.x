@@ -27,11 +27,24 @@ import org.osoa.sca.annotations.Remotable;
  * 
  */
 public interface CallBackApiService {
-
+    /**
+     * This function is defined in CallBackApiServiceImpl
+     */
     public void knockKnock(String aString);
+
+    /**
+     * This function is defined in CallBackApiServiceImpl
+     */
     public void knockKnockByRef(String aString);
+
+    /**
+     * This function is defined in CallBackApiServiceImpl
+     */
     public void noCallBack(String aString);
 
+    /**
+     * This function is defined in CallBackApiServiceImpl
+     */
     public void multiCallBack(String aString);
 
 }

@@ -18,8 +18,16 @@
  */
 package calculator;
 
+/**
+ * This is an interface for Subtract Service which has subtract method declared which is implemented in
+ * SubtractServiceImpl class
+ */
+
 public interface SubtractService {
 
+    /**
+     * This is a subtract method which takes 2 parameters of double type and returns the result of subtraction.
+     */
     double subtract(double n1, double n2);
 
 }

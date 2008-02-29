@@ -16,11 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package mysca.test.myservice.impl;
 
-
 public interface MyService {
+    /**
+     * This is a method to get the location property value from the sca runtime environment. It is implemented in the
+     * class MyServiceImpl
+     */
     String getLocation();
 
+    /**
+     * This is a method to get the year property value from the sca runtime environment. It is implemented in the class
+     * MyServiceImpl
+     */
     String getYear();
 }

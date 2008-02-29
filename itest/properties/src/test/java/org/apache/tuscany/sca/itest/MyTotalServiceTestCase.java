@@ -1,5 +1,5 @@
-
 package org.apache.tuscany.sca.itest;
+
 import static junit.framework.Assert.assertEquals;
 import mysca.test.myservice.impl.MyService;
 
@@ -15,36 +15,65 @@ public class MyTotalServiceTestCase {
 
     private static SCADomain domain;
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the local
+     *       property variables defined in the implementation file with the expected values 'RTP' and '2006'
+     */
     @Test
     public void testPropertyDefault() {
         assertEquals("RTP", service1.getLocation());
         assertEquals("2006", service1.getYear());
     }
-    
+
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property value obtained using service2 from the SCA runtime environment with the expected values 'Raleigh'
+     *       and '2008'. This overrides the local property values
+     */
     @Test
     public void testPropertyOverride() {
         assertEquals("Raleigh", service2.getLocation());
         assertEquals("2008", service2.getYear());
-    }    
+    }
 
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property value obtained using service3 from the SCA runtime environment with the expected values 'Durham'
+     *       and '2009'
+     */
     @Test
     public void testPropertyNestedOverride() {
         assertEquals("Durham", service3.getLocation());
         assertEquals("2009", service3.getYear());
     }
 
-    @BeforeClass
     /**
-     * Sets up for the test case execution such as locating services.
+     * Method annotated with
+     * 
+     * @BeforeClass is used for one time set Up, it executes before every tests. This method is used to create a test
+     *              Embedded SCA Domain, to start the SCA Domain and to get a reference to the 'outerABService' service
      */
+    @BeforeClass
     public static void setUp() throws Exception {
-        
+
         domain = SCADomain.newInstance("Outer.composite");
         service1 = domain.getService(MyService.class, "MyServiceComponent/MyService");
         service2 = domain.getService(MyService.class, "MyServiceComponentNew/MyService");
         service3 = domain.getService(MyService.class, "MySimpleServiceInRecursiveAnother");
     }
-   
+
+    /**
+     * Method annotated with
+     * 
+     * @AfterClass is used for one time Tear Down, it executes after every tests. This method is used to close the
+     *             domain, close any previously opened connections etc
+     */
     @AfterClass
     public static void tearDown() {
         domain.close();

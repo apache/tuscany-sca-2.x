@@ -18,9 +18,9 @@
  */
 package calculator;
 
-
 /**
- * The Calculator service interface.
+ * This is a Calculator service interface. All the methods which are to be accessed as a service are declared in this
+ * interface but not the implementation of those methods.
  */
 public interface CalculatorService {
 

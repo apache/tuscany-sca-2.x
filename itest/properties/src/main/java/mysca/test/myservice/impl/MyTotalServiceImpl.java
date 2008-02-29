@@ -21,6 +21,13 @@ package mysca.test.myservice.impl;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
+/**
+ * This class Implements the interface MyService and gives implementation for all methods which are declared in that
+ * interface. scope is specified as Composite using
+ * 
+ * @scope annotaiton.
+ */
+
 @Service(MyService.class)
 public class MyTotalServiceImpl implements MyService {
 
