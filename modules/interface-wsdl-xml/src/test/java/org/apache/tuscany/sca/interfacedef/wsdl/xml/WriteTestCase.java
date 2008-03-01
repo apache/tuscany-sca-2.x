@@ -54,24 +54,20 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  */
 public class WriteTestCase extends TestCase {
 
-    XMLInputFactory inputFactory;
-    DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
+    private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
     private ExtensibleStAXArtifactProcessor staxProcessor;
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
-    private InterfaceContractMapper mapper;
 
     @Override
     public void setUp() throws Exception {
         ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
         factory = new DefaultAssemblyFactory();
         policyFactory = new DefaultPolicyFactory();
-        mapper = new InterfaceContractMapperImpl();
-        inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(modelFactories);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
 
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(new DefaultContributionFactory(), factory, policyFactory, mapper, staxProcessor));
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(new DefaultContributionFactory(), factory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
 
@@ -79,15 +75,6 @@ public class WriteTestCase extends TestCase {
         modelFactories.addFactory(wsdlFactory);
         WSDLInterfaceProcessor wsdlProcessor = new WSDLInterfaceProcessor(modelFactories);
         staxProcessors.addArtifactProcessor(wsdlProcessor);
-    }
-
-    @Override
-    public void tearDown() throws Exception {
-        inputFactory = null;
-        staxProcessors = null;
-        policyFactory = null;
-        factory = null;
-        mapper = null;
     }
 
     public void testReadWriteComponentType() throws Exception {

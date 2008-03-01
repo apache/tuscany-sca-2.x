@@ -50,8 +50,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.workspace.admin.CompositeCollection;
 import org.apache.xml.serialize.OutputFormat;
@@ -95,9 +93,7 @@ public class CompositeCollectionImpl implements CompositeCollection {
         // Read domain.composite
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
-        //FIXME dependency on implementation class
-        InterfaceContractMapper contractMapper = new InterfaceContractMapperImpl();
-        compositeProcessor = new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, contractMapper, null);
+        compositeProcessor = new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, null);
         File file = new File(compositeFileName);
         if (file.exists()) {
             XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);

@@ -91,7 +91,7 @@ public class SCABindingTestCase {
     public void testBuildModel() {
     	try{
 	        InputStream is = getClass().getResourceAsStream("/Calculator.composite");      
-	        CompositeProcessor compositeReader = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, mapper, staxProcessor);
+	        CompositeProcessor compositeReader = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor);
 	        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
 	        Composite composite = compositeReader.read(reader);
 	        

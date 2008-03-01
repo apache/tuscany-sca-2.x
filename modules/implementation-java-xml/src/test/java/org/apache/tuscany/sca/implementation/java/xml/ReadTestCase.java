@@ -65,14 +65,14 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  */
 public class ReadTestCase extends TestCase {
 
-    XMLInputFactory inputFactory;
-    DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
-    ExtensibleStAXArtifactProcessor staxProcessor;
+    private XMLInputFactory inputFactory;
+    private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
+    private ExtensibleStAXArtifactProcessor staxProcessor;
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;
     private PolicyFactory policyFactory;
     private InterfaceContractMapper mapper;
-    SCADefinitionsDocumentProcessor scaDefnDocProcessor;
+    private SCADefinitionsDocumentProcessor scaDefnDocProcessor;
     private IntentAttachPointTypeFactory  intentAttachPointTypeFactory;
     
     @Override
@@ -92,7 +92,7 @@ public class ReadTestCase extends TestCase {
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         modelFactories.addFactory(javaImplementationFactory);
         
-        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, mapper, staxProcessor);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor);
         staxProcessors.addArtifactProcessor(compositeProcessor);
 
         JavaImplementationProcessor javaProcessor = new JavaImplementationProcessor(modelFactories);
@@ -111,7 +111,7 @@ public class ReadTestCase extends TestCase {
     }
 
     public void stestReadComposite() throws Exception {
-        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, mapper, staxProcessor);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor);
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);
@@ -130,7 +130,7 @@ public class ReadTestCase extends TestCase {
         scaDefnDocProcessor.setDomainModelResolver(resolver);
         SCADefinitions scaDefns = scaDefnDocProcessor.read(null, uri, url);
                 
-        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, mapper, staxProcessor);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor);
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);
@@ -199,7 +199,7 @@ public class ReadTestCase extends TestCase {
         scaDefnDocProcessor.setDomainModelResolver(resolver);
         SCADefinitions scaDefns = scaDefnDocProcessor.read(null, uri, url);
                 
-        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, mapper, staxProcessor);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor);
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);

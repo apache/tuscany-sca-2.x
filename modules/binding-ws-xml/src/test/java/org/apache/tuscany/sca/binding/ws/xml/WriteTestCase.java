@@ -60,7 +60,6 @@ public class WriteTestCase extends TestCase {
     ExtensibleStAXArtifactProcessor staxProcessor;
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
-    private InterfaceContractMapper mapper;
 
     @Override
     public void setUp() throws Exception {
@@ -70,7 +69,6 @@ public class WriteTestCase extends TestCase {
         policyFactory = new DefaultPolicyFactory();
         factories.addFactory(policyFactory);
         
-        mapper = new InterfaceContractMapperImpl();
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
@@ -80,7 +78,7 @@ public class WriteTestCase extends TestCase {
         WSDLFactory wsdlFactory = new DefaultWSDLFactory();
         factories.addFactory(wsdlFactory);
 
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(new DefaultContributionFactory(), factory, policyFactory, mapper, staxProcessor));
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(new DefaultContributionFactory(), factory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
 
