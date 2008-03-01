@@ -74,7 +74,6 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
         QName name = null;
         SCADefinitions definitions = null;
 
-        // Read the composite document
         while (reader.hasNext()) {
             int event = reader.getEventType();
             switch (event) {
@@ -108,6 +107,10 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
                     break;
 
                 case END_ELEMENT:
+                    name = reader.getName();
+                    if ( SCA_DEFINITIONS_QNAME.equals(name)) {
+                        return definitions;
+                    }
                     break;
             }
             

@@ -35,9 +35,15 @@
             <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
 
-	<dependency>
+		<dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-definitions</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-extensibility</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
             	

@@ -52,9 +52,7 @@ public class ImplementationPolicyComputer extends PolicyComputer {
             parent.getRequiredIntents().clear();
             parent.getRequiredIntents().addAll(prunedIntents);
             computeIntents(parent);
-            //trimInherentlyProvidedIntents(policiedImplementation.getType(), 
-            //                              parent.getRequiredIntents());
-            
+         
             computeIntentsForOperations((OperationsConfigurator)parent,
                                         (IntentAttachPoint)implementation,
                                         parent.getRequiredIntents());
