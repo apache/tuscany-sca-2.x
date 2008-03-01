@@ -76,13 +76,13 @@ public class ResourceImportExportListener implements ContributionListener {
                         }
                     }
                 } 
+                
+                //if no location was specified, try to resolve with any contribution            
+                if( !initialized ) {
+                    // Use a resolver that will consider all contributions
+                    import_.setModelResolver(new DefaultImportAllModelResolver(import_, repository.getContributions()));
+                }
             } 
-            
-            //if no location was specified, try to resolve with any contribution            
-            if( !initialized ) {
-                // Use a resolver that will consider all contributions
-                import_.setModelResolver(new DefaultImportAllModelResolver(import_, repository.getContributions()));
-            }
         }
     }
 
