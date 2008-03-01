@@ -21,17 +21,15 @@ package org.apache.tuscany.sca.contribution.scanner;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
-import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
-import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
+import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
  * Default implementation of a contribution scanner extension point.

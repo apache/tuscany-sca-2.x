@@ -23,7 +23,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 
 /**

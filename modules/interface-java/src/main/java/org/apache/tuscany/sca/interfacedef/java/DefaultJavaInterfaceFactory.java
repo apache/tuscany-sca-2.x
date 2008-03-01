@@ -18,18 +18,12 @@
  */
 package org.apache.tuscany.sca.interfacedef.java;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
-import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
+import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceFactoryImpl;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 

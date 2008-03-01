@@ -24,7 +24,9 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -37,6 +39,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.definitions.SCADefinitionsBuilder;
 import org.apache.tuscany.sca.definitions.SCADefinitionsBuilderImpl;
+import org.apache.tuscany.sca.definitions.impl.SCADefinitionsImpl;
 import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
 import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
@@ -57,6 +60,9 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
     private SCADefinitionsBuilder definitionsBuilder;
     private ModelResolver scaDefinitionsResolver;
     private XMLInputFactory inputFactory;
+    private static final String TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private static final String DEFINITIONS = "definitions";
+    private static final QName tuscanyDefinitions = new QName(TUSCANY_NS,DEFINITIONS);
 
     /**
      * Construct a new SCADefinitions processor
@@ -88,12 +94,31 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
     
 
     public SCADefinitions read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
-        InputStream urlStream = null;
+        InputStream urlStream = null; 
         try {
             urlStream = url.openStream();
+            //urlStream = createInputStream(url);
             XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
-            reader.nextTag();
-            SCADefinitions scaDefns = (SCADefinitions)extensionProcessor.read(reader);
+            
+            SCADefinitions scaDefns = new SCADefinitionsImpl();
+            QName name = null;
+            int event;
+            while ( reader.hasNext() ) {
+                event = reader.next();
+                
+                if ( event == XMLStreamConstants.START_ELEMENT  ||
+                    event == XMLStreamConstants.END_ELEMENT ) {
+                    name = reader.getName();
+                    if ( name.equals(tuscanyDefinitions) ) {
+                        if ( event == XMLStreamConstants.END_ELEMENT ) {
+                            return scaDefns;
+                        } 
+                    } else {
+                        SCADefinitions aDefn = (SCADefinitions)extensionProcessor.read(reader);
+                        SCADefinitionsUtil.aggregateSCADefinitions(aDefn, scaDefns);
+                    }
+                }
+            }
             
             return scaDefns;
         } catch (XMLStreamException e) {
@@ -112,7 +137,6 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
             }
         }
     }
-    
     
     public void resolve(SCADefinitions scaDefinitions, ModelResolver resolver) throws ContributionResolveException {
         if ( resolver == null ) {

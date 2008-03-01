@@ -18,25 +18,16 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.util.PolicyHandlerDefinitionsLoader;
-import org.apache.tuscany.sca.contribution.util.ServiceDeclaration;
-import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.policy.util.PolicyHandler;
+import org.apache.tuscany.sca.policy.util.PolicyHandlerDefinitionsLoader;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;

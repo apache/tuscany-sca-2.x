@@ -99,7 +99,7 @@ public class BindingPolicyComputer extends PolicyComputer {
                 policiedBinding.getApplicablePolicySets().addAll(applicablePolicySets);
                 List<PolicySet> prunedPolicySets = computeInheritablePolicySets(policiedBinding,
                                                                                 inheritedPolicySets,
-                                                                                applicablePolicySets);
+                                                                                policiedBinding.getApplicablePolicySets());
                 policiedBinding.getPolicySets().addAll(prunedPolicySets);
                 computePolicySets(policiedBinding);
                 computePolicySetsForOperations(applicablePolicySets, policiedBinding);

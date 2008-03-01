@@ -30,6 +30,12 @@
 
 	<dependencies>
 		<dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-extensibility</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+	
+		<dependency>
 			<groupId>org.apache.tuscany.sca</groupId>
 			<artifactId>tuscany-interface</artifactId>
 			<version>1.2-incubating-SNAPSHOT</version>
