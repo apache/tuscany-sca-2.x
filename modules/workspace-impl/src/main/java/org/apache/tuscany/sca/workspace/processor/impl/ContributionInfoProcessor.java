@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
-import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
 import org.apache.tuscany.sca.workspace.scanner.impl.DirectoryContributionScanner;
 import org.apache.tuscany.sca.workspace.scanner.impl.JarContributionScanner;
 
@@ -40,12 +39,12 @@ import org.apache.tuscany.sca.workspace.scanner.impl.JarContributionScanner;
  * @version $Rev$ $Date$
  */
 public class ContributionInfoProcessor implements URLArtifactProcessor<Contribution>{
-    private ContributionMetadataDocumentProcessor metadataProcessor;
+    private URLArtifactProcessor<Object> artifactProcessor;
     private ContributionFactory contributionFactory;
 
-    public ContributionInfoProcessor(ContributionFactory contributionFactory, ContributionMetadataDocumentProcessor metadataProcessor) {
+    public ContributionInfoProcessor(ContributionFactory contributionFactory, URLArtifactProcessor<Object> artifactProcessor) {
         this.contributionFactory = contributionFactory;
-        this.metadataProcessor = metadataProcessor; 
+        this.artifactProcessor = artifactProcessor; 
     }
     
     public String getArtifactType() {
@@ -77,7 +76,7 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
                                        Contribution.SCA_CONTRIBUTION_META}) {
             URL url = scanner.getArtifactURL(contributionURL, path);
             if (url != null) {
-                Contribution c = metadataProcessor.read(contributionURL, URI.create(path), url);
+                Contribution c = (Contribution)artifactProcessor.read(contributionURL, URI.create(path), url);
                 contribution.getImports().addAll(c.getImports());
                 contribution.getExports().addAll(c.getExports());
                 contribution.getDeployables().addAll(c.getDeployables());
@@ -88,7 +87,7 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
     }
     
     public void resolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
-        metadataProcessor.resolve(contribution, resolver);
+        artifactProcessor.resolve(contribution, resolver);
     }
 
 }
