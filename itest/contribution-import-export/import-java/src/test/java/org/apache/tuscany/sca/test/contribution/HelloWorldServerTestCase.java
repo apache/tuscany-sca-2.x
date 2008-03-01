@@ -52,9 +52,9 @@ public class HelloWorldServerTestCase extends TestCase {
 
         // Contribute the SCA contribution
         ContributionService contributionService = domain.getContributionService();
-
-//        File javaContribLocation = new File("../export-java/target/classes");
-//        URL javaContribURL = javaContribLocation.toURL();
+        
+        //File javaContribLocation = new File("../export-java/target/classes");
+        //URL javaContribURL = javaContribLocation.toURL();
         URL javaContribURL = getContributionURL(HelloWorldService.class);
         javaContribution = contributionService.contribute("http://import-export/export-java", javaContribURL, false);
         for (Composite deployable : javaContribution.getDeployables()) {
@@ -62,12 +62,10 @@ public class HelloWorldServerTestCase extends TestCase {
             domain.buildComposite(deployable);
         }
 
-//        File helloWorldContribLocation = new File("./target/classes/");
-//        URL helloWorldContribURL = helloWorldContribLocation.toURL();
+        //File helloWorldContribLocation = new File("./target/classes/");
+        //URL helloWorldContribURL = helloWorldContribLocation.toURL();
         URL helloWorldContribURL = getContributionURL(HelloWorldImpl.class);
-
-        helloWorldContribution =
-            contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, false);
+        helloWorldContribution = contributionService.contribute("http://import-export/helloworld", helloWorldContribURL, false);
         for (Composite deployable : helloWorldContribution.getDeployables()) {
             domain.getDomainComposite().getIncludes().add(deployable);
             domain.buildComposite(deployable);
