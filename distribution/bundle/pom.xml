@@ -432,7 +432,14 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>shade-maven-plugin</artifactId>
-                <version>1.0-alpha-7</version>
+                <version>1.0-alpha-7</version>  
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.tuscany.sca</groupId>
+                        <artifactId>tuscany-maven-definitions</artifactId>
+                        <version>1.2-incubating-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -576,6 +583,9 @@
                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.policy.util.PolicyHandler</resource>
                                 </transformer>
+                               <transformer implementation="org.apache.tuscany.sca.tools.maven.plugin.shade.transformer.SCADefinitionsAppendingTransformer">
+                                    <resource>META-INF/services/definitions.xml</resource> 
+                               </transformer>
                             </transformers>
                         </configuration>
                     </execution>
