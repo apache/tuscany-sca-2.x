@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.contribution.resource.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
@@ -38,7 +35,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionRepository;
  * 
  * @version $Rev$ $Date$
  */
-public class ResourceceImportExportListener implements ContributionListener {
+public class ResourceImportExportListener implements ContributionListener {
 
     /**
      * Initialize the import/export model resolvers
@@ -58,7 +55,6 @@ public class ResourceceImportExportListener implements ContributionListener {
         for (Import import_: contribution.getImports()) {
             boolean initialized = false;
 
-            
             if (import_ instanceof ResourceImport) {
                 ResourceImport resourceImport = (ResourceImport)import_;
                 
@@ -73,11 +69,6 @@ public class ResourceceImportExportListener implements ContributionListener {
                                 ResourceExport resourceExport = (ResourceExport)export;
                                 if (resourceImport.getURI().equals(resourceExport.getURI())) {
                                 	resourceImport.setModelResolver(resourceExport.getModelResolver());
-                                    
-                                    List<Contribution> exportingContributions = new ArrayList<Contribution>();
-                                    exportingContributions.add(targetContribution);
-                                    import_.setExportContributions(exportingContributions);
-                                    
                                     initialized = true;
                                     break;
                                 }
@@ -91,10 +82,8 @@ public class ResourceceImportExportListener implements ContributionListener {
             if( !initialized ) {
                 // Use a resolver that will consider all contributions
                 import_.setModelResolver(new DefaultImportAllModelResolver(import_, repository.getContributions()));
-                import_.setExportContributions(repository.getContributions());
             }
         }
-
     }
 
     public void contributionRemoved(ContributionRepository repository, Contribution contribution) {
