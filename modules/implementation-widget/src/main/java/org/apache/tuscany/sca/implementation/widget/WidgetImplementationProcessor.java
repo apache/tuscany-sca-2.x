@@ -67,7 +67,7 @@ public class WidgetImplementationProcessor implements StAXArtifactProcessor<Widg
 
     public WidgetImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         
-        // Read an <implementation.resource> element
+        // Read an <implementation.widget> element
 
         // Read the location attribute specifying the location of the
         // resources
@@ -106,7 +106,7 @@ public class WidgetImplementationProcessor implements StAXArtifactProcessor<Widg
 
     public void write(WidgetImplementation implementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         
-        // Write <implementation.resource>
+        // Write <implementation.widget>
         writer.setPrefix("widget",IMPLEMENTATION_WIDGET.getNamespaceURI());
         writer.writeStartElement(IMPLEMENTATION_WIDGET.getNamespaceURI(), IMPLEMENTATION_WIDGET.getLocalPart());
         writer.writeNamespace("widget",IMPLEMENTATION_WIDGET.getNamespaceURI());
