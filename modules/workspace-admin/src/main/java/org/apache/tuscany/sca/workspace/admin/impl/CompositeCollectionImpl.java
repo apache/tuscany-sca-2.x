@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,18 +40,18 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.workspace.admin.CompositeCollection;
 import org.apache.xml.serialize.OutputFormat;
@@ -76,9 +75,6 @@ public class CompositeCollectionImpl implements CompositeCollection {
     public String compositeFileName;
 
     private AssemblyFactory assemblyFactory;
-    private ContributionFactory contributionFactory;
-    private PolicyFactory policyFactory;
-    private InterfaceContractMapper contractMapper;
     private Composite compositeCollection;
     private CompositeProcessor compositeProcessor;
     private XMLOutputFactory outputFactory;
@@ -91,18 +87,20 @@ public class CompositeCollectionImpl implements CompositeCollection {
     public void init() throws IOException, ContributionReadException, XMLStreamException, ParserConfigurationException {
         
         // Create factories
-        contributionFactory = new DefaultContributionFactory();
-        assemblyFactory = new DefaultAssemblyFactory();
-        policyFactory = new DefaultPolicyFactory();
-        outputFactory = XMLOutputFactory.newInstance();
-        outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+        ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
+        assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         
         // Read domain.composite
+        ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        //FIXME dependency on implementation class
+        InterfaceContractMapper contractMapper = new InterfaceContractMapperImpl();
         compositeProcessor = new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, contractMapper, null);
         File file = new File(compositeFileName);
         if (file.exists()) {
-            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+            XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
             FileInputStream is = new FileInputStream(file);
             XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
             compositeCollection = compositeProcessor.read(reader);

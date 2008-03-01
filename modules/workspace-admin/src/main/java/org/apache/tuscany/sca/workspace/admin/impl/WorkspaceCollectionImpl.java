@@ -48,10 +48,16 @@ import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
@@ -86,10 +92,10 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
     private AssemblyFactory assemblyFactory;
     private WorkspaceFactory workspaceFactory;
     private Workspace workspace;
-    private WorkspaceProcessor workspaceProcessor;
+    private StAXArtifactProcessor<Object> staxProcessor;
+    private URLArtifactProcessor<Object> urlProcessor;
+    private URLArtifactProcessor<Contribution> contributionInfoProcessor;
     private XMLOutputFactory outputFactory;
-    private XMLInputFactory inputFactory;
-    private ContributionInfoProcessor contributionProcessor;
     
     /**
      * Initialize the workspace administration component.
@@ -97,32 +103,35 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
     @Init
     public void init() throws IOException, ContributionReadException, XMLStreamException, ParserConfigurationException {
         
-        // Create extension points
-        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
-        StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(factories);
-        inputFactory = factories.getFactory(XMLInputFactory.class);
-        outputFactory = factories.getFactory(XMLOutputFactory.class);
-        outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
-        ExtensibleStAXArtifactProcessor extensionProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
-        
-        // Create factories
-        contributionFactory = factories.getFactory(ContributionFactory.class);
-        assemblyFactory = factories.getFactory(AssemblyFactory.class);
-        workspaceFactory = factories.getFactory(WorkspaceFactory.class);
+        // Create model factories
+        ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
+        outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class);
 
+        // Create artifact processors
+        XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
+        StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(modelFactories);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
+        staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new WorkspaceProcessor(workspaceFactory, contributionFactory, staxProcessor));
+
+        URLArtifactProcessorExtensionPoint urlProcessors = new DefaultURLArtifactProcessorExtensionPoint(modelFactories);
+        urlProcessor = new ExtensibleURLArtifactProcessor(urlProcessors);
+        urlProcessors.addArtifactProcessor(new ContributionMetadataDocumentProcessor(staxProcessor, inputFactory));
+        urlProcessors.addArtifactProcessor(new ContributionGeneratedMetadataDocumentProcessor(staxProcessor, inputFactory));
+        
         // Create workspace and contribution artifact processors
-        workspaceProcessor = new WorkspaceProcessor(workspaceFactory, contributionFactory, extensionProcessor);
-        ContributionMetadataProcessor metadataProcessor = new ContributionMetadataProcessor(assemblyFactory, contributionFactory, extensionProcessor);
-        ContributionMetadataDocumentProcessor metadataDocumentProcessor = new ContributionMetadataDocumentProcessor(metadataProcessor, inputFactory); 
-        contributionProcessor = new ContributionInfoProcessor(contributionFactory, metadataDocumentProcessor);
+        contributionInfoProcessor = new ContributionInfoProcessor(contributionFactory, urlProcessor);
 
         // Read workspace.xml
         File file = new File(workspaceFileName);
         if (file.exists()) {
-            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
             FileInputStream is = new FileInputStream(file);
             XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-            workspace = workspaceProcessor.read(reader);
+            reader.nextTag();
+            workspace = (Workspace)staxProcessor.read(reader);
         } else {
             workspace = workspaceFactory.createWorkspace();
         }
@@ -221,7 +230,7 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
                 }
                 Contribution contribution;
                 try {
-                    contribution = contributionProcessor.read(null, uri, url);
+                    contribution = (Contribution)contributionInfoProcessor.read(null, uri, url);
                 } catch (ContributionReadException e) {
                     throw new ServiceRuntimeException(e);
                 }
@@ -285,7 +294,7 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
             // First write to a byte stream
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
-            workspaceProcessor.write(workspace, writer);
+            staxProcessor.write(workspace, writer);
             
             // Parse again to pretty format the document
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
