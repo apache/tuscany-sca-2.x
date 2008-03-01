@@ -95,4 +95,9 @@ class ArtifactImpl implements Artifact {
         }
     }
 
+    @Override
+    public String toString() {
+    	return "Artifact:" + uri + "\n" +
+    	       "at: " + location;
+    }
 }

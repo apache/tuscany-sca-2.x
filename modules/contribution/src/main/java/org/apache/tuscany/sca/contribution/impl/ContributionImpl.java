@@ -70,6 +70,7 @@ class ContributionImpl implements Contribution {
         this.classLoader = classLoader;
     }
     
+    
     public String getURI() {
         return this.uri;
     }
@@ -142,6 +143,12 @@ class ContributionImpl implements Contribution {
                 return false;
             }
         }
+    }
+
+    @Override
+    public String toString() {
+    	return "Contribution : " + uri + " \n" +
+    	       "from: " + location;
     }
 
 }
