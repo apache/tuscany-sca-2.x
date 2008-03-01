@@ -38,7 +38,8 @@ import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
  */
 public class AdminTestCase extends TestCase {
     
-    private ContributionCollectionImpl workspaceCollection;
+    private ContributionCollectionImpl contributionCollection;
+    private DeployableCompositeCollectionImpl deployableCollection;
     
     private final static String WORKSPACE_XML =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -58,38 +59,47 @@ public class AdminTestCase extends TestCase {
         writer.flush();
         
         // Create a workspace collection component
-        workspaceCollection = new ContributionCollectionImpl();
-        workspaceCollection.workspaceFileName = url.getFile();
-        workspaceCollection.init();
+        contributionCollection = new ContributionCollectionImpl();
+        contributionCollection.workspaceFileName = url.getFile();
+        deployableCollection = new DeployableCompositeCollectionImpl();
+        deployableCollection.contributionCollection = contributionCollection;
+        contributionCollection.init();
+        deployableCollection.init();
         
         // Populate the workspace with test data
         Item item = new Item();
         item.setLink(cl.getResource("contributions/store").toString());
-        workspaceCollection.post("store", item);
+        contributionCollection.post("store", item);
         item.setLink(cl.getResource("contributions/assets").toString());
-        workspaceCollection.post("assets", item);
+        contributionCollection.post("assets", item);
     }
     
     public void testGetAll() {
-        Entry<String, Item>[] entries = workspaceCollection.getAll();
+        Entry<String, Item>[] entries = contributionCollection.getAll();
         assertEquals(2, entries.length);
         assertEquals(entries[0].getKey(), "store");
     }
 
     public void testGet() throws NotFoundException {
-        Item item = workspaceCollection.get("assets");
+        Item item = contributionCollection.get("assets");
         assertTrue(item.getLink().endsWith("contributions/assets"));
     }
     
-    public void testQuery1() {
-        Entry<String, Item>[] entries = workspaceCollection.query("importedBy=store");
+    public void testDependencies1() {
+        Entry<String, Item>[] entries = contributionCollection.query("importedBy=store");
         assertEquals(2, entries.length);
     }
     
-    public void testQuery2() {
-        Entry<String, Item>[] entries = workspaceCollection.query("importedBy=assets");
+    public void testDependencies2() {
+        Entry<String, Item>[] entries = contributionCollection.query("importedBy=assets");
         assertEquals(1, entries.length);
         assertEquals("assets", entries[0].getKey());
+    }
+    
+    public void testDeployables() {
+        Entry<String, Item>[] entries = deployableCollection.getAll();
+        assertEquals(1, entries.length);
+        assertEquals("{http://store}store", entries[0].getKey());
     }
     
 }
