@@ -85,6 +85,7 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
 
                         // Read <contribution>
                         contribution = this.contributionFactory.createContribution();
+                        contribution.setUnresolved(true);
                         
                     } else if (DEPLOYABLE_QNAME.equals(name)) {
                         
@@ -158,6 +159,6 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
     }
 
     public void resolve(Contribution model, ModelResolver resolver) throws ContributionResolveException {
-        // Nothing to do here
+        model.setUnresolved(false);
     }
 }
