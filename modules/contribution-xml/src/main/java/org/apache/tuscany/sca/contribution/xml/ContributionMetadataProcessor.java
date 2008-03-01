@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.contribution.xml;
 
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -160,5 +162,15 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
 
     public void resolve(Contribution model, ModelResolver resolver) throws ContributionResolveException {
         model.setUnresolved(false);
+        
+        // Resolve deployable composites
+        List<Composite> deployables = model.getDeployables();
+        for (int i = 0, n = deployables.size(); i < n; i++) {
+            Composite deployable = deployables.get(i);
+            Composite resolved = (Composite)resolver.resolveModel(Composite.class, deployable);
+            if (resolved != deployable) {
+                deployables.set(i, resolved);
+            }
+        }
     }
 }
