@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 
-import org.apache.tuscany.sca.contribution.util.ServiceDiscovery;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
