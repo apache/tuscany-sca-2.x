@@ -64,6 +64,7 @@
                 <module>contribution-java</module>
                 <module>contribution-impl</module>
                 <module>contribution-osgi</module>
+                <module>contribution-resource</module>
                 <module>contribution-xml</module>
                 <module>core</module>
                 <module>core-databinding</module>
