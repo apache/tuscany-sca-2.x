@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 
 /**
- * URLArtifactProcessor that handles contribution.xml files.
+ * URLArtifactProcessor that handles sca-contribution.xml files.
  * 
  * @version $Rev$ $Date$
  */
@@ -49,7 +49,7 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
     }
     
     public String getArtifactType() {
-        return null;
+        return "sca-contribution.xml";
     }
     
     public Class<Contribution> getModelType() {
