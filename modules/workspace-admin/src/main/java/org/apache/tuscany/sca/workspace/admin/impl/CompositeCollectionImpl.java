@@ -46,7 +46,6 @@ import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
-import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
@@ -59,7 +58,6 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  * Implementation of a composite collection service. 
@@ -76,7 +74,6 @@ public class CompositeCollectionImpl implements CompositeCollection {
     private Composite compositeCollection;
     private CompositeProcessor compositeProcessor;
     private XMLOutputFactory outputFactory;
-    private DocumentBuilder documentBuilder;
     
     /**
      * Initialize the workspace administration component.
@@ -88,7 +85,6 @@ public class CompositeCollectionImpl implements CompositeCollection {
         ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
-        documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         
         // Read domain.composite
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
@@ -208,6 +204,7 @@ public class CompositeCollectionImpl implements CompositeCollection {
             compositeProcessor.write(compositeCollection, writer);
             
             // Parse again to pretty format the document
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = documentBuilder.parse(new ByteArrayInputStream(bos.toByteArray()));
             OutputFormat format = new OutputFormat();
             format.setIndenting(true);
@@ -218,13 +215,7 @@ public class CompositeCollectionImpl implements CompositeCollection {
             XMLSerializer serializer = new XMLSerializer(os, format);
             serializer.serialize(document);
             
-        } catch (IOException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (ContributionWriteException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (XMLStreamException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (SAXException e) {
+        } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
     }

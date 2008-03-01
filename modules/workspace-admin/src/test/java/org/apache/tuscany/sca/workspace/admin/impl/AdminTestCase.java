@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
  */
 public class AdminTestCase extends TestCase {
     
-    private WorkspaceCollectionImpl workspaceCollection;
+    private ContributionCollectionImpl workspaceCollection;
     
     private final static String WORKSPACE_XML =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -58,7 +58,7 @@ public class AdminTestCase extends TestCase {
         writer.flush();
         
         // Create a workspace collection component
-        workspaceCollection = new WorkspaceCollectionImpl();
+        workspaceCollection = new ContributionCollectionImpl();
         workspaceCollection.workspaceFileName = url.getFile();
         workspaceCollection.init();
         

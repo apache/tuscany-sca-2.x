@@ -24,11 +24,11 @@ import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.osoa.sca.annotations.Remotable;
 
 /**
- * The contribution workspace service interface.
+ * The contribution collection service interface.
  *
  * @version $Rev$ $Date$
  */
 @Remotable
-public interface WorkspaceCollection extends Collection<String, Item>{
+public interface ContributionCollection extends Collection<String, Item>{
 
 }
