@@ -21,7 +21,9 @@ package org.apache.tuscany.sca.workspace.processor.impl;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -36,18 +38,18 @@ import org.apache.tuscany.sca.workspace.scanner.impl.DirectoryContributionScanne
 import org.apache.tuscany.sca.workspace.scanner.impl.JarContributionScanner;
 
 /**
- * URLArtifactProcessor that handles contribution files and returns a contribution
- * info model.
+ * URLArtifactProcessor that handles contribution files and the artifacts they contain
+ * and returns a contribution model.
  * 
  * @version $Rev$ $Date$
  */
-public class ContributionInfoProcessor implements URLArtifactProcessor<Contribution>{
+public class ContributionContentProcessor implements URLArtifactProcessor<Contribution>{
     private ContributionFactory contributionFactory;
     private ModelResolverExtensionPoint modelResolvers;
     private ModelFactoryExtensionPoint modelFactories;
     private URLArtifactProcessor<Object> artifactProcessor;
 
-    public ContributionInfoProcessor(ModelFactoryExtensionPoint modelFactories, ModelResolverExtensionPoint modelResolvers, URLArtifactProcessor<Object> artifactProcessor) {
+    public ContributionContentProcessor(ModelFactoryExtensionPoint modelFactories, ModelResolverExtensionPoint modelResolvers, URLArtifactProcessor<Object> artifactProcessor) {
         this.modelFactories = modelFactories;
         this.modelResolvers = modelResolvers;
         this.artifactProcessor = artifactProcessor;
@@ -79,16 +81,32 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
             scanner = new JarContributionScanner();
         }
         
-        // Read generated and user sca-contribution.xml files
-        for (String path: new String[]{
-                                       Contribution.SCA_CONTRIBUTION_GENERATED_META,
-                                       Contribution.SCA_CONTRIBUTION_META}) {
-            URL url = scanner.getArtifactURL(contributionURL, path);
-            if (url != null) {
-                Contribution c = (Contribution)artifactProcessor.read(contributionURL, URI.create(path), url);
-                contribution.getImports().addAll(c.getImports());
-                contribution.getExports().addAll(c.getExports());
-                contribution.getDeployables().addAll(c.getDeployables());
+        // Scan the contribution and list the artifacts contained in it
+        List<Artifact> artifacts = contribution.getArtifacts();
+        for (String artifactURI: scanner.getArtifacts(contributionURL)) {
+            URL artifactURL = scanner.getArtifactURL(contributionURL, artifactURI);
+
+            // Add the deployed artifact model to the contribution
+            Artifact artifact = this.contributionFactory.createArtifact();
+            artifact.setURI(artifactURI);
+            artifact.setLocation(artifactURL.toString());
+            artifacts.add(artifact);
+            
+            // Read each artifact
+            Object model = artifactProcessor.read(contributionURL, URI.create(artifactURI), artifactURL);
+            if (model != null) {
+                artifact.setModel(model);
+
+                // Add the loaded model to the model resolver
+                modelResolver.addModel(model);
+
+                // Merge contribution metadata into the contribution model
+                if (model instanceof Contribution) {
+                    Contribution c = (Contribution)model;
+                    contribution.getImports().addAll(c.getImports());
+                    contribution.getExports().addAll(c.getExports());
+                    contribution.getDeployables().addAll(c.getDeployables());
+                }
             }
         }
         
@@ -96,7 +114,18 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
     }
     
     public void resolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
-        artifactProcessor.resolve(contribution, contribution.getModelResolver());
+        
+        // Resolve all artifact models
+        ModelResolver contributionResolver = contribution.getModelResolver();
+        for (Artifact artifact : contribution.getArtifacts()) {
+            Object model = artifact.getModel();
+            if (model != null) {
+                artifactProcessor.resolve(model, contributionResolver);
+            }
+        }
+        
+        // Resolve the contribution model itself
+        artifactProcessor.resolve(contribution, contributionResolver);
     }
 
 }
