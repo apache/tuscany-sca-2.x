@@ -65,15 +65,14 @@ public class BuildPolicyTestCase extends TestCase {
 
     private ExtensibleURLArtifactProcessor documentProcessor;
     private TestModelResolver resolver; 
-    SCADefinitionsDocumentProcessor scaDefnDocProcessor;
-    CompositeBuilder compositeBuilder;
-    Composite composite = null;
+    private SCADefinitionsDocumentProcessor scaDefnDocProcessor;
+    private CompositeBuilder compositeBuilder;
+    private Composite composite;
 
     @Override
     public void setUp() throws Exception {
         AssemblyFactory factory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
-        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
         resolver = new TestModelResolver();
         compositeBuilder = new CompositeBuilderImpl(factory, new TestSCABindingFactoryImpl(), new DefaultIntentAttachPointTypeFactory(), new InterfaceContractMapperImpl(), null, null);
         URLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
@@ -82,7 +81,7 @@ public class BuildPolicyTestCase extends TestCase {
         // Create Stax processors 
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
         ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(new DefaultContributionFactory(), factory, policyFactory, mapper, staxProcessor));
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(new DefaultContributionFactory(), factory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new SCADefinitionsProcessor(policyFactory, staxProcessor, resolver));

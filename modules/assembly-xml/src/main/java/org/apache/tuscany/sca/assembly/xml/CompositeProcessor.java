@@ -94,14 +94,17 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
     /**
      * Construct a new composite processor
      * 
+     * @param contributionFactory
      * @param assemblyFactory
      * @param policyFactory
-     * @param extensionProcessor public CompositeProcessor(AssemblyFactory
-     *            factory, PolicyFactory policyFactory, InterfaceContractMapper
-     *            interfaceContractMapper, StAXArtifactProcessor
-     *            extensionProcessor) { super(factory, policyFactory,
-     *            extensionProcessor); }
+     * @param extensionProcessor
      */
+    public CompositeProcessor(ContributionFactory contributionFactory,
+                              AssemblyFactory factory,
+                              PolicyFactory policyFactory,
+                              StAXArtifactProcessor extensionProcessor) {
+        super(contributionFactory, factory, policyFactory, extensionProcessor);
+    }
 
     public Composite read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         Composite composite = null;

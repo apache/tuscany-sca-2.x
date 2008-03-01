@@ -40,8 +40,6 @@ import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcesso
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 import org.apache.tuscany.sca.implementation.node.impl.NodeImplementationFactoryImpl;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
@@ -52,12 +50,10 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  */
 public class WriteTestCase extends TestCase {
 
-    XMLInputFactory inputFactory;
-    DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
-    ExtensibleStAXArtifactProcessor staxProcessor;
+    private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
+    private ExtensibleStAXArtifactProcessor staxProcessor;
     private AssemblyFactory factory;
     private PolicyFactory policyFactory;
-    private InterfaceContractMapper mapper;
 
     @Override
     public void setUp() throws Exception {
@@ -67,15 +63,13 @@ public class WriteTestCase extends TestCase {
         policyFactory = new DefaultPolicyFactory();
         factories.addFactory(policyFactory);
         
-        mapper = new InterfaceContractMapperImpl();
-        inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         
         NodeImplementationFactory nodeFactory = new NodeImplementationFactoryImpl();
         factories.addFactory(nodeFactory);
         
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(new DefaultContributionFactory(), factory, policyFactory, mapper, staxProcessor));
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(new DefaultContributionFactory(), factory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
 

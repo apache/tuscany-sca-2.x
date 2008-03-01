@@ -58,9 +58,9 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  */
 public class ReadTestCase extends TestCase {
 
-    XMLInputFactory inputFactory;
-    DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
-    ExtensibleStAXArtifactProcessor staxProcessor;
+    private XMLInputFactory inputFactory;
+    private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
+    private ExtensibleStAXArtifactProcessor staxProcessor;
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;
     private PolicyFactory policyFactory;
@@ -113,7 +113,7 @@ public class ReadTestCase extends TestCase {
     }
 
     public void testReadComposite() throws Exception {
-        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, mapper, staxProcessor);
+        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor);
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);
