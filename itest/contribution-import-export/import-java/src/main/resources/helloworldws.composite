@@ -23,9 +23,6 @@
     name="helloworldws">
 
     <component name="HelloWorldServiceComponent">
-	    <service name="HelloWorldService">
-	        <interface.java interface="helloworld.HelloWorldService" />
-	    </service>
         <implementation.java class="helloworld.HelloWorldImpl" />
     </component>
 
