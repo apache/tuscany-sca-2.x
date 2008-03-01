@@ -30,12 +30,14 @@
     <name>Apache Tuscany SCA Contribution Import/Export Integration Tests</name>
 
     <modules>
-        <module>export-wsdl</module>
-        <module>import-wsdl</module>
         <module>export-composite</module>
-        <module>import-composite</module>
         <module>export-java</module>
+        <module>export-resource</module>
+        <module>export-wsdl</module>
+        <module>import-composite</module>
         <module>import-java</module>
+        <module>import-resource</module>
+        <module>import-wsdl</module>
     </modules>
     
     <dependencies>
