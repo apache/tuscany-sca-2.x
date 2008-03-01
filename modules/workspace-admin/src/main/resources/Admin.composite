@@ -22,12 +22,12 @@
 	targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
     name="Admin">
 
-    <component name="WorkspaceUI">
+    <component name="ContributionUI">
         <t:implementation.widget location="workspace.html"/>
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/workspace"/>
         </service>
-		 <reference name="workspace" target="WorkspaceCollectionComponent">
+		 <reference name="workspace" target="ContributionCollectionComponent/ContributionCollection">
 		 	<t:binding.atom/>
 		 </reference>
     </component>
@@ -62,10 +62,10 @@
 		 </reference>
     </component>
     
-    <component name="WorkspaceCollectionComponent">
-        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.WorkspaceCollectionImpl"/>             
+    <component name="ContributionCollectionComponent">
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.ContributionCollectionImpl"/>             
         <property name="workspaceFileName">workspace.xml</property>             
-   		<service name="WorkspaceCollection">
+   		<service name="ContributionCollection">
    	 		<t:binding.atom uri="http://localhost:9990/workspace"/>
    		</service>
     </component>
@@ -92,6 +92,14 @@
    		<service name="CompositeCollection">
    	 		<t:binding.atom uri="http://localhost:9990/composite"/>
    		</service>
+    </component>
+
+    <component name="DeployableCompositeCollectionComponent">
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.DeployableCompositeCollectionImpl"/>
+   		<service name="CompositeCollection">
+   	 		<t:binding.atom uri="http://localhost:9990/deployable"/>
+   		</service>
+   		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalContributionCollection"/>
     </component>
 
     <component name="CloudCollectionComponent">

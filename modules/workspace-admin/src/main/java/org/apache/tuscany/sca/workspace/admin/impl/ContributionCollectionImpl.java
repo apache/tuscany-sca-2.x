@@ -23,7 +23,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -55,8 +54,9 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
-import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
@@ -65,7 +65,8 @@ import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
-import org.apache.tuscany.sca.workspace.admin.WorkspaceCollection;
+import org.apache.tuscany.sca.workspace.admin.ContributionCollection;
+import org.apache.tuscany.sca.workspace.admin.LocalContributionCollection;
 import org.apache.tuscany.sca.workspace.dependency.impl.ContributionDependencyAnalyzer;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor;
 import org.apache.tuscany.sca.workspace.xml.WorkspaceProcessor;
@@ -75,15 +76,17 @@ import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Document;
 
 /**
- * Implementation of a contribution workspace service component. 
+ * Implementation of a contribution collection service component. 
  *
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-public class WorkspaceCollectionImpl implements WorkspaceCollection {
+@Service(interfaces={ContributionCollection.class, LocalContributionCollection.class})
+public class ContributionCollectionImpl implements ContributionCollection, LocalContributionCollection {
 
     @Property
     public String workspaceFileName;
@@ -109,6 +112,9 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class);
+        
+        // Create model resolvers
+        ModelResolverExtensionPoint modelResolvers = new DefaultModelResolverExtensionPoint();
 
         // Create artifact processors
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
@@ -122,8 +128,8 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
         urlProcessors.addArtifactProcessor(new ContributionMetadataDocumentProcessor(staxProcessor, inputFactory));
         urlProcessors.addArtifactProcessor(new ContributionGeneratedMetadataDocumentProcessor(staxProcessor, inputFactory));
         
-        // Create workspace and contribution artifact processors
-        contributionInfoProcessor = new ContributionInfoProcessor(contributionFactory, urlProcessor);
+        // Create contribution info processor
+        contributionInfoProcessor = new ContributionInfoProcessor(modelFactories, modelResolvers, urlProcessor);
 
         // Read workspace.xml
         File file = new File(workspaceFileName);
@@ -220,21 +226,15 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
             
             // Read the contribution metadata into a temporary workspace
             Workspace dependencyWorkspace = workspaceFactory.createWorkspace();
-            for (Contribution c: workspace.getContributions()) {
-                URI uri = URI.create(c.getURI());
-                URL url;
-                try {
-                    url = url(c.getLocation());
-                } catch (MalformedURLException e) {
-                    throw new ServiceRuntimeException();
+            try {
+                for (Contribution c: workspace.getContributions()) {
+                    URI uri = URI.create(c.getURI());
+                    URL url = url(c.getLocation());
+                    Contribution contribution = (Contribution)contributionInfoProcessor.read(null, uri, url);
+                    dependencyWorkspace.getContributions().add(contribution);
                 }
-                Contribution contribution;
-                try {
-                    contribution = (Contribution)contributionInfoProcessor.read(null, uri, url);
-                } catch (ContributionReadException e) {
-                    throw new ServiceRuntimeException(e);
-                }
-                dependencyWorkspace.getContributions().add(contribution);
+            } catch (Exception e) {
+                throw new ServiceRuntimeException(e);
             }
             
             // Calculate the contribution dependencies
@@ -261,6 +261,12 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
         }
     }
     
+    /**
+     * Returns a URL from a location string.
+     * @param location
+     * @return
+     * @throws MalformedURLException
+     */
     private URL url(String location) throws MalformedURLException {
         URI uri = URI.create(location);
         if (uri.getScheme() == null) {
@@ -308,14 +314,8 @@ public class WorkspaceCollectionImpl implements WorkspaceCollection {
             XMLSerializer serializer = new XMLSerializer(os, format);
             serializer.serialize(document);
             
-        } catch (FileNotFoundException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (ContributionWriteException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (XMLStreamException e) {
-            throw new ServiceRuntimeException(e);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new ServiceRuntimeException(e);
         }
     }
 }
