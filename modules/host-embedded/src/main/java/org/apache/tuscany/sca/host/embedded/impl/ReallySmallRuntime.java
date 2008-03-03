@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.host.embedded.impl;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -274,10 +275,15 @@ public class ReallySmallRuntime {
         // Load and instantiate the modules found on the classpath (or any registered classloaders)
         modules = new ArrayList<ModuleActivator>();
         try {
-        	Set<ServiceDeclaration> moduleActivators = ServiceDiscovery.getInstance().getServiceDeclarations(ModuleActivator.class);
-        	
-            for (ServiceDeclaration moduleDeclarator : moduleActivators) { 
-            	Class<?> moduleClass = moduleDeclarator.loadClass();
+            Set<ServiceDeclaration> moduleActivators =
+                ServiceDiscovery.getInstance().getServiceDeclarations(ModuleActivator.class);
+            Set<String> moduleClasses = new HashSet<String>();
+            for (ServiceDeclaration moduleDeclarator : moduleActivators) {
+                if (moduleClasses.contains(moduleDeclarator.getClassName())) {
+                    continue;
+                }
+                moduleClasses.add(moduleDeclarator.getClassName());
+                Class<?> moduleClass = moduleDeclarator.loadClass();
                 ModuleActivator module = (ModuleActivator)moduleClass.newInstance();
                 modules.add(module);
             }
