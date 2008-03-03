@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.workspace.dependency.impl;
 
-import java.util.Set;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -90,8 +90,9 @@ public class ContributionDependencyAnalyzerTestCase extends TestCase {
         another.getExports().add(export);
         
         ContributionDependencyAnalyzer analyzer = new ContributionDependencyAnalyzer();
-        Set<Contribution> dependencies = analyzer.calculateContributionDependencies(workspace, importer);
-        assertTrue(dependencies.size() == 2);
+        List<Contribution> dependencies = analyzer.calculateContributionDependencies(workspace, importer);
+        assertTrue(dependencies.size() == 3);
+        assertTrue(dependencies.contains(importer));
         assertTrue(dependencies.contains(imported));
         assertTrue(dependencies.contains(imported2));
     }

@@ -47,14 +47,10 @@ public class DirectoryContributionScanner implements ContributionScanner {
     public URL getArtifactURL(URL contributionURL, String artifact) throws ContributionReadException {
         File directory = directory(contributionURL);
         File file = new File(directory, artifact);
-        if (file.exists()) {
-            try {
-                return file.toURI().toURL();
-            } catch (MalformedURLException e) {
-                throw new ContributionReadException(e);
-            }
-        } else {
-            return null;
+        try {
+            return file.toURI().toURL();
+        } catch (MalformedURLException e) {
+            throw new ContributionReadException(e);
         }
     }
 

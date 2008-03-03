@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.workspace.scanner.impl;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -55,12 +54,6 @@ public class JarContributionScanner implements ContributionScanner {
             } else {
                 url = new URL("jar:" + contributionURL.toExternalForm() + "!/" + artifact);
             }
-            try {
-                InputStream is = url.openStream();
-                is.close();
-            } catch (IOException e) {
-                return null;
-            }
             return url;
         } catch (MalformedURLException e) {
             throw new ContributionReadException(e);
@@ -82,7 +75,7 @@ public class JarContributionScanner implements ContributionScanner {
                     }
 
                     String name = entry.getName(); 
-                    if (!name.startsWith(".")) {
+                    if (name.length() != 0 && !name.startsWith(".")) {
                         
                         // Trim trailing /
                         if (name.endsWith("/")) {
@@ -101,7 +94,7 @@ public class JarContributionScanner implements ContributionScanner {
                                 } else {
                                     name = name.substring(0, s);
                                 }
-                                if (!names.contains(name)) {
+                                if (name.length() != 0 && !names.contains(name)) {
                                     names.add(name);
                                 } else {
                                     break;
