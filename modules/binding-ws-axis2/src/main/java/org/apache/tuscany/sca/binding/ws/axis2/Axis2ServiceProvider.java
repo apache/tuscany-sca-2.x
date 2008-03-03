@@ -81,7 +81,6 @@ import org.apache.axis2.transport.jms.JMSListener;
 import org.apache.axis2.transport.jms.JMSSender;
 import org.apache.axis2.transport.jms.JMSUtils;
 import org.apache.axis2.wsdl.WSDLConstants;
-import org.apache.neethi.Policy;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
@@ -409,11 +408,13 @@ public class Axis2ServiceProvider {
             List<?> wsdlPortExtensions = wsdlPort.getExtensibilityElements();
             for (Object extension : wsdlPortExtensions) {
                 if (extension instanceof SOAPAddress) {
-                    return URI.create(((SOAPAddress)extension).getLocationURI());
+                    String uri = ((SOAPAddress)extension).getLocationURI();
+                    return (uri == null || "".equals(uri)) ? null : URI.create(uri);
                 }
                 if (extension instanceof SOAP12Address) {
                     SOAP12Address address = (SOAP12Address)extension;
-                    return URI.create((address.getLocationURI()));
+                    String uri = address.getLocationURI();
+                    return (uri == null || "".equals(uri)) ? null : URI.create(uri);
                 }
             }
         }
@@ -495,8 +496,10 @@ public class Axis2ServiceProvider {
         // these but ...
 
         Axis2ServiceClient.setServiceAndPort(wsBinding);
-        QName serviceQName = wsBinding.getServiceName();
-        String portName = wsBinding.getPortName();
+        // The service and port can be set by the above call
+        QName serviceQName =
+            wsBinding.getService() != null ? wsBinding.getService().getQName() : wsBinding.getServiceName();
+        String portName = wsBinding.getPort() != null ? wsBinding.getPort().getName() : wsBinding.getPortName();
         
         Definition def = getDefinition(definition, serviceQName);
 

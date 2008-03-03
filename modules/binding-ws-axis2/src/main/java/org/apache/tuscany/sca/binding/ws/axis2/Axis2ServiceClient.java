@@ -30,8 +30,10 @@ import javax.wsdl.Definition;
 import javax.wsdl.Import;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
+import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap.SOAPOperation;
+import javax.wsdl.extensions.soap12.SOAP12Address;
 import javax.xml.namespace.QName;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -61,7 +63,9 @@ import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.tuscany.sca.assembly.AbstractContract;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.XMLDocumentHelper;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -83,13 +87,11 @@ public class Axis2ServiceClient {
     private static final QName SOAP12_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0", "soap12");
     private List<PolicyHandler> policyHandlerList = new ArrayList<PolicyHandler>();
 
-    
-
     public Axis2ServiceClient(RuntimeComponent component,
                               AbstractContract contract,
                               WebServiceBinding wsBinding,
                               ServletHost servletHost,
-                              MessageFactory messageFactory, 
+                              MessageFactory messageFactory,
                               Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames) {
 
         this.wsBinding = wsBinding;
@@ -97,14 +99,14 @@ public class Axis2ServiceClient {
     }
 
     protected void start() {
-        if (serviceClient == null){
+        if (serviceClient == null) {
             this.serviceClient = createServiceClient();
         }
     }
-    
+
     public ServiceClient getServiceClient() {
         return serviceClient;
-    }    
+    }
 
     /**
      * Create an Axis2 ServiceClient
@@ -115,17 +117,18 @@ public class Axis2ServiceClient {
             ConfigurationContext configContext = tuscanyAxisConfigurator.getConfigurationContext();
             createPolicyHandlers();
             setupPolicyHandlers(policyHandlerList, configContext);
-            
+
             Definition wsdlDefinition = wsBinding.getWSDLDefinition().getDefinition();
             setServiceAndPort(wsBinding);
-            QName serviceQName = wsBinding.getServiceName();
-            String portName = wsBinding.getPortName();
+            // The service and port can be set by the above call
+            QName serviceQName =
+                wsBinding.getService() != null ? wsBinding.getService().getQName() : wsBinding.getServiceName();
+            String portName = wsBinding.getPort() != null ? wsBinding.getPort().getName() : wsBinding.getPortName();
             AxisService axisService =
                 createClientSideAxisService(wsdlDefinition, serviceQName, portName, new Options());
 
-            HttpClient httpClient = (HttpClient) configContext.getProperty(HTTPConstants.CACHED_HTTP_CLIENT); 
-            if (httpClient == null)
-            {
+            HttpClient httpClient = (HttpClient)configContext.getProperty(HTTPConstants.CACHED_HTTP_CLIENT);
+            if (httpClient == null) {
                 MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
                 HttpConnectionManagerParams connectionManagerParams = new HttpConnectionManagerParams();
                 connectionManagerParams.setDefaultMaxConnectionsPerHost(2);
@@ -133,16 +136,14 @@ public class Axis2ServiceClient {
                 connectionManagerParams.setStaleCheckingEnabled(true);
                 connectionManagerParams.setLinger(0);
                 connectionManager.setParams(connectionManagerParams);
-                httpClient  = new HttpClient(connectionManager);
+                httpClient = new HttpClient(connectionManager);
                 configContext.setThreadPool(new ThreadPool(1, 5));
-                configContext.setProperty(HTTPConstants.REUSE_HTTP_CLIENT,
-                                          Boolean.TRUE);
-                configContext.setProperty(HTTPConstants.CACHED_HTTP_CLIENT,
-                                          httpClient);
+                configContext.setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
+                configContext.setProperty(HTTPConstants.CACHED_HTTP_CLIENT, httpClient);
             }
 
             return new ServiceClient(configContext, axisService);
-           
+
         } catch (AxisFault e) {
             throw new RuntimeException(e); // TODO: better exception
         } catch (ClassNotFoundException e) {
@@ -153,7 +154,7 @@ public class Axis2ServiceClient {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * URI resolver implementation for xml schema
      */
@@ -178,7 +179,7 @@ public class Axis2ServiceClient {
             }
         }
     }
-    
+
     /**
      * Workaround for https://issues.apache.org/jira/browse/AXIS2-3205
      * @param definition
@@ -186,11 +187,11 @@ public class Axis2ServiceClient {
      * @return
      */
     private static Definition getDefinition(Definition definition, QName serviceName) {
-        
-        if (serviceName == null){
+
+        if (serviceName == null) {
             return definition;
         }
-        
+
         if (definition == null) {
             return null;
         }
@@ -209,7 +210,7 @@ public class Axis2ServiceClient {
         }
         return null;
     }
-    
+
     /**
      * This method is copied from AxisService.createClientSideAxisService to
      * work around http://issues.apache.org/jira/browse/WSCOMMONS-228
@@ -227,24 +228,29 @@ public class Axis2ServiceClient {
                                                           String portName,
                                                           Options options) throws AxisFault {
         Definition def = getDefinition(wsdlDefinition, wsdlServiceName);
-        WSDL11ToAxisServiceBuilder serviceBuilder =
-                new WSDL11ToAxisServiceBuilder(def, wsdlServiceName, portName);
+        WSDL11ToAxisServiceBuilder serviceBuilder = new WSDL11ToAxisServiceBuilder(def, wsdlServiceName, portName);
         serviceBuilder.setServerSide(false);
         // [rfeng] Add a custom resolver to work around WSCOMMONS-228
         serviceBuilder.setCustomResolver(new URIResolverImpl(def));
         serviceBuilder.setBaseUri(def.getDocumentBaseURI());
         // [rfeng]
         AxisService axisService = serviceBuilder.populateService();
-        AxisEndpoint axisEndpoint = (AxisEndpoint) axisService.getEndpoints()
-                .get(axisService.getEndpointName());
+        AxisEndpoint axisEndpoint = (AxisEndpoint)axisService.getEndpoints().get(axisService.getEndpointName());
         options.setTo(new EndpointReference(axisEndpoint.getEndpointURL()));
         if (axisEndpoint != null) {
-            options.setSoapVersionURI((String) axisEndpoint.getBinding()
-                    .getProperty(WSDL2Constants.ATTR_WSOAP_VERSION));
+            options.setSoapVersionURI((String)axisEndpoint.getBinding().getProperty(WSDL2Constants.ATTR_WSOAP_VERSION));
         }
         return axisService;
     }
 
+    private static <T extends ExtensibilityElement> T getExtensibilityElement(List elements, Class<T> type) {
+        for (Object e : elements) {
+            if (type.isInstance(e)) {
+                return type.cast(e);
+            }
+        }
+        return null;
+    }
 
     /**
      * Ensure the WSDL definition contains a suitable service and port
@@ -254,6 +260,10 @@ public class Axis2ServiceClient {
         QName serviceQName = wsBinding.getServiceName();
         String portName = wsBinding.getPortName();
 
+        if (portName != null || serviceQName != null) {
+            return;
+        }
+
         // If no service is specified in the binding element, allow for WSDL that
         // only contains a portType and not a service and port.  Synthesize a
         // service and port using WSDL4J and add them to the wsdlDefinition to
@@ -261,25 +271,26 @@ public class Axis2ServiceClient {
         //FIXME: it would be better to do this for all WSDLs to explictly control the
         // service and port that Axis will use, rather than just hoping the user has
         // placed a suitable service and/or port first in the WSDL.
-        if (serviceQName == null && wsBinding.getBinding() != null) {
-            QName bindingQName = wsBinding.getBindingName();
-            Port port = wsdlDefinition.createPort();
-            portName = "$port$." + bindingQName.getLocalPart();
-            port.setName(portName);
-            wsBinding.setPortName(portName);
-            port.setBinding(wsBinding.getBinding());
-            Service service = wsdlDefinition.createService();
-            serviceQName = new QName(bindingQName.getNamespaceURI(),
-                                     "$service$." + bindingQName.getLocalPart());
-            service.setQName(serviceQName);
-            wsBinding.setServiceName(serviceQName);
-            service.addPort(port);
-            wsdlDefinition.addService(service);
+        WSDLDefinitionHelper helper = new WSDLDefinitionHelper();
+        if (wsBinding.getBinding() == null) {
+            InterfaceContract ic = wsBinding.getBindingInterfaceContract();
+            WSDLInterface wi = (WSDLInterface)ic.getInterface();
+            Service service = helper.createService(wsdlDefinition, wi.getPortType());
+            Port port = (Port)service.getPorts().values().iterator().next();
+            wsBinding.setService(service);
+            wsBinding.setPort(port);
+            wsBinding.setBinding(port.getBinding());
+        } else {
+            Service service = helper.createService(wsdlDefinition, wsBinding.getBinding());
+            Port port = (Port)service.getPorts().values().iterator().next();
+            wsBinding.setService(service);
+            wsBinding.setPort(port);
         }
+
     }
 
     protected void stop() {
-        if (serviceClient != null){
+        if (serviceClient != null) {
             // close all connections that we have initiated, so that the jetty server
             // can be restarted without seeing ConnectExceptions
             HttpClient httpClient =
@@ -287,7 +298,7 @@ public class Axis2ServiceClient {
                     .getProperty(HTTPConstants.CACHED_HTTP_CLIENT);
             if (httpClient != null)
                 ((MultiThreadedHttpConnectionManager)httpClient.getHttpConnectionManager()).shutdown();
-            
+
             serviceClient = null;
         }
     }
@@ -312,7 +323,8 @@ public class Axis2ServiceClient {
 
         options.setTimeOutInMilliSeconds(30 * 1000); // 30 seconds
 
-        SOAPFactory soapFactory = requiresSOAP12() ? OMAbstractFactory.getSOAP12Factory() : OMAbstractFactory.getSOAP11Factory();
+        SOAPFactory soapFactory =
+            requiresSOAP12() ? OMAbstractFactory.getSOAP12Factory() : OMAbstractFactory.getSOAP11Factory();
         QName wsdlOperationQName = new QName(operationName);
 
         Axis2BindingInvoker invoker;
@@ -358,9 +370,14 @@ public class Axis2ServiceClient {
                     ep = ((SOAPAddress)extension).getLocationURI();
                     break;
                 }
+                if (extension instanceof SOAP12Address) {
+                    SOAP12Address address = (SOAP12Address)extension;
+                    ep = address.getLocationURI();
+                    break;
+                }
             }
         }
-        return ep != null ? new EndpointReference(ep) : null;
+        return ep == null || "".equals(ep) ? null : new EndpointReference(ep);
     }
 
     protected org.apache.axis2.addressing.EndpointReference getEPR(WebServiceBinding wsBinding) {
@@ -369,7 +386,8 @@ public class Axis2ServiceClient {
         }
         try {
 
-            XMLStreamReader parser = XMLInputFactory.newInstance().createXMLStreamReader(new DOMSource(wsBinding.getEndPointReference()));
+            XMLStreamReader parser =
+                XMLInputFactory.newInstance().createXMLStreamReader(new DOMSource(wsBinding.getEndPointReference()));
             StAXOMBuilder builder = new StAXOMBuilder(parser);
             OMElement omElement = builder.getDocumentElement();
             org.apache.axis2.addressing.EndpointReference epr = EndpointReferenceHelper.fromOM(omElement);
@@ -400,16 +418,13 @@ public class Axis2ServiceClient {
         }
         return null;
     }
-    
-    
-    private void createPolicyHandlers() throws IllegalAccessException, InstantiationException,
-        ClassNotFoundException {
+
+    private void createPolicyHandlers() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
         if (wsBinding instanceof PolicySetAttachPoint) {
             PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding;
             PolicyHandler policyHandler = null;
             for (PolicySet policySet : policiedBinding.getPolicySets()) {
-                policyHandler =
-                    PolicyHandlerUtils.findPolicyHandler(policySet, policyHandlerClassnames);
+                policyHandler = PolicyHandlerUtils.findPolicyHandler(policySet, policyHandlerClassnames);
                 if (policyHandler != null) {
                     policyHandler.setApplicablePolicySet(policySet);
                     policyHandlerList.add(policyHandler);
@@ -418,8 +433,8 @@ public class Axis2ServiceClient {
         }
     }
 
-    private void setupPolicyHandlers(List<PolicyHandler> policyHandlers, ConfigurationContext configContext)  {
-        for ( PolicyHandler aHandler : policyHandlers ) {
+    private void setupPolicyHandlers(List<PolicyHandler> policyHandlers, ConfigurationContext configContext) {
+        for (PolicyHandler aHandler : policyHandlers) {
             aHandler.setUp(configContext);
         }
     }

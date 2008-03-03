@@ -52,10 +52,8 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 public class WebServiceBindingProcessor implements
     StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
@@ -305,19 +303,19 @@ public class WebServiceBindingProcessor implements
 
     private PortType getPortType(WebServiceBinding model) {
         PortType portType = null;
-        if (model.getService() != null) {
+        if (model.getPort() != null) {
+            portType = model.getPort().getBinding().getPortType();
+        } else if (model.getEndpoint() != null) {
+            portType = model.getPort().getBinding().getPortType();
+        } else if (model.getBinding() != null) {
+            portType = model.getBinding().getPortType();
+        } else if (model.getService() != null) {
             // FIXME: How to find the compatible port?
             Map ports = model.getService().getPorts();
             if (!ports.isEmpty()) {
                 Port port = (Port)ports.values().iterator().next();
                 portType = port.getBinding().getPortType();
             }
-        } else if (model.getPort() != null) {
-            portType = model.getPort().getBinding().getPortType();
-        } else if (model.getEndpoint() != null) {
-            portType = model.getPort().getBinding().getPortType();
-        } else if (model.getBinding() != null) {
-            portType = model.getBinding().getPortType();
         }
         return portType;
     }

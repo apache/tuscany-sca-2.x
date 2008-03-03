@@ -264,7 +264,7 @@ public class TuscanyWSDLTypesGenerator implements TuscanyJava2WSDLConstants {
 
         XmlSchemaElement globalElement = new XmlSchemaElement();
         globalElement.setSchemaType(complexType);
-        globalElement.setName(formGlobalElementName(localPartName));
+        globalElement.setName(localPartName);
         globalElement.setQName(elementName);
 
         xmlSchema.getItems().add(globalElement);
@@ -275,11 +275,6 @@ public class TuscanyWSDLTypesGenerator implements TuscanyJava2WSDLConstants {
                                        elementName);
 
         return complexType;
-    }
-
-    private String formGlobalElementName(String typeName) {
-        String firstChar = typeName.substring(0, 1);
-        return typeName.replaceFirst(firstChar, firstChar.toLowerCase());
     }
 
     public TuscanyTypeTable getTypeTable() {
