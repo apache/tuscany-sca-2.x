@@ -49,7 +49,6 @@ import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -74,6 +73,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     protected Class<?> businessInterface;
 
     protected boolean fixedWire = true;
+
     protected transient Map<Method, InvocationChain> chains = new HashMap<Method, InvocationChain>();
 
     public JDKInvocationHandler(MessageFactory messageFactory, Class<?> businessInterface, RuntimeWire wire) {
@@ -98,14 +98,14 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
     protected void init(RuntimeWire wire) {
         if (wire != null) {
-		    /* [scn] no need to clone because the wire doesn't get modified
+            /* [scn] no need to clone because the wire doesn't get modified
             try {
                 // Clone the wire so that reference parameters can be changed
                 this.wire = (RuntimeWire)wire.clone();
             } catch (CloneNotSupportedException e) {
                 throw new ServiceRuntimeException(e);
             }
-			[scn] */
+            [scn] */
             initConversational(wire);
         }
     }
@@ -187,6 +187,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
      * 
      * @return true if the operation matches, false if does not
      */
+    // FIXME: Should it be in the InterfaceContractMapper?
     @SuppressWarnings("unchecked")
     private static boolean match(Operation operation, Method method) {
         if (!method.getName().equals(operation.getName())) {
@@ -198,14 +199,28 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                 return true;
             }
         }
+        
+        // For remotable interface, operation is not overloaded. 
+        if(operation.getInterface().isRemotable()) {
+            return true;
+        }
+        
         Class<?>[] params = method.getParameterTypes();
-        DataType<List<DataType>> inputType = operation.getInputType();
+
+        DataType<List<DataType>> inputType = null;
+        if (operation.isWrapperStyle()) {
+            inputType = operation.getWrapper().getUnwrappedInputType();
+        } else {
+            inputType = operation.getInputType();
+        }
         List<DataType> types = inputType.getLogical();
         boolean matched = true;
         if (types.size() == params.length && method.getName().equals(operation.getName())) {
             for (int i = 0; i < params.length; i++) {
                 Class<?> clazz = params[i];
-                if (!operation.getInputType().getLogical().get(i).getPhysical().isAssignableFrom(clazz)) {
+                Class<?> type = types.get(i).getPhysical();
+                // Object.class.isAssignableFrom(int.class) returns false
+                if (type != Object.class && (!type.isAssignableFrom(clazz))) {
                     matched = false;
                 }
             }
@@ -340,23 +355,22 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             // Not conversational or the conversation has been started
             return;
         }
-        
+
         ConversationManager conversationManager = ((RuntimeWireImpl)wire).getConversationManager();
-        
+
         if (conversation == null || conversation.getState() == ConversationState.ENDED) {
-     
+
             conversation = conversationManager.startConversation(getConversationID());
             conversation.initializeConversationAttributes(wire.getTarget().getComponent());
             if (callableReference != null) {
                 ((CallableReferenceImpl)callableReference).attachConversation(conversation);
             }
+        } else if (conversation.isExpired()) {
+            throw new ConversationEndedException("Conversation has expired.");
         }
-        else if (conversation.isExpired()){
-        	throw new ConversationEndedException("Conversation has expired.");
-        }
-        
+
         conversation.updateLastReferencedTime();
-        
+
         msg.getFrom().getReferenceParameters().setConversationID(conversation.getConversationID());
 
     }
@@ -374,8 +388,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         // We check that conversation has not already ended as there is only one
         // conversation manager in the runtime and so, in the case of remote bindings, 
         // the conversation will already have been stopped when we get back to the client
-        if ((sequence == ConversationSequence.CONVERSATION_END) && 
-            (conversation.getState()!= ConversationState.ENDED)) {
+        if ((sequence == ConversationSequence.CONVERSATION_END) && (conversation.getState() != ConversationState.ENDED)) {
 
             // remove conversation id from scope container
             ScopeContainer scopeContainer = getConversationalScopeContainer(wire);
@@ -383,8 +396,8 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             if (scopeContainer != null) {
                 scopeContainer.remove(conversation.getConversationID());
             }
-            
-            conversation.end();            
+
+            conversation.end();
         }
     }
 
