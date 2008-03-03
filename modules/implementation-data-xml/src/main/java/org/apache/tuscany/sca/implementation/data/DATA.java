@@ -22,25 +22,43 @@ import javax.xml.stream.XMLStreamReader;
 
 /**
  * The service interface of a DAS service provided by DAS components.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public interface DATA {
-    
-    /**
-     * Retrieve the Database table contents
-     * If a id is given, the results will be filtered to a matching row
-     * @param id The PK that identifies the row on the table
-     * @return The row content in XML format
-     */
-    XMLStreamReader get(String id);
-    
-    /**
-     * Delete the Database table contents
-     * If a id is given, only a specific row will be deleted
-     * @param id The PK that identifies the row on the table
-     * @return The number of rows affected
-     */
-    int delete(String id);
-    
+
+	/**
+	 * Retrieve the Database table contents If a id is given, the results will
+	 * be filtered to a matching row
+	 * 
+	 * @param id The PK that identifies the row on the table
+	 * @return The row content in XML format
+	 */
+	XMLStreamReader get(String id);
+
+	/**
+	 * Insert new content in the Database
+	 * 
+	 * @param insertStream The insertion in XML format
+	 * @return The number of rows affected
+	 */
+	int insert(XMLStreamReader insertStream);
+
+	/**
+	 * Update the Database table contents
+	 * 
+	 * @param updateStream The updates in XML format
+	 * @return The number of rows affected
+	 */
+	int update(XMLStreamReader updateStream);
+
+	/**
+	 * Delete the Database table contents If a id is given, only a specific row
+	 * will be deleted
+	 * 
+	 * @param id The PK that identifies the row on the table
+	 * @return The number of rows affected
+	 */
+	int delete(String id);
+
 }
