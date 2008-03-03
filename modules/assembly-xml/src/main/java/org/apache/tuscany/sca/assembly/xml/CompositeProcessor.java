@@ -256,6 +256,13 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                             
                             composite.getProperties().add(property);
                         }
+                        
+                        // TUSCANY-1949
+                        // If the proerty doesn't have a value, the END_ELEMENT event is read by the readPropertyValue
+                        if (reader.getEventType() == END_ELEMENT && PROPERTY_QNAME.equals(reader.getName())) {
+                            property = null;
+                            componentProperty = null;
+                        }
 
                     } else if (COMPONENT_QNAME.equals(name)) {
 
