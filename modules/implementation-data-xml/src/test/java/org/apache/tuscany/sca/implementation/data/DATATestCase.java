@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.implementation.data;
 
+import java.io.FileInputStream;
+
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
@@ -52,40 +55,78 @@ public class DATATestCase extends TestCase {
         scaDomain.close();
     }
     
-    public void testDeleteByID() throws Exception {
-        System.out.println(">testDeleteByID");
-        
-        Integer companyID = new Integer(52);
-        int dRows = dataService.delete(companyID.toString());
-        System.out.println("Deleted rows: "+dRows);
+    public void testInsert() throws Exception {
+        System.out.println(">testInsert");
+
+        //Read and process the XML file
+        FileInputStream fileInputStream = new FileInputStream("src/test/resources/insert.xml");
+        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(fileInputStream);
+
+        int result = dataService.insert(reader);
+        assertEquals(result,2);
+
+        System.out.println("Number of rows inserted: "+result);
+
+        reader.close();
     }
-    
+
     public void testGet() throws Exception {
+        
         System.out.println(">testGet");
         
         XMLStreamReader reader = dataService.get(null);
+        assertNotNull(reader);
         String xml = new XMLStreamReader2String().transform(reader, null);
         System.out.println(xml);
         reader.close();
     }
-    
+
+    public void testUpdate() throws Exception {
+
+        System.out.println(">testUpdate");
+
+        //Read and process the XML file
+        FileInputStream fileInputStream = new FileInputStream("src/test/resources/update.xml");
+        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(fileInputStream);
+
+        int result = dataService.update(reader);
+        assertEquals(result,1);
+        System.out.println("Number of rows affected: "+result);
+
+        reader.close();
+    }
+
     public void testGetByID() throws Exception {
         System.out.println(">testGetByID");
-        
-        Integer companyID = new Integer(51);
-        
+
+        Integer companyID = new Integer(4);
+
         XMLStreamReader reader = dataService.get(companyID.toString());
         assertNotNull(reader);
         String xml = new XMLStreamReader2String().transform(reader, null);
         System.out.println(xml);
         reader.close();
     }
-    
+
+    public void testDeleteByID() throws Exception {
+        System.out.println(">testDeleteByID");
+
+        Integer companyID = new Integer(4);
+        int result = dataService.delete(companyID.toString());
+        assertEquals(result,1);
+        System.out.println("Number of rows deleted: "+result);
+    }
+
     public void testDelete() throws Exception {
         System.out.println(">testDelete");
-        
-        int dRows = dataService.delete(null);
-        System.out.println("Deleted rows: "+dRows);
+
+        int result = dataService.delete(null);
+        assertEquals(result,4);
+        System.out.println("Number of rows deleted: "+result);
+
+        System.out.println("recreating database...");
+        //Helper.createDB();
+        System.out.println("done!");
     }
     
 }

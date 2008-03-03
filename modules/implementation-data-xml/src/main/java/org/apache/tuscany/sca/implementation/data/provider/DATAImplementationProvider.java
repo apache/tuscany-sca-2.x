@@ -31,14 +31,14 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * @version $Rev$ $Date$
  */
 public class DATAImplementationProvider implements ImplementationProvider {
-    private RuntimeComponent component;
+    //private RuntimeComponent component;
     private DATAImplementation implementation;
 
     /**
      * Constructs a new DATA implementation.
      */
     public DATAImplementationProvider(RuntimeComponent component, DATAImplementation implementation) {
-        this.component = component;
+        //this.component = component;
         this.implementation = implementation;
     }
 
@@ -48,8 +48,11 @@ public class DATAImplementationProvider implements ImplementationProvider {
 
         if (operationName.equals("get")) {
             return new DATAInvoker.GetInvoker(operation, implementation.getConnectionInfo(), tableName);
-        }      
-        else if (operationName.equals("delete")) {
+        } else if (operationName.equals("insert")) {
+        	return new DATAInvoker.InsertInvoker(operation, implementation.getConnectionInfo(), tableName);
+        } else if (operationName.equals("update")) {
+        	return new DATAInvoker.UpdateInvoker(operation, implementation.getConnectionInfo(), tableName);
+        } else if (operationName.equals("delete")) {
             return new DATAInvoker.DeleteInvoker(operation, implementation.getConnectionInfo(), tableName);
         }
 
