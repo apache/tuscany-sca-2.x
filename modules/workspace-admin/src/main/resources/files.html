@@ -21,6 +21,7 @@
 <title>SCA Contribution File Server</title>
 
 <script type="text/javascript" src="files.js"></script>
+<script type="text/javascript" src="utils.js"></script>
 
 <script language="JavaScript">
 
@@ -46,7 +47,7 @@
 	}				
 
 	function deleteFile() {
-		var list = document.filesForm.files;
+		var list = array(document.filesForm.files);
 		for (var i=0; i < list.length; i++) {
 			if (list[i].checked) {
 			    var id = list[i].value;
@@ -68,10 +69,12 @@
 
 </head>
 
-<body>
+<body onload="toolbar()">
+  <div id="toolbar"></div>
+
   <div id="fileServer">
   <p style="font-size:150%">
-  <b>SCA Contribution Files</b>&nbsp;<a href="/feed/files/"><img src="icons/feed-icon.png" border="0"></a>
+  <b>SCA Contribution File Server</b>&nbsp;<a href="/feed/files/"><img src="icons/feed-icon.png" border="0"></a>
   </p>
   <form name="filesForm">
     <div id="files" ></div>

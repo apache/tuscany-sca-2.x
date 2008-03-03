@@ -21,6 +21,7 @@
 <title>SCA Contributions</title>
 
 <script type="text/javascript" src="workspace.js"></script>
+<script type="text/javascript" src="utils.js"></script>
 
 <script language="JavaScript">
 
@@ -42,7 +43,7 @@
 				contributions += '<tr valign="bottom">'
 				contributions += '<td><input name="contributions" type="checkbox" value="' + id + '">' +
 											'<a href=\"' + location + '\">' + id + '</a></td>';
-				contributions += '<td>&nbsp;&nbsp;&nbsp;<a href=\"/workspace/?importedBy=' + id + '\">dependencies</a></td>';
+				contributions += '<td>&nbsp;&nbsp;&nbsp;<a href=\"/workspace/?requiredBy=' + id + '\">dependencies</a></td>';
 				contributions += '<td>&nbsp;&nbsp;&nbsp;<a href=\"/deployable/?contribution=' + id + '\">deployables</a></td>';
 				contributions += '</tr>';
 			}
@@ -52,7 +53,7 @@
 	}				
 
 	function deleteContribution() {
-		var contributions  = document.workspaceForm.contributions;
+		var contributions  = array(document.workspaceForm.contributions);
 		for (var i=0; i < contributions.length; i++) {
 			if (contributions[i].checked) {
 			    var id = contributions[i].value;
@@ -88,10 +89,12 @@
 
 </head>
 
-<body>
+<body onload="toolbar()">
+  <div id="toolbar"></div>
+
   <div id="workspace">
   <p style="font-size:150%">
-  <b>SCA Contributions</b>&nbsp;<a href="/workspace/"><img src="icons/feed-icon.png" border="0"></a>
+  <b>SCA Domain</b><br><br><b>Contributions</b>&nbsp;<a href="/workspace/"><img src="icons/feed-icon.png" border="0"></a>
   </p>
   <form name="workspaceForm">
     <div id="contributions" ></div>

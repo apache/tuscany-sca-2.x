@@ -20,9 +20,11 @@
 package org.apache.tuscany.sca.workspace.admin.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URLDecoder;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -86,13 +88,38 @@ public class ContributionFileServiceImpl extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        // Download a contribution
-        String path = request.getPathInfo();
+        // Download a contribution file
+        String requestURI = URLDecoder.decode(request.getRequestURI(), "UTF-8");
+        String path = requestURI.substring(request.getServletPath().length());
         if (path.startsWith("/")) {
             path = path.substring(1);
         }
         try {
-            FileInputStream is = new FileInputStream(new File(files, path));
+            URI uri = URI.create(path);
+            
+            // Default to file protocol
+            if (uri.getScheme() == null) {
+                uri = new File(files, path).toURI();
+            }
+            
+            // Support the following syntaxes
+            // foo.jar!/file.txt
+            // directory!/file.txt
+            // directory/!/file.txt
+            String str = uri.toString();
+            int e = str.indexOf("!/"); 
+            if (e != -1) {
+                int s = str.lastIndexOf('/', e - 2) +1;
+                if (str.substring(s, e).contains(".")) {
+                    str = "jar:" + str;
+                } else {
+                    str = str.substring(0, e) + str.substring(e + 1);
+                }
+                uri = URI.create(str);
+            }
+            
+            // Read the file and write to response 
+            InputStream is = uri.toURL().openStream();
             ServletOutputStream os = response.getOutputStream();
             byte[] buffer = new byte[4096];
             for (;;) {
@@ -104,6 +131,7 @@ public class ContributionFileServiceImpl extends HttpServlet {
             }
             is.close();
             os.flush();
+            
       } catch (FileNotFoundException e) {
           response.sendError(HttpServletResponse.SC_NOT_FOUND);
       }

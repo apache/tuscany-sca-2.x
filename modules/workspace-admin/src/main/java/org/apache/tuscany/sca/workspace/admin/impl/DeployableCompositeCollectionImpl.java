@@ -35,6 +35,8 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
+import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
@@ -48,6 +50,8 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;
@@ -56,13 +60,16 @@ import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.workspace.admin.CompositeCollection;
+import org.apache.tuscany.sca.workspace.admin.LocalCompositeCollection;
 import org.apache.tuscany.sca.workspace.admin.LocalContributionCollection;
-import org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor;
+import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Service;
 
 /**
  * Implementation of a deployable composite collection service. 
@@ -70,13 +77,16 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-public class DeployableCompositeCollectionImpl implements CompositeCollection {
+@Service(interfaces={CompositeCollection.class, LocalCompositeCollection.class})
+public class DeployableCompositeCollectionImpl implements CompositeCollection, LocalCompositeCollection {
     
     @Reference
     public LocalContributionCollection contributionCollection;
 
+    private ModelFactoryExtensionPoint modelFactories;
+    private ModelResolverExtensionPoint modelResolvers;
     private AssemblyFactory assemblyFactory;
-    private URLArtifactProcessor<Contribution> contributionInfoProcessor;
+    private URLArtifactProcessor<Contribution> contributionContentProcessor;
     
     /**
      * Initialize the workspace administration component.
@@ -85,27 +95,31 @@ public class DeployableCompositeCollectionImpl implements CompositeCollection {
     public void init() throws IOException, ContributionReadException, XMLStreamException, ParserConfigurationException {
         
         // Create factories
-        ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
+        modelFactories = new DefaultModelFactoryExtensionPoint();
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
 
         // Create model resolvers
-        ModelResolverExtensionPoint modelResolvers = new DefaultModelResolverExtensionPoint();
+        modelResolvers = new DefaultModelResolverExtensionPoint();
 
         // Create artifact processors
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(modelFactories);
         StAXArtifactProcessor<Object> staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
         staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, staxProcessor));
 
         URLArtifactProcessorExtensionPoint urlProcessors = new DefaultURLArtifactProcessorExtensionPoint(modelFactories);
         URLArtifactProcessor<Object> urlProcessor = new ExtensibleURLArtifactProcessor(urlProcessors);
         urlProcessors.addArtifactProcessor(new ContributionMetadataDocumentProcessor(staxProcessor, inputFactory));
         urlProcessors.addArtifactProcessor(new ContributionGeneratedMetadataDocumentProcessor(staxProcessor, inputFactory));
+        urlProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory));
         
-        // Create contribution info processor
-        contributionInfoProcessor = new ContributionInfoProcessor(modelFactories, modelResolvers, urlProcessor);
+        // Create contribution processors
+        contributionContentProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor);
 
     }
     
@@ -122,7 +136,9 @@ public class DeployableCompositeCollectionImpl implements CompositeCollection {
             try {
                 URI uri = URI.create(contributionEntry.getKey());
                 URL url = url(contributionEntry.getData().getLink());
-                contribution = (Contribution)contributionInfoProcessor.read(null, uri, url);
+                contribution = (Contribution)contributionContentProcessor.read(null, uri, url);
+                ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
+                contributionContentProcessor.resolve(contribution, modelResolver);
             } catch (Exception e) {
                 throw new ServiceRuntimeException(e);
             }
@@ -133,7 +149,7 @@ public class DeployableCompositeCollectionImpl implements CompositeCollection {
                 entry.setKey(name(deployable.getName()));
                 Item item = new Item();
                 item.setTitle(name(deployable.getName()));
-                item.setLink("/workspace/" + contribution.getURI());
+                item.setLink(deployableLink(contribution.getLocation(), deployable.getURI()));
                 entry.setData(item);
                 entries.add(entry);
             }
@@ -171,14 +187,16 @@ public class DeployableCompositeCollectionImpl implements CompositeCollection {
             try {
                 contributionItem = contributionCollection.get(key);
             } catch (NotFoundException e) {
-                return null;
+                return entries.toArray(new Entry[entries.size()]);
             }
 
             Contribution contribution;
             try {
                 URI uri = URI.create(key);
                 URL url = url(contributionItem.getLink());
-                contribution = (Contribution)contributionInfoProcessor.read(null, uri, url);
+                contribution = (Contribution)contributionContentProcessor.read(null, uri, url);
+                ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
+                contributionContentProcessor.resolve(contribution, modelResolver);
             } catch (Exception e) {
                 throw new ServiceRuntimeException(e);
             }
@@ -189,7 +207,7 @@ public class DeployableCompositeCollectionImpl implements CompositeCollection {
                 entry.setKey(name(deployable.getName()));
                 Item item = new Item();
                 item.setTitle(name(deployable.getName()));
-                item.setLink("/workspace/" + deployable.getURI());
+                item.setLink(deployableLink(contribution.getLocation(), deployable.getURI()));
                 entry.setData(item);
                 entries.add(entry);
             }
@@ -198,6 +216,15 @@ public class DeployableCompositeCollectionImpl implements CompositeCollection {
             
         } else {
             throw new UnsupportedOperationException();
+        }
+    }
+    
+    private static String deployableLink(String contributionLocation, String deployableURI) {
+        URI uri = URI.create(contributionLocation);
+        if (uri.getPath().startsWith("/files/")) {
+            return contributionLocation + "!/" + deployableURI;
+        } else {
+            return "/files/" + contributionLocation + "!/" + deployableURI;
         }
     }
     
