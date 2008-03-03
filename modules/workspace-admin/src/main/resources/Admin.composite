@@ -22,6 +22,13 @@
 	targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
     name="Admin">
 
+    <component name="AdminUI">
+        <t:implementation.widget location="home.html"/>
+        <service name="Widget">
+        	<t:binding.http uri="http://localhost:9990/ui/home"/>
+        </service>
+    </component>
+    
     <component name="ContributionUI">
         <t:implementation.widget location="workspace.html"/>
         <service name="Widget">
@@ -47,7 +54,7 @@
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/composite"/>
         </service>
-		 <reference name="domainComposite" target="DomainCompositeCollectionComponent">
+		 <reference name="domainComposite" target="DomainCompositeCollectionComponent/CompositeCollection">
 		 	<t:binding.atom/>
 		 </reference>
     </component>
@@ -57,7 +64,7 @@
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/cloud"/>
         </service>
-		 <reference name="cloudComposite" target="CloudCollectionComponent">
+		 <reference name="cloudComposite" target="CloudCollectionComponent/CompositeCollection">
 		 	<t:binding.atom/>
 		 </reference>
     </component>
@@ -92,6 +99,7 @@
    		<service name="CompositeCollection">
    	 		<t:binding.atom uri="http://localhost:9990/composite"/>
    		</service>
+        <reference name="deployableCompositeCollection" target="DeployableCompositeCollectionComponent/LocalCompositeCollection"/>
     </component>
 
     <component name="DeployableCompositeCollectionComponent">
@@ -108,6 +116,7 @@
    		<service name="CompositeCollection">
    	 		<t:binding.atom uri="http://localhost:9990/cloud"/>
    		</service>
+        <reference name="deployableCompositeCollection" target="DeployableCompositeCollectionComponent/LocalCompositeCollection"/>
     </component>
 
 </composite>

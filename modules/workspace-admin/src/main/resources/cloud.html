@@ -21,6 +21,7 @@
 <title>SCA Node Cloud</title>
 
 <script type="text/javascript" src="cloud.js"></script>
+<script type="text/javascript" src="utils.js"></script>
 
 <script language="JavaScript">
 
@@ -50,7 +51,7 @@
 	}
 
 	function deleteComposite() {
-		var composites  = document.cloudCompositeForm.composites;
+		var composites  = array(document.cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			    var id = composites[i].value;
@@ -82,24 +83,29 @@
 	}	
 
 	getComposites();
+
 </script>
 
 </head>
 
-<body>
+<body onload="toolbar()">
+  <div id="toolbar"></div>
+
   <div id="cloudComposite">
   <p style="font-size:150%">
-  <b>SCA Node Cloud</b>&nbsp;<a href="/cloud/"><img src="icons/feed-icon.png" border="0"></a>
+  <b>SCA Domain</b><br><br><b>Node Cloud</b>&nbsp;<a href="/cloud/"><img src="icons/feed-icon.png" border="0"></a>
   </p>
   <form name="cloudCompositeForm">
     <div id="composites" ></div>
     <br/>
+    <input type="button" onClick="startComposite()"  value="Start" />
+    <input type="button" onClick="stopComposite()"  value="Stop" />
+    &nbsp;&nbsp;
     <input type="button" onClick="deleteComposite()"  value="Delete" />
-    <a href="/cloud/">(feed)</a>
   </form>
   <br/>
   
-  <b>Add Composite</b>
+  <b>Add Node</b>
   <form name="newCompositeForm">
     <table border="0">
     <tr><td>QName:</td><td><input type="text" name="compositeQName" /></td></tr> 
@@ -111,4 +117,5 @@
   
   </div>
 </body>
+
 </html>

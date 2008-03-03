@@ -51,11 +51,13 @@ import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.workspace.admin.CompositeCollection;
+import org.apache.tuscany.sca.workspace.admin.LocalCompositeCollection;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.w3c.dom.Document;
 
@@ -69,6 +71,9 @@ public class CompositeCollectionImpl implements CompositeCollection {
     
     @Property
     public String compositeFileName;
+    
+    @Reference
+    public LocalCompositeCollection deployableCompositeCollection;
 
     private AssemblyFactory assemblyFactory;
     private Composite compositeCollection;
@@ -85,6 +90,7 @@ public class CompositeCollectionImpl implements CompositeCollection {
         ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
         
         // Read domain.composite
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
@@ -107,10 +113,11 @@ public class CompositeCollectionImpl implements CompositeCollection {
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
         for (Composite composite: compositeCollection.getIncludes()) {
             Entry<String, Item> entry = new Entry<String, Item>();
-            entry.setKey(name(composite.getName()));
+            QName qname = composite.getName();
+            entry.setKey(name(qname));
             Item item = new Item();
-            item.setTitle(name(composite.getName()));
-            item.setLink("/workspace/" + composite.getURI());
+            item.setTitle(name(qname));
+            item.setLink(compositeLink(qname, composite.getURI()));
             entry.setData(item);
             entries.add(entry);
         }
@@ -121,10 +128,11 @@ public class CompositeCollectionImpl implements CompositeCollection {
 
         // Returns the composite with the given name key
         for (Composite composite: compositeCollection.getIncludes()) {
-            if (key.equals(name(composite.getName()))) {
+            QName qname = composite.getName();
+            if (key.equals(name(qname))) {
                 Item item = new Item();
-                item.setTitle(name(composite.getName()));
-                item.setLink(composite.getURI());
+                item.setTitle(name(qname));
+                item.setLink(compositeLink(qname, composite.getURI()));
                 return item;
             }
         }
@@ -218,6 +226,17 @@ public class CompositeCollectionImpl implements CompositeCollection {
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
+    }
+    
+    private String compositeLink(QName qname, String contributionURI) {
+        String name = name(qname);
+        Entry<String, Item>[] entries = deployableCompositeCollection.query("contribution=" + contributionURI);
+        for (Entry<String, Item> entry: entries) {
+            if (name.equals(entry.getKey())) {
+                return entry.getData().getLink();
+            }
+        }
+        return null;
     }
     
     /**

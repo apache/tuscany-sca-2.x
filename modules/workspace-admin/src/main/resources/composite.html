@@ -21,6 +21,7 @@
 <title>SCA Domain Composites</title>
 
 <script type="text/javascript" src="composite.js"></script>
+<script type="text/javascript" src="utils.js"></script>
 
 <script language="JavaScript">
 
@@ -50,7 +51,7 @@
 	}
 
 	function deleteComposite() {
-		var composites  = document.domainCompositeForm.composites;
+		var composites  = array(document.domainCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			    var id = composites[i].value;
@@ -86,10 +87,12 @@
 
 </head>
 
-<body>
+<body onload="toolbar()">
+  <div id="toolbar"></div>
+
   <div id="domainComposite">
   <p style="font-size:150%">
-  <b>SCA Domain Composites</b>&nbsp;<a href="/composite/"><img src="icons/feed-icon.png" border="0"></a>
+  <b>SCA Domain</b><br><br><b>Included Composites</b>&nbsp;<a href="/composite/"><img src="icons/feed-icon.png" border="0"></a>
   </p>
   <form name="domainCompositeForm">
     <div id="composites" ></div>

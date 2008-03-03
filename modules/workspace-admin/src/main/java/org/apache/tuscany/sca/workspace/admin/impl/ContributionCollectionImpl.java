@@ -109,6 +109,7 @@ public class ContributionCollectionImpl implements ContributionCollection, Local
         // Create model factories
         ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class);
@@ -219,7 +220,7 @@ public class ContributionCollectionImpl implements ContributionCollection, Local
     }
 
     public Entry<String, Item>[] query(String queryString) {
-        if (queryString.startsWith("importedBy=")) {
+        if (queryString.startsWith("requiredBy=")) {
             
             // Return the collection of dependencies of the specified contribution
             List<Entry<String, Item>> entries = new ArrayList<Entry<String,Item>>();
@@ -241,10 +242,8 @@ public class ContributionCollectionImpl implements ContributionCollection, Local
             String key = queryString.substring(11);
             for (Contribution contribution: dependencyWorkspace.getContributions()) {
                 if (key.equals(contribution.getURI())) {
-                    entries.add(entry(contribution));
-                    
                     ContributionDependencyAnalyzer analyzer = new ContributionDependencyAnalyzer();
-                    Set<Contribution> dependencies = analyzer.calculateContributionDependencies(dependencyWorkspace, contribution);
+                    List<Contribution> dependencies = analyzer.calculateContributionDependencies(dependencyWorkspace, contribution);
                     
                     // Build the collection of dependencies
                     for (Contribution dependency: dependencies) {
