@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.binding.http.provider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLDecoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -56,8 +57,8 @@ public class HTTPGetListenerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         // Get the request path
-        String path = request.getPathInfo();
-        if (path == null) {
+        String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
+        if (path.length() ==0) {
             
             // Redirect to a URL ending with / to make relative hrefs work
             // relative to the served resource.
