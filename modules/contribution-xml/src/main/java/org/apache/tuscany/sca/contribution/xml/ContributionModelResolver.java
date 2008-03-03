@@ -35,7 +35,7 @@ public class ContributionModelResolver implements ModelResolver {
 
     private Map<String, Contribution> map = new HashMap<String, Contribution>();
     
-    public ContributionModelResolver(ModelFactoryExtensionPoint modelFactories) {
+    public ContributionModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
     }
 
     public void addModel(Object resolved) {
