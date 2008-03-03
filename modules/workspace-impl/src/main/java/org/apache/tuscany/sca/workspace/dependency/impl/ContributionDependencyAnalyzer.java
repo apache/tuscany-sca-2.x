@@ -19,7 +19,10 @@
 
 package org.apache.tuscany.sca.workspace.dependency.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -47,12 +50,15 @@ public class ContributionDependencyAnalyzer {
      * @param contribution
      * @return
      */
-    public Set<Contribution> calculateContributionDependencies(Workspace workspace, Contribution contribution) {
-        Set<Contribution> dependencies = new HashSet<Contribution>();
+    public List<Contribution> calculateContributionDependencies(Workspace workspace, Contribution contribution) {
+        List<Contribution> dependencies = new ArrayList<Contribution>();
+        Set<Contribution> set = new HashSet<Contribution>();
 
-        addContributionDependencies(workspace, contribution, dependencies);
-        dependencies.remove(contribution);
+        dependencies.add(contribution);
+        set.add(contribution);
+        addContributionDependencies(workspace, contribution, dependencies, set);
         
+        Collections.reverse(dependencies);
         return dependencies;
     }
     
@@ -61,8 +67,9 @@ public class ContributionDependencyAnalyzer {
      * @param workspace
      * @param contribution
      * @param dependencies
+     * @param set
      */
-    private void addContributionDependencies(Workspace workspace, Contribution contribution, Set<Contribution> dependencies) {
+    private void addContributionDependencies(Workspace workspace, Contribution contribution, List<Contribution> dependencies, Set<Contribution> set) {
         
         // Go through the contribution imports
         for (Import import_: contribution.getImports()) {
@@ -74,11 +81,12 @@ public class ContributionDependencyAnalyzer {
                     // If an export from a contribution matches the import in hand
                     // add that contribution to the dependency set
                     if (import_.match(export)) {
-                        if (!dependencies.contains(dependency)) {
+                        if (!set.contains(dependency)) {
+                            set.add(dependency);
                             dependencies.add(dependency);
                             
                             // Now add the dependencies of that contribution
-                            addContributionDependencies(workspace, dependency, dependencies);
+                            addContributionDependencies(workspace, dependency, dependencies, set);
                         }
                     }
                 }

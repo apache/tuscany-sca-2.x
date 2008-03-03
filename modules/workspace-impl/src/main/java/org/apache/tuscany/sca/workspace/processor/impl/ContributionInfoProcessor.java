@@ -19,6 +19,8 @@
 package org.apache.tuscany.sca.workspace.processor.impl;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
@@ -67,6 +69,7 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
         // Create contribution model
         Contribution contribution = contributionFactory.createContribution();
         contribution.setURI(contributionURI.toString());
+        contribution.setLocation(contributionURL.toString());
         ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
         contribution.setModelResolver(modelResolver);
         contribution.setUnresolved(true);
@@ -84,12 +87,19 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
                                        Contribution.SCA_CONTRIBUTION_GENERATED_META,
                                        Contribution.SCA_CONTRIBUTION_META}) {
             URL url = scanner.getArtifactURL(contributionURL, path);
-            if (url != null) {
-                Contribution c = (Contribution)artifactProcessor.read(contributionURL, URI.create(path), url);
-                contribution.getImports().addAll(c.getImports());
-                contribution.getExports().addAll(c.getExports());
-                contribution.getDeployables().addAll(c.getDeployables());
+            try {
+                // Check if the file actually exists before trying to read it
+                InputStream is = url.openStream();
+                is.close();
+            } catch (IOException e) {
+                continue;
             }
+            
+            // Read the sca-contribution.xml file
+            Contribution c = (Contribution)artifactProcessor.read(contributionURL, URI.create(path), url);
+            contribution.getImports().addAll(c.getImports());
+            contribution.getExports().addAll(c.getExports());
+            contribution.getDeployables().addAll(c.getDeployables());
         }
         
         return contribution;
