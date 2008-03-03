@@ -39,7 +39,6 @@ import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
-import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
@@ -47,6 +46,7 @@ import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLOperation;
 import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
@@ -70,7 +70,7 @@ public class WSDLOperationIntrospectorImpl {
     private ModelResolver resolver;
     private WSDLDefinition wsdlDefinition;
     private javax.wsdl.Operation operation;
-    private Operation operationModel;
+    private WSDLOperation operationModel;
     private DataType<List<DataType>> inputType;
     private DataType outputType;
     private List<DataType> faultTypes;
@@ -108,9 +108,10 @@ public class WSDLOperationIntrospectorImpl {
     public boolean isWrapperStyle() throws InvalidWSDLException {
         if (wrapperStyle == null) {
             wrapperStyle =
-                (operation.getInput() == null || operation.getInput().getMessage().getParts().size() == 0 || wrapper
-                    .getInputChildElements() != null) && (operation.getOutput() == null || operation.getOutput()
-                    .getMessage().getParts().size() == 0 || wrapper.getOutputChildElements() != null);
+                (operation.getInput() == null || operation.getInput().getMessage() == null
+                    || operation.getInput().getMessage().getParts().size() == 0 || wrapper.getInputChildElements() != null) && (operation
+                    .getOutput() == null || operation.getOutput().getMessage() == null
+                    || operation.getOutput().getMessage().getParts().size() == 0 || wrapper.getOutputChildElements() != null);
         }
         return wrapperStyle;
     }
@@ -207,7 +208,8 @@ public class WSDLOperationIntrospectorImpl {
     public Operation getOperation() throws InvalidWSDLException {
         if (operationModel == null) {
             boolean oneway = (operation.getOutput() == null);
-            operationModel = new OperationImpl();
+            operationModel = new WSDLOperationImpl();
+            operationModel.setWsdlOperation(operation);
             operationModel.setName(operation.getName());
             operationModel.setFaultTypes(getFaultTypes());
             operationModel.setNonBlocking(oneway);

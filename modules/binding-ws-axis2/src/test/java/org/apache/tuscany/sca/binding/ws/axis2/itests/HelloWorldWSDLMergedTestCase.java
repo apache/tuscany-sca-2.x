@@ -28,7 +28,7 @@ import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMText;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-public class HelloWorldWSDLMergedTestCaseFIXME extends TestCase {
+public class HelloWorldWSDLMergedTestCase extends TestCase {
 
     private SCADomain domain;
     private HelloWorldOM helloWorld;
