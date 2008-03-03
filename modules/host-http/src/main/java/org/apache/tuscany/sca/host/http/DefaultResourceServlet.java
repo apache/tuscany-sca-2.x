@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLDecoder;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -65,11 +66,11 @@ public class DefaultResourceServlet extends HttpServlet implements Servlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         // Determine the resource path
-        String requestPath = request.getPathInfo();
-        if (requestPath.startsWith("/")) {
-            requestPath = requestPath.substring(1);
+        String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
+        if (path.startsWith("/")) {
+            path = path.substring(1);
         }
-        URL url = new URL(documentRoot + '/' + requestPath);
+        URL url = new URL(documentRoot + '/' + path);
         
         // Write the resource
         InputStream is = url.openStream();
