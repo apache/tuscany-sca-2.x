@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URLDecoder;
 import java.util.Date;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
@@ -147,7 +148,7 @@ class FeedBindingListenerServlet extends HttpServlet {
         // No authentication required for a get request
 
         // Get the request path
-        String path = request.getPathInfo();
+        String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
 
         // The feedType parameter is used to override what type of feed is going
         // to be produced
@@ -427,9 +428,8 @@ class FeedBindingListenerServlet extends HttpServlet {
             return;
         }
 
-
         // Get the request path
-        String path = request.getPathInfo();
+        String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
 
         if (path == null || path.length() == 0 || path.equals("/")) {
             Entry createdFeedEntry = null;
@@ -535,7 +535,7 @@ class FeedBindingListenerServlet extends HttpServlet {
         }
 
         // Get the request path
-        String path = request.getPathInfo();
+        String path = request.getRequestURI().substring(request.getServletPath().length());
 
         if (path != null && path.startsWith("/")) {
             String id = path.substring(1);
@@ -621,7 +621,7 @@ class FeedBindingListenerServlet extends HttpServlet {
         }
 
         // Get the request path
-        String path = request.getPathInfo();
+        String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
 
         String id;
         if (path != null && path.startsWith("/")) {
