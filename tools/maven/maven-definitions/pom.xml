@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>shade-maven-plugin</artifactId>
-            <version>1.0-alpha-7</version>
+            <version>1.0-alpha-13</version>
         </dependency>
     
         <dependency>
