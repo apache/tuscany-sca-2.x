@@ -37,12 +37,13 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>maven-dependency-lister</module>
-                <module>maven-java2wsdl</module>
-                <module>maven-wsdl2java</module>
                 <module>maven-ant-generator</module>
+                <module>maven-definitions</module>
+                <module>maven-dependency-lister</module>
                 <module>maven-incremental-build</module>
+                <module>maven-java2wsdl</module>
                 <module>maven-web-junit</module>
+                <module>maven-wsdl2java</module>
             </modules>
         </profile>
     </profiles>
