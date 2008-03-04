@@ -64,7 +64,7 @@ import org.w3c.dom.Document;
 /**
  * Implementation of a composite collection service. 
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 632617 $ $Date: 2008-03-01 08:24:33 -0800 (Sat, 01 Mar 2008) $
  */
 @Scope("COMPOSITE")
 public class CompositeCollectionImpl implements CompositeCollection {
@@ -245,23 +245,23 @@ public class CompositeCollectionImpl implements CompositeCollection {
      * @return
      */
     private static QName qname(String name) {
-        int i = name.indexOf('}');
+        int i = name.indexOf(';');
         if (i != -1) {
-            return new QName(name.substring(1, i), name.substring(i + 1));
+            return new QName(name.substring(0, i), name.substring(i + 1));
         } else {
             return new QName(name);
         }
     }
     
     /**
-     * Returns a qname expressed as namespace#localpart.
+     * Returns a qname expressed as namespace;localpart.
      * @param qname
      * @return
      */
     private static String name(QName qname) {
         String ns = qname.getNamespaceURI();
         if (ns != null) {
-            return '{' + ns + '}' + qname.getLocalPart();
+            return ns + ';' + qname.getLocalPart();
         } else {
             return qname.getLocalPart();
         }

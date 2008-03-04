@@ -99,7 +99,7 @@ public class AdminTestCase extends TestCase {
     public void testDeployables() {
         Entry<String, Item>[] entries = deployableCollection.getAll();
         assertEquals(1, entries.length);
-        assertEquals("{http://store}store", entries[0].getKey());
+        assertEquals("http://store;store", entries[0].getKey());
     }
     
 }
