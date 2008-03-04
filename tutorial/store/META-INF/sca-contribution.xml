@@ -18,8 +18,8 @@
     * under the License.    
 -->
 <contribution xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	          targetNamespace="http://store"
-              xmlns:s="http://store">
-   <deployable composite="s:store"/>
+   xmlns:s="http://store">
+   <export namespace="http://store"/>
    <import.java package="services"/>
+   <deployable composite="s:store"/>
 </contribution>
