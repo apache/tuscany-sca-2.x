@@ -24,11 +24,19 @@ import static org.apache.tuscany.sca.interfacedef.wsdl.impl.XSDefinitionImpl.get
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import javax.wsdl.Binding;
 import javax.wsdl.Definition;
+import javax.wsdl.Import;
+import javax.wsdl.Message;
+import javax.wsdl.PortType;
+import javax.wsdl.Service;
+import javax.wsdl.WSDLElement;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
 import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
@@ -206,6 +214,44 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
             return schemaCollection.getTypeByQName(name);
         }
         return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends WSDLElement> WSDLObject<T> getWSDLObject(Definition definition, Class<T> type, QName name) {
+        if (definition == null) {
+            return null;
+        }
+        Map<QName, WSDLElement> map = null;
+        if (type == PortType.class) {
+            map = definition.getPortTypes();
+        } else if (type == Service.class) {
+            map = definition.getServices();
+        } else if (type == Binding.class) {
+            map = definition.getBindings();
+        } else if (type == Message.class) {
+            map = definition.getMessages();
+        } else {
+            throw new IllegalArgumentException("Invalid type: " + type.getName());
+        }
+        if (map.containsKey(name)) {
+            return (WSDLObject<T>)new WSDLObjectImpl(definition, map.get(name));
+        } else {
+            for (Object imports : definition.getImports().values()) {
+                List<Import> importList = (List<Import>)imports;
+                for (Import i : importList) {
+                    definition = i.getDefinition();
+                    WSDLObject<T> element = getWSDLObject(definition, type, name);
+                    if (element != null) {
+                        return element;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public <T extends WSDLElement> WSDLObject<T> getWSDLObject(Class<T> type, QName name) {
+        return getWSDLObject(definition, type, name);
     }
 
 }

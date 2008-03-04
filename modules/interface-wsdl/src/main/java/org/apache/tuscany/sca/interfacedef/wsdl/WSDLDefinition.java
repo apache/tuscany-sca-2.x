@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.List;
 
 import javax.wsdl.Definition;
+import javax.wsdl.WSDLElement;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Base;
@@ -36,19 +37,22 @@ import org.apache.ws.commons.schema.XmlSchemaType;
  * @version $Rev$ $Date$
  */
 public interface WSDLDefinition extends Base {
-    
+
     /**
-     * Returns the WSDL definition model
+     * Returns the WSDL definition model, if there are more than one WSDL definition under the 
+     * same namespace, the defintion will be a facade which imports all the physical WSDL 
+     * definitions
+     * 
      * @return the WSDL definition model
      */
     Definition getDefinition();
-    
+
     /**
      * Sets the WSDL definition model
      * @param definition the WSDL definition model
      */
     void setDefinition(Definition definition);
-    
+
     /**
      * Returns the namespace of this WSDL definition.
      * @return the namespace of this WSDL definition
@@ -60,16 +64,46 @@ public interface WSDLDefinition extends Base {
      * @param namespace the namespace of this WSDL definition
      */
     void setNamespace(String namespace);
-    
+
     /**
-     * @return
+     * Get a list of inline XML schema defintions
+     * @return A list of inline XML schema definitions
      */
     List<XSDefinition> getXmlSchemas();
-    
+
+    /**
+     * Get the location of the WSDL file
+     * @return The location of the WSDL file
+     */
     URI getLocation();
+
+    /**
+     * Set the location of the WSDL file
+     * @param url
+     */
     void setLocation(URI url);
-    
+
+    /**
+     * Get an XSD element by QName
+     * @param name
+     * @return
+     */
     XmlSchemaElement getXmlSchemaElement(QName name);
+
+    /**
+     * Get an XSD type by QName
+     * @param name
+     * @return
+     */
     XmlSchemaType getXmlSchemaType(QName name);
     
+    /**
+     * Get the WSDL object by type and name
+     * @param <T>
+     * @param type javax.wsdl.Service/PortType/Binding/Message.class
+     * @param name The QName of the object
+     * @return WSDLObject
+     */
+    <T extends WSDLElement> WSDLObject<T> getWSDLObject(Class<T> type, QName name);
+
 }

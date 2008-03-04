@@ -24,7 +24,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.util.Map;
 
-import javax.wsdl.Definition;
+import javax.wsdl.Binding;
 import javax.wsdl.Port;
 import javax.wsdl.PortType;
 import javax.wsdl.Service;
@@ -52,19 +52,18 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
-public class WebServiceBindingProcessor implements
-    StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
+public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
 
     private WSDLFactory wsdlFactory;
     private WebServiceBindingFactory wsFactory;
     private PolicyFactory policyFactory;
     private PolicyAttachPointProcessor policyProcessor;
-    private IntentAttachPointTypeFactory  intentAttachPointTypeFactory;
+    private IntentAttachPointTypeFactory intentAttachPointTypeFactory;
     private ConfiguredOperationProcessor configuredOperationProcessor;
-    
 
     public WebServiceBindingProcessor(ModelFactoryExtensionPoint modelFactories) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
@@ -87,7 +86,7 @@ public class WebServiceBindingProcessor implements
 
         // Read policies
         policyProcessor.readPolicies(wsBinding, reader);
-        
+
         // Read the binding name
         String name = reader.getAttributeValue(null, NAME);
         if (name != null) {
@@ -107,8 +106,7 @@ public class WebServiceBindingProcessor implements
         if (wsdlElement != null) {
             int index = wsdlElement.indexOf('#');
             if (index == -1) {
-                throw new ContributionReadException(
-                                                    "Invalid WebService binding wsdlElement attribute: " + wsdlElement);
+                throw new ContributionReadException("Invalid WebService binding wsdlElement attribute: " + wsdlElement);
             }
             String namespace = wsdlElement.substring(0, index);
             wsBinding.setNamespace(namespace);
@@ -148,12 +146,11 @@ public class WebServiceBindingProcessor implements
                 // Read a wsdl.service
                 localName = localName.substring("wsdl.binding(".length(), localName.length() - 1);
                 wsBinding.setBindingName(new QName(namespace, localName));
-                
+
                 wsdlElementIsBinding = true;
 
             } else {
-                throw new ContributionReadException(
-                                                    "Invalid WebService binding wsdlElement attribute: " + wsdlElement);
+                throw new ContributionReadException("Invalid WebService binding wsdlElement attribute: " + wsdlElement);
             }
         }
 
@@ -165,23 +162,24 @@ public class WebServiceBindingProcessor implements
         while (reader.hasNext()) {
             int event = reader.next();
             switch (event) {
-                case START_ELEMENT  : {
+                case START_ELEMENT: {
                     if (END_POINT_REFERENCE.equals(reader.getName().getLocalPart())) {
                         if (wsdlElementIsBinding != null && wsdlElementIsBinding) {
-                            throw new ContributionReadException(wsdlElement + " must use wsdl.binding when using wsa:EndpointReference");
+                            throw new ContributionReadException(
+                                                                wsdlElement + " must use wsdl.binding when using wsa:EndpointReference");
                         }
                         wsBinding.setEndPointReference(EndPointReferenceHelper.readEndPointReference(reader));
-                    } else if ( Constants.OPERATION_QNAME.equals(reader.getName()) ) {
+                    } else if (Constants.OPERATION_QNAME.equals(reader.getName())) {
                         confOp = configuredOperationProcessor.read(reader);
-                        if ( confOp != null ) {
+                        if (confOp != null) {
                             ((OperationsConfigurator)wsBinding).getConfiguredOperations().add(confOp);
                         }
-                    } 
+                    }
                 }
-                break;
-                
+                    break;
+
             }
-            
+
             if (event == END_ELEMENT && BINDING_WS_QNAME.equals(reader.getName())) {
                 break;
             }
@@ -192,13 +190,14 @@ public class WebServiceBindingProcessor implements
     protected void processEndPointReference(XMLStreamReader reader, WebServiceBinding wsBinding) {
     }
 
-    public void write(WebServiceBinding wsBinding, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(WebServiceBinding wsBinding, XMLStreamWriter writer) throws ContributionWriteException,
+        XMLStreamException {
 
         // Write a <binding.ws>
         policyProcessor.writePolicyPrefixes(wsBinding, writer);
         writer.writeStartElement(Constants.SCA10_NS, BINDING_WS);
         policyProcessor.writePolicyAttributes(wsBinding, writer);
-        
+
         // Write binding name
         if (wsBinding.getName() != null) {
             writer.writeAttribute(NAME, wsBinding.getName());
@@ -213,37 +212,41 @@ public class WebServiceBindingProcessor implements
         if (wsBinding.getPortName() != null) {
 
             // Write namespace#wsdl.port(service/port)
-            String wsdlElement = wsBinding.getServiceName().getNamespaceURI() + "#wsdl.port("
-                                 + wsBinding.getServiceName().getLocalPart()
-                                 + "/"
-                                 + wsBinding.getPortName()
-                                 + ")";
+            String wsdlElement =
+                wsBinding.getServiceName().getNamespaceURI() + "#wsdl.port("
+                    + wsBinding.getServiceName().getLocalPart()
+                    + "/"
+                    + wsBinding.getPortName()
+                    + ")";
             writer.writeAttribute(WSDL_ELEMENT, wsdlElement);
 
         } else if (wsBinding.getEndpointName() != null) {
 
             // Write namespace#wsdl.endpoint(service/endpoint)
-            String wsdlElement = wsBinding.getServiceName().getNamespaceURI() + "#wsdl.endpoint("
-                                 + wsBinding.getServiceName().getLocalPart()
-                                 + "/"
-                                 + wsBinding.getEndpointName()
-                                 + ")";
+            String wsdlElement =
+                wsBinding.getServiceName().getNamespaceURI() + "#wsdl.endpoint("
+                    + wsBinding.getServiceName().getLocalPart()
+                    + "/"
+                    + wsBinding.getEndpointName()
+                    + ")";
             writer.writeAttribute(WSDL_ELEMENT, wsdlElement);
 
         } else if (wsBinding.getBindingName() != null) {
 
             // Write namespace#wsdl.binding(binding)
-            String wsdlElement = wsBinding.getBindingName().getNamespaceURI() + "#wsdl.binding("
-                                 + wsBinding.getBindingName().getLocalPart()
-                                 + ")";
+            String wsdlElement =
+                wsBinding.getBindingName().getNamespaceURI() + "#wsdl.binding("
+                    + wsBinding.getBindingName().getLocalPart()
+                    + ")";
             writer.writeAttribute(WSDL_ELEMENT, wsdlElement);
 
         } else if (wsBinding.getServiceName() != null) {
 
             // Write namespace#wsdl.service(service)
-            String wsdlElement = wsBinding.getServiceName().getNamespaceURI() + "#wsdl.service("
-                                 + wsBinding.getServiceName().getLocalPart()
-                                 + ")";
+            String wsdlElement =
+                wsBinding.getServiceName().getNamespaceURI() + "#wsdl.service("
+                    + wsBinding.getServiceName().getLocalPart()
+                    + ")";
             writer.writeAttribute(WSDL_ELEMENT, wsdlElement);
         }
 
@@ -255,7 +258,7 @@ public class WebServiceBindingProcessor implements
         if (wsBinding.getEndPointReference() != null) {
             EndPointReferenceHelper.writeEndPointReference(wsBinding.getEndPointReference(), writer);
         }
-        
+
         writer.writeEndElement();
     }
 
@@ -263,21 +266,31 @@ public class WebServiceBindingProcessor implements
         WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
         wsdlDefinition.setUnresolved(true);
         wsdlDefinition.setNamespace(model.getNamespace());
-        wsdlDefinition = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition);
-        
-        if (!wsdlDefinition.isUnresolved()) {
+        WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition);
+
+        if (!resolved.isUnresolved()) {
+            wsdlDefinition.setDefinition(resolved.getDefinition());
+            wsdlDefinition.setLocation(resolved.getLocation());
+            wsdlDefinition.getXmlSchemas().addAll(resolved.getXmlSchemas());
+            wsdlDefinition.setUnresolved(false);
             model.setDefinition(wsdlDefinition);
-            Definition definition = wsdlDefinition.getDefinition();
             if (model.getBindingName() != null) {
-                model.setBinding(definition.getBinding(model.getBindingName()));
+                WSDLObject<Binding> binding = wsdlDefinition.getWSDLObject(Binding.class, model.getBindingName());
+                if (binding != null) {
+                    wsdlDefinition.setDefinition(binding.getDefinition());
+                    model.setBinding(binding.getElement());
+                }
             }
             if (model.getServiceName() != null) {
-                Service service = definition.getService(model.getServiceName());
-                model.setService(service);
-                if (service != null && model.getPortName() != null) {
-                    Port port = service.getPort(model.getPortName());
-                    model.setPort(port);
-                    model.setBinding(port.getBinding());
+                WSDLObject<Service> service = wsdlDefinition.getWSDLObject(Service.class, model.getServiceName());
+                if (service != null) {
+                    wsdlDefinition.setDefinition(service.getDefinition());
+                    model.setService(service.getElement());
+                    if (model.getPortName() != null) {
+                        Port port = service.getElement().getPort(model.getPortName());
+                        model.setPort(port);
+                        model.setBinding(port.getBinding());
+                    }
                 }
             }
 
@@ -294,9 +307,9 @@ public class WebServiceBindingProcessor implements
                 model.setBindingInterfaceContract(interfaceContract);
             }
         }
-        policyProcessor.resolvePolicies(model, resolver); 
+        policyProcessor.resolvePolicies(model, resolver);
         OperationsConfigurator opCongigurator = (OperationsConfigurator)model;
-        for ( ConfiguredOperation confOp : opCongigurator.getConfiguredOperations() ) {
+        for (ConfiguredOperation confOp : opCongigurator.getConfiguredOperations()) {
             policyProcessor.resolvePolicies(confOp, resolver);
         }
     }
