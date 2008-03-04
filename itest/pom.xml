@@ -112,6 +112,7 @@
                 <module>transaction</module>
                 <module>bpel</module>
                 <module>spring</module>
+		<module>policy</module>
            </modules>
         </profile>
         
