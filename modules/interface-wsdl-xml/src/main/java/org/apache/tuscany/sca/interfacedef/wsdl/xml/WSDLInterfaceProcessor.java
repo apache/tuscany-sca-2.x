@@ -39,6 +39,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
 
 public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfaceContract>, WSDLConstants {
 
@@ -141,20 +142,25 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                 WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
                 wsdlDefinition.setUnresolved(true);
                 wsdlDefinition.setNamespace(wsdlInterface.getName().getNamespaceURI());
-                wsdlDefinition = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition);
-                if (!wsdlDefinition.isUnresolved()) {
-                    PortType portType = wsdlDefinition.getDefinition().getPortType(wsdlInterface.getName());
+                WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, wsdlDefinition);
+                if (!resolved.isUnresolved()) {
+                    wsdlDefinition.setDefinition(resolved.getDefinition());
+                    wsdlDefinition.setLocation(resolved.getLocation());
+                    wsdlDefinition.getXmlSchemas().addAll(resolved.getXmlSchemas());
+                    wsdlDefinition.setUnresolved(false);
+                    WSDLObject<PortType> portType = wsdlDefinition.getWSDLObject(PortType.class, wsdlInterface.getName());
                     if (portType != null) {
                         
                         // Introspect the WSDL portType and add the resulting
                         // WSDLInterface to the resolver
                         try {
-                            wsdlInterface = wsdlFactory.createWSDLInterface(portType, wsdlDefinition, resolver);
+                            wsdlDefinition.setDefinition(portType.getDefinition());
+                            wsdlInterface = wsdlFactory.createWSDLInterface(portType.getElement(), wsdlDefinition, resolver);
+                            wsdlInterface.setWsdlDefinition(wsdlDefinition);
                         } catch (InvalidInterfaceException e) {
                             throw new ContributionResolveException(e);
                         }
                         resolver.addModel(wsdlInterface);
-                        wsdlInterface.setWsdlDefinition(wsdlDefinition);
                     }
                 }
             }

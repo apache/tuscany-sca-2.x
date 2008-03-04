@@ -88,7 +88,16 @@ public interface XSDefinition extends Base {
      */
     void setDocument(Document document);
 
+    /**
+     * Get the XSD element by QName
+     * @param name
+     * @return The XSD element
+     */
     XmlSchemaElement getXmlSchemaElement(QName name);
 
+    /**
+     * @param name Get the XSD type by QName
+     * @return The XSD type
+     */
     XmlSchemaType getXmlSchemaType(QName name);
 }
