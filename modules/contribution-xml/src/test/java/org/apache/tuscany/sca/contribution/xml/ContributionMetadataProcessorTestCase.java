@@ -20,9 +20,13 @@
 package org.apache.tuscany.sca.contribution.xml;
 
 import java.io.StringReader;
+import java.io.StringWriter;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import junit.framework.TestCase;
 
@@ -42,27 +46,31 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 public class ContributionMetadataProcessorTestCase extends TestCase {
 
     private static final String VALID_XML =
-        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
             + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
             + "<deployable composite=\"ns:Composite1\"/>"
             + "<deployable composite=\"ns:Composite2\"/>"
             + "</contribution>";
 
     private static final String INVALID_XML =
-        "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
             + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
             + "<deployable composite=\"ns:Composite1\"/>"
             + "<deployable/>"
             + "</contribution>";
-    private XMLInputFactory xmlFactory;
+    
+    private XMLInputFactory xmlInputFactory;
+    private XMLOutputFactory xmlOutputFactory;
 
     @Override
     protected void setUp() throws Exception {
-        xmlFactory = XMLInputFactory.newInstance();
+        xmlInputFactory = XMLInputFactory.newInstance();
+        xmlOutputFactory = XMLOutputFactory.newInstance();
+        xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
     }
 
     public void testRead() throws Exception {
-        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(VALID_XML));
+        XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(new StringReader(VALID_XML));
 
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         ContributionFactory contributionFactory = new DefaultContributionFactory();
@@ -76,7 +84,7 @@ public class ContributionMetadataProcessorTestCase extends TestCase {
   }
 
     public void testReadInvalid() throws Exception {
-        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(INVALID_XML));
+        XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(new StringReader(INVALID_XML));
         AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
         ContributionFactory contributionFactory = new DefaultContributionFactory();
         ContributionMetadataProcessor processor = 
@@ -90,4 +98,42 @@ public class ContributionMetadataProcessorTestCase extends TestCase {
             assertTrue(true);
         }
     }    
+
+    public void testWrite() throws Exception {
+        XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(new StringReader(VALID_XML));
+
+        //read the original contribution metadata file
+        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
+        ContributionFactory contributionFactory = new DefaultContributionFactory();
+        ContributionMetadataProcessor processor = 
+            new ContributionMetadataProcessor(assemblyFactory, contributionFactory, null);
+        Contribution contribution = contributionFactory.createContribution();
+        contribution.setModelResolver(new TestModelResolver(contribution, null));
+        contribution = processor.read(reader);
+
+        validateContribution(contribution);
+        
+        //write the contribution metadata contents
+        StringWriter stringWriter = new StringWriter();
+        XMLStreamWriter writer = xmlOutputFactory.createXMLStreamWriter(stringWriter);
+        processor.write(contribution, writer);
+        stringWriter.close();
+
+        reader = xmlInputFactory.createXMLStreamReader(new StringReader(stringWriter.toString()));
+        contribution = processor.read(reader);
+        
+        validateContribution(contribution);
+  }
+    
+  public void validateContribution(Contribution contribution) {
+	  QName deployable;
+	  
+	  assertNotNull(contribution);
+	  assertEquals(2, contribution.getDeployables().size());
+	  deployable = new QName("http://ns", "Composite1");
+	  assertEquals(deployable, contribution.getDeployables().get(0).getName());
+	  deployable = new QName("http://ns", "Composite2");
+	  assertEquals(deployable, contribution.getDeployables().get(1).getName());	  
+  }
+    
 }
