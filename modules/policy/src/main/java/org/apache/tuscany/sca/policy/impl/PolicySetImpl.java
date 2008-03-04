@@ -44,7 +44,16 @@ public class PolicySetImpl implements PolicySet {
     private List<Object> policies = new ArrayList<Object>();
     Map<Intent, List<Object>>  mappedPolicies = new Hashtable<Intent, List<Object>>();
     private boolean unresolved = true;
+    private String alwaysAppliesTo;
     
+    public String getAlwaysAppliesTo() {
+        return alwaysAppliesTo;
+    }
+
+    public void setAlwaysAppliesTo(String alwaysAppliesTo) {
+        this.alwaysAppliesTo = alwaysAppliesTo;
+    }
+
     protected PolicySetImpl() {
     }
 

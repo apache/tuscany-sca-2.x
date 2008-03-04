@@ -111,4 +111,22 @@ public interface PolicySet {
      * @return
      */
     Map<Intent, List<Object>>getMappedPolicies();
+    
+    /**
+     * Gets the xpath expression that is to be used to evaluate
+     * the SCA Artifacts that this policyset will always apply to
+     * immaterial of an intent declared on the SCA Artifact
+     * 
+     * @return the xpath expression
+     */
+    String getAlwaysAppliesTo();
+    
+    /**
+     * Sets the xpath expression that is to be used to evaluate
+     * the SCA Artifacts that this policyset will always apply to
+     * immaterial of an intent declared on the SCA Artifact
+     * 
+     * @return 
+     */
+    void setAlwaysAppliesTo(String xpath);
 }

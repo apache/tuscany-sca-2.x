@@ -832,7 +832,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                 
                 resolveImplIntentsAndPolicySets(implementation, component.getApplicablePolicySets(), resolver);
                 
-                copyPoliciesToComponent(component, implementation, resolver);
+                copyPoliciesToComponent(component, implementation, resolver, true);
                 
                 //now resolve the implementation so that even if there is a shared instance
                 //for this that is resolved, the specified intents and policysets are safe in the
@@ -842,7 +842,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                 //resolved implementation may contain intents and policysets specified at 
                 //componentType (either in the componentType side file or in annotations if its a 
                 //java implementation).  This has to be consolidated in to the component.
-                copyPoliciesToComponent(component, implementation, resolver);
+                copyPoliciesToComponent(component, implementation, resolver, false);
                 
                 component.setImplementation(implementation);
             }
@@ -876,7 +876,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
     
     private void copyPoliciesToComponent(Component component, 
                                          Implementation implementation, 
-                                         ModelResolver resolver) throws ContributionResolveException {
+                                         ModelResolver resolver,
+                                         boolean clearImplSettings) throws ContributionResolveException {
         if (implementation instanceof PolicySetAttachPoint) {
             //add implementation policies into component... since implementation instance are 
             //reused and its likely that this implementation instance will not hold after its resolution
@@ -887,7 +888,9 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             if ( implementation instanceof OperationsConfigurator ) {
                 boolean notFound;
                 List<ConfiguredOperation> opsFromImplementation = new ArrayList<ConfiguredOperation>();
-                for ( ConfiguredOperation implConfOp : ((OperationsConfigurator)implementation).getConfiguredOperations() ) {
+                List<ConfiguredOperation> implConfOperations = 
+                    new ArrayList<ConfiguredOperation>(((OperationsConfigurator)implementation).getConfiguredOperations());
+                for ( ConfiguredOperation implConfOp : implConfOperations ) {
                     notFound = true;
                     for ( ConfiguredOperation compConfOp : ((OperationsConfigurator)component).getConfiguredOperations() ) {
                         if ( implConfOp.getName().equals(compConfOp.getName()) ) {
@@ -902,11 +905,18 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     if ( notFound ) {
                         opsFromImplementation.add(implConfOp);
                     }
+                    
+                    if ( clearImplSettings ) {
+                        ((OperationsConfigurator)implementation).getConfiguredOperations().remove(implConfOp);
+                    }
                 }
                 ((OperationsConfigurator)component).getConfiguredOperations().addAll(opsFromImplementation);
             }
-            ((PolicySetAttachPoint)implementation).getRequiredIntents().clear();
-            ((PolicySetAttachPoint)implementation).getPolicySets().clear();
+            
+            if ( clearImplSettings ) {
+                ((PolicySetAttachPoint)implementation).getRequiredIntents().clear();
+                ((PolicySetAttachPoint)implementation).getPolicySets().clear();
+            }
         }
     }
     
