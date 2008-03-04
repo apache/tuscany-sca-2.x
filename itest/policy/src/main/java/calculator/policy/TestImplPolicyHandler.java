@@ -48,10 +48,15 @@ public class TestImplPolicyHandler implements PolicyHandler {
                 } else if ( op.getName().equals("subtract") ) {
                     Assert.assertEquals(applicablePolicySet.getName().getLocalPart(), 
                                         "TestPolicySet_1_Qualified_implementation");
-                } else if ( op.getName().equals("multiply") || op.getName().equals("divide")) {
+                } else if ( op.getName().equals("divide")) {
                     Assert.assertEquals(applicablePolicySet.getName().getLocalPart(), 
                                         "TestPolicySet_1_implementation");
-                } else {
+                } else if ( op.getName().equals("multiply") ) {
+                    boolean match = applicablePolicySet.getName().getLocalPart().equals("TestPolicySet_5_implementation") ||
+                    applicablePolicySet.getName().getLocalPart().equals("TestPolicySet_1_implementation");
+                    Assert.assertTrue(match);
+                }    
+                else {
                     Assert.fail();
                 }
                 //System.out.println(" *TestImplPolicyHandler* " + op.getName() + " ** " + applicablePolicySet);

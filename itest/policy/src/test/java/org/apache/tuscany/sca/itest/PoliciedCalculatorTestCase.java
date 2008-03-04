@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.itest;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.net.URL;
+
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
