@@ -192,7 +192,7 @@ public class BindingPolicyComputer extends PolicyComputer {
     private void determineApplicableDomainPolicySets(Contract contract, 
                                                      PolicySetAttachPoint policiedBinding) 
                                                             throws PolicyComputationException {
-        if ( domainPolicySets != null) {
+        //if ( domainPolicySets != null) {
             determineApplicableDomainPolicySets(policiedBinding.getApplicablePolicySets(), 
                                                 policiedBinding,
                                                 policiedBinding.getType());
@@ -208,6 +208,6 @@ public class BindingPolicyComputer extends PolicyComputer {
                             policiedBinding.getRequiredIntents());
                 }
             }
-        }
+        //}
     }
 }

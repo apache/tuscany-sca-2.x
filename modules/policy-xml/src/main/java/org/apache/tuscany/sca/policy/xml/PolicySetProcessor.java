@@ -73,6 +73,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         PolicySet policySet = policyFactory.createPolicySet();
         policySet.setName(getQName(reader, NAME));
         String appliesTo = reader.getAttributeValue(null, APPLIES_TO);
+        String alwaysAppliesTo = reader.getAttributeValue(TUSCANY_NS, ALWAYS_APPLIES_TO);
         
         //TODO: with 1.0 version of specs the applies to xpath is given related to the immediate
         //parent whereas the runtime evaluates the xpath aginst the composite element.  What the runtime
@@ -82,7 +83,12 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
             appliesTo = "//" + appliesTo;
         }
         
+        if ( alwaysAppliesTo != null && !alwaysAppliesTo.startsWith("/") ) {
+            alwaysAppliesTo = "//" + alwaysAppliesTo;
+        }
+        
         policySet.setAppliesTo(appliesTo);
+        policySet.setAlwaysAppliesTo(alwaysAppliesTo);
         readProvidedIntents(policySet, reader);
         
         int event = reader.getEventType();
@@ -243,6 +249,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         writer.writeAttribute(NAME, 
                               policySet.getName().getPrefix() + COLON + policySet.getName().getLocalPart());
         writer.writeAttribute(APPLIES_TO, policySet.getAppliesTo());
+        writer.writeAttribute(TUSCANY_NS, ALWAYS_APPLIES_TO, policySet.getAlwaysAppliesTo());
         
         writeProvidedIntents(policySet, writer);
         

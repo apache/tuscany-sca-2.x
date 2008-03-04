@@ -28,6 +28,7 @@ public interface PolicyConstants {
     String WHITE_SPACE = " ";
     String COLON = ":";
     String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    String TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
     String INTENT = "intent";
     String POLICY_SET = "policySet";
     String POLICY_SET_REFERENCE = "policySetReference";
@@ -39,6 +40,7 @@ public interface PolicyConstants {
     String DESCRIPTION = "description";
     String PROVIDES = "provides";
     String APPLIES_TO = "appliesTo";
+    String ALWAYS_APPLIES_TO = "alwaysAppliesTo";
     String QUALIFIER = ".";
     String INTENT_MAP_QUALIFIER = "qualifier";
     String REQUIRES = "requires";

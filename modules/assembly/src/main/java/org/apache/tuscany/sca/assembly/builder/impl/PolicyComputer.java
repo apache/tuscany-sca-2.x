@@ -273,6 +273,7 @@ public abstract class PolicyComputer {
         
             confOp.getPolicySets().clear();
             confOp.getPolicySets().addAll(policySetTable.values());
+            policySetTable.clear();
             
             //expand profile intents
             for ( PolicySet policySet : confOp.getPolicySets() ) {
@@ -291,18 +292,17 @@ public abstract class PolicyComputer {
     protected void determineApplicableDomainPolicySets(List<PolicySet> applicablePolicySets,
                                                      PolicySetAttachPoint policySetAttachPoint,
                                                      IntentAttachPointType intentAttachPointType) {
-        //String scdlFragment = null; //write parentelement as scdl fragment and store it here
+
         if (policySetAttachPoint.getRequiredIntents().size() > 0) {
-            for (PolicySet policySet : domainPolicySets) {
-                //if (PolicyValidationUtils.isPolicySetApplicable(scdlFragment, policySet.getAppliesTo(), intentAttachPointType)) {
-                if ( applicablePolicySets.contains(policySet)) {
-                    int prevSize = policySetAttachPoint.getRequiredIntents().size();
-                    trimProvidedIntents(policySetAttachPoint.getRequiredIntents(), policySet);
-                    // if any intent was trimmed off, then this policyset must
-                    // be attached to the intent attachpoint's policyset
-                    if (prevSize != policySetAttachPoint.getRequiredIntents().size()) {
-                        policySetAttachPoint.getPolicySets().add(policySet);
-                    }
+            //since the set of applicable policysets for this attachpoint is known 
+            //we only need to check in that list if there is a policyset that matches
+            for (PolicySet policySet : applicablePolicySets) {
+                int prevSize = policySetAttachPoint.getRequiredIntents().size();
+                trimProvidedIntents(policySetAttachPoint.getRequiredIntents(), policySet);
+                // if any intent was trimmed off, then this policyset must
+                // be attached to the intent attachpoint's policyset
+                if (prevSize != policySetAttachPoint.getRequiredIntents().size()) {
+                    policySetAttachPoint.getPolicySets().add(policySet);
                 }
             } 
         }

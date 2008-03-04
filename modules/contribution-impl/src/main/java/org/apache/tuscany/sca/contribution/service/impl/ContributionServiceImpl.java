@@ -159,7 +159,9 @@ public class ContributionServiceImpl implements ContributionService {
     private String POLICYSET_PREFIX = "tp_";
     private String APPLICABLE_POLICYSET_ATTR_NS = "http://tuscany.apache.org/xmlns/sca/1.0"; 
     private String APPLICABLE_POLICYSET_ATTR = "applicablePolicySets"; 
+    private String POLICY_SETS_ATTR = "policySets"; 
     private String APPLICABLE_POLICYSET_ATTR_PREFIX = "tuscany";
+    private String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
 
     public ContributionServiceImpl(ContributionRepository repository,
                                    PackageProcessor packageProcessor,
@@ -537,45 +539,22 @@ public class ContributionServiceImpl implements ContributionService {
         }
     }
     
-    private byte[] addApplicablePolicySets(Document doc, Collection<PolicySet> policySets) throws XPathExpressionException,
+    private byte[] addApplicablePolicySets(Document doc, Collection<PolicySet> policySets) throws 
+                                                                XPathExpressionException,
                                                                 TransformerConfigurationException,
                                                                 TransformerException  {
         XPathFactory xpathFactory = XPathFactory.newInstance();
         XPath path = xpathFactory.newXPath();
         path.setNamespaceContext(new DOMNamespaceContext(doc));
-        XPathExpression expression = null;
-        NodeList result = null;
-        int count = 1;
+        int prefixCount = 1;
         
         for ( PolicySet policySet : policySets ) {
-            expression = path.compile(policySet.getAppliesTo());
-            result = (NodeList)expression.evaluate(doc, XPathConstants.NODESET);
+            if ( policySet.getAppliesTo() != null ) {
+                addApplicablePolicySets(policySet, path, doc, prefixCount);
+            }
             
-            if ( result != null ) {
-                for ( int counter = 0 ; counter < result.getLength() ; ++counter ) {
-                    Node aResultNode = result.item(counter);
-                
-                    String applicablePolicySets = null;
-                    String policySetPrefix = POLICYSET_PREFIX + count++;
-                    String appPolicyAttrPrefix = APPLICABLE_POLICYSET_ATTR_PREFIX;
-                    
-                    policySetPrefix = declareNamespace((Element)aResultNode, policySetPrefix, policySet.getName().getNamespaceURI());
-                    appPolicyAttrPrefix = declareNamespace((Element)aResultNode, appPolicyAttrPrefix, APPLICABLE_POLICYSET_ATTR_NS);
-                    if ( aResultNode.getAttributes().getNamedItemNS(APPLICABLE_POLICYSET_ATTR_NS, APPLICABLE_POLICYSET_ATTR) != null ) {
-                        applicablePolicySets =
-                            aResultNode.getAttributes().getNamedItemNS(APPLICABLE_POLICYSET_ATTR_NS, APPLICABLE_POLICYSET_ATTR).getNodeValue();
-                    }
-                    
-                    if ( applicablePolicySets != null && applicablePolicySets.length() > 0 ) {
-                        applicablePolicySets = applicablePolicySets + " " + policySetPrefix + ":" + policySet.getName().getLocalPart();
-                    } else {
-                        applicablePolicySets = policySetPrefix + ":" + policySet.getName().getLocalPart();
-                    }
-                    
-                    ((Element)aResultNode).setAttributeNS(APPLICABLE_POLICYSET_ATTR_NS, 
-                                                          appPolicyAttrPrefix + ":" + APPLICABLE_POLICYSET_ATTR, 
-                                                     applicablePolicySets);
-                }
+            if ( policySet.getAlwaysAppliesTo() != null ) {
+                addAlwaysApplicablePolicySets(policySet, path, doc, prefixCount);
             }
         }
         
@@ -586,6 +565,69 @@ public class ContributionServiceImpl implements ContributionService {
         //transformer.setOutputProperty("omit-xml-declaration", "yes");
         transformer.transform(domSource, finalResult);
         return sw.toString().getBytes();
+    }
+    
+    private void addAlwaysApplicablePolicySets(PolicySet policySet, XPath path, Document doc, int prefixCount) throws XPathExpressionException {
+        XPathExpression expression = path.compile(policySet.getAlwaysAppliesTo());
+        NodeList result = (NodeList)expression.evaluate(doc, XPathConstants.NODESET);
+        
+        if ( result != null ) {
+            for ( int counter = 0 ; counter < result.getLength() ; ++counter ) {
+                Node aResultNode = result.item(counter);
+            
+                String alwaysApplicablePolicySets = null;
+                String policySetPrefix = POLICYSET_PREFIX + prefixCount++;
+                String policySetsAttrPrefix = "sca";
+                
+                policySetPrefix = declareNamespace((Element)aResultNode, policySetPrefix, policySet.getName().getNamespaceURI());
+                policySetsAttrPrefix = declareNamespace((Element)aResultNode, policySetsAttrPrefix, SCA10_NS);
+                if ( aResultNode.getAttributes().getNamedItem( POLICY_SETS_ATTR) != null ) {
+                    alwaysApplicablePolicySets =
+                        aResultNode.getAttributes().getNamedItem(POLICY_SETS_ATTR).getNodeValue();
+                }
+                
+                if ( alwaysApplicablePolicySets != null && alwaysApplicablePolicySets.length() > 0 ) {
+                    alwaysApplicablePolicySets = alwaysApplicablePolicySets + " " + policySetPrefix + ":" + policySet.getName().getLocalPart();
+                } else {
+                    alwaysApplicablePolicySets = policySetPrefix + ":" + policySet.getName().getLocalPart();
+                }
+                
+                ((Element)aResultNode).setAttribute(POLICY_SETS_ATTR, 
+                                                      alwaysApplicablePolicySets);
+            }
+        }
+    }
+    
+    private void addApplicablePolicySets(PolicySet policySet, XPath path, Document doc, int prefixCount) throws XPathExpressionException {
+        XPathExpression expression = path.compile(policySet.getAppliesTo());
+        NodeList result = (NodeList)expression.evaluate(doc, XPathConstants.NODESET);
+        
+        if ( result != null ) {
+            for ( int counter = 0 ; counter < result.getLength() ; ++counter ) {
+                Node aResultNode = result.item(counter);
+            
+                String applicablePolicySets = null;
+                String policySetPrefix = POLICYSET_PREFIX + prefixCount++;
+                String appPolicyAttrPrefix = APPLICABLE_POLICYSET_ATTR_PREFIX;
+                
+                policySetPrefix = declareNamespace((Element)aResultNode, policySetPrefix, policySet.getName().getNamespaceURI());
+                appPolicyAttrPrefix = declareNamespace((Element)aResultNode, appPolicyAttrPrefix, APPLICABLE_POLICYSET_ATTR_NS);
+                if ( aResultNode.getAttributes().getNamedItemNS(APPLICABLE_POLICYSET_ATTR_NS, APPLICABLE_POLICYSET_ATTR) != null ) {
+                    applicablePolicySets =
+                        aResultNode.getAttributes().getNamedItemNS(APPLICABLE_POLICYSET_ATTR_NS, APPLICABLE_POLICYSET_ATTR).getNodeValue();
+                }
+                
+                if ( applicablePolicySets != null && applicablePolicySets.length() > 0 ) {
+                    applicablePolicySets = applicablePolicySets + " " + policySetPrefix + ":" + policySet.getName().getLocalPart();
+                } else {
+                    applicablePolicySets = policySetPrefix + ":" + policySet.getName().getLocalPart();
+                }
+                
+                ((Element)aResultNode).setAttributeNS(APPLICABLE_POLICYSET_ATTR_NS, 
+                                                      appPolicyAttrPrefix + ":" + APPLICABLE_POLICYSET_ATTR, 
+                                                 applicablePolicySets);
+            }
+        }
     }
     
     private byte[] addApplicablePolicySets(URL artifactUrl) throws ContributionReadException {
@@ -666,18 +708,22 @@ public class ContributionServiceImpl implements ContributionService {
 
     }
     
-    private static String print(Node node) throws Exception {
+    private static String print(Node node)  {
         if ( node.getNodeType() != 3 ) {
             System.out.println("********************************************************" + node.getNodeType());
             StringWriter sw = new StringWriter();
             Source domSource = new DOMSource(node);
             Result finalResult = new StreamResult(sw);
-            Transformer t = TransformerFactory.newInstance().newTransformer();
             
-            t.setOutputProperty("omit-xml-declaration", "yes");
-            //System.out.println(" ***** - " + t.getOutputProperties());
-            t.transform(domSource, finalResult);
-            
+            try {
+                Transformer t = TransformerFactory.newInstance().newTransformer();
+                
+                t.setOutputProperty("omit-xml-declaration", "yes");
+                //System.out.println(" ***** - " + t.getOutputProperties());
+                t.transform(domSource, finalResult);
+            } catch ( Exception e ) {
+                e.printStackTrace();
+             }
             System.out.println(sw.toString());
             System.out.println("********************************************************");
             return sw.toString();

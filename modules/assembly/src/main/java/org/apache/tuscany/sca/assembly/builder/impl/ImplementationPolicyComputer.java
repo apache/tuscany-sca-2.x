@@ -117,7 +117,7 @@ public class ImplementationPolicyComputer extends PolicyComputer {
             //if there are intents that are not provided by any policy set throw a warning
             //TODO: resolved to domain policy registry and attach suitable policy sets to the implementation
             //...for now using the SCA Definitions instead of registry
-            if ( domainPolicySets != null)  {
+            //if ( domainPolicySets != null)  {
                 determineApplicableDomainPolicySets(component.getApplicablePolicySets(), 
                                                     component,
                                                     policiedImplementation.getType());
@@ -126,7 +126,7 @@ public class ImplementationPolicyComputer extends PolicyComputer {
                     throw new PolicyComputationException("The following are unfulfilled intents for component implementation - " + component
                         .getName() + "\nUnfulfilled Intents = " + component.getRequiredIntents());
                 }
-            }
+            //}
             
             //the intents list could have been trimmed when matching for policysets
             //since the bindings may need the original set of intents we copy that back
