@@ -62,6 +62,7 @@
 <sca:intent name="tuscany:TestIntent_1.Qualifier_1" /> 
 
 
+
 <!-- PolicySets -->
 <sca:policySet name="tuscany:TestPolicySet_1_implementation"
  	provides="tuscany:TestIntent_1"
@@ -159,8 +160,9 @@
  </sca:policySet>
  
  <sca:policySet name="tuscany:TestPolicySet_5_implementation"
- 	provides="tuscany:TestIntent_5"
+ 	provides=""
  	appliesTo="sca:implementation.java"
+ 	tuscany:alwaysAppliesTo="sca:component[@name='MultiplyServiceComponent']"
  	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
  	>
  	<wsp:Policy/>
