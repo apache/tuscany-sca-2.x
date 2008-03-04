@@ -229,20 +229,6 @@ public class DeployableCompositeCollectionImpl implements CompositeCollection, L
     }
     
     /**
-     * Returns a qname object from its expression as namespace#localpart.
-     * @param name
-     * @return
-     */
-    private static QName qname(String name) {
-        int i = name.indexOf('}');
-        if (i != -1) {
-            return new QName(name.substring(1, i), name.substring(i + 1));
-        } else {
-            return new QName(name);
-        }
-    }
-    
-    /**
      * Returns a qname expressed as namespace#localpart.
      * @param qname
      * @return
@@ -250,7 +236,7 @@ public class DeployableCompositeCollectionImpl implements CompositeCollection, L
     private static String name(QName qname) {
         String ns = qname.getNamespaceURI();
         if (ns != null) {
-            return '{' + ns + '}' + qname.getLocalPart();
+            return ns + ';' + qname.getLocalPart();
         } else {
             return qname.getLocalPart();
         }
