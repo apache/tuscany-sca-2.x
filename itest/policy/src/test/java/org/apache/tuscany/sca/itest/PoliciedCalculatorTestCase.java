@@ -19,10 +19,6 @@
 
 package org.apache.tuscany.sca.itest;
 
-import java.io.File;
-import java.io.FileDescriptor;
-import java.net.URL;
-
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -33,8 +29,7 @@ import calculator.CalculatorService;
 public class PoliciedCalculatorTestCase {
     private static SCADomain domain;
     private static CalculatorService calculatorService;
-    
-    
+
     @Test
     public void testPolicies() {
         calculatorService.add(10, 10);
@@ -42,13 +37,13 @@ public class PoliciedCalculatorTestCase {
         calculatorService.divide(10, 10);
         calculatorService.subtract(10, 10);
     }
-    
+
     @BeforeClass
     public static void init() throws Exception {
         try {
             domain = SCADomain.newInstance("Calculator.composite");
-        } catch ( Exception e ) { 
-            e.printStackTrace(); 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         calculatorService = domain.getService(CalculatorService.class, "CalculatorServiceComponent");
     }

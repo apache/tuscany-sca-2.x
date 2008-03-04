@@ -1,198 +1,136 @@
 <?xml version="1.0" encoding="ASCII"?>
 <!--
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.    
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    * 
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.    
 -->
-<definitions xmlns="http://www.osoa.org/xmlns/sca/1.0"
- 			targetNamespace="http://test"
- 			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
- 			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
- 			xmlns:calc="http://calculator">
+<definitions xmlns="http://www.osoa.org/xmlns/sca/1.0" targetNamespace="http://test"
+    xmlns:sca="http://www.osoa.org/xmlns/sca/1.0" xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+    xmlns:calc="http://calculator">
 
-<!-- Policy Intents -->
-<sca:intent name="tuscany:TestIntent_1" 
- 			 constrains="sca:implementation.java sca:binding.ws">
- 			 <description>
- 			 	Test Intent One
- 			 </description>
-</sca:intent>
+    <!-- Policy Intents -->
+    <sca:intent name="tuscany:TestIntent_1" constrains="sca:implementation.java sca:binding.ws">
+        <description>Test Intent One</description>
+    </sca:intent>
 
-<sca:intent name="tuscany:TestIntent_2" 
- 			 constrains="sca:implementation.java sca:binding.ws">
- 			 <description>
- 			 	Test Intent Two
- 			 </description>
-</sca:intent>
+    <sca:intent name="tuscany:TestIntent_2" constrains="sca:implementation.java sca:binding.ws">
+        <description>Test Intent Two</description>
+    </sca:intent>
 
-<sca:intent name="tuscany:TestIntent_3" 
- 			 constrains="sca:implementation.java sca:binding.ws">
- 			 <description>
- 			 	Test Intent Three
- 			 </description>
-</sca:intent>
+    <sca:intent name="tuscany:TestIntent_3" constrains="sca:implementation.java sca:binding.ws">
+        <description>Test Intent Three</description>
+    </sca:intent>
 
-<sca:intent name="tuscany:TestIntent_4" 
- 			 constrains="sca:implementation.java sca:binding.ws">
- 			 <description>
- 			 	Test Intent Four
- 			 </description>
-</sca:intent>
+    <sca:intent name="tuscany:TestIntent_4" constrains="sca:implementation.java sca:binding.ws">
+        <description>Test Intent Four</description>
+    </sca:intent>
 
-<sca:intent name="tuscany:TestIntent_5" 
- 			 constrains="sca:implementation.java sca:binding.ws">
- 			 <description>
- 			 	Test Intent Five
- 			 </description>
-</sca:intent>
+    <sca:intent name="tuscany:TestIntent_5" constrains="sca:implementation.java sca:binding.ws">
+        <description>Test Intent Five</description>
+    </sca:intent>
 
-<sca:intent name="tuscany:TestIntent_1.Qualifier_1" /> 
+    <sca:intent name="tuscany:TestIntent_1.Qualifier_1" />
 
 
 
-<!-- PolicySets -->
-<sca:policySet name="tuscany:TestPolicySet_1_implementation"
- 	provides="tuscany:TestIntent_1"
- 	appliesTo="sca:implementation.java"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
- 	>
- 	<intentMap provides="tuscany:TestIntent_1" default="Qualifier_1">
-        <qualifier name="Qualifier_1">
-           <wsp:Policy/>
-        </qualifier>
-    </intentMap>
- 	<wsp:Policy/>
- </sca:policySet>
+    <!-- PolicySets -->
+    <sca:policySet name="tuscany:TestPolicySet_1_implementation" provides="tuscany:TestIntent_1"
+        appliesTo="sca:implementation.java" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <intentMap provides="tuscany:TestIntent_1" default="Qualifier_1">
+            <qualifier name="Qualifier_1">
+                <wsp:Policy />
+            </qualifier>
+        </intentMap>
+        <wsp:Policy />
+    </sca:policySet>
 
-<sca:policySet name="tuscany:TestPolicySet_1_Qualified_implementation"
- 	provides="tuscany:TestIntent_1.Qualifier_1"
- 	appliesTo="sca:implementation.java"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
- 	>
- 	<wsp:Policy/>
- </sca:policySet>
- 
- <sca:policySet name="tuscany:TestPolicySet_1_reference"
- 	provides="tuscany:TestIntent_1"
- 	appliesTo="sca:reference"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
- 	>
- 	<wsp:Policy/>
- </sca:policySet>
- 
- <sca:policySet name="tuscany:TestPolicySet_1_service"
- 	provides="tuscany:TestIntent_1"
- 	appliesTo="sca:service"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
- 	>
- 	<wsp:Policy/>
- </sca:policySet>
- 
- 
- <sca:policySet name="tuscany:TestPolicySet_2_implementation"
- 	provides="tuscany:TestIntent_2"
- 	appliesTo="sca:implementation.java"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
- 	>
- 	<wsp:Policy/>
- </sca:policySet>
- 
- <sca:policySet name="tuscany:TestPolicySet_2_reference"
- 	provides="tuscany:TestIntent_2"
- 	appliesTo="sca:reference"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
- 	>
- 	<wsp:Policy/>
- </sca:policySet>
- 
- <sca:policySet name="tuscany:TestPolicySet_2_service"
- 	provides="tuscany:TestIntent_2"
- 	appliesTo="sca:service"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
- 	>
- 	<wsp:Policy/>
- </sca:policySet>
- 
-  
- <sca:policySet name="tuscany:TestPolicySet_3_implementation"
- 	provides="tuscany:TestIntent_3"
- 	appliesTo="sca:implementation.java"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
- 	>
- 	<wsp:Policy/>
- </sca:policySet>
- 
- <sca:policySet name="tuscany:TestPolicySet_4_implementation"
- 	provides="tuscany:TestIntent_4"
- 	appliesTo="sca:implementation.java"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
- 	>
- 	<wsp:Policy/>
- </sca:policySet>
- 
- <sca:policySet name="tuscany:TestPolicySet_4_service"
- 	provides="tuscany:TestIntent_4"
- 	appliesTo="sca:service"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
- 	>
- 	<wsp:Policy/>
- </sca:policySet>
- 
- <sca:policySet name="tuscany:TestPolicySet_4_reference"
- 	provides="tuscany:TestIntent_4"
- 	appliesTo="sca:reference"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
- 	>
- 	<wsp:Policy/>
- </sca:policySet>
- 
- <sca:policySet name="tuscany:TestPolicySet_5_implementation"
- 	provides=""
- 	appliesTo="sca:implementation.java"
- 	tuscany:alwaysAppliesTo="sca:component[@name='MultiplyServiceComponent']"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
- 	>
- 	<wsp:Policy/>
- </sca:policySet>
- 
- <sca:policySet name="tuscany:TestPolicySet_5_service"
- 	provides="tuscany:TestIntent_5"
- 	appliesTo="sca:service"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
- 	>
- 	<wsp:Policy/>
- </sca:policySet>
- 
- <sca:policySet name="tuscany:TestPolicySet_5_reference"
- 	provides="tuscany:TestIntent_5"
- 	appliesTo="sca:reference"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
- 	>
- 	<wsp:Policy/>
- </sca:policySet>
- 
- <sca:policySet name="tuscany:TestPolicySet_4_qualified_1_implementation"
- 	provides="tuscany:TestIntent_4"
- 	appliesTo="sca:implementation.java"
- 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
- 	>
- 	 <intentMap provides="tuscany:TestIntent_4" default="Qualifier_1">
-        <qualifier name="Qualifier_1">
-           <wsp:Policy/>
-        </qualifier>
-    </intentMap>
- </sca:policySet>
+    <sca:policySet name="tuscany:TestPolicySet_1_Qualified_implementation" provides="tuscany:TestIntent_1.Qualifier_1"
+        appliesTo="sca:implementation.java" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsp:Policy />
+    </sca:policySet>
+
+    <sca:policySet name="tuscany:TestPolicySet_1_reference" provides="tuscany:TestIntent_1" appliesTo="sca:reference"
+        xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsp:Policy />
+    </sca:policySet>
+
+    <sca:policySet name="tuscany:TestPolicySet_1_service" provides="tuscany:TestIntent_1" appliesTo="sca:service"
+        xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsp:Policy />
+    </sca:policySet>
+
+
+    <sca:policySet name="tuscany:TestPolicySet_2_implementation" provides="tuscany:TestIntent_2"
+        appliesTo="sca:implementation.java" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsp:Policy />
+    </sca:policySet>
+
+    <sca:policySet name="tuscany:TestPolicySet_2_reference" provides="tuscany:TestIntent_2" appliesTo="sca:reference"
+        xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsp:Policy />
+    </sca:policySet>
+
+    <sca:policySet name="tuscany:TestPolicySet_2_service" provides="tuscany:TestIntent_2" appliesTo="sca:service"
+        xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsp:Policy />
+    </sca:policySet>
+
+
+    <sca:policySet name="tuscany:TestPolicySet_3_implementation" provides="tuscany:TestIntent_3"
+        appliesTo="sca:implementation.java" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsp:Policy />
+    </sca:policySet>
+
+    <sca:policySet name="tuscany:TestPolicySet_4_implementation" provides="tuscany:TestIntent_4"
+        appliesTo="sca:implementation.java" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsp:Policy />
+    </sca:policySet>
+
+    <sca:policySet name="tuscany:TestPolicySet_4_service" provides="tuscany:TestIntent_4" appliesTo="sca:service"
+        xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsp:Policy />
+    </sca:policySet>
+
+    <sca:policySet name="tuscany:TestPolicySet_4_reference" provides="tuscany:TestIntent_4" appliesTo="sca:reference"
+        xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsp:Policy />
+    </sca:policySet>
+
+    <sca:policySet name="tuscany:TestPolicySet_5_implementation" provides="" appliesTo="sca:implementation.java"
+        tuscany:alwaysAppliesTo="sca:component[@name='MultiplyServiceComponent']"
+        xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsp:Policy />
+    </sca:policySet>
+
+    <sca:policySet name="tuscany:TestPolicySet_5_service" provides="tuscany:TestIntent_5" appliesTo="sca:service"
+        xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsp:Policy />
+    </sca:policySet>
+
+    <sca:policySet name="tuscany:TestPolicySet_5_reference" provides="tuscany:TestIntent_5" appliesTo="sca:reference"
+        xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsp:Policy />
+    </sca:policySet>
+
+    <sca:policySet name="tuscany:TestPolicySet_4_qualified_1_implementation" provides="tuscany:TestIntent_4"
+        appliesTo="sca:implementation.java" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <intentMap provides="tuscany:TestIntent_4" default="Qualifier_1">
+            <qualifier name="Qualifier_1">
+                <wsp:Policy />
+            </qualifier>
+        </intentMap>
+    </sca:policySet>
 </definitions>
