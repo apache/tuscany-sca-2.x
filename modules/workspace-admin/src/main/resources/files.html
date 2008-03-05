@@ -18,7 +18,7 @@
 -->
 <html>
 <head>
-<title>SCA Contribution File Server</title>
+<title>SCA Domain - Contribution File Server</title>
 
 <script type="text/javascript" src="files.js"></script>
 <script type="text/javascript" src="utils.js"></script>
@@ -74,8 +74,11 @@
 
   <div id="fileServer">
   <p style="font-size:150%">
-  <b>SCA Contribution File Server</b>&nbsp;<a href="/feed/files/"><img src="icons/feed-icon.png" border="0"></a>
+  <b>SCA Domain</b><br><br><b>Contribution File Server</b>&nbsp;<a href="/feed/files/"><img src="icons/feed-icon.png" border="0"></a>
   </p>
+  This is a simple ATOM-based file server useful to share SCA contributions if you don't have an FTP, SVN or Maven repository.
+  <br><br>
+
   <form name="filesForm">
     <div id="files" ></div>
     <br/>
@@ -83,7 +86,11 @@
   </form>
   <br/>
   
-  <b>Upload SCA Contribution File</b>
+  <p><b>Upload Contribution</b>
+  </p>
+  Upload an SCA contribution file to the server.
+  <br><br>
+
   <form method="post" name="uploadFileForm" enctype='multipart/form-data' action='/files'>
     <table border="0">
     <tr><td>File:</td><td><input type="file" name="file" /></td></tr>

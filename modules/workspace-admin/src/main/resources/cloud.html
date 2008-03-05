@@ -80,7 +80,8 @@
 	function addComposite() {
 		var id  = 'composite:' +
 			document.newCompositeForm.contributionURI.value + ';' +
-			document.newCompositeForm.compositeQName.value;
+			document.newCompositeForm.compositeNamespace.value + ';' +
+			document.newCompositeForm.compositeName.value;
 		var entry = '<entry xmlns="http://www.w3.org/2005/Atom">' +
 				'<title>' + id +'</title>' +
               	'<id>' + id + '</id>' +
@@ -107,6 +108,10 @@
   <p style="font-size:150%">
   <b>SCA Domain</b><br><br><b>Node Cloud</b>&nbsp;<a href="/cloud/"><img src="icons/feed-icon.png" border="0"></a>
   </p>
+  Here are the SCA composites describing the SCA nodes currently in your SCA node cloud.<br>
+  SCA nodes are described as special SCA components of type "implementation.node".
+  <br><br>
+  
   <form name="cloudCompositeForm">
     <div id="composites" ></div>
     <br/>
@@ -117,11 +122,16 @@
   </form>
   <br/>
   
-  <b>Add Node</b>
+  <p><b>Add Nodes</b>
+  </p>
+  Add a composite describing one ore more SCA nodes to add to the cloud.
+  <br><br>
+  
   <form name="newCompositeForm">
     <table border="0">
-    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" /></td></tr>
-    <tr><td>QName:</td><td><input type="text" name="compositeQName" /></td></tr> 
+    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" /></td></td><td>e.g. mycontrib, http:/mycontrib</td></tr>
+    <tr><td>Composite Namespace:</td><td><input type="text" name="compositeNamespace" /></td><td>e.g. http://my/namespace</td></tr> 
+    <tr><td>Composite Name:</td><td><input type="text" name="compositeName" /></td><td>e.g. mycomposite</td></tr> 
     </table>
     <br/>
     <input type="button" onClick="addComposite()" value="Add" />
