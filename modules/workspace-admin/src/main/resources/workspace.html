@@ -96,6 +96,9 @@
   <p style="font-size:150%">
   <b>SCA Domain</b><br><br><b>Contributions</b>&nbsp;<a href="/workspace/"><img src="icons/feed-icon.png" border="0"></a>
   </p>
+  Here are the SCA contributions currently available in your SCA domain.
+  <br><br>
+
   <form name="workspaceForm">
     <div id="contributions" ></div>
     <br/>
@@ -103,11 +106,15 @@
   </form>
   <br/>
   
-  <b>Add Contribution</b>
+  <p><b>Add Contribution</b>
+  </p>
+  Add an SCA contribution containing your application artifacts to the SCA domain.
+  <br><br>
+  
   <form name="newContributionForm">
     <table border="0" >
-    <tr><td>Contribution URI:</td><td><input type="text" name="contributionID" /></td></tr> 
-    <tr><td>Address:</td><td><input type="text" name="contributionLocation" /></td></tr>
+    <tr><td>Contribution URI:</td><td><input type="text" name="contributionID" /></td></td><td>e.g. mycontrib, http:/mycontrib</td></tr> 
+    <tr><td>Address:</td><td><input type="text" name="contributionLocation" /></td></td><td>e.g. http://host/myjar.jar, file:/mydir, file:/myjar.jar</td></tr>
     </table>
     <br/>
     <input type="button" onClick="addContribution()" value="Add" />
