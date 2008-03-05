@@ -32,6 +32,16 @@
 		cloudComposite.get("", getCompositesResponse);
 	}
 	
+	function contributionURI(id) {
+	       var i = id.indexOf(';');
+	       return id.substring(10, i);
+	}
+	
+	function compositeName(id) {
+	       var i = id.indexOf(';');
+	       return id.substring(i + 1);
+	}
+	
 	function getCompositesResponse(feed) {
 		if (feed != null) {
 			var entries = feed.getElementsByTagName("entry");              
@@ -40,9 +50,12 @@
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
 				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
+				var uri = contributionURI(id);
+				var qname = compositeName(id);
+				
 				composites += '<tr valign="bottom">'
 				composites += '<td><input name="composites" type="checkbox" value="' + id + '">' +
-											'<a href=\"' + location + '\">' + id + '</a></td>';
+											'<a href=\"' + location + '\">' + uri + ' - ' + qname + '</a></td>';
 				composites += '</tr>';
 			}
 			composites += '</table>';

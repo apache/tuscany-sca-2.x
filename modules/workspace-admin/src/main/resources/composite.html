@@ -18,7 +18,7 @@
 -->
 <html>
 <head>
-<title>SCA Domain - Included Composites</title>
+<title>SCA Domain - Deployed Composites</title>
 
 <script type="text/javascript" src="composite.js"></script>
 <script type="text/javascript" src="utils.js"></script>
@@ -32,18 +32,32 @@
 		domainComposite.get("", getCompositesResponse);
 	}
 	
+	function contributionURI(id) {
+	       var i = id.indexOf(';');
+	       return id.substring(10, i);
+	}
+	
+	function compositeName(id) {
+	       var i = id.indexOf(';');
+	       return id.substring(i + 1);
+	}
+		
 	function getCompositesResponse(feed) {
 		if (feed != null) {
 			var entries = feed.getElementsByTagName("entry");              
 			var composites = "";
 			composites += '<table border="0">';
+			compositeIDs = new Array();
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
 				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
+				var uri = contributionURI(id);
+				var qname = compositeName(id);
+				
 				composites += '<tr valign="bottom">'
 				composites += '<td><input name="composites" type="checkbox" value="' + id + '">' +
-											'<a href=\"' + location + '\">' + id + '</a></td>';
-				composites += '<td>&nbsp;&nbsp;&nbsp;<a href=\"/resolved/composite/' + id + '\">resolved</a></td>';
+											'<a href=\"' + location + '\">' + uri + ' - ' + qname + '</a></td>';
+				composites += '<td>&nbsp;&nbsp;&nbsp;<a href=\"/package/?deployable=' + id + '\">installable package</a></td>';
 				composites += '</tr>';
 			}
 			composites += '</table>';
@@ -92,7 +106,7 @@
 
   <div id="domainComposite">
   <p style="font-size:150%">
-  <b>SCA Domain</b><br><br><b>Included Composites</b>&nbsp;<a href="/composite/"><img src="icons/feed-icon.png" border="0"></a>
+  <b>SCA Domain</b><br><br><b>Deployed Composites</b>&nbsp;<a href="/composite/"><img src="icons/feed-icon.png" border="0"></a>
   </p>
   <form name="domainCompositeForm">
     <div id="composites" ></div>
