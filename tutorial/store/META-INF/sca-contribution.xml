@@ -21,5 +21,6 @@
    xmlns:s="http://store">
    <export namespace="http://store"/>
    <import.java package="services"/>
+   <import.resource uri="uiservices/store.html"/>   
    <deployable composite="s:store"/>
 </contribution>
