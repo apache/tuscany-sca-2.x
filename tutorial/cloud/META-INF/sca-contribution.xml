@@ -19,7 +19,6 @@
 -->
 <contribution xmlns="http://www.osoa.org/xmlns/sca/1.0"
    xmlns:c="http://cloud">
-   <export namespace="http://cloud"/>
    <import.java package="services"/>
    <deployable composite="c:catalogs"/>
    <deployable composite="c:currency"/>
