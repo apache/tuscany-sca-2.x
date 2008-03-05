@@ -88,7 +88,7 @@
     <component name="ContributionFileServiceComponent">
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.ContributionFileServiceImpl"/>
         <property name="directoryName">contributions</property>             
-   		<service name="ContributionFileServiceImpl">
+   		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/files"/>
    		</service>
     </component>
@@ -106,6 +106,9 @@
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.DeployableCompositeCollectionImpl"/>
    		<service name="CompositeCollection">
    	 		<t:binding.atom uri="http://localhost:9990/deployable"/>
+   		</service>
+   		<service name="Servlet">
+   	 		<t:binding.http uri="http://localhost:9990/resolved/composite/"/>
    		</service>
    		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalContributionCollection"/>
     </component>

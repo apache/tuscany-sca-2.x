@@ -63,7 +63,7 @@ public class AdminTestCase extends TestCase {
         contributionCollection.workspaceFileName = url.getFile();
         deployableCollection = new DeployableCompositeCollectionImpl();
         deployableCollection.contributionCollection = contributionCollection;
-        contributionCollection.init();
+        contributionCollection.initialize();
         deployableCollection.init();
         
         // Populate the workspace with test data

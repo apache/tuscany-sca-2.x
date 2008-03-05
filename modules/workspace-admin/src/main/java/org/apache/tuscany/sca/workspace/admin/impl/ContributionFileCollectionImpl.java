@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.workspace.admin.ContributionFileCollection;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Service;
 
 /**
  * Implementation of a file collection service component. 
@@ -38,6 +39,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
+@Service(ContributionFileCollection.class)
 public class ContributionFileCollectionImpl implements ContributionFileCollection {
     
     @Property
@@ -49,7 +51,7 @@ public class ContributionFileCollectionImpl implements ContributionFileCollectio
      * Initialize the component.
      */
     @Init
-    public void init() throws IOException {
+    public void initialize() throws IOException {
         files = new File(directoryName);
         if (!files.exists()) {
             files.mkdirs();

@@ -27,6 +27,7 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.util.List;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -39,6 +40,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Service;
 
 /**
  * Implementation of a servlet component supporting file upload/download.
@@ -46,6 +48,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
+@Service(Servlet.class)
 public class ContributionFileServiceImpl extends HttpServlet {
     private static final long serialVersionUID = -4560385595481971616L;
     

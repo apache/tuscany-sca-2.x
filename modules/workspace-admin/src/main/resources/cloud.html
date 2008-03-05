@@ -65,13 +65,12 @@
 	}	
 
 	function addComposite() {
-		var id  = document.newCompositeForm.compositeQName.value;
-		var location  = document.newCompositeForm.contributionURI.value;
+		var id  = 'composite:' +
+			document.newCompositeForm.contributionURI.value + ';' +
+			document.newCompositeForm.compositeQName.value;
 		var entry = '<entry xmlns="http://www.w3.org/2005/Atom">' +
-				'<title>Contribution - ' + id +'</title>' +
+				'<title>' + id +'</title>' +
               	'<id>' + id + '</id>' +
-              	'<link rel="alternate" href="' + location + '" />' +
-              	'<link rel="edit" href="' + location + '" />' +
                	'</entry>';
 		cloudComposite.post(entry, addCompositeResponse);
 	}
@@ -108,8 +107,8 @@
   <b>Add Node</b>
   <form name="newCompositeForm">
     <table border="0">
-    <tr><td>QName:</td><td><input type="text" name="compositeQName" /></td></tr> 
     <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" /></td></tr>
+    <tr><td>QName:</td><td><input type="text" name="compositeQName" /></td></tr> 
     </table>
     <br/>
     <input type="button" onClick="addComposite()" value="Add" />

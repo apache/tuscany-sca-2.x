@@ -59,6 +59,7 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Document;
 
 /**
@@ -67,6 +68,7 @@ import org.w3c.dom.Document;
  * @version $Rev: 632617 $ $Date: 2008-03-01 08:24:33 -0800 (Sat, 01 Mar 2008) $
  */
 @Scope("COMPOSITE")
+@Service(CompositeCollection.class)
 public class CompositeCollectionImpl implements CompositeCollection {
     
     @Property
@@ -81,10 +83,10 @@ public class CompositeCollectionImpl implements CompositeCollection {
     private XMLOutputFactory outputFactory;
     
     /**
-     * Initialize the workspace administration component.
+     * Initialize the component.
      */
     @Init
-    public void init() throws IOException, ContributionReadException, XMLStreamException, ParserConfigurationException {
+    public void initialize() throws IOException, ContributionReadException, XMLStreamException, ParserConfigurationException {
         
         // Create factories
         ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
@@ -114,10 +116,12 @@ public class CompositeCollectionImpl implements CompositeCollection {
         for (Composite composite: compositeCollection.getIncludes()) {
             Entry<String, Item> entry = new Entry<String, Item>();
             QName qname = composite.getName();
-            entry.setKey(name(qname));
+            String contributionURI = composite.getURI();
+            String key = key(contributionURI, qname); 
+            entry.setKey(key);
             Item item = new Item();
-            item.setTitle(name(qname));
-            item.setLink(compositeLink(qname, composite.getURI()));
+            item.setTitle(key);
+            item.setLink(compositeLink(contributionURI, qname));
             entry.setData(item);
             entries.add(entry);
         }
@@ -125,14 +129,15 @@ public class CompositeCollectionImpl implements CompositeCollection {
     }
 
     public Item get(String key) throws NotFoundException {
+        String contributionURI = uri(key);
+        QName qname = qname(key);
 
         // Returns the composite with the given name key
         for (Composite composite: compositeCollection.getIncludes()) {
-            QName qname = composite.getName();
-            if (key.equals(name(qname))) {
+            if (contributionURI.equals(composite.getURI()) && qname.equals(composite.getName())) {
                 Item item = new Item();
-                item.setTitle(name(qname));
-                item.setLink(compositeLink(qname, composite.getURI()));
+                item.setTitle(key);
+                item.setLink(compositeLink(composite.getURI(), qname));
                 return item;
             }
         }
@@ -140,11 +145,13 @@ public class CompositeCollectionImpl implements CompositeCollection {
     }
 
     public String post(String key, Item item) {
+        String contributionURI = uri(key);
+        QName qname = qname(key);
         
         // Adds a new composite to the domain composite
         Composite composite = assemblyFactory.createComposite();
-        composite.setName(qname(key));
-        composite.setURI(item.getLink());
+        composite.setName(qname);
+        composite.setURI(contributionURI);
         composite.setUnresolved(true);
         compositeCollection.getIncludes().add(composite);
         
@@ -155,15 +162,18 @@ public class CompositeCollectionImpl implements CompositeCollection {
     }
 
     public void put(String key, Item item) throws NotFoundException {
+        String contributionURI = uri(key);
+        QName qname = qname(key);
         
         // Update a composite already in the domain composite
         Composite newComposite = assemblyFactory.createComposite();
-        newComposite.setName(qname(key));
-        newComposite.setURI(item.getLink());
+        newComposite.setName(qname);
+        newComposite.setURI(contributionURI);
         newComposite.setUnresolved(true);
         List<Composite> composites = compositeCollection.getIncludes();
         for (int i = 0, n = composites.size(); i < n; i++) {
-            if (name(composites.get(i).getName()).equals(key)) {
+            Composite composite = composites.get(i);
+            if (contributionURI.equals(composite.getURI()) && qname.equals(composite.getName())) {
                 composites.set(i, newComposite);
                 
                 // Write the domain composite
@@ -176,11 +186,14 @@ public class CompositeCollectionImpl implements CompositeCollection {
     }
 
     public void delete(String key) throws NotFoundException {
+        String contributionURI = uri(key);
+        QName qname = qname(key);
         
         // Delete a composite from the domain composite
         List<Composite> composites = compositeCollection.getIncludes();
         for (int i = 0, n = composites.size(); i < n; i++) {
-            if (name(composites.get(i).getName()).equals(key)) {
+            Composite composite = composites.get(i);
+            if (contributionURI.equals(composite.getURI()) && qname.equals(composite.getName())) {
                 composites.remove(i);
 
                 // Write the domain composite
@@ -193,7 +206,7 @@ public class CompositeCollectionImpl implements CompositeCollection {
     }
 
     public Entry<String, Item>[] query(String queryString) {
-        if (queryString.startsWith("usedBy=")) {
+        if (queryString.startsWith("uris=true")) {
             //FIXME Invoke the Composite processing code from workspace-impl
             return getAll();
         } else {
@@ -228,11 +241,11 @@ public class CompositeCollectionImpl implements CompositeCollection {
         }
     }
     
-    private String compositeLink(QName qname, String contributionURI) {
-        String name = name(qname);
+    private String compositeLink(String contributionURI, QName qname) {
+        String key = key(contributionURI, qname);
         Entry<String, Item>[] entries = deployableCompositeCollection.query("contribution=" + contributionURI);
         for (Entry<String, Item> entry: entries) {
-            if (name.equals(entry.getKey())) {
+            if (key.equals(entry.getKey())) {
                 return entry.getData().getLink();
             }
         }
@@ -240,30 +253,33 @@ public class CompositeCollectionImpl implements CompositeCollection {
     }
     
     /**
-     * Returns a qname object from its expression as namespace#localpart.
-     * @param name
+     * Extracts a qname from a key expressed as contributionURI;namespace;localpart.
+     * @param key
      * @return
      */
-    private static QName qname(String name) {
-        int i = name.indexOf(';');
-        if (i != -1) {
-            return new QName(name.substring(0, i), name.substring(i + 1));
-        } else {
-            return new QName(name);
-        }
+    private static QName qname(String key) {
+        int i = key.indexOf(';');
+        key = key.substring(i + 1);
+        i = key.indexOf(';');
+        return new QName(key.substring(0, i), key.substring(i + 1));
     }
     
     /**
-     * Returns a qname expressed as namespace;localpart.
+     * Extracts a contribution uri from a key expressed as contributionURI;namespace;localpart.
+     * @param key
+     * @return
+     */
+    private static String uri(String key) {
+        int i = key.indexOf(';');
+        return key.substring("composite:".length(), i);
+    }
+    
+    /**
+     * Returns a composite key expressed as contributionURI;namespace;localpart.
      * @param qname
      * @return
      */
-    private static String name(QName qname) {
-        String ns = qname.getNamespaceURI();
-        if (ns != null) {
-            return ns + ';' + qname.getLocalPart();
-        } else {
-            return qname.getLocalPart();
-        }
+    private static String key(String uri, QName qname) {
+        return "composite:" + uri + ';' + qname.getNamespaceURI() + ';' + qname.getLocalPart();
     }
 }
