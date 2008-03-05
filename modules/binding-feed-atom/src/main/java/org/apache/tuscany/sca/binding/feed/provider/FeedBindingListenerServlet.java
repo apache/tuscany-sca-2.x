@@ -324,7 +324,7 @@ class FeedBindingListenerServlet extends HttpServlet {
 
             String href = item.getLink();
             if (href == null && key != null) {
-           		href = key.toString();
+                href = key.toString();
             }
 
             if (href != null) {
@@ -332,15 +332,19 @@ class FeedBindingListenerServlet extends HttpServlet {
                 feedEntry.addLink(href,"alternate");
             }
                 
-            Date date = item.getDate();
-            if (date == null) {
-                date = new Date();
+            String related = item.getRelated();
+            if (related != null) {
+                feedEntry.addLink(href, "related");
             }
-            feedEntry.setUpdated(date);
+                
+            Date date = item.getDate();
+            if (date != null) {
+                feedEntry.setUpdated(date);
+            }
             return feedEntry;
             
         } else if (data != null) {
-        	 Entry feedEntry = abdera.getFactory().newEntry();
+            Entry feedEntry = abdera.getFactory().newEntry();
              feedEntry.setId(key.toString());
              feedEntry.setTitle("item");
              
@@ -357,8 +361,6 @@ class FeedBindingListenerServlet extends HttpServlet {
              feedEntry.addLink(key.toString(), "edit");
              feedEntry.addLink(key.toString(), "alternate");
      
-             feedEntry.setUpdated(new Date());
-
              return feedEntry;
         } else {
             return null;
@@ -382,12 +384,15 @@ class FeedBindingListenerServlet extends HttpServlet {
                 
                 for (Link link : feedEntry.getLinks()) {
                     if (link.getRel() == null || "edit".equals(link.getRel())) {
-                        String href = link.getHref().toString();
-                        if (href.startsWith("null/")) {
-                            href = href.substring(5);
+                        if (item.getLink() == null) {
+                            String href = link.getHref().toString();
+                            item.setLink(href);
                         }
-                        item.setLink(href);
-                        break;
+                    } else if ("related".equals(link.getRel())) {
+                        if (item.getRelated() == null) {
+                            String related = link.getHref().toString();
+                            item.setRelated(related);
+                        }
                     }
                 }
                 
@@ -400,7 +405,6 @@ class FeedBindingListenerServlet extends HttpServlet {
             	if ( feedEntry.getId() != null) {
             		feedEntry.getId().toString();
             	}
-                
                 
                 // Create the item from XML
             	if (feedEntry.getContentElement().getElements().size() == 0) {
