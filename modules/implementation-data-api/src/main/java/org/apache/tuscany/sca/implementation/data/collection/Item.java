@@ -31,6 +31,7 @@ public class Item {
     private String title;
     private String contents;
     private String link;
+    private String related;
     private Date date;
     
     /**
@@ -44,12 +45,14 @@ public class Item {
      * @param title the item title
      * @param contents the item contents
      * @param link the item link to a web resource
+     * @param related the item link to a related web resource
      * @param date the item date
      */
-    public Item(String title, String contents, String link, Date date) {
+    public Item(String title, String contents, String link, String related, Date date) {
         this.title = title;
         this.contents = contents;
         this.link = link;
+        this.related = related;
         this.date = date;
     }
 
@@ -99,6 +102,22 @@ public class Item {
      */
     public void setLink(String link) {
         this.link = link;
+    }
+
+    /**
+     * Returns the item link to a related web resource
+     * @return the item link to a related web resource
+     */
+    public String getRelated() {
+        return related;
+    }
+
+    /**
+     * Sets the item link to a related web resource
+     * @param link the item link to a related web resource
+     */
+    public void setRelated(String related) {
+        this.related = related;
     }
 
     /**
