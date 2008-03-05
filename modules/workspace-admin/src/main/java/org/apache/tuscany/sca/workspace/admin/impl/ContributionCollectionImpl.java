@@ -30,7 +30,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -101,10 +100,10 @@ public class ContributionCollectionImpl implements ContributionCollection, Local
     private XMLOutputFactory outputFactory;
     
     /**
-     * Initialize the workspace administration component.
+     * Initialize the component.
      */
     @Init
-    public void init() throws IOException, ContributionReadException, XMLStreamException, ParserConfigurationException {
+    public void initialize() throws IOException, ContributionReadException, XMLStreamException, ParserConfigurationException {
         
         // Create model factories
         ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();

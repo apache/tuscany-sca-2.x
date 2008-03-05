@@ -19,22 +19,37 @@
 
 package org.apache.tuscany.sca.workspace.admin.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -60,16 +75,23 @@ import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.workspace.admin.CompositeCollection;
 import org.apache.tuscany.sca.workspace.admin.LocalCompositeCollection;
 import org.apache.tuscany.sca.workspace.admin.LocalContributionCollection;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
+import org.w3c.dom.Document;
 
 /**
  * Implementation of a deployable composite collection service. 
@@ -77,9 +99,10 @@ import org.osoa.sca.annotations.Service;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-@Service(interfaces={CompositeCollection.class, LocalCompositeCollection.class})
-public class DeployableCompositeCollectionImpl implements CompositeCollection, LocalCompositeCollection {
-    
+@Service(interfaces={CompositeCollection.class, LocalCompositeCollection.class, Servlet.class})
+public class DeployableCompositeCollectionImpl extends HttpServlet implements CompositeCollection, LocalCompositeCollection {
+    private static final long serialVersionUID = -8809641932774129151L;
+
     @Reference
     public LocalContributionCollection contributionCollection;
 
@@ -87,30 +110,31 @@ public class DeployableCompositeCollectionImpl implements CompositeCollection, L
     private ModelResolverExtensionPoint modelResolvers;
     private AssemblyFactory assemblyFactory;
     private URLArtifactProcessor<Contribution> contributionContentProcessor;
+    private StAXArtifactProcessor<Composite> compositeProcessor;
+    private XMLOutputFactory outputFactory;
+    private CompositeBuilder compositeBuilder;
     
     /**
-     * Initialize the workspace administration component.
+     * Initialize the component.
      */
     @Init
-    public void init() throws IOException, ContributionReadException, XMLStreamException, ParserConfigurationException {
+    public void initialize() throws IOException, ContributionReadException, XMLStreamException, ParserConfigurationException {
         
         // Create factories
         modelFactories = new DefaultModelFactoryExtensionPoint();
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
-        XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
-
-        // Create model resolvers
-        modelResolvers = new DefaultModelResolverExtensionPoint();
 
         // Create artifact processors
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(modelFactories);
         StAXArtifactProcessor<Object> staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
         staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, staxProcessor));
+        compositeProcessor = new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, staxProcessor);
+        staxProcessors.addArtifactProcessor(compositeProcessor);
 
         URLArtifactProcessorExtensionPoint urlProcessors = new DefaultURLArtifactProcessorExtensionPoint(modelFactories);
         URLArtifactProcessor<Object> urlProcessor = new ExtensibleURLArtifactProcessor(urlProcessors);
@@ -118,9 +142,17 @@ public class DeployableCompositeCollectionImpl implements CompositeCollection, L
         urlProcessors.addArtifactProcessor(new ContributionGeneratedMetadataDocumentProcessor(staxProcessor, inputFactory));
         urlProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory));
         
-        // Create contribution processors
+        // Create contribution processor
+        modelResolvers = new DefaultModelResolverExtensionPoint();
         contributionContentProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor);
 
+        // Create composite builder
+        SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
+        IntentAttachPointTypeFactory intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
+        InterfaceContractMapper contractMapper = new InterfaceContractMapperImpl();
+        List<PolicySet> domainPolicySets = new ArrayList<PolicySet>();
+        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory,
+                                                                                            contractMapper, domainPolicySets, null);
     }
     
     public Entry<String, Item>[] getAll() {
@@ -132,7 +164,7 @@ public class DeployableCompositeCollectionImpl implements CompositeCollection, L
 
         // Read contribution metadata
         for (Entry<String, Item> contributionEntry: contributionEntries) {
-            Contribution contribution;
+            Contribution contribution = contribution(contributionEntry.getKey(), contributionEntry.getData().getLink());
             try {
                 URI uri = URI.create(contributionEntry.getKey());
                 URL url = url(contributionEntry.getData().getLink());
@@ -146,9 +178,10 @@ public class DeployableCompositeCollectionImpl implements CompositeCollection, L
             // Create entries for the deployable composites
             for (Composite deployable: contribution.getDeployables()) {
                 Entry<String, Item> entry = new Entry<String, Item>();
-                entry.setKey(name(deployable.getName()));
+                String key = key(contribution.getURI(), deployable.getName());
+                entry.setKey(key);
                 Item item = new Item();
-                item.setTitle(name(deployable.getName()));
+                item.setTitle(key);
                 item.setLink(deployableLink(contribution.getLocation(), deployable.getURI()));
                 entry.setData(item);
                 entries.add(entry);
@@ -159,7 +192,28 @@ public class DeployableCompositeCollectionImpl implements CompositeCollection, L
     }
 
     public Item get(String key) throws NotFoundException {
-        throw new UnsupportedOperationException();
+
+        // Get the specified contribution info 
+        String contributionURI = uri(key);
+        Item contributionItem = contributionCollection.get(contributionURI);
+        
+        // Read the contribution
+        Contribution contribution = contribution(contributionURI, contributionItem.getLink());
+
+        // Find the specified deployable composite
+        QName qname = qname(key);
+        for (Composite deployable: contribution.getDeployables()) {
+            if (qname.equals(deployable.getName())) {
+                
+                // Return an item describing the deployable composite
+                Item item = new Item();
+                item.setTitle(key);
+                item.setLink(deployableLink(contribution.getLocation(), deployable.getURI()));
+                return item;
+            }
+        }
+
+        throw new NotFoundException();
     }
 
     public String post(String key, Item item) {
@@ -173,7 +227,7 @@ public class DeployableCompositeCollectionImpl implements CompositeCollection, L
     public void delete(String key) throws NotFoundException {
         throw new UnsupportedOperationException();
     }
-
+    
     public Entry<String, Item>[] query(String queryString) {
         if (queryString.startsWith("contribution=")) {
 
@@ -182,31 +236,24 @@ public class DeployableCompositeCollectionImpl implements CompositeCollection, L
             List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
 
             // Get the specified contribution info 
-            String key = queryString.substring(13);
+            String contributionURI = queryString.substring(13);
             Item contributionItem;
             try {
-                contributionItem = contributionCollection.get(key);
+                contributionItem = contributionCollection.get(contributionURI);
             } catch (NotFoundException e) {
                 return entries.toArray(new Entry[entries.size()]);
             }
-
-            Contribution contribution;
-            try {
-                URI uri = URI.create(key);
-                URL url = url(contributionItem.getLink());
-                contribution = (Contribution)contributionContentProcessor.read(null, uri, url);
-                ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
-                contributionContentProcessor.resolve(contribution, modelResolver);
-            } catch (Exception e) {
-                throw new ServiceRuntimeException(e);
-            }
+            
+            // Read the contribution
+            Contribution contribution = contribution(contributionURI, contributionItem.getLink());
 
             // Create entries for the deployable composites
             for (Composite deployable: contribution.getDeployables()) {
                 Entry<String, Item> entry = new Entry<String, Item>();
-                entry.setKey(name(deployable.getName()));
+                String key = key(contributionURI, deployable.getName());
+                entry.setKey(key);
                 Item item = new Item();
-                item.setTitle(name(deployable.getName()));
+                item.setTitle(key);
                 item.setLink(deployableLink(contribution.getLocation(), deployable.getURI()));
                 entry.setData(item);
                 entries.add(entry);
@@ -219,27 +266,152 @@ public class DeployableCompositeCollectionImpl implements CompositeCollection, L
         }
     }
     
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        // Get the request path
+        String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
+        String key = path.startsWith("/")? path.substring(1) : path;
+
+        // Get the specified contribution info 
+        String contributionURI = uri(key);
+        Item contributionItem;
+        try {
+            contributionItem = contributionCollection.get(contributionURI);
+        } catch (NotFoundException e) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+        
+        // Read the contribution
+        Contribution contribution = contribution(contributionURI, contributionItem.getLink());
+
+        // Find the specified deployable composite
+        Composite deployable = null;
+        QName qname = qname(key);
+        for (Composite d: contribution.getDeployables()) {
+            if (qname.equals(d.getName())) {
+                deployable = d;
+                break;
+            }
+        }
+        if (deployable == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+        
+        // Build the composite
+        try {
+            compositeBuilder.build(deployable);
+        } catch (CompositeBuilderException e) {
+            throw new ServletException(e);
+        }
+        
+        // Write the deployable composite back to XML
+        try {
+            // First write to a byte stream
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
+            compositeProcessor.write(deployable, writer);
+            
+            // Parse again to pretty format the document
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document document = documentBuilder.parse(new ByteArrayInputStream(bos.toByteArray()));
+            OutputFormat format = new OutputFormat();
+            format.setIndenting(true);
+            format.setIndent(2);
+            
+            // Write to domain.composite
+            XMLSerializer serializer = new XMLSerializer(response.getOutputStream(), format);
+            serializer.serialize(document);
+            
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+    }
+
+    /**
+     * Returns the contribution with the given URI.
+     * 
+     * @param contributionURI
+     * @return
+     * @throws NotFoundException
+     */
+    private Contribution contribution(String contributionURI, String contributionURL) {
+        try {
+            URI uri = URI.create(contributionURI);
+            URL url = url(contributionURL);
+            Contribution contribution = (Contribution)contributionContentProcessor.read(null, uri, url);
+            ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
+            contributionContentProcessor.resolve(contribution, modelResolver);
+            return contribution;
+
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
+    /**
+     * Returns a link to a deployable composite.
+     * 
+     * If the containing contribution is a local directory, return the URI of  the local composite file
+     * inside the contribution.
+     * 
+     * If the containing contribution is a local or remote file, return a URI of the form:
+     * /files/ contribution URI !/ composite URI.
+     * The contribution file servlet at '/files/' will open the contribution and extract the composite
+     * file from it.
+     *  
+     * @param contributionLocation
+     * @param deployableURI
+     * @return
+     */
     private static String deployableLink(String contributionLocation, String deployableURI) {
         URI uri = URI.create(contributionLocation);
-        if (uri.getPath().startsWith("/files/")) {
-            return contributionLocation + "!/" + deployableURI;
+        if ("file".equals(uri.getScheme())) {
+            if (new File(uri).isDirectory()) {
+                return contributionLocation + "/" + deployableURI;
+            } else {
+                return "/files/" + contributionLocation + "!/" + deployableURI; 
+            }
         } else {
-            return "/files/" + contributionLocation + "!/" + deployableURI;
+            if (uri.getPath().startsWith("/files/")) {
+                return contributionLocation + "!/" + deployableURI;
+            } else {
+                return "/files/" + contributionLocation + "!/" + deployableURI;
+            }
         }
     }
     
     /**
-     * Returns a qname expressed as namespace#localpart.
+     * Extracts a qname from a key expressed as contributionURI;namespace;localpart.
+     * @param key
+     * @return
+     */
+    private static QName qname(String key) {
+        int i = key.indexOf(';');
+        key = key.substring(i + 1);
+        i = key.indexOf(';');
+        return new QName(key.substring(0, i), key.substring(i + 1));
+    }
+    
+    /**
+     * Extracts a contribution uri from a key expressed as contributionURI;namespace;localpart.
+     * @param key
+     * @return
+     */
+    private static String uri(String key) {
+        int i = key.indexOf(';');
+        return key.substring("composite:".length(), i);
+    }
+    
+    /**
+     * Returns a composite key expressed as contributionURI;namespace;localpart.
      * @param qname
      * @return
      */
-    private static String name(QName qname) {
-        String ns = qname.getNamespaceURI();
-        if (ns != null) {
-            return ns + ';' + qname.getLocalPart();
-        } else {
-            return qname.getLocalPart();
-        }
+    private static String key(String uri, QName qname) {
+        return "composite:" + uri + ';' + qname.getNamespaceURI() + ';' + qname.getLocalPart();
     }
 
     /**
