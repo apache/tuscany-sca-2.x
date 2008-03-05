@@ -19,7 +19,5 @@
 -->
 <contribution xmlns="http://www.osoa.org/xmlns/sca/1.0"
    xmlns:n="http://nodes">
-   <import namespace="http://cloud"/>
-   <import namespace="http://store"/>
    <deployable composite="n:nodes"/>
 </contribution>
