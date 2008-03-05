@@ -115,12 +115,12 @@ public class CompositeCollectionImpl implements CompositeCollection {
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
         for (Composite composite: compositeCollection.getIncludes()) {
             Entry<String, Item> entry = new Entry<String, Item>();
-            QName qname = composite.getName();
             String contributionURI = composite.getURI();
+            QName qname = composite.getName();
             String key = key(contributionURI, qname); 
             entry.setKey(key);
             Item item = new Item();
-            item.setTitle(key);
+            item.setTitle(title(contributionURI, qname));
             item.setLink(compositeLink(contributionURI, qname));
             entry.setData(item);
             entries.add(entry);
@@ -136,7 +136,7 @@ public class CompositeCollectionImpl implements CompositeCollection {
         for (Composite composite: compositeCollection.getIncludes()) {
             if (contributionURI.equals(composite.getURI()) && qname.equals(composite.getName())) {
                 Item item = new Item();
-                item.setTitle(key);
+                item.setTitle(title(contributionURI, qname));
                 item.setLink(compositeLink(composite.getURI(), qname));
                 return item;
             }
@@ -206,12 +206,7 @@ public class CompositeCollectionImpl implements CompositeCollection {
     }
 
     public Entry<String, Item>[] query(String queryString) {
-        if (queryString.startsWith("uris=true")) {
-            //FIXME Invoke the Composite processing code from workspace-impl
-            return getAll();
-        } else {
-            throw new UnsupportedOperationException();
-        }
+        throw new UnsupportedOperationException();
     }
     
     /**
@@ -282,4 +277,14 @@ public class CompositeCollectionImpl implements CompositeCollection {
     private static String key(String uri, QName qname) {
         return "composite:" + uri + ';' + qname.getNamespaceURI() + ';' + qname.getLocalPart();
     }
+
+    /**
+     * Returns a composite title expressed as contributionURI - namespace;localpart.
+     * @param qname
+     * @return
+     */
+    private static String title(String uri, QName qname) {
+        return uri + " - " + qname.getNamespaceURI() + ';' + qname.getLocalPart();
+    }
+
 }

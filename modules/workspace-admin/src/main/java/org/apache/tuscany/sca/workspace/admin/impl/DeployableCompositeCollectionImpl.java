@@ -178,10 +178,12 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
             // Create entries for the deployable composites
             for (Composite deployable: contribution.getDeployables()) {
                 Entry<String, Item> entry = new Entry<String, Item>();
-                String key = key(contribution.getURI(), deployable.getName());
+                String contributionURI = contribution.getURI();
+                QName qname = deployable.getName();
+                String key = key(contributionURI, qname);
                 entry.setKey(key);
                 Item item = new Item();
-                item.setTitle(key);
+                item.setTitle(title(contributionURI, qname));
                 item.setLink(deployableLink(contribution.getLocation(), deployable.getURI()));
                 entry.setData(item);
                 entries.add(entry);
@@ -207,7 +209,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
                 
                 // Return an item describing the deployable composite
                 Item item = new Item();
-                item.setTitle(key);
+                item.setTitle(title(contributionURI, qname));
                 item.setLink(deployableLink(contribution.getLocation(), deployable.getURI()));
                 return item;
             }
@@ -250,10 +252,11 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
             // Create entries for the deployable composites
             for (Composite deployable: contribution.getDeployables()) {
                 Entry<String, Item> entry = new Entry<String, Item>();
-                String key = key(contributionURI, deployable.getName());
+                QName qname = deployable.getName();
+                String key = key(contributionURI, qname);
                 entry.setKey(key);
                 Item item = new Item();
-                item.setTitle(key);
+                item.setTitle(title(contributionURI, qname));
                 item.setLink(deployableLink(contribution.getLocation(), deployable.getURI()));
                 entry.setData(item);
                 entries.add(entry);
@@ -272,6 +275,9 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
         // Get the request path
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
         String key = path.startsWith("/")? path.substring(1) : path;
+        
+        // Expecting a key in the form:
+        // composite:contributionURI;namespace;localName
 
         // Get the specified contribution info 
         String contributionURI = uri(key);
@@ -412,6 +418,15 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
      */
     private static String key(String uri, QName qname) {
         return "composite:" + uri + ';' + qname.getNamespaceURI() + ';' + qname.getLocalPart();
+    }
+
+    /**
+     * Returns a composite title expressed as contributionURI - namespace;localpart.
+     * @param qname
+     * @return
+     */
+    private static String title(String uri, QName qname) {
+        return uri + " - " + qname.getNamespaceURI() + ';' + qname.getLocalPart();
     }
 
     /**

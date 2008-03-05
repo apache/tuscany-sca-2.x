@@ -122,4 +122,12 @@
         <reference name="deployableCompositeCollection" target="DeployableCompositeCollectionComponent/LocalCompositeCollection"/>
     </component>
 
+    <component name="PackageCollectionComponent">
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.PackageCollectionImpl"/>
+   		<service name="PackageCollection">
+   	 		<t:binding.atom uri="http://localhost:9990/package"/>
+   		</service>
+   		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalContributionCollection"/>
+    </component>
+
 </composite>
