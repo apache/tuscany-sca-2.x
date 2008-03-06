@@ -21,24 +21,7 @@
 		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
 		targetNamespace="http://nodes"
 		xmlns:s="http://store"
-		xmlns:c="http://cloud"
-		name="nodes">
-		
-	<component name="StoreNode">
-		<t:implementation.node composite="s:store"/>
-		<service name="Node">
-			<t:binding.http uri="http://localhost:8100"/>
-			<t:binding.jsonrpc uri="http://localhost:8100"/>
-			<t:binding.atom uri="http://localhost:8100"/>
-		</service>
-	</component> 
-
-	<component name="CloudNode">
-		<t:implementation.node composite="c:cloud"/>
-		<service name="Node">
-			<binding.sca uri="http://localhost:8500"/>
-		</service>
-	</component> 
+		name="merger-nodes">
 
 	<component name="StoreMergerNode">
 		<t:implementation.node composite="s:store-merger"/>
@@ -65,16 +48,6 @@
 			<t:binding.jsonrpc uri="http://localhost:8103"/>
 			<t:binding.atom uri="http://localhost:8103"/>
 			<t:binding.ws uri="http://localhost:8333"/>
-		</service>
-	</component> 
-
-	<component name="StoreEUNode">
-		<t:implementation.node composite="s:store-eu"/>
-		<service name="Node">
-			<t:binding.http uri="http://localhost:8104"/>
-			<t:binding.jsonrpc uri="http://localhost:8104"/>
-			<t:binding.atom uri="http://localhost:8104"/>
-			<t:binding.ws uri="http://localhost:8444"/>
 		</service>
 	</component> 
 

@@ -19,5 +19,8 @@
 -->
 <contribution xmlns="http://www.osoa.org/xmlns/sca/1.0"
    xmlns:n="http://nodes">
-   <deployable composite="n:nodes"/>
+   <deployable composite="n:backend-nodes"/>
+   <deployable composite="n:frontend-us-node"/>
+   <deployable composite="n:merger-nodes"/>
+   <deployable composite="n:frontend-eu-node"/>
 </contribution>
