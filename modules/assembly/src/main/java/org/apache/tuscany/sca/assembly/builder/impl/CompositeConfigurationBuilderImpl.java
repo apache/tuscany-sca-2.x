@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -1085,6 +1087,295 @@ public class CompositeConfigurationBuilderImpl {
         
         return scaBinding;
     }
-    
 
+     /**
+      * Fully resolve the binding URIs based on available information. This includes information
+      * from the ".composite" files, from resources associated with the binding, e.g. WSDL files, 
+      * from any associated policies and from the default information for each binding type.
+      * 
+      * TODO: Share the  URL calculation algorithm with the configureComponents() method above
+      *       although keeping the configureComponents() methods signature as is because when
+      *       a composite is actually build in a node the node default information is currently
+      *       available
+      *  
+      * @param defaultBindings list of default bindings (from the node configuration composite)
+      * @param composite the composite to be configured
+      * @param uri the path to the composite provided through any nested composite component implementations
+      */
+    public void calculateBindingURIs(List<Binding> defaultBindings, Composite composite, String uri) throws CompositeBuilderException {
+        
+        String parentComponentURI = uri;
+        
+        // Process nested composites recursively
+        for (Component component : composite.getComponents()) {
+
+            // Initialize component URI
+            String componentURI;
+            if (parentComponentURI == null) {
+                componentURI = component.getName();
+            } else {
+                componentURI = URI.create(parentComponentURI + '/').resolve(component.getName()).toString();
+            }
+            component.setURI(componentURI);
+
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+
+                // Process nested composite
+                calculateBindingURIs(defaultBindings, (Composite)implementation, componentURI);
+            }
+        }  
+        
+        // Initialize composite service binding URIs
+        List<Service> compositeServices = composite.getServices();
+        for (Service service : compositeServices) {
+            // Set default binding names 
+            
+            // Create default SCA binding
+            if (service.getBindings().isEmpty()) {
+                SCABinding scaBinding = createSCABinding();
+                service.getBindings().add(scaBinding);
+            }
+    
+            // Initialize binding names and URIs
+            for (Binding binding : service.getBindings()) {  
+                constructBindingName(service, binding);
+                constructBindingURI(parentComponentURI, composite, service, binding, defaultBindings);
+            }
+        }
+        
+        // Initialize component service binding URIs
+        for (Component component : composite.getComponents()) {
+            for (ComponentService service : component.getServices()) {
+    
+                // Create default SCA binding
+                if (service.getBindings().isEmpty()) {
+                    SCABinding scaBinding = createSCABinding();
+                    service.getBindings().add(scaBinding);
+                }
+    
+                // Initialize binding names and URIs
+                for (Binding binding : service.getBindings()) {
+                    
+                    constructBindingName(service, binding);
+                    constructBindingURI(component, service, binding, defaultBindings);
+                }
+            } 
+        }
+    }
+    
+    /**
+     * If a binding name is not provided by the user construct it based on the service name
+     * 
+     * @param service
+     * @param binding
+     */
+    private void constructBindingName(Service service, Binding binding) throws CompositeBuilderException{
+        
+        // set the default binding name if one is required        
+        // if there is no name on the binding then set it to the service name 
+        if (binding.getName() == null){
+            binding.setName(service.getName());
+        }
+            
+        // Check that multiple bindings do not have the same name
+        // TODO: this test needs to be refined to take into account the 
+        //       scheme that the binding is using.         
+        for (Binding serviceBinding : service.getBindings()){
+            if ((!binding.equals(serviceBinding)) && 
+                (binding.getName().equals(serviceBinding.getName()))){
+
+                throw new CompositeBuilderException("Multiple bindings for service " + 
+                                                    service.getName() + 
+                                                    " have the same binding name " +
+                                                    binding.getName() +
+                                                    ". This means Tuscany SCA can't create unique URIs to differenetiate these bindings ");
+            }
+        }
+    }
+
+    /**
+     * URI construction for composite bindings based on Assembly spec section 1.7.2, This method
+     * assumes that the component URI part of the binding URI is formed from the part to the 
+     * composite in question and just calls the generic constructBindingURI method with this 
+     * information
+     * 
+     * @param parentComponentURI
+     * @param composite
+     * @param service
+     * @param binding
+     * @param defaultBindings
+     */
+    private void constructBindingURI(String parentComponentURI, Composite composite, Service service, Binding binding, List<Binding> defaultBindings) 
+    throws CompositeBuilderException{
+        // This is a composite service so there is no component to provide a component URI
+        // The path to this composite (through nested composites) is used.
+        constructBindingURI(parentComponentURI, service, binding, composite.getServices().size() > 1, defaultBindings);
+    }
+
+     /**
+      * URI construction for component bindings based on Assembly spec section 1.7.2. This method
+      * calculates the component URI part based on component information before calling the generic
+      * constructBindingURI method
+      *
+      * @param component the component that holds the service
+      * @param service the service that holds the binding
+      * @param binding the binding for which the URI is being constructed
+      * @param defaultBindings the list of default binding configurations
+      */
+    private void constructBindingURI(Component component, Service service, Binding binding, List<Binding> defaultBindings)
+    throws CompositeBuilderException{
+        constructBindingURI(component.getURI(), service, binding, component.getServices().size() > 1, defaultBindings);
+    }
+            
+    /**
+     * Generic URI construction for bindings based on Assembly spec section 1.7.2
+     * 
+     * @param componentURIString the string version of the URI part that comes from the component name
+     * @param service the service in question
+     * @param binding the binding for which the URI is being constructed
+     * @param includeServiceBindingURI when set true the serviceBindingURI part should be used
+     * @param defaultBindings the list of default binding configurations
+     * @throws CompositeBuilderException
+     */
+    private void constructBindingURI(String componentURIString, Service service, Binding binding, boolean includeServiceBindingURI, List<Binding> defaultBindings) 
+      throws CompositeBuilderException{
+        
+        try {
+            URI baseURI = null;
+            URI componentURI = null;
+            URI serviceBindingURI = null;
+            
+            // calculate the service binding URI
+            if (binding.getURI() == null){
+                serviceBindingURI = new URI(binding.getName());
+            } else {
+                serviceBindingURI = new URI(binding.getURI());
+            } 
+            
+            // if the user has provided an absolute binding URI then use it
+            if (serviceBindingURI != null && serviceBindingURI.isAbsolute()){
+                binding.setURI(serviceBindingURI.toString());
+                return;
+            }
+            
+            // calculate the component URI  
+            if (componentURIString != null) {
+                componentURI = new URI(addSlashToPath(componentURIString));
+            } else {
+                componentURI = null;
+            }
+            
+            // if the user has provided an absolute component URI then use it
+            if (componentURI != null && componentURI.isAbsolute()){
+                binding.setURI(concatenateModelURI(null, componentURI, serviceBindingURI, includeServiceBindingURI));
+                return;
+            }         
+            
+            // calculate the base URI
+            
+            // get the protocol for this binding/URI
+/* some code that allows binding specific code to run. Being discussed on ML            
+            BindingURICalculator uriCalculator = bindingURICalcualtorExtensionPoint.getBindingURICalculator(binding);
+            
+            if  (uriCalculator != null){
+                String protocol = uriCalculator.getProtocol(binding);
+                
+                // find the default binding with the right protocol
+                Binding defaultBinding = nodeInfo.getBindingDefault(binding, protocol);
+                
+                if (defaultBinding != null){
+                    baseURI = new URI(defaultBinding.getURI());
+                } else {
+                    baseURI = null;
+                }
+                
+            } else {
+                baseURI = null;
+            }
+*/
+            // as a simpler alternative to the above commented out code. 
+            baseURI = null;
+            if (defaultBindings != null) {
+                for (Binding defaultBinding : defaultBindings){
+                    if (binding.getClass() == defaultBinding.getClass()){
+                        baseURI = new URI(addSlashToPath(defaultBinding.getURI()));
+                    }
+                }
+            }
+            
+            binding.setURI(concatenateModelURI(baseURI, componentURI, serviceBindingURI,includeServiceBindingURI));
+        } catch (URISyntaxException ex){
+            throw new CompositeBuilderException("URLSyntaxException when creating binding URI at component " +
+                                                componentURIString +
+                                                " service " + 
+                                                service.getName() +
+                                                " binding " + 
+                                                binding.getName(),
+                                                ex);
+        }      
+    }
+    
+    /**
+     * Use to ensure that URI paths end in "/" as here we want to maintain the
+     * last path element of an base URI when other URI are resolved against it. This is
+     * not the default behaviour of URI resolution as defined in RFC 2369
+     * 
+     * @param path the path string to which the "/" is to be added
+     * @return the resulting path with a "/" added if it not already there
+     */
+    private String addSlashToPath(String path){
+        if (path.endsWith("/")){
+            return path;
+        } else {
+            return path + "/";
+        }
+    }
+    
+    /**
+     * Concatenate binding URI parts together based on Assembly spec section 1.7.2
+     * 
+     * @param baseURI the base of the binding URI
+     * @param componentURI the middle part of the binding uri derived from the component name
+     * @param serviceBindingURI the end part of the binding uri derived from the service name
+     * @param includeServiceBindingURI when set true the serviceBindingURI part should be used
+     * @return the resulting URI as a string
+     */
+    private String concatenateModelURI(URI baseURI, URI componentURI, URI serviceBindingURI, boolean includeServiceBindingURI){        
+       
+        String uriString;
+        
+        if (baseURI == null){
+            if (componentURI == null){
+                uriString = serviceBindingURI.toString();
+            } else {
+                if (includeServiceBindingURI){
+                    uriString = componentURI.resolve(serviceBindingURI).toString();
+                } else {
+                    uriString = componentURI.toString();
+                }
+            }
+        } else {
+            if (componentURI == null){
+                if (includeServiceBindingURI){
+                    uriString = baseURI.resolve(serviceBindingURI).toString();
+                } else {
+                    uriString = baseURI.toString();
+                }                    
+            } else {
+                if (includeServiceBindingURI){
+                    uriString = baseURI.resolve(componentURI).resolve(serviceBindingURI).toString();
+                } else {
+                    uriString = baseURI.resolve(componentURI).toString();
+                }
+            }
+        }
+        
+        // tidy up by removing any trailing "/"
+        if (uriString.endsWith("/")){
+            uriString = uriString.substring(0, uriString.length()-1);   
+        }
+        
+        return uriString;
+    }    
 }
