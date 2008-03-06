@@ -18,7 +18,7 @@
 -->
 <html>
 <head>
-<title>SCA Domain - Node Clouds</title>
+<title>SCA Domain - Clouds</title>
 
 <script type="text/javascript" src="cloud.js"></script>
 <script type="text/javascript" src="utils.js"></script>
@@ -53,13 +53,14 @@
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
 				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
+				var components = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
 				var uri = contributionURI(id);
 				var qname = compositeName(id);
 				
 				composites += '<tr valign="bottom">'
 				composites += '<td><input name="composites" type="checkbox" value="' + id + '">' +
 											'<a href=\"' + location + '\">' + qname + '</a></td>';
-				composites += '<td>&nbsp;&nbsp;&nbsp;Node1, Node2, Node3</td>';
+				composites += '<td>&nbsp;&nbsp;&nbsp;' + components + '</td>';
 				composites += '<td align="center"><img src="icons/feed-icon.png" border="0"></td>';
 				composites += '</tr>';
 			}
@@ -112,9 +113,9 @@
 
   <div id="cloudComposite">
   <p style="font-size:150%">
-  <b>SCA Domain</b><br><br><b>Node Clouds</b>&nbsp;<a href="/cloud/"><img src="icons/feed-icon.png" border="0"></a>
+  <b>SCA Domain</b><br><br><b>Clouds</b>&nbsp;<a href="/cloud/"><img src="icons/feed-icon.png" border="0"></a>
   </p>
-  Here is the list of nodes configured in SCA node clouds.
+  Here is the list of nodes configured in SCA clouds.
   <br><br>
   
   <form name="cloudCompositeForm">
@@ -127,9 +128,9 @@
   </form>
   <br/>
   
-  <p><b>Add a Node Cloud</b>
+  <p><b>Add a Cloud</b>
   </p>
-  Add a node cloud. A cloud is composed of one or more nodes.
+  Add a cloud. A cloud is composed of one or more nodes.
   <br><br>
   
   <form name="newCompositeForm">

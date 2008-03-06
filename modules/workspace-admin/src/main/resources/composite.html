@@ -49,10 +49,12 @@
 			composites += '<table border="0">';
 			composites += '<tr valign="bottom"><td><b>Composite</b></td>' +
 			'<td>&nbsp;&nbsp;&nbsp;<b>Contribution</b></td>' +
+			'<td>&nbsp;&nbsp;&nbsp;<b>Components</b></td>' +
 			'<td>&nbsp;&nbsp;<b>Deployment</b></td></tr>';
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
 				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
+				var components = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
 				var uri = contributionURI(id);
 				var qname = compositeName(id);
 				
@@ -60,6 +62,7 @@
 				composites += '<td><input name="composites" type="checkbox" value="' + id + '">';
 				composites += '<a href=\"' + location + '\">' + qname + '</a></td>';
 				composites += '<td>&nbsp;&nbsp;&nbsp;' + uri + '</td>';
+				composites += '<td>&nbsp;&nbsp;&nbsp;' + components + '</td>';
 				composites += '<td align="center">&nbsp;&nbsp;&nbsp;<a href="/package/?deployable=' + id + '"><img src="icons/feed-icon.png" border="0"></a></td>';
 				composites += '</tr>';
 			}
