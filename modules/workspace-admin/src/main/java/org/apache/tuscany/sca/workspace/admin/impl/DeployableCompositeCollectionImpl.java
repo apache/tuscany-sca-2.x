@@ -45,6 +45,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
@@ -165,15 +166,6 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
         // Read contribution metadata
         for (Entry<String, Item> contributionEntry: contributionEntries) {
             Contribution contribution = contribution(contributionEntry.getKey(), contributionEntry.getData().getLink());
-            try {
-                URI uri = URI.create(contributionEntry.getKey());
-                URL url = url(contributionEntry.getData().getLink());
-                contribution = (Contribution)contributionContentProcessor.read(null, uri, url);
-                ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
-                contributionContentProcessor.resolve(contribution, modelResolver);
-            } catch (Exception e) {
-                throw new ServiceRuntimeException(e);
-            }
 
             // Create entries for the deployable composites
             for (Composite deployable: contribution.getDeployables()) {
@@ -184,7 +176,9 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
                 entry.setKey(key);
                 Item item = new Item();
                 item.setTitle(title(contributionURI, qname));
-                item.setLink(deployableLink(contribution.getLocation(), deployable.getURI()));
+                item.setContents(components(deployable));
+                item.setLink(link(contribution.getLocation(), deployable.getURI()));
+                item.setContents(components(deployable));
                 entry.setData(item);
                 entries.add(entry);
             }
@@ -210,7 +204,8 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
                 // Return an item describing the deployable composite
                 Item item = new Item();
                 item.setTitle(title(contributionURI, qname));
-                item.setLink(deployableLink(contribution.getLocation(), deployable.getURI()));
+                item.setContents(components(deployable));
+                item.setLink(link(contribution.getLocation(), deployable.getURI()));
                 return item;
             }
         }
@@ -257,7 +252,8 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
                 entry.setKey(key);
                 Item item = new Item();
                 item.setTitle(title(contributionURI, qname));
-                item.setLink(deployableLink(contribution.getLocation(), deployable.getURI()));
+                item.setContents(components(deployable));
+                item.setLink(link(contribution.getLocation(), deployable.getURI()));
                 entry.setData(item);
                 entries.add(entry);
             }
@@ -372,7 +368,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
      * @param deployableURI
      * @return
      */
-    private static String deployableLink(String contributionLocation, String deployableURI) {
+    private static String link(String contributionLocation, String deployableURI) {
         URI uri = URI.create(contributionLocation);
         if ("file".equals(uri.getScheme())) {
             if (new File(uri).isDirectory()) {
@@ -387,6 +383,23 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
                 return "/files/" + contributionLocation + "!/" + deployableURI;
             }
         }
+    }
+    
+    /**
+     * Returns the list of components in a composite.
+     * 
+     * @param composite
+     * @return
+     */
+    private static String components(Composite composite) {
+        StringBuffer sb = new StringBuffer();
+        for (Component component: composite.getComponents()) {
+            if (sb.length() != 0) {
+                sb.append(" ");
+            }
+            sb.append(component.getName());
+        }
+        return sb.toString();
     }
     
     /**
