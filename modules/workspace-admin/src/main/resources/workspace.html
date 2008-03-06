@@ -37,14 +37,17 @@
 			var entries = feed.getElementsByTagName("entry");              
 			var contributions = "";
 			contributions += '<table border="0">';
+			contributions += '<tr valign="bottom"><td><b>Contribution</b></td>' +
+			'<td>&nbsp;&nbsp;&nbsp;<b>Dependencies</b></td>' +
+			'<td>&nbsp;&nbsp;&nbsp;<b>Deployables</b></td></tr>';
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
 				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
-				contributions += '<tr valign="bottom">'
+				contributions += '<tr valign="bottom">';
 				contributions += '<td><input name="contributions" type="checkbox" value="' + id + '">' +
 											'<a href=\"' + location + '\">' + id + '</a></td>';
-				contributions += '<td>&nbsp;&nbsp;&nbsp;<a href=\"/workspace/?requiredBy=' + id + '\">dependencies</a></td>';
-				contributions += '<td>&nbsp;&nbsp;&nbsp;<a href=\"/deployable/?contribution=' + id + '\">deployables</a></td>';
+				contributions += '<td align="center">&nbsp;&nbsp;&nbsp;<a href=\"/workspace/?requiredBy=' + id + '\"><img src="icons/feed-icon.png" border="0"></a></td>';
+				contributions += '<td align="center">&nbsp;&nbsp;&nbsp;<a href=\"/deployable/?contribution=' + id + '\"><img src="icons/feed-icon.png" border="0"></a></td>';
 				contributions += '</tr>';
 			}
 			contributions += '</table>';
@@ -96,7 +99,7 @@
   <p style="font-size:150%">
   <b>SCA Domain</b><br><br><b>Contributions</b>&nbsp;<a href="/workspace/"><img src="icons/feed-icon.png" border="0"></a>
   </p>
-  Here are the SCA contributions currently available in your SCA domain.
+  Here is the list of SCA contributions currently available in your SCA domain.
   <br><br>
 
   <form name="workspaceForm">
