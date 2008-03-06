@@ -18,7 +18,7 @@
 -->
 <html>
 <head>
-<title>SCA Domain - Node Cloud</title>
+<title>SCA Domain - Node Clouds</title>
 
 <script type="text/javascript" src="cloud.js"></script>
 <script type="text/javascript" src="utils.js"></script>
@@ -47,6 +47,9 @@
 			var entries = feed.getElementsByTagName("entry");              
 			var composites = "";
 			composites += '<table border="0" valign="bottom">';
+			composites += '<tr valign="bottom">' +
+			'<td><b>Cloud</b></td><td>&nbsp;&nbsp;&nbsp;<b>Nodes</b></td>' +
+			'<td>&nbsp;&nbsp;&nbsp;<b>Log</b></td></tr>';
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
 				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
@@ -55,7 +58,9 @@
 				
 				composites += '<tr valign="bottom">'
 				composites += '<td><input name="composites" type="checkbox" value="' + id + '">' +
-											'<a href=\"' + location + '\">' + uri + ' - ' + qname + '</a></td>';
+											'<a href=\"' + location + '\">' + qname + '</a></td>';
+				composites += '<td>&nbsp;&nbsp;&nbsp;Node1, Node2, Node3</td>';
+				composites += '<td align="center"><img src="icons/feed-icon.png" border="0"></td>';
 				composites += '</tr>';
 			}
 			composites += '</table>';
@@ -90,7 +95,8 @@
 	}
 
 	function addCompositeResponse() {
-		document.newCompositeForm.compositeQName.value = "";
+		document.newCompositeForm.compositeNamespace.value = "";
+		document.newCompositeForm.compositeName.value = "";
 		document.newCompositeForm.contributionURI.value = "";
 	    getComposites();
 	}	
@@ -106,10 +112,9 @@
 
   <div id="cloudComposite">
   <p style="font-size:150%">
-  <b>SCA Domain</b><br><br><b>Node Cloud</b>&nbsp;<a href="/cloud/"><img src="icons/feed-icon.png" border="0"></a>
+  <b>SCA Domain</b><br><br><b>Node Clouds</b>&nbsp;<a href="/cloud/"><img src="icons/feed-icon.png" border="0"></a>
   </p>
-  Here are the SCA composites describing the SCA nodes currently in your SCA node cloud.<br>
-  SCA nodes are described as special SCA components of type "implementation.node".
+  Here is the list of nodes configured in SCA node clouds.
   <br><br>
   
   <form name="cloudCompositeForm">
@@ -122,16 +127,16 @@
   </form>
   <br/>
   
-  <p><b>Add Nodes</b>
+  <p><b>Add a Node Cloud</b>
   </p>
-  Add a composite describing one ore more SCA nodes to add to the cloud.
+  Add a node cloud. A cloud is composed of one or more nodes.
   <br><br>
   
   <form name="newCompositeForm">
     <table border="0">
-    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" /></td></td><td>e.g. mycontrib, http:/mycontrib</td></tr>
-    <tr><td>Composite Namespace:</td><td><input type="text" name="compositeNamespace" /></td><td>e.g. http://my/namespace</td></tr> 
-    <tr><td>Composite Name:</td><td><input type="text" name="compositeName" /></td><td>e.g. mycomposite</td></tr> 
+    <tr><td>Cloud composite namespace:</td><td><input type="text" name="compositeNamespace" /></td><td>e.g. http://my/namespace</td></tr>
+    <tr><td>Cloud composite name:</td><td><input type="text" name="compositeName" /></td><td>e.g. mycomposite</td></tr>
+    <tr><td>Cloud contribution URI:</td><td><input type="text" name="contributionURI" /></td></td><td>e.g. mycontrib, http:/mycontrib</td></tr>
     </table>
     <br/>
     <input type="button" onClick="addComposite()" value="Add" />
