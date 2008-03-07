@@ -211,7 +211,7 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
         faultType.setPhysical(faultBean);
         // TODO: Use the databinding framework to introspect the fault bean class
         if (dataBindingExtensionPoint != null) {
-            return dataBindingExtensionPoint.introspectType(faultType, null);
+            return dataBindingExtensionPoint.introspectType(faultType, null, true);
         }
 
         return false;
