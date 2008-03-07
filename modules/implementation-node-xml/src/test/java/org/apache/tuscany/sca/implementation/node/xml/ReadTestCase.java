@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.binding.sca.impl.SCABindingFactoryImpl;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -65,6 +66,8 @@ public class ReadTestCase extends TestCase {
     @Override
     public void setUp() throws Exception {
         ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
+        ContributionFactory contributionFactory = new DefaultContributionFactory();
+        factories.addFactory(contributionFactory);
         assemblyFactory = new DefaultAssemblyFactory();
         factories.addFactory(assemblyFactory);
         scaBindingFactory = new SCABindingFactoryImpl();
@@ -81,6 +84,8 @@ public class ReadTestCase extends TestCase {
         
         NodeImplementationProcessor nodeProcessor = new NodeImplementationProcessor(factories);
         staxProcessors.addArtifactProcessor(nodeProcessor);
+        ConfiguredNodeImplementationProcessor configuredNodeProcessor = new ConfiguredNodeImplementationProcessor(factories);
+        staxProcessors.addArtifactProcessor(configuredNodeProcessor);
     }
 
     @Override
