@@ -68,8 +68,8 @@ import com.sun.syndication.io.WireFeedOutput;
  * A resource collection binding listener, implemented as a servlet and
  * registered in a servlet host provided by the SCA hosting runtime.
  */
-class FeedBindingListenerServlet extends HttpServlet {
-    private static final Logger logger = Logger.getLogger(FeedBindingListenerServlet.class.getName());
+class RSSBindingListenerServlet extends HttpServlet {
+    private static final Logger logger = Logger.getLogger(RSSBindingListenerServlet.class.getName());
     private static final long serialVersionUID = 1L;
 
     private RuntimeWire wire;
@@ -96,7 +96,7 @@ class FeedBindingListenerServlet extends HttpServlet {
      * @param messageFactory
      * @param feedType
      */
-    FeedBindingListenerServlet(RuntimeWire wire, MessageFactory messageFactory, Mediator mediator, String feedType) {
+    RSSBindingListenerServlet(RuntimeWire wire, MessageFactory messageFactory, Mediator mediator, String feedType) {
         this.wire = wire;
         this.messageFactory = messageFactory;
         this.mediator = mediator;
