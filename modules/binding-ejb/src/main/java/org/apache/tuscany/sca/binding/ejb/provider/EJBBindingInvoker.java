@@ -24,12 +24,12 @@ import org.apache.tuscany.sca.binding.ejb.util.NamingEndpoint;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.invocation.PassByValueAware;
+import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 
 /**
  * EJBTargetInvoker
  */
-public class EJBBindingInvoker implements Invoker, PassByValueAware {
+public class EJBBindingInvoker implements Invoker, DataExchangeSemantics {
 
     private Operation operation;
     private String location;

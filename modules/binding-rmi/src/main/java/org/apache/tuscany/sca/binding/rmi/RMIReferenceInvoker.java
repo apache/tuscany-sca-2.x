@@ -25,9 +25,9 @@ import java.rmi.Remote;
 import org.apache.tuscany.sca.host.rmi.RMIHost;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.invocation.PassByValueAware;
+import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 
-public class RMIReferenceInvoker implements Invoker, PassByValueAware {
+public class RMIReferenceInvoker implements Invoker, DataExchangeSemantics {
 
     private RMIHost rmiHost;
     private String host;

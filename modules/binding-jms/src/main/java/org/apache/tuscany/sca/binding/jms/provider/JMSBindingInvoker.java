@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.PassByValueAware;
+import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
@@ -41,7 +41,7 @@ import org.osoa.sca.ServiceRuntimeException;
  * 
  * @version $Rev$ $Date$
  */
-public class JMSBindingInvoker implements Invoker, PassByValueAware {
+public class JMSBindingInvoker implements Invoker, DataExchangeSemantics {
 
     protected Operation operation;
     protected String operationName;
