@@ -45,5 +45,20 @@ public class HelloWorldImpl implements HelloWorldService {
     public void noGreetings() {
         System.out.println("Hello, who's there?");
     }
+    
+    public Bean getBean(){
+    	Bean bean = new Bean();
+    	bean.setFirst("wang");
+    	bean.setLast("feng");
+    	return bean;
+    }
+    
+    public Bean getNullBean(){
+    	return  null;
+    }
+    
+    public String getNullString(){
+    	return  null;
+    }
 
 }

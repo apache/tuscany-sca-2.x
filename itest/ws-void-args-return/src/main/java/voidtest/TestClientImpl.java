@@ -19,6 +19,7 @@
 package voidtest;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
@@ -41,5 +42,12 @@ public class TestClientImpl implements TestClient {
         helloService.giveGreetingsOneWay("Brown");
         assertEquals("Hello Stranger", helloService.takeGreetings());
         helloService.noGreetings();
+        
+        assertEquals("wang",helloService.getBean().getFirst());
+        assertEquals("feng",helloService.getBean().getLast());
+        
+        assertNull(helloService.getNullString());
+        
+        assertNull(helloService.getNullBean());
     }
 }
