@@ -66,8 +66,8 @@ class RSSServiceBindingProvider implements ServiceBindingProvider {
         RuntimeComponentService componentService = (RuntimeComponentService)service;
         RuntimeWire wire = componentService.getRuntimeWire(binding);
 
-        FeedBindingListenerServlet servlet =
-            new FeedBindingListenerServlet(wire, messageFactory, mediator, "rss_2.0");
+        RSSBindingListenerServlet servlet =
+            new RSSBindingListenerServlet(wire, messageFactory, mediator, "rss_2.0");
 
         servletMapping = binding.getURI();
         servletHost.addServletMapping(servletMapping, servlet);
