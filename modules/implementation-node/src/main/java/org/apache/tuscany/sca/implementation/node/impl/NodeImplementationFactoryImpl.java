@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.implementation.node.impl;
 
+import org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 
@@ -34,6 +35,10 @@ public class NodeImplementationFactoryImpl implements NodeImplementationFactory 
 
     public NodeImplementation createNodeImplementation() {
         return new NodeImplementationImpl();
+    }
+    
+    public ConfiguredNodeImplementation createConfiguredNodeImplementation() {
+        return new ConfiguredNodeImplementationImpl();
     }
 
 }
