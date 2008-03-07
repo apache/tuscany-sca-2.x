@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.provider;
 
+import java.util.List;
+
 
 /**
  * An extension point for provider factories. Holds all of the provider
@@ -51,5 +53,11 @@ public interface ProviderFactoryExtensionPoint {
      * @return The provider factory associated with the given model type
      */
     ProviderFactory getProviderFactory(Class<?> modelType);
+    
+    /**
+     * Get a list of registered PolicyProviderFactory
+     * @return a list of registered PolicyProviderFactory
+     */
+    List<PolicyProviderFactory> getPolicyProviderFactories();
     
 }
