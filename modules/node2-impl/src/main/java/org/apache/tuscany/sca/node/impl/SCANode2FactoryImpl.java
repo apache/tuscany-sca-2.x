@@ -20,34 +20,20 @@
 package org.apache.tuscany.sca.node.impl;
 
 import org.apache.tuscany.sca.node.NodeException;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode2Factory;
 
 /**
- * A finder for SCA domains.
+ * Default implementation of an SCA node factory.
  * 
  * @version $Rev$ $Date$
  */
-public class SCANodeFactoryImpl extends SCANodeFactory {
+public class SCANode2FactoryImpl extends SCANode2Factory {
     
-        
-    public SCANodeFactoryImpl() {
-
+    public SCANode2FactoryImpl() {
     }
 
-    public SCANode createSCANode(String physicalNodeURI, String domainURI) throws NodeException {
-        return new SCANodeImpl(physicalNodeURI, domainURI);
+    public SCANode2 createSCANode(String configurationURI) throws NodeException {
+        return new SCANode2Impl(configurationURI);
     }
-    
-    @Deprecated
-    public SCANode createSCANode(String physicalNodeURI, String domainURI, String logicalNodeURI) throws NodeException {
-        return null;       
-    }
-    
-    @Deprecated
-    public SCANode createSCANode(String physicalNodeURI, String domainURI, String logicalNodeURI, ClassLoader classLoader) throws NodeException {
-        return null;               
-    }
-    
-
 }
