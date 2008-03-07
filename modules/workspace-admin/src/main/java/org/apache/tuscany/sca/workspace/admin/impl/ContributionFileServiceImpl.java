@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.util.List;
 
@@ -122,7 +123,10 @@ public class ContributionFileServiceImpl extends HttpServlet {
             }
             
             // Read the file and write to response 
-            InputStream is = uri.toURL().openStream();
+            URLConnection connection = uri.toURL().openConnection();
+            connection.setUseCaches(false);
+            connection.connect();
+            InputStream is = connection.getInputStream();
             ServletOutputStream os = response.getOutputStream();
             byte[] buffer = new byte[4096];
             for (;;) {

@@ -219,12 +219,12 @@ public class ContributionCollectionImpl implements ContributionCollection, Local
     }
 
     public Entry<String, Item>[] query(String queryString) {
-        if (queryString.startsWith("requiredBy=")) {
+        if (queryString.startsWith("dependencies=") || queryString.startsWith("alldependencies=")) {
             
             // Return the collection of dependencies of the specified contribution
             List<Entry<String, Item>> entries = new ArrayList<Entry<String,Item>>();
             
-            // Read the contribution metadata into a temporary workspace
+            // Read the metadata for all the contributions into a temporary workspace
             Workspace dependencyWorkspace = workspaceFactory.createWorkspace();
             try {
                 for (Contribution c: workspace.getContributions()) {
@@ -237,15 +237,24 @@ public class ContributionCollectionImpl implements ContributionCollection, Local
                 throw new ServiceRuntimeException(e);
             }
             
-            // Calculate the contribution dependencies
-            String key = queryString.substring(11);
+            // Look for the specified contribution
+            int e = queryString.indexOf('=');
+            String key = queryString.substring(e+1);
             for (Contribution contribution: dependencyWorkspace.getContributions()) {
                 if (key.equals(contribution.getURI())) {
+
+                    // Compute the contribution dependencies
                     ContributionDependencyAnalyzer analyzer = new ContributionDependencyAnalyzer();
                     List<Contribution> dependencies = analyzer.calculateContributionDependencies(dependencyWorkspace, contribution);
                     
-                    // Build the collection of dependencies
+                    // Returns entries for the dependencies
+                    // optionally skip the specified contribution
+                    boolean allDependencies = queryString.startsWith("alldependencies=");
                     for (Contribution dependency: dependencies) {
+                        if (!allDependencies && dependency == contribution) {
+                            // Skip the specified contribution
+                            continue;
+                        }
                         entries.add(entry(dependency));
                     }
                     break;
