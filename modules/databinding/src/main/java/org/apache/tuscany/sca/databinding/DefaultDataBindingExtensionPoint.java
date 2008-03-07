@@ -260,7 +260,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             return true;
         } else if (isException) {
             dataType.setDataBinding(JavaExceptionDataBinding.NAME);
-            return false;
+            return true;
         } else {
             dataType.setDataBinding(JavaBeansDataBinding.NAME);
             return false;
