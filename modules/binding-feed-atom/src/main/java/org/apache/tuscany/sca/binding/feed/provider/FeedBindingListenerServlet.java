@@ -328,13 +328,15 @@ class FeedBindingListenerServlet extends HttpServlet {
             }
 
             if (href != null) {
-                feedEntry.addLink(href, "edit");
-                feedEntry.addLink(href,"alternate");
+                feedEntry.addLink(href);
             }
-                
             String related = item.getRelated();
             if (related != null) {
-                feedEntry.addLink(href, "related");
+                feedEntry.addLink(related, "related");
+            }
+            String alternate = item.getAlternate();
+            if (related != null) {
+                feedEntry.addLink(alternate, "alternate");
             }
                 
             Date date = item.getDate();
@@ -383,16 +385,14 @@ class FeedBindingListenerServlet extends HttpServlet {
                 item.setContents(feedEntry.getContent());
                 
                 for (Link link : feedEntry.getLinks()) {
-                    if (link.getRel() == null || "edit".equals(link.getRel())) {
+                    if (link.getRel() == null || "self".equals(link.getRel())) {
                         if (item.getLink() == null) {
-                            String href = link.getHref().toString();
-                            item.setLink(href);
+                            item.setLink(link.getHref().toString());
                         }
                     } else if ("related".equals(link.getRel())) {
-                        if (item.getRelated() == null) {
-                            String related = link.getHref().toString();
-                            item.setRelated(related);
-                        }
+                        item.setRelated(link.getHref().toString());
+                    } else if ("alternate".equals(link.getRel())) {
+                        item.setAlternate(link.getHref().toString());
                     }
                 }
                 
