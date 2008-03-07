@@ -32,6 +32,7 @@ public class Item {
     private String contents;
     private String link;
     private String related;
+    private String alternate;
     private Date date;
     
     /**
@@ -118,6 +119,22 @@ public class Item {
      */
     public void setRelated(String related) {
         this.related = related;
+    }
+
+    /**
+     * Returns the item link to an alternate web resource
+     * @return the item link to an alternate web resource
+     */
+    public String getAlternate() {
+        return alternate;
+    }
+
+    /**
+     * Sets the item link to a related web resource
+     * @param link the item link to a related web resource
+     */
+    public void setAlternate(String alternate) {
+        this.alternate = alternate;
     }
 
     /**
