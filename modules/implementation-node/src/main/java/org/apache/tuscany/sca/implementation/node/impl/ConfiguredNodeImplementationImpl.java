@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.implementation.node.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,22 +27,24 @@ import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.implementation.node.NodeImplementation;
+import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation;
 
 
 /**
- * The model representing a node implementation in an SCA assembly model.
+ * The model representing a configured node implementation in an SCA assembly model.
  */
-class NodeImplementationImpl implements NodeImplementation {
+class ConfiguredNodeImplementationImpl implements ConfiguredNodeImplementation {
 
     private String uri;
     private boolean unresolved;
     private Composite composite;
+    private List<Contribution> contributions = new ArrayList<Contribution>();
 
     /**
      * Constructs a new node implementation.
      */
-    NodeImplementationImpl() {
+    ConfiguredNodeImplementationImpl() {
     }
 
     public ConstrainingType getConstrainingType() {
@@ -72,6 +75,10 @@ class NodeImplementationImpl implements NodeImplementation {
         return composite;
     }
     
+    public List<Contribution> getContributions() {
+        return contributions;
+    }
+
     public void setConstrainingType(ConstrainingType constrainingType) {
         // The node implementation does not support constrainingTypes
     }

@@ -16,27 +16,37 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.sca.implementation.node;
+
+import java.util.List;
+
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.contribution.Contribution;
+
 
 
 /**
- * Factory for the resource implementation model.
- *
- * @version $Rev$ $Date$
+ * The model representing a resource implementation in an SCA assembly model.
  */
-public interface NodeImplementationFactory {
+public interface ConfiguredNodeImplementation extends Implementation {
     
     /**
-     * Creates a new node implementation.
-     * @return a new node implementation
+     * Returns the composite deployed to this node.
+     * @return the composite deployed to this node
      */
-    NodeImplementation createNodeImplementation();
+    Composite getComposite();
+    
+    /**
+     * Sets the composite deployed to this node.
+     * @param composite the composite deployed to this node
+     */
+    void setComposite(Composite composite);
 
     /**
-     * Creates a new configured node implementation.
-     * @return a new configured node implementation
+     * Returns the list of contributions deployed to this node.
+     * @return the list of contributions deployed to this node
      */
-    ConfiguredNodeImplementation createConfiguredNodeImplementation();
+    List<Contribution> getContributions();
 
 }
