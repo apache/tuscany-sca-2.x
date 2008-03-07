@@ -47,12 +47,6 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Namespace;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
 
 import com.sun.syndication.feed.atom.Content;
 import com.sun.syndication.feed.atom.Entry;
@@ -62,7 +56,6 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
-import com.sun.syndication.io.WireFeedOutput;
 
 /**
  * A resource collection binding listener, implemented as a servlet and
@@ -77,11 +70,6 @@ class RSSBindingListenerServlet extends HttpServlet {
     private Invoker getAllInvoker;
     private Invoker queryInvoker;
     private Invoker getInvoker;
-    private Invoker postInvoker;
-    private Invoker postMediaInvoker;
-    private Invoker putInvoker;
-    private Invoker putMediaInvoker;
-    private Invoker deleteInvoker;
     private MessageFactory messageFactory;
     private String feedType;
     private Mediator mediator;
@@ -117,16 +105,6 @@ class RSSBindingListenerServlet extends HttpServlet {
             } else if (operationName.equals("get")) {
                 getInvoker = invocationChain.getHeadInvoker();
                 getOperation = operation;
-            } else if (operationName.equals("put")) {
-                putInvoker = invocationChain.getHeadInvoker();
-            } else if (operationName.equals("putMedia")) {
-                putMediaInvoker = invocationChain.getHeadInvoker();
-            } else if (operationName.equals("post")) {
-                postInvoker = invocationChain.getHeadInvoker();
-            } else if (operationName.equals("postMedia")) {
-                postMediaInvoker = invocationChain.getHeadInvoker();
-            } else if (operationName.equals("delete")) {
-                deleteInvoker = invocationChain.getHeadInvoker();
             }
         }
 
@@ -201,6 +179,7 @@ class RSSBindingListenerServlet extends HttpServlet {
                     // Create the feed
                     feed = new Feed();
                     feed.setTitle("Feed");
+                    
                     for (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry: collection) {
                         Entry feedEntry = createFeedEntry(entry);
                         feed.getEntries().add(feedEntry);
@@ -214,6 +193,7 @@ class RSSBindingListenerServlet extends HttpServlet {
                 feed.setFeedType("atom_1.0");
                 SyndFeed syndFeed = new SyndFeedImpl(feed);
                 syndFeed.setFeedType(requestFeedType);
+                syndFeed.setLink(path);
                 SyndFeedOutput syndOutput = new SyndFeedOutput();
                 try {
                     syndOutput.output(syndFeed, getWriter(response));
