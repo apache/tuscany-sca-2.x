@@ -75,11 +75,12 @@ public class PackageCollectionImpl implements PackageCollection, LocalPackageCol
     }
     
     public Entry<String, Item>[] query(String queryString) {
-        if (queryString.startsWith("deployable=")) {
+        if (queryString.startsWith("composite=")) {
 
             // Expecting a key in the form:
             // composite:contributionURI;namespace;localName
-            String key = queryString.substring(11);
+            int e = queryString.indexOf('=');
+            String key = queryString.substring(e + 1);
             String contributionURI = uri(key);
             QName qname = qname(key);
             
@@ -98,7 +99,7 @@ public class PackageCollectionImpl implements PackageCollection, LocalPackageCol
             entries.add(compositeEntry);
             
             // Get the collection of required contributions
-            Entry<String, Item>[] contributionEntries = contributionCollection.query("requiredBy=" + contributionURI);
+            Entry<String, Item>[] contributionEntries = contributionCollection.query("alldependencies=" + contributionURI);
             for (Entry<String, Item> entry: contributionEntries) {
                 entries.add(entry);
             }

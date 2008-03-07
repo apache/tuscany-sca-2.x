@@ -86,12 +86,12 @@ public class AdminTestCase extends TestCase {
     }
     
     public void testDependencies1() {
-        Entry<String, Item>[] entries = contributionCollection.query("requiredBy=store");
+        Entry<String, Item>[] entries = contributionCollection.query("alldependencies=store");
         assertEquals(2, entries.length);
     }
     
     public void testDependencies2() {
-        Entry<String, Item>[] entries = contributionCollection.query("requiredBy=assets");
+        Entry<String, Item>[] entries = contributionCollection.query("alldependencies=assets");
         assertEquals(1, entries.length);
         assertEquals("assets", entries[0].getKey());
     }
