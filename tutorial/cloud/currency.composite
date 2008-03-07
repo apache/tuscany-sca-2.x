@@ -24,6 +24,9 @@
 		
 	<component name="CloudCurrencyConverter">
 		<implementation.java class="services.CurrencyConverterImpl"/>
-	</component>     
+		<service name="CurrencyConverter">
+			<binding.sca uri="http://localhost:8201/CloudCurrencyConverter"/>
+		</service>
+	</component>
 
 </composite>
