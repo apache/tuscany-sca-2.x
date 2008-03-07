@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.invocation.PassByValueAware;
+import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * 
  * @version $Rev$ $Date$
  */
-public class JavaImplementationInvoker implements Invoker, PassByValueAware {
+public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics {
     protected Operation operation;
     protected Method method;
     protected boolean allowsPBR;

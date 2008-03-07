@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.PassByValueAware;
+import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Phase;
 
 /**
@@ -149,8 +149,8 @@ public class InvocationChainImpl implements InvocationChain {
         // Check if any of the invokers allows pass-by-reference
         boolean allowsPBR = false;
         for (Node i : nodes) {
-            if (i.getInvoker() instanceof PassByValueAware) {
-                if (((PassByValueAware)i.getInvoker()).allowsPassByReference()) {
+            if (i.getInvoker() instanceof DataExchangeSemantics) {
+                if (((DataExchangeSemantics)i.getInvoker()).allowsPassByReference()) {
                     allowsPBR = true;
                     break;
                 }

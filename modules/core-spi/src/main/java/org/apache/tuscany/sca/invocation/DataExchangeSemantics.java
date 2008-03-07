@@ -25,7 +25,7 @@ package org.apache.tuscany.sca.invocation;
  * 
  * @version $Rev$ $Date$
  */
-public interface PassByValueAware {
+public interface DataExchangeSemantics {
     /**
      * Indicate if the data can be passed in by reference as they won't be mutated.
      * @return true if pass-by-reference is allowed

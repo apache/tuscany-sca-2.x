@@ -23,12 +23,12 @@ import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.invocation.PassByValueAware;
+import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SCABindingInvoker implements Interceptor, PassByValueAware {
+public class SCABindingInvoker implements Interceptor, DataExchangeSemantics {
     private InvocationChain chain;
     
     /**
@@ -62,7 +62,7 @@ public class SCABindingInvoker implements Interceptor, PassByValueAware {
     }
 
     /**
-     * @see org.apache.tuscany.sca.invocation.PassByValueAware#allowsPassByReference()
+     * @see org.apache.tuscany.sca.invocation.DataExchangeSemantics#allowsPassByReference()
      */
     public boolean allowsPassByReference() {
         return chain.allowsPassByReference();
