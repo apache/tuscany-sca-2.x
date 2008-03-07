@@ -1153,6 +1153,37 @@ public class CompositeConfigurationBuilderImpl {
         
         // Initialize component service binding URIs
         for (Component component : composite.getComponents()) {
+            
+            // Index properties, services and references
+            Map<String, Service> services = new HashMap<String, Service>();
+            Map<String, Reference> references = new HashMap<String, Reference>();
+            Map<String, Property> properties = new HashMap<String, Property>();
+            indexImplementationPropertiesServicesAndReferences(component,
+                                                               services,
+                                                               references,
+                                                               properties);
+
+            // Index component services, references and properties
+            // Also check for duplicates
+            Map<String, ComponentService> componentServices =
+                new HashMap<String, ComponentService>();
+            Map<String, ComponentReference> componentReferences =
+                new HashMap<String, ComponentReference>();
+            Map<String, ComponentProperty> componentProperties =
+                new HashMap<String, ComponentProperty>();
+            indexComponentPropertiesServicesAndReferences(component,
+                                                          componentServices,
+                                                          componentReferences,
+                                                          componentProperties);
+
+            // Reconcile component services/references/properties and
+            // implementation services/references and create component
+            // services/references/properties for the services/references
+            // declared by the implementation
+            reconcileServices(component, services, componentServices);
+            reconcileReferences(component, references, componentReferences);
+            reconcileProperties(component, properties, componentProperties);
+            
             for (ComponentService service : component.getServices()) {
     
                 // Create default SCA binding
