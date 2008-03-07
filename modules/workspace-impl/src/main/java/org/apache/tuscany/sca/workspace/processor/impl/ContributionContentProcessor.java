@@ -121,9 +121,11 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
         for (Artifact artifact : contribution.getArtifacts()) {
             Object model = artifact.getModel();
             if (model != null) {
-                //FIXME Resolution is broken right now since Java imports
-                // expect a classloader to be associated with the contribution
-                //artifactProcessor.resolve(model, contributionResolver);
+                try {
+                   artifactProcessor.resolve(model, contributionResolver);
+                } catch (Exception e) {
+                    //FIXME this shouldn't happen
+                }
             }
         }
         
