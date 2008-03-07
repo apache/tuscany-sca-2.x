@@ -22,23 +22,26 @@ package org.apache.tuscany.sca.core.assembly;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.impl.ComponentReferenceImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implements RuntimeComponentReference {
-    private List<RuntimeWire> wires;
-    private Map<Binding, ReferenceBindingProvider> bindingProviders = new HashMap<Binding, ReferenceBindingProvider>();
+    private ArrayList<RuntimeWire> wires;
+    private HashMap<Binding, ReferenceBindingProvider> bindingProviders =
+        new HashMap<Binding, ReferenceBindingProvider>();
+    private HashMap<Binding, List<PolicyProvider>> policyProviders = new HashMap<Binding, List<PolicyProvider>>();
 
     private RuntimeComponent component;
+
     public RuntimeComponentReferenceImpl() {
         super();
     }
@@ -96,10 +99,24 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
-        RuntimeComponentReferenceImpl ref = (RuntimeComponentReferenceImpl) super.clone();
+        RuntimeComponentReferenceImpl ref = (RuntimeComponentReferenceImpl)super.clone();
         ref.wires = null;
         ref.bindingProviders = new HashMap<Binding, ReferenceBindingProvider>();
+        ref.policyProviders = new HashMap<Binding, List<PolicyProvider>>();
         return ref;
+    }
+
+    public void addPolicyProvider(Binding binding, PolicyProvider policyProvider) {
+        List<PolicyProvider> providers = policyProviders.get(binding);
+        if (providers == null) {
+            providers = new ArrayList<PolicyProvider>();
+            policyProviders.put(binding, providers);
+        }
+        providers.add(policyProvider);
+    }
+
+    public List<PolicyProvider> getPolicyProviders(Binding binding) {
+        return policyProviders.get(binding);
     }
 
 }

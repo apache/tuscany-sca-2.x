@@ -44,7 +44,7 @@ public class PolicyReadTestCase extends TestCase {
 
         TransactionPolicyProcessor processor = new TransactionPolicyProcessor(null);
 
-        URL url = getClass().getResource("/policy_definitions.xml");
+        URL url = getClass().getResource("/META-INF/services/definitions.xml");
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
         InputStream urlStream = url.openStream();

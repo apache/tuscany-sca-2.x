@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.core.assembly;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.impl.ComponentServiceImpl;
@@ -30,15 +29,18 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.ServiceRuntimeException;
 
 public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements RuntimeComponentService {
-    private List<RuntimeWire> wires = new ArrayList<RuntimeWire>();
-    private List<RuntimeWire> callbackWires = new ArrayList<RuntimeWire>();
-    private Map<Binding, ServiceBindingProvider> bindingProviders = new HashMap<Binding, ServiceBindingProvider>();
+    private ArrayList<RuntimeWire> wires = new ArrayList<RuntimeWire>();
+    private ArrayList<RuntimeWire> callbackWires = new ArrayList<RuntimeWire>();
+    private HashMap<Binding, ServiceBindingProvider> bindingProviders = new HashMap<Binding, ServiceBindingProvider>();
+    private HashMap<Binding, List<PolicyProvider>> policyProviders = new HashMap<Binding, List<PolicyProvider>>();
+
     public RuntimeComponentServiceImpl() {
         super();
     }
@@ -71,10 +73,10 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
                 throw new ServiceRuntimeException(e);
             }
         }
-        
+
         return wire;
     }
-    
+
     public List<RuntimeWire> getCallbackWires() {
         return callbackWires;
     }
@@ -129,10 +131,23 @@ public class RuntimeComponentServiceImpl extends ComponentServiceImpl implements
     @Override
     public Object clone() throws CloneNotSupportedException {
         RuntimeComponentServiceImpl clone = (RuntimeComponentServiceImpl)super.clone();
-        clone.bindingProviders =
-            (Map<Binding, ServiceBindingProvider>)((HashMap<Binding, ServiceBindingProvider>)bindingProviders).clone();
-        clone.wires = (List<RuntimeWire>)((ArrayList<RuntimeWire>)wires).clone();
-        clone.callbackWires = (List<RuntimeWire>)((ArrayList<RuntimeWire>)callbackWires).clone();
+        clone.bindingProviders = (HashMap<Binding, ServiceBindingProvider>)bindingProviders.clone();
+        clone.wires = (ArrayList<RuntimeWire>)wires.clone();
+        clone.callbackWires = (ArrayList<RuntimeWire>)callbackWires.clone();
+        clone.policyProviders = (HashMap<Binding, List<PolicyProvider>>)policyProviders.clone();
         return clone;
+    }
+
+    public void addPolicyProvider(Binding binding, PolicyProvider policyProvider) {
+        List<PolicyProvider> providers = policyProviders.get(binding);
+        if (providers == null) {
+            providers = new ArrayList<PolicyProvider>();
+            policyProviders.put(binding, providers);
+        }
+        providers.add(policyProvider);
+    }
+
+    public List<PolicyProvider> getPolicyProviders(Binding binding) {
+        return policyProviders.get(binding);
     }
 }

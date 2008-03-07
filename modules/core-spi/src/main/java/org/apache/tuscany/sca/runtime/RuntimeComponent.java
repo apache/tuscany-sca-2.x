@@ -19,8 +19,11 @@
 
 package org.apache.tuscany.sca.runtime;
 
+import java.util.List;
+
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
+import org.apache.tuscany.sca.provider.PolicyProvider;
 
 /**
  * The runtime component interface. Provides the bridge between the
@@ -65,4 +68,16 @@ public interface RuntimeComponent extends Component {
      * @param the state to set
      */
     void setStarted(boolean started);
+    
+    /**
+     * Add a policy provider to the component
+     * @param policyProvider
+     */
+    void addPolicyProvider(PolicyProvider policyProvider);
+    
+    /**
+     * Get a list of policy providers configured for this component
+     * @return
+     */
+    List<PolicyProvider> getPolicyProviders();
 }

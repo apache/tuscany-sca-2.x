@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 
 /**
@@ -68,6 +69,19 @@ public interface RuntimeComponentReference extends ComponentReference {
      */
     void setBindingProvider(Binding binding, ReferenceBindingProvider bindingProvider);
     
+    /**
+     * Add a policy provider for the given binding to the reference
+     * @param binding The assembly model binding
+     * @param policyProvider The policy handler
+     */
+    void addPolicyProvider(Binding binding, PolicyProvider policyProvider);
+    
+    /**
+     * Get a list of policy providers for the given binding
+     * @param binding The assembly model binding
+     * @return A list of policy proviers for the given binding
+     */
+    List<PolicyProvider> getPolicyProviders(Binding binding);    
     
     /**
      * Get the invoker for the given binding and operation
@@ -77,7 +91,8 @@ public interface RuntimeComponentReference extends ComponentReference {
      */
     Invoker getInvoker(Binding binding, Operation operation); 
     
-    /**Set the owning component
+    /**
+     * Set the owning component
      * @param component
      */
     void setComponent(RuntimeComponent component);

@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.core.assembly;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,6 +52,8 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
+import org.apache.tuscany.sca.provider.PolicyProvider;
+import org.apache.tuscany.sca.provider.PolicyProviderFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
@@ -180,6 +183,13 @@ public class CompositeActivatorImpl implements CompositeActivator {
             if (bindingProvider != null) {
                 ((RuntimeComponentReference)reference).setBindingProvider(binding, bindingProvider);
             }
+            for (PolicyProviderFactory f : providerFactories.getPolicyProviderFactories()) {
+                PolicyProvider policyProvider = f.createReferencePolicyProvider(component, reference, binding);
+                if (policyProvider != null) {
+                    reference.addPolicyProvider(binding, policyProvider);
+                }
+            }
+
             return bindingProvider;
         } else {
             throw new IllegalStateException("Provider factory not found for class: " + binding.getClass().getName());
@@ -387,10 +397,15 @@ public class CompositeActivatorImpl implements CompositeActivator {
             throw new IllegalStateException("Provider factory not found for class: " + implementation.getClass()
                 .getName());
         }
+        for(PolicyProviderFactory f: providerFactories.getPolicyProviderFactories()){
+            component.addPolicyProvider(f.createImplementationPolicyProvider(component, implementation));
+        }
+        
     }
 
     private void removeImplementationProvider(RuntimeComponent component) {
         component.setImplementationProvider(null);
+        component.getPolicyProviders().clear();
     }
 
     /**
@@ -412,6 +427,12 @@ public class CompositeActivatorImpl implements CompositeActivator {
             if (bindingProvider != null) {
                 ((RuntimeComponentService)service).setBindingProvider(binding, bindingProvider);
             }
+            for (PolicyProviderFactory f : providerFactories.getPolicyProviderFactories()) {
+                PolicyProvider policyProvider = f.createServicePolicyProvider(component, service, binding);
+                if (policyProvider != null) {
+                    service.addPolicyProvider(binding, policyProvider);
+                }
+            }
             return bindingProvider;
         } else {
             throw new IllegalStateException("Provider factory not found for class: " + binding.getClass().getName());
@@ -422,12 +443,24 @@ public class CompositeActivatorImpl implements CompositeActivator {
                                               RuntimeComponentService service,
                                               Binding binding) {
         service.setBindingProvider(binding, null);
+        for (Binding b : service.getBindings()) {
+            List<PolicyProvider> pps = service.getPolicyProviders(b);
+            if (pps != null) {
+                pps.clear();
+            }
+        }
     }
 
     private void removeReferenceBindingProvider(RuntimeComponent component,
                                                 RuntimeComponentReference reference,
                                                 Binding binding) {
         reference.setBindingProvider(binding, null);
+        for (Binding b : reference.getBindings()) {
+            List<PolicyProvider> pps = reference.getPolicyProviders(b);
+            if (pps != null) {
+                pps.clear();
+            }
+        }
     }
 
     public void start(Composite composite) {

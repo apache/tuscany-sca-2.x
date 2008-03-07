@@ -35,12 +35,14 @@ import org.apache.tuscany.sca.core.invocation.RuntimeWireInvoker;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.invocation.Phase;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
+import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.EndpointReference;
@@ -89,7 +91,8 @@ public class RuntimeWireImpl implements RuntimeWire {
                            InterfaceContractMapper interfaceContractMapper,
                            WorkScheduler workScheduler,
                            RuntimeWireProcessor wireProcessor,
-                           MessageFactory messageFactory, ConversationManager conversationManager) {
+                           MessageFactory messageFactory,
+                           ConversationManager conversationManager) {
         super();
         this.wireSource = source;
         this.wireTarget = target;
@@ -161,7 +164,7 @@ public class RuntimeWireImpl implements RuntimeWire {
                 if (operation.isNonBlocking()) {
                     addNonBlockingInterceptor(reference, refBinding, chain);
                 }
-                addBindingInterceptor(reference, refBinding, chain, operation);
+                addReferenceBindingInterceptor(reference, refBinding, chain, operation);
                 chains.add(chain);
             }
         } else {
@@ -209,6 +212,36 @@ public class RuntimeWireImpl implements RuntimeWire {
     }
 
     /**
+     * Add the interceptor for a reference binding
+     * 
+     * @param reference
+     * @param binding
+     * @param chain
+     * @param operation
+     */
+    private void addReferenceBindingInterceptor(ComponentReference reference,
+                                                Binding binding,
+                                                InvocationChain chain,
+                                                Operation operation) {
+        ReferenceBindingProvider provider = ((RuntimeComponentReference)reference).getBindingProvider(binding);
+        if (provider != null) {
+            Invoker invoker = provider.createInvoker(operation);
+            if (invoker != null) {
+                chain.addInvoker(invoker);
+            }
+        }
+        List<PolicyProvider> pps = ((RuntimeComponentReference)reference).getPolicyProviders(binding);
+        if (pps != null) {
+            for (PolicyProvider p : pps) {
+                Interceptor interceptor = p.createInterceptor(operation);
+                if (interceptor != null) {
+                    chain.addInterceptor(p.getPhase(), p.createInterceptor(operation));
+                }
+            }
+        }
+    }
+
+    /**
      * Add the interceptor for a binding
      * 
      * @param reference
@@ -216,20 +249,18 @@ public class RuntimeWireImpl implements RuntimeWire {
      * @param chain
      * @param operation
      */
-    private void addBindingInterceptor(ComponentReference reference,
-                                       Binding binding,
-                                       InvocationChain chain,
-                                       Operation operation) {
-        try {
-            ReferenceBindingProvider provider = ((RuntimeComponentReference)reference).getBindingProvider(binding);
-            if (provider != null) {
-                Invoker invoker = provider.createInvoker(operation);
-                if (invoker != null) {
-                    chain.addInvoker(invoker);
+    private void addServiceBindingInterceptor(ComponentReference service,
+                                              Binding binding,
+                                              InvocationChain chain,
+                                              Operation operation) {
+        List<PolicyProvider> pps = ((RuntimeComponentService)service).getPolicyProviders(binding);
+        if (pps != null) {
+            for (PolicyProvider p : pps) {
+                Interceptor interceptor = p.createInterceptor(operation);
+                if (interceptor != null) {
+                    chain.addInterceptor(p.getPhase(), p.createInterceptor(operation));
                 }
             }
-        } catch (RuntimeException e) {
-            throw e;
         }
     }
 
@@ -265,7 +296,7 @@ public class RuntimeWireImpl implements RuntimeWire {
             }
         }
     }
- 
+
     /**
      * Add the interceptor for a component implementation
      * 
@@ -283,6 +314,15 @@ public class RuntimeWireImpl implements RuntimeWire {
             Invoker invoker = null;
             invoker = provider.createInvoker((RuntimeComponentService)service, operation);
             chain.addInvoker(invoker);
+        }
+        List<PolicyProvider> pps = ((RuntimeComponent)component).getPolicyProviders();
+        if (pps != null) {
+            for (PolicyProvider p : pps) {
+                Interceptor interceptor = p.createInterceptor(operation);
+                if (interceptor != null) {
+                    chain.addInterceptor(p.getPhase(), p.createInterceptor(operation));
+                }
+            }
         }
     }
 
