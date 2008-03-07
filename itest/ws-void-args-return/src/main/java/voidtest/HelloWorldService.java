@@ -37,5 +37,11 @@ public interface HelloWorldService {
     String takeGreetings();
 
     void noGreetings();
+    
+    Bean getBean();
+    
+    String getNullString();
+    
+    Bean getNullBean();
 }
 
