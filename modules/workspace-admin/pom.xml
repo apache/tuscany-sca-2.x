@@ -137,6 +137,27 @@
             <version>1.2-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency> 
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws-axis2</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>  
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws-xml</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>          
 
     </dependencies>
 </project>

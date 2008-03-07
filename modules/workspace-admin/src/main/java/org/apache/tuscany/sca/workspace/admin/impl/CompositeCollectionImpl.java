@@ -68,8 +68,8 @@ import org.w3c.dom.Document;
  * @version $Rev: 632617 $ $Date: 2008-03-01 08:24:33 -0800 (Sat, 01 Mar 2008) $
  */
 @Scope("COMPOSITE")
-@Service(CompositeCollection.class)
-public class CompositeCollectionImpl implements CompositeCollection {
+@Service(interfaces={CompositeCollection.class,LocalCompositeCollection.class})
+public class CompositeCollectionImpl implements CompositeCollection, LocalCompositeCollection {
     
     @Property
     public String compositeFileName;

@@ -29,6 +29,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -45,14 +47,20 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
+import org.apache.tuscany.sca.assembly.builder.Problem;
+import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
+import org.apache.tuscany.sca.assembly.builder.impl.CompositeConfigurationBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
@@ -76,8 +84,29 @@ import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
+import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.AllowsPassByReferenceProcessor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.BaseJavaClassVisitor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.ComponentNameProcessor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.ConstructorProcessor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.ContextProcessor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.ConversationIDProcessor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.ConversationProcessor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.DestroyProcessor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.EagerInitProcessor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.HeuristicPojoProcessor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.InitProcessor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.PolicyProcessor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.PropertyProcessor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.ReferenceProcessor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.ResourceProcessor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.ScopeProcessor;
+import org.apache.tuscany.sca.implementation.java.introspect.impl.ServiceProcessor;
+import org.apache.tuscany.sca.implementation.node.NodeImplementation;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -103,9 +132,16 @@ import org.w3c.dom.Document;
 @Service(interfaces={CompositeCollection.class, LocalCompositeCollection.class, Servlet.class})
 public class DeployableCompositeCollectionImpl extends HttpServlet implements CompositeCollection, LocalCompositeCollection {
     private static final long serialVersionUID = -8809641932774129151L;
+    private final static Logger logger = Logger.getLogger(DeployableCompositeCollectionImpl.class.getName());    
 
     @Reference
     public LocalContributionCollection contributionCollection;
+    
+    @Reference 
+    public LocalContributionCollection domainCompositeCollection;
+    
+    @Reference 
+    public LocalContributionCollection cloudCollection;    
 
     private ModelFactoryExtensionPoint modelFactories;
     private ModelResolverExtensionPoint modelResolvers;
@@ -114,6 +150,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
     private StAXArtifactProcessor<Composite> compositeProcessor;
     private XMLOutputFactory outputFactory;
     private CompositeBuilder compositeBuilder;
+    private CompositeConfigurationBuilderImpl compositeConfiguationBuilder;
     
     /**
      * Initialize the component.
@@ -129,6 +166,32 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        
+        // TODO - This doesn't really belong here but this method seems to be building another
+        //        runtime in parallel to the one runing this component and the composite
+        //        needs to resolve implementation types so that it can be built. 
+        //        If we want to do this parallel thing we should create a new extension 
+        //        registry so that existing initialization methods can be called. 
+        JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+        JavaImplementationFactory javaImplementationFactory = modelFactories.getFactory(JavaImplementationFactory.class);
+
+        BaseJavaClassVisitor[] extensions =
+            new BaseJavaClassVisitor[] {new ConstructorProcessor(assemblyFactory),
+                                        new AllowsPassByReferenceProcessor(assemblyFactory),
+                                        new ComponentNameProcessor(assemblyFactory),
+                                        new ContextProcessor(assemblyFactory),
+                                        new ConversationIDProcessor(assemblyFactory),
+                                        new ConversationProcessor(assemblyFactory),
+                                        new DestroyProcessor(assemblyFactory), new EagerInitProcessor(assemblyFactory),
+                                        new InitProcessor(assemblyFactory), new PropertyProcessor(assemblyFactory),
+                                        new ReferenceProcessor(assemblyFactory, javaFactory),
+                                        new ResourceProcessor(assemblyFactory), new ScopeProcessor(assemblyFactory),
+                                        new ServiceProcessor(assemblyFactory, javaFactory),
+                                        new HeuristicPojoProcessor(assemblyFactory, javaFactory),
+                                        new PolicyProcessor(assemblyFactory, policyFactory)};
+        for (JavaClassVisitor extension : extensions) {
+            javaImplementationFactory.addClassVisitor(extension);
+        }        
 
         // Create artifact processors
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(modelFactories);
@@ -152,8 +215,34 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
         IntentAttachPointTypeFactory intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
         InterfaceContractMapper contractMapper = new InterfaceContractMapperImpl();
         List<PolicySet> domainPolicySets = new ArrayList<PolicySet>();
+        
+        // TODO need to get these messages back to the browser
+        CompositeBuilderMonitor monitor = new CompositeBuilderMonitor() {
+            public void problem(Problem problem) {
+                if (problem.getSeverity() == Severity.INFO) {
+                    logger.info(problem.toString());
+                } else if (problem.getSeverity() == Severity.WARNING) {
+                    logger.warning(problem.toString());
+                } else if (problem.getSeverity() == Severity.ERROR) {
+                    if (problem.getCause() != null) {
+                        logger.log(Level.SEVERE, problem.toString(), problem.getCause());
+                    } else {
+                        logger.severe(problem.toString());
+                    }
+                }
+            }
+        };
+        
         compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory,
-                                                                                            contractMapper, domainPolicySets, null);
+                                                    contractMapper, domainPolicySets, monitor);
+        
+        compositeConfiguationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, 
+                                                                             scaBindingFactory, 
+                                                                             intentAttachPointTypeFactory,
+                                                                             contractMapper,
+                                                                             monitor);
+        
+        
     }
     
     public Entry<String, Item>[] getAll() {
@@ -274,39 +363,124 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
         
         // Expecting a key in the form:
         // composite:contributionURI;namespace;localName
+        QName keyQName = qname(key);
+        
+        // somewhere to store the composite we expect to write out at the end
+        Composite deployableComposite = null;
 
-        // Get the specified contribution info 
-        String contributionURI = uri(key);
-        Item contributionItem;
-        try {
-            contributionItem = contributionCollection.get(contributionURI);
-        } catch (NotFoundException e) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
+        // create a local domain composite
+        Composite domainComposite = assemblyFactory.createComposite();
+            
+        // Get the domain composite items
+        Entry<String, Item>[] domainComposites = domainCompositeCollection.getAll();
+        
+        // create the domain composite
+        for (int i=0; i < domainComposites.length; i++){
+            // load the contribution
+            String contributionURI = uri(domainComposites[i].getKey());
+            Item contributionItem;
+            try {
+                contributionItem = contributionCollection.get(contributionURI);
+            } catch (NotFoundException e) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+            
+            // Read the contribution
+            Contribution contribution = contribution(contributionURI, contributionItem.getLink());
+
+            // Find the specified deployable composite in the contribution
+            Composite deployable = null;
+            QName qname = qname(domainComposites[i].getKey());
+            for (Composite d: contribution.getDeployables()) {
+                if (qname.equals(d.getName())) {
+                    deployable = d;
+                    break;
+                }
+            }
+            if (deployable == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+            
+            // store away the composite we are generating the deployable XML for. 
+            if (keyQName.equals(deployable.getName())){
+                deployableComposite = deployable;
+            }
+            
+            // add the deployable composite to the domain composite
+            domainComposite.getIncludes().add(deployable);
         }
         
-        // Read the contribution
-        Contribution contribution = contribution(contributionURI, contributionItem.getLink());
+        // get all the node clouds
+        Entry<String, Item>[] cloudComposites = cloudCollection.getAll();
+        List<Composite> nodeCloudComposites = new ArrayList<Composite>();
+        
+        // extract all of the node cloud composites
+        for (int i=0; i < cloudComposites.length; i++){
+            // load the contribution
+            String contributionURI = uri(cloudComposites[i].getKey());
+            Item contributionItem;
+            try {
+                contributionItem = contributionCollection.get(contributionURI);
+            } catch (NotFoundException e) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+            
+            // Read the contribution
+            Contribution contribution = contribution(contributionURI, contributionItem.getLink());
+            
+            // extract the node cloud composites and store them for later
+            for (Artifact artifact : contribution.getArtifacts()) {
+                if (artifact.getModel() instanceof Composite) {
+                    Composite composite = (Composite)artifact.getModel();
+                    nodeCloudComposites.add(composite);
+                }
+            } 
+        }
 
-        // Find the specified deployable composite
-        Composite deployable = null;
-        QName qname = qname(key);
-        for (Composite d: contribution.getDeployables()) {
-            if (qname.equals(d.getName())) {
-                deployable = d;
-                break;
+        // configure the endpoints for each composite in the domain
+        for (Composite composite : domainComposite.getIncludes()){
+            List<Binding> defaultBindings = null;
+            
+            // find the node that will run this composite
+            for(Composite nodeCloudComposite : nodeCloudComposites){
+                for(Component node : nodeCloudComposite.getComponents()){
+                    NodeImplementation nodeImplementation = (NodeImplementation)node.getImplementation();
+                    if (nodeImplementation.getComposite().getName().equals(composite.getName())){
+                        defaultBindings = node.getServices().get(0).getBindings();
+                    }
+                }
+            }
+           
+            try {
+                compositeConfiguationBuilder.calculateBindingURIs(defaultBindings, composite, null);
+            } catch (CompositeBuilderException e) {
+                throw new ServletException(e);
             }
         }
-        if (deployable == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
         
-        // Build the composite
+        // build the domain composite
         try {
-            compositeBuilder.build(deployable);
+            compositeBuilder.build(domainComposite);
         } catch (CompositeBuilderException e) {
             throw new ServletException(e);
+        }        
+        
+        // rebuild the requested composite from the domian composite
+        // we have to reverse the falttening that went on when the domain
+        // composite was built
+        List<Component> tempComponentList = new ArrayList<Component>();
+        tempComponentList.addAll(deployableComposite.getComponents());
+        deployableComposite.getComponents().clear();
+        
+        for (Component inputComponent : tempComponentList){
+            for (Component deployComponent : domainComposite.getComponents()){
+                if (deployComponent.getName().equals(inputComponent.getName())){
+                    deployableComposite.getComponents().add(deployComponent);
+                }
+            }
         }
         
         // Write the deployable composite back to XML
@@ -314,7 +488,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
             // First write to a byte stream
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
-            compositeProcessor.write(deployable, writer);
+            compositeProcessor.write(deployableComposite, writer);
             
             // Parse again to pretty format the document
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -330,6 +504,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
         } catch (Exception e) {
             throw new ServletException(e);
         }
+               
     }
 
     /**
