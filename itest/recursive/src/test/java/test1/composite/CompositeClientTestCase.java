@@ -23,16 +23,42 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
+import test.Aggregator;
+
 /**
  * Simple client program that invokes the components that we wired together.
  */
 public class CompositeClientTestCase extends TestCase {
+    
+    private SCADomain scaDomain;
+    private Target target;
+
+    @Override
+    protected void setUp() throws Exception {
+        scaDomain = SCADomain.newInstance("test1/OuterComposite.composite");
+        target = scaDomain.getService(Target.class, "Test1TargetComponent/Service_Two");
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        scaDomain.close();
+    }    
 
     public void testComposite() throws Exception {
-        SCADomain scaDomain = SCADomain.newInstance("test1/OuterComposite.composite");
-        Target target = scaDomain.getService(Target.class, "TargetComponent/Service_Two");
         String res = target.hello("Wang Feng");
         assertEquals("TargetTwo: Hello Wang Feng!", res);
-        scaDomain.close();
+    }
+    
+    // Test for problem in TUSCANY-2010
+    public void testURLs() throws Exception {
+        try {
+            System.out.println("Component URI: " + scaDomain.getComponentManager().getComponent("Test1TargetComponent").getURI());
+            System.out.println("  Service Name: " + scaDomain.getComponentManager().getComponent("Test1TargetComponent").getServices().get(0).getName());
+            System.out.println("    Binding Name: " + scaDomain.getComponentManager().getComponent("Test1TargetComponent").getServices().get(0).getBindings().get(0).getName());
+            System.out.println("    Binding URI: " + scaDomain.getComponentManager().getComponent("Test1TargetComponent").getServices().get(0).getBindings().get(0).getURI());
+            assertEquals("Test1TargetComponent/Service_One", scaDomain.getComponentManager().getComponent("Test1TargetComponent").getServices().get(0).getBindings().get(0).getURI());
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 }

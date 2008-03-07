@@ -295,7 +295,14 @@ public class CompositeConfigurationBuilderImpl {
                     } else {
                         // Combine the specified binding URI with the component URI
                         bindingURI = binding.getURI();
-                        bindingURI = URI.create(component.getURI() + '/').resolve(bindingURI).toString();
+                        
+                        // if this binding comes from a composite service then the URI will already be set
+                        // otherwise we need to set it relative to the component URI. We can tell by looking
+                        // if this binding is the same as the one on the component type service
+                        if ((componentService.getService() != null)&&
+                            (!componentService.getService().getBindings().contains(binding))){
+                            bindingURI = URI.create(component.getURI() + '/').resolve(bindingURI).toString();
+                        }
                     }
                     
                     binding.setURI(bindingURI);

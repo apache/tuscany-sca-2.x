@@ -21,7 +21,7 @@
     targetNamespace="http://sample1"
     xmlns:sample1="http://sample1"
     name="OuterComposite">
-    <component name="TargetComponent">
+    <component name="Test1TargetComponent">
         <implementation.composite name="sample1:InnerComposite"/>
     </component>
 </composite>
