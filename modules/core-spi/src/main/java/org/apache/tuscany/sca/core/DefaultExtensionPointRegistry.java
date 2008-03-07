@@ -131,10 +131,10 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
     private static void getAllInterfaces(Class clazz, Set<Class> implemented) {
         Class[] interfaces = clazz.getInterfaces();
         for (Class interfaze : interfaces) {
-            String name = interfaze.getName();
-            if (name.startsWith("java.") || name.startsWith("javax.")) {
-                continue;
-            }
+//            String name = interfaze.getName();
+//            if (name.startsWith("java.") || name.startsWith("javax.")) {
+//                continue;
+//            }
             if (Modifier.isPublic(interfaze.getModifiers())) {
                 implemented.add(interfaze);
             }
