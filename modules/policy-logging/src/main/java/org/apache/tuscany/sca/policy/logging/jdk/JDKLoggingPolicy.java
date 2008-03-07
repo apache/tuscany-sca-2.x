@@ -20,38 +20,63 @@ package org.apache.tuscany.sca.policy.logging.jdk;
 
 import java.util.logging.Level;
 
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.policy.Policy;
+
 /**
  * Implementation for policies that could be injected as parameter
  * into the axis2config.
  */
-public class JDKLoggingPolicy {
+public class JDKLoggingPolicy implements Policy {
+    private static final QName JDK_LOGGING_POLICY_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "jdkLogger");
+
     private String loggerName;
     private String resourceBundleName;
     private Level logLevel;
     private boolean useParentHandlers = false;
-    
+
     public String getLoggerName() {
         return loggerName;
     }
+
     public void setLoggerName(String loggerName) {
         this.loggerName = loggerName;
     }
+
     public Level getLogLevel() {
         return logLevel;
     }
+
     public void setLogLevel(Level logLevel) {
         this.logLevel = logLevel;
     }
+
     public String getResourceBundleName() {
         return resourceBundleName;
     }
+
     public void setResourceBundleName(String resourceBundleName) {
         this.resourceBundleName = resourceBundleName;
     }
+
     public boolean isUseParentHandlers() {
         return useParentHandlers;
     }
+
     public void setUseParentHandlers(boolean useParentHandlers) {
         this.useParentHandlers = useParentHandlers;
+    }
+
+    public QName getSchemaName() {
+        return JDK_LOGGING_POLICY_QNAME;
+    }
+
+    public boolean isUnresolved() {
+        return false;
+    }
+
+    public void setUnresolved(boolean unresolved) {
     }
 }

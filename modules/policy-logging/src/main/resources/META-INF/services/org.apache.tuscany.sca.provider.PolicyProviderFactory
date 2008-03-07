@@ -13,8 +13,7 @@
 # "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
-# under the License.
-org.apache.tuscany.sca.policy.transaction.TransactionPolicyHandler;qname=http://tuscany.apache.org/xmlns/sca/1.0#ManagedTransactionPolicySet
-org.apache.tuscany.sca.policy.transaction.TransactionPolicyHandler;qname=http://tuscany.apache.org/xmlns/sca/1.0#NoManagedTransactionPolicySet
-org.apache.tuscany.sca.policy.transaction.TransactionPolicyHandler;qname=http://tuscany.apache.org/xmlns/sca/1.0#PropagatesTransactionPolicySet
-org.apache.tuscany.sca.policy.transaction.TransactionPolicyHandler;qname=http://tuscany.apache.org/xmlns/sca/1.0#SuspendsTransactionPolicySet
+# under the License. 
+
+# Implementation class for the policy extension
+org.apache.tuscany.sca.policy.logging.jdk.JDKLoggingPolicyProviderFactory;model=org.apache.tuscany.sca.policy.logging.jdk.JDKLoggingPolicy

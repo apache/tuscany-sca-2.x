@@ -22,13 +22,14 @@ package org.apache.tuscany.sca.policy.transaction;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.policy.Policy;
 
 /**
  * The model for Tuscany transaction policy
  * 
  * @version $Rev$ $Date$
  */
-public interface TransactionPolicy {
+public interface TransactionPolicy extends Policy {
     QName NAME = new QName(Constants.SCA10_TUSCANY_NS, "transactionPolicy");
 
     enum Action {

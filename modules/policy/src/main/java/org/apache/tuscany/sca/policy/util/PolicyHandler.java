@@ -22,8 +22,11 @@ package org.apache.tuscany.sca.policy.util;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
+ * @deprecated This interface is replaced by PolicyProviderFactory/PolicyProvider SPIs
  * Handler interface for handling policies defined in policysets
+ * 
  */
+@Deprecated
 public interface PolicyHandler {
     PolicySet getApplicablePolicySet();
     void setApplicablePolicySet(PolicySet policySet);

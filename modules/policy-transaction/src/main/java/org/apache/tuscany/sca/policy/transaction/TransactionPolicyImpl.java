@@ -19,10 +19,13 @@
 
 package org.apache.tuscany.sca.policy.transaction;
 
+import javax.xml.namespace.QName;
+
 /**
  * @version $Rev$ $Date$
  */
 public class TransactionPolicyImpl implements TransactionPolicy {
+    private boolean unresolved;
     private int transactionTimeout = 1200;
     private Action action = Action.PROPAGATE;
 
@@ -40,5 +43,17 @@ public class TransactionPolicyImpl implements TransactionPolicy {
 
     public void setAction(Action policy) {
         this.action = policy;
+    }
+
+    public QName getSchemaName() {
+        return NAME;
+    }
+
+    public boolean isUnresolved() {
+        return unresolved;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+        this.unresolved = unresolved;
     }
 }

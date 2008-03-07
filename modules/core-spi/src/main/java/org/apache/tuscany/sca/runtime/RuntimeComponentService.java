@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 
 /**
@@ -118,5 +119,20 @@ public interface RuntimeComponentService extends ComponentService {
      * @param interfaceContract the client interface contract
      * @return The runtime invocation chain
      */
-    InvocationChain getInvocationChain(Binding binding, InterfaceContract interfaceContract, Operation operation);  
+    InvocationChain getInvocationChain(Binding binding, InterfaceContract interfaceContract, Operation operation);
+    
+    /**
+     * Add a policy provider for the given binding to the service
+     * @param binding The assembly model binding
+     * @param policyProvider The policy handler
+     */
+    void addPolicyProvider(Binding binding, PolicyProvider policyProvider);
+    
+    /**
+     * Get a list of policy providers for the given binding
+     * @param binding The assembly model binding
+     * @return A list of policy proviers for the given binding
+     */
+    List<PolicyProvider> getPolicyProviders(Binding binding);
+
 }

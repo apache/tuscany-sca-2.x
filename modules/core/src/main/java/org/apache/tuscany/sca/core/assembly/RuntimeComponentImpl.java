@@ -19,10 +19,14 @@
 
 package org.apache.tuscany.sca.core.assembly;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tuscany.sca.assembly.impl.ComponentImpl;
 import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
+import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 
@@ -32,6 +36,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 public class RuntimeComponentImpl extends ComponentImpl implements RuntimeComponent, ScopedRuntimeComponent {
     protected RuntimeComponentContext componentContext;
     protected ImplementationProvider implementationProvider;
+    protected List<PolicyProvider> policyProviders = new ArrayList<PolicyProvider>();
     protected ScopeContainer scopeContainer;
     protected boolean started;
 
@@ -77,5 +82,13 @@ public class RuntimeComponentImpl extends ComponentImpl implements RuntimeCompon
      */
     public void setComponentContext(RuntimeComponentContext componentContext) {
         this.componentContext = componentContext;
+    }
+
+    public void addPolicyProvider(PolicyProvider policyProvider) {
+        policyProviders.add(policyProvider);
+    }
+
+    public List<PolicyProvider> getPolicyProviders() {
+        return policyProviders;
     }
 }

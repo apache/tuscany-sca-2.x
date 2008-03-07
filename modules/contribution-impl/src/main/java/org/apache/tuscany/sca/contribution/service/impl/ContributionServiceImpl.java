@@ -470,8 +470,7 @@ public class ContributionServiceImpl implements ContributionService {
             
             byte[] transformedArtifactContent = addApplicablePolicySets(artifactURL);
             artifact.setContents(transformedArtifactContent);
-            XMLStreamReader reader = XMLInputFactory.newInstance().
-                                createXMLStreamReader(new ByteArrayInputStream(transformedArtifactContent));
+            XMLStreamReader reader = xmlFactory.createXMLStreamReader(new ByteArrayInputStream(transformedArtifactContent));
             reader.nextTag();
             Composite composite = (Composite)staxProcessor.read(reader);
             if (composite != null) {

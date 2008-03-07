@@ -13,8 +13,7 @@
 # "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
-# under the License.
-# 
-# PolicyHandlerClasses to interpret specific PolicyModels against specific QoS infrastructures
-# handler classname;qname=<policy intent addressed>;model=<policy model class>
-org.apache.tuscany.sca.policy.logging.jdk.JDKLoggingPolicyHandler;intent=http://tuscany.apache.org/xmlns/sca/1.0#logging,model=org.apache.tuscany.sca.policy.logging.jdk.JDKLoggingPolicy
+# under the License. 
+
+# Implementation class for the policy extension
+org.apache.tuscany.sca.policy.transaction.TransactionPolicyProviderFactory;model=org.apache.tuscany.sca.policy.transaction.TransactionPolicy
