@@ -345,6 +345,7 @@ class FeedBindingListenerServlet extends HttpServlet {
                     feed.setFeedType("atom_1.0");
                     SyndFeed syndFeed = new SyndFeedImpl(feed);
                     syndFeed.setFeedType(requestFeedType);
+                    syndFeed.setLink(path);
                     SyndFeedOutput syndOutput = new SyndFeedOutput();
                     try {
                         syndOutput.output(syndFeed, getWriter(response));
