@@ -40,7 +40,7 @@ import calculator.CalculatorService;
  * Runs a distributed domain in a single VM by using and in memory 
  * implementation of the distributed domain
  */
-public class DomainNodeTestCase {
+public class DomainNodeTestCaseFIXME {
     
     private static SCANode   nodeA;
     private static SCANode   nodeB;
@@ -64,7 +64,7 @@ public class DomainNodeTestCase {
             
             System.out.println("Setting up calculator nodes");
             
-            ClassLoader cl = DomainNodeTestCase.class.getClassLoader();
+            ClassLoader cl = DomainNodeTestCaseFIXME.class.getClassLoader();
             
             SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
             
