@@ -40,7 +40,7 @@ public class EchoBindingPoliciedInvoker implements Invoker {
     
     public EchoBindingPoliciedInvoker(List<PolicySet> policies) {
         this.policies = policies;
-        policyHandlers.put(new QName("http://sample/policy","EncryptionPolicy"), 
+        policyHandlers.put(new QName("http://test","EncryptionPolicy"), 
                            new EncryptionPolicyHandler());
     }
 

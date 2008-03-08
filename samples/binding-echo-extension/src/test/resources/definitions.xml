@@ -23,10 +23,9 @@
             xmlns:e="http://echo"
             xmlns:p="http://sample/policy">
     <!-- POLICY SETS -->
-    <sca:policySet name="p:EncryptionPolicy"
+    <sca:policySet name="EncryptionPolicy"
        provides="sca:confidentiality"
        appliesTo="e:binding.echo"
-       xmlns="http://test"
        >
         <p:echoBindingPolicy name="Encryption" strategy="echo.provider.policy.ReverseEncryptionStrategy" />
     </sca:policySet>
