@@ -70,8 +70,10 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
     }
 
     public PolicySet read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        String policySetName = reader.getAttributeValue(null, NAME);
+        
         PolicySet policySet = policyFactory.createPolicySet();
-        policySet.setName(getQName(reader, NAME));
+        policySet.setName(new QName(policySetName));
         String appliesTo = reader.getAttributeValue(null, APPLIES_TO);
         String alwaysAppliesTo = reader.getAttributeValue(TUSCANY_NS, ALWAYS_APPLIES_TO);
         
@@ -105,7 +107,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                         if ( policySet.getProvidedIntents().contains(mappedIntent) ) {
                             readIntentMap(reader, policySet, mappedIntent);
                         } else {
-                            throw new ContributionReadException("Intent Map provides for Intent not spcified as provided by parent PolicySet - " +policySet.getName());
+                            throw new ContributionReadException("Intent Map provides for Intent not spcified as provided by parent PolicySet - " + policySetName);
                         }
                     } else if ( POLICY_SET_REFERENCE_QNAME.equals(name) )  {
                         PolicySet referredPolicySet = policyFactory.createPolicySet();

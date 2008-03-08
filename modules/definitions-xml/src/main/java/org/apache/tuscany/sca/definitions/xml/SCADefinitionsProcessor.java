@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.QualifiedIntent;
 
 /**
  * Processor for SCA Definitions
@@ -56,6 +57,7 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
     public static final String SCA_DEFINITIONS = "definitions";
     public static final QName SCA_DEFINITIONS_QNAME = new QName(SCA10_NS, SCA_DEFINITIONS);
     public static final String TARGET_NAMESPACE = "targetNamespace";
+    public static final String NAME = "name";
     
     /**
      * Construct a new (sca) definitions processor
@@ -73,6 +75,7 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
     public SCADefinitions read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         QName name = null;
         SCADefinitions definitions = null;
+        String targetNamespace = null;
 
         while (reader.hasNext()) {
             int event = reader.getEventType();
@@ -81,13 +84,24 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
                     name = reader.getName();
                     if ( SCA_DEFINITIONS_QNAME.equals(name)) {
                         definitions = new SCADefinitionsImpl();
-                        definitions.setTargetNamespace(reader.getAttributeValue(null, TARGET_NAMESPACE));
+                        targetNamespace = reader.getAttributeValue(null, TARGET_NAMESPACE);
+                        definitions.setTargetNamespace(targetNamespace);
                     } else {
                         Object extension = extensionProcessor.read(reader);
                         if (extension != null) {
                             if ( extension instanceof Intent ) {
+                                ((Intent)extension).setName(new QName(targetNamespace, 
+                                                                      ((Intent)extension).getName().getLocalPart()));
+                                if ( extension instanceof QualifiedIntent ) {
+                                    ((QualifiedIntent)extension).getQualifiableIntent().
+                                            setName(new QName(targetNamespace, 
+                                                              ((QualifiedIntent)extension).getQualifiableIntent().getName().getLocalPart()));
+                                }
+                                
                                 definitions.getPolicyIntents().add((Intent)extension);
                             } else if ( extension instanceof PolicySet ) {
+                                ((PolicySet)extension).setName(new QName(targetNamespace, 
+                                                                         ((PolicySet)extension).getName().getLocalPart()));
                                 definitions.getPolicySets().add((PolicySet)extension);
                             } else if ( extension instanceof IntentAttachPointType ) {
                                 IntentAttachPointType type = (IntentAttachPointType)extension;

@@ -66,7 +66,8 @@ public class ReadDocumentTestCase extends TestCase {
     Map<QName, PolicySet> policySetTable = new Hashtable<QName, PolicySet>();
     Map<QName, IntentAttachPointType> bindingTypesTable = new Hashtable<QName, IntentAttachPointType>();
     Map<QName, IntentAttachPointType> implTypesTable = new Hashtable<QName, IntentAttachPointType>();
-    public static final String namespace = "http://www.osoa.org/xmlns/sca/1.0";
+    public static final String scaNamespace = "http://www.osoa.org/xmlns/sca/1.0";
+    public static final String namespace = "http://test";
     
     private static final QName secureWsPolicy = new QName(namespace, "SecureWSPolicy");
     private static final QName confidentiality = new QName(namespace, "confidentiality");
@@ -78,8 +79,8 @@ public class ReadDocumentTestCase extends TestCase {
     private static final QName secureMessagingPolicies = new QName(namespace, "SecureMessagingPolicies");
     private static final QName securityPolicy = new QName(namespace, "SecurityPolicy");
     private static final QName basicAuthMsgProtSecurity = new QName(namespace, "BasicAuthMsgProtSecurity");
-    private static final QName wsBinding = new QName(namespace, "binding.ws");
-    private static final QName javaImpl = new QName(namespace, "implementation.java");
+    private static final QName wsBinding = new QName(scaNamespace, "binding.ws");
+    private static final QName javaImpl = new QName(scaNamespace, "implementation.java");
     
 
     @Override
@@ -111,9 +112,16 @@ public class ReadDocumentTestCase extends TestCase {
                     Object artifact = staxProcessor.read(reader);
                     if ( artifact instanceof PolicySet ) {
                         PolicySet policySet = (PolicySet)artifact;
+                        policySet.setName(new QName(namespace, policySet.getName().getLocalPart()));
                         policySetTable.put(policySet.getName(), policySet);
                     } else if ( artifact instanceof Intent ) {
                         Intent intent = (Intent)artifact;
+                        intent.setName(new QName(namespace, intent.getName().getLocalPart()));
+                        if ( intent instanceof QualifiedIntent ) {
+                            ((QualifiedIntent)intent).getQualifiableIntent().
+                                    setName(new QName(namespace, 
+                                                      ((QualifiedIntent)intent).getQualifiableIntent().getName().getLocalPart()));
+                        }
                         intentTable.put(intent.getName(), intent);
                     } else if ( artifact instanceof BindingTypeImpl ) {
                         IntentAttachPointType bindingType = (IntentAttachPointType)artifact;
