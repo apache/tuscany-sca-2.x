@@ -19,7 +19,8 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
     targetNamespace="http://itest/policy" xmlns:sample="http://itest/policy" name="Calculator"
-    xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
+    xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
+    xmlns:ip="http://itest/policy">
 
     <component name="CalculatorServiceComponent">
         <implementation.java class="calculator.CalculatorServiceImpl"></implementation.java>
@@ -34,7 +35,7 @@
     </component>
 
     <component name="AddServiceComponent">
-        <implementation.java class="calculator.AddServiceImpl" requires="tuscany:TestIntent_3" />
+        <implementation.java class="calculator.AddServiceImpl" requires="ip:TestIntent_3" />
         <service name="AddService">
             <interface.java interface="calculator.AddService" />
             <binding.ws uri="http://localhost:8085/AddServiceComponent" />
