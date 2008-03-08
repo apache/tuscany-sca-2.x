@@ -46,10 +46,8 @@
 		if (feed != null) {
 			var entries = feed.getElementsByTagName("entry");              
 			var composites = "";
-			composites += '<table border="0" valign="bottom">';
-			composites += '<tr valign="bottom">' +
-			'<td><b>Cloud</b></td><td>&nbsp;&nbsp;&nbsp;<b>Nodes</b></td>' +
-			'<td>&nbsp;&nbsp;&nbsp;<b>Log</b></td></tr>';
+			composites += '<table width="100%">';
+			composites += '<tr><th>Cloud</th><th>Nodes</th><th>Log</th></tr>';
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
 				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
@@ -57,11 +55,11 @@
 				var uri = contributionURI(id);
 				var qname = compositeName(id);
 				
-				composites += '<tr valign="bottom">'
+				composites += '<tr>'
 				composites += '<td><input name="composites" type="checkbox" value="' + id + '">' +
 											'<a href=\"' + location + '\">' + qname + '</a></td>';
-				composites += '<td>&nbsp;&nbsp;&nbsp;' + components + '</td>';
-				composites += '<td align="center"><img src="icons/feed-icon.png" border="0"></td>';
+				composites += '<td class=tdw>' + components + '</td>';
+				composites += '<td><img src="icons/feed-icon.png" border="0"></td>';
 				composites += '</tr>';
 			}
 			composites += '</table>';
@@ -106,40 +104,44 @@
 
 </script>
 
+<link rel="stylesheet" type="text/css" href="admin.css">
 </head>
 
 <body onload="toolbar()">
   <div id="toolbar"></div>
 
   <div id="cloudComposite">
-  <p style="font-size:150%">
-  <b>SCA Domain</b><br><br><b>Clouds</b>&nbsp;<a href="/cloud/"><img src="icons/feed-icon.png" border="0"></a>
-  </p>
+  <br>
+  <span class=hd1>
+  SCA Domain<br><br>
+  Clouds</b>&nbsp;<a href="/cloud/"><img src="icons/feed-icon.png" border="0"></a>
+  </span>
+  <br><br>
   Here is the list of nodes configured in SCA clouds.
   <br><br>
   
   <form name="cloudCompositeForm">
     <div id="composites" ></div>
-    <br/>
+    <br>
     <input type="button" onClick="startComposite()"  value="Start" />
     <input type="button" onClick="stopComposite()"  value="Stop" />
     &nbsp;&nbsp;
     <input type="button" onClick="deleteComposite()"  value="Delete" />
   </form>
-  <br/>
-  
-  <p><b>Add a Cloud</b>
-  </p>
-  Add a cloud. A cloud is composed of one or more nodes.
+
   <br><br>
   
   <form name="newCompositeForm">
-    <table border="0">
-    <tr><td>Cloud composite namespace:</td><td><input type="text" name="compositeNamespace" /></td><td>e.g. http://my/namespace</td></tr>
-    <tr><td>Cloud composite name:</td><td><input type="text" name="compositeName" /></td><td>e.g. mycomposite</td></tr>
-    <tr><td>Cloud contribution URI:</td><td><input type="text" name="contributionURI" /></td></td><td>e.g. mycontrib, http:/mycontrib</td></tr>
+    <table width="100%">
+    <tr><th>Add a Cloud</th></tr>
+    <tr><td>Add a cloud. A cloud is composed of one or more nodes.</td></tr>
     </table>
-    <br/>
+    <br>
+    <table>
+    <tr><td>Cloud composite namespace:</td><td><input type="text" name="compositeNamespace" size="50"/></td><td>e.g. http://my/namespace</td></tr>
+    <tr><td>Cloud composite name:</td><td><input type="text" name="compositeName" size="50"/></td><td>e.g. mycomposite</td></tr>
+    <tr><td>Cloud contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td></td><td>e.g. mycontrib, http:/mycontrib</td></tr>
+    </table>
     <input type="button" onClick="addComposite()" value="Add" />
   </form>
   

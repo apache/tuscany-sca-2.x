@@ -25,7 +25,7 @@ function Tool(name, href) {
 Tool.prototype.print = function() {
     var loc = '' + location;
 	if (loc.match(this.href) == null) {
-		return '<a href="' + this.href + '" style="color: blue">' + this.name + '</a>';
+		return '<a href="' + this.href + '">' + this.name + '</a>';
 	} else {
 		return '<span>' + this.name + '</span>';
 	}
@@ -33,22 +33,16 @@ Tool.prototype.print = function() {
 
 function toolbar() {
 
-	var toolbar = '<table border="0" cellspacing="0" cellpadding="0" width="100%" ' +
-	' style="padding-bottom: 2px; border-bottom: 1px solid blue"><tr>' + 
-	'<td>' +
-	'<table border="0" cellspacing="0" cellpadding="0"><tr>';
+	var toolbar = '<table width="100%" cellpadding="0" cellspacing="0" class=tbar><tr>' +
+	'<td class=ltbar><table border="0" cellspacing="0" cellpadding="0"><tr>';
    
 	for (var i = 0; i < tools.length; i++) {
-	   toolbar = toolbar + '<td>' +tools[i].print() + '&nbsp;&nbsp;&nbsp;</td>'
+	   toolbar = toolbar + '<td class=ltbar>' +tools[i].print() + '</td>'
    	}
    
-   	toolbar = toolbar + '</tr></table>' + 
-   	'</td>' +
-   	'<td>' +
-   	'<table border="0" cellspacing="0" cellpadding="0" align="right"><tr>' +
-   	'<td>' + home.print() + '</td>' +
-   	'</tr></table>' +
-   	'</td>' + 
+   	toolbar = toolbar + '</tr></table></td>' + 
+   	'<td class=rtbar><table border="0" cellpadding="0" cellspacing="0" align="right"><tr>' +
+   	'<td class=rtbar>' + home.print() + '</td></tr></table></td>' +
    	'</tr></table>';
 
 	document.getElementById('toolbar').innerHTML = toolbar;
