@@ -196,7 +196,7 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
      */
     private OMElement attachXSIType(ElementInfo childElement, OMElement element) {
         TypeInfo type = childElement.getType();
-        if (type != null) {
+        if (type != null && type.getQName() != null) {
             OMAttribute attr = element.getAttribute(XSI_TYPE_QNAME);
             if (attr == null) {
                 String typeNS = type.getQName().getNamespaceURI();

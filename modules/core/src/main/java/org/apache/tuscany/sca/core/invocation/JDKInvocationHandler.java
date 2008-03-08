@@ -190,21 +190,26 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     // FIXME: Should it be in the InterfaceContractMapper?
     @SuppressWarnings("unchecked")
     private static boolean match(Operation operation, Method method) {
-        if (!method.getName().equals(operation.getName())) {
-            return false;
-        }
         if (operation instanceof JavaOperation) {
-            Method m = ((JavaOperation)operation).getJavaMethod();
+            JavaOperation javaOp = (JavaOperation)operation;
+            Method m = javaOp.getJavaMethod();
+            if (!method.getName().equals(m.getName())) {
+                return false;
+            }
             if (method.equals(m)) {
                 return true;
             }
+        } else {
+            if (!method.getName().equals(operation.getName())) {
+                return false;
+            }
         }
-        
+
         // For remotable interface, operation is not overloaded. 
-        if(operation.getInterface().isRemotable()) {
+        if (operation.getInterface().isRemotable()) {
             return true;
         }
-        
+
         Class<?>[] params = method.getParameterTypes();
 
         DataType<List<DataType>> inputType = null;
