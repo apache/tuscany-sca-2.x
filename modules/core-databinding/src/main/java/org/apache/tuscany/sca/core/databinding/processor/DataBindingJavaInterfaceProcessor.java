@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.osoa.sca.annotations.Reference;
 
@@ -72,6 +73,10 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
         Map<String, Operation> opMap = new HashMap<String, Operation>();
         for (Operation op : javaInterface.getOperations()) {
             opMap.put(op.getName(), op);
+            // In the case of @WebMethod, the method name can be different from the operation name
+            if (op instanceof JavaOperation) {
+                opMap.put(((JavaOperation)op).getJavaMethod().getName(), op);
+            }
             if (dataBindingId != null) {
                 op.setDataBinding(dataBindingId);
                 op.setWrapperStyle(wrapperStyle);

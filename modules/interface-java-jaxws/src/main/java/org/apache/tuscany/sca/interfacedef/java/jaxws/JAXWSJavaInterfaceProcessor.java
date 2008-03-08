@@ -135,6 +135,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
             }
 
             String operationName = getValue(webMethod.operationName(), operation.getName());
+            operation.setName(operationName);
 
             RequestWrapper requestWrapper = method.getAnnotation(RequestWrapper.class);
             ResponseWrapper responseWrapper = method.getAnnotation(ResponseWrapper.class);
