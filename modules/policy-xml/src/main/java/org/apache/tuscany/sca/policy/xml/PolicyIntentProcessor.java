@@ -78,7 +78,7 @@ public abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXAr
         } else {
             policyIntent = policyFactory.createIntent();
         }
-        policyIntent.setName(getQNameValue(reader, policyIntentName));
+        policyIntent.setName(new QName(policyIntentName));
         
         if ( policyIntent instanceof ProfileIntent ) {
             readRequiredIntents((ProfileIntent)policyIntent, reader);

@@ -42,8 +42,11 @@ import org.apache.tuscany.sca.definitions.SCADefinitionsBuilderImpl;
 import org.apache.tuscany.sca.definitions.impl.SCADefinitionsImpl;
 import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
 import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
+import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.ProfileIntent;
 import org.apache.tuscany.sca.policy.xml.BindingTypeProcessor;
 import org.apache.tuscany.sca.policy.xml.ImplementationTypeProcessor;
 import org.apache.tuscany.sca.policy.xml.PolicySetProcessor;
@@ -145,7 +148,7 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
         SCADefinitionsUtil.stripDuplicates(scaDefinitions);
         extensionProcessor.resolve(scaDefinitions, resolver);
     }
-
+    
     public String getArtifactType() {
         return "definitions.xml";
     }

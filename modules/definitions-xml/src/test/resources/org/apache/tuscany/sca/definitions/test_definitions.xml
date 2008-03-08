@@ -19,14 +19,48 @@
 -->
 <definitions xmlns="http://www.osoa.org/xmlns/sca/1.0"
  			targetNamespace="http://test"
+ 			xmlns:test="http://test"
  			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0">
 
 <!-- Extension Types Metadata -->
-<implementationType type="sca:implementation.java" alwaysProvides="logging"
-					mayProvide="tracing"/>
-<bindingType type="sca:binding.ws" alwaysProvides="confidentiality"
-					mayProvide="integrity"/>					
-
+<implementationType type="sca:implementation.java" alwaysProvides="test:logging"
+					mayProvide="test:tracing"/>
+<bindingType type="sca:binding.ws" alwaysProvides="test:confidentiality"
+					mayProvide="test:integrity"/>	
+					
+<!-- Intents and Policysets to assume targetnamespace -->									
+<intent name="TestIntentOne" 
+ 			 constrains="sca:binding"
+ 			 >
+ 			 <description>
+ 			 	Test Intent
+ 			 </description>
+ </intent>
+ 
+  <intent name="TestIntentTwo" 
+ 			 constrains="sca:binding"
+ 			 requires="TestIntentOne">
+ 			 <description>
+ 			 	Protect messages from unauthorized reading or modification
+ 			 </description>
+ </intent>
+ 
+ <policySet name="TestPolicySetOne"
+ 	provides="test:TestIntentOne"
+ 	appliesTo="sca:binding.ws"
+ 	xmlns="http://www.osoa.org/xmlns/sca/1.0"
+ 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+ 		<wsp:PolicyAttachment>
+ 			<!-- policy expression and policy subject for
+				 "basic authentication" -->
+		</wsp:PolicyAttachment>
+     	<wsp:PolicyAttachment>
+		 	<!-- policy expression and policy subject for
+		 		"reliability" -->
+		</wsp:PolicyAttachment>
+ </policySet>
+ 
+ 
  <!-- qualified intents -->
  <intent name="confidentiality.transport" />
  <intent name="confidentiality.message" />
@@ -35,7 +69,7 @@
  
  <!-- POLICY SETS -->
   <policySet name="SecureReliablePolicy"
- 	provides="confidentiality.transport integrity"
+ 	provides="test:confidentiality.transport test:integrity"
  	appliesTo="sca:binding.ws"
  	xmlns="http://www.osoa.org/xmlns/sca/1.0"
  	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
@@ -50,11 +84,11 @@
  </policySet>
  
  <policySet name="SecureMessagingPolicies"
-	 provides="confidentiality"
+	 provides="test:confidentiality"
 	 appliesTo="binding.ws"
 	 xmlns="http://www.osoa.org/xmlns/sca/1.0"
  	 xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
-     <intentMap provides="confidentiality" default="transport">
+     <intentMap provides="test:confidentiality" default="transport">
         <qualifier name="transport">
             <wsp:PolicyAttachment>
                 <!-- policy expression and policy subject for "transport" alternative -->
@@ -69,10 +103,10 @@
     </intentMap>
 </policySet>
 
-<policySet name="SecurityPolicy" provides="confidentiality"
+<policySet name="SecurityPolicy" provides="test:confidentiality"
 	xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" >
-    <intentMap provides="confidentiality" default="message">
+    <intentMap provides="test:confidentiality" default="message">
         <qualifier name="message">
             <intentMap provides="message" default="whole">
                 <qualifier name="body">
@@ -96,15 +130,15 @@
 </policySet>
 
 <policySet name="BasicAuthMsgProtSecurity"
-     provides="authentication confidentiality"
+     provides="test:authentication test:confidentiality"
      appliesTo="binding.ws"
  		xmlns="http://www.osoa.org/xmlns/sca/1.0">
-    <policySetReference name="AuthenticationPolicies"/>
-    <policySetReference name="ConfidentialityPolicies"/>
+    <policySetReference name="test:AuthenticationPolicies"/>
+    <policySetReference name="test:ConfidentialityPolicies"/>
 </policySet>
 
 <policySet name="AuthenticationPolicies"
-	provides="authentication"
+	provides="test:authentication"
 	appliesTo="binding.ws"
 	xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
@@ -115,11 +149,11 @@
 </policySet>
 
 <policySet name="ConfidentialityPolicies"
- provides="confidentiality"
+ provides="test:confidentiality"
  bindings="binding.ws"
  xmlns="http://www.osoa.org/xmlns/sca/1.0"
     xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
-    <intentMap provides="confidentiality"  default="transport">
+    <intentMap provides="test:confidentiality"  default="transport">
         <qualifier name="transport">
             <wsp:PolicyAttachment>
                 <!-- policy expression and policy subject for "transport"
@@ -137,7 +171,7 @@
 </policySet>
 
 <policySet name="SecureWSPolicy"
- 	provides="confidentiality"
+ 	provides="test:confidentiality"
  	appliesTo="sca:binding.ws"
  	xmlns="http://www.osoa.org/xmlns/sca/1.0"
  	xmlns:sp="http://schemas.xmlsoap.org/ws/2002/12/secext"
@@ -164,7 +198,7 @@
 <!-- profile intent -->
  <intent name="reliableMessageProtection" 
  			 constrains="sca:binding"
- 			 requires="messageProtection">
+ 			 requires="test:messageProtection">
  			 <description>
  			 	Protect messages from unauthorized reading or modification
  			 </description>
@@ -172,7 +206,7 @@
  
  <intent name="messageProtection" 
  			 constrains="sca:binding"
- 			 requires="confidentiality integrity">
+ 			 requires="test:confidentiality test:integrity">
  			 <description>
  			 	Protect messages from unauthorized reading or modification
  			 </description>
