@@ -23,6 +23,7 @@
 	xmlns:se="http://sample/echo"
 	xmlns:e="http://echo"
 	xmlns:p="http://sample/policy"
+        xmlns:t="http://test"
 	name="EchoBinding">
 
     <service name="EchoService" promote="EchoComponent">
@@ -36,7 +37,7 @@
     
     <reference name="EchoReference" promote="EchoComponent/echoReference">
         <interface.java interface="echo.Echo"/>
-        <e:binding.echo uri="http://tempuri.org" policySets="p:EncryptionPolicy" />
+        <e:binding.echo uri="http://tempuri.org" policySets="t:EncryptionPolicy" />
     </reference>
     
 </composite>
