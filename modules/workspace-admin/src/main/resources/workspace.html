@@ -36,18 +36,16 @@
 		if (feed != null) {
 			var entries = feed.getElementsByTagName("entry");              
 			var contributions = "";
-			contributions += '<table border="0">';
-			contributions += '<tr valign="bottom"><td><b>Contribution</b></td>' +
-			'<td>&nbsp;&nbsp;&nbsp;<b>Dependencies</b></td>' +
-			'<td>&nbsp;&nbsp;&nbsp;<b>Deployables</b></td></tr>';
+			contributions += '<table width="100%">';
+			contributions += '<tr><th>Contribution</th><th>Dependencies</td><th>Deployables</th></tr>';
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
 				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
-				contributions += '<tr valign="bottom">';
+				contributions += '<tr>';
 				contributions += '<td><input name="contributions" type="checkbox" value="' + id + '">' +
 											'<a href=\"' + location + '\">' + id + '</a></td>';
-				contributions += '<td align="center">&nbsp;&nbsp;&nbsp;<a href=\"/workspace/?dependencies=' + id + '\"><img src="icons/feed-icon.png" border="0"></a></td>';
-				contributions += '<td align="center">&nbsp;&nbsp;&nbsp;<a href=\"/deployable/?contribution=' + id + '\"><img src="icons/feed-icon.png" border="0"></a></td>';
+				contributions += '<td><a href=\"/workspace/?dependencies=' + id + '\"><img src="icons/feed-icon.png" border="0"></a></td>';
+				contributions += '<td><a href=\"/deployable/?contribution=' + id + '\"><img src="icons/feed-icon.png" border="0"></a></td>';
 				contributions += '</tr>';
 			}
 			contributions += '</table>';
@@ -75,8 +73,7 @@
 		var entry = '<entry xmlns="http://www.w3.org/2005/Atom">' +
 				'<title>Contribution - ' + id +'</title>' +
               	'<id>' + id + '</id>' +
-              	'<link rel="alternate" href="' + location + '" />' +
-              	'<link rel="edit" href="' + location + '" />' +
+              	'<link href="' + location + '" />' +
                	'</entry>';
 		workspace.post(entry, addContributionResponse);
 	}
@@ -90,36 +87,39 @@
 	getContributions();
 </script>
 
+<link rel="stylesheet" type="text/css" href="admin.css">
 </head>
 
 <body onload="toolbar()">
   <div id="toolbar"></div>
 
   <div id="workspace">
-  <p style="font-size:150%">
-  <b>SCA Domain</b><br><br><b>Contributions</b>&nbsp;<a href="/workspace/"><img src="icons/feed-icon.png" border="0"></a>
-  </p>
+  <br>
+  <span class=hd1>
+  SCA Domain<br><br>
+  Contributions</b>&nbsp;<a href="/workspace/"><img src="icons/feed-icon.png" border="0"></a>  </span>
+  <br><br>
   Here is the list of SCA contributions currently available in your SCA domain.
   <br><br>
 
   <form name="workspaceForm">
     <div id="contributions" ></div>
-    <br/>
+    <br>
     <input type="button" onClick="deleteContribution()"  value="Delete" />
   </form>
-  <br/>
-  
-  <p><b>Add Contribution</b>
-  </p>
-  Add an SCA contribution containing your application artifacts to the SCA domain.
+
   <br><br>
   
   <form name="newContributionForm">
-    <table border="0" >
-    <tr><td>Contribution URI:</td><td><input type="text" name="contributionID" /></td></td><td>e.g. mycontrib, http:/mycontrib</td></tr> 
-    <tr><td>Address:</td><td><input type="text" name="contributionLocation" /></td></td><td>e.g. http://host/myjar.jar, file:/mydir, file:/myjar.jar</td></tr>
+    <table width="100%">
+    <tr><th>Add Composite</th></tr>
+    <tr><td>Add an SCA contribution containing your application artifacts to the SCA domain.</td></tr>
     </table>
-    <br/>
+    <br>
+    <table>
+    <tr><td>Contribution URI:</td><td><input type="text" name="contributionID" size="50"/></td></td><td>e.g. mycontrib, http:/mycontrib</td></tr> 
+    <tr><td>Address:</td><td><input type="text" name="contributionLocation" size="50"/></td></td><td>e.g. http://host/myjar.jar, file:/mydir, file:/myjar.jar</td></tr>
+    </table>
     <input type="button" onClick="addContribution()" value="Add" />
   </form>
   

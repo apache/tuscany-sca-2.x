@@ -46,11 +46,11 @@
 		if (feed != null) {
 			var entries = feed.getElementsByTagName("entry");              
 			var composites = "";
-			composites += '<table border="0">';
-			composites += '<tr valign="bottom"><td><b>Composite</b></td>' +
-			'<td>&nbsp;&nbsp;&nbsp;<b>Contribution</b></td>' +
-			'<td>&nbsp;&nbsp;&nbsp;<b>Components</b></td>' +
-			'<td>&nbsp;&nbsp;<b>Install Image</b></td></tr>';
+			composites += '<table width="100%">';
+			composites += '<tr><th>Composite</th>' +
+			'<th>Contribution</th>' +
+			'<th>Components</th>' +
+			'<th>Composite Install Image</th></tr>';
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
 				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
@@ -58,12 +58,12 @@
 				var uri = contributionURI(id);
 				var qname = compositeName(id);
 				
-				composites += '<tr valign="bottom">'
+				composites += '<tr>'
 				composites += '<td><input name="composites" type="checkbox" value="' + id + '">';
 				composites += '<a href=\"' + location + '\">' + qname + '</a></td>';
-				composites += '<td>&nbsp;&nbsp;&nbsp;' + uri + '</td>';
-				composites += '<td>&nbsp;&nbsp;&nbsp;' + components + '</td>';
-				composites += '<td align="center">&nbsp;&nbsp;&nbsp;<a href="/package/?composite=' + id + '"><img src="icons/feed-icon.png" border="0"></a></td>';
+				composites += '<td>' + uri + '</td>';
+				composites += '<td class=tdw>' + components + '</td>';
+				composites += '<td><a href="/package/?composite=' + id + '"><img src="icons/feed-icon.png" border="0"></a></td>';
 				composites += '</tr>';
 			}
 			composites += '</table>';
@@ -107,37 +107,41 @@
 	getComposites();
 </script>
 
+<link rel="stylesheet" type="text/css" href="admin.css">
 </head>
 
 <body onload="toolbar()">
   <div id="toolbar"></div>
 
   <div id="domainComposite">
-  <p style="font-size:150%">
-  <b>SCA Domain</b><br><br><b>Domain Composite</b>&nbsp;<a href="/composite/"><img src="icons/feed-icon.png" border="0"></a>
-  </p>
+  <br>
+  <span class=hd1>
+  SCA Domain<br><br>
+  Domain Composite&nbsp;<a href="/composite/"><img src="icons/feed-icon.png" border="0"></a>
+  </span>
+  <br><br>
   Here is the list of SCA composites currently included as top-level composites in your SCA domain.
   <br><br>
   
   <form name="domainCompositeForm">
     <div id="composites" ></div>
-    <br/>
+    <br>
     <input type="button" onClick="deleteComposite()"  value="Delete" />
   </form>
-  <br/>
   
-  <p><b>Add Composite</b>
-  </p>
-  Add a composite describing your SCA service components.
   <br><br>
   
   <form name="newCompositeForm">
-    <table border="0">
-    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" /></td><td>e.g. mycontrib, http:/mycontrib</td></tr>
-    <tr><td>Composite namespace:</td><td><input type="text" name="compositeNamespace" /></td><td>e.g. http://my/namespace</td></tr> 
-    <tr><td>Composite name:</td><td><input type="text" name="compositeName" /></td><td>e.g. mycomposite</td></tr> 
+    <table width="100%">
+    <tr><th>Add Composite</th></tr>
+    <tr><td>Add a composite describing your SCA service components.</td></tr>
     </table>
-    <br/>
+    <br>
+	<table>    
+    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td><td>e.g. mycontrib, http:/mycontrib</td></tr>
+    <tr><td>Composite namespace:</td><td><input type="text" name="compositeNamespace" size="50"/></td><td>e.g. http://my/namespace</td></tr> 
+    <tr><td>Composite name:</td><td><input type="text" name="compositeName" size="50"/></td><td>e.g. mycomposite</td></tr>
+    </table>
     <input type="button" onClick="addComposite()" value="Add" />
   </form>
   
