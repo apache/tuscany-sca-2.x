@@ -21,8 +21,10 @@ package org.apache.tuscany.sca.node.launch;
 
 import java.io.IOException;
 
+import org.apache.tuscany.sca.node.NodeException;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.osoa.sca.ServiceRuntimeException;
 
 public class SCANode2Launcher {
 
@@ -30,12 +32,12 @@ public class SCANode2Launcher {
      * @param args
      */
     public static void main(String[] args) {
-        System.out.println("Tuscany starting...");
+        System.out.println("Apache Tuscany SCA Node starting...");
 
         SCANode2 node = null;
         try {
             String configurationURI = args[0];
-            System.out.println("Node configuration: " + configurationURI);
+            System.out.println("SCA Node configuration: " + configurationURI);
             
             SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
             node = nodeFactory.createSCANode(configurationURI);
@@ -43,25 +45,19 @@ public class SCANode2Launcher {
             node.start();
             
         } catch (Exception e) {
-            System.err.println("Exception starting node");
-            e.printStackTrace();
-            System.exit(0);
+            throw new ServiceRuntimeException(e);
         }
         
-        System.out.println("Node ready...");
-        System.out.println("Press enter to shutdown");
+        System.out.println("SCA Node started...");
+        System.out.println("Press enter to shutdown.");
         try {
             System.in.read();
-        } catch (IOException e) {
-        }
+        } catch (IOException e) {}
         
         try {
             node.stop();
-        } catch (Exception e) {
-            System.err.println("Exception stopping node");
-            e.printStackTrace();
+        } catch (NodeException e) {
+            throw new ServiceRuntimeException(e);
         }
-        
-        System.exit(0);
     }
 }
