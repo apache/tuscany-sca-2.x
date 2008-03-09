@@ -29,7 +29,9 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,7 +61,6 @@ import org.apache.tuscany.sca.assembly.builder.Problem;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeConfigurationBuilderImpl;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -330,7 +331,7 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
         QName keyQName = qname(key);
         
         // Somewhere to store the composite we expect to write out at the end
-        Composite deployableComposite = null;
+        Composite compositeImage = null;
 
         // Create a domain composite model
         Composite domainComposite = assemblyFactory.createComposite();
@@ -339,34 +340,40 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
         domainComposite.setName(new QName(url.toString(), "domain"));
             
         // Get the domain composite items
-        Entry<String, Item>[] domainComposites = domainCompositeCollection.getAll();
+        Entry<String, Item>[] domainEntries = domainCompositeCollection.getAll();
         
         // Populate the domain composite
-        for (int i=0; i < domainComposites.length; i++) {
+        List<Contribution> loadedContributions = new ArrayList<Contribution>();
+        Map<String, Contribution> contributionMap = new HashMap<String, Contribution>(); 
+        for (Entry<String, Item> domainEntry: domainEntries) {
             
             // Load the required contributions
-            List<Contribution> loadedContributions = new ArrayList<Contribution>();
-            String contributionURI = uri(domainComposites[i].getKey());
-            Contribution contribution = null; 
-            for (Entry<String, Item> entry: contributionCollection.query("alldependencies=" + contributionURI)) {
-                Item contributionItem = entry.getData();
-
-                // Read the contribution
-                Contribution c = contribution(loadedContributions, entry.getKey(), contributionItem.getLink());
-                loadedContributions.add(c);
-                if (contributionURI.equals(entry.getKey())) {
-                    contribution = c;
+            String contributionURI = uri(domainEntry.getKey());
+            Contribution contribution = contributionMap.get(contributionURI);
+            if (contribution == null) {
+                
+                // The contribution has not been loaded yet, load it with all its dependencies
+                for (Entry<String, Item> entry: contributionCollection.query("alldependencies=" + contributionURI)) {
+                    Item contributionItem = entry.getData();
+    
+                    // Read the contribution
+                    Contribution c = contribution(loadedContributions, entry.getKey(), contributionItem.getLink());
+                    loadedContributions.add(c);
+                    if (contributionURI.equals(entry.getKey())) {
+                        contribution = c;
+                        contributionMap.put(contributionURI, contribution);
+                    }
                 }
             }
             
             if (contribution == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                return;
+                //FIXME We should just report a warning here
+                throw new ServletException(new NotFoundException("Contribution not found: " + contributionURI));
             }
             
             // Find the specified deployable composite in the contribution
             Composite deployable = null;
-            QName qname = qname(domainComposites[i].getKey());
+            QName qname = qname(domainEntry.getKey());
             for (Composite d: contribution.getDeployables()) {
                 if (qname.equals(d.getName())) {
                     deployable = d;
@@ -374,65 +381,51 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
                 }
             }
             if (deployable == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                return;
-            }
-            
-            // store away the composite we are generating the deployable XML for. 
-            if (keyQName.equals(deployable.getName())){
-                deployableComposite = deployable;
+                //FIXME We should just report a warning here
+                throw new ServletException(new NotFoundException("Deployable not found: " + qname));
             }
             
             // add the deployable composite to the domain composite
             domainComposite.getIncludes().add(deployable);
-        }
-        
-        // get all the node clouds
-        Entry<String, Item>[] cloudComposites = cloudCollection.getAll();
-        List<Composite> nodeCloudComposites = new ArrayList<Composite>();
-        
-        // extract all of the node cloud composites
-        for (int i=0; i < cloudComposites.length; i++){
-            // load the contribution
-            String contributionURI = uri(cloudComposites[i].getKey());
-            Item contributionItem;
-            try {
-                contributionItem = contributionCollection.get(contributionURI);
-            } catch (NotFoundException e) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                return;
+            
+            // store away the composite we are generating the deployable XML for. 
+            if (keyQName.equals(deployable.getName())){
+                compositeImage = deployable;
             }
-            
-            // Read the contribution
-            Contribution contribution = contribution(contributionURI, contributionItem.getLink());
-            
-            // extract the node cloud composites and store them for later
-            for (Artifact artifact : contribution.getArtifacts()) {
-                if (artifact.getModel() instanceof Composite) {
-                    Composite composite = (Composite)artifact.getModel();
-                    nodeCloudComposites.add(composite);
-                }
-            } 
         }
 
+        // Get the clouds composite
+        Composite cloudsComposite;
+        try {
+            cloudsComposite = clouds();
+        } catch (NotFoundException e) {
+            //FIXME We should just report a warning here
+            throw new ServletException(e);
+        }
+        
         // configure the endpoints for each composite in the domain
-        for (Composite composite : domainComposite.getIncludes()){
+        for (Composite composite : domainComposite.getIncludes()) {
             List<Binding> defaultBindings = null;
             
             // find the node that will run this composite
-            for(Composite nodeCloudComposite : nodeCloudComposites){
-                for(Component node : nodeCloudComposite.getComponents()){
+            QName compositeName = composite.getName();
+            String contributionURI = composite.getURI();
+            for (Composite cloudComposite : cloudsComposite.getIncludes()) {
+                for (Component node : cloudComposite.getComponents()) {
                     NodeImplementation nodeImplementation = (NodeImplementation)node.getImplementation();
-                    if (nodeImplementation.getComposite().getName().equals(composite.getName())){
+                    if (nodeImplementation.getComposite().getName().equals(compositeName) &&
+                        nodeImplementation.getComposite().getURI().equals(contributionURI)) {
                         defaultBindings = node.getServices().get(0).getBindings();
                     }
                 }
             }
-           
-            try {
-                compositeConfigurationBuilder.calculateBindingURIs(defaultBindings, composite, null);
-            } catch (CompositeBuilderException e) {
-                throw new ServletException(e);
+
+            if (defaultBindings != null) {
+                try {
+                    compositeConfigurationBuilder.calculateBindingURIs(defaultBindings, composite, null);
+                } catch (CompositeBuilderException e) {
+                    throw new ServletException(e);
+                }
             }
         }
         
@@ -443,27 +436,27 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
             throw new ServletException(e);
         }        
         
-        // rebuild the requested composite from the domian composite
-        // we have to reverse the falttening that went on when the domain
+        // rebuild the requested composite from the domain composite
+        // we have to reverse the flatterning that went on when the domain
         // composite was built
         List<Component> tempComponentList = new ArrayList<Component>();
-        tempComponentList.addAll(deployableComposite.getComponents());
-        deployableComposite.getComponents().clear();
+        tempComponentList.addAll(compositeImage.getComponents());
+        compositeImage.getComponents().clear();
         
         for (Component inputComponent : tempComponentList){
             for (Component deployComponent : domainComposite.getComponents()){
                 if (deployComponent.getName().equals(inputComponent.getName())){
-                    deployableComposite.getComponents().add(deployComponent);
+                    compositeImage.getComponents().add(deployComponent);
                 }
             }
         }
         
-        // Write the deployable composite back to XML
+        // Write the deployable composite
         try {
             // First write to a byte stream
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
-            compositeProcessor.write(deployableComposite, writer);
+            compositeProcessor.write(compositeImage, writer);
             
             // Parse again to pretty format the document
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -472,7 +465,7 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
             format.setIndenting(true);
             format.setIndent(2);
             
-            // Write to domain.composite
+            // Write to the response stream
             XMLSerializer serializer = new XMLSerializer(response.getOutputStream(), format);
             serializer.serialize(document);
             
@@ -480,6 +473,48 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
             throw new ServletException(e);
         }
                
+    }
+
+    /**
+     * Returns the clouds composite.
+     * 
+     * @return the clouds composite
+     */
+    private Composite clouds() throws NotFoundException {
+
+        // Create a new composite for the clouds
+        Composite clouds = assemblyFactory.createComposite();
+        
+        // Get the collection of cloud composites
+        Entry<String, Item>[] cloudEntries = cloudCollection.getAll();
+        
+        // Load the cloud composites
+        List<Contribution> loadedContributions = new ArrayList<Contribution>();
+        Map<String, Contribution> contributionMap = new HashMap<String, Contribution>(); 
+        for (int i=0; i < cloudEntries.length; i++) {
+
+            // load the contribution
+            String contributionURI = uri(cloudEntries[i].getKey());
+            Contribution contribution = contributionMap.get(contributionURI);
+            if (contribution == null) {
+                Item contributionItem = contributionCollection.get(contributionURI);
+                
+                // Read the contribution
+                contribution = contribution(loadedContributions, contributionURI, contributionItem.getLink());
+                loadedContributions.add(contribution);
+                contributionMap.put(contributionURI, contribution);
+            }
+            
+            // Include the composite in the clouds composite
+            for (Artifact artifact : contribution.getArtifacts()) {
+                if (artifact.getModel() instanceof Composite) {
+                    Composite composite = (Composite)artifact.getModel();
+                    clouds.getIncludes().add(composite);
+                }
+            } 
+        }
+        
+        return clouds;
     }
 
     /**
