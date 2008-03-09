@@ -25,9 +25,9 @@
         <version>1.2-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tutorial-www-cloud</artifactId>
+    <artifactId>tutorial-catalog-amazon</artifactId>
     <packaging>jar</packaging>
-    <name>Apache Tuscany SCA Tutorial WWW Service Cloud</name>
+    <name>Apache Tuscany SCA Tutorial Amazon Catalog</name>
 
     <dependencies>
         <dependency>

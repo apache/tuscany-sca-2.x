@@ -25,7 +25,7 @@
         <version>1.2-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tutorial-nodes-jee</artifactId>
+    <artifactId>tutorial-www-services</artifactId>
     <packaging>pom</packaging>
     <name>Apache Tuscany SCA Tutorial External Web Services</name>
 
@@ -36,8 +36,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>amazon</module>
-                <module>www-cloud</module>
+                <module>cart-amazon</module>
+                <module>catalog-amazon</module>
             </modules>
         </profile>
 
