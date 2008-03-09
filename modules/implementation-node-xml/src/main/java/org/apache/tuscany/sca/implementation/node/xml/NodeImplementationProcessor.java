@@ -67,13 +67,15 @@ public class NodeImplementationProcessor extends BaseStAXArtifactProcessor imple
         
         // Read an <implementation.node> element
         NodeImplementation implementation = implementationFactory.createNodeImplementation();
-        implementation.setUnresolved(true);
+        implementation.setUnresolved(false);
 
         // Read the composite attribute
         QName qname = getQName(reader, "composite");
         if (qname != null) {
             Composite composite = assemblyFactory.createComposite();
             composite.setName(qname);
+            String uri = getString(reader, "uri");
+            composite.setURI(uri);
             composite.setUnresolved(true);
             implementation.setComposite(composite);
         }
@@ -89,16 +91,8 @@ public class NodeImplementationProcessor extends BaseStAXArtifactProcessor imple
     }
 
     public void resolve(NodeImplementation implementation, ModelResolver resolver) throws ContributionResolveException {
-        
-        // Resolve the referenced composite
-        Composite composite = implementation.getComposite();
-        if (composite != null) {
-            composite = resolver.resolveModel(Composite.class, composite);
-            if (!composite.isUnresolved()) {
-                implementation.setComposite(composite);
-            }
-        }
-        implementation.setUnresolved(false);
+        // We do not need to resolve the referenced composites here
+        // Nodes and application composites are not in the same composition tree
     }
 
     public void write(NodeImplementation implementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
@@ -106,13 +100,16 @@ public class NodeImplementationProcessor extends BaseStAXArtifactProcessor imple
         // Write <implementation.node>
         Composite composite = implementation.getComposite();
         QName qname;
+        String uri;
         if (composite != null) {
             qname = composite.getName();
+            uri = composite.getURI();
         } else {
             qname = null;
+            uri = null;
         }
         writeStart(writer, IMPLEMENTATION_NODE.getNamespaceURI(), IMPLEMENTATION_NODE.getLocalPart(),
-                                 new XAttr("composite", qname));
+                                 new XAttr("composite", qname), new XAttr("uri", uri));
         
         writeEnd(writer);
     }
