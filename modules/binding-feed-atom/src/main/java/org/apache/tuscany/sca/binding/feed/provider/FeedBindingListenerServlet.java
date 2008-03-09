@@ -360,8 +360,7 @@ class FeedBindingListenerServlet extends HttpServlet {
              
              feedEntry.setContentElement(content);
 
-             feedEntry.addLink(key.toString(), "edit");
-             feedEntry.addLink(key.toString(), "alternate");
+             feedEntry.addLink(key.toString());
      
              return feedEntry;
         } else {
@@ -500,10 +499,10 @@ class FeedBindingListenerServlet extends HttpServlet {
             if (createdFeedEntry != null) {
 
                 // Set location of the created entry in the Location header
-            	Link editLink = createdFeedEntry.getEditLink();
-				if (editLink.getRel() == null || "edit".equals(editLink.getRel())) {
-					response.addHeader("Location", editLink.getHref().toString());
-				}
+            	Link link = createdFeedEntry.getSelfLink();
+            	if (link != null) {
+                    response.addHeader("Location", link.getHref().toString());
+                }
 
                 // Write the created Atom entry
                 response.setStatus(HttpServletResponse.SC_CREATED);
