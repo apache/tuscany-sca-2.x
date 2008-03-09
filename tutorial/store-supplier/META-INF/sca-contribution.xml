@@ -22,5 +22,6 @@
    <import.java package="services"/>
    <import.java package="services.merger"/>
    <import.java package="services.db"/>
+   <import.resource uri="uiservices/store.html"/>   
    <deployable composite="s:store-supplier"/>
 </contribution>
