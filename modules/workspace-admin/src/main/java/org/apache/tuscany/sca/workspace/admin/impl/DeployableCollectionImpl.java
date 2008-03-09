@@ -59,6 +59,7 @@ import org.apache.tuscany.sca.assembly.builder.Problem;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeConfigurationBuilderImpl;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -204,7 +205,6 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
                                                                                  monitor);
             
         } catch (Exception e) {
-            e.printStackTrace();
             throw new ContributionReadException(e); 
         }
     }
@@ -332,13 +332,16 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
         // Somewhere to store the composite we expect to write out at the end
         Composite deployableComposite = null;
 
-        // Create a local domain composite
+        // Create a domain composite model
         Composite domainComposite = assemblyFactory.createComposite();
+        URL url = new URL(request.getRequestURL().toString());
+        url= new URL(url.getProtocol(), url.getHost(), url.getPort(), "");
+        domainComposite.setName(new QName(url.toString(), "domain"));
             
         // Get the domain composite items
         Entry<String, Item>[] domainComposites = domainCompositeCollection.getAll();
         
-        // Create the domain composite
+        // Populate the domain composite
         for (int i=0; i < domainComposites.length; i++) {
             
             // Load the required contributions
