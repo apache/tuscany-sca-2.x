@@ -41,6 +41,55 @@
             <artifactId>tuscany-workspace-admin</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-widget</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-feed-atom</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-jsonrpc</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-http</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws-axis2</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-sca-axis2</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
     
     <build>
@@ -64,6 +113,9 @@
                 <version>1.2-incubating-SNAPSHOT</version>
                 <executions>
                     <execution>
+                        <configuration>
+                            <mainClass>launch.LaunchTutorialAdmin</mainClass>
+                        </configuration>
                         <goals>
                             <goal>generate</goal>
                         </goals>

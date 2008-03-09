@@ -3,6 +3,10 @@
   targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
   xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:ns1="http://www.osoa.org/xmlns/sca/1.0">
   <include name="ns2:store" uri="store" xmlns:ns2="http://store"/>
+  <include name="ns2:store-merger" uri="store-merger" xmlns:ns2="http://store"/>
+  <include name="ns2:store-db" uri="store-db" xmlns:ns2="http://store"/>
+  <include name="ns2:store-supplier" uri="store-supplier" xmlns:ns2="http://store"/>
+  <include name="ns2:store-eu" uri="store-eu" xmlns:ns2="http://store"/>
   <include name="ns2:catalogs" uri="cloud" xmlns:ns2="http://cloud"/>
   <include name="ns2:currency" uri="cloud" xmlns:ns2="http://cloud"/>
 </composite>

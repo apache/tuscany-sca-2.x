@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspace xmlns="http://tuscany.apache.org/xmlns/sca/1.0" xmlns:ns1="http://tuscany.apache.org/xmlns/sca/1.0">
   <contribution location="http://localhost:9990/files/file:../assets/target/tutorial-assets.jar" uri="assets"/>
-  <contribution location="http://localhost:9990/files/file:../store/target/tutorial-store.jar" uri="store"/>
   <contribution location="http://localhost:9990/files/file:../cloud/target/tutorial-cloud.jar" uri="cloud"/>
+  <contribution location="http://localhost:9990/files/file:../store/target/tutorial-store.jar" uri="store"/>
+  <contribution location="http://localhost:9990/files/file:../store-merger/target/tutorial-store-merger.jar" uri="store-merger"/>
+  <contribution location="http://localhost:9990/files/file:../store-db/target/tutorial-store-db.jar" uri="store-db"/>
+  <contribution location="http://localhost:9990/files/file:../store-supplier/target/tutorial-store-supplier.jar" uri="store-supplier"/>
+  <contribution location="http://localhost:9990/files/file:../store-eu/target/tutorial-store-eu.jar" uri="store-eu"/>
   <contribution location="http://localhost:9990/files/file:../nodes/target/tutorial-nodes.jar" uri="nodes"/>
 </workspace>
