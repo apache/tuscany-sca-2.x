@@ -535,6 +535,15 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                        new XAttr(AUTOWIRE, component.getAutowire()),
                        policyProcessor.writePolicies(component));
             
+            // Write the component implementation
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                writeStart(writer, IMPLEMENTATION_COMPOSITE, new XAttr(NAME, composite.getName()));
+                writeEnd(writer);
+            } else {
+                extensionProcessor.write(component.getImplementation(), writer);
+            }
+            
             // Write <service> elements
             for (ComponentService service : component.getServices()) {
                 writeStart(writer, SERVICE, new XAttr(NAME, service.getName()),
@@ -639,15 +648,6 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                 writeEnd(writer);
             }
     
-            // Write the component implementation
-            Implementation implementation = component.getImplementation();
-            if (implementation instanceof Composite) {
-                writeStart(writer, IMPLEMENTATION_COMPOSITE, new XAttr(NAME, composite.getName()));
-                writeEnd(writer);
-            } else {
-                extensionProcessor.write(component.getImplementation(), writer);
-            }
-            
             writeEnd(writer);
         }
 
