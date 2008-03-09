@@ -92,6 +92,7 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
             artifact.setURI(artifactURI);
             artifact.setLocation(artifactURL.toString());
             artifacts.add(artifact);
+            modelResolver.addModel(artifact);
             
             // Read each artifact
             Object model = artifactProcessor.read(contributionURL, URI.create(artifactURI), artifactURL);
