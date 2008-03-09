@@ -21,52 +21,27 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-tutorial</artifactId>
+        <artifactId>tuscany-sca</artifactId>
         <version>1.2-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tutorial-nodes-jee</artifactId>
+    <packaging>pom</packaging>
     <name>Apache Tuscany SCA Tutorial JEE Nodes</name>
 
-    <repositories>
-       <repository>
-          <id>apache.incubator</id>
-          <url>http://people.apache.org/repo/m2-incubating-repository</url>
-       </repository>
-    </repositories>
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>catalog-ejb</module>
+                <module>catalog-jee</module>
+                <module>catalog-webapp</module>
+            </modules>
+        </profile>
 
-    <dependencies>
-    </dependencies>
-    
-    <build>
-       <finalName>${artifactId}</finalName>
-       <sourceDirectory>${basedir}</sourceDirectory>
-       <resources>
-          <resource>
-              <directory>${basedir}</directory>
-              <excludes>
-                  <exclude>**/*.java</exclude>
-                  <exclude>**/.*/**</exclude>
-                  <exclude>pom.xml</exclude>
-                  <exclude>build.xml</exclude>
-              </excludes>
-          </resource>
-       </resources>
-
-       <plugins>
-            <plugin>
-                <groupId>org.apache.tuscany.sca</groupId>
-                <artifactId>tuscany-maven-ant-generator</artifactId>
-                <version>1.2-incubating-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-       </plugins>
-    </build>
+    </profiles>
 
 </project>
