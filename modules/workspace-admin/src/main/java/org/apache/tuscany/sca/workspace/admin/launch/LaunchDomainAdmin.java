@@ -17,16 +17,29 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.workspace.admin;
+package org.apache.tuscany.sca.workspace.admin.launch;
 
-import org.apache.tuscany.sca.implementation.data.collection.Collection;
-import org.apache.tuscany.sca.implementation.data.collection.Item;
+import java.io.IOException;
+
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
- * A local interface for the package collection service.
+ * Simple launcher for the SCA domain administration application. 
  *
  * @version $Rev$ $Date$
  */
-public interface LocalPackageCollection extends Collection<String, Item>{
+public class LaunchDomainAdmin {
+    
+    public static void main(String[] args) {
+        System.out.println("Apache Tuscany SCA Domain administration starting...");
+        
+        SCADomain.newInstance("Admin.composite");
+        
+        System.out.println("SCA Domain administration started.");
+        System.out.println("Press enter to shutdown.");
+        try {
+            System.in.read();
+        } catch (IOException e) {}
+    }
 
 }

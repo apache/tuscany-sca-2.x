@@ -26,8 +26,8 @@ import java.util.List;
 
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
+import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
-import org.apache.tuscany.sca.workspace.admin.ContributionFileCollection;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
@@ -39,39 +39,36 @@ import org.osoa.sca.annotations.Service;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-@Service(ContributionFileCollection.class)
-public class ContributionFileCollectionImpl implements ContributionFileCollection {
+@Service(ItemCollection.class)
+public class FileCollectionImpl implements ItemCollection {
     
     @Property
     public String directoryName;
 
-    private File files;
-    
     /**
      * Initialize the component.
      */
     @Init
     public void initialize() throws IOException {
-        files = new File(directoryName);
-        if (!files.exists()) {
-            files.mkdirs();
-        }
     }
     
     public Entry<String, Item>[] getAll() {
         // Return all the contributions
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
-        for (File file: files.listFiles()) {
-            if (file.getName().startsWith(".")) {
-                continue;
+        File directory = new File(directoryName);
+        if (directory.exists()) {
+            for (File file: directory.listFiles()) {
+                if (file.getName().startsWith(".")) {
+                    continue;
+                }
+                Entry<String, Item> entry = new Entry<String, Item>();
+                entry.setKey(file.getName());
+                Item item = new Item();
+                item.setTitle(file.getName());
+                item.setLink("/files/" + file.getName());
+                entry.setData(item);
+                entries.add(entry);
             }
-            Entry<String, Item> entry = new Entry<String, Item>();
-            entry.setKey(file.getName());
-            Item item = new Item();
-            item.setTitle(file.getName());
-            item.setLink("/files/" + file.getName());
-            entry.setData(item);
-            entries.add(entry);
         }
         return entries.toArray(new Entry[entries.size()]);
     }
@@ -89,7 +86,8 @@ public class ContributionFileCollectionImpl implements ContributionFileCollectio
     }
 
     public void delete(String key) throws NotFoundException {
-        File file = new File(files, key);
+        File directory = new File(directoryName);
+        File file = new File(directory, key);
         if (file.exists()) {
             file.delete();
         } else {
@@ -100,5 +98,4 @@ public class ContributionFileCollectionImpl implements ContributionFileCollectio
     public Entry<String, Item>[] query(String queryString) {
         throw new UnsupportedOperationException();
     }
-
 }

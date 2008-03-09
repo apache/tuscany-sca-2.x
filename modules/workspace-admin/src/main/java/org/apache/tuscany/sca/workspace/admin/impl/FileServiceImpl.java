@@ -50,14 +50,13 @@ import org.osoa.sca.annotations.Service;
  */
 @Scope("COMPOSITE")
 @Service(Servlet.class)
-public class ContributionFileServiceImpl extends HttpServlet {
+public class FileServiceImpl extends HttpServlet {
     private static final long serialVersionUID = -4560385595481971616L;
     
     @Property
     public String directoryName;
     
     private ServletFileUpload upload;
-    private File files;
     
     /**
      * Initialize the component.
@@ -65,11 +64,6 @@ public class ContributionFileServiceImpl extends HttpServlet {
     @Init
     public void initialize() throws IOException {
         upload = new ServletFileUpload(new DiskFileItemFactory());
-        
-        files = new File(directoryName);
-        if (!files.exists()) {
-            files.mkdirs();
-        }
     }
     
     @Override
@@ -79,7 +73,11 @@ public class ContributionFileServiceImpl extends HttpServlet {
         try {
             for (FileItem item: (List<FileItem>)upload.parseRequest(request)) {
                 if (!item.isFormField()) {
-                    item.write(new File(files, item.getName()));
+                    File directory = new File(directoryName);
+                    if (!directory.exists()) {
+                        directory.mkdirs();
+                    }
+                    item.write(new File(directory, item.getName()));
                 }
             }
             response.sendRedirect("/ui/files");
@@ -103,7 +101,8 @@ public class ContributionFileServiceImpl extends HttpServlet {
             
             // Default to file protocol
             if (uri.getScheme() == null) {
-                uri = new File(files, path).toURI();
+                File directory = new File(directoryName);
+                uri = new File(directory, path).toURI();
             }
             
             // Support the following syntaxes

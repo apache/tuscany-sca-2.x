@@ -61,11 +61,11 @@ import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProce
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
+import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
+import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
-import org.apache.tuscany.sca.workspace.admin.ContributionCollection;
-import org.apache.tuscany.sca.workspace.admin.LocalContributionCollection;
 import org.apache.tuscany.sca.workspace.dependency.impl.ContributionDependencyAnalyzer;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor;
 import org.apache.tuscany.sca.workspace.xml.WorkspaceProcessor;
@@ -84,8 +84,8 @@ import org.w3c.dom.Document;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-@Service(interfaces={ContributionCollection.class, LocalContributionCollection.class})
-public class ContributionCollectionImpl implements ContributionCollection, LocalContributionCollection {
+@Service(interfaces={ItemCollection.class, LocalItemCollection.class})
+public class ContributionCollectionImpl implements ItemCollection, LocalItemCollection {
 
     @Property
     public String workspaceFileName;
@@ -93,10 +93,10 @@ public class ContributionCollectionImpl implements ContributionCollection, Local
     private ContributionFactory contributionFactory;
     private AssemblyFactory assemblyFactory;
     private WorkspaceFactory workspaceFactory;
-    private Workspace workspace;
     private StAXArtifactProcessor<Object> staxProcessor;
     private URLArtifactProcessor<Object> urlProcessor;
     private URLArtifactProcessor<Contribution> contributionInfoProcessor;
+    private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
     
     /**
@@ -117,7 +117,7 @@ public class ContributionCollectionImpl implements ContributionCollection, Local
         ModelResolverExtensionPoint modelResolvers = new DefaultModelResolverExtensionPoint();
 
         // Create artifact processors
-        XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
+        inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(modelFactories);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
         staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory, staxProcessor));
@@ -131,22 +131,13 @@ public class ContributionCollectionImpl implements ContributionCollection, Local
         // Create contribution info processor
         contributionInfoProcessor = new ContributionInfoProcessor(modelFactories, modelResolvers, urlProcessor);
 
-        // Read workspace.xml
-        File file = new File(workspaceFileName);
-        if (file.exists()) {
-            FileInputStream is = new FileInputStream(file);
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-            reader.nextTag();
-            workspace = (Workspace)staxProcessor.read(reader);
-        } else {
-            workspace = workspaceFactory.createWorkspace();
-        }
     }
     
     public Entry<String, Item>[] getAll() {
 
         // Return all the contributions
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
+        Workspace workspace = readWorkspace();
         for (Contribution contribution: workspace.getContributions()) {
             entries.add(entry(contribution));
         }
@@ -156,6 +147,7 @@ public class ContributionCollectionImpl implements ContributionCollection, Local
     public Item get(String key) throws NotFoundException {
 
         // Returns the contribution with the given URI key
+        Workspace workspace = readWorkspace();
         for (Contribution contribution: workspace.getContributions()) {
             if (key.equals(contribution.getURI())) {
                 Item item = new Item();
@@ -170,13 +162,14 @@ public class ContributionCollectionImpl implements ContributionCollection, Local
     public String post(String key, Item item) {
         
         // Adds a new contribution to the workspace
+        Workspace workspace = readWorkspace();
         Contribution contribution = contributionFactory.createContribution();
         contribution.setURI(key);
         contribution.setLocation(item.getLink());
         workspace.getContributions().add(contribution);
         
         // Write the workspace
-        writeWorkspace();
+        writeWorkspace(workspace);
         
         return key;
     }
@@ -184,6 +177,7 @@ public class ContributionCollectionImpl implements ContributionCollection, Local
     public void put(String key, Item item) throws NotFoundException {
         
         // Update a contribution already in the workspace
+        Workspace workspace = readWorkspace();
         Contribution newContribution = contributionFactory.createContribution();
         newContribution.setURI(key);
         newContribution.setLocation(item.getLink());
@@ -193,8 +187,7 @@ public class ContributionCollectionImpl implements ContributionCollection, Local
                 contributions.set(i, newContribution);
                 
                 // Write the workspace
-                writeWorkspace();
-                
+                writeWorkspace(workspace);
                 return;
             }
         }
@@ -204,13 +197,14 @@ public class ContributionCollectionImpl implements ContributionCollection, Local
     public void delete(String key) throws NotFoundException {
         
         // Delete a contribution from the workspace
+        Workspace workspace = readWorkspace();
         List<Contribution> contributions = workspace.getContributions();
         for (int i = 0, n = contributions.size(); i < n; i++) {
             if (contributions.get(i).getURI().equals(key)) {
                 contributions.remove(i);
 
                 // Write the workspace
-                writeWorkspace();
+                writeWorkspace(workspace);
                 
                 return;
             }
@@ -225,6 +219,7 @@ public class ContributionCollectionImpl implements ContributionCollection, Local
             List<Entry<String, Item>> entries = new ArrayList<Entry<String,Item>>();
             
             // Read the metadata for all the contributions into a temporary workspace
+            Workspace workspace = readWorkspace();
             Workspace dependencyWorkspace = workspaceFactory.createWorkspace();
             try {
                 for (Contribution c: workspace.getContributions()) {
@@ -300,9 +295,34 @@ public class ContributionCollectionImpl implements ContributionCollection, Local
     }
     
     /**
-     * Write the workspace back to disk
+     * Read the workspace.
+     * 
+     * @return
      */
-    private void writeWorkspace() {
+    private Workspace readWorkspace() {
+        Workspace workspace;
+        File file = new File(workspaceFileName);
+        if (file.exists()) {
+            try {
+                FileInputStream is = new FileInputStream(file);
+                XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+                reader.nextTag();
+                workspace = (Workspace)staxProcessor.read(reader);
+            } catch (Exception e) {
+                throw new ServiceRuntimeException(e);
+            }
+        } else {
+            workspace = workspaceFactory.createWorkspace();
+        }
+        return workspace;
+    }
+    
+    /**
+     * Write the workspace back to disk
+     * 
+     * @param workspace
+     */
+    private void writeWorkspace(Workspace workspace) {
         try {
             // First write to a byte stream
             ByteArrayOutputStream bos = new ByteArrayOutputStream();

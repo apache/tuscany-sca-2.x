@@ -26,10 +26,9 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
+import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
+import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
-import org.apache.tuscany.sca.workspace.admin.LocalContributionCollection;
-import org.apache.tuscany.sca.workspace.admin.LocalPackageCollection;
-import org.apache.tuscany.sca.workspace.admin.PackageCollection;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
@@ -41,11 +40,11 @@ import org.osoa.sca.annotations.Service;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-@Service(interfaces={PackageCollection.class, LocalPackageCollection.class})
-public class PackageCollectionImpl implements PackageCollection, LocalPackageCollection {
+@Service(interfaces={ItemCollection.class, LocalItemCollection.class})
+public class ImageCollectionImpl implements ItemCollection, LocalItemCollection {
 
     @Reference
-    public LocalContributionCollection contributionCollection;
+    public LocalItemCollection contributionCollection;
     
     /**
      * Initialize the component.

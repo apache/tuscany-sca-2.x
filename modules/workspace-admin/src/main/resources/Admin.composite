@@ -34,7 +34,7 @@
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/workspace"/>
         </service>
-		 <reference name="workspace" target="ContributionCollectionComponent/ContributionCollection">
+		 <reference name="workspace" target="ContributionCollectionComponent/ItemCollection">
 		 	<t:binding.atom/>
 		 </reference>
     </component>
@@ -44,7 +44,7 @@
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/files"/>
         </service>
-		 <reference name="files" target="ContributionFileCollectionComponent">
+		 <reference name="files" target="FileCollectionComponent">
 		 	<t:binding.atom/>
 		 </reference>
     </component>
@@ -54,7 +54,7 @@
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/composite"/>
         </service>
-		 <reference name="domainComposite" target="DomainCompositeCollectionComponent/CompositeCollection">
+		 <reference name="domainComposite" target="DomainCompositeCollectionComponent/ItemCollection">
 		 	<t:binding.atom/>
 		 </reference>
     </component>
@@ -64,7 +64,7 @@
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/cloud"/>
         </service>
-		 <reference name="cloudComposite" target="CloudCollectionComponent/CompositeCollection">
+		 <reference name="cloudComposite" target="CloudCollectionComponent/ItemCollection">
 		 	<t:binding.atom/>
 		 </reference>
     </component>
@@ -72,21 +72,21 @@
     <component name="ContributionCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.ContributionCollectionImpl"/>             
         <property name="workspaceFileName">workspace.xml</property>             
-   		<service name="ContributionCollection">
+   		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/workspace"/>
    		</service>
     </component>
 
-    <component name="ContributionFileCollectionComponent">
-        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.ContributionFileCollectionImpl"/>             
+    <component name="FileCollectionComponent">
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.FileCollectionImpl"/>             
         <property name="directoryName">contributions</property>             
-   		<service name="ContributionFileCollection">
+   		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/feed/files"/>
    		</service>
     </component>
 
-    <component name="ContributionFileServiceComponent">
-        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.ContributionFileServiceImpl"/>
+    <component name="FileServiceComponent">
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.FileServiceImpl"/>
         <property name="directoryName">contributions</property>             
    		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/files"/>
@@ -96,40 +96,40 @@
     <component name="DomainCompositeCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.CompositeCollectionImpl"/>
         <property name="compositeFileName">domain.composite</property>
-   		<service name="CompositeCollection">
+   		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/composite"/>
    		</service>
-        <reference name="deployableCompositeCollection" target="DeployableCompositeCollectionComponent/LocalCompositeCollection"/>
+        <reference name="deployableCompositeCollection" target="DeployableCollectionComponent/LocalItemCollection"/>
     </component>
 
-    <component name="DeployableCompositeCollectionComponent">
-        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.DeployableCompositeCollectionImpl"/>
-   		<service name="CompositeCollection">
+    <component name="DeployableCollectionComponent">
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.DeployableCollectionImpl"/>
+   		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/deployable"/>
    		</service>
    		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/resolved/composite/"/>
    		</service>
-   		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalContributionCollection"/>
-   		<reference name="domainCompositeCollection" target="DomainCompositeCollectionComponent/LocalCompositeCollection"/>
-   		<reference name="cloudCollection" target="CloudCollectionComponent/LocalCompositeCollection"/>
+   		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalItemCollection"/>
+   		<reference name="domainCompositeCollection" target="DomainCompositeCollectionComponent/LocalItemCollection"/>
+   		<reference name="cloudCollection" target="CloudCollectionComponent/LocalItemCollection"/>
     </component>
 
     <component name="CloudCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.CompositeCollectionImpl"/>
         <property name="compositeFileName">cloud.composite</property>
-   		<service name="CompositeCollection">
+   		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/cloud"/>
    		</service>
-        <reference name="deployableCompositeCollection" target="DeployableCompositeCollectionComponent/LocalCompositeCollection"/>
+        <reference name="deployableCompositeCollection" target="DeployableCollectionComponent/LocalItemCollection"/>
     </component>
 
-    <component name="PackageCollectionComponent">
-        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.PackageCollectionImpl"/>
-   		<service name="PackageCollection">
+    <component name="ImageCollectionComponent">
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.ImageCollectionImpl"/>
+   		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/package"/>
    		</service>
-   		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalContributionCollection"/>
+   		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalItemCollection"/>
     </component>
 
 </composite>
