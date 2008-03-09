@@ -24,7 +24,7 @@
 		name="frontend-eu-node">
 
 	<component name="StoreEUNode">
-		<t:implementation.node composite="s:store-eu"/>
+		<t:implementation.node uri="store-eu" composite="s:store-eu"/>
 		<service name="Node">
 			<t:binding.http uri="http://localhost:8104"/>
 			<t:binding.jsonrpc uri="http://localhost:8104"/>

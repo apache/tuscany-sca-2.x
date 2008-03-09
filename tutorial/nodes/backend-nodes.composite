@@ -24,14 +24,14 @@
 		name="backend-nodes">
 
 	<component name="CatalogsNode">
-		<t:implementation.node composite="c:catalogs"/>
+		<t:implementation.node uri="cloud" composite="c:catalogs"/>
 		<service name="Node">
 			<binding.sca uri="http://localhost:8200"/>
 		</service>
 	</component> 
 
 	<component name="CurrencyNode">
-		<t:implementation.node composite="c:currency"/>
+		<t:implementation.node uri="cloud" composite="c:currency"/>
 		<service name="Node">
 			<binding.sca uri="http://localhost:8201"/>
 		</service>
