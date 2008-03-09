@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -91,15 +92,23 @@ public class PropertyUtil {
         URI uri = URI.create(file);
         // URI resolution for relative uris is done when the composite is resolved.
         URL url = uri.toURL();
-        InputStream is = url.openStream();
-
-        Source streamSource = new SAXSource(new InputSource(is));
-        DOMResult result = new DOMResult();
-        javax.xml.transform.Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
-        transformer.transform(streamSource, result);
-        is.close();
-        
-        return (Document)result.getNode();
+        URLConnection connection = url.openConnection();
+        connection.setUseCaches(false);
+        InputStream is = null;
+        try {
+            is = connection.getInputStream();
+    
+            Source streamSource = new SAXSource(new InputSource(is));
+            DOMResult result = new DOMResult();
+            javax.xml.transform.Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
+            transformer.transform(streamSource, result);
+            
+            return (Document)result.getNode();
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+        }
     }
     
     static void sourceComponentProperties(Map<String, Property> compositeProperties,
