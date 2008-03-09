@@ -46,7 +46,6 @@
                 <module>store-eu</module>
                 <module>store-merger</module>
                 <module>store-supplier</module>
-                <module>www-services</module>
             </modules>
         </profile>
 
