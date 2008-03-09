@@ -44,6 +44,7 @@
                 <module>catalog-jee</module>
                 <module>catalog-webapp</module>
                 <module>cloud</module>
+                <module>domain</module>
                 <module>nodes</module>
                 <module>store</module>
                 <module>store-db</module>

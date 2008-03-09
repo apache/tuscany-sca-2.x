@@ -45,9 +45,15 @@
 			<t:binding.jsonrpc/>
 			<binding.ws uri="http://localhost:8104/CatalogWebService"/>
    		</service>
-		<reference name="fruitsCatalog" target="CloudFruitsCatalog"/>	
-		<reference name="vegetablesCatalog" target="CloudVegetablesCatalog"/>	
-		<reference name="currencyConverter" target="CloudCurrencyConverter"/>	
+		<reference name="fruitsCatalog" target="CloudFruitsCatalog">
+			<binding.ws/>
+		</reference>	
+		<reference name="vegetablesCatalog" target="CloudVegetablesCatalog">
+			<binding.ws/>
+		</reference>	
+		<reference name="currencyConverter" target="CloudCurrencyConverter">
+			<binding.ws/>
+		</reference>	
 	</component>
  	
 	<component name="ShoppingCart">

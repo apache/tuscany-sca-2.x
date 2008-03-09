@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspace xmlns="http://tuscany.apache.org/xmlns/sca/1.0" xmlns:ns1="http://tuscany.apache.org/xmlns/sca/1.0">
+  <contribution location="http://localhost:9990/files/file:../assets/target/tutorial-assets.jar" uri="assets"/>
+  <contribution location="http://localhost:9990/files/file:../store/target/tutorial-store.jar" uri="store"/>
+  <contribution location="http://localhost:9990/files/file:../cloud/target/tutorial-cloud.jar" uri="cloud"/>
+  <contribution location="http://localhost:9990/files/file:../nodes/target/tutorial-nodes.jar" uri="nodes"/>
+</workspace>

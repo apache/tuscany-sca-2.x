@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite name="cloud.composite"
+  targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
+  xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:ns1="http://www.osoa.org/xmlns/sca/1.0">
+  <include name="ns2:backend-nodes" uri="nodes" xmlns:ns2="http://nodes"/>
+  <include name="ns2:frontend-us-node" uri="nodes" xmlns:ns2="http://nodes"/>
+  <include name="ns2:merger-nodes" uri="nodes" xmlns:ns2="http://nodes"/>
+  <include name="ns2:frontend-eu-node" uri="nodes" xmlns:ns2="http://nodes"/>
+</composite>
