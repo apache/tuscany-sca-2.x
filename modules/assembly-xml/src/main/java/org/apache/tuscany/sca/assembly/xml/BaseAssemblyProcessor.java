@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.assembly.xml;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -68,6 +69,8 @@ import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.impl.IntentAttachPointTypeFactoryImpl;
 import org.apache.tuscany.sca.policy.util.PolicyValidationUtils;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -649,9 +652,11 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
             NodeList nodeList = document.getDocumentElement().getChildNodes();
 
             for (int item = 0; item < nodeList.getLength(); ++item) {
-                if (nodeList.item(item).getNodeType() == Node.ELEMENT_NODE) {
+                Node node = nodeList.item(item);
+                int nodeType = node.getNodeType();
+                if (nodeType == Node.ELEMENT_NODE) {
                     XMLStreamReader reader =
-                        XMLInputFactory.newInstance().createXMLStreamReader(new DOMSource(nodeList.item(item)));
+                        XMLInputFactory.newInstance().createXMLStreamReader(new DOMSource(node));
 
                     while (reader.hasNext()) {
                         switch (reader.next()) {
@@ -693,6 +698,8 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                                 break;
                         }
                     }
+                } else {
+                    writer.writeCharacters(node.getTextContent());
                 }
             }
         }
