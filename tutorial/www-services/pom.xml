@@ -36,6 +36,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>amazon</module>
+                <module>www-cloud</module>
             </modules>
         </profile>
 
