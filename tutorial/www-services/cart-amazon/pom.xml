@@ -25,7 +25,7 @@
         <version>1.2-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tutorial-amazon</artifactId>
+    <artifactId>tutorial-cart-amazon</artifactId>
     <name>Apache Tuscany SCA Tutorial Amazon Cart</name>
 
     <dependencies>
