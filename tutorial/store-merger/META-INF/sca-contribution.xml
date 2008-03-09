@@ -21,5 +21,6 @@
 	xmlns:s="http://store">
 	<import.java package="services" />
 	<import.java package="services.merger" />
+   <import.resource uri="uiservices/store.html"/>   
    <deployable composite="s:store-merger" />
 </contribution>
