@@ -19,10 +19,15 @@
 
 package launch;
 
-import org.apache.tuscany.sca.node.launch.SCANode2Launcher;
-
-public class LaunchStore {
-    public static void main(String[] args) throws Exception {
-        SCANode2Launcher.main(new String[] {"http://localhost:9990/package/?composite=composite:store;http://store;store"});
+/**
+ * Launches the domain admin from this module.
+ *
+ * @version $Rev$ $Date$
+ */
+public class LaunchTutorialAdmin {
+    
+    public static void main(String[] args) {
+        org.apache.tuscany.sca.workspace.admin.launch.LaunchDomainAdmin.main(args);
     }
+
 }

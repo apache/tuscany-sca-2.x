@@ -46,7 +46,9 @@
 			<binding.ws uri="http://localhost:8103/CatalogWebService"/>
    		</service>
 		<reference name="fruitsCatalog" target="FruitsCatalog"/>	
-		<reference name="vegetablesCatalog" target="CloudVegetablesCatalog"/>	
+		<reference name="vegetablesCatalog" target="CloudVegetablesCatalog">
+			<binding.ws/>
+		</reference>	
 		<reference name="currencyConverter" target="CurrencyConverter"/>	
 	</component>
  	

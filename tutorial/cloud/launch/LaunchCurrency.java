@@ -21,8 +21,8 @@ package launch;
 
 import org.apache.tuscany.sca.node.launch.SCANode2Launcher;
 
-public class LaunchStore {
+public class LaunchCurrency {
     public static void main(String[] args) throws Exception {
-        SCANode2Launcher.main(new String[] {"http://localhost:9990/package/?composite=composite:store;http://store;store"});
+        SCANode2Launcher.main(new String[] {"http://localhost:9990/package/?composite=composite:cloud;http://cloud;currency"});
     }
 }

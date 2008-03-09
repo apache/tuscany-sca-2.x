@@ -25,16 +25,18 @@
 	<component name="CloudFruitsCatalog">
 		<implementation.java class="services.FruitsCatalogImpl"/>
 		<service name="Catalog">
-			<binding.sca uri="http://localhost:8200/CloudFruitsCatalog"/>
+			<binding.ws uri="http://localhost:8200/CloudFruitsCatalog"/>
 		</service> 
 		<property name="currencyCode">USD</property>
-		<reference name="currencyConverter" target="CloudCurrencyConverter"/>	
+		<reference name="currencyConverter" target="CloudCurrencyConverter">
+			<binding.ws/>
+		</reference>
 	</component> 
  	
 	<component name="CloudVegetablesCatalog">
 		<implementation.java class="services.VegetablesCatalogImpl"/>
 		<service name="Catalog">
-			<binding.sca uri="http://localhost:8200/CloudVegetablesCatalog"/>
+			<binding.ws uri="http://localhost:8200/CloudVegetablesCatalog"/>
 		</service> 
 	</component> 
  	
