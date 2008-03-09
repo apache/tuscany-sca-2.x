@@ -24,17 +24,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -45,13 +42,12 @@ import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
+import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
+import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.workspace.admin.CompositeCollection;
-import org.apache.tuscany.sca.workspace.admin.LocalCompositeCollection;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.osoa.sca.ServiceRuntimeException;
@@ -68,17 +64,17 @@ import org.w3c.dom.Document;
  * @version $Rev: 632617 $ $Date: 2008-03-01 08:24:33 -0800 (Sat, 01 Mar 2008) $
  */
 @Scope("COMPOSITE")
-@Service(interfaces={CompositeCollection.class,LocalCompositeCollection.class})
-public class CompositeCollectionImpl implements CompositeCollection, LocalCompositeCollection {
+@Service(interfaces={ItemCollection.class,LocalItemCollection.class})
+public class CompositeCollectionImpl implements ItemCollection, LocalItemCollection {
     
     @Property
     public String compositeFileName;
     
     @Reference
-    public LocalCompositeCollection deployableCompositeCollection;
+    public LocalItemCollection deployableCompositeCollection;
 
+    private ModelFactoryExtensionPoint modelFactories;
     private AssemblyFactory assemblyFactory;
-    private Composite compositeCollection;
     private CompositeProcessor compositeProcessor;
     private XMLOutputFactory outputFactory;
     
@@ -86,33 +82,49 @@ public class CompositeCollectionImpl implements CompositeCollection, LocalCompos
      * Initialize the component.
      */
     @Init
-    public void initialize() throws IOException, ContributionReadException, XMLStreamException, ParserConfigurationException {
+    public void initialize() {
         
         // Create factories
-        ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
+        modelFactories = new DefaultModelFactoryExtensionPoint();
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
         
-        // Read domain.composite
+        // Create composite processor
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
         compositeProcessor = new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, null);
+    }
+    
+    /**
+     * Reads the domain composite.
+     * 
+     * @return the domain composite
+     * @throws ServiceRuntimeException
+     */
+    private Composite readCompositeCollection() throws ServiceRuntimeException {
+        Composite compositeCollection;
         File file = new File(compositeFileName);
         if (file.exists()) {
             XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
-            FileInputStream is = new FileInputStream(file);
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-            compositeCollection = compositeProcessor.read(reader);
+            try {
+                FileInputStream is = new FileInputStream(file);
+                XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+                compositeCollection = compositeProcessor.read(reader);
+            } catch (Exception e) {
+                throw new ServiceRuntimeException(e);
+            }
         } else {
             compositeCollection = assemblyFactory.createComposite();
             compositeCollection.setName(new QName(Constants.SCA10_TUSCANY_NS, compositeFileName));
         }
+        return compositeCollection;
     }
     
     public Entry<String, Item>[] getAll() {
         // Return all the composites in the domain composite
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
+        Composite compositeCollection = readCompositeCollection();
         for (Composite composite: compositeCollection.getIncludes()) {
             Entry<String, Item> entry = new Entry<String, Item>();
             String contributionURI = composite.getURI();
@@ -131,6 +143,7 @@ public class CompositeCollectionImpl implements CompositeCollection, LocalCompos
         QName qname = qname(key);
 
         // Returns the composite with the given name key
+        Composite compositeCollection = readCompositeCollection();
         for (Composite composite: compositeCollection.getIncludes()) {
             if (contributionURI.equals(composite.getURI()) && qname.equals(composite.getName())) {
                 Item item = compositeItem(composite.getURI(), qname);
@@ -145,6 +158,7 @@ public class CompositeCollectionImpl implements CompositeCollection, LocalCompos
         QName qname = qname(key);
         
         // Adds a new composite to the domain composite
+        Composite compositeCollection = readCompositeCollection();
         Composite composite = assemblyFactory.createComposite();
         composite.setName(qname);
         composite.setURI(contributionURI);
@@ -152,7 +166,7 @@ public class CompositeCollectionImpl implements CompositeCollection, LocalCompos
         compositeCollection.getIncludes().add(composite);
         
         // Write the domain composite
-        write();
+        writeCompositeCollection(compositeCollection);
         
         return key;
     }
@@ -162,6 +176,7 @@ public class CompositeCollectionImpl implements CompositeCollection, LocalCompos
         QName qname = qname(key);
         
         // Update a composite already in the domain composite
+        Composite compositeCollection = readCompositeCollection();
         Composite newComposite = assemblyFactory.createComposite();
         newComposite.setName(qname);
         newComposite.setURI(contributionURI);
@@ -173,7 +188,7 @@ public class CompositeCollectionImpl implements CompositeCollection, LocalCompos
                 composites.set(i, newComposite);
                 
                 // Write the domain composite
-                write();
+                writeCompositeCollection(compositeCollection);
                 
                 return;
             }
@@ -186,6 +201,7 @@ public class CompositeCollectionImpl implements CompositeCollection, LocalCompos
         QName qname = qname(key);
         
         // Delete a composite from the domain composite
+        Composite compositeCollection = readCompositeCollection();
         List<Composite> composites = compositeCollection.getIncludes();
         for (int i = 0, n = composites.size(); i < n; i++) {
             Composite composite = composites.get(i);
@@ -193,8 +209,7 @@ public class CompositeCollectionImpl implements CompositeCollection, LocalCompos
                 composites.remove(i);
 
                 // Write the domain composite
-                write();
-                
+                writeCompositeCollection(compositeCollection);
                 return;
             }
         }
@@ -206,9 +221,11 @@ public class CompositeCollectionImpl implements CompositeCollection, LocalCompos
     }
     
     /**
-     * Write the domain composite back to disk
+     * Write the domain composite back to disk.
+     * 
+     * @param compositeCollection
      */
-    private void write() {
+    private void writeCompositeCollection(Composite compositeCollection) {
         try {
             // First write to a byte stream
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -226,7 +243,6 @@ public class CompositeCollectionImpl implements CompositeCollection, LocalCompos
             FileOutputStream os = new FileOutputStream(new File(compositeFileName));
             XMLSerializer serializer = new XMLSerializer(os, format);
             serializer.serialize(document);
-            
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }

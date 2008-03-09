@@ -62,7 +62,6 @@ import org.apache.tuscany.sca.assembly.builder.impl.CompositeConfigurationBuilde
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
@@ -70,7 +69,6 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
@@ -86,6 +84,8 @@ import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
+import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
+import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.apache.tuscany.sca.implementation.node.NodeImplementation;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -93,9 +93,6 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.workspace.admin.CompositeCollection;
-import org.apache.tuscany.sca.workspace.admin.LocalCompositeCollection;
-import org.apache.tuscany.sca.workspace.admin.LocalContributionCollection;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -112,19 +109,20 @@ import org.w3c.dom.Document;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-@Service(interfaces={CompositeCollection.class, LocalCompositeCollection.class, Servlet.class})
-public class DeployableCompositeCollectionImpl extends HttpServlet implements CompositeCollection, LocalCompositeCollection {
+@Service(interfaces={ItemCollection.class, LocalItemCollection.class, Servlet.class})
+public class DeployableCollectionImpl extends HttpServlet implements ItemCollection, LocalItemCollection {
     private static final long serialVersionUID = -8809641932774129151L;
-    private final static Logger logger = Logger.getLogger(DeployableCompositeCollectionImpl.class.getName());    
+    
+    private final static Logger logger = Logger.getLogger(DeployableCollectionImpl.class.getName());    
 
     @Reference
-    public LocalContributionCollection contributionCollection;
+    public LocalItemCollection contributionCollection;
     
     @Reference 
-    public LocalCompositeCollection domainCompositeCollection;
+    public LocalItemCollection domainCompositeCollection;
     
     @Reference 
-    public LocalCompositeCollection cloudCollection;    
+    public LocalItemCollection cloudCollection;    
 
     private ModelFactoryExtensionPoint modelFactories;
     private ModelResolverExtensionPoint modelResolvers;
@@ -133,7 +131,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
     private StAXArtifactProcessor<Composite> compositeProcessor;
     private XMLOutputFactory outputFactory;
     private CompositeBuilder compositeBuilder;
-    private CompositeConfigurationBuilderImpl compositeConfiguationBuilder;
+    private CompositeConfigurationBuilderImpl compositeConfigurationBuilder;
     private List<ContributionListener> contributionListeners;
     
     /**
@@ -199,7 +197,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
             compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory,
                                                         contractMapper, domainPolicySets, monitor);
             
-            compositeConfiguationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, 
+            compositeConfigurationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, 
                                                                                  scaBindingFactory, 
                                                                                  intentAttachPointTypeFactory,
                                                                                  contractMapper,
@@ -429,7 +427,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements Co
             }
            
             try {
-                compositeConfiguationBuilder.calculateBindingURIs(defaultBindings, composite, null);
+                compositeConfigurationBuilder.calculateBindingURIs(defaultBindings, composite, null);
             } catch (CompositeBuilderException e) {
                 throw new ServletException(e);
             }
