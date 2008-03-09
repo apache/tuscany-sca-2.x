@@ -1217,17 +1217,22 @@ public class CompositeConfigurationBuilderImpl {
         }
             
         // Check that multiple bindings do not have the same name
-        // TODO: this test needs to be refined to take into account the 
-        //       scheme that the binding is using.         
-        for (Binding serviceBinding : service.getBindings()){
-            if ((!binding.equals(serviceBinding)) && 
-                (binding.getName().equals(serviceBinding.getName()))){
+        for (Binding otherBinding : service.getBindings()) {
+            if (otherBinding == binding) {
+                // Skip the current binding
+                continue;
+            }
+            if (binding.getClass() != otherBinding.getClass()) {
+                // Look for a binding of the same type
+                continue;
+            }
+            if (binding.getName().equals(otherBinding.getName())) {
 
                 throw new CompositeBuilderException("Multiple bindings for service " + 
                                                     service.getName() + 
-                                                    " have the same binding name " +
+                                                    " have the same binding type and name " +
                                                     binding.getName() +
-                                                    ". This means Tuscany SCA can't create unique URIs to differenetiate these bindings ");
+                                                    ". Tuscany SCA can't create unique URIs to differentiate these bindings ");
             }
         }
     }
