@@ -33,6 +33,7 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -152,7 +153,9 @@ public class ContributionRepositoryImpl implements ContributionRepository {
         File location = mapToFile(sourceURL);
         File source = FileHelper.toFile(sourceURL);
         if (source == null || source.isFile()) {
-            InputStream is = sourceURL.openStream();
+            URLConnection connection = sourceURL.openConnection();
+            connection.setUseCaches(false);
+            InputStream is = connection.getInputStream();
             try {
                 return store(contribution, sourceURL, is);
             } finally {

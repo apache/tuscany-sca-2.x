@@ -28,6 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -360,7 +361,9 @@ public class ContributionServiceImpl implements ContributionService {
         //NOTE: if a contribution is stored on the repository
         //the stream would be consumed at this point
         if (storeInRepository || contributionStream == null) {
-            contributionStream = sourceURL.openStream();
+            URLConnection connection = sourceURL.openConnection();
+            connection.setUseCaches(false);
+            contributionStream = connection.getInputStream();
             try {
                 // process the contribution
                 contributionArtifacts = this.packageProcessor.getArtifacts(locationURL, contributionStream);
