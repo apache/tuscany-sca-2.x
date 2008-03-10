@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the binding extension
-org.apache.tuscany.sca.binding.feed.provider.RSSBindingProviderFactory;model=org.apache.tuscany.sca.binding.feed.RSSBinding
+org.apache.tuscany.sca.binding.rss.provider.RSSBindingProviderFactory;model=org.apache.tuscany.sca.binding.rss.RSSBinding

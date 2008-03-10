@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the model factory
-org.apache.tuscany.sca.binding.feed.impl.RSSBindingFactoryImpl
+org.apache.tuscany.sca.binding.rss.impl.RSSBindingFactoryImpl
