@@ -24,9 +24,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -64,9 +71,10 @@ import org.w3c.dom.Document;
  * @version $Rev: 632617 $ $Date: 2008-03-01 08:24:33 -0800 (Sat, 01 Mar 2008) $
  */
 @Scope("COMPOSITE")
-@Service(interfaces={ItemCollection.class,LocalItemCollection.class})
-public class CompositeCollectionImpl implements ItemCollection, LocalItemCollection {
-    
+@Service(interfaces={ItemCollection.class,LocalItemCollection.class, Servlet.class})
+public class CompositeCollectionImpl extends HttpServlet implements ItemCollection, LocalItemCollection {
+    private static final long serialVersionUID = 1L;
+
     @Property
     public String compositeFileName;
     
@@ -151,6 +159,25 @@ public class CompositeCollectionImpl implements ItemCollection, LocalItemCollect
             }
         }
         throw new NotFoundException(key);
+    }
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        // Get the request path
+        String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
+        String key = path.startsWith("/")? path.substring(1) : path;
+        
+        // Expecting a key in the form:
+        // composite:contributionURI;namespace;localName
+        QName qname = qname(key);
+        String contributionURI = uri(key);
+        
+        // Get the item describing the composite
+        Item item = compositeItem(contributionURI, qname);
+        
+        // Redirect to the composite source
+        response.sendRedirect(item.getLink());
     }
 
     public String post(String key, Item item) {
