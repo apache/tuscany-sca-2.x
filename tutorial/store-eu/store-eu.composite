@@ -25,7 +25,7 @@
     <component name="StoreEU">
         <t:implementation.widget location="uiservices/store-eu.html"/>
         <service name="Widget">
-        	<t:binding.http uri="http://localhost:8104/ui"/> 
+        	<t:binding.http uri="/ui"/> 
         </service>
 		<reference name="catalog" target="StoreEUCatalog">
 		 	<t:binding.jsonrpc/>
@@ -43,7 +43,7 @@
 		<property name="currencyCode">EUR</property>
 		<service name="Catalog">
 			<t:binding.jsonrpc/>
-			<binding.ws uri="http://localhost:8104/CatalogWebService"/>
+			<binding.ws uri="/CatalogWebService"/>
    		</service>
 		<reference name="fruitsCatalog" target="CloudFruitsCatalog">
 			<binding.ws/>
@@ -58,7 +58,7 @@
  	
 	<component name="StoreEUShoppingCart">
 		<implementation.java class="services.db.ShoppingCartTableImpl"/>
-		<property name="database">cart-eu-db</property>
+		<property name="database">../store-eu/target/cart-eu-db</property>
 		<service name="Cart">
 			<t:binding.atom/>
 		</service>    	

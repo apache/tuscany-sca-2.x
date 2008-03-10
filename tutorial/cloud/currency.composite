@@ -25,7 +25,7 @@
 	<component name="CloudCurrencyConverter">
 		<implementation.java class="services.CurrencyConverterImpl"/>
 		<service name="CurrencyConverter">
-			<binding.ws uri="http://localhost:8201/CloudCurrencyConverter"/>
+			<binding.ws/>
 		</service>
 	</component>
 
