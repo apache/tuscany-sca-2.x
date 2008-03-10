@@ -24,25 +24,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.abdera.Abdera;
+import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.Feed;
 import org.apache.tuscany.sca.binding.feed.collection.Collection;
 import org.apache.tuscany.sca.binding.feed.collection.NotFoundException;
-
-import com.sun.syndication.feed.atom.Content;
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.feed.atom.Link;
 
 public class ShoppingCartImpl implements Collection {
 
     private static Map<String, Entry> cart = new HashMap<String, Entry>();
 
     public Feed getFeed() {
-        Feed feed = new Feed();
+        Feed feed = Abdera.getNewFactory().newFeed();
         feed.setTitle("shopping cart");
-        Content subtitle = new Content();
-        subtitle.setValue("Total : " + getTotal());
-        feed.setSubtitle(subtitle);
-        feed.getEntries().addAll(cart.values());
+        feed.setSubtitle("Total : " + getTotal());
+        
+        for (Entry entry : cart.values()) {
+        	feed.addEntry(entry);
+        }
+
         return feed;
     }
 
@@ -55,16 +55,10 @@ public class ShoppingCartImpl implements Collection {
         String id = "cart-" + UUID.randomUUID().toString();
         entry.setId(id);
 
-        Link link = new Link();
-        link.setRel("edit");
-        link.setHref(id);
-        entry.getOtherLinks().add(link);
-        link = new Link();
-        link.setRel("alternate");
-        link.setHref(id);
-        entry.getAlternateLinks().add(link);
-
-        entry.setCreated(new Date());
+        entry.addLink(id, "edit");
+        entry.addLink(id, "alternate");
+        
+        entry.setEdited(new Date());
 
         cart.put(id, entry);
         return entry;
@@ -86,11 +80,11 @@ public class ShoppingCartImpl implements Collection {
         float total = 0;
         String currencySymbol = "";
         if (!cart.isEmpty()) {
-            String item = ((Content)cart.values().iterator().next().getContents().get(0)).getValue();
+            String item = ((Entry)cart.values().iterator().next()).getContent();
             currencySymbol = item.substring(item.indexOf("-") + 2, item.indexOf("-") + 3);
         }
         for (Entry entry : cart.values()) {
-            String item = ((Content)entry.getContents().get(0)).getValue();
+            String item = entry.getContent();
             
             int index = item.length()-1;
             char digit;

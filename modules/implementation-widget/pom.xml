@@ -62,7 +62,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-feed</artifactId>
+            <artifactId>tuscany-binding-atom-abdera</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
         
