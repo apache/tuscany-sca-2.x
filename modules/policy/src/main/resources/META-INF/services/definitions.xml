@@ -23,7 +23,7 @@
  			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
 
 	<!-- Policy Intents Defined by the SCA Runtime -->
-	<intent name="sca:authentication" 
+	<intent name="authentication" 
 	 		constrains="sca:binding">
 		<description>
 			Specifying this intent on references requires necessary authentication information
@@ -32,14 +32,14 @@
 		</description>
 	</intent>
 	
-	<intent name="sca:confidentiality" 
+	<intent name="confidentiality" 
 	 		constrains="sca:binding">
 		<description>
 			Specifying this intent requires message exchanged to be encrypted
 		</description>
 	</intent>
 	
-	<intent name="sca:integrity" 
+	<intent name="integrity" 
 	 		constrains="sca:binding">
 		<description>
 			Specifying this intent requires message exchanged to be signed
