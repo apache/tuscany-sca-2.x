@@ -23,9 +23,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.invocation.PassByValueAware;
 
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.synd.SyndFeed;
@@ -37,7 +37,7 @@ import com.sun.syndication.io.XmlReader;
 /**
  * Invoker for the RSS binding.
  */
-class RSSBindingInvoker implements Invoker, PassByValueAware {
+class RSSBindingInvoker implements Invoker , DataExchangeSemantics {
     private final static Logger logger = Logger.getLogger(RSSBindingInvoker.class.getName());
     
     private String feedType;
