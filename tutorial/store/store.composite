@@ -25,7 +25,7 @@
     <component name="Store">
         <t:implementation.widget location="uiservices/store.html"/>
         <service name="Widget">
-        	<t:binding.http uri="http://localhost:8100/ui"/>
+        	<t:binding.http uri="/ui"/>
         </service>
 		<reference name="catalog" target="Catalog">
 		 	<t:binding.jsonrpc/>
@@ -42,7 +42,7 @@
 		<implementation.java class="services.FruitsCatalogImpl"/> 
 		<property name="currencyCode">USD</property>
 		<service name="Catalog">
-			<t:binding.jsonrpc uri="http://localhost:8100/Catalog"/>
+			<t:binding.jsonrpc/>
    		</service>
 		<reference name="currencyConverter" target="CurrencyConverter"/>	
 	</component> 
@@ -50,10 +50,10 @@
 	<component name="ShoppingCart">
 		<implementation.java class="services.ShoppingCartImpl"/>
 		<service name="Cart">
-			<t:binding.atom uri="http://localhost:8100/ShoppingCart/Cart"/>
+			<t:binding.atom/>
 		</service>    	
 		<service name="Total">
-			<t:binding.jsonrpc uri="http://localhost:8100/ShoppingCart/Total"/>
+			<t:binding.jsonrpc/>
 		</service>    	
 	</component>
     

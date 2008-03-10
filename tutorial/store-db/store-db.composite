@@ -25,7 +25,7 @@
     <component name="StoreDB">
         <t:implementation.widget location="uiservices/store.html"/>
         <service name="Widget">
-        	<t:binding.http uri="http://localhost:8102/ui"/> 
+        	<t:binding.http uri="/ui"/> 
         </service>
 		<reference name="catalog" target="StoreDBCatalog">
 		 	<t:binding.jsonrpc/>
@@ -42,7 +42,7 @@
 		<implementation.java class="services.merger.MergedCatalogImpl"/> 
 		<property name="currencyCode">USD</property>
 		<service name="Catalog">
-			<t:binding.jsonrpc uri="http://localhost:8102/Catalog"/>
+			<t:binding.jsonrpc/>
    		</service>
 		<reference name="fruitsCatalog" target="StoreDBFruitsCatalog"/>	
 		<reference name="vegetablesCatalog" target="CloudVegetablesCatalog">
@@ -59,12 +59,12 @@
  	
 	<component name="StoreDBShoppingCart">
 		<implementation.java class="services.db.ShoppingCartTableImpl"/>
-		<property name="database">cart-db</property>
+		<property name="database">../store-db/target/cart-db</property>
 		<service name="Cart">
-			<t:binding.atom uri="http://localhost:8102/ShoppingCart/Cart"/>
+			<t:binding.atom/>
 		</service>    	
 		<service name="Total">
-			<t:binding.jsonrpc uri="http://localhost:8102/ShoppingCart/Total"/>
+			<t:binding.jsonrpc/>
 		</service>    	
 	</component>
     
