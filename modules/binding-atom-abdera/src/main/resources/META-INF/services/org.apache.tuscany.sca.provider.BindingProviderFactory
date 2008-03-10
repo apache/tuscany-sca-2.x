@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the binding extension
-org.apache.tuscany.sca.binding.feed.provider.AtomBindingProviderFactory;model=org.apache.tuscany.sca.binding.feed.AtomBinding
+org.apache.tuscany.sca.binding.atom.provider.AtomBindingProviderFactory;model=org.apache.tuscany.sca.binding.atom.AtomBinding

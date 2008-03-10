@@ -17,9 +17,9 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed.provider;
+package org.apache.tuscany.sca.binding.atom.provider;
 
-import org.apache.tuscany.sca.binding.feed.AtomBinding;
+import org.apache.tuscany.sca.binding.atom.AtomBinding;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;

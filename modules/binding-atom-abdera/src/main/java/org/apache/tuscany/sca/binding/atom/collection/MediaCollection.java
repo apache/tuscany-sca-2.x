@@ -16,10 +16,40 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.binding.atom.collection;
 
-package org.apache.tuscany.sca.binding.feed;
+import java.io.InputStream;
 
-public interface CustomerClient {
+import org.osoa.sca.annotations.Remotable;
 
-    void testCustomerCollection() throws Exception;
+import org.apache.abdera.model.Entry;
+
+/**
+ * Provides access to a collection of resources using Atom.
+ * 
+ * @version $Rev$ $Date$
+ */
+@Remotable
+public interface MediaCollection extends Collection {
+
+    /**
+     * Creates a new media entry
+     * 
+     * @param title
+     * @param slug
+     * @param contentType
+     * @param media
+     */
+    Entry postMedia(String title, String slug, String contentType, InputStream media);
+
+    /**
+     * Update a media entry.
+     * 
+     * @param id
+     * @param contentType
+     * @param media
+     * @return
+     */
+    void putMedia(String id, String contentType, InputStream media) throws NotFoundException;
+
 }

@@ -17,18 +17,24 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed;
+package org.apache.tuscany.sca.binding.atom;
+
+import java.io.IOException;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-public class Consumer {
+public class Provider {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
-        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/feed/Consumer.composite");
+        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/feed/Provider.composite");
+        System.out.println("Provider.composite ready...");
 
-        CustomerClient testService = scaDomain.getService(CustomerClient.class, "CustomerClient");
-        testService.testCustomerCollection();
+        try {
+            System.in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         scaDomain.close();
     }

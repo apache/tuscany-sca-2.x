@@ -16,4 +16,4 @@
 # under the License. 
 
 # Implementation class for the model factory
-org.apache.tuscany.sca.binding.feed.impl.AtomBindingFactoryImpl
+org.apache.tuscany.sca.binding.atom.impl.AtomBindingFactoryImpl

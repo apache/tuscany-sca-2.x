@@ -16,13 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.feed.collection;
-
-import java.io.InputStream;
-
-import org.osoa.sca.annotations.Remotable;
+package org.apache.tuscany.sca.binding.atom.collection;
 
 import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.Feed;
+import org.osoa.sca.annotations.Remotable;
 
 /**
  * Provides access to a collection of resources using Atom.
@@ -30,26 +28,46 @@ import org.apache.abdera.model.Entry;
  * @version $Rev$ $Date$
  */
 @Remotable
-public interface MediaCollection extends Collection {
+public interface Collection {
 
     /**
-     * Creates a new media entry
+     * Get an RSS or Atom feed for a collection of resources.
      * 
-     * @param title
-     * @param slug
-     * @param contentType
-     * @param media
+     * @param uri the uri of the feed
+     * @return the RSS or Atom feed
      */
-    Entry postMedia(String title, String slug, String contentType, InputStream media);
+    Feed getFeed();
 
     /**
-     * Update a media entry.
+     * Creates a new entry.
      * 
-     * @param id
-     * @param contentType
-     * @param media
+     * @param entry
      * @return
      */
-    void putMedia(String id, String contentType, InputStream media) throws NotFoundException;
+    Entry post(Entry entry);
+
+    /**
+     * Retrieves an entry.
+     * 
+     * @param id
+     * @return
+     */
+    Entry get(String id) throws NotFoundException;
+
+    /**
+     * Update an entry.
+     * 
+     * @param id
+     * @param entry
+     * @return
+     */
+    void put(String id, Entry entry) throws NotFoundException;
+
+    /**
+     * Delete an entry.
+     * 
+     * @param id
+     */
+    void delete(String id) throws NotFoundException;
 
 }
