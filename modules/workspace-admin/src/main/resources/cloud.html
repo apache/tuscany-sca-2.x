@@ -47,20 +47,54 @@
 			var entries = feed.getElementsByTagName("entry");              
 			var composites = "";
 			composites += '<table width="100%">';
-			composites += '<tr><th>Cloud</th><th>Nodes</th><th>Log</th></tr>';
+			composites += '<tr><th>Cloud</th><th>Node</th><th>Composite</th><th>Composite Install Image</th></tr>';
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
 				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
 				var components = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
+				
 				var uri = contributionURI(id);
 				var qname = compositeName(id);
 				
-				composites += '<tr>'
-				composites += '<td><input name="composites" type="checkbox" value="' + id + '">' +
-											'<a href=\"' + location + '\">' + qname + '</a></td>';
-				composites += '<td class=tdw>' + components + '</td>';
-				composites += '<td><img src="icons/feed-icon.png" border="0"></td>';
-				composites += '</tr>';
+				for (var r =0; r < 3; r++) {
+					var a = components.indexOf('<br>');
+					if (a != -1) {
+						var name = components.substring(0, a);
+						components = components.substring(a + 4);
+						a = components.indexOf('<br>');
+						var source = components.substring(0, a);
+						components = components.substring(a + 4);
+						a = components.indexOf('<br>');
+						if (a != -1) {
+							var image = components.substring(0, a);
+							components = components.substring(a + 4);
+						} else {
+							var image = components;
+							components = '';
+						}
+
+						if (r == 0) {
+							composites += '<tr>'
+							composites += '<td><input name="composites" type="checkbox" value="' + id + '">' +
+														'<a href=\"' + location + '\">' + qname + '</a></td>';
+							composites += '<td>' + name + '</td>';
+							composites += '<td>' + source + '</td>';
+							composites += '<td>' + image + '</td>';
+							composites += '</tr>';
+						} else {
+							composites += '<tr>'
+							composites += '<td>&nbsp;</td>';
+							composites += '<td>' + name + '</td>';
+							composites += '<td>' + source + '</td>';
+							composites += '<td>' + image + '</td>';
+							composites += '</tr>';
+						}
+						
+					} else {
+						break;
+					}
+				}
+				
 			}
 			composites += '</table>';
 			document.getElementById("composites").innerHTML = composites;

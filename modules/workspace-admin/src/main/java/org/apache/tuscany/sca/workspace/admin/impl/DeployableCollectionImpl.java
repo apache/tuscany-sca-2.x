@@ -587,19 +587,47 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
         }
     }
     
+    private Item compositeItem(String contributionURI, QName qname) {
+        String key = key(contributionURI, qname);
+        Entry<String, Item>[] entries = query("contribution=" + contributionURI);
+        for (Entry<String, Item> entry: entries) {
+            if (key.equals(entry.getKey())) {
+                return entry.getData();
+            }
+        }
+        return null;
+    }
+
     /**
      * Returns the list of components in a composite.
      * 
      * @param composite
      * @return
      */
-    private static String components(Composite composite) {
+    private String components(Composite composite) {
         StringBuffer sb = new StringBuffer();
         for (Component component: composite.getComponents()) {
-            if (sb.length() != 0) {
-                sb.append(" ");
+            if (component.getImplementation() instanceof NodeImplementation) {
+                sb.append(component.getName());
+
+                NodeImplementation nodeImplementation = (NodeImplementation)component.getImplementation();
+                Composite deployable = nodeImplementation.getComposite();
+                String contributionURI = deployable.getURI();
+                QName qname = deployable.getName();
+                String title = title(contributionURI, qname);
+
+                Item item = compositeItem(contributionURI, qname);
+                sb.append("<br><a href=\"" + item.getLink() + "\">" + title + "</a><br>");
+                
+                String imageLink = "/composite-image?composite=" + key(contributionURI, qname);
+                sb.append("<a href=\"" + imageLink + "\"><img src=\"icons/feed-icon.png\" border=\"0\"></a><br>");
+                
+            } else {
+                if (sb.length() != 0) {
+                    sb.append(" ");
+                }
+                sb.append(component.getName());
             }
-            sb.append(component.getName());
         }
         return sb.toString();
     }
@@ -641,7 +669,7 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
      * @return
      */
     private static String title(String uri, QName qname) {
-        return uri + " - " + qname.getNamespaceURI() + ';' + qname.getLocalPart();
+        return uri + " / " + qname.getNamespaceURI() + ";" + qname.getLocalPart();
     }
 
     /**

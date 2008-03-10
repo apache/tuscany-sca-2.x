@@ -99,7 +99,7 @@
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/composite"/>
    		</service>
-        <reference name="deployableCompositeCollection" target="DeployableCollectionComponent/LocalItemCollection"/>
+        <reference name="deployableCollection" target="DeployableCollectionComponent/LocalItemCollection"/>
     </component>
 
     <component name="DeployableCollectionComponent">
@@ -121,7 +121,7 @@
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/cloud"/>
    		</service>
-        <reference name="deployableCompositeCollection" target="DeployableCollectionComponent/LocalItemCollection"/>
+        <reference name="deployableCollection" target="DeployableCollectionComponent/LocalItemCollection"/>
     </component>
 
     <component name="ImageCollectionComponent">
