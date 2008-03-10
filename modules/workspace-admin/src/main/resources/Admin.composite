@@ -108,7 +108,7 @@
    	 		<t:binding.atom uri="http://localhost:9990/deployable"/>
    		</service>
    		<service name="Servlet">
-   	 		<t:binding.http uri="http://localhost:9990/resolved/composite/"/>
+   	 		<t:binding.http uri="http://localhost:9990/composite-resolved"/>
    		</service>
    		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalItemCollection"/>
    		<reference name="domainCompositeCollection" target="DomainCompositeCollectionComponent/LocalItemCollection"/>
@@ -127,7 +127,7 @@
     <component name="ImageCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.ImageCollectionImpl"/>
    		<service name="ItemCollection">
-   	 		<t:binding.atom uri="http://localhost:9990/package"/>
+   	 		<t:binding.atom uri="http://localhost:9990/composite-image"/>
    		</service>
    		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalItemCollection"/>
     </component>
