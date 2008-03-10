@@ -24,7 +24,7 @@
 
  <!-- WS Security POLICY SETS -->
  <!-- A policyset that uses WS Policy -->
- <sca:intent name="tuscany:wsAuthentication" 
+ <sca:intent name="wsAuthentication" 
  			 constrains="sca:binding.ws">
  			 <description>
  			 Communitcation thro this binding required Authentication.
@@ -32,7 +32,7 @@
  </sca:intent>	
  
  <!-- WS Security POLICY SETS -->
-  <sca:policySet name="tuscany:wsAuthenticationPolicy"
+  <sca:policySet name="wsAuthenticationPolicy"
  	provides="sca:authentication"
  	appliesTo="//sca:binding.ws"
  	>
@@ -46,7 +46,7 @@
  	</tuscany:wsConfigParam>
  </sca:policySet>
  
- <sca:policySet name="tuscany:wsClientAuthenticationPolicy"
+ <sca:policySet name="wsClientAuthenticationPolicy"
  	provides="tuscany:wsAuthentication"
  	appliesTo="//sca:binding.ws">
  	<tuscany:wsConfigParam>
@@ -61,7 +61,7 @@
  	</tuscany:wsConfigParam>
  </sca:policySet>
  
- <sca:policySet name="tuscany:wsMixedReceiverIntegrityPolicy"
+ <sca:policySet name="wsMixedReceiverIntegrityPolicy"
  	provides="sca:integrity"
  	appliesTo="//sca:binding.ws">
  	<tuscany:wsConfigParam>
@@ -74,7 +74,7 @@
  	</tuscany:wsConfigParam>
  </sca:policySet>
  
- <sca:policySet name="tuscany:wsMixedSenderIntegrityPolicy"
+ <sca:policySet name="wsMixedSenderIntegrityPolicy"
  	provides="sca:integrity"
  	appliesTo="//sca:binding.ws">
  	<tuscany:wsConfigParam>
@@ -90,7 +90,7 @@
  	</tuscany:wsConfigParam>
  </sca:policySet>
  
- <sca:policySet name="tuscany:wsServerAuthenticationIntegrityPolicy"
+ <sca:policySet name="wsServerAuthenticationIntegrityPolicy"
  	provides="sca:authentication sca:integrity"
  	appliesTo="//sca:binding.ws"
  	>
@@ -114,7 +114,7 @@
  	</tuscany:wsConfigParam>
  </sca:policySet>
  
- <sca:policySet name="tuscany:wsClientAuthenticationIntegrityPolicy"
+ <sca:policySet name="wsClientAuthenticationIntegrityPolicy"
  	provides="tuscany:wsAuthentication"
  	appliesTo="//sca:binding.ws">
  	<tuscany:wsConfigParam>
@@ -137,7 +137,7 @@
  	</tuscany:wsConfigParam>
  </sca:policySet>
  
- <sca:policySet name="tuscany:clientWsPolicyForAuthentication"
+ <sca:policySet name="clientWsPolicyForAuthentication"
  	provides="sca:authentication"
  	appliesTo="//sca:binding.ws"
  	>
@@ -162,7 +162,7 @@
 	</wsp:Policy>
  </sca:policySet>
  
- <sca:policySet name="tuscany:serverWsPolicyForAuthentication"
+ <sca:policySet name="serverWsPolicyForAuthentication"
  	provides="sca:authentication"
  	appliesTo="//sca:binding.ws"
  	>
@@ -186,7 +186,7 @@
  </sca:policySet>
  
   <!-- A policyset that uses WS Policy --> 
- <sca:policySet name="tuscany:serverWsPolicyForIntegrity"
+ <sca:policySet name="serverWsPolicyForIntegrity"
  	provides="sca:integrity"
  	appliesTo="//sca:binding.ws">
  	<wsp:Policy wsu:Id="SignOnly" 
