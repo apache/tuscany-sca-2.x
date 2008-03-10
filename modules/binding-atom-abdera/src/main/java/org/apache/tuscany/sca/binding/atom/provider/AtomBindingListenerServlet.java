@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.feed.provider;
+package org.apache.tuscany.sca.binding.atom.provider;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;

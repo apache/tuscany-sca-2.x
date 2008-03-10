@@ -17,25 +17,29 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed;
+package org.apache.tuscany.sca.binding.atom.collection;
 
-import java.io.IOException;
+/**
+ * Indicates that a resource could not be found.
+ * 
+ * @version $Rev$ $Date$
+ */
+public class NotFoundException extends Exception {
+    private static final long serialVersionUID = -5046027674128627383L;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-
-public class Provider {
-
-    public static void main(String[] args) {
-
-        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/feed/Provider.composite");
-        System.out.println("Provider.composite ready...");
-
-        try {
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        scaDomain.close();
+    public NotFoundException() {
     }
+
+    public NotFoundException(String message) {
+        super(message);
+    }
+
+    public NotFoundException(Throwable cause) {
+        super(cause);
+    }
+
+    public NotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

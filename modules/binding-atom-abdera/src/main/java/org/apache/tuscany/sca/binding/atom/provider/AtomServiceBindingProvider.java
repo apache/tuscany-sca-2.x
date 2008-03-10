@@ -17,9 +17,9 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed.provider;
+package org.apache.tuscany.sca.binding.atom.provider;
 
-import org.apache.tuscany.sca.binding.feed.AtomBinding;
+import org.apache.tuscany.sca.binding.atom.AtomBinding;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;

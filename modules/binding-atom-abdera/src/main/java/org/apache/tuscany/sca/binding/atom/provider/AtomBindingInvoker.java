@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.feed.provider;
+package org.apache.tuscany.sca.binding.atom.provider;
 
 import java.io.InputStreamReader;
 import java.io.StringWriter;
@@ -31,7 +31,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.apache.tuscany.sca.binding.feed.collection.NotFoundException;
+import org.apache.tuscany.sca.binding.atom.collection.NotFoundException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;

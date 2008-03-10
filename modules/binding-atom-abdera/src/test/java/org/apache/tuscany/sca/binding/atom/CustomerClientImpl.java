@@ -17,13 +17,13 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed;
+package org.apache.tuscany.sca.binding.atom;
 
 import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
-import org.apache.tuscany.sca.binding.feed.collection.Collection;
+import org.apache.tuscany.sca.binding.atom.collection.Collection;
 import org.osoa.sca.annotations.Reference;
 
 public class CustomerClientImpl implements CustomerClient {

@@ -17,20 +17,19 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed.impl;
+package org.apache.tuscany.sca.binding.atom;
 
-import org.apache.tuscany.sca.binding.feed.AtomBinding;
-import org.apache.tuscany.sca.binding.feed.AtomBindingFactory;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-/**
- * Factory for the Atom binding model.
- *
- * @version $Rev$ $Date$
- */
-public class AtomBindingFactoryImpl implements AtomBindingFactory {
+public class Consumer {
 
-    public AtomBinding createAtomBinding() {
-        return new AtomBindingImpl();
+    public static void main(String[] args) throws Exception {
+
+        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/feed/Consumer.composite");
+
+        CustomerClient testService = scaDomain.getService(CustomerClient.class, "CustomerClient");
+        testService.testCustomerCollection();
+
+        scaDomain.close();
     }
-
 }
