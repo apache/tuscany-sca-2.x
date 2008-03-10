@@ -17,25 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed;
+package org.apache.tuscany.sca.binding.rss.impl;
 
-import java.io.IOException;
+import org.apache.tuscany.sca.binding.rss.RSSBinding;
+import org.apache.tuscany.sca.binding.rss.RSSBindingFactory;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+/**
+ * Factory for the RSS binding model.
+ *
+ * @version $Rev$ $Date$
+ */
+public class RSSBindingFactoryImpl implements RSSBindingFactory {
 
-public class Provider {
-
-    public static void main(String[] args) {
-
-        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/feed/Provider.composite");
-        System.out.println("Provider.composite ready...");
-
-        try {
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        scaDomain.close();
+    public RSSBinding createRSSBinding() {
+        return new RSSBindingImpl();
     }
+
 }

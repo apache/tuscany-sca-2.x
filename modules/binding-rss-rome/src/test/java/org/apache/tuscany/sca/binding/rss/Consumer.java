@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed;
+package org.apache.tuscany.sca.binding.rss;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 

@@ -17,29 +17,12 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed.collection;
+package org.apache.tuscany.sca.binding.rss;
+
+import org.apache.tuscany.sca.assembly.Binding;
 
 /**
- * Indicates that a resource could not be found.
- * 
- * @version $Rev$ $Date$
+ * RSS Feed binding model.
  */
-public class NotFoundException extends Exception {
-    private static final long serialVersionUID = -5046027674128627383L;
-
-    public NotFoundException() {
-    }
-
-    public NotFoundException(String message) {
-        super(message);
-    }
-
-    public NotFoundException(Throwable cause) {
-        super(cause);
-    }
-
-    public NotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
+public interface RSSBinding extends Binding {
 }

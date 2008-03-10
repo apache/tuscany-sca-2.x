@@ -17,12 +17,12 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed.impl;
+package org.apache.tuscany.sca.binding.rss.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.binding.feed.RSSBinding;
+import org.apache.tuscany.sca.binding.rss.RSSBinding;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
