@@ -16,17 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package bigbank.account;
 
-import org.osoa.sca.annotations.Remotable;
+package bigbank.account.security;
 
 /**
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-
-@Remotable
-public interface AccountService {
-
-    public double getAccountReport(String customerID);
+public class CheckingsDeptAuthPolicy {
 
 }

@@ -16,35 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package bigbank.accountdata;
+package bigbank.account.checking;
+
+import org.osoa.sca.annotations.Remotable;
 
 /**
- * @version $$Rev$$ $$Date: 2007-04-09 12:03:34 -0700 (Mon, 09 Apr
- *          2007) $$
+ * @version $$Rev$$ $$Date$$
  */
-
-public class SavingsAccount {
-    private String accountNumber;
-    private double balance;
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String n) {
-        this.accountNumber = n;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(double b) {
-        this.balance = b;
-    }
-
-    @Override
-    public String toString() {
-        return accountNumber + ", balance:" + balance;
-    }
+@Remotable
+public interface CheckingAccountService {
+    
+    public CheckingAccountDetails getAccountDetails(String customerID);
+    
+    public double deposit(String accountNo, double depositAmt);
+    
+    public double withdraw(String accountNo, double withdrawalAmount);
+    
 }

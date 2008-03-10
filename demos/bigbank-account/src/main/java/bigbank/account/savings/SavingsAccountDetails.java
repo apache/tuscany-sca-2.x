@@ -16,19 +16,37 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator;
+package bigbank.account.savings;
+
+import java.io.Serializable;
 
 /**
- * The Calculator service interface.
+ * @version $$Rev$$ $$Date: 2007-04-09 12:03:34 -0700 (Mon, 09 Apr
+ *          2007) $$
  */
-public interface CalculatorService {
 
-    double add(double n1, double n2);
+public class SavingsAccountDetails implements Serializable {
+    private String accountNumber;
+    private double balance;
 
-    double subtract(double n1, double n2);
+    public String getAccountNumber() {
+        return accountNumber;
+    }
 
-    double multiply(double n1, double n2);
+    public void setAccountNumber(String n) {
+        this.accountNumber = n;
+    }
 
-    double divide(double n1, double n2);
+    public double getBalance() {
+        return balance;
+    }
 
+    public void setBalance(double b) {
+        this.balance = b;
+    }
+
+    @Override
+    public String toString() {
+        return accountNumber + ", balance:" + balance;
+    }
 }

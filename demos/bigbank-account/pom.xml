@@ -37,139 +37,17 @@
     </repositories>
 
     <dependencies>
-        <dependency>
+    	<dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-embedded</artifactId>
+            <artifactId>tuscany-core-spi</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-feed</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-ws-axis2</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-jsonrpc</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-rmi</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-resource</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-http</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-jetty</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.2</version>
-            <scope>test</scope>
-        </dependency>
-
-    </dependencies>
     
-    <build>
-            <finalName>demo-bigbank-account</finalName>
-            <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                    
-                <dependencies>
-                    <dependency>
-                        <groupId>ant</groupId>
-                        <artifactId>ant-trax</artifactId>
-                        <version>1.6.5</version>
-                    </dependency>
-                </dependencies>
-                
-                    <executions>
-                        <execution> 
-                            <id>install-dojo</id>                       
-                            <phase>validate</phase>
-                            <goals>
-                                <goal>run</goal>
-                            </goals>
-                            <configuration>
-                                <tasks>
-                                    <ant antfile="./build-dojo.xml" target="install-dojo">
-                                        <property name="localRepository" value="${settings.localRepository}"/>
-                                    </ant>
-                                </tasks>
-                            </configuration>
-                        </execution>
-                        <execution> 
-                            <id>copy-dojo-files</id>                       
-                            <phase>generate-resources</phase>
-                            <goals>
-                                <goal>run</goal>
-                            </goals>
-                            <configuration>
-                                <tasks>
-                                    <ant antfile="./build-dojo.xml" target="unpack-dojo-files">
-                                        <property name="localRepository" value="${settings.localRepository}"/>
-                                        <property name="artifactId" value="${artifactId}"/>
-                                    </ant>
-                                </tasks>
-                            </configuration>
-                        </execution>
-                        <execution> 
-                            <id>clean-dojo-files</id>                       
-                            <phase>clean</phase>
-                            <goals>
-                                <goal>run</goal>
-                            </goals>
-                            <configuration>
-                                <tasks>
-                                    <ant antfile="./build-dojo.xml" target="clean-dojo-files">
-                                        <property name="localRepository" value="${settings.localRepository}"/>
-                                        <property name="artifactId" value="${artifactId}"/>
-                                    </ant>
-                                </tasks>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>            
-                </plugins>
-    </build>
-
+    
+        <dependency>
+            <groupId>org.apache.ws.security</groupId>
+            <artifactId>wss4j</artifactId>
+            <version>1.5.3</version>
+        </dependency>
+    </dependencies>
 </project>
