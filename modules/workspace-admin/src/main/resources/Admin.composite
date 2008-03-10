@@ -99,6 +99,9 @@
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/composite"/>
    		</service>
+   		<service name="Servlet">
+   	 		<t:binding.http uri="http://localhost:9990/composite-source"/>
+   		</service>
         <reference name="deployableCollection" target="DeployableCollectionComponent/LocalItemCollection"/>
     </component>
 
@@ -120,6 +123,9 @@
         <property name="compositeFileName">cloud.composite</property>
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/cloud"/>
+   		</service>
+   		<service name="Servlet">
+   	 		<t:binding.http uri="http://localhost:9990/cloud-source"/>
    		</service>
         <reference name="deployableCollection" target="DeployableCollectionComponent/LocalItemCollection"/>
     </component>

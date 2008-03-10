@@ -27,13 +27,13 @@ table {
 
 th {
 	font-weight: bold; white-space: nowrap; background-color: #e5ecf9; color: #598edd;
-	text-align: left; padding-left: 2px; padding-right: 20px; padding-top: 2px; padding-bottom: 2px; vertical-align:top;
+	text-align: left; padding-left: 2px; padding-right: 20px; padding-top: 2px; padding-bottom: 2px; vertical-align: text-top;
 	border-top: 1px; border-bottom: 1px; border-left: 0px; border-right: 0px;
 	border-style: solid; border-top-color: #a2bae7; border-bottom-color: #d1d3d4
 }
 
 td {
-	padding-left: 2px; padding-top: 2px; padding-right: 20px; white-space: nowrap; vertical-align: middle
+	padding-left: 2px; padding-top: 2px; padding-right: 20px; white-space: nowrap; vertical-align: text-top
 }
 
 input {
@@ -49,7 +49,7 @@ a:visited {
 }
 
 .tdw {
-	padding-left: 2px; padding-top: 2px; padding-right: 20px; white-space: normal; vertical-align: middle
+	padding-left: 2px; padding-top: 2px; padding-right: 20px; white-space: normal; vertical-align: text-top
 }
 
 .hd1 {

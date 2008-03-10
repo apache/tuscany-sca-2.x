@@ -615,11 +615,11 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
                 String contributionURI = deployable.getURI();
                 QName qname = deployable.getName();
                 String title = title(contributionURI, qname);
+                String key = key(contributionURI, qname);
 
-                Item item = compositeItem(contributionURI, qname);
-                sb.append("<br><a href=\"" + item.getLink() + "\">" + title + "</a><br>");
+                sb.append("<br><a href=\"" + "/composite-source/" + key + "\">" + title + "</a><br>");
                 
-                String imageLink = "/composite-image?composite=" + key(contributionURI, qname);
+                String imageLink = "/composite-image?composite=" + key;
                 sb.append("<a href=\"" + imageLink + "\"><img src=\"icons/feed-icon.png\" border=\"0\"></a><br>");
                 
             } else {
