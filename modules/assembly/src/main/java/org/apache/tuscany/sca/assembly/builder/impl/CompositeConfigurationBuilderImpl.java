@@ -52,9 +52,9 @@ import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 public class CompositeConfigurationBuilderImpl {
-    String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
-    String BINDING_SCA = "binding.sca";
-    QName BINDING_SCA_QNAME = new QName(SCA10_NS, BINDING_SCA);
+    private final static String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    private final static String BINDING_SCA = "binding.sca";
+    private final static QName BINDING_SCA_QNAME = new QName(SCA10_NS, BINDING_SCA);
 
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;
@@ -81,9 +81,10 @@ public class CompositeConfigurationBuilderImpl {
      * @param composite
      * @param problems
      */
-    public void configureComponents(Composite composite) {
+    public void configureComponents(Composite composite) throws CompositeBuilderException {
         configureComponents(composite, null);
         configureSourcedProperties(composite, null);
+        configureBindingURIs(composite, null, null);
     }
 
     /**
@@ -124,8 +125,6 @@ public class CompositeConfigurationBuilderImpl {
             // Create default SCA binding
             if (service.getBindings().isEmpty()) {
                 SCABinding scaBinding = createSCABinding();
-                
-                
                 service.getBindings().add(scaBinding);
             }
 
@@ -136,33 +135,6 @@ public class CompositeConfigurationBuilderImpl {
                 if (binding.getName() == null) {
                     binding.setName(service.getName());
                 }
-                
-                String bindingURI;
-                if (binding.getURI() == null) {
-                    if (compositeServices.size() > 1) {
-                        // Binding URI defaults to parent URI / binding name
-                        bindingURI = String.valueOf(binding.getName());
-                        if (parentURI != null) {
-                            bindingURI = URI.create(parentURI + '/').resolve(bindingURI).toString();
-                        }
-                    } else {
-                        // If there's only one service then binding URI defaults
-                        // to the parent URI
-                        if (parentURI != null) {
-                            bindingURI = parentURI;
-                        } else {
-                            bindingURI = String.valueOf(binding.getName());
-                        }
-                    }
-                } else {
-                    // Combine the specified binding URI with the component URI
-                    bindingURI = binding.getURI();
-                    if (parentURI != null) {
-                        bindingURI = URI.create(parentURI + '/').resolve(bindingURI).toString();
-                    }
-                }
-
-                binding.setURI(bindingURI);
             }
             
             if (service.getCallback() != null) {
@@ -272,40 +244,13 @@ public class CompositeConfigurationBuilderImpl {
                     componentService.getBindings().add(scaBinding);
                 }
 
-                // Set binding names and URIs
+                // Set binding names
                 for (Binding binding : componentService.getBindings()) {
                     
                     // Binding name defaults to the service name
                     if (binding.getName() == null) {
                         binding.setName(componentService.getName());
                     }
-
-                    String bindingURI;
-                    if (binding.getURI() == null) {
-                        //if (componentServices.size() > 1) {
-                        if (component.getServices().size() > 1) {
-                            // Binding URI defaults to component URI / binding name
-                            bindingURI = String.valueOf(binding.getName());
-                            bindingURI = URI.create(component.getURI() + '/').resolve(bindingURI).toString();
-                        } else {
-                            // If there's only one service then binding URI defaults
-                            // to the component URI
-                            bindingURI = component.getURI();
-                        }
-                    } else {
-                        // Combine the specified binding URI with the component URI
-                        bindingURI = binding.getURI();
-                        
-                        // if this binding comes from a composite service then the URI will already be set
-                        // otherwise we need to set it relative to the component URI. We can tell by looking
-                        // if this binding is the same as the one on the component type service
-                        if ((componentService.getService() != null)&&
-                            (!componentService.getService().getBindings().contains(binding))){
-                            bindingURI = URI.create(component.getURI() + '/').resolve(bindingURI).toString();
-                        }
-                    }
-                    
-                    binding.setURI(bindingURI);
                 }
                 if (componentService.getCallback() != null) {
                     for (Binding binding : componentService.getCallback().getBindings()) {
@@ -1053,7 +998,7 @@ public class CompositeConfigurationBuilderImpl {
      * @param compositeService
      * @return
      */
-    static Component getPromotedComponent(CompositeService compositeService) {
+    private static Component getPromotedComponent(CompositeService compositeService) {
         ComponentService componentService = compositeService.getPromotedService();
         if (componentService != null) {
             Service service = componentService.getService();
@@ -1105,11 +1050,11 @@ public class CompositeConfigurationBuilderImpl {
       *       a composite is actually build in a node the node default information is currently
       *       available
       *  
-      * @param defaultBindings list of default bindings (from the node configuration composite)
       * @param composite the composite to be configured
       * @param uri the path to the composite provided through any nested composite component implementations
+      * @param defaultBindings list of default binding configurations
       */
-    public void calculateBindingURIs(List<Binding> defaultBindings, Composite composite, String uri) throws CompositeBuilderException {
+    public void configureBindingURIs(Composite composite, String uri, List<Binding> defaultBindings) throws CompositeBuilderException {
         
         String parentComponentURI = uri;
         
@@ -1129,7 +1074,7 @@ public class CompositeConfigurationBuilderImpl {
             if (implementation instanceof Composite) {
 
                 // Process nested composite
-                calculateBindingURIs(defaultBindings, (Composite)implementation, componentURI);
+                configureBindingURIs((Composite)implementation, componentURI, defaultBindings);
             }
         }  
         
@@ -1227,12 +1172,11 @@ public class CompositeConfigurationBuilderImpl {
                 continue;
             }
             if (binding.getName().equals(otherBinding.getName())) {
-
-                throw new CompositeBuilderException("Multiple bindings for service " + 
+                warning("Multiple bindings for service " + 
                                                     service.getName() + 
                                                     " have the same binding type and name " +
                                                     binding.getName() +
-                                                    ". Tuscany SCA can't create unique URIs to differentiate these bindings ");
+                                                    ". Tuscany SCA can't create unique URIs to differentiate these bindings ", binding);
             }
         }
     }
@@ -1253,7 +1197,8 @@ public class CompositeConfigurationBuilderImpl {
     throws CompositeBuilderException{
         // This is a composite service so there is no component to provide a component URI
         // The path to this composite (through nested composites) is used.
-        constructBindingURI(parentComponentURI, service, binding, composite.getServices().size() > 1, defaultBindings);
+        boolean includeBindingName = composite.getServices().size() != 1;
+        constructBindingURI(parentComponentURI, service, binding, includeBindingName, defaultBindings);
     }
 
      /**
@@ -1268,7 +1213,8 @@ public class CompositeConfigurationBuilderImpl {
       */
     private void constructBindingURI(Component component, Service service, Binding binding, List<Binding> defaultBindings)
     throws CompositeBuilderException{
-        constructBindingURI(component.getURI(), service, binding, component.getServices().size() > 1, defaultBindings);
+        boolean includeBindingName = component.getServices().size() != 1;
+        constructBindingURI(component.getURI(), service, binding, includeBindingName, defaultBindings);
     }
             
     /**
@@ -1277,32 +1223,38 @@ public class CompositeConfigurationBuilderImpl {
      * @param componentURIString the string version of the URI part that comes from the component name
      * @param service the service in question
      * @param binding the binding for which the URI is being constructed
-     * @param includeServiceBindingURI when set true the serviceBindingURI part should be used
+     * @param includeBindingName when set true the serviceBindingURI part should be used
      * @param defaultBindings the list of default binding configurations
      * @throws CompositeBuilderException
      */
-    private void constructBindingURI(String componentURIString, Service service, Binding binding, boolean includeServiceBindingURI, List<Binding> defaultBindings) 
+    private void constructBindingURI(String componentURIString, Service service, Binding binding, boolean includeBindingName, List<Binding> defaultBindings) 
       throws CompositeBuilderException{
         
         try {
-            URI baseURI = null;
-            URI componentURI = null;
-            URI serviceBindingURI = null;
-            
             // calculate the service binding URI
-            if (binding.getURI() == null){
-                serviceBindingURI = new URI(binding.getName());
+            URI bindingURI;
+            if (binding.getURI() != null){
+                bindingURI = new URI(binding.getURI());
+
+                // if the user has provided an absolute binding URI then use it
+                if (bindingURI.isAbsolute()){
+                    binding.setURI(bindingURI.toString());
+                    return;
+                }
             } else {
-                serviceBindingURI = new URI(binding.getURI());
-            } 
+                bindingURI = null;
+            }
             
-            // if the user has provided an absolute binding URI then use it
-            if (serviceBindingURI != null && serviceBindingURI.isAbsolute()){
-                binding.setURI(serviceBindingURI.toString());
-                return;
+            // Get the service binding name
+            URI bindingName;
+            if (binding.getName() != null) {
+                bindingName = new URI(binding.getName());
+            } else {
+                bindingName = new URI("");
             }
             
             // calculate the component URI  
+            URI componentURI;
             if (componentURIString != null) {
                 componentURI = new URI(addSlashToPath(componentURIString));
             } else {
@@ -1311,7 +1263,7 @@ public class CompositeConfigurationBuilderImpl {
             
             // if the user has provided an absolute component URI then use it
             if (componentURI != null && componentURI.isAbsolute()){
-                binding.setURI(concatenateModelURI(null, componentURI, serviceBindingURI, includeServiceBindingURI));
+                binding.setURI(constructBindingURI(null, componentURI, bindingURI, includeBindingName, bindingName));
                 return;
             }         
             
@@ -1338,18 +1290,19 @@ public class CompositeConfigurationBuilderImpl {
             }
 */
             // as a simpler alternative to the above commented out code. 
-            baseURI = null;
+            URI baseURI = null;
             if (defaultBindings != null) {
                 for (Binding defaultBinding : defaultBindings){
                     if (binding.getClass() == defaultBinding.getClass()){
                         baseURI = new URI(addSlashToPath(defaultBinding.getURI()));
+                        break;
                     }
                 }
             }
             
-            binding.setURI(concatenateModelURI(baseURI, componentURI, serviceBindingURI,includeServiceBindingURI));
-        } catch (URISyntaxException ex){
-            throw new CompositeBuilderException("URLSyntaxException when creating binding URI at component " +
+            binding.setURI(constructBindingURI(baseURI, componentURI, bindingURI, includeBindingName, bindingName));
+        } catch (URISyntaxException ex) {
+            warning("URLSyntaxException when creating binding URI at component " +
                                                 componentURIString +
                                                 " service " + 
                                                 service.getName() +
@@ -1380,36 +1333,52 @@ public class CompositeConfigurationBuilderImpl {
      * 
      * @param baseURI the base of the binding URI
      * @param componentURI the middle part of the binding uri derived from the component name
-     * @param serviceBindingURI the end part of the binding uri derived from the service name
-     * @param includeServiceBindingURI when set true the serviceBindingURI part should be used
+     * @param bindingURI the end part of the binding uri
+     * @param includeBindingName when set true the binding name part should be used
+     * @param bindingName the binding name
      * @return the resulting URI as a string
      */
-    private String concatenateModelURI(URI baseURI, URI componentURI, URI serviceBindingURI, boolean includeServiceBindingURI){        
-       
+    private String constructBindingURI(URI baseURI, URI componentURI, URI bindingURI, boolean includeBindingName, URI bindingName){        
         String uriString;
         
-        if (baseURI == null){
+        if (baseURI == null) {
             if (componentURI == null){
-                uriString = serviceBindingURI.toString();
-            } else {
-                if (includeServiceBindingURI){
-                    uriString = componentURI.resolve(serviceBindingURI).toString();
+                if (bindingURI != null ) {
+                    uriString = bindingURI.toString();
                 } else {
-                    uriString = componentURI.toString();
+                    uriString = bindingName.toString();
+                }
+            } else {
+                if (bindingURI != null ) {
+                    uriString = componentURI.resolve(bindingURI).toString();
+                } else {
+                    if (includeBindingName) {
+                        uriString = componentURI.resolve(bindingName).toString();
+                    } else {
+                        uriString = componentURI.toString();
+                    }
                 }
             }
         } else {
             if (componentURI == null){
-                if (includeServiceBindingURI){
-                    uriString = baseURI.resolve(serviceBindingURI).toString();
+                if (bindingURI != null ) {
+                    uriString = baseURI.resolve(bindingURI).toString();
                 } else {
-                    uriString = baseURI.toString();
-                }                    
+                    if (includeBindingName) {
+                        uriString = baseURI.resolve(bindingName).toString();
+                    } else {
+                        uriString = baseURI.toString();
+                    }
+                }
             } else {
-                if (includeServiceBindingURI){
-                    uriString = baseURI.resolve(componentURI).resolve(serviceBindingURI).toString();
+                if (bindingURI != null ) {
+                    uriString = baseURI.resolve(componentURI).resolve(bindingURI).toString();
                 } else {
-                    uriString = baseURI.resolve(componentURI).toString();
+                    if (includeBindingName) {
+                        uriString = baseURI.resolve(componentURI).resolve(bindingName).toString();
+                    } else {
+                        uriString = baseURI.resolve(componentURI).toString();
+                    }
                 }
             }
         }
@@ -1419,6 +1388,10 @@ public class CompositeConfigurationBuilderImpl {
             uriString = uriString.substring(0, uriString.length()-1);   
         }
         
-        return uriString;
+        URI uri = URI.create(uriString);
+        if (!uri.isAbsolute()) {
+            uri = URI.create("/").resolve(uri);
+        }
+        return uri.toString();
     }    
 }

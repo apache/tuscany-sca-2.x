@@ -404,25 +404,30 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
         }
         
         // configure the endpoints for each composite in the domain
-        for (Composite composite : domainComposite.getIncludes()) {
-            List<Binding> defaultBindings = null;
-            
-            // find the node that will run this composite
+        List<Composite> domainIncludes = domainComposite.getIncludes(); 
+        for (int i = 0, n =domainIncludes.size(); i < n; i++) {
+            Composite composite = domainIncludes.get(i);
             QName compositeName = composite.getName();
-            String contributionURI = composite.getURI();
+            String contributionURI = uri(domainEntries[i].getKey());
+            
+            // find the node that will run this composite and the default
+            // bindings that it configures
+            Component node = null;
             for (Composite cloudComposite : cloudsComposite.getIncludes()) {
-                for (Component node : cloudComposite.getComponents()) {
-                    NodeImplementation nodeImplementation = (NodeImplementation)node.getImplementation();
+                for (Component nc : cloudComposite.getComponents()) {
+                    NodeImplementation nodeImplementation = (NodeImplementation)nc.getImplementation();
                     if (nodeImplementation.getComposite().getName().equals(compositeName) &&
                         nodeImplementation.getComposite().getURI().equals(contributionURI)) {
-                        defaultBindings = node.getServices().get(0).getBindings();
+                        node = nc;
+                        break;
                     }
                 }
             }
 
-            if (defaultBindings != null) {
+            if (node != null) {
                 try {
-                    compositeConfigurationBuilder.calculateBindingURIs(defaultBindings, composite, null);
+                    List<Binding> defaultBindings = node.getServices().get(0).getBindings();
+                    compositeConfigurationBuilder.configureBindingURIs(composite, null, defaultBindings);
                 } catch (CompositeBuilderException e) {
                     throw new ServletException(e);
                 }
