@@ -44,7 +44,6 @@
                 <module>binding-ejb</module>
                 <!-- obsolete -->
                 <module>binding-feed</module>
-                <module>binding-feed-atom</module>
                 <!-- new bindings -->
                 <module>binding-atom</module>
                 <module>binding-atom-abdera</module>
