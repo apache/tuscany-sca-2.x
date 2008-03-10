@@ -50,7 +50,7 @@
 	<component name="ShoppingCart">
 		<implementation.java class="services.ShoppingCartImpl"/>
 		<service name="Cart">
-			<t:binding.atom/>
+			<t:binding.atom uri="/ShoppingCart/Cart"/>
 		</service>    	
 		<service name="Total">
 			<t:binding.jsonrpc/>
