@@ -16,14 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package stockquote;
+package bigbank.account.savings;
 
 import org.osoa.sca.annotations.Remotable;
 
 /**
- * This is the business interface of the StockQuote service.
+ * @version $$Rev$$ $$Date$$
  */
 @Remotable
-public interface StockQuoteService {
-    public double getQuote(String symbol);
+public interface SavingsAccountService {
+    
+    public SavingsAccountDetails getAccountDetails(String customerID);
+    
+    public double deposit(String accountNo, double depositAmt);
+    
+    public double withdraw(String accountNo, double withdrawalAmount);
+    
 }

@@ -17,19 +17,18 @@
  * specific language governing permissions and limitations
  * under the License.
 -->
-<project name="bigbank-account" default="run">
+<project name="bigbank-account" default="compile">
     <property name="settings.localRepository" value="./target/repo" />
     <property name="artifactId" value="demo-bigbank-account" />	
-    <property name="test.class" value="bigbank.demo.BigBankServer" />
-	
-    <path id="test.classpath">
+    
+    <!--path id="test.classpath">
     	<pathelement location="target/classes"/>
         <pathelement location="../../modules/tuscany-host-jetty-1.2-incubating-SNAPSHOT.jar"/>
         <pathelement location="../../modules/tuscany-binding-jsonrpc-1.2-incubating-SNAPSHOT.jar"/>
         <pathelement location="../../modules/tuscany-binding-rmi-1.2-incubating-SNAPSHOT.jar"/>
     	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>    	
     	<pathelement location="target/demo-bigbank-account.jar"/>    
-    </path>
+    </path-->
 	
     <target name="init">
         <mkdir dir="target/classes"/>
@@ -37,7 +36,7 @@
     	<mkdir dir="target/repo"/>
     </target>
 	
-    <target name="dojo" depends="init">
+    <!--target name="dojo" depends="init">
         <ant antfile="./build-dojo.xml" target="install-dojo-nomaven">
           <property name="localRepository" value="${settings.localRepository}"/>
         </ant>
@@ -46,9 +45,9 @@
           <property name="localRepository" value="${settings.localRepository}"/>
           <property name="artifactId" value="${artifactId}"/>
         </ant>
-    </target>
+    </target-->
 	
-    <target name="compile" depends="dojo">
+    <target name="compile" depends="init">
         <javac srcdir="src/main/java"
                destdir="target/classes"
                debug="on"
@@ -62,9 +61,9 @@
             <fileset dir="src/main/resources"/>
         </copy>
         <jar destfile="target/demo-bigbank-account.jar" basedir="target/classes">
-            <manifest>
+            <!--manifest>
                 <attribute name="Main-Class" value="${test.class}" /> 
-            </manifest>
+            </manifest-->
         </jar>    	
     </target>		
 	
@@ -76,5 +75,11 @@
             </classpath>
         </java>    	
     </target>
+
+    <target name="clean">
+		<delete quiet="true" includeemptydirs="true">
+			<fileset dir="target" />
+		</delete>
+	</target>
 	
 </project>

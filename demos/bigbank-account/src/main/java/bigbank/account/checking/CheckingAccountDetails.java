@@ -16,18 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package bigbank.accountdata;
+package bigbank.account.checking;
 
 /**
- * @version $$Rev$$ $$Date$$
+ * @version $$Rev$$ $$Date: 2007-04-09 12:03:34 -0700 (Mon, 09 Apr
+ *          2007) $$
  */
 
-public interface AccountDataService {
-    
-    public CheckingAccount getCheckingAccount(String customerID);
-    
-    public SavingsAccount getSavingsAccount(String customerID);
-    
-    public StockAccount getStockAccount(String customerID);
-    
+public class CheckingAccountDetails {
+    private String accountNumber;
+    private double balance;
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String n) {
+        this.accountNumber = n;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double b) {
+        this.balance = b;
+    }
+
+    @Override
+    public String toString() {
+        return accountNumber + ", balance:" + balance;
+    }
 }
