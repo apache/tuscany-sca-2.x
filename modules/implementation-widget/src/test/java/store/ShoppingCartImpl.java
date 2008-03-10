@@ -27,8 +27,8 @@ import java.util.UUID;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
-import org.apache.tuscany.sca.binding.feed.collection.Collection;
-import org.apache.tuscany.sca.binding.feed.collection.NotFoundException;
+import org.apache.tuscany.sca.binding.atom.collection.Collection;
+import org.apache.tuscany.sca.binding.atom.collection.NotFoundException;
 
 public class ShoppingCartImpl implements Collection {
 
