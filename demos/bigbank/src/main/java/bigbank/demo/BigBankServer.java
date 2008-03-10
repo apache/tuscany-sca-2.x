@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-//import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
+import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 
 import bigbank.account.savings.SavingsAccountService;
 
@@ -45,7 +45,7 @@ public class BigBankServer {
         }
         
         System.out.println("Starting the Sample SCA BigBank server...");
-        /*ClassLoader cl = BigBankServer.class.getClassLoader();
+        ClassLoader cl = BigBankServer.class.getClassLoader();
         EmbeddedSCADomain domain = new EmbeddedSCADomain(cl, "http://localhost");
 
         //Start the domain
@@ -61,17 +61,18 @@ public class BigBankServer {
             domain.buildComposite(deployable);
         }
         
-        //Start Components from  composite
-        for (Composite deployable : bigbankAcContribution.getDeployables()) {
-            domain.getCompositeActivator().activate(deployable);
-            domain.getCompositeActivator().start(deployable);
-        }
-        
         URL bigbankContribUrl = getContributionURL(BigBankServer.class);
         Contribution bigbankContribution = contributionService.contribute("http://bigbank", bigbankContribUrl, false);
         for (Composite deployable : bigbankContribution.getDeployables()) {
             domain.getDomainComposite().getIncludes().add(deployable);
             domain.buildComposite(deployable);
+        }
+
+
+        //Start Components from  composite
+        for (Composite deployable : bigbankAcContribution.getDeployables()) {
+            domain.getCompositeActivator().activate(deployable);
+            domain.getCompositeActivator().start(deployable);
         }
 
         for (Composite deployable : bigbankContribution.getDeployables()) {
@@ -97,9 +98,10 @@ public class BigBankServer {
 
         domain.stop();
 
-        domain.close();*/
+        domain.close();
         
-        SCADomain domain = SCADomain.newInstance("BigBank.composite");
+        
+        /*SCADomain domain = SCADomain.newInstance("BigBank.composite");
 
         if (timeout < 0) {
             System.out.println("Press Enter to Exit...");
@@ -108,7 +110,7 @@ public class BigBankServer {
             Thread.sleep(timeout);
         }
 
-        domain.close();
+        domain.close();*/
         
         System.out.println("Bye");
     }
