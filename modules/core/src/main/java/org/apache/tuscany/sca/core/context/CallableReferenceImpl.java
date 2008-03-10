@@ -248,19 +248,22 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                 for (Binding binding : reference.getBindings()) {
                     if (binding instanceof OptimizableBinding) {
                         String targetURI = binding.getURI();
+                        if (targetURI.startsWith("/")) {
+                            targetURI = targetURI.substring(1);
+                        }
                         int index = targetURI.lastIndexOf('/');
                         String serviceName = "";
                         if (index > -1) {
                             serviceName = targetURI.substring(index + 1);
                             targetURI = targetURI.substring(0, index);
                         }
-                        Component targetComponet = compositeActivator.resolve(targetURI);
+                        Component targetComponent = compositeActivator.resolve(targetURI);
                         ComponentService targetService = null;
-                        if (targetComponet != null) {
+                        if (targetComponent != null) {
                             if ("".equals(serviceName)) {
-                                targetService = ComponentContextHelper.getSingleService(targetComponet);
+                                targetService = ComponentContextHelper.getSingleService(targetComponent);
                             } else {
-                                for (ComponentService service : targetComponet.getServices()) {
+                                for (ComponentService service : targetComponent.getServices()) {
                                     if (service.getName().equals(serviceName)) {
                                         targetService = service;
                                         break;
@@ -269,7 +272,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                             }
                         }
                         OptimizableBinding optimizableBinding = (OptimizableBinding)binding;
-                        optimizableBinding.setTargetComponent(targetComponet);
+                        optimizableBinding.setTargetComponent(targetComponent);
                         optimizableBinding.setTargetComponentService(targetService);
                         if (targetService != null) {
                             for (Binding serviceBinding : targetService.getBindings()) {

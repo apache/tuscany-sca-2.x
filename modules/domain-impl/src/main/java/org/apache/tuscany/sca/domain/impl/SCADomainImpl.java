@@ -670,6 +670,9 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                                "]");
         
         String url = SERVICE_NOT_REGISTERED;
+        if (serviceName.startsWith("/")) {
+            serviceName = serviceName.substring(1);
+        }
         String serviceKey = serviceName + bindingName;
         
         for (NodeModel node : domainModel.getNodes().values()){

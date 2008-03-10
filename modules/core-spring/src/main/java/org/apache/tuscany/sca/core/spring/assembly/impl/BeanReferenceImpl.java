@@ -40,6 +40,9 @@ public class BeanReferenceImpl extends RuntimeBeanReference {
     public String getBeanName() {
         SCABinding binding = reference.getBinding(SCABinding.class);
         String name = binding.getURI();
+        if (name.startsWith("/")) {
+            name = name.substring(1);
+        }
         int s = name.lastIndexOf('/');
         if (s != -1) {
             name = name.substring(0, s);
