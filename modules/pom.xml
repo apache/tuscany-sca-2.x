@@ -42,8 +42,15 @@
                 <module>assembly-xsd</module>
                 <module>binding-dwr</module>
                 <module>binding-ejb</module>
+                <!-- obsolete -->
                 <module>binding-feed</module>
                 <module>binding-feed-atom</module>
+                <!-- new bindings -->
+                <module>binding-atom</module>
+                <module>binding-atom-abdera</module>
+                <module>binding-rss</module>
+                <module>binding-rss-rome</module>
+                <!-- -->
                 <module>binding-http</module>
                 <module>binding-jms</module>
                 <module>binding-jsonrpc</module>
