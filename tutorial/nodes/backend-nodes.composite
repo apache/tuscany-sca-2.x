@@ -26,14 +26,14 @@
 	<component name="CatalogsNode">
 		<t:implementation.node uri="cloud" composite="c:catalogs"/>
 		<service name="Node">
-			<binding.sca uri="http://localhost:8200"/>
+			<binding.ws uri="http://localhost:8200"/>
 		</service>
 	</component> 
 
 	<component name="CurrencyNode">
 		<t:implementation.node uri="cloud" composite="c:currency"/>
 		<service name="Node">
-			<binding.sca uri="http://localhost:8201"/>
+			<binding.ws uri="http://localhost:8201"/>
 		</service>
 	</component> 
 
