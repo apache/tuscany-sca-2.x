@@ -23,6 +23,6 @@ import org.apache.tuscany.sca.node.launch.SCANode2Launcher;
 
 public class LaunchStoreEUNode {
     public static void main(String[] args) throws Exception {
-        SCANode2Launcher.main(new String[] {"http://localhost:9990/package/?composite=composite:store-eu;http://store;store-eu"});
+        SCANode2Launcher.main(new String[] {"http://localhost:9990/composite-image/?composite=composite:store-eu;http://store;store-eu"});
     }
 }
