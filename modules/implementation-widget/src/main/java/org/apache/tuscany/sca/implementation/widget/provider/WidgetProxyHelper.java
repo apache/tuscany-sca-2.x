@@ -27,8 +27,8 @@ class WidgetProxyHelper {
     private static Map<String, String> proxyClient = new HashMap<String, String>();
 
     static {
-        proxyFileRegistry.put("org.apache.tuscany.sca.binding.feed.impl.AtomBindingImpl", "binding-atom.js");
-        proxyClient.put("org.apache.tuscany.sca.binding.feed.impl.AtomBindingImpl", "AtomClient");
+        proxyFileRegistry.put("org.apache.tuscany.sca.binding.atom.impl.AtomBindingImpl", "binding-atom.js");
+        proxyClient.put("org.apache.tuscany.sca.binding.atom.impl.AtomBindingImpl", "AtomClient");
         
         proxyFileRegistry.put("org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding", "binding-jsonrpc.js");
         proxyClient.put("org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding", "JSONRpcClient");
