@@ -71,7 +71,7 @@ public class CompositeCollectionImpl implements ItemCollection, LocalItemCollect
     public String compositeFileName;
     
     @Reference
-    public LocalItemCollection deployableCompositeCollection;
+    public LocalItemCollection deployableCollection;
 
     private ModelFactoryExtensionPoint modelFactories;
     private AssemblyFactory assemblyFactory;
@@ -250,7 +250,7 @@ public class CompositeCollectionImpl implements ItemCollection, LocalItemCollect
     
     private Item compositeItem(String contributionURI, QName qname) {
         String key = key(contributionURI, qname);
-        Entry<String, Item>[] entries = deployableCompositeCollection.query("contribution=" + contributionURI);
+        Entry<String, Item>[] entries = deployableCollection.query("contribution=" + contributionURI);
         for (Entry<String, Item> entry: entries) {
             if (key.equals(entry.getKey())) {
                 return entry.getData();

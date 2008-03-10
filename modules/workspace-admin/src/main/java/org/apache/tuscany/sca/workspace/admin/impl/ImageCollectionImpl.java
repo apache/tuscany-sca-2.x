@@ -138,7 +138,7 @@ public class ImageCollectionImpl implements ItemCollection, LocalItemCollection 
      * @return
      */
     private static String title(String uri, QName qname) {
-        return uri + " - " + qname.getNamespaceURI() + ';' + qname.getLocalPart();
+        return uri + " / " + qname.getNamespaceURI() + ";" + qname.getLocalPart();
     }
 
 }
