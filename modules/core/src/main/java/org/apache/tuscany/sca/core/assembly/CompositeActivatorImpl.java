@@ -397,8 +397,11 @@ public class CompositeActivatorImpl implements CompositeActivator {
             throw new IllegalStateException("Provider factory not found for class: " + implementation.getClass()
                 .getName());
         }
-        for(PolicyProviderFactory f: providerFactories.getPolicyProviderFactories()){
-            component.addPolicyProvider(f.createImplementationPolicyProvider(component, implementation));
+        for (PolicyProviderFactory f : providerFactories.getPolicyProviderFactories()) {
+            PolicyProvider policyProvider = f.createImplementationPolicyProvider(component, implementation);
+            if (policyProvider != null) {
+                component.addPolicyProvider(policyProvider);
+            }
         }
         
     }
