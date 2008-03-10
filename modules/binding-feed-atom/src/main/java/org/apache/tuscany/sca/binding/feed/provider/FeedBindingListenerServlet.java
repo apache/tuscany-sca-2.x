@@ -320,7 +320,7 @@ class FeedBindingListenerServlet extends HttpServlet {
             	feedEntry.setId(key.toString());
             }
             feedEntry.setTitle(item.getTitle());
-            feedEntry.setContent(item.getContents());
+            feedEntry.setContentAsHtml(item.getContents());
 
             String href = item.getLink();
             if (href == null && key != null) {
