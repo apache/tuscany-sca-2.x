@@ -17,12 +17,12 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed;
+package org.apache.tuscany.sca.binding.rss;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.sca.binding.feed.collection.Collection;
+import org.apache.tuscany.sca.binding.rss.collection.Collection;
 import org.osoa.sca.annotations.Reference;
 
 import com.sun.syndication.feed.atom.Content;

@@ -16,21 +16,40 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.binding.rss.collection;
 
-package org.apache.tuscany.sca.binding.feed.impl;
+import java.io.InputStream;
 
-import org.apache.tuscany.sca.binding.feed.RSSBinding;
-import org.apache.tuscany.sca.binding.feed.RSSBindingFactory;
+import org.osoa.sca.annotations.Remotable;
+
+import com.sun.syndication.feed.atom.Entry;
 
 /**
- * Factory for the RSS binding model.
- *
+ * Provides access to a collection of resources using Atom.
+ * 
  * @version $Rev$ $Date$
  */
-public class RSSBindingFactoryImpl implements RSSBindingFactory {
+@Remotable
+public interface MediaCollection extends Collection {
 
-    public RSSBinding createRSSBinding() {
-        return new RSSBindingImpl();
-    }
+    /**
+     * Creates a new media entry
+     * 
+     * @param title
+     * @param slug
+     * @param contentType
+     * @param media
+     */
+    Entry postMedia(String title, String slug, String contentType, InputStream media);
+
+    /**
+     * Update a media entry.
+     * 
+     * @param id
+     * @param contentType
+     * @param media
+     * @return
+     */
+    void putMedia(String id, String contentType, InputStream media) throws NotFoundException;
 
 }

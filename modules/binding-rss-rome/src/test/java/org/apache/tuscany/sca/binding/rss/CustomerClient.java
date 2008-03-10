@@ -17,19 +17,9 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed;
+package org.apache.tuscany.sca.binding.rss;
 
-/**
- * Factory for the RSS binding
- *
- * @version $Rev$ $Date$
- */
-public interface RSSBindingFactory {
+public interface CustomerClient {
 
-    /**
-     * Creates a new RSS binding.
-     * @return the new RSS binding
-     */
-    RSSBinding createRSSBinding();
-
+    void testCustomerCollection() throws Exception;
 }

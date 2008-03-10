@@ -17,9 +17,25 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed;
+package org.apache.tuscany.sca.binding.rss;
 
-public interface CustomerClient {
+import java.io.IOException;
 
-    void testCustomerCollection() throws Exception;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
+
+public class Provider {
+
+    public static void main(String[] args) {
+
+        SCADomain scaDomain = SCADomain.newInstance("org/apache/tuscany/sca/binding/feed/Provider.composite");
+        System.out.println("Provider.composite ready...");
+
+        try {
+            System.in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        scaDomain.close();
+    }
 }

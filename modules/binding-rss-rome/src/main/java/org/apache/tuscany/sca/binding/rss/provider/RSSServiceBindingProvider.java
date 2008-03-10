@@ -17,9 +17,9 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.binding.feed.provider;
+package org.apache.tuscany.sca.binding.rss.provider;
 
-import org.apache.tuscany.sca.binding.feed.RSSBinding;
+import org.apache.tuscany.sca.binding.rss.RSSBinding;
 import org.apache.tuscany.sca.databinding.Mediator;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;

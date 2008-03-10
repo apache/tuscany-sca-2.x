@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.binding.feed.collection;
+package org.apache.tuscany.sca.binding.rss.collection;
 
 import org.osoa.sca.annotations.Remotable;
 
