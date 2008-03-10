@@ -172,7 +172,7 @@ public class Axis2ServiceProvider {
             uri = computeActualURI(component, contract);
             
             if (!uri.startsWith("jms:/")) {
-                uri = "jms:/" + uri;
+                uri = "jms:" + uri;
             }
             
             // construct the rest of the uri based on the policy. All the details are put
