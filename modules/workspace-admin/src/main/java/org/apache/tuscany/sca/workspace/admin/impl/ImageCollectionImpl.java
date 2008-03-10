@@ -92,7 +92,7 @@ public class ImageCollectionImpl implements ItemCollection, LocalItemCollection 
             Entry<String, Item> compositeEntry = new Entry<String, Item>();
             Item compositeItem = new Item();
             compositeItem.setTitle(title(contributionURI, qname));
-            compositeItem.setLink("/resolved/composite/" + key);
+            compositeItem.setLink("/composite-resolved/" + key);
             compositeEntry.setKey(key);
             compositeEntry.setData(compositeItem);
             entries.add(compositeEntry);
