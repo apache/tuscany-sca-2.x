@@ -62,8 +62,8 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
  * A resource collection binding listener, implemented as a servlet and
  * registered in a servlet host provided by the SCA hosting runtime.
  */
-class FeedBindingListenerServlet extends HttpServlet {
-    private static final Logger logger = Logger.getLogger(FeedBindingListenerServlet.class.getName());
+class AtomBindingListenerServlet extends HttpServlet {
+    private static final Logger logger = Logger.getLogger(AtomBindingListenerServlet.class.getName());
     private static final long serialVersionUID = 1L;
 
     //private final static Namespace APP_NS = Namespace.getNamespace("app", "http://purl.org/atom/app#");
@@ -95,7 +95,7 @@ class FeedBindingListenerServlet extends HttpServlet {
      * @param messageFactory
      * @param feedType
      */
-    FeedBindingListenerServlet(RuntimeWire wire, MessageFactory messageFactory, Mediator mediator, String feedType) {
+    AtomBindingListenerServlet(RuntimeWire wire, MessageFactory messageFactory, Mediator mediator, String feedType) {
         this.wire = wire;
         this.messageFactory = messageFactory;
         this.mediator = mediator;
