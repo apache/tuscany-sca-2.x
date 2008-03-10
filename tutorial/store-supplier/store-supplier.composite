@@ -62,7 +62,7 @@
 		<implementation.java class="services.db.ShoppingCartTableImpl"/>
 		<property name="database">../store-supplier/target/cart-db</property>
 		<service name="Cart">
-			<t:binding.atom/>
+			<t:binding.atom uri="/ShoppingCart/Cart"/>
 		</service>    	
 		<service name="Total">
 			<t:binding.jsonrpc/>
