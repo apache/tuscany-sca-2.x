@@ -62,10 +62,9 @@ public class DServiceImpl implements DService {
      */
     @ConversationID
     public void setConversationID(String id) {
-        System.out.println ("Setting conversation ID");
+        System.out.println ("Setting conversation ID at service = " + id );
     }
     
-    @EndsConversation
     public void endConversationViaAnnotatedMethod() {
         System.out.println ("Annotated Ends Conversation");
     }

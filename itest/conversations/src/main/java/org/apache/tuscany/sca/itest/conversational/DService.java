@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.itest.conversational;
 
 import org.osoa.sca.annotations.Conversational;
+import org.osoa.sca.annotations.EndsConversation;
 
 /**
  * Simple conversational Service
@@ -40,5 +41,6 @@ public interface DService {
      */
     void setState(String aState);
     
+    @EndsConversation
     void endConversationViaAnnotatedMethod();
 }

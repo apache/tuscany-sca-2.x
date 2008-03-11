@@ -31,6 +31,8 @@ public interface CService {
     void setState(String aState);
     
     Object getConversationID();
+    
+    Object getConversationObjectConversationId();
         
     void setConversationID(String theID);
     
