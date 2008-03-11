@@ -88,7 +88,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
             try {
                 handleServiceRequest(request, response);
             } finally {
-                HttpSession session = request.getSession();
+                HttpSession session = request.getSession(false);
                 if (session != null) {
                     session.removeAttribute("JSONRPCBridge");
                 }
