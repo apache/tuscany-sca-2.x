@@ -30,6 +30,9 @@
 	
 	//@Reference
 	var shoppingCart = new Reference("ShoppingCart"); 
+	
+	//@Property
+	var locale = Property("locale");
 
 	function catalog_getResponse(items) {
 		var catalog = "";
@@ -86,6 +89,7 @@
 		document.getElementById('total').innerHTML = "";	
 	}	
 
+    alert(locale);
 	catalog.get(catalog_getResponse);
 	shoppingCart.get("", shoppingCart_getResponse);
 </script>

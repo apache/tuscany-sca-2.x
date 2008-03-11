@@ -20,15 +20,16 @@
 package org.apache.tuscany.sca.implementation.widget;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
+
 
 class WidgetImplementationIntrospector {
     private static final String WEB_REFERENCE_ANNOTATION = "//@Reference";
+    private static final String WEB_PROPERTY_ANNOTATION = "//@Property";
     
     private AssemblyFactory assemblyFactory;
     private WidgetImplementation widgetImplementation;
@@ -40,23 +41,30 @@ class WidgetImplementationIntrospector {
     
     
     /**
-     * Introspect the References of a given htmlWidget
-     * @return
+     * Introspect and populate a given widget implementation
      */
-    List<Reference> getReferences() {
-        List<Reference> references = new ArrayList<Reference>();
+    public void introspectImplementation() {
         URL htmlWidget = widgetImplementation.getLocationURL();
         
         try {
             Scanner scanner = new Scanner(htmlWidget.openStream());
             while(scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if(line.contains(WEB_REFERENCE_ANNOTATION)) {
+                if(line.contains(WEB_PROPERTY_ANNOTATION)) {
+                	//process the next line, as it has the property info
+                	if (scanner.hasNextLine()) {
+                		Property property = processPropertyScript(scanner.nextLine());
+                		if (property != null) {
+                			widgetImplementation.getProperties().add(property);
+                		}
+                	}
+                	
+                } else if(line.contains(WEB_REFERENCE_ANNOTATION)) {
                     //process the next line, as it has the reference info
-                    if(scanner.hasNextLine()) {
+                    if (scanner.hasNextLine()) {
                         Reference reference = processReferenceScript(scanner.nextLine());
                         if(reference != null){
-                            references.add(reference);
+                        	widgetImplementation.getReferences().add(reference);
                         }
                         
                     }
@@ -67,8 +75,36 @@ class WidgetImplementationIntrospector {
             
         }
         
-        return references;
+    	
+    }
+    
+    
+    /**
+     * Process Property declaration in JavaScript code
+     * Supported ways:
+     *    //@Property
+     *    var locale = Property("locale");
+     *    
+     *    //@Property
+     *    locale = Property("locale");
+     *    
+     * @param scriptContent
+     * @return
+     */
+    private Property processPropertyScript(String scriptContent) {
+    	Property property = null;
+        String propertyName = null;
         
+        String tokens[] = scriptContent.split("=");
+        tokens = tokens[0].split(" ");
+        propertyName = tokens[tokens.length -1];
+        
+        if(propertyName != null) {
+            property = assemblyFactory.createProperty();
+            property.setName(propertyName);     
+        }
+        
+        return property;
     }
     
     /**
@@ -98,8 +134,4 @@ class WidgetImplementationIntrospector {
         
         return reference;
     }
-    
-    
-
-
 }

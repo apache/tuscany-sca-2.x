@@ -29,11 +29,15 @@ import java.net.URI;
 import java.net.URL;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
+import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**
@@ -92,6 +96,8 @@ class WidgetImplementationInvoker implements Invoker {
     }
 
     /**
+     * This helper class concatenates the necessary javascript client code into a
+     * single javascript per component
      */
     private InputStream generateWidgetCode() throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -110,6 +116,10 @@ class WidgetImplementationInvoker implements Invoker {
             }
         }
         
+        //process properties
+        generateJavaScriptPropertyFunction(pw);
+        
+        //process references
         generateJavaScriptReferenceFunction(pw);
         
        
@@ -128,7 +138,7 @@ class WidgetImplementationInvoker implements Invoker {
      */
     private void generateJavaScriptBindingProxy(PrintWriter pw, String bindingProxyName) throws IOException {
         
-        URL url = getClass().getClassLoader().getResource(bindingProxyName); //Thread.currentThread().getContextClassLoader().getResource(bindingProxyName);
+        URL url = getClass().getClassLoader().getResource(bindingProxyName);
         InputStream is = url.openStream();
         int i;
         while ((i = is.read()) != -1) {
@@ -138,6 +148,50 @@ class WidgetImplementationInvoker implements Invoker {
         pw.println();
     }
     
+    /**
+     * Generate JavaScript code to inject SCA Properties
+     * @param pw
+     * @throws IOException
+     */
+    private void generateJavaScriptPropertyFunction(PrintWriter pw) throws IOException {
+
+        pw.println("var propertyMap = new String();");
+        for(ComponentProperty property : component.getProperties()) {
+            String propertyName = property.getName();
+
+            pw.println("propertyMap." + propertyName + " = \"" + getPropertyValue(property) + "\"");
+        }
+        
+        pw.println("function Property(name) {");
+        pw.println("    return propertyMap[name];");
+        pw.println("}");
+    }
+    
+    /**
+     * Convert property value to String
+     * @param property
+     * @return
+     */
+    private String getPropertyValue(ComponentProperty property) {
+    	Document doc = (Document)property.getValue();
+    	Element rootElement = doc.getDocumentElement();
+    	
+    	String value = null;
+    	
+    	//FIXME : Provide support for isMany and other property types
+    	
+    	if (rootElement.getChildNodes().getLength() > 0) {
+            value = rootElement.getChildNodes().item(0).getTextContent();
+        }
+    	
+    	return value;
+    }
+    
+    /**
+     * Generate JavaScript code to inject SCA References
+     * @param pw
+     * @throws IOException
+     */
     private void generateJavaScriptReferenceFunction (PrintWriter pw) throws IOException {
         
         pw.println("var referenceMap = new Object();");

@@ -25,6 +25,7 @@
 
     <component name="store">
         <tuscany:implementation.widget location="content/store.html"/>
+        <property name="locale">en</property>
         <service name="Widget">
         	<tuscany:binding.http uri="http://localhost:8085/store"/> 
         </service>
