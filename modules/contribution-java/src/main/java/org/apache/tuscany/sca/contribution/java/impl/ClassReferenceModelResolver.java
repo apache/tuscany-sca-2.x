@@ -79,7 +79,10 @@ public class ClassReferenceModelResolver implements ModelResolver {
   
 
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
-        Object resolved = map.get(unresolved);
+        if (!(unresolved instanceof ClassReference)) {
+            return unresolved;
+        }
+        Object resolved = map.get(((ClassReference)unresolved).getClassName());
 
         if (resolved != null) {
             return modelClass.cast(resolved);
@@ -106,7 +109,7 @@ public class ClassReferenceModelResolver implements ModelResolver {
             //if we load the class            
             // Store a new ClassReference wrappering the loaded class
             ClassReference classReference = new ClassReference(clazz);
-            map.put(getPackageName(classReference), classReference);
+            map.put(clazz.getName(), classReference);
 
             // Return the resolved ClassReference
             return modelClass.cast(classReference);
@@ -123,7 +126,7 @@ public class ClassReferenceModelResolver implements ModelResolver {
 
     private String getPackageName(ClassReference clazz) {
         int pos = clazz.getClassName().lastIndexOf(".");
-        return clazz.getClassName().substring(0, pos - 1);
+        return clazz.getClassName().substring(0, pos);
     }
     
 }
