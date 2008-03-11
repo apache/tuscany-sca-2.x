@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -47,12 +48,14 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 public class WidgetImplementationProcessor implements StAXArtifactProcessor<WidgetImplementation> {
     private static final QName IMPLEMENTATION_WIDGET = new QName(Constants.SCA10_TUSCANY_NS, "implementation.widget");
     
+    private AssemblyFactory assemblyFactory;
     private ContributionFactory contributionFactory;
     private WidgetImplementationFactory implementationFactory;
     
     public WidgetImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
+    	assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-        implementationFactory = new WidgetImplementationFactory(modelFactories); //modelFactories.getFactory(WidgetImplementationFactory.class);
+        implementationFactory = new WidgetImplementationFactory(modelFactories); 
     }
 
     public QName getArtifactType() {
@@ -69,11 +72,10 @@ public class WidgetImplementationProcessor implements StAXArtifactProcessor<Widg
         
         // Read an <implementation.widget> element
 
-        // Read the location attribute specifying the location of the
-        // resources
+        // Read the location attribute specifying the location of the resources
         String location = reader.getAttributeValue(null, "location");
 
-        // Create an initialize the resource implementationmodel
+        // Create an initialize the resource implementation model
         WidgetImplementation implementation = implementationFactory.createWidgetImplementation();
         implementation.setLocation(location);
         implementation.setUnresolved(true);
@@ -98,6 +100,11 @@ public class WidgetImplementationProcessor implements StAXArtifactProcessor<Widg
             try {
                 implementation.setLocationURL(new URL(resolved.getLocation()));
                 implementation.setUnresolved(false);
+                
+                //introspect implementation
+                WidgetImplementationIntrospector widgetIntrospector = new WidgetImplementationIntrospector(assemblyFactory, implementation);
+                widgetIntrospector.introspectImplementation();
+
             } catch (IOException e) {
                 throw new ContributionResolveException(e);
             }

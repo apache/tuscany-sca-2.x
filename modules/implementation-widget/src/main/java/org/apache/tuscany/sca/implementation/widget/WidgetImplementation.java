@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.implementation.widget;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,10 +41,9 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
  * @version $Rev$ $Date$
  */
 public class WidgetImplementation implements Implementation {
-    private AssemblyFactory assemblyFactory;
-    
     private Service widgetService;
-    private List<Reference> references = null;
+    private List<Reference> references = new ArrayList<Reference>();
+    private List<Property> properties = new ArrayList<Property>();
     
     private String location;
     private URL url;
@@ -55,8 +55,6 @@ public class WidgetImplementation implements Implementation {
     WidgetImplementation(AssemblyFactory assemblyFactory,
                          JavaInterfaceFactory javaFactory) {
 
-        this.assemblyFactory = assemblyFactory;
-        
         // Resource implementation always provide a single service exposing
         // the Resource interface, and have no references and properties
         widgetService = assemblyFactory.createService();
@@ -96,8 +94,7 @@ public class WidgetImplementation implements Implementation {
     }
 
     public List<Property> getProperties() {
-        // The resource implementation does not support properties
-        return Collections.emptyList();
+        return properties;
     }
 
     public List<Service> getServices() {
@@ -106,10 +103,6 @@ public class WidgetImplementation implements Implementation {
     }
     
     public List<Reference> getReferences() {
-        if(this.references == null) {
-            WidgetImplementationIntrospector widgetIntrospector = new WidgetImplementationIntrospector(assemblyFactory, this);
-            references = widgetIntrospector.getReferences();
-        }
         return references;
     }
 
