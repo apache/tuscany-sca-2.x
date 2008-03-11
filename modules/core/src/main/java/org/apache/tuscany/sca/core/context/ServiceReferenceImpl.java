@@ -92,7 +92,8 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
             this.conversationID = conversationID;
             this.conversation = null;
         } else {
-            throw new IllegalStateException("The state of the conversation " + conversation.getConversationID()
+            throw new IllegalStateException("Trying to set the conversationId on a service reference but the state of the conversation " 
+                + conversation.getConversationID()
                 + " is "
                 + conversation.getState());
         }
