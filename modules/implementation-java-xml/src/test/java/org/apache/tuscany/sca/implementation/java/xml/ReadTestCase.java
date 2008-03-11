@@ -246,10 +246,11 @@ public class ReadTestCase extends TestCase {
         }
         
         opConf = (OperationsConfigurator)composite.getComponents().get(6);
-        assertEquals(opConf.getConfiguredOperations().get(0).getPolicySets().size(), 3);
+        assertEquals(opConf.getConfiguredOperations().get(0).getPolicySets().size(), 4);
         for ( PolicySet policySet : opConf.getConfiguredOperations().get(0).getPolicySets() ) {
             String policySetName = policySet.getName().getLocalPart();
             if ( !(policySetName.equals("tuscanyPolicySet_1") || policySetName.equals("tuscanyPolicySet_2")
+                    || policySetName.equals("tuscanyPolicySet_3")
                     || policySetName.equals("tuscanyPolicySet_4")) ) {
                 fail();
             }

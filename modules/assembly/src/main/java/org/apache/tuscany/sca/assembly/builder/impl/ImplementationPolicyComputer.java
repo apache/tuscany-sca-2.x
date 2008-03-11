@@ -51,7 +51,7 @@ public class ImplementationPolicyComputer extends PolicyComputer {
                                                                    parent.getRequiredIntents());
             parent.getRequiredIntents().clear();
             parent.getRequiredIntents().addAll(prunedIntents);
-            computeIntents(parent);
+            normalizeIntents(parent);
          
             computeIntentsForOperations((OperationsConfigurator)parent,
                                         (IntentAttachPoint)implementation,
@@ -63,7 +63,7 @@ public class ImplementationPolicyComputer extends PolicyComputer {
                                                                             parent.getApplicablePolicySets());
             parent.getPolicySets().clear();
             parent.getPolicySets().addAll(prunedPolicySets);
-            computePolicySets(parent);
+            normalizePolicySets(parent);
             computePolicySetsForOperations(parent.getApplicablePolicySets(), 
                                            (OperationsConfigurator)parent, 
                                            (PolicySetAttachPoint)implementation);

@@ -65,6 +65,8 @@ import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.util.PolicyValidationException;
+import org.apache.tuscany.sca.policy.util.PolicyValidationUtils;
 import org.w3c.dom.Document;
 
 /**
@@ -825,33 +827,42 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             //resolve component implemenation
             Implementation implementation = component.getImplementation();
             if (implementation != null) {
-                //resolve intents and policysets specified on this implementation
-                //before copying them over to the component.  Before that, from the component
-                //copy over the applicablePolicySets alone as it might have to be
-                //used to validate the policysets specified on the implementation
-                
-                resolveImplIntentsAndPolicySets(implementation, component.getApplicablePolicySets(), resolver);
-                
-                copyPoliciesToComponent(component, implementation, resolver, true);
-                
-                //now resolve the implementation so that even if there is a shared instance
-                //for this that is resolved, the specified intents and policysets are safe in the
-                //component and not lost
-                implementation = resolveImplementation(implementation, resolver);
-                
-                //resolved implementation may contain intents and policysets specified at 
-                //componentType (either in the componentType side file or in annotations if its a 
-                //java implementation).  This has to be consolidated in to the component.
-                copyPoliciesToComponent(component, implementation, resolver, false);
-                
-                component.setImplementation(implementation);
+                try {
+                    //resolve intents and policysets specified on this implementation
+                    //before copying them over to the component.  Before that, from the component
+                    //copy over the applicablePolicySets alone as it might have to be
+                    //used to validate the policysets specified on the implementation
+                    
+                    resolveImplIntentsAndPolicySets(implementation, 
+                                                    component.getApplicablePolicySets(), 
+                                                    resolver);
+                    
+                    copyPoliciesToComponent(component, implementation, resolver, true);
+                    
+                    //now resolve the implementation so that even if there is a shared instance
+                    //for this that is resolved, the specified intents and policysets are safe in the
+                    //component and not lost
+                    implementation = resolveImplementation(implementation, resolver);
+                    
+                    //resolved implementation may contain intents and policysets specified at 
+                    //componentType (either in the componentType side file or in annotations if its a 
+                    //java implementation).  This has to be consolidated in to the component.
+                    copyPoliciesToComponent(component, implementation, resolver, false);
+                    
+                    component.setImplementation(implementation);
+                } catch ( PolicyValidationException e ) {
+                    throw new ContributionResolveException("PolicyValidation exception when processing implementation of component '" 
+                                                           + component.getName() + "' due to " + e.getMessage());
+                }
+            
             }
         }
     }
     
     private void resolveImplIntentsAndPolicySets(Implementation implementation,
                                                  List<PolicySet> inheritedApplicablePolicySets,
-                                                 ModelResolver resolver) throws ContributionResolveException
+                                                 ModelResolver resolver) throws ContributionResolveException,
+                                                                                 PolicyValidationException
                                                         {
         if ( implementation instanceof PolicySetAttachPoint ) {
             PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
@@ -859,16 +870,29 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             policiedImpl.getApplicablePolicySets().addAll(inheritedApplicablePolicySets);
             
             resolveIntents(policiedImpl.getRequiredIntents(), resolver);
+            PolicyValidationUtils.validateIntents(policiedImpl, policiedImpl.getType());
+            
             resolvePolicySets(policiedImpl.getPolicySets(), resolver);
             resolvePolicySets(policiedImpl.getApplicablePolicySets(), resolver);
-            validatePolicySets(policiedImpl);
+            
+            PolicyValidationUtils.validatePolicySets(policiedImpl);
             
             if ( implementation instanceof OperationsConfigurator ) {
                 for ( ConfiguredOperation implConfOp : ((OperationsConfigurator)implementation).getConfiguredOperations() ) {
                     resolveIntents(implConfOp.getRequiredIntents(), resolver);
+                    PolicyValidationUtils.validateIntents(implConfOp, policiedImpl.getType());
+                    
                     resolvePolicySets(implConfOp.getPolicySets(), resolver);
                     resolvePolicySets(implConfOp.getApplicablePolicySets(), resolver);
-                    validatePolicySets(implConfOp, policiedImpl.getApplicablePolicySets());
+                    //add the inherited applicablePolicysets
+                    addInheritedPolicySets(policiedImpl.getApplicablePolicySets(), implConfOp.getApplicablePolicySets());
+                    
+                    PolicyValidationUtils.validatePolicySets(implConfOp);
+                    
+                    addInheritedIntents(((PolicySetAttachPoint)implementation).getRequiredIntents(), 
+                                        implConfOp.getRequiredIntents());
+                    addInheritedPolicySets(((PolicySetAttachPoint)implementation).getPolicySets(), 
+                                           implConfOp.getPolicySets());
                 }
             }
         }
