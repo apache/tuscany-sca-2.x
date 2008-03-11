@@ -319,6 +319,7 @@
                                 <pingURL>http://localhost:8080/AlertsSourcesServiceJSONRPC</pingURL>
                             </deployable>
                         </deployables>
+                        <home>${project.build.directory}/cargo-jetty</home>
                     </configuration>
                 </configuration>                
             </plugin>

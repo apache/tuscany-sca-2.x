@@ -17,17 +17,16 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<web-app xmlns="http://geronimo.apache.org/xml/ns/j2ee/web-1.1"
-    xmlns:d="http://geronimo.apache.org/xml/ns/deployment-1.1">
-
+<web-app xmlns="http://geronimo.apache.org/xml/ns/j2ee/web-2.0"
+    xmlns:d="http://geronimo.apache.org/xml/ns/deployment-1.2">
     <d:environment>
         <d:moduleId>
-            <d:groupId>org.apache.tuscany.sca.tuscany-demos</d:groupId>
+            <d:groupId>org.apache.tuscany.sca</d:groupId>
             <d:artifactId>demo-alert-aggregator-webapp</d:artifactId>
             <d:version>1.2-incubating-SNAPSHOT</d:version>
             <d:type>war</d:type>
         </d:moduleId>
         <!-- TUSCANY-1986 -->
-        <inverse-classloading />
+        <d:inverse-classloading />
     </d:environment>
 </web-app>
