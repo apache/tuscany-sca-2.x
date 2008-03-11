@@ -61,7 +61,7 @@ public abstract class PolicyComputer {
         for (Intent intent : inheritableIntents) {
             if ( !intent.isUnresolved() ) { 
                 for (QName constrained : intent.getConstrains()) {
-                    if ( isConstrained(constrained, attachPointType)) {
+                    if ( PolicyValidationUtils.isConstrained(constrained, attachPointType)) {
                         validInheritableIntents.add(intent);
                         break;
                     }
@@ -83,10 +83,10 @@ public abstract class PolicyComputer {
         }
     }
     
-    protected void computeIntents(IntentAttachPoint intentAttachPoint) {
+    protected void normalizeIntents(IntentAttachPoint intentAttachPoint) {
         //expand profile intents specified in the attachpoint (binding / implementation)
         expandProfileIntents(intentAttachPoint.getRequiredIntents());
-        
+
         //remove duplicates and ...
         //where qualified form of intent exists retain it and remove the qualifiable intent
         filterDuplicatesAndQualifiableIntents(intentAttachPoint);
@@ -122,7 +122,7 @@ public abstract class PolicyComputer {
             //expand profile intents specified on operations
             expandProfileIntents(confOp.getRequiredIntents());
             
-            validateIntents(confOp, attachPointType);
+            //validateIntents(confOp, attachPointType);
             
             //add intents specified for parent intent attach point (binding / implementation)
             //wherever its not overriden in the operation
@@ -167,29 +167,6 @@ public abstract class PolicyComputer {
         }
     }
     
-    /*protected List<PolicySet> computeInheritablePolicySets(Base parent,
-                                                           IntentAttachPointType attachPointType,
-                                                           List<PolicySet> inheritablePolicySets) 
-                                                               throws PolicyValidationException {
-        List<PolicySet> validInheritablePolicySets = new ArrayList<PolicySet>();
-        String appliesTo = null;
-        String scdlFragment = null; //need to write parent as scdl fragment and pass the xml string
-        //from the inherited set of policysets add only what applies to the attach point
-        for (PolicySet policySet : inheritablePolicySets) {
-            if ( !policySet.isUnresolved() ) { 
-                appliesTo = policySet.getAppliesTo();
-                if (PolicyValidationUtils.isPolicySetApplicable(scdlFragment, appliesTo, attachPointType)) {
-                    validInheritablePolicySets.add(policySet);
-                }
-            } else {
-                throw new PolicyValidationException("Policy Set '" + policySet.getName()
-                        + "' is not defined in this domain  ");
-            }
-                
-        }
-        return validInheritablePolicySets;
-    }*/
-    
     protected List<PolicySet> computeInheritablePolicySets(PolicySetAttachPoint policySetAttachPoint,
                                                            List<PolicySet> inheritablePolicySets,
                                                            List<PolicySet> applicablePolicySets) 
@@ -209,7 +186,7 @@ public abstract class PolicyComputer {
         return validInheritablePolicySets;
     }
     
-    protected void computePolicySets(PolicySetAttachPoint policySetAttachPoint ) {
+    protected void normalizePolicySets(PolicySetAttachPoint policySetAttachPoint ) {
         //get rid of duplicate entries
         HashMap<QName, PolicySet> policySetTable = new HashMap<QName, PolicySet>();
         for ( PolicySet policySet : policySetAttachPoint.getPolicySets() ) {
@@ -345,12 +322,6 @@ public abstract class PolicyComputer {
         }
     }
     
-    private boolean isConstrained(QName constrained, IntentAttachPointType attachPointType) {
-        return (attachPointType != null && attachPointType.getName().getNamespaceURI().equals(constrained
-                                                                                      .getNamespaceURI()) && attachPointType.getName().getLocalPart()
-                                                                                      .startsWith(constrained.getLocalPart()) );
-    }
-    
     private void filterDuplicatesAndQualifiableIntents(IntentAttachPoint intentAttachPoint) {
         //remove duplicates
         Map<QName, Intent> intentsTable = new HashMap<QName, Intent>();
@@ -381,7 +352,7 @@ public abstract class PolicyComputer {
             for (Intent intent : confOp.getRequiredIntents()) {
                 if ( !intent.isUnresolved() ) {
                     for (QName constrained : intent.getConstrains()) {
-                        if (isConstrained(constrained, attachPointType)) {
+                        if (PolicyValidationUtils.isConstrained(constrained, attachPointType)) {
                             found = true;
                             break;
                         }

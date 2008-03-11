@@ -50,7 +50,7 @@ public class BindingPolicyComputer extends PolicyComputer {
         computeIntents(contract.getBindings(), contract.getRequiredIntents());
         computePolicySets(contract.getApplicablePolicySets(), contract.getBindings(), contract.getPolicySets());
         
-        for ( Binding binding : contract.getBindings() ) {
+        /*for ( Binding binding : contract.getBindings() ) {
             if ( binding instanceof IntentAttachPoint ) {
                 computeIntentsForOperations((IntentAttachPoint)binding);
             }
@@ -59,7 +59,7 @@ public class BindingPolicyComputer extends PolicyComputer {
                 computePolicySetsForOperations(((PolicySetAttachPoint)binding).getApplicablePolicySets(), 
                                                (PolicySetAttachPoint)binding);
             }
-        }
+        }*/
         
         if ( contract.getCallback() != null ) {
             computeIntents(contract.getCallback().getBindings(), 
@@ -80,9 +80,7 @@ public class BindingPolicyComputer extends PolicyComputer {
                                                                        inheritedIntents);
                 policiedBinding.getRequiredIntents().addAll(prunedIntents);
                 
-                computeIntents(policiedBinding);
-                //trimInherentlyProvidedIntents(policiedBinding.getType(), 
-                //                              policiedBinding.getRequiredIntents());
+                normalizeIntents(policiedBinding);
                 
                 computeIntentsForOperations((IntentAttachPoint)policiedBinding);
             }
@@ -101,7 +99,7 @@ public class BindingPolicyComputer extends PolicyComputer {
                                                                                 inheritedPolicySets,
                                                                                 policiedBinding.getApplicablePolicySets());
                 policiedBinding.getPolicySets().addAll(prunedPolicySets);
-                computePolicySets(policiedBinding);
+                normalizePolicySets(policiedBinding);
                 computePolicySetsForOperations(applicablePolicySets, policiedBinding);
 
             }

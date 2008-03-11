@@ -42,8 +42,10 @@ import org.apache.tuscany.sca.assembly.AbstractReference;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Contract;
@@ -67,6 +69,8 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.impl.IntentAttachPointTypeFactoryImpl;
+import org.apache.tuscany.sca.policy.util.PolicyValidationException;
+import org.apache.tuscany.sca.policy.util.PolicyValidationUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -234,7 +238,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
      * @throws ContributionResolveException
      */
     protected Implementation resolveImplementation(Implementation implementation, ModelResolver resolver)
-        throws ContributionResolveException {
+        throws ContributionResolveException, PolicyValidationException {
         if (implementation != null) {
             if (implementation.isUnresolved()) {
                 implementation = resolver.resolveModel(Implementation.class, implementation);
@@ -247,34 +251,36 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                         if ( implementation instanceof PolicySetAttachPoint ) {
                             PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
                             resolveIntents(policiedImpl.getRequiredIntents(), resolver);
+                            PolicyValidationUtils.validateIntents(policiedImpl, policiedImpl.getType());
+                            
                             resolvePolicySets(policiedImpl.getPolicySets(), resolver);
-                            validatePolicySets(policiedImpl);
+                            PolicyValidationUtils.validatePolicySets(policiedImpl, 
+                                                                     policiedImpl.getApplicablePolicySets());
                             
                             if ( implementation instanceof OperationsConfigurator ) {
                                 OperationsConfigurator opsConfigurator = (OperationsConfigurator)implementation;
                                 for ( ConfiguredOperation implOp : opsConfigurator.getConfiguredOperations() ) {
                                     resolveIntents(implOp.getRequiredIntents(), resolver);
+                                    PolicyValidationUtils.validateIntents(implOp, policiedImpl.getType());
+                                    
                                     resolvePolicySets(implOp.getPolicySets(), resolver);
-                                    validatePolicySets(implOp, policiedImpl.getApplicablePolicySets());
+                                    PolicyValidationUtils.validatePolicySets(implOp, policiedImpl.getApplicablePolicySets());
                                 }
                             }
                             
                             for ( Service service : implementation.getServices() ) {
                                 resolveIntents(service.getRequiredIntents(), resolver);
                                 resolvePolicySets(service.getPolicySets(), resolver);
-                                validatePolicySets(service, policiedImpl.getApplicablePolicySets());
                                 
                                 for ( ConfiguredOperation svcOp : service.getConfiguredOperations() ) {
                                     resolveIntents(svcOp.getRequiredIntents(), resolver);
                                     resolvePolicySets(svcOp.getPolicySets(), resolver);
-                                    validatePolicySets(svcOp, policiedImpl.getApplicablePolicySets());
                                 }
                             }
                             
                             for ( Reference reference : implementation.getReferences() ) {
                                 resolveIntents(reference.getRequiredIntents(), resolver);
                                 resolvePolicySets(reference.getPolicySets(), resolver);
-                                validatePolicySets(reference, policiedImpl.getApplicablePolicySets());
                             }
                         }
                         
@@ -304,7 +310,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
         resolveContracts(null, contracts, resolver);
     }
 
-
+    
     /**
      * Resolve interface, callback interface and bindings on a list of contracts.
      * @param parent element for the contracts
@@ -313,90 +319,137 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
      */
     protected <C extends Contract> void resolveContracts(Base parent, List<C> contracts, ModelResolver resolver)
         throws ContributionResolveException {
+        
+        String parentName = (parent instanceof Composite) ? ((Composite)parent).getName().toString() :
+            (parent instanceof Component) ? ((Component)parent).getName().toString() : "UNKNOWN";
+        
         for (Contract contract : contracts) {
-            //resolve the intents and policysets as they need to be copied over into the
-            //child binding elements
-            resolveIntents(contract.getRequiredIntents(), resolver);
-            resolvePolicySets(contract.getPolicySets(), resolver);
-            resolvePolicySets(contract.getApplicablePolicySets(), resolver);
-            
-            //inherit the composite / component level policy intents and policysets
-            if ( parent != null && parent instanceof PolicySetAttachPoint )  {
-                addInheritedIntents(((PolicySetAttachPoint)parent).getRequiredIntents(), contract.getRequiredIntents());
-                addInheritedPolicySets(((PolicySetAttachPoint)parent).getPolicySets(), contract.getPolicySets());
-                addInheritedPolicySets(((PolicySetAttachPoint)parent).getApplicablePolicySets(), contract.getApplicablePolicySets());
-            }
-            
-            for ( ConfiguredOperation confOp : contract.getConfiguredOperations() ) {
-                resolveIntents(confOp.getRequiredIntents(), resolver);
-                resolvePolicySets(confOp.getPolicySets(), resolver);
-                resolvePolicySets(confOp.getApplicablePolicySets(), resolver);
-            }
-                            
-            // Resolve the interface contract
-            InterfaceContract interfaceContract = contract.getInterfaceContract();
-            if (interfaceContract != null) {
-                extensionProcessor.resolve(interfaceContract, resolver);
-            }
-
-            // Resolve bindings
-            for (int i = 0, n = contract.getBindings().size(); i < n; i++) {
-                Binding binding = contract.getBindings().get(i);
-                extensionProcessor.resolve(binding, resolver);
-                if (binding instanceof IntentAttachPoint) {
-                    IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
-                    resolveIntents(policiedBinding.getRequiredIntents(), resolver);
-                }
-                if (binding instanceof PolicySetAttachPoint) {
-                    PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
-                    resolvePolicySets(policiedBinding.getPolicySets(), resolver);
-                    //validate if attached policysets apply to the binding
-                    resolvePolicySets(policiedBinding.getApplicablePolicySets(), resolver);
-                    validatePolicySets(policiedBinding);
-                }
-                if (binding instanceof OperationsConfigurator) {
-                    OperationsConfigurator opConfigurator = (OperationsConfigurator)binding;
-                    for (ConfiguredOperation confOp : opConfigurator.getConfiguredOperations()) {
-                        resolveIntents(confOp.getRequiredIntents(), resolver);
-                        resolvePolicySets(confOp.getPolicySets(), resolver);
-                        resolvePolicySets(confOp.getApplicablePolicySets(), resolver);
-                    }
-                }
-            }
-
-            // Resolve callback bindings
-            if (contract.getCallback() != null) {
-                resolveIntents(contract.getCallback().getRequiredIntents(), resolver);
-                resolvePolicySets(contract.getCallback().getPolicySets(), resolver);
-                resolvePolicySets(contract.getCallback().getApplicablePolicySets(), resolver);
-                //inherit the contract's policy intents and policysets
-                addInheritedIntents(contract.getRequiredIntents(), contract.getCallback().getRequiredIntents());
-                addInheritedPolicySets(contract.getPolicySets(), contract.getCallback().getPolicySets());
-                addInheritedPolicySets(contract.getApplicablePolicySets(), contract.getCallback().getApplicablePolicySets());
+            try {
+                //resolve the intents and policysets as they need to be copied over into the
+                //child binding elements
+                resolveIntents(contract.getRequiredIntents(), resolver);
+                resolvePolicySets(contract.getPolicySets(), resolver);
+                resolvePolicySets(contract.getApplicablePolicySets(), resolver);
                 
-                for (int i = 0, n = contract.getCallback().getBindings().size(); i < n; i++) {
-                    Binding binding = contract.getCallback().getBindings().get(i);
+                //inherit the composite / component level policy intents and policysets
+                if ( parent != null && parent instanceof PolicySetAttachPoint )  {
+                    addInheritedIntents(((PolicySetAttachPoint)parent).getRequiredIntents(), contract.getRequiredIntents());
+                    addInheritedPolicySets(((PolicySetAttachPoint)parent).getPolicySets(), contract.getPolicySets());
+                    addInheritedPolicySets(((PolicySetAttachPoint)parent).getApplicablePolicySets(), contract.getApplicablePolicySets());
+                }
+                
+                for ( ConfiguredOperation confOp : contract.getConfiguredOperations() ) {
+                    resolveIntents(confOp.getRequiredIntents(), resolver);
+                    resolvePolicySets(confOp.getPolicySets(), resolver);
+                    resolvePolicySets(confOp.getApplicablePolicySets(), resolver);
+                    
+                    //inherit intents and policysets from parent contract
+                    addInheritedIntents(contract.getRequiredIntents(), confOp.getRequiredIntents());
+                    addInheritedPolicySets(contract.getPolicySets(), confOp.getPolicySets());
+                    addInheritedPolicySets(contract.getApplicablePolicySets(), confOp.getApplicablePolicySets());
+                }
+                                
+                // Resolve the interface contract
+                InterfaceContract interfaceContract = contract.getInterfaceContract();
+                if (interfaceContract != null) {
+                    extensionProcessor.resolve(interfaceContract, resolver);
+                }
+    
+                // Resolve bindings
+                for (int i = 0, n = contract.getBindings().size(); i < n; i++) {
+                    Binding binding = contract.getBindings().get(i);
                     extensionProcessor.resolve(binding, resolver);
-
+                    
                     if (binding instanceof IntentAttachPoint) {
                         IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
                         resolveIntents(policiedBinding.getRequiredIntents(), resolver);
+                        PolicyValidationUtils.validateIntents(policiedBinding, policiedBinding.getType());
                     }
+                    
                     if (binding instanceof PolicySetAttachPoint) {
                         PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
                         resolvePolicySets(policiedBinding.getPolicySets(), resolver);
+                        //validate if attached policysets apply to the binding
                         resolvePolicySets(policiedBinding.getApplicablePolicySets(), resolver);
-                        validatePolicySets(policiedBinding);
+                        //inherit the applicable policysets from parent contract as whatever applies to that
+                        //applies to the binding as well
+                        addInheritedPolicySets(contract.getApplicablePolicySets(), policiedBinding.getApplicablePolicySets());
+                        PolicyValidationUtils.validatePolicySets(policiedBinding);
                     }
+                    
                     if (binding instanceof OperationsConfigurator) {
                         OperationsConfigurator opConfigurator = (OperationsConfigurator)binding;
                         for (ConfiguredOperation confOp : opConfigurator.getConfiguredOperations()) {
                             resolveIntents(confOp.getRequiredIntents(), resolver);
+                            PolicyValidationUtils.validateIntents(confOp, ((PolicySetAttachPoint)binding).getType());
+                            
                             resolvePolicySets(confOp.getPolicySets(), resolver);
                             resolvePolicySets(confOp.getApplicablePolicySets(), resolver);
+                            //inherit the applicable policysets from parent binding as whatever applies to that
+                            //applies to the binding as well
+                            addInheritedPolicySets(((PolicySetAttachPoint)binding).getApplicablePolicySets(), 
+                                                   confOp.getApplicablePolicySets());
+                            PolicyValidationUtils.validatePolicySets(confOp);
+                            
+                            addInheritedIntents(((PolicySetAttachPoint)binding).getRequiredIntents(), 
+                                                confOp.getRequiredIntents());
+                            addInheritedPolicySets(((PolicySetAttachPoint)binding).getPolicySets(), 
+                                                confOp.getPolicySets());
                         }
                     }
                 }
+    
+                // Resolve callback bindings
+                if (contract.getCallback() != null) {
+                    resolveIntents(contract.getCallback().getRequiredIntents(), resolver);
+                    resolvePolicySets(contract.getCallback().getPolicySets(), resolver);
+                    resolvePolicySets(contract.getCallback().getApplicablePolicySets(), resolver);
+                    //inherit the contract's policy intents and policysets
+                    addInheritedIntents(contract.getRequiredIntents(), contract.getCallback().getRequiredIntents());
+                    addInheritedPolicySets(contract.getPolicySets(), contract.getCallback().getPolicySets());
+                    addInheritedPolicySets(contract.getApplicablePolicySets(), contract.getCallback().getApplicablePolicySets());
+                    
+                    for (int i = 0, n = contract.getCallback().getBindings().size(); i < n; i++) {
+                        Binding binding = contract.getCallback().getBindings().get(i);
+                        extensionProcessor.resolve(binding, resolver);
+    
+                        if (binding instanceof IntentAttachPoint) {
+                            IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
+                            resolveIntents(policiedBinding.getRequiredIntents(), resolver);
+                            PolicyValidationUtils.validateIntents(policiedBinding, policiedBinding.getType());
+                        }
+                        
+                        if (binding instanceof PolicySetAttachPoint) {
+                            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
+                            resolvePolicySets(policiedBinding.getPolicySets(), resolver);
+                            //validate if attached policysets apply to the binding
+                            resolvePolicySets(policiedBinding.getApplicablePolicySets(), resolver);
+                            //inherit the applicable policysets from parent contract as whatever applies to that
+                            //applies to the binding as well
+                            addInheritedPolicySets(contract.getApplicablePolicySets(), policiedBinding.getApplicablePolicySets());
+                            PolicyValidationUtils.validatePolicySets(policiedBinding);
+                        }
+                        
+                        if (binding instanceof OperationsConfigurator) {
+                            OperationsConfigurator opConfigurator = (OperationsConfigurator)binding;
+                            for (ConfiguredOperation confOp : opConfigurator.getConfiguredOperations()) {
+                                resolveIntents(confOp.getRequiredIntents(), resolver);
+                                PolicyValidationUtils.validateIntents(confOp, ((PolicySetAttachPoint)binding).getType());
+                                
+                                resolvePolicySets(confOp.getPolicySets(), resolver);
+                                resolvePolicySets(confOp.getApplicablePolicySets(), resolver);
+                                //inherit the applicable policysets from parent binding as whatever applies to that
+                                //applies to the binding as well
+                                addInheritedPolicySets(((PolicySetAttachPoint)binding).getApplicablePolicySets(), 
+                                                       confOp.getApplicablePolicySets());
+                                PolicyValidationUtils.validatePolicySets(confOp);
+                            }
+                        }
+                    }
+                }
+            } catch ( PolicyValidationException e ) {
+                throw new ContributionResolveException("PolicyValidation exceptions when processing service/reference '" 
+                                                       + contract.getName() + "' in '" + parentName + "'");
             }
         }
     }
@@ -714,7 +767,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
     }
     
     
-    protected void validatePolicySets(PolicySetAttachPoint policySetAttachPoint) 
+    /*protected void validatePolicySets(PolicySetAttachPoint policySetAttachPoint) 
                                                             throws ContributionResolveException {
         validatePolicySets(policySetAttachPoint, policySetAttachPoint.getApplicablePolicySets());
     }
@@ -740,28 +793,5 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
             
             }
         }
-        
-        /*String appliesTo = null;
-        IntentAttachPointType attachPointType = policySetAttachPoint.getType();
-        String scdlFragment = ""; //need to write the 'parent' as scdl xml string
-        
-        if ( attachPointType != null ) {
-            //validate policysets specified for the attachPoint
-            for (PolicySet policySet : policySetAttachPoint.getPolicySets()) {
-                appliesTo = policySet.getAppliesTo();
-                if ( !policySet.isUnresolved() ) {
-                    if (!PolicyValidationUtils.isPolicySetApplicable(scdlFragment, appliesTo, attachPointType)) {
-                        throw new ContributionResolveException("Policy Set '" + policySet.getName()
-                            + "' does not apply to binding type  "
-                            + attachPointType.getName());
-         
-                    } }
-                else {
-                    throw new ContributionResolveException("Policy Set '" + policySet.getName()
-                           + "' is not defined in this domain  ");
-                    
-                }
-            }
-        }*/
-    }
+    }*/
 }

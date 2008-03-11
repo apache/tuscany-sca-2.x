@@ -19,35 +19,83 @@
 
 package org.apache.tuscany.sca.policy.util;
 
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * @version $Rev$ $Date$
  */
 public class PolicyValidationUtils {
-    /*public static boolean isPolicySetApplicable(String scdlFragment,
-                                                String xpath,
-                                                IntentAttachPointType attachPointType) {
-        
-        //FIXME: For now do a simple check and later implement whatever is mentioned in the next comment
-       if ( xpath != null && attachPointType != null && xpath.indexOf(attachPointType.getName().getLocalPart()) != -1) {
-           return true;
-       } else {
-           return false;
-       }
-        
-        
-        //create a xml node out of the parent object.. i.e. write the parent object as scdl fragment
-        //invoke PropertyUtil.evaluate(null, node, xpath)
-        //verify the result Node's QName against the bindingType's name
-        
-        /*if (parent instanceof ComponentReference) {
-        } else if (parent instanceof ComponentReference) {
-        } else if (parent instanceof Component) {
-        } else if (parent instanceof CompositeService) {
-        } else if (parent instanceof CompositeReference) {
 
+    public static boolean isConstrained(QName constrained, IntentAttachPointType attachPointType) {
+        return (attachPointType != null && attachPointType.getName().getNamespaceURI()
+            .equals(constrained.getNamespaceURI()) && attachPointType.getName().getLocalPart()
+            .startsWith(constrained.getLocalPart()));
+    }
+
+    public static void validateIntents(IntentAttachPoint attachPoint,
+                                       IntentAttachPointType attachPointType)
+        throws PolicyValidationException {
+        boolean found = false;
+        if (attachPointType != null) {
+            // validate intents specified against the parent (binding /
+            // implementation)
+            found = false;
+            for (Intent intent : attachPoint.getRequiredIntents()) {
+                if (!intent.isUnresolved()) {
+                    for (QName constrained : intent.getConstrains()) {
+                        if (isConstrained(constrained, attachPointType)) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        throw new PolicyValidationException("Policy Intent '" + intent.getName()
+                            + "' does not constrain extension type  "
+                            + attachPointType.getName());
+                    }
+                } else {
+                    throw new PolicyValidationException("Policy Intent '" + intent.getName()
+                        + "' is not defined in this domain  ");
+                }
+            }
         }
-        return true;
-    }*/
+    }
+
+    public static void validatePolicySets(PolicySetAttachPoint policySetAttachPoint)
+        throws PolicyValidationException {
+        validatePolicySets(policySetAttachPoint, policySetAttachPoint.getApplicablePolicySets());
+    }
+
+    public static void validatePolicySets(PolicySetAttachPoint policySetAttachPoint,
+                                      List<PolicySet> applicablePolicySets)
+        throws PolicyValidationException {
+        // Since the applicablePolicySets in a policySetAttachPoint will already
+        // have the list of policysets that might ever be applicable to this attachPoint,
+        // just check if the defined policysets feature in the list of applicable
+        // policysets
+        IntentAttachPointType attachPointType = policySetAttachPoint.getType();
+        for (PolicySet definedPolicySet : policySetAttachPoint.getPolicySets()) {
+            if (!definedPolicySet.isUnresolved()) {
+                if (!applicablePolicySets.contains(definedPolicySet)) {
+                    throw new PolicyValidationException("Policy Set '" + definedPolicySet
+                        .getName()
+                        + "' does not apply to binding type  "
+                        + attachPointType.getName());
+                }
+            } else {
+                throw new PolicyValidationException("Policy Set '" + definedPolicySet.getName()
+                    + "' is not defined in this domain  ");
+
+            }
+        }
+    }
 }
