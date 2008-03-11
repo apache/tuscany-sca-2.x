@@ -72,6 +72,11 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution-resource</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-domain-api</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
@@ -154,6 +159,7 @@
                             org.apache.tuscany.sca.contribution.java,
                             org.apache.tuscany.sca.contribution.namespace,
                             org.apache.tuscany.sca.contribution.osgi,
+                            org.apache.tuscany.sca.contribution.resource,
                             org.apache.tuscany.sca.domain*,
                             org.apache.tuscany.sca.node*,
                             org.apache.tuscany.sca.assembly.xml,
