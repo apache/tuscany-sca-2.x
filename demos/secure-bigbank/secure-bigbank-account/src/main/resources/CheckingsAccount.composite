@@ -20,6 +20,7 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	targetNamespace="http://bigbank/checkings"
 	xmlns:bbck="http://bigbank/checkings"
+	xmlns:bb="http://bigbank"
 	xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
 	name="CheckingsAccountDept">
 	
@@ -29,6 +30,6 @@
     </service>
 
     <component name="CheckingAccountServiceComponent">
-        <implementation.java class="bigbank.account.checking.CheckingAccountServiceImpl" requires="authorization"/>
+        <implementation.java class="bigbank.account.checking.CheckingAccountServiceImpl" requires="bb:authorization"/>
     </component>
 </composite>

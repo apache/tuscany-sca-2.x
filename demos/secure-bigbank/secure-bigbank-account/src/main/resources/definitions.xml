@@ -18,7 +18,7 @@
  * under the License.    
 -->
 <sca:definitions xmlns="http://www.osoa.org/xmlns/sca/1.0"
- 			targetNamespace="http://www.osoa.org/xmlns/sca/1.0"
+ 			targetNamespace="http://bigbank"
  			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
  			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
 			xmlns:chk="http://bigbank/checkings"
@@ -33,7 +33,7 @@
 </sca:intent>
  
  <!-- WS Security POLICY SETS -->
- <sca:policySet name="tuscany:wsIntegrityPolicy"
+ <sca:policySet name="wsIntegrityPolicy"
  	provides="integrity"
  	appliesTo="sca:binding.ws">
  	<tuscany:wsConfigParam>
@@ -55,7 +55,7 @@
  	</tuscany:wsConfigParam>
  </sca:policySet>
  
- <sca:policySet name="tuscany:wsAuthenticationPolicy"
+ <sca:policySet name="wsAuthenticationPolicy"
  	provides="authentication"
  	appliesTo="sca:service/sca:binding.ws">
  	<tuscany:wsConfigParam>
@@ -68,7 +68,7 @@
  	</tuscany:wsConfigParam>
  </sca:policySet>
  
- <sca:policySet name="tuscany:wsClientAuthenticationPolicy"
+ <sca:policySet name="wsClientAuthenticationPolicy"
  	provides="authentication"
  	appliesTo="sca:reference/sca:binding.ws">
  	<tuscany:wsConfigParam>
@@ -83,7 +83,7 @@
  	</tuscany:wsConfigParam>
  </sca:policySet>
  
- <sca:policySet name="chk:chkDeptAuthorizationPolicy"
+ <sca:policySet name="chkDeptAuthorizationPolicy"
  	provides="authorization"
  	appliesTo="sca:implementation.java">
  	<chk:AuthPolicy>
