@@ -26,69 +26,61 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 
 @Scope("COMPOSITE")
-public class AlphaImpl implements Alpha
-{
+public class AlphaImpl implements Alpha {
     @Reference
     public Beta beta;
-	
+
     @Context
     protected ComponentContext componentContext;
-    
-	public boolean run()
-	{
-		CallableReference<Gamma> gammaRef = null;
-		try
-        {   
-		    Object conversationId1 = null;
-		    Object conversationId2 = null;
-		    
-			// it is expected that this call returns a reference to Gamma that reuses the established Conversation
-			gammaRef = beta.getRef();	
-			
-			// no Conversation exists
-			Conversation con = gammaRef.getConversation();
-			if( con == null)
-			{
-				System.out.println( "Alpha: Conversation to gamma is null" );
-			}
-			else
-			{
-				System.out.println( "Alpha: Conversation to gamma exists. conversationId=" + con.getConversationID() );
-				conversationId1 = con.getConversationID();
-			}
-					
-			// this call should reuse a Conversation, but as none exists it creates a new conversation
-	        gammaRef.getService().doSomething();
-	        con = gammaRef.getConversation();
-			if( con == null)
-			{
-				System.out.println( "Alpha: Conversation to gamma is null" );
-			}
-			else
-			{
-				System.out.println( "Alpha: Conversation to gamma exists. conversationId=" + con.getConversationID() );
-				conversationId2 = con.getConversationID();
-			}	        
-			
-			if ( (conversationId1 == null) || (conversationId2 == null)){
-			    return false;
-			} 
-			
-			boolean testPassed = conversationId1.equals(conversationId2);
-			return testPassed;
+
+    public boolean run() {
+        CallableReference<Gamma> gammaRef = null;
+        try {
+            Object conversationId1 = null;
+            Object conversationId2 = null;
+
+            // it is expected that this call returns a reference to Gamma that
+            // reuses the established Conversation
+            gammaRef = beta.getRef();
+
+            // no Conversation exists
+            Conversation con = gammaRef.getConversation();
+            if (con == null) {
+                System.out.println("Alpha: Conversation to gamma is null");
+            } else {
+                System.out
+                        .println("Alpha: Conversation to gamma exists. conversationId="
+                                + con.getConversationID());
+                conversationId1 = con.getConversationID();
+            }
+
+            // this call should reuse a Conversation, but as none exists it
+            // creates a new conversation
+            gammaRef.getService().doSomething();
+            con = gammaRef.getConversation();
+            if (con == null) {
+                System.out.println("Alpha: Conversation to gamma is null");
+            } else {
+                System.out
+                        .println("Alpha: Conversation to gamma exists. conversationId="
+                                + con.getConversationID());
+                conversationId2 = con.getConversationID();
+            }
+
+            if ((conversationId1 == null) || (conversationId2 == null)) {
+                return false;
+            }
+
+            boolean testPassed = conversationId1.equals(conversationId2);
+            return testPassed;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (gammaRef != null) {
+                gammaRef.getService().stop();
+            }
         }
-        catch(Exception e)
-        {
-        	e.printStackTrace();
-        	return false;
-        }
-        finally
-        {        	 
-        	if( gammaRef != null)
-        	{
-        		gammaRef.getService().stop();
-        	}
-        }
-	}
-		
+    }
+
 }
