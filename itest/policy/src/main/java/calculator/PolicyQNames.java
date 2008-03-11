@@ -25,12 +25,12 @@ package calculator;
 public interface PolicyQNames {
     public static final String QUALIFIER = ".";
     
-    public static final String TUSCANY_PREFIX="{http://tuscany.apache.org/xmlns/sca/1.0}";
-    public static final String TEST_INTENT_ONE = TUSCANY_PREFIX + "TestIntent_1";
-    public static final String TEST_INTENT_TWO = TUSCANY_PREFIX + "TestIntent_2";
-    public static final String TEST_INTENT_THREE = TUSCANY_PREFIX + "TestIntent_3";
-    public static final String TEST_INTENT_FOUR = TUSCANY_PREFIX + "TestIntent_4";
-    public static final String TEST_INTENT_FIVE = TUSCANY_PREFIX + "TestIntent_5";
+    public static final String POLICY_ITEST_PREFIX="{http://itest/policy}";
+    public static final String TEST_INTENT_ONE = POLICY_ITEST_PREFIX + "TestIntent_1";
+    public static final String TEST_INTENT_TWO = POLICY_ITEST_PREFIX + "TestIntent_2";
+    public static final String TEST_INTENT_THREE = POLICY_ITEST_PREFIX + "TestIntent_3";
+    public static final String TEST_INTENT_FOUR = POLICY_ITEST_PREFIX + "TestIntent_4";
+    public static final String TEST_INTENT_FIVE = POLICY_ITEST_PREFIX + "TestIntent_5";
     
     public static final String QUALIFIER_ONE = "Qualifier_1";
     

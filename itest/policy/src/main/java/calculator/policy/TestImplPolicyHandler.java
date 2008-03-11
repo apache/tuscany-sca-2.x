@@ -46,8 +46,9 @@ public class TestImplPolicyHandler implements PolicyHandler {
                         applicablePolicySet.getName().getLocalPart().equals("TestPolicySet_3_implementation") ;
                     Assert.assertTrue(match); 
                 } else if ( op.getName().equals("subtract") ) {
-                    Assert.assertEquals(applicablePolicySet.getName().getLocalPart(), 
-                                        "TestPolicySet_1_Qualified_implementation");
+                    boolean match = applicablePolicySet.getName().getLocalPart().equals("TestPolicySet_1_Qualified_implementation") ||
+                    applicablePolicySet.getName().getLocalPart().equals("TestPolicySet_1_implementation");
+                    Assert.assertTrue(match); 
                 } else if ( op.getName().equals("divide")) {
                     Assert.assertEquals(applicablePolicySet.getName().getLocalPart(), 
                                         "TestPolicySet_1_implementation");
