@@ -17,12 +17,12 @@
 # 
 # PolicyHandlerClasses to interpret specific PolicyModels against specific QoS infrastructures
 # handler classname;qname=<policy intent addressed>;model=<policy model class>
-calculator.policy.TestImplPolicyHandler;intent=http://tuscany.apache.org/xmlns/sca/1.0#TestIntent_1,model=org.apache.neethi.Policy,appliesTo=sca:implementation.java
-calculator.policy.TestRefPolicyHandler;intent=http://tuscany.apache.org/xmlns/sca/1.0#TestIntent_1,model=org.apache.neethi.Policy,appliesTo=sca:reference
-calculator.policy.TestSvcPolicyHandler;intent=http://tuscany.apache.org/xmlns/sca/1.0#TestIntent_1,model=org.apache.neethi.Policy,appliesTo=sca:service
-calculator.policy.TestImplPolicyHandler;intent=http://tuscany.apache.org/xmlns/sca/1.0#TestIntent_1.Qualifier_1,model=org.apache.neethi.Policy,appliesTo=sca:implementation.java
-calculator.policy.TestImplPolicyHandler;intent=http://tuscany.apache.org/xmlns/sca/1.0#TestIntent_2,model=org.apache.neethi.Policy,appliesTo=sca:implementation.java
-calculator.policy.TestRefPolicyHandler;intent=http://tuscany.apache.org/xmlns/sca/1.0#TestIntent_2,model=org.apache.neethi.Policy,appliesTo=sca:reference
-calculator.policy.TestSvcPolicyHandler;intent=http://tuscany.apache.org/xmlns/sca/1.0#TestIntent_2,model=org.apache.neethi.Policy,appliesTo=sca:service
-calculator.policy.TestImplPolicyHandler;intent=http://tuscany.apache.org/xmlns/sca/1.0#TestIntent_3,model=org.apache.neethi.Policy,appliesTo=sca:implementation.java
-calculator.policy.TestImplPolicyHandler;intent=http://tuscany.apache.org/xmlns/sca/1.0#TestIntent_5,model=org.apache.neethi.Policy,appliesTo=sca:implementation.java
+calculator.policy.TestImplPolicyHandler;intent=http://itest/policy#TestIntent_1,model=org.apache.neethi.Policy,appliesTo=sca:implementation.java
+calculator.policy.TestRefPolicyHandler;intent=http://itest/policy#TestIntent_1,model=org.apache.neethi.Policy,appliesTo=sca:reference
+calculator.policy.TestSvcPolicyHandler;intent=http://itest/policy#TestIntent_1,model=org.apache.neethi.Policy,appliesTo=sca:service
+calculator.policy.TestImplPolicyHandler;intent=http://itest/policy#TestIntent_1.Qualifier_1,model=org.apache.neethi.Policy,appliesTo=sca:implementation.java
+calculator.policy.TestImplPolicyHandler;intent=http://itest/policy#TestIntent_2,model=org.apache.neethi.Policy,appliesTo=sca:implementation.java
+calculator.policy.TestRefPolicyHandler;intent=http://itest/policy#TestIntent_2,model=org.apache.neethi.Policy,appliesTo=sca:reference
+calculator.policy.TestSvcPolicyHandler;intent=http://itest/policy#TestIntent_2,model=org.apache.neethi.Policy,appliesTo=sca:service
+calculator.policy.TestImplPolicyHandler;intent=http://itest/policy#TestIntent_3,model=org.apache.neethi.Policy,appliesTo=sca:implementation.java
+calculator.policy.TestImplPolicyHandler;intent=http://itest/policy#TestIntent_5,model=org.apache.neethi.Policy,appliesTo=sca:implementation.java

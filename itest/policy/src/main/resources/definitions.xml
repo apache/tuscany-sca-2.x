@@ -94,6 +94,16 @@
         appliesTo="sca:implementation.java" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
         <wsp:Policy />
     </sca:policySet>
+    
+    <sca:policySet name="TestPolicySet_3_reference" provides="ip:TestIntent_3" appliesTo="sca:reference"
+        xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsp:Policy />
+    </sca:policySet>
+
+    <sca:policySet name="TestPolicySet_3_service" provides="ip:TestIntent_3" appliesTo="sca:service"
+        xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+        <wsp:Policy />
+    </sca:policySet>
 
     <sca:policySet name="TestPolicySet_4_implementation" provides="ip:TestIntent_4"
         appliesTo="sca:implementation.java" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">

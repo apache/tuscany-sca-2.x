@@ -18,9 +18,14 @@
  */
 package calculator;
 
+import org.osoa.sca.annotations.Remotable;
+import org.osoa.sca.annotations.Service;
+
 /**
  * The divide service interface
  */
+@Remotable
+@Service
 public interface DivideService {
 
     double divide(double n1, double n2);
