@@ -90,6 +90,11 @@
             <artifactId>tuscany-databinding</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-extensibility</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 
@@ -137,7 +142,8 @@
                             org.apache.tuscany.sca.databinding.externalizable,
                             org.apache.tuscany.sca.databinding.impl,
                             org.apache.tuscany.sca.databinding.javabeans,
-                            org.apache.tuscany.sca.databinding.xml
+                            org.apache.tuscany.sca.databinding.xml,
+                            org.apache.tuscany.sca.extensibility
                         </_exportcontents>
                     </instructions>
                 </configuration>
