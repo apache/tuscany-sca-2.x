@@ -138,7 +138,7 @@ public class CompositeImageCollectionImpl implements ItemCollection, LocalItemCo
      * @return
      */
     private static String title(String uri, QName qname) {
-        return "Composite " + uri + " - " + qname.getNamespaceURI() + ";" + qname.getLocalPart();
+        return uri + " - " + qname.getNamespaceURI() + ";" + qname.getLocalPart();
     }
 
 }
