@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<composite name="domain.composite"
+<composite name="domain"
   targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
   xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:ns1="http://www.osoa.org/xmlns/sca/1.0">
   <include name="ns2:store" uri="store" xmlns:ns2="http://store"/>

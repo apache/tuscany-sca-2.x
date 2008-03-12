@@ -19,21 +19,14 @@
 -->
 <composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
 		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
-		targetNamespace="http://nodes"
+		targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0/cloud"
 		xmlns:c="http://cloud"
-		name="backend-nodes">
+		name="CatalogsNode">
 
 	<component name="CatalogsNode">
 		<t:implementation.node uri="cloud" composite="c:catalogs"/>
 		<service name="Node">
 			<binding.ws uri="http://localhost:8200"/>
-		</service>
-	</component> 
-
-	<component name="CurrencyNode">
-		<t:implementation.node uri="cloud" composite="c:currency"/>
-		<service name="Node">
-			<binding.ws uri="http://localhost:8201"/>
 		</service>
 	</component> 
 

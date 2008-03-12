@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<composite name="cloud.composite"
-  targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
+<composite name="cloud"
+  targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0/"
   xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:ns1="http://www.osoa.org/xmlns/sca/1.0">
-  <include name="ns2:backend-nodes" uri="nodes" xmlns:ns2="http://nodes"/>
-  <include name="ns2:frontend-us-node" uri="nodes" xmlns:ns2="http://nodes"/>
-  <include name="ns2:merger-nodes" uri="nodes" xmlns:ns2="http://nodes"/>
-  <include name="ns2:frontend-eu-node" uri="nodes" xmlns:ns2="http://nodes"/>
+  <include name="ns2:CurrencyNode"
+    uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud" xmlns:ns2="http://tuscany.apache.org/xmlns/sca/1.0/cloud"/>
+  <include name="ns2:CatalogsNode"
+    uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud" xmlns:ns2="http://tuscany.apache.org/xmlns/sca/1.0/cloud"/>
+  <include name="ns2:StoreNode"
+    uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud" xmlns:ns2="http://tuscany.apache.org/xmlns/sca/1.0/cloud"/>
+  <include name="ns2:StoreMergerNode"
+    uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud" xmlns:ns2="http://tuscany.apache.org/xmlns/sca/1.0/cloud"/>
+  <include name="ns2:StoreDBNode"
+    uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud" xmlns:ns2="http://tuscany.apache.org/xmlns/sca/1.0/cloud"/>
+  <include name="ns2:StoreSupplierNode"
+    uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud" xmlns:ns2="http://tuscany.apache.org/xmlns/sca/1.0/cloud"/>
+  <include name="ns2:StoreEUNode"
+    uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud" xmlns:ns2="http://tuscany.apache.org/xmlns/sca/1.0/cloud"/>
 </composite>
