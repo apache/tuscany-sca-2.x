@@ -27,4 +27,17 @@ import org.apache.tuscany.sca.assembly.Binding;
  * @version $Rev$ $Date$
  */
 public interface AtomBinding extends Binding {
+    
+    /**
+     * Returns the title of the Atom collection.
+     * @return
+     */
+    String getTitle();
+    
+    /**
+     * Sets the title of the Atom collection.
+     * @param title
+     */
+    void setTitle(String title);
+    
 }

@@ -39,6 +39,7 @@ class AtomBindingImpl implements AtomBinding, OptimizableBinding, PolicySetAttac
 
     private String name;
     private String uri;
+    private String title;
     private List<Intent> requiredIntents = new ArrayList<Intent>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
     private IntentAttachPointType intentAttachPointType;
@@ -64,6 +65,13 @@ class AtomBindingImpl implements AtomBinding, OptimizableBinding, PolicySetAttac
         this.uri = uri;
     }
 
+    public String getTitle() {
+        return title;
+    }
+    
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public boolean isUnresolved() {
         // The binding is always resolved
