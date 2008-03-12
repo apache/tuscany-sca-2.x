@@ -39,7 +39,6 @@
                 <module>assets</module>
                 <module>cloud</module>
                 <module>domain</module>
-                <module>nodes</module>
                 <module>nodes-jee</module>
                 <module>store</module>
                 <module>store-db</module>

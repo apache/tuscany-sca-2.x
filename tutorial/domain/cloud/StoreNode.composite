@@ -19,9 +19,9 @@
 -->
 <composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
 		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
-		targetNamespace="http://nodes"
+		targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0/cloud"
 		xmlns:s="http://store"
-		name="frontend-us-node">
+		name="StoreNode">
 
 	<component name="StoreNode">
 		<t:implementation.node uri="store" composite="s:store"/>

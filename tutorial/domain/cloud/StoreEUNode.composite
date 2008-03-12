@@ -19,35 +19,17 @@
 -->
 <composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
 		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
-		targetNamespace="http://nodes"
+		targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0/cloud"
 		xmlns:s="http://store"
-		name="merger-nodes">
+		name="StoreEUNode">
 
-	<component name="StoreMergerNode">
-		<t:implementation.node uri="store-merger" composite="s:store-merger"/>
+	<component name="StoreEUNode">
+		<t:implementation.node uri="store-eu" composite="s:store-eu"/>
 		<service name="Node">
-			<t:binding.http uri="http://localhost:8101"/>
-			<t:binding.jsonrpc uri="http://localhost:8101"/>
-			<t:binding.atom uri="http://localhost:8101"/>
-		</service>
-	</component> 
-
-	<component name="StoreDBNode">
-		<t:implementation.node uri="store-db" composite="s:store-db"/>
-		<service name="Node">
-			<t:binding.http uri="http://localhost:8102"/>
-			<t:binding.jsonrpc uri="http://localhost:8102"/>
-			<t:binding.atom uri="http://localhost:8102"/>
-		</service>
-	</component> 
-
-	<component name="StoreSupplierNode">
-		<t:implementation.node uri="store-supplier" composite="s:store-supplier"/>
-		<service name="Node">
-			<t:binding.http uri="http://localhost:8103"/>
-			<t:binding.jsonrpc uri="http://localhost:8103"/>
-			<t:binding.atom uri="http://localhost:8103"/>
-			<binding.ws uri="http://localhost:8333"/>
+			<t:binding.http uri="http://localhost:8104"/>
+			<t:binding.jsonrpc uri="http://localhost:8104"/>
+			<t:binding.atom uri="http://localhost:8104"/>
+			<binding.ws uri="http://localhost:8444"/>
 		</service>
 	</component> 
 
