@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project name="sample-helloworld-ws-service-webapp" default="package">
+<project name="sample-helloworld-ws-service-webapp" default="compile">
     <property file="${user.home}/tuscany/build.properties" />
     <property file="${user.home}/build.properties" />
 
@@ -49,9 +49,6 @@
             <fileset dir="src/main/resources"/>
             <fileset dir="target/sdo-source"/>
         </copy>
-    </target>	
-	
-    <target name="package" depends="compile">
         <war destfile="target/sample-helloworld-ws-service-webapp.war" 
              webxml="src/main/webapp/WEB-INF/web.xml">
             <fileset dir="src/main/webapp"/>       	
@@ -147,8 +144,9 @@
             </lib>        	
             <classes dir="target/classes"/>
             <classes dir="target/sdo-source"/>
-        </war>
-     </target>
+        </war>    </target>	
+	
+    <target name="package" depends="compile"/>
 		
     <target name="clean">
         <delete quiet="true" includeemptydirs="true">

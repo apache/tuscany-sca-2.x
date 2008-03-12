@@ -57,7 +57,8 @@
           <property name="localRepository" value="./target/repo"/>
         </ant>     	
     </target>
-	<target name="package" depends="compile"/>
+	
+    <target name="package" depends="compile"/>
 
     <target name="clean">
         <delete includeemptydirs="true">
