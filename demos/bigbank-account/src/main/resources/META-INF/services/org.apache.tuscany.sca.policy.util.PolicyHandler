@@ -17,4 +17,4 @@
 # 
 # PolicyHandlerClasses to interpret specific PolicyModels against specific QoS infrastructures
 # handler classname;qname=<policy intent addressed>;model=<policy model class>
-bigbank.account.security.CheckingsDeptAuthorizationPolicyHandler;intent=http://bigbank/checkings#chkDeptAuthorization,model=bigbank.account.security.CheckingsDeptAuthPolicy
+bigbank.account.security.CheckingsDeptAuthorizationPolicyHandler;intent=http://bigbankAccount#authorization,model=bigbank.account.security.CheckingsDeptAuthPolicy

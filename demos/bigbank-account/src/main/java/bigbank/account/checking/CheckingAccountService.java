@@ -19,10 +19,12 @@
 package bigbank.account.checking;
 
 import org.osoa.sca.annotations.Remotable;
+import org.osoa.sca.annotations.Service;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
+@Service
 @Remotable
 public interface CheckingAccountService {
     

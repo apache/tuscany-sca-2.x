@@ -21,6 +21,7 @@
 	targetNamespace="http://bigbank/checkings"
 	xmlns:bbck="http://bigbank/checkings"
 	xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+	xmlns:bba="http://bigbankAccount"
 	name="CheckingsAccountDept">
 	
     <service name="CheckingsAccountService" promote="CheckingAccountServiceComponent" requires="authentication">
@@ -29,6 +30,6 @@
     </service>
 
     <component name="CheckingAccountServiceComponent">
-        <implementation.java class="bigbank.account.checking.CheckingAccountServiceImpl" requires="authorization"/>
+        <implementation.java class="bigbank.account.checking.CheckingAccountServiceImpl" requires="bba:authorization"/>
     </component>
 </composite>
