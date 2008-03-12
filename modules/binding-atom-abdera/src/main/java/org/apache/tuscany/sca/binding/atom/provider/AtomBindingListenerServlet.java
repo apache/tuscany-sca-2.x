@@ -83,6 +83,7 @@ class AtomBindingListenerServlet extends HttpServlet {
     private Invoker deleteInvoker;
     private MessageFactory messageFactory;
     private String feedType;
+    private String title;
     private Mediator mediator;
     private DataType<?> itemClassType;
     private DataType<?> itemXMLType;
@@ -95,11 +96,12 @@ class AtomBindingListenerServlet extends HttpServlet {
      * @param messageFactory
      * @param feedType
      */
-    AtomBindingListenerServlet(RuntimeWire wire, MessageFactory messageFactory, Mediator mediator, String feedType) {
+    AtomBindingListenerServlet(RuntimeWire wire, MessageFactory messageFactory, Mediator mediator, String feedType, String title) {
         this.wire = wire;
         this.messageFactory = messageFactory;
         this.mediator = mediator;
         this.feedType = feedType;
+        this.title = title;
 
         // Get the invokers for the supported operations
         Operation getOperation = null;
@@ -240,9 +242,18 @@ class AtomBindingListenerServlet extends HttpServlet {
                 org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>[] collection =
                     (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>[])responseMessage.getBody();
                 if (collection != null) {
+                    
                     // Create the feed
                     feed = this.abdera.getFactory().newFeed();
-                    feed.setTitle("Feed");
+                    
+                    // Set the feed title
+                    if (title != null) {
+                        feed.setTitle(title);
+                    } else {
+                        feed.setTitle("Feed");
+                    }
+                    
+                    // Add entries to the feed
                     for (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry: collection) {
                         Entry feedEntry = createFeedEntry(entry);
                         feed.addEntry(feedEntry);
