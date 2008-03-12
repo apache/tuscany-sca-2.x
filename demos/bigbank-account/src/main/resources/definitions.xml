@@ -22,7 +22,8 @@
  			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
  			xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
 			xmlns:chk="http://bigbank/checkings"
- 			xmlns:bb="http://bigbank">
+ 			xmlns:bb="http://bigbank"
+ 			xmlns:bba="http://bigbankAccount">
 
   
 <sca:intent name="authorization" 
@@ -47,7 +48,7 @@
  </sca:policySet>
  
  <sca:policySet name="chkDeptAuthorizationPolicy"
- 	provides="authorization"
+ 	provides="bba:authorization"
  	appliesTo="sca:implementation.java">
  	<chk:AuthPolicy>
  		<!-- need to evolve what should go in here -->
