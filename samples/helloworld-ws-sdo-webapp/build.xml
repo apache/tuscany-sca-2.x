@@ -20,7 +20,7 @@
 <!ENTITY buildDependency SYSTEM "build-dependency.xml">
 ]>
 	
-<project name="sample-helloworld-ws-sdo-webapp" default="package">
+<project name="sample-helloworld-ws-sdo-webapp" default="compile">
 	&buildDependency;
 	
     <property file="${user.home}/tuscany/build.properties" />
@@ -80,9 +80,6 @@
         <copy todir="target/classes">
             <fileset dir="src/main/resources"/>
         </copy>
-    </target>	
-	
-    <target name="package" depends="compile">
         <war destfile="target/sample-helloworld-ws-sdo-webapp.war" 
              webxml="src/main/webapp/WEB-INF/web.xml">
             <fileset dir="src/main/webapp"/>       	
@@ -90,7 +87,9 @@
             <lib refid="3rdparty.jars"/>
             <classes dir="target/classes"/>
         </war>
-     </target>
+    </target>	
+	
+    <target name="package" depends="compile"/>
 		
     <target name="clean">
         <delete quiet="true" includeemptydirs="true">
