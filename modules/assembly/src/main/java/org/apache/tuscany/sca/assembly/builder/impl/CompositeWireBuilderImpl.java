@@ -49,6 +49,7 @@ import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
 
 public class CompositeWireBuilderImpl {
 
@@ -825,19 +826,19 @@ public class CompositeWireBuilderImpl {
     
     private void addPoliciesFromPromotedService(CompositeService compositeService) {
         //inherit intents and policies from promoted service
-        addInheritedIntents(compositeService.getPromotedService().getRequiredIntents(), 
+        PolicyComputationUtils.addInheritedIntents(compositeService.getPromotedService().getRequiredIntents(), 
                             compositeService.getRequiredIntents());
-        addInheritedPolicySets(compositeService.getPromotedService().getPolicySets(), 
+        PolicyComputationUtils.addInheritedPolicySets(compositeService.getPromotedService().getPolicySets(), 
                                compositeService.getPolicySets(), true);
         addInheritedOperationConfigurations(compositeService.getPromotedService(), compositeService);
     }
     
     private void addPoliciesFromPromotedReference(CompositeReference compositeReference) {
         for ( Reference promotedReference : compositeReference.getPromotedReferences() ) {
-           addInheritedIntents(promotedReference.getRequiredIntents(), 
+           PolicyComputationUtils.addInheritedIntents(promotedReference.getRequiredIntents(), 
                                compositeReference.getRequiredIntents());
        
-           addInheritedPolicySets(promotedReference.getPolicySets(), 
+           PolicyComputationUtils.addInheritedPolicySets(promotedReference.getPolicySets(), 
                                   compositeReference.getPolicySets(), true);
            addInheritedOperationConfigurations(promotedReference, compositeReference);
         }
@@ -853,7 +854,7 @@ public class CompositeWireBuilderImpl {
                 //compute the intents for operations under service element
                 bindingPolicyComputer.computeIntentsForOperations(service);
                 //add or merge service operations to the binding
-                addInheritedOpConfOnBindings(service);
+                //addInheritedOpConfOnBindings(service);
                 bindingPolicyComputer.computeBindingIntentsAndPolicySets(service);
                 bindingPolicyComputer.determineApplicableBindingPolicySets(service, null);
             } catch ( Exception e ) {
@@ -869,12 +870,12 @@ public class CompositeWireBuilderImpl {
             try {
                 //compute the intents for operations under service element
                 bindingPolicyComputer.computeIntentsForOperations(reference);
-                addInheritedOpConfOnBindings(reference);
+                //addInheritedOpConfOnBindings(reference);
                 
                 if (compReference.getCallback() != null) {
-                    addInheritedIntents(compReference.getRequiredIntents(), 
+                    PolicyComputationUtils.addInheritedIntents(compReference.getRequiredIntents(), 
                                         compReference.getCallback().getRequiredIntents());
-                    addInheritedPolicySets(compReference.getPolicySets(), 
+                    PolicyComputationUtils.addInheritedPolicySets(compReference.getPolicySets(), 
                                            compReference.getCallback().getPolicySets(), 
                                            false);
                 }
@@ -900,8 +901,8 @@ public class CompositeWireBuilderImpl {
                 Service service = componentService.getService();
                 if (service != null) {
                     // reconcile intents and policysets from componentType
-                     addInheritedIntents(service.getRequiredIntents(), componentService.getRequiredIntents());
-                     addInheritedPolicySets(service.getPolicySets(), componentService.getPolicySets(), true);
+                     PolicyComputationUtils.addInheritedIntents(service.getRequiredIntents(), componentService.getRequiredIntents());
+                     PolicyComputationUtils.addInheritedPolicySets(service.getPolicySets(), componentService.getPolicySets(), true);
                      
                      //reconcile intents and policysets for operations 
                      boolean notFound;
@@ -910,8 +911,8 @@ public class CompositeWireBuilderImpl {
                          notFound = true;
                          for ( ConfiguredOperation csConfOp : componentService.getConfiguredOperations() ) {
                              if ( csConfOp.getName().equals(ctsConfOp.getName()) ) {
-                                 addInheritedIntents(ctsConfOp.getRequiredIntents(), csConfOp.getRequiredIntents());
-                                 addInheritedPolicySets(ctsConfOp.getPolicySets(), csConfOp.getPolicySets(), true);
+                                 PolicyComputationUtils.addInheritedIntents(ctsConfOp.getRequiredIntents(), csConfOp.getRequiredIntents());
+                                 PolicyComputationUtils.addInheritedPolicySets(ctsConfOp.getPolicySets(), csConfOp.getPolicySets(), true);
                                  notFound = false;
                              } 
                          }
@@ -924,9 +925,9 @@ public class CompositeWireBuilderImpl {
                 }
                 
                 if ( componentService.getCallback() != null ) {
-                    addInheritedIntents(componentService.getRequiredIntents(), 
+                    PolicyComputationUtils.addInheritedIntents(componentService.getRequiredIntents(), 
                                         componentService.getCallback().getRequiredIntents());
-                    addInheritedPolicySets(componentService.getPolicySets(), 
+                    PolicyComputationUtils.addInheritedPolicySets(componentService.getPolicySets(), 
                                            componentService.getCallback().getPolicySets(), 
                                            false);
                 }
@@ -935,14 +936,14 @@ public class CompositeWireBuilderImpl {
                     //compute the intents for operations under service element
                     bindingPolicyComputer.computeIntentsForOperations(componentService);
                     //compute intents and policyset for each binding
-                    addInheritedOpConfOnBindings(componentService);
+                    //addInheritedOpConfOnBindings(componentService);
                     bindingPolicyComputer.computeBindingIntentsAndPolicySets(componentService);
                     bindingPolicyComputer.determineApplicableBindingPolicySets(componentService, null);
     
                     if ( componentService.getCallback() != null ) {
-                        addInheritedIntents(componentService.getRequiredIntents(), 
+                        PolicyComputationUtils.addInheritedIntents(componentService.getRequiredIntents(), 
                                         componentService.getCallback().getRequiredIntents());
-                        addInheritedPolicySets(componentService.getPolicySets(), 
+                        PolicyComputationUtils.addInheritedPolicySets(componentService.getPolicySets(), 
                                            componentService.getCallback().getPolicySets(), 
                                            false);
                     }
@@ -956,14 +957,14 @@ public class CompositeWireBuilderImpl {
                 Reference reference = componentReference.getReference();
                 if (reference != null) {
                     // reconcile intents and policysets
-                    addInheritedIntents(reference.getRequiredIntents(), componentReference.getRequiredIntents());
-                    addInheritedPolicySets(reference.getPolicySets(), componentReference.getPolicySets(), true);
+                    PolicyComputationUtils.addInheritedIntents(reference.getRequiredIntents(), componentReference.getRequiredIntents());
+                    PolicyComputationUtils.addInheritedPolicySets(reference.getPolicySets(), componentReference.getPolicySets(), true);
                 }
                 
                 if ( componentReference.getCallback() != null ) {
-                    addInheritedIntents(componentReference.getRequiredIntents(), 
+                    PolicyComputationUtils.addInheritedIntents(componentReference.getRequiredIntents(), 
                                         componentReference.getCallback().getRequiredIntents());
-                    addInheritedPolicySets(componentReference.getPolicySets(), 
+                    PolicyComputationUtils.addInheritedPolicySets(componentReference.getPolicySets(), 
                                            componentReference.getCallback().getPolicySets(), 
                                            false);
                 }
@@ -972,15 +973,15 @@ public class CompositeWireBuilderImpl {
                     //compute the intents for operations under reference element
                     bindingPolicyComputer.computeIntentsForOperations(componentReference);
                     //compute intents and policyset for each binding
-                    addInheritedOpConfOnBindings(componentReference);
+                    //addInheritedOpConfOnBindings(componentReference);
                     bindingPolicyComputer.computeBindingIntentsAndPolicySets(componentReference);
                     bindingPolicyComputer.determineApplicableBindingPolicySets(componentReference, null);
     
                 
                     if ( componentReference.getCallback() != null ) {
-                        addInheritedIntents(componentReference.getRequiredIntents(), 
+                        PolicyComputationUtils.addInheritedIntents(componentReference.getRequiredIntents(), 
                                             componentReference.getCallback().getRequiredIntents());
-                        addInheritedPolicySets(componentReference.getPolicySets(), 
+                        PolicyComputationUtils.addInheritedPolicySets(componentReference.getPolicySets(), 
                                                componentReference.getCallback().getPolicySets(), 
                                                false);
                     }
@@ -990,50 +991,20 @@ public class CompositeWireBuilderImpl {
                 }
             }
         } 
-        
     }
     
-    /******************************************************************************************************/
-    /*policy computation methods common to implementation and binding types */
-    /******************************************************************************************************/
-    private void addInheritedIntents(List<Intent> sourceList, List<Intent> targetList) {
-        if (sourceList != null) {
-            targetList.addAll(sourceList);
-        }
-    }
-    
-    private  void addInheritedPolicySets(List<PolicySet> sourceList, List<PolicySet> targetList, boolean checkOverrides) {
-        //check overrides is true when policysets are to be copied from componentType to component level
-        if ( checkOverrides ) {
-            //aggregate all the provided intents present in the target
-            List<Intent> targetProvidedIntents = new ArrayList<Intent>();
-            for ( PolicySet policySet : targetList ) {
-                targetProvidedIntents.addAll(policySet.getProvidedIntents());
-            }
-            
-            //for every policy set in the source check if it provides one of the intents that is 
-            //already provided by the policysets in the destination and do not copy them.
-            for ( PolicySet policySet : sourceList ) {
-                for ( Intent sourceProvidedIntent : policySet.getProvidedIntents() ) {
-                    if ( !targetProvidedIntents.contains(sourceProvidedIntent) ) {
-                        targetList.add(policySet);
-                    }
-                }
-            }
-        } else {
-            targetList.addAll(sourceList);
-        }
-    }
-
-    private void addInheritedOperationConfigurations(OperationsConfigurator source, OperationsConfigurator target) {
+    private void addInheritedOperationConfigurations(OperationsConfigurator source, 
+                                                     OperationsConfigurator target) {
         boolean found = false;
         
         List<ConfiguredOperation> additionalOperations = new ArrayList<ConfiguredOperation>();
         for ( ConfiguredOperation sourceConfOp : source.getConfiguredOperations() ) {
             for ( ConfiguredOperation targetConfOp : target.getConfiguredOperations() ) {
                 if ( sourceConfOp.getName().equals(targetConfOp.getName())) {
-                    addInheritedIntents(sourceConfOp.getRequiredIntents(), targetConfOp.getRequiredIntents());
-                    addInheritedPolicySets(sourceConfOp.getPolicySets(), targetConfOp.getPolicySets(), true);
+                    PolicyComputationUtils.addInheritedIntents(sourceConfOp.getRequiredIntents(), 
+                                                               targetConfOp.getRequiredIntents());
+                    PolicyComputationUtils.addInheritedPolicySets(sourceConfOp.getPolicySets(), 
+                                                                  targetConfOp.getPolicySets(), true);
                     found = true;
                     break;
                 }
@@ -1049,11 +1020,4 @@ public class CompositeWireBuilderImpl {
         }
     }
     
-    private void addInheritedOpConfOnBindings(Contract contract) {      
-        for ( Binding binding : contract.getBindings() ) {
-            if ( binding instanceof OperationsConfigurator ) {
-                addInheritedOperationConfigurations(contract, (OperationsConfigurator)binding);
-            }
-        }
-    }
 }

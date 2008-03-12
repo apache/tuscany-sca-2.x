@@ -887,7 +887,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     //add the inherited applicablePolicysets
                     addInheritedPolicySets(policiedImpl.getApplicablePolicySets(), implConfOp.getApplicablePolicySets());
                     
-                    PolicyValidationUtils.validatePolicySets(implConfOp);
+                    PolicyValidationUtils.validatePolicySets(implConfOp, policiedImpl.getType());
                     
                     addInheritedIntents(((PolicySetAttachPoint)implementation).getRequiredIntents(), 
                                         implConfOp.getRequiredIntents());
