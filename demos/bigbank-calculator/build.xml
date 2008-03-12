@@ -20,8 +20,8 @@
     <property name="test.class" value="calculator.demo.CalculatorServer" />
 	
     <path id="test.classpath">
-        <pathelement location="../../modules/tuscany-binding-rmi-1.2-incubating-SNAPSHOT.jar"/>
-    	<pathelement path="target/demo-bigbank-calculator.jar"/>     	
+        <!-- pathelement location="../../modules/tuscany-binding-rmi-1.2-incubating-SNAPSHOT.jar"/-->
+        <pathelement path="target/demo-bigbank-calculator.jar"/>      
     	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>    	
     </path>
 	
@@ -57,6 +57,12 @@
             </classpath>
         </java>    	
     </target>	
+
+    <target name="clean">
+		<delete quiet="true" includeemptydirs="true">
+			<fileset dir="target" />
+		</delete>
+	</target>
 
 </project>
 
