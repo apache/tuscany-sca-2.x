@@ -61,6 +61,7 @@ import org.apache.tuscany.sca.assembly.builder.Problem;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeConfigurationBuilderImpl;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -78,6 +79,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionListener;
 import org.apache.tuscany.sca.contribution.service.ContributionListenerExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
+import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
@@ -112,11 +114,13 @@ import org.w3c.dom.Document;
  */
 @Scope("COMPOSITE")
 @Service(interfaces={ItemCollection.class, LocalItemCollection.class, Servlet.class})
-public class DeployableCollectionImpl extends HttpServlet implements ItemCollection, LocalItemCollection {
+public class DeployableCompositeCollectionImpl extends HttpServlet implements ItemCollection, LocalItemCollection {
     private static final long serialVersionUID = -8809641932774129151L;
     
-    private final static Logger logger = Logger.getLogger(DeployableCollectionImpl.class.getName());    
+    private final static Logger logger = Logger.getLogger(DeployableCompositeCollectionImpl.class.getName());    
 
+    private static final String deploymentContributionURI = Constants.SCA10_TUSCANY_NS + "/cloud";
+    
     @Reference
     public LocalItemCollection contributionCollection;
     
@@ -219,22 +223,16 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
 
         // Read contribution metadata
         for (Entry<String, Item> contributionEntry: contributionEntries) {
-            Contribution contribution = contribution(contributionEntry.getKey(), contributionEntry.getData().getLink());
+            Contribution contribution;
+            try {
+                contribution = contribution(contributionEntry.getKey(), contributionEntry.getData().getLink());
+            } catch (ContributionReadException e) {
+                continue;
+            }
 
             // Create entries for the deployable composites
             for (Composite deployable: contribution.getDeployables()) {
-                Entry<String, Item> entry = new Entry<String, Item>();
-                String contributionURI = contribution.getURI();
-                QName qname = deployable.getName();
-                String key = key(contributionURI, qname);
-                entry.setKey(key);
-                Item item = new Item();
-                item.setTitle(title(contributionURI, qname));
-                item.setContents(components(deployable));
-                item.setLink(link(contribution.getLocation(), deployable.getURI()));
-                item.setContents(components(deployable));
-                entry.setData(item);
-                entries.add(entry);
+                entries.add(entry(contribution, deployable));
             }
             
         }
@@ -248,7 +246,12 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
         Item contributionItem = contributionCollection.get(contributionURI);
         
         // Read the contribution
-        Contribution contribution = contribution(contributionURI, contributionItem.getLink());
+        Contribution contribution;
+        try {
+            contribution = contribution(contributionURI, contributionItem.getLink());
+        } catch (ContributionReadException e) {
+            throw new NotFoundException(key);
+        }
 
         // Find the specified deployable composite
         QName qname = qname(key);
@@ -256,15 +259,11 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
             if (qname.equals(deployable.getName())) {
                 
                 // Return an item describing the deployable composite
-                Item item = new Item();
-                item.setTitle(title(contributionURI, qname));
-                item.setContents(components(deployable));
-                item.setLink(link(contribution.getLocation(), deployable.getURI()));
-                return item;
+                return item(contribution, deployable);
             }
         }
 
-        throw new NotFoundException();
+        throw new NotFoundException(key);
     }
 
     public String post(String key, Item item) {
@@ -287,7 +286,7 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
             List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
 
             // Get the specified contribution info 
-            String contributionURI = queryString.substring(13);
+            String contributionURI = queryString.substring(queryString.indexOf('=') + 1);
             Item contributionItem;
             try {
                 contributionItem = contributionCollection.get(contributionURI);
@@ -296,20 +295,16 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
             }
             
             // Read the contribution
-            Contribution contribution = contribution(contributionURI, contributionItem.getLink());
+            Contribution contribution;
+            try {
+                contribution = contribution(contributionURI, contributionItem.getLink());
+            } catch (ContributionReadException e) {
+                return entries.toArray(new Entry[entries.size()]);
+            }
 
             // Create entries for the deployable composites
             for (Composite deployable: contribution.getDeployables()) {
-                Entry<String, Item> entry = new Entry<String, Item>();
-                QName qname = deployable.getName();
-                String key = key(contributionURI, qname);
-                entry.setKey(key);
-                Item item = new Item();
-                item.setTitle(title(contributionURI, qname));
-                item.setContents(components(deployable));
-                item.setLink(link(contribution.getLocation(), deployable.getURI()));
-                entry.setData(item);
-                entries.add(entry);
+                entries.add(entry(contribution, deployable));
             }
 
             return entries.toArray(new Entry[entries.size()]);
@@ -322,22 +317,23 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
+        // Expect a key in the form
+        // composite:contributionURI;namespace;localName
+        // and return the corresponding resolved composite
+        
         // Get the request path
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
         String key = path.startsWith("/")? path.substring(1) : path;
         
-        // Expecting a key in the form:
-        // composite:contributionURI;namespace;localName
-        QName keyQName = qname(key);
+        // Extract the composite qname from the key
+        QName qname = qname(key);
         
         // Somewhere to store the composite we expect to write out at the end
         Composite compositeImage = null;
 
         // Create a domain composite model
         Composite domainComposite = assemblyFactory.createComposite();
-        URL url = new URL(request.getRequestURL().toString());
-        url= new URL(url.getProtocol(), url.getHost(), url.getPort(), "");
-        domainComposite.setName(new QName(url.toString(), "domain"));
+        domainComposite.setName(new QName(Constants.SCA10_TUSCANY_NS, "domain"));
             
         // Get the domain composite items
         Entry<String, Item>[] domainEntries = domainCompositeCollection.getAll();
@@ -353,11 +349,17 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
             if (contribution == null) {
                 
                 // The contribution has not been loaded yet, load it with all its dependencies
-                for (Entry<String, Item> entry: contributionCollection.query("alldependencies=" + contributionURI)) {
+                Entry<String, Item>[] entries = contributionCollection.query("alldependencies=" + contributionURI);
+                for (Entry<String, Item> entry: entries) {
                     Item contributionItem = entry.getData();
     
                     // Read the contribution
-                    Contribution c = contribution(loadedContributions, entry.getKey(), contributionItem.getLink());
+                    Contribution c;
+                    try {
+                        c = contribution(loadedContributions, entry.getKey(), contributionItem.getLink());
+                    } catch (ContributionReadException e) {
+                        continue;
+                    }
                     loadedContributions.add(c);
                     if (contributionURI.equals(entry.getKey())) {
                         contribution = c;
@@ -367,29 +369,29 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
             }
             
             if (contribution == null) {
-                //FIXME We should just report a warning here
-                throw new ServletException(new NotFoundException("Contribution not found: " + contributionURI));
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
             }
             
             // Find the specified deployable composite in the contribution
             Composite deployable = null;
-            QName qname = qname(domainEntry.getKey());
+            QName qn = qname(domainEntry.getKey());
             for (Composite d: contribution.getDeployables()) {
-                if (qname.equals(d.getName())) {
+                if (qn.equals(d.getName())) {
                     deployable = d;
                     break;
                 }
             }
             if (deployable == null) {
-                //FIXME We should just report a warning here
-                throw new ServletException(new NotFoundException("Deployable not found: " + qname));
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, qn.toString());
+                return;
             }
             
             // add the deployable composite to the domain composite
             domainComposite.getIncludes().add(deployable);
             
             // store away the composite we are generating the deployable XML for. 
-            if (keyQName.equals(deployable.getName())){
+            if (qname.equals(deployable.getName())){
                 compositeImage = deployable;
             }
         }
@@ -397,10 +399,10 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
         // Get the clouds composite
         Composite cloudsComposite;
         try {
-            cloudsComposite = clouds();
+            cloudsComposite = cloud();
         } catch (NotFoundException e) {
-            //FIXME We should just report a warning here
-            throw new ServletException(e);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+            return;
         }
         
         // configure the endpoints for each composite in the domain
@@ -438,7 +440,8 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
         try {
             compositeBuilder.build(domainComposite);
         } catch (CompositeBuilderException e) {
-            throw new ServletException(e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+            return;
         }        
         
         // rebuild the requested composite from the domain composite
@@ -475,20 +478,21 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
             serializer.serialize(document);
             
         } catch (Exception e) {
-            throw new ServletException(e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
         }
                
     }
 
     /**
-     * Returns the clouds composite.
+     * Returns the cloud composite.
      * 
-     * @return the clouds composite
+     * @return the cloud composite
      */
-    private Composite clouds() throws NotFoundException {
+    private Composite cloud() throws NotFoundException {
 
         // Create a new composite for the clouds
         Composite clouds = assemblyFactory.createComposite();
+        clouds.setName(new QName(Constants.SCA10_TUSCANY_NS, "cloud"));
         
         // Get the collection of cloud composites
         Entry<String, Item>[] cloudEntries = cloudCollection.getAll();
@@ -505,7 +509,11 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
                 Item contributionItem = contributionCollection.get(contributionURI);
                 
                 // Read the contribution
-                contribution = contribution(loadedContributions, contributionURI, contributionItem.getLink());
+                try {
+                    contribution = contribution(loadedContributions, contributionURI, contributionItem.getLink());
+                } catch (ContributionReadException e) {
+                    continue;
+                }
                 loadedContributions.add(contribution);
                 contributionMap.put(contributionURI, contribution);
             }
@@ -529,7 +537,7 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
      * @return
      * @throws NotFoundException
      */
-    private Contribution contribution(List<Contribution> contributions, String contributionURI, String contributionURL) {
+    private Contribution contribution(List<Contribution> contributions, String contributionURI, String contributionURL) throws ContributionReadException {
         try {
             URI uri = URI.create(contributionURI);
             URL url = url(contributionURL);
@@ -544,14 +552,28 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
             
             ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
             contributionContentProcessor.resolve(contribution, modelResolver);
+            
+            // Special processing for the cloud contribution, make all the
+            // composites deployable
+            if (contribution.getURI().equals(deploymentContributionURI)) {
+                for (Artifact artifact: contribution.getArtifacts()) {
+                    if (artifact.getModel() instanceof Composite) {
+                        contribution.getDeployables().add((Composite)artifact.getModel());
+                    }
+                }
+            }
             return contribution;
 
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
+        } catch (ContributionReadException e) {
+            throw e;
+        } catch (ContributionResolveException e) {
+            throw new ContributionReadException(e);
+        } catch (MalformedURLException e) {
+            throw new ContributionReadException(e);
         }
     }
 
-    private Contribution contribution(String contributionURI, String contributionURL) {
+    private Contribution contribution(String contributionURI, String contributionURL) throws ContributionReadException {
         return contribution(new ArrayList<Contribution>(), contributionURI, contributionURL);
     }
     
@@ -562,76 +584,107 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
      * inside the contribution.
      * 
      * If the containing contribution is a local or remote file, return a URI of the form:
-     * /files/ contribution URI !/ composite URI.
-     * The contribution file servlet at '/files/' will open the contribution and extract the composite
-     * file from it.
+     * jar: contribution URI !/ composite URI.
      *  
      * @param contributionLocation
      * @param deployableURI
      * @return
      */
-    private static String link(String contributionLocation, String deployableURI) {
+    private static String alternateLink(String contributionLocation, String deployableURI) {
         URI uri = URI.create(contributionLocation);
         if ("file".equals(uri.getScheme())) {
-            if (new File(uri).isDirectory()) {
-                return contributionLocation + "/" + deployableURI;
+            String path = uri.toString().substring(5);
+            File file = new File(path);
+            if (file.isDirectory()) {
+                if (contributionLocation.endsWith("/")) {
+                    return contributionLocation + deployableURI;
+                } else {
+                    return contributionLocation + "/" + deployableURI;
+                }
             } else {
-                return "/files/" + contributionLocation + "!/" + deployableURI; 
+                return contributionLocation + "!/" + deployableURI; 
             }
         } else {
-            if (uri.getPath().startsWith("/files/")) {
-                return contributionLocation + "!/" + deployableURI;
-            } else {
-                return "/files/" + contributionLocation + "!/" + deployableURI;
-            }
+            return contributionLocation + "!/" + deployableURI;
         }
     }
     
-    private Item compositeItem(String contributionURI, QName qname) {
-        String key = key(contributionURI, qname);
-        Entry<String, Item>[] entries = query("contribution=" + contributionURI);
-        for (Entry<String, Item> entry: entries) {
-            if (key.equals(entry.getKey())) {
-                return entry.getData();
-            }
-        }
-        return null;
+    private static String sourceLink(String contributionURI, QName qname) {
+        return "/composite-source/" + key(contributionURI, qname);
     }
-
+    
     /**
      * Returns the list of components in a composite.
      * 
      * @param composite
      * @return
      */
-    private String components(Composite composite) {
+    private static String components(Composite composite) {
         StringBuffer sb = new StringBuffer();
         for (Component component: composite.getComponents()) {
-            if (component.getImplementation() instanceof NodeImplementation) {
-                sb.append(component.getName());
-
-                NodeImplementation nodeImplementation = (NodeImplementation)component.getImplementation();
-                Composite deployable = nodeImplementation.getComposite();
-                String contributionURI = deployable.getURI();
-                QName qname = deployable.getName();
-                String title = title(contributionURI, qname);
-                String key = key(contributionURI, qname);
-
-                sb.append("<br><a href=\"" + "/composite-source/" + key + "\">" + title + "</a><br>");
-                
-                String imageLink = "/composite-image?composite=" + key;
-                sb.append("<a href=\"" + imageLink + "\"><img src=\"icons/feed-icon.png\" border=\"0\"></a><br>");
-                
-            } else {
-                if (sb.length() != 0) {
-                    sb.append(" ");
-                }
-                sb.append(component.getName());
+            if (sb.length() != 0) {
+                sb.append(" ");
             }
+            sb.append(component.getName());
         }
         return sb.toString();
     }
     
+    /**
+     * Returns the link to the resource related to a composite.
+     * 
+     * @param composite
+     * @return
+     */
+    private static String relatedLink(Composite composite) {
+        for (Component component: composite.getComponents()) {
+            if (component.getImplementation() instanceof NodeImplementation) {
+                NodeImplementation nodeImplementation = (NodeImplementation)component.getImplementation();
+                Composite deployable = nodeImplementation.getComposite();
+                String contributionURI = deployable.getURI();
+                QName qname = deployable.getName();
+                String key = key(contributionURI, qname);
+                return "/composite-source/" + key;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Returns an entry describing the given deployable.
+     * 
+     * @param contribution
+     * @param deployable
+     * @return
+     */
+    private static Entry<String, Item> entry(Contribution contribution, Composite deployable) {
+        Entry<String, Item> entry = new Entry<String, Item>();
+        entry.setKey(key(contribution.getURI(), deployable.getName()));
+        entry.setData(item(contribution, deployable));
+        return entry;
+    }
+
+    /**
+     * Returns an item describing the given deployable.
+     * 
+     * @param contribution
+     * @param deployable
+     * @return
+     */
+    private static Item item(Contribution contribution, Composite deployable) {
+        String contributionURI = contribution.getURI();
+        String contributionLocation = contribution.getLocation();
+        QName qname = deployable.getName();
+        String deployableURI = deployable.getURI();
+        Item item = new Item();
+        item.setTitle(title(contributionURI, qname));
+        item.setContents(components(deployable));
+        item.setLink(sourceLink(contributionURI, qname));
+        item.setAlternate(alternateLink(contributionLocation, deployableURI));
+        item.setRelated(relatedLink(deployable));
+        return item;
+    }
+
     /**
      * Extracts a qname from a key expressed as contributionURI;namespace;localpart.
      * @param key
@@ -669,7 +722,11 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
      * @return
      */
     private static String title(String uri, QName qname) {
-        return uri + " / " + qname.getNamespaceURI() + ";" + qname.getLocalPart();
+        if (uri.equals(deploymentContributionURI)) {
+            return "Node " + qname.getLocalPart();
+        } else {
+            return "Composite " + uri + " - " + qname.getNamespaceURI() + ";" + qname.getLocalPart();
+        }
     }
 
     /**
@@ -678,10 +735,14 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
      * @return
      * @throws MalformedURLException
      */
-    private URL url(String location) throws MalformedURLException {
+    private static URL url(String location) throws MalformedURLException {
         URI uri = URI.create(location);
-        if (uri.getScheme() == null) {
+        String scheme = uri.getScheme();
+        if (scheme == null) {
             File file = new File(location);
+            return file.toURI().toURL();
+        } else if (scheme.equals("file")) {
+            File file = new File(location.substring(5));
             return file.toURI().toURL();
         } else {
             return uri.toURL();
@@ -694,7 +755,7 @@ public class DeployableCollectionImpl extends HttpServlet implements ItemCollect
      * 
      * @return the registry
      */
-    private ExtensionPointRegistry registry() {
+    private static ExtensionPointRegistry registry() {
         try {
             ReallySmallRuntime runtime = new ReallySmallRuntime(Thread.currentThread().getContextClassLoader());
             runtime.start();

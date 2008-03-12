@@ -67,13 +67,20 @@
 		 <reference name="cloudComposite" target="CloudCollectionComponent/ItemCollection">
 		 	<t:binding.atom/>
 		 </reference>
+		 <reference name="processCollection" target="NodeProcessCollectionComponent/ItemCollection">
+		 	<t:binding.atom/>
+		 </reference>
     </component>
     
     <component name="ContributionCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.ContributionCollectionImpl"/>             
-        <property name="workspaceFileName">workspace.xml</property>             
+        <property name="workspaceFile">workspace.xml</property>             
+        <property name="deploymentContributionDirectory">cloud</property>             
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/workspace"/>
+   		</service>
+   		<service name="Servlet">
+   	 		<t:binding.http uri="http://localhost:9990/contribution"/>
    		</service>
     </component>
 
@@ -94,19 +101,19 @@
     </component>
 
     <component name="DomainCompositeCollectionComponent">
-        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.CompositeCollectionImpl"/>
-        <property name="compositeFileName">domain.composite</property>
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.DeployedCompositeCollectionImpl"/>
+        <property name="compositeFile">domain.composite</property>
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/composite"/>
    		</service>
    		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/composite-source"/>
    		</service>
-        <reference name="deployableCollection" target="DeployableCollectionComponent/LocalItemCollection"/>
+        <reference name="deployableCollection" target="DeployableCompositeCollectionComponent/LocalItemCollection"/>
     </component>
 
-    <component name="DeployableCollectionComponent">
-        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.DeployableCollectionImpl"/>
+    <component name="DeployableCompositeCollectionComponent">
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.DeployableCompositeCollectionImpl"/>
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/deployable"/>
    		</service>
@@ -119,23 +126,31 @@
     </component>
 
     <component name="CloudCollectionComponent">
-        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.CompositeCollectionImpl"/>
-        <property name="compositeFileName">cloud.composite</property>
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.DeployedCompositeCollectionImpl"/>
+        <property name="compositeFile">cloud.composite</property>
+        <property name="deploymentContributionDirectory">cloud</property>             
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/cloud"/>
    		</service>
    		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/cloud-source"/>
    		</service>
-        <reference name="deployableCollection" target="DeployableCollectionComponent/LocalItemCollection"/>
+        <reference name="deployableCollection" target="DeployableCompositeCollectionComponent/LocalItemCollection"/>
     </component>
 
-    <component name="ImageCollectionComponent">
-        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.ImageCollectionImpl"/>
+    <component name="CompositeImageCollectionComponent">
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.CompositeImageCollectionImpl"/>
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/composite-image"/>
    		</service>
    		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalItemCollection"/>
+    </component>
+
+    <component name="NodeProcessCollectionComponent">
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.NodeProcessCollectionImpl"/>
+   		<service name="ItemCollection">
+   	 		<t:binding.atom uri="http://localhost:9990/process"/>
+   		</service>
     </component>
 
 </composite>

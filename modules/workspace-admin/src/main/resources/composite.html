@@ -53,15 +53,15 @@
 			'<th>Composite Install Image</th></tr>';
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
-				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
+				var link = entries[i].getElementsByTagName("link")[0].getAttribute("href");
 				var components = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
 				var uri = contributionURI(id);
 				var qname = compositeName(id);
 				
 				composites += '<tr>'
 				composites += '<td><input name="composites" type="checkbox" value="' + id + '">';
-				composites += '<a href=\"' + location + '\">' + qname + '</a></td>';
-				composites += '<td>' + uri + '</td>';
+				composites += '<a href=\"' + link + '\">' + qname + '</a></td>';
+				composites += '<td><a href="/contribution/' + uri + '">' + uri + '</a></td>';
 				composites += '<td class=tdw>' + components + '</td>';
 				composites += '<td><a href="/composite-image/?composite=' + id + '"><img src="icons/feed-icon.png" border="0"></a></td>';
 				composites += '</tr>';
@@ -134,13 +134,13 @@
   <form name="newCompositeForm">
     <table width="100%">
     <tr><th>Add Composite</th></tr>
-    <tr><td>Add a composite describing your SCA service components.</td></tr>
+    <tr><td>Add an SCA composite describing your SCA service components.</td></tr>
     </table>
     <br>
 	<table>    
     <tr><td>Composite namespace:</td><td><input type="text" name="compositeNamespace" size="50"/></td><td>e.g. http://my/namespace</td></tr> 
     <tr><td>Composite name:</td><td><input type="text" name="compositeName" size="50"/></td><td>e.g. mycomposite</td></tr>
-    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td><td>e.g. mycontrib, http:/mycontrib</td></tr>
+    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td><td>e.g. mycontrib, http://mycontrib</td></tr>
     </table>
     <input type="button" onClick="addComposite()" value="Add" />
   </form>

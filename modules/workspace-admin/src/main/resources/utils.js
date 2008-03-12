@@ -62,7 +62,7 @@ function array(obj) {
 var tools = new Array();
 tools[0] = new Tool("Contributions", "/ui/workspace");
 tools[1] = new Tool("Composites", "/ui/composite");
-tools[2] = new Tool("Clouds", "/ui/cloud");
+tools[2] = new Tool("Cloud", "/ui/cloud");
 tools[3] = new Tool("Files", "/ui/files");
 
 var home = new Tool("Home", "/ui/home");

@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 public class AdminTestCase extends TestCase {
     
     private ContributionCollectionImpl contributionCollection;
-    private DeployableCollectionImpl deployableCollection;
+    private DeployableCompositeCollectionImpl deployableCollection;
     
     private final static String WORKSPACE_XML =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -60,8 +60,9 @@ public class AdminTestCase extends TestCase {
         
         // Create a workspace collection component
         contributionCollection = new ContributionCollectionImpl();
-        contributionCollection.workspaceFileName = url.getFile();
-        deployableCollection = new DeployableCollectionImpl();
+        contributionCollection.workspaceFile = url.getFile();
+        contributionCollection.deploymentContributionDirectory = "cloud";
+        deployableCollection = new DeployableCompositeCollectionImpl();
         deployableCollection.contributionCollection = contributionCollection;
         contributionCollection.initialize();
         deployableCollection.initialize();
@@ -96,7 +97,7 @@ public class AdminTestCase extends TestCase {
         assertEquals("assets", entries[0].getKey());
     }
     
-    public void testDeployables() {
+    public void testDeployables() throws NotFoundException {
         Entry<String, Item>[] entries = deployableCollection.getAll();
         assertEquals(1, entries.length);
         assertEquals("composite:store;http://store;store", entries[0].getKey());

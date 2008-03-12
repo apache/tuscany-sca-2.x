@@ -80,6 +80,8 @@ public class FileServiceImpl extends HttpServlet {
                     item.write(new File(directory, item.getName()));
                 }
             }
+            
+            // Redirect to the admin page
             response.sendRedirect("/ui/files");
         }
         catch (Exception e) {
@@ -97,28 +99,21 @@ public class FileServiceImpl extends HttpServlet {
             path = path.substring(1);
         }
         try {
+            
+            // Analyze the given path
             URI uri = URI.create(path);
-            
-            // Default to file protocol
-            if (uri.getScheme() == null) {
-                File directory = new File(directoryName);
-                uri = new File(directory, path).toURI();
-            }
-            
-            // Support the following syntaxes
-            // foo.jar!/file.txt
-            // directory!/file.txt
-            // directory/!/file.txt
-            String str = uri.toString();
-            int e = str.indexOf("!/"); 
-            if (e != -1) {
-                int s = str.lastIndexOf('/', e - 2) +1;
-                if (str.substring(s, e).contains(".")) {
-                    str = "jar:" + str;
-                } else {
-                    str = str.substring(0, e) + str.substring(e + 1);
-                }
-                uri = URI.create(str);
+            String scheme = uri.getScheme();
+            if (scheme == null) {
+
+                // If no scheme is specified then the path identifies file
+                // inside our directory
+                uri = new File(directoryName, path).toURI();
+                
+            } else if (!scheme.equals("file")) {
+                
+                // If the scheme does not identify a local file, just redirect to the server
+                // hosting the file
+                response.sendRedirect(path);
             }
             
             // Read the file and write to response 

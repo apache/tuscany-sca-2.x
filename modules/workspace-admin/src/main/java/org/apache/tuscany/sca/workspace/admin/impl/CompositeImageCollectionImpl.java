@@ -35,13 +35,13 @@ import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
 /**
- * Implementation of a package collection service. 
+ * Implementation of a composite install image collection service. 
  *
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
 @Service(interfaces={ItemCollection.class, LocalItemCollection.class})
-public class ImageCollectionImpl implements ItemCollection, LocalItemCollection {
+public class CompositeImageCollectionImpl implements ItemCollection, LocalItemCollection {
 
     @Reference
     public LocalItemCollection contributionCollection;
@@ -138,7 +138,7 @@ public class ImageCollectionImpl implements ItemCollection, LocalItemCollection 
      * @return
      */
     private static String title(String uri, QName qname) {
-        return uri + " / " + qname.getNamespaceURI() + ";" + qname.getLocalPart();
+        return "Composite " + uri + " - " + qname.getNamespaceURI() + ";" + qname.getLocalPart();
     }
 
 }
