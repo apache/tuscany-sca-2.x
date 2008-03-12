@@ -83,6 +83,8 @@ import org.w3c.dom.Document;
 public class DeployedCompositeCollectionImpl extends HttpServlet implements ItemCollection, LocalItemCollection {
     private static final long serialVersionUID = -3477992129462720901L;
 
+    private static final String deploymentContributionURI = Constants.SCA10_TUSCANY_NS + "/cloud";
+    
     @Property
     public String compositeFile;
     
@@ -264,6 +266,13 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
             if (contributionURI.equals(composite.getURI()) && qname.equals(composite.getName())) {
                 composites.remove(i);
 
+                if (deploymentContributionDirectory != null && contributionURI.equals(deploymentContributionURI)) {
+                    File file = new File(deploymentContributionDirectory, qname.getLocalPart() + ".composite");
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
+                
                 // Write the domain composite
                 writeCompositeCollection(compositeCollection);
                 return;

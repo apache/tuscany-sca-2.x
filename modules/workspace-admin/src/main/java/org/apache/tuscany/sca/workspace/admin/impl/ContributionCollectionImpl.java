@@ -352,7 +352,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
      * @return
      */
     private static String title(Contribution contribution) {
-        return "Contribution " + contribution.getURI();
+        return contribution.getURI();
     }
     
     /**

@@ -723,9 +723,9 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
      */
     private static String title(String uri, QName qname) {
         if (uri.equals(deploymentContributionURI)) {
-            return "Node " + qname.getLocalPart();
+            return qname.getLocalPart();
         } else {
-            return "Composite " + uri + " - " + qname.getNamespaceURI() + ";" + qname.getLocalPart();
+            return uri + " - " + qname.getNamespaceURI() + ";" + qname.getLocalPart();
         }
     }
 
