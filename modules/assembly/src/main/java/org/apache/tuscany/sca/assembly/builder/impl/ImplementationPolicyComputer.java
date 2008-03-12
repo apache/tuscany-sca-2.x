@@ -58,8 +58,7 @@ public class ImplementationPolicyComputer extends PolicyComputer {
                                         parent.getRequiredIntents());
             
             
-            List<PolicySet> prunedPolicySets = computeInheritablePolicySets(policiedImplementation, 
-                                                                            parent.getPolicySets(),
+            List<PolicySet> prunedPolicySets = computeInheritablePolicySets(parent.getPolicySets(),
                                                                             parent.getApplicablePolicySets());
             parent.getPolicySets().clear();
             parent.getPolicySets().addAll(prunedPolicySets);

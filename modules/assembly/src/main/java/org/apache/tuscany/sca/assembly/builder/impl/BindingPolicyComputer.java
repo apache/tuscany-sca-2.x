@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -35,6 +36,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
 import org.apache.tuscany.sca.policy.util.PolicyValidationException;
 
 /**
@@ -47,63 +49,63 @@ public class BindingPolicyComputer extends PolicyComputer {
     }
     
     public void computeBindingIntentsAndPolicySets(Contract contract)  throws PolicyValidationException {
-        computeIntents(contract.getBindings(), contract.getRequiredIntents());
-        computePolicySets(contract.getApplicablePolicySets(), contract.getBindings(), contract.getPolicySets());
-        
-        /*for ( Binding binding : contract.getBindings() ) {
-            if ( binding instanceof IntentAttachPoint ) {
-                computeIntentsForOperations((IntentAttachPoint)binding);
+        for (Binding binding : contract.getBindings()) {
+            if (binding instanceof PolicySetAttachPoint) {
+                computeIntents((IntentAttachPoint)binding, contract.getRequiredIntents());
+                
+                aggregateAndPruneApplicablePolicySets(contract.getApplicablePolicySets(), 
+                                                      ((PolicySetAttachPoint)binding).getApplicablePolicySets());
+
+                computePolicySets((PolicySetAttachPoint)binding, contract.getPolicySets());
+                
+                if ( binding instanceof OperationsConfigurator && 
+                        contract instanceof OperationsConfigurator ) {
+                    //add or merge service operations to the binding
+                    addInheritedOpConfOnBindings((OperationsConfigurator)contract,
+                                                 (OperationsConfigurator)binding,
+                                                 (PolicySetAttachPoint)binding);
+                
+                    computeIntentsForOperations((IntentAttachPoint)binding);
+                    computePolicySetsForOperations(contract.getApplicablePolicySets(), 
+                                                   (PolicySetAttachPoint)binding);
+                }
             }
-            
-            if ( binding instanceof PolicySetAttachPoint ) {
-                computePolicySetsForOperations(((PolicySetAttachPoint)binding).getApplicablePolicySets(), 
-                                               (PolicySetAttachPoint)binding);
-            }
-        }*/
+        }
         
         if ( contract.getCallback() != null ) {
-            computeIntents(contract.getCallback().getBindings(), 
-                           contract.getCallback().getRequiredIntents());
-            computePolicySets(contract.getApplicablePolicySets(), 
-                              contract.getCallback().getBindings(), 
-                              contract.getCallback().getPolicySets());
-        }
-    }
-    
-    private void computeIntents(List<Binding> bindings, List<Intent> inheritedIntents) throws PolicyValidationException {
-        for (Binding binding : bindings) {
-            if (binding instanceof IntentAttachPoint) {
-                IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
-                //since the parent component could also contain intents that apply to implementation
-                //and binding elements within, we filter out only those that apply to this binding type
-                List<Intent> prunedIntents = computeInheritableIntents(policiedBinding.getType(), 
-                                                                       inheritedIntents);
-                policiedBinding.getRequiredIntents().addAll(prunedIntents);
-                
-                normalizeIntents(policiedBinding);
-                
-                computeIntentsForOperations((IntentAttachPoint)policiedBinding);
-            }
-        }
-    }
-    
-    private void computePolicySets(List<PolicySet> applicablePolicySets,
-                                   List<Binding> bindings,
-                                   List<PolicySet> inheritedPolicySets) throws PolicyValidationException {
-        for (Binding binding : bindings) {
-            if ( binding instanceof PolicySetAttachPoint ) {
-                PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
-                
-                policiedBinding.getApplicablePolicySets().addAll(applicablePolicySets);
-                List<PolicySet> prunedPolicySets = computeInheritablePolicySets(policiedBinding,
-                                                                                inheritedPolicySets,
-                                                                                policiedBinding.getApplicablePolicySets());
-                policiedBinding.getPolicySets().addAll(prunedPolicySets);
-                normalizePolicySets(policiedBinding);
-                computePolicySetsForOperations(applicablePolicySets, policiedBinding);
+            for (Binding binding : contract.getCallback().getBindings()) {
+                if (binding instanceof PolicySetAttachPoint) {
+                    computeIntents((IntentAttachPoint)binding, contract.getCallback().getRequiredIntents());
+            
+                    aggregateAndPruneApplicablePolicySets(contract.getApplicablePolicySets(), 
+                                                          ((PolicySetAttachPoint)binding).getApplicablePolicySets());
 
+                    computePolicySets((PolicySetAttachPoint)binding, contract.getCallback().getPolicySets());
+                }
             }
         }
+    }
+    
+    
+    private void computeIntents(IntentAttachPoint policiedBinding, List<Intent> inheritedIntents) 
+                                                                    throws PolicyValidationException {
+            //since the parent component could also contain intents that apply to implementation
+            //and binding elements within, we filter out only those that apply to this binding type
+            List<Intent> prunedIntents = computeInheritableIntents(policiedBinding.getType(), 
+                                                                   inheritedIntents);
+            policiedBinding.getRequiredIntents().addAll(prunedIntents);
+            
+            normalizeIntents(policiedBinding);
+    }
+    
+    
+    private void computePolicySets(PolicySetAttachPoint policiedBinding,
+                                   List<PolicySet> inheritedPolicySets) throws PolicyValidationException {
+                
+        List<PolicySet> prunedPolicySets = computeInheritablePolicySets(inheritedPolicySets,
+                                                                        policiedBinding.getApplicablePolicySets());
+        policiedBinding.getPolicySets().addAll(prunedPolicySets);
+        normalizePolicySets(policiedBinding);
     }
     
     public void determineApplicableBindingPolicySets(Contract source, Contract target) throws PolicyComputationException {
@@ -207,5 +209,57 @@ public class BindingPolicyComputer extends PolicyComputer {
                 }
             }
         //}
+    }
+    
+    private void addInheritedOpConfOnBindings(OperationsConfigurator source, 
+                                              OperationsConfigurator target,
+                                              PolicySetAttachPoint attachPoint) throws PolicyValidationException {
+        boolean found = false;
+        
+        List<ConfiguredOperation> additionalOperations = new ArrayList<ConfiguredOperation>();
+        for ( ConfiguredOperation sourceConfOp : source.getConfiguredOperations() ) {
+            for ( ConfiguredOperation targetConfOp : target.getConfiguredOperations() ) {
+                if ( sourceConfOp.getName().equals(targetConfOp.getName())) {
+                    List<Intent> prunedIntents = computeInheritableIntents(attachPoint.getType(), 
+                                                                           sourceConfOp.getRequiredIntents());
+                    PolicyComputationUtils.addInheritedIntents(prunedIntents, 
+                                                               targetConfOp.getRequiredIntents());
+                    
+                    List<PolicySet> prunedPolicySets  = computeInheritablePolicySets(sourceConfOp.getPolicySets(), 
+                                                                                     attachPoint.getApplicablePolicySets());
+                    PolicyComputationUtils.addInheritedPolicySets(prunedPolicySets, targetConfOp.getPolicySets(), true);
+                    found = true;
+                    break;
+                }
+            }
+            
+            if ( !found ) {
+                additionalOperations.add(sourceConfOp);
+            }
+        }
+        
+        if ( !additionalOperations.isEmpty() ) {
+            target.getConfiguredOperations().addAll(additionalOperations);
+        }
+    }
+    
+    /*private void addInheritedOpConfOnBindings(Contract contract) {      
+        for ( Binding binding : contract.getBindings() ) {
+            if ( binding instanceof OperationsConfigurator ) {
+                addInheritedOperationConfigurations(contract, (OperationsConfigurator)binding);
+            }
+        }
+    }*/
+    
+    private void aggregateAndPruneApplicablePolicySets(List<PolicySet> source, List<PolicySet> target) {
+        target.addAll(source);
+        //strip duplicates
+        Hashtable<QName, PolicySet> policySetTable = new Hashtable<QName, PolicySet>();
+        for ( PolicySet policySet : target ) {
+            policySetTable.put(policySet.getName(), policySet);
+        }
+        
+        target.clear();
+        target.addAll(policySetTable.values());
     }
 }

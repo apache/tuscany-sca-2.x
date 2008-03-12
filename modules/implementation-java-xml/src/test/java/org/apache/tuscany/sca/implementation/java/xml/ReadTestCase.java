@@ -110,7 +110,7 @@ public class ReadTestCase extends TestCase {
         mapper = null;
     }
 
-    public void stestReadComposite() throws Exception {
+    public void testReadComposite() throws Exception {
         CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor);
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);

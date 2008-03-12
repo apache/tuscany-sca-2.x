@@ -254,8 +254,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                             PolicyValidationUtils.validateIntents(policiedImpl, policiedImpl.getType());
                             
                             resolvePolicySets(policiedImpl.getPolicySets(), resolver);
-                            PolicyValidationUtils.validatePolicySets(policiedImpl, 
-                                                                     policiedImpl.getApplicablePolicySets());
+                            PolicyValidationUtils.validatePolicySets(policiedImpl);
                             
                             if ( implementation instanceof OperationsConfigurator ) {
                                 OperationsConfigurator opsConfigurator = (OperationsConfigurator)implementation;
@@ -264,7 +263,9 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                                     PolicyValidationUtils.validateIntents(implOp, policiedImpl.getType());
                                     
                                     resolvePolicySets(implOp.getPolicySets(), resolver);
-                                    PolicyValidationUtils.validatePolicySets(implOp, policiedImpl.getApplicablePolicySets());
+                                    PolicyValidationUtils.validatePolicySets(implOp, 
+                                                                             policiedImpl.getType(),
+                                                                             policiedImpl.getApplicablePolicySets());
                                 }
                             }
                             
@@ -389,7 +390,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                             //applies to the binding as well
                             addInheritedPolicySets(((PolicySetAttachPoint)binding).getApplicablePolicySets(), 
                                                    confOp.getApplicablePolicySets());
-                            PolicyValidationUtils.validatePolicySets(confOp);
+                            PolicyValidationUtils.validatePolicySets(confOp, ((PolicySetAttachPoint)binding).getType());
                             
                             addInheritedIntents(((PolicySetAttachPoint)binding).getRequiredIntents(), 
                                                 confOp.getRequiredIntents());
@@ -442,7 +443,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                                 //applies to the binding as well
                                 addInheritedPolicySets(((PolicySetAttachPoint)binding).getApplicablePolicySets(), 
                                                        confOp.getApplicablePolicySets());
-                                PolicyValidationUtils.validatePolicySets(confOp);
+                                PolicyValidationUtils.validatePolicySets(confOp, ((PolicySetAttachPoint)binding).getType());
                             }
                         }
                     }

@@ -72,23 +72,33 @@ public class PolicyValidationUtils {
 
     public static void validatePolicySets(PolicySetAttachPoint policySetAttachPoint)
         throws PolicyValidationException {
-        validatePolicySets(policySetAttachPoint, policySetAttachPoint.getApplicablePolicySets());
+        validatePolicySets(policySetAttachPoint, 
+                           policySetAttachPoint.getType(),
+                           policySetAttachPoint.getApplicablePolicySets());
+    }
+    
+    public static void validatePolicySets(PolicySetAttachPoint policySetAttachPoint,
+                                          IntentAttachPointType attachPointType)
+        throws PolicyValidationException {
+        validatePolicySets(policySetAttachPoint,
+                           attachPointType,
+                           policySetAttachPoint.getApplicablePolicySets());
     }
 
     public static void validatePolicySets(PolicySetAttachPoint policySetAttachPoint,
-                                      List<PolicySet> applicablePolicySets)
+                                          IntentAttachPointType attachPointType,
+                                          List<PolicySet> applicablePolicySets)
         throws PolicyValidationException {
         // Since the applicablePolicySets in a policySetAttachPoint will already
         // have the list of policysets that might ever be applicable to this attachPoint,
         // just check if the defined policysets feature in the list of applicable
         // policysets
-        IntentAttachPointType attachPointType = policySetAttachPoint.getType();
         for (PolicySet definedPolicySet : policySetAttachPoint.getPolicySets()) {
             if (!definedPolicySet.isUnresolved()) {
                 if (!applicablePolicySets.contains(definedPolicySet)) {
                     throw new PolicyValidationException("Policy Set '" + definedPolicySet
                         .getName()
-                        + "' does not apply to binding type  "
+                        + "' does not apply to extension type  "
                         + attachPointType.getName());
                 }
             } else {

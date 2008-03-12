@@ -167,8 +167,7 @@ public abstract class PolicyComputer {
         }
     }
     
-    protected List<PolicySet> computeInheritablePolicySets(PolicySetAttachPoint policySetAttachPoint,
-                                                           List<PolicySet> inheritablePolicySets,
+    protected List<PolicySet> computeInheritablePolicySets(List<PolicySet> inheritablePolicySets,
                                                            List<PolicySet> applicablePolicySets) 
                                                                throws PolicyValidationException {
         List<PolicySet> validInheritablePolicySets = new ArrayList<PolicySet>();

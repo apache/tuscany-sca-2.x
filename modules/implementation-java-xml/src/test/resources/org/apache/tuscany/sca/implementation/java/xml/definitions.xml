@@ -83,4 +83,18 @@
  <sca:intent name="tuscanyIntent_2.qualified" />
  <sca:intent name="tuscanyIntent_6.qualified1" />
  <sca:intent name="tuscanyIntent_6.qualified2" />
+ 
+ <sca:policySet name="tuscanyPolicySet_4"
+ 	provides="tuscanyIntent_6"
+ 	appliesTo="/sca:composite/sca:component"
+ 	xmlns="http://test"
+ 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+ 	<sca:intentMap provides="tuscanyIntent_6" default="qualified2">
+        <sca:qualifier name="qualified2">
+            <wsp:Policy>
+                <!-- policy expression and policy subject for "qualified2" alternative" -->
+            </wsp:Policy>
+        </sca:qualifier>
+    </sca:intentMap>
+ </sca:policySet>
 </sca:definitions>
