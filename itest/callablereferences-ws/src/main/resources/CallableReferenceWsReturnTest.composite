@@ -28,7 +28,7 @@
 			<binding.sca />
 		</service>
 		<reference name="beta">
-			<binding.ws uri="http://localhost:8080/Beta" />
+			<binding.ws uri="http://localhost:8085/Beta" />
 		</reference>
 	</component>
 
@@ -36,10 +36,10 @@
 		<implementation.java
 			class="org.apache.tuscany.sca.itest.callablerefwsreturn.BetaImpl" />
 		<service name="Beta">
-			<binding.ws uri="http://localhost:8080/Beta" />
+			<binding.ws uri="http://localhost:8085/Beta" />
 		</service>
 		<reference name="gamma">
-			<binding.ws uri="http://localhost:8080/Gamma" />
+			<binding.ws uri="http://localhost:8085/Gamma" />
 		</reference>
 	</component>
 
@@ -47,7 +47,7 @@
 		<implementation.java
 			class="org.apache.tuscany.sca.itest.callablerefwsreturn.GammaImpl" />
 		<service name="Gamma">
-			<binding.ws uri="http://localhost:8080/Gamma" />
+			<binding.ws uri="http://localhost:8085/Gamma" />
 		</service>
 	</component>
 
