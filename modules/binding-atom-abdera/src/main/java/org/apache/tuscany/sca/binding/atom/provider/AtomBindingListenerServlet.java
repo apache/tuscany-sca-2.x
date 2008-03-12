@@ -157,14 +157,14 @@ class AtomBindingListenerServlet extends HttpServlet {
             requestFeedType = feedType;
 
         if (! requestFeedType.startsWith("atom_")) {
-        	throw new UnsupportedOperationException(requestFeedType + " Not supported !");
+                throw new UnsupportedOperationException(requestFeedType + " Not supported !");
         }
         
         logger.info(">>> FeedEndPointServlet (" + requestFeedType + ") " + request.getRequestURI());
 
         // Handle an Atom request
         if (path != null && path.equals("/atomsvc")) {
-        	/*
+                /*
              <?xml version='1.0' encoding='UTF-8'?>
              <service xmlns="http://www.w3.org/2007/app" xmlns:atom="http://www.w3.org/2005/Atom">
                 <workspace>
@@ -176,8 +176,8 @@ class AtomBindingListenerServlet extends HttpServlet {
                    </collection>
                 </workspace>
              </service>
-        	 */
-        	
+                 */
+                
             // Return the Atom service document
             response.setContentType("application/atomsvc+xml; charset=utf-8");
             
@@ -202,9 +202,9 @@ class AtomBindingListenerServlet extends HttpServlet {
 
             //FIXME add prettyPrint support
             try {
-            	service.getDocument().writeTo(response.getOutputStream());
+                service.getDocument().writeTo(response.getOutputStream());
             } catch (IOException ioe) {
-            	throw new ServletException(ioe);
+                throw new ServletException(ioe);
             }
 
         } else if (path == null || path.length() == 0 || path.equals("/")) {
@@ -254,7 +254,7 @@ class AtomBindingListenerServlet extends HttpServlet {
                 // Write the Atom feed
                 response.setContentType("application/atom+xml; charset=utf-8");
                 try {
-                	 feed.getDocument().writeTo(response.getOutputStream());
+                         feed.getDocument().writeTo(response.getOutputStream());
                 } catch (IOException ioe) {
                     throw new ServletException(ioe);
                 }
@@ -277,7 +277,7 @@ class AtomBindingListenerServlet extends HttpServlet {
             }
             
             if (supportsFeedEntries) {
-            	// The service implementation returns a feed entry 
+                // The service implementation returns a feed entry 
                 feedEntry = responseMessage.getBody();
             } else {
                 // The service implementation only returns a data item, create an entry
@@ -289,7 +289,7 @@ class AtomBindingListenerServlet extends HttpServlet {
             if (feedEntry != null) {
                 response.setContentType("application/atom+xml; charset=utf-8");
                 try {
-                	feedEntry.writeTo(getWriter(response));
+                        feedEntry.writeTo(getWriter(response));
                 } catch (IOException ioe) {
                     throw new ServletException(ioe);
                 }
@@ -317,10 +317,10 @@ class AtomBindingListenerServlet extends HttpServlet {
             
             Entry feedEntry = abdera.getFactory().newEntry();
             if (key != null) {
-            	feedEntry.setId(key.toString());
+                feedEntry.setId(key.toString());
             }
             feedEntry.setTitle(item.getTitle());
-            feedEntry.setContent(item.getContents());
+            feedEntry.setContentAsHtml(item.getContents());
 
             String href = item.getLink();
             if (href == null && key != null) {
@@ -328,13 +328,15 @@ class AtomBindingListenerServlet extends HttpServlet {
             }
 
             if (href != null) {
-                feedEntry.addLink(href, "edit");
-                feedEntry.addLink(href,"alternate");
+                feedEntry.addLink(href);
             }
-                
             String related = item.getRelated();
             if (related != null) {
-                feedEntry.addLink(href, "related");
+                feedEntry.addLink(related, "related");
+            }
+            String alternate = item.getAlternate();
+            if (alternate != null) {
+                feedEntry.addLink(alternate, "alternate");
             }
                 
             Date date = item.getDate();
@@ -358,9 +360,8 @@ class AtomBindingListenerServlet extends HttpServlet {
              
              feedEntry.setContentElement(content);
 
-             feedEntry.addLink(key.toString(), "edit");
-             feedEntry.addLink(key.toString(), "alternate");
-     
+             feedEntry.addLink(key.toString());
+                  
              return feedEntry;
         } else {
             return null;
@@ -383,16 +384,14 @@ class AtomBindingListenerServlet extends HttpServlet {
                 item.setContents(feedEntry.getContent());
                 
                 for (Link link : feedEntry.getLinks()) {
-                    if (link.getRel() == null || "edit".equals(link.getRel())) {
+                    if (link.getRel() == null || "self".equals(link.getRel())) {
                         if (item.getLink() == null) {
-                            String href = link.getHref().toString();
-                            item.setLink(href);
+                            item.setLink(link.getHref().toString());
                         }
                     } else if ("related".equals(link.getRel())) {
-                        if (item.getRelated() == null) {
-                            String related = link.getHref().toString();
-                            item.setRelated(related);
-                        }
+                        item.setRelated(link.getHref().toString());
+                    } else if ("alternate".equals(link.getRel())) {
+                        item.setAlternate(link.getHref().toString());
                     }
                 }
                 
@@ -401,16 +400,16 @@ class AtomBindingListenerServlet extends HttpServlet {
                 return new org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>(key, item);
                 
             } else {
-            	String key = null; 
-            	if ( feedEntry.getId() != null) {
-            		feedEntry.getId().toString();
-            	}
+                String key = null; 
+                if ( feedEntry.getId() != null) {
+                        feedEntry.getId().toString();
+                }
                 
                 // Create the item from XML
-            	if (feedEntry.getContentElement().getElements().size() == 0) {
-            		return null;
-            	}
-            	
+                if (feedEntry.getContentElement().getElements().size() == 0) {
+                        return null;
+                }
+                
                 String value = feedEntry.getContent();
                 Object data = mediator.mediate(value, itemXMLType, itemClassType, null);
 
@@ -445,8 +444,8 @@ class AtomBindingListenerServlet extends HttpServlet {
                 // Read the entry from the request
                 Entry feedEntry;
                 try {
-                	Document<Entry> doc = Abdera.getNewParser().parse(request.getReader());
-                	feedEntry = doc.getRoot();
+                        Document<Entry> doc = Abdera.getNewParser().parse(request.getReader());
+                        feedEntry = doc.getRoot();
                 } catch (ParseException pe) {
                     throw new ServletException(pe);
                 }
@@ -500,16 +499,16 @@ class AtomBindingListenerServlet extends HttpServlet {
             if (createdFeedEntry != null) {
 
                 // Set location of the created entry in the Location header
-            	Link editLink = createdFeedEntry.getEditLink();
-				if (editLink.getRel() == null || "edit".equals(editLink.getRel())) {
-					response.addHeader("Location", editLink.getHref().toString());
-				}
+                Link link = createdFeedEntry.getSelfLink();
+                if (link != null) {
+                    response.addHeader("Location", link.getHref().toString());
+                }
 
                 // Write the created Atom entry
                 response.setStatus(HttpServletResponse.SC_CREATED);
                 response.setContentType("application/atom+xml; charset=utf-8");
                 try {
-                	createdFeedEntry.writeTo(getWriter(response));
+                        createdFeedEntry.writeTo(getWriter(response));
                 } catch (ParseException pe) {
                     throw new ServletException(pe);
                 }
@@ -551,8 +550,8 @@ class AtomBindingListenerServlet extends HttpServlet {
                 // Read the entry from the request
                 Entry feedEntry;
                 try {
-                	Document<Entry> doc = Abdera.getNewParser().parse(request.getReader());
-                	feedEntry = doc.getRoot();
+                        Document<Entry> doc = Abdera.getNewParser().parse(request.getReader());
+                        feedEntry = doc.getRoot();
                 } catch (ParseException pe) {
                     throw new ServletException(pe);
                 }
@@ -656,6 +655,11 @@ class AtomBindingListenerServlet extends HttpServlet {
      * @throws ServletException
      */
     private String processAuthorizationHeader(HttpServletRequest request) throws ServletException {
+        
+        // FIXME temporarily disabling this as it doesn't work with all browsers 
+        if (true)
+            return "admin";
+        
         try {
             String authorization = request.getHeader("Authorization");
             if (authorization != null) {
