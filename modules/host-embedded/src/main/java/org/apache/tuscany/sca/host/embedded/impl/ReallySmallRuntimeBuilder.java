@@ -37,7 +37,6 @@ import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
-import org.apache.tuscany.sca.binding.sca.xml.SCABindingProcessor;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
