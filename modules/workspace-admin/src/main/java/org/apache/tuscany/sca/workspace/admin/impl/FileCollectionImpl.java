@@ -61,20 +61,14 @@ public class FileCollectionImpl implements ItemCollection {
                 if (file.getName().startsWith(".")) {
                     continue;
                 }
-                Entry<String, Item> entry = new Entry<String, Item>();
-                entry.setKey(file.getName());
-                Item item = new Item();
-                item.setTitle(file.getName());
-                item.setLink("/files/" + file.getName());
-                entry.setData(item);
-                entries.add(entry);
+                entries.add(entry(file.getName()));
             }
         }
         return entries.toArray(new Entry[entries.size()]);
     }
 
     public Item get(String key) throws NotFoundException {
-        throw new NotFoundException(key);
+        return item(key);
     }
 
     public String post(String key, Item item) {
@@ -91,11 +85,37 @@ public class FileCollectionImpl implements ItemCollection {
         if (file.exists()) {
             file.delete();
         } else {
-            throw new NotFoundException();
+            throw new NotFoundException(key);
         }
     }
 
     public Entry<String, Item>[] query(String queryString) {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns an entry representing a file.
+     * 
+     * @param fileName
+     * @return
+     */
+    private static Entry<String, Item> entry(String fileName) {
+        Entry<String, Item> entry = new Entry<String, Item>();
+        entry.setKey(fileName);
+        entry.setData(item(fileName));
+        return entry;
+    }
+
+    /**
+     * Returns an item representing a file.
+     * 
+     * @param fileName
+     * @return
+     */
+    private static Item item(String fileName) {
+        Item item = new Item();
+        item.setTitle(fileName);
+        item.setLink("/files/" + fileName);
+        return item;
     }
 }

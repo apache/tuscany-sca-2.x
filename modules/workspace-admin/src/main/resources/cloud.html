@@ -18,7 +18,7 @@
 -->
 <html>
 <head>
-<title>SCA Domain - Clouds</title>
+<title>SCA Domain - Cloud</title>
 
 <script type="text/javascript" src="cloud.js"></script>
 <script type="text/javascript" src="utils.js"></script>
@@ -28,73 +28,80 @@
 	//@Reference
 	var cloudComposite = new Reference("cloudComposite");
 	
+	//@Reference
+	var processCollection = new Reference("processCollection");
+	
 	function getComposites() {
 		cloudComposite.get("", getCompositesResponse);
 	}
 	
 	function contributionURI(id) {
-	       var i = id.indexOf(';');
-	       return id.substring(10, i);
+       var i = id.indexOf(';');
+       return id.substring(10, i);
 	}
 	
 	function compositeName(id) {
-	       var i = id.indexOf(';');
-	       return id.substring(i + 1);
+       var i = id.indexOf(';');
+       return id.substring(i + 1);
 	}
 	
+	function compositeLocalName(id) {
+		name = compositeName(id); 
+    	var i = name.indexOf(';');
+    	return name.substring(i + 1);
+	}
+	
+	var compositeIds;
+	
 	function getCompositesResponse(feed) {
+		compositeIds = new Array();      
 		if (feed != null) {
-			var entries = feed.getElementsByTagName("entry");              
+			var entries = feed.getElementsByTagName("entry");
 			var composites = "";
 			composites += '<table width="100%">';
-			composites += '<tr><th>Cloud</th><th>Node</th><th>Composite</th><th>Composite Install Image</th></tr>';
+			composites += '<tr><th>Node</th><th>Composite</th><th>Contribution</th><th>Composite Install Image</th>' +
+			'<th>Log</th></tr>';
+			
 			for (var i=0; i<entries.length; i++) {
-				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
-				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
-				var components = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
-				
-				var uri = contributionURI(id);
-				var qname = compositeName(id);
-				
-				for (var r =0; r < 3; r++) {
-					var a = components.indexOf('<br>');
-					if (a != -1) {
-						var name = components.substring(0, a);
-						components = components.substring(a + 4);
-						a = components.indexOf('<br>');
-						var source = components.substring(0, a);
-						components = components.substring(a + 4);
-						a = components.indexOf('<br>');
-						if (a != -1) {
-							var image = components.substring(0, a);
-							components = components.substring(a + 4);
-						} else {
-							var image = components;
-							components = '';
-						}
-
-						if (r == 0) {
-							composites += '<tr>'
-							composites += '<td><input name="composites" type="checkbox" value="' + id + '">' +
-														'<a href=\"' + location + '\">' + qname + '</a></td>';
-							composites += '<td>' + name + '</td>';
-							composites += '<td>' + source + '</td>';
-							composites += '<td>' + image + '</td>';
-							composites += '</tr>';
-						} else {
-							composites += '<tr>'
-							composites += '<td>&nbsp;</td>';
-							composites += '<td>' + name + '</td>';
-							composites += '<td>' + source + '</td>';
-							composites += '<td>' + image + '</td>';
-							composites += '</tr>';
-						}
-						
-					} else {
-						break;
+				var nodeId = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
+				var links = entries[i].getElementsByTagName("link");
+				var nodeLink = undefined;
+				var compositeLink = undefined;
+				var compositeId = "composite:undefined;undefined;undefined";
+				var uri = '<span style="color: red">unknown</span>';
+				var qname = undefined;
+				for (var l = 0; l < links.length; l++) {
+					var a = links[l].getAttribute('rel');
+					if (a == undefined) {
+					  nodeLink = links[l].getAttribute('href');
+					} else if (a == 'related') {
+					  compositeLink = links[l].getAttribute('href');
+					  var c = compositeLink.indexOf('composite:');
+					  compositeId = compositeLink.substring(c);
+					  uri = contributionURI(compositeId);
+					  qname = compositeName(compositeId);
 					}
 				}
+				compositeIds[i] = compositeId;
+
+				var content = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
+				var name = compositeLocalName(nodeId);
 				
+				composites += '<tr>'
+				if (content.indexOf('<span ') != -1) {
+					composites += '<td><input name="composites" type="checkbox" value="' + nodeId + '">' +
+											'<a href=\"' + nodeLink + '\">' + name + '</a></td>';
+					composites += '<td>' + content + '</td>';
+					composites += '<td>' + uri + '</td>';
+				} else {
+					composites += '<td><input name="composites" type="checkbox" value="' + nodeId + '">' +
+											'<a href=\"' + nodeLink + '\">' + content + '</a></td>';
+					composites += '<td><a href=\"' + compositeLink + '\">' + qname + '</a></td>';
+					composites += '<td><a href="/contribution/' + uri + '">' + uri + '</a></td>';
+				}
+				composites += '<td><a href="/composite-image/?composite=' + compositeId + '"><img src="icons/feed-icon.png" border="0"></a></td>';
+				composites += '<td><a href="/process/?composite=' + compositeId + '"><img src="icons/feed-icon.png" border="0"></a></td>';
+				composites += '</tr>';
 			}
 			composites += '</table>';
 			document.getElementById("composites").innerHTML = composites;
@@ -116,22 +123,87 @@
 	}	
 
 	function addComposite() {
+		var nodeName = document.newCompositeForm.nodeName.value;
+		var nodeURI = document.newCompositeForm.nodeURI.value;			
+		var compositeNamespace = document.newCompositeForm.compositeNamespace.value;
+		var compositeName = document.newCompositeForm.compositeName.value;
+		var contributionURI = document.newCompositeForm.contributionURI.value;
 		var id  = 'composite:' +
-			document.newCompositeForm.contributionURI.value + ';' +
-			document.newCompositeForm.compositeNamespace.value + ';' +
-			document.newCompositeForm.compositeName.value;
-		var entry = '<entry xmlns="http://www.w3.org/2005/Atom">' +
-				'<title>' + id +'</title>' +
-              	'<id>' + id + '</id>' +
+			'http://tuscany.apache.org/xmlns/sca/1.0/cloud' + ';' +
+			'http://tuscany.apache.org/xmlns/sca/1.0/cloud' + ';' +
+			nodeName;
+			
+		var entry = '<entry xmlns="http://www.w3.org/2005/Atom">\n' +
+              	'<id>' + id + '</id>\n' +
+              	'<content type="text/xml"\n>\n' + 
+  				'<composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"\n' +
+				'	xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"\n' +
+				'	targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0/cloud"\n' +
+				'	xmlns:c="' + compositeNamespace + '"\n' +
+				'	name="' + nodeName + '">\n' +
+				'\n' +
+				'	<component name="' + nodeName + '">\n' +
+				'		<t:implementation.node uri="' + contributionURI + '" composite="c:' + compositeName + '"/>\n' +
+				'		<service name="Node">\n' +
+				'			<binding.ws uri="' + nodeURI + '"/>\n' +
+				'			<t:binding.http uri="' + nodeURI + '"/>\n' +
+				'			<t:binding.jsonrpc uri="' + nodeURI + '"/>\n' +
+				'			<t:binding.atom uri="' + nodeURI + '"/>\n' +
+				'		</service>\n' +
+				'	</component>\n' + 
+				'</composite>' +
+              	'</content>' +
                	'</entry>';
 		cloudComposite.post(entry, addCompositeResponse);
 	}
 
 	function addCompositeResponse() {
+		document.newCompositeForm.nodeName.value = "";
+		document.newCompositeForm.nodeURI.value = "";
 		document.newCompositeForm.compositeNamespace.value = "";
 		document.newCompositeForm.compositeName.value = "";
 		document.newCompositeForm.contributionURI.value = "";
 	    getComposites();
+	}	
+
+	function startComposite() {
+		var composites  = array(document.cloudCompositeForm.composites);
+		for (var i = 0; i < composites.length; i++) {
+			if (composites[i].checked) {
+			    var id = compositeIds[i];
+			    
+				var entry = '<entry xmlns="http://www.w3.org/2005/Atom">' +
+              	'<id>' + id + '</id>' +
+               	'</entry>';
+				processCollection.post(entry, startCompositeResponse);
+			}
+		}
+	}
+
+	function startCompositeResponse() {
+		for (var i = 0; i < composites.length; i++) {
+			if (composites[i].checked) {
+			  composites[i].checked = false;
+			}
+		}
+	}	
+
+	function stopComposite() {
+		var composites  = array(document.cloudCompositeForm.composites);
+		for (var i = 0; i < composites.length; i++) {
+			if (composites[i].checked) {
+			    var id = compositeIds[i];
+				processCollection.del(id, stopCompositeResponse);
+			}
+		}
+	}
+
+	function stopCompositeResponse() {
+		for (var i = 0; i < composites.length; i++) {
+			if (composites[i].checked) {
+			  composites[i].checked = false;
+			}
+		}
 	}	
 
 	getComposites();
@@ -148,12 +220,12 @@
   <br>
   <span class=hd1>
   SCA Domain<br><br>
-  Clouds</b>&nbsp;<a href="/cloud/"><img src="icons/feed-icon.png" border="0"></a>
+  Cloud</b>&nbsp;<a href="/process/"><img src="icons/feed-icon.png" border="0"></a>
   </span>
   <br><br>
-  Here is the list of nodes configured in SCA clouds.
+  Here is the list of SCA nodes configured in your SCA domain cloud.
   <br><br>
-  
+
   <form name="cloudCompositeForm">
     <div id="composites" ></div>
     <br>
@@ -167,14 +239,16 @@
   
   <form name="newCompositeForm">
     <table width="100%">
-    <tr><th>Add a Cloud</th></tr>
-    <tr><td>Add a cloud. A cloud is composed of one or more nodes.</td></tr>
+    <tr><th>Add a Node</th></tr>
+    <tr><td>Add a node to the cloud. The node will run the specified SCA composite.</td></tr>
     </table>
     <br>
     <table>
-    <tr><td>Cloud composite namespace:</td><td><input type="text" name="compositeNamespace" size="50"/></td><td>e.g. http://my/namespace</td></tr>
-    <tr><td>Cloud composite name:</td><td><input type="text" name="compositeName" size="50"/></td><td>e.g. mycomposite</td></tr>
-    <tr><td>Cloud contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td></td><td>e.g. mycontrib, http:/mycontrib</td></tr>
+    <tr><td>Node name:</td><td><input type="text" name="nodeName" size="50"/></td><td>e.g. MyNode</td></tr>
+    <tr><td>Node URI:</td><td><input type="text" name="nodeURI" size="50"/></td></td><td>e.g. http://host:8080</td></tr>
+    <tr><td>Composite namespace:</td><td><input type="text" name="compositeNamespace" size="50"/></td></td><td>e.g. http://my/namespace</td></tr>
+    <tr><td>Composite name:</td><td><input type="text" name="compositeName" size="50"/></td></td><td>e.g. mycomposite</td></tr>
+    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td></td><td>e.g. mycontrib, http://mycontrib</td></tr>
     </table>
     <input type="button" onClick="addComposite()" value="Add" />
   </form>

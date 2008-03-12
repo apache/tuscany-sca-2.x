@@ -25,12 +25,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -41,6 +50,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
@@ -84,11 +94,17 @@ import org.w3c.dom.Document;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-@Service(interfaces={ItemCollection.class, LocalItemCollection.class})
-public class ContributionCollectionImpl implements ItemCollection, LocalItemCollection {
+@Service(interfaces={ItemCollection.class, LocalItemCollection.class, Servlet.class})
+public class ContributionCollectionImpl extends HttpServlet implements ItemCollection, LocalItemCollection {
+    private static final long serialVersionUID = -4759297945439322773L;
 
     @Property
-    public String workspaceFileName;
+    public String workspaceFile;
+    
+    @Property
+    public String deploymentContributionDirectory;
+    
+    private static final String deploymentContributionURI = Constants.SCA10_TUSCANY_NS + "/cloud";
     
     private ContributionFactory contributionFactory;
     private AssemblyFactory assemblyFactory;
@@ -139,6 +155,9 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
         Workspace workspace = readWorkspace();
         for (Contribution contribution: workspace.getContributions()) {
+            if (contribution.getURI().equals(deploymentContributionURI)) {
+                continue;
+            }
             entries.add(entry(contribution));
         }
         return entries.toArray(new Entry[entries.size()]);
@@ -150,13 +169,32 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
         Workspace workspace = readWorkspace();
         for (Contribution contribution: workspace.getContributions()) {
             if (key.equals(contribution.getURI())) {
-                Item item = new Item();
-                item.setTitle(contribution.getURI());
-                item.setLink(contribution.getLocation());
-                return item;
+                return item(contribution);
             }
         }
         throw new NotFoundException(key);
+    }
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        // Get the request path
+        String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
+
+        // The key is the contribution URI
+        String key = path.startsWith("/")? path.substring(1) : path;
+        
+        // Get the item describing the composite
+        Item item;
+        try {
+            item = get(key);
+        } catch (NotFoundException e) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, key);
+            return;
+        }
+
+        // Redirect to the actual contribution location
+        response.sendRedirect("/files/" + item.getLink());
     }
 
     public String post(String key, Item item) {
@@ -205,7 +243,6 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
 
                 // Write the workspace
                 writeWorkspace(workspace);
-                
                 return;
             }
         }
@@ -269,10 +306,14 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
      * @return
      * @throws MalformedURLException
      */
-    private URL url(String location) throws MalformedURLException {
+    private static URL url(String location) throws MalformedURLException {
         URI uri = URI.create(location);
-        if (uri.getScheme() == null) {
+        String scheme = uri.getScheme();
+        if (scheme == null) {
             File file = new File(location);
+            return file.toURI().toURL();
+        } else if (scheme.equals("file")) {
+            File file = new File(location.substring(5));
             return file.toURI().toURL();
         } else {
             return uri.toURL();
@@ -287,11 +328,31 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
     private static Entry<String, Item> entry(Contribution contribution) {
         Entry<String, Item> entry = new Entry<String, Item>();
         entry.setKey(contribution.getURI());
-        Item item = new Item();
-        item.setTitle(contribution.getURI());
-        item.setLink(contribution.getLocation());
-        entry.setData(item);
+        entry.setData(item(contribution));
         return entry;
+    }
+    
+    /**
+     * Returns an item representing a contribution.
+     * 
+     * @param contribution
+     * @return
+     */
+    private static Item item(Contribution contribution) {
+        Item item = new Item();
+        item.setTitle(title(contribution));
+        item.setLink(contribution.getLocation());
+        return item;
+    }
+    
+    /**
+     * Returns a title for the given contribution
+     * 
+     * @param contribution
+     * @return
+     */
+    private static String title(Contribution contribution) {
+        return "Contribution " + contribution.getURI();
     }
     
     /**
@@ -301,7 +362,7 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
      */
     private Workspace readWorkspace() {
         Workspace workspace;
-        File file = new File(workspaceFileName);
+        File file = new File(workspaceFile);
         if (file.exists()) {
             try {
                 FileInputStream is = new FileInputStream(file);
@@ -313,6 +374,23 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
             }
         } else {
             workspace = workspaceFactory.createWorkspace();
+        }
+        
+        // Make sure that the workspace contains the cloud contribution
+        // The cloud contribution contains the composites describing the
+        // SCA nodes declared in the cloud
+        Contribution cloudContribution = null;
+        for (Contribution contribution: workspace.getContributions()) {
+            if (contribution.getURI().equals(deploymentContributionURI)) {
+                cloudContribution = contribution;
+            }
+        }
+        if (cloudContribution == null) {
+            Contribution contribution = contributionFactory.createContribution();
+            contribution.setURI(deploymentContributionURI);
+            File cloudDirectory = new File(deploymentContributionDirectory);
+            contribution.setLocation(cloudDirectory.toURI().toString());
+            workspace.getContributions().add(contribution);
         }
         return workspace;
     }
@@ -337,7 +415,7 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
             format.setIndent(2);
             
             // Write to workspace.xml
-            FileOutputStream os = new FileOutputStream(new File(workspaceFileName));
+            FileOutputStream os = new FileOutputStream(new File(workspaceFile));
             XMLSerializer serializer = new XMLSerializer(os, format);
             serializer.serialize(document);
             
