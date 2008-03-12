@@ -111,7 +111,7 @@ public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProces
                                 (wire.getSource().getContract() instanceof ComponentReference) ? Phase.REFERENCE_POLICY
                                     : Phase.SERVICE_POLICY;
 
-                            chain.addInterceptor(phase, new PolicyHandlingInterceptor(chain.getTargetOperation(),
+                            chain.addInterceptor(Phase.IMPLEMENTATION_POLICY, new PolicyHandlingInterceptor(chain.getTargetOperation(),
                                                                                       applicablePolicyHandlers));
                         }
                     }
