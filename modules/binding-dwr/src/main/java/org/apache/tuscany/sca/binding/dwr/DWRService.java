@@ -19,14 +19,19 @@
 
 package org.apache.tuscany.sca.binding.dwr;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
 import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.core.invocation.JDKProxyFactory;
-import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.extension.helper.ComponentLifecycle;
 import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 public class DWRService implements ComponentLifecycle {
 
@@ -52,10 +57,14 @@ public class DWRService implements ComponentLifecycle {
             servletHost.addServletMapping(SERVLET_PATH, servlet);
         }
         
-        Class<?> type = ((JavaInterface)rcs.getInterfaceContract().getInterface()).getJavaClass();
-
         // Create a Java proxy to the target service
-		Object proxy = rc.getComponentContext().createSelfReference(type, rcs).getService();
+        Class<?> type = ((JavaInterface)rcs.getInterfaceContract().getInterface()).getJavaClass();
+        Object proxy = Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, new InvocationHandler() {
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                RuntimeWire wire = rcs.getRuntimeWire(binding);
+                Operation op = JavaInterfaceUtil.findOperation(method, rcs.getInterfaceContract().getInterface().getOperations());
+                return wire.invoke(op, args);
+            }});
 
         servlet.addService(binding.getName(), type, proxy);
     }
