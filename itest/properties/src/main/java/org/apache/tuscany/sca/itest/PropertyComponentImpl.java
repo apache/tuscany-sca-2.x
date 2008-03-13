@@ -54,6 +54,9 @@ public class PropertyComponentImpl implements PropertyComponent {
     @Property
     protected Collection<ComplexPropertyBean> complexPropertyFour;
 
+    @Property
+    protected ComplexPropertyBean complexPropertyFive;
+
     @Property(name = "location")
     protected String location;
 
@@ -98,6 +101,10 @@ public class PropertyComponentImpl implements PropertyComponent {
     public Collection<ComplexPropertyBean> getComplexPropertyFour() {
         //System.out.println(complexPropertyThree);
         return complexPropertyFour;
+    }
+
+    public ComplexPropertyBean getComplexPropertyFive() {
+        return complexPropertyFive;
     }
 
     public DataObject getSdoProperty() {

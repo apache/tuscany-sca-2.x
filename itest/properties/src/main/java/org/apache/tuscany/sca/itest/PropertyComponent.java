@@ -98,6 +98,13 @@ public interface PropertyComponent {
      * This is a method to get a property value from the sca runtime environment. It is implemented in the class
      * PropertyComponentImpl
      */
+
+    public ComplexPropertyBean getComplexPropertyFive();
+
+    /**
+     * This is a method to get a property value from the sca runtime environment. It is implemented in the class
+     * PropertyComponentImpl
+     */
     public DataObject getSdoProperty();
 
     /**

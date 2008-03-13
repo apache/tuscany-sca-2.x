@@ -74,6 +74,15 @@
             </numberSet>
         </MyMoreComplexValue>
     </property>
+    
+    <property name="complexFoo" type="foo:MyMoreComplexType">
+        <MyMoreComplexValue xmlns="">
+            <stringArray>TestString_3</stringArray>
+            <stringArray>TestString_4</stringArray>
+            <intArray>100</intArray>
+            <intArray>200</intArray>
+        </MyMoreComplexValue>
+    </property>
 
     <component name="ABCDComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.ABCDComponentImpl"/>
@@ -195,6 +204,7 @@
                 </numberSet>
             </PropertyFourElement>
         </property>
+        <property name="complexPropertyFive" source="$complexFoo"/>
         <property name="sdoProperty" type="cust:Customer">	
         	<cust:customer>
         		<cust:firstName>Firstly Name</cust:firstName>
