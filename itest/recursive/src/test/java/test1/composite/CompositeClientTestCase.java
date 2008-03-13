@@ -23,8 +23,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
-import test.Aggregator;
-
 /**
  * Simple client program that invokes the components that we wired together.
  */
@@ -56,7 +54,7 @@ public class CompositeClientTestCase extends TestCase {
             System.out.println("  Service Name: " + scaDomain.getComponentManager().getComponent("Test1TargetComponent").getServices().get(0).getName());
             System.out.println("    Binding Name: " + scaDomain.getComponentManager().getComponent("Test1TargetComponent").getServices().get(0).getBindings().get(0).getName());
             System.out.println("    Binding URI: " + scaDomain.getComponentManager().getComponent("Test1TargetComponent").getServices().get(0).getBindings().get(0).getURI());
-            assertEquals("Test1TargetComponent/Service_One", scaDomain.getComponentManager().getComponent("Test1TargetComponent").getServices().get(0).getBindings().get(0).getURI());
+            assertEquals("/Test1TargetComponent/Service_One", scaDomain.getComponentManager().getComponent("Test1TargetComponent").getServices().get(0).getBindings().get(0).getURI());
         } catch (Throwable t) {
             t.printStackTrace();
         }
