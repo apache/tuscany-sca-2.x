@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.UUID;
+
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Binding;
@@ -82,17 +83,18 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
     private transient XMLStreamReader xmlReader;
 
     /*
-     * Protected constructor for Externalizable serialization/deserialization
+     * Public constructor for Externalizable serialization/deserialization
      */
-    protected CallableReferenceImpl() {
+    public CallableReferenceImpl() {
         super();
     }
 
     /*
      * Public constructor for use by XMLStreamReader2CallableReference
      */
-    public CallableReferenceImpl(XMLStreamReader xmlReader) {
+    public CallableReferenceImpl(XMLStreamReader xmlReader) throws Exception {
         this.xmlReader = xmlReader;
+        resolve();
     }
 
     protected CallableReferenceImpl(Class<B> businessInterface,
@@ -353,7 +355,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         try {
             out.writeUTF(toXMLString());
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             throw new IOException(e.getMessage());
         }
     }

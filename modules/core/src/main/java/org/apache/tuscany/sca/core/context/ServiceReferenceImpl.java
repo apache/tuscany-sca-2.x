@@ -53,7 +53,7 @@ public class ServiceReferenceImpl<B> extends CallableReferenceImpl<B> implements
     /*
      * Public constructor for use by XMLStreamReader2CallableReference
      */
-    public ServiceReferenceImpl(XMLStreamReader xmlReader) {
+    public ServiceReferenceImpl(XMLStreamReader xmlReader) throws Exception {
         super(xmlReader);
     }
 
