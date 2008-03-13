@@ -29,6 +29,7 @@
 
 
     <xsl:template match="/interface">
+
     <xsl:variable name="isSync"><xsl:value-of select="@isSync"/></xsl:variable>
     <xsl:variable name="isAsync"><xsl:value-of select="@isAsync"/></xsl:variable>
     <xsl:variable name="callbackname"><xsl:value-of select="@callbackname"/></xsl:variable>
@@ -43,14 +44,17 @@
     package <xsl:value-of select="$package"/>;
 
     import org.osoa.sca.annotations.Remotable;
+    import org.osoa.sca.annotations.Service;
     
     /*
      *  <xsl:value-of select="@name"/> java interface
      */
 
     @Remotable
+    @Service
     public interface <xsl:value-of select="@name"></xsl:value-of> {
           <xsl:for-each select="method">
+
             <!-- Code for in-out mep -->
          <xsl:if test="@mep='12'">
          <xsl:variable name="outputtype"><xsl:value-of select="output/param/@type"></xsl:value-of></xsl:variable>
@@ -61,14 +65,16 @@
          * Auto generated method signatures
          <xsl:for-each select="input/param[@type!='']">* @param <xsl:value-of select="@name"></xsl:value-of><xsl:text>&#10;         </xsl:text></xsl:for-each>
          <xsl:for-each select="fault/param[@name!='']">* @throws <xsl:value-of select="@name"></xsl:value-of><xsl:text>&#10;         *</xsl:text></xsl:for-each>
+
          */
          public <xsl:choose><xsl:when test="$outputtype=''">void</xsl:when><xsl:otherwise><xsl:value-of select="$outputtype"/></xsl:otherwise></xsl:choose>
         <xsl:text> </xsl:text><xsl:value-of select="@name"/>(
          <xsl:for-each select="input/param[@type!='']">
             <xsl:if test="position()>1">,</xsl:if><xsl:value-of select="@type"/><xsl:text> </xsl:text><xsl:value-of select="@name"/>
-          </xsl:for-each>) <xsl:for-each select="fault/param[@name!='']">
-            <xsl:if test="position()=1">throws </xsl:if><xsl:if test="position()>1">,</xsl:if><xsl:text> </xsl:text><xsl:value-of select="@name"/>
-          </xsl:for-each>;
+          </xsl:for-each>) throws <xsl:for-each select="fault/param[@name!='']">
+            <xsl:if test="position()>1">,</xsl:if><xsl:text> </xsl:text><xsl:value-of select="@name"/><xsl:if test="position()=last()">,</xsl:if>
+
+          </xsl:for-each> java.rmi.RemoteException;
         <!-- end of the sync block -->
         </xsl:if>
 
@@ -78,15 +84,16 @@
           * Auto generated method signature
          <xsl:for-each select="input/param[@type!='']">* @param <xsl:value-of select="@name"></xsl:value-of><xsl:text>&#10;         </xsl:text></xsl:for-each>
          <xsl:for-each select="fault/param[@name!='']">* @throws <xsl:value-of select="@name"></xsl:value-of><xsl:text>&#10;         *</xsl:text></xsl:for-each>
+
           */
 
         public void start<xsl:value-of select="@name"/>(
          <xsl:variable name="paramCount"><xsl:value-of select="count(input/param[@type!=''])"></xsl:value-of></xsl:variable>
                <xsl:for-each select="input/param">
             <xsl:if test="@type!=''"><xsl:if test="position()>1">,</xsl:if><xsl:value-of select="@type"/><xsl:text> </xsl:text><xsl:value-of select="@name"></xsl:value-of></xsl:if></xsl:for-each>
-           <xsl:if test="$paramCount>0">,</xsl:if>final <xsl:value-of select="$package"/>.<xsl:value-of select="$callbackname"/> callback) <xsl:for-each select="fault/param[@name!='']">
-            <xsl:if test="position()=1">throws </xsl:if><xsl:if test="position()>1">,</xsl:if><xsl:text> </xsl:text><xsl:value-of select="@name"/>
-          </xsl:for-each>;
+           <xsl:if test="$paramCount>0">,</xsl:if>final <xsl:value-of select="$package"/>.<xsl:value-of select="$callbackname"/> callback) throws <xsl:for-each select="fault/param[@name!='']">
+            <xsl:if test="position()>1">,</xsl:if><xsl:text> </xsl:text><xsl:value-of select="@name"/><xsl:if test="position()=last()">,</xsl:if>
+          </xsl:for-each> java.rmi.RemoteException;
         </xsl:if>
        <!-- end of async block-->
 
@@ -103,13 +110,15 @@
          public  void
         <xsl:text> </xsl:text><xsl:value-of select="@name"/>(
          <xsl:for-each select="input/param">
+
             <xsl:if test="@type!=''"><xsl:if test="position()>1">,</xsl:if><xsl:value-of select="@type"/><xsl:text> </xsl:text><xsl:value-of select="@name"/>
             </xsl:if>
-         </xsl:for-each>) <xsl:for-each select="fault/param[@name!='']">
-            <xsl:if test="position()=1">throws </xsl:if><xsl:if test="position()>1">,</xsl:if><xsl:text> </xsl:text><xsl:value-of select="@name"/>
-          </xsl:for-each>;
+         </xsl:for-each>) throws <xsl:for-each select="fault/param[@name!='']">
+            <xsl:if test="position()>1">,</xsl:if><xsl:text> </xsl:text><xsl:value-of select="@name"/><xsl:if test="position()=last()">,</xsl:if>
+          </xsl:for-each> java.rmi.RemoteException;
 
         </xsl:if>
+
        </xsl:for-each>
 
        <!-- Apply other templates --> 

@@ -52,7 +52,7 @@ public class BPELHelloWorldTestCase extends TestCase {
         scaDomain.close();
     }
     
-    public void testInvoke() {
+    public void testInvoke() throws Exception {
         String response = bpelService.hello("Hello");
         assertEquals("Hello World", response);
     }

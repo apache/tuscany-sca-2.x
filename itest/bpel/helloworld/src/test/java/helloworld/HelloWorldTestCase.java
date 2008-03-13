@@ -49,13 +49,13 @@ public class HelloWorldTestCase extends TestCase {
         scaDomain.close();
     }
     
-    public void testServiceInvocation() {
+    public void testServiceInvocation() throws Exception {
         HelloPortType bpelService = scaDomain.getService(HelloPortType.class, "BPELHelloWorldService");
         String response = bpelService.hello("Hello");
         assertEquals("Hello World", response);
     }
     
-    public void testReferenceInvocation() {
+    public void testReferenceInvocation() throws Exception {
         HelloWorld bpelService = scaDomain.getService(HelloWorld.class, "BPELHelloWorld");
         String response = bpelService.hello("Hello");
         assertEquals("Hello World", response);        
