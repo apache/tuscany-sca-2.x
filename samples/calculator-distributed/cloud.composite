@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite name="cloud.composite"
+  targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
+  xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:ns1="http://www.osoa.org/xmlns/sca/1.0">
+  <include name="ns2:cloud" uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud" xmlns:ns2="http://tuscany.apache.org/xmlns/sca/1.0/cloud"/>
+</composite>

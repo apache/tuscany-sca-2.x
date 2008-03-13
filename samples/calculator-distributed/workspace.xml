@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspace xmlns="http://tuscany.apache.org/xmlns/sca/1.0" xmlns:ns1="http://tuscany.apache.org/xmlns/sca/1.0">
+  <contribution location="file:./target/classes/nodeA"  uri="nodeA"/>
+  <contribution location="file:./target/classes/nodeB"  uri="nodeB"/>
+  <contribution location="file:./target/classes/nodeC"  uri="nodeC"/>  
+  <contribution location="file:./target/classes/domain" uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud"/>  
+</workspace>

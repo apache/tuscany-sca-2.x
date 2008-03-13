@@ -180,7 +180,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                         + reference.getName());
                 }
 
-                if (nodeFactory.getNode() == null) {
+                if ((nodeFactory != null) && (nodeFactory.getNode() == null)) {
                     throw new IllegalStateException("No distributed domain available for component: " + component
                         .getName()
                         + " and reference: "

@@ -18,34 +18,14 @@
  */
 package node;
 
-import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.domain.SCADomainFactory;
-
-
 /**
  * This server program that loads a composite to provide simple registry function.
  * This server can be replaced with any registry that is appropriate but the components
  * in each node that talk to the registry should be replaced also. 
  */
-public class DomainNode {
-
-    private static String DEFAULT_DOMAIN_URI = "http://localhost:8877";
-    
+public class LaunchDomain {
     public static void main(String[] args) {
-
-        try {
-            SCADomainFactory domainFactory = SCADomainFactory.newInstance();
-            SCADomain domain = domainFactory.createSCADomain(DEFAULT_DOMAIN_URI); 
-        
-            System.out.println("Domain started (press enter to shutdown)");
-            System.in.read();
-            
-            domain.destroy();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("Domain stopped");
+        org.apache.tuscany.sca.workspace.admin.launch.LaunchDomainAdmin.main(args);
     }
 
 }

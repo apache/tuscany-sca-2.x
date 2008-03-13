@@ -73,7 +73,16 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
             // - distributed domain in which to look for remote endpoints 
             // - remotable interface on the service
             if (distributedProviderFactory != null) {
-                if ((this.nodeFactory != null) && (this.nodeFactory.getNode() != null)) {
+                
+                URI serviceURI = null;
+                try {
+                    serviceURI = new URI(binding.getURI());
+                } catch(Exception ex) {
+                    
+                }
+                
+                if (((this.nodeFactory != null) && (this.nodeFactory.getNode() != null)) ||
+                      ((serviceURI != null) &&(serviceURI.isAbsolute()))) {
                     if (!service.getInterfaceContract().getInterface().isRemotable()) {
                         throw new IllegalStateException("Reference interface not remoteable for component: "+
                                                         component.getName() +
