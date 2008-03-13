@@ -319,6 +319,23 @@ public class PropertyTestCase {
      * Method annotated with
      * 
      * @Test is a test method where testing logic is written using various assert methods. This test verifies the
+     *       property values obtained using a service from the SCA runtime environment with the expected values
+     *       'TestString_3', 'TestString_4', 100 and 200.
+     */
+    @Test
+    public void testComplexPropertyFive() {
+        ComplexPropertyBean propBean = propertyService.getComplexPropertyFive();
+        assertNotNull(propBean);
+        assertEquals("TestString_3", propBean.getStringArray()[0]);
+        assertEquals("TestString_4", propBean.getStringArray()[1]);
+        assertEquals(100, propBean.getIntArray()[0]);
+        assertEquals(200, propBean.getIntArray()[1]);
+    }
+
+    /**
+     * Method annotated with
+     * 
+     * @Test is a test method where testing logic is written using various assert methods. This test verifies the
      *       property values obtained using a service from the SCA runtime environment with the expected string values
      *       'Firstly Name' , 'Middler Name' and 'Lasting Name' respectively
      */
