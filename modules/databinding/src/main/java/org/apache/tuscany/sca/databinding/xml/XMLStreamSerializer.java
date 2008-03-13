@@ -92,7 +92,7 @@ public class XMLStreamSerializer implements XMLStreamConstants {
                 namespaceName = "";
             }
 
-            writerPrefix = writer.getNamespaceContext().getPrefix(namespaceName);
+            writerPrefix = writer.getPrefix(namespaceName);
 
             if (!"".equals(namespaceName)) {
                 // prefix has already being declared but this particular
