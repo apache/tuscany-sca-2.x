@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite name="domain.composite"
+  targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
+  xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:ns1="http://www.osoa.org/xmlns/sca/1.0">
+  <include name="ns2:CalculatorA" uri="nodeA" xmlns:ns2="http://sample"/>
+  <include name="ns2:CalculatorB" uri="nodeB" xmlns:ns2="http://sample"/>
+  <include name="ns2:CalculatorC" uri="nodeC" xmlns:ns2="http://sample"/>  
+</composite>

@@ -46,7 +46,7 @@
     </target>
 	
     <target name="runDomain">
-        <java classname="${domain.class}"
+        <java classname="node.LaunchDomain"
               fork="true">
             <classpath>
             	<pathelement path="src/main/resources"/>
@@ -58,44 +58,38 @@
     </target>
 	
     <target name="runNodeA">
-        <java classname="${node.class}"
+        <java classname="node.LaunchNodeA"
               fork="true">
             <classpath>
             	<pathelement path="src/main/resources"/>
                 <pathelement path="target/classes"/>
             	<pathelement path="target/${test.jar}"/>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
-        	<arg value="http://localhost:8877"/>
-        	<arg value="nodeA"/>        	        	
+            </classpath>     	        	
         </java>
     </target>
 	
     <target name="runNodeB">
-        <java classname="${node.class}"
+        <java classname="node.LaunchNodeB"
               fork="true">
             <classpath>
             	<pathelement path="src/main/resources"/>
                 <pathelement path="target/classes"/>
             	<pathelement path="target/${test.jar}"/>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
-        	<arg value="http://localhost:8877"/>
-        	<arg value="nodeB"/>        	
+            </classpath>      	
         </java>
     </target>	
 	
     <target name="runNodeC">
-        <java classname="${node.class}"
+        <java classname="node.LaunchNodeC"
               fork="true">
             <classpath>
             	<pathelement path="src/main/resources"/>
                 <pathelement path="target/classes"/>
             	<pathelement path="target/${test.jar}"/>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-            </classpath>
-        	<arg value="http://localhost:8877"/>
-        	<arg value="nodeC"/>        	
+            </classpath>      	
         </java>
     </target>	
 	

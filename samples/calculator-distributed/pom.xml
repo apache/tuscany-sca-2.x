@@ -36,35 +36,39 @@
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-embedded</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
-        </dependency>
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-api</artifactId>
+            <artifactId>tuscany-node2-api</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
-        </dependency>  
+        </dependency>    
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-domain-api</artifactId>
+            <artifactId>tuscany-workspace-admin</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
-        </dependency>                                
+        </dependency> 
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node2-impl</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency> 
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-sca</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>                                        
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-sca-axis2</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
-        </dependency>   
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-binding-jsonrpc</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
-        </dependency>   
+            <scope>runtime</scope>
+        </dependency>         
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
@@ -86,20 +90,6 @@
             <version>1.2-incubating-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>   
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-domain-impl</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency> 
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node-impl</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency> 
         
         <dependency>
             <groupId>junit</groupId>
