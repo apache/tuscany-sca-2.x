@@ -418,7 +418,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
             FileOutputStream os = new FileOutputStream(new File(workspaceFile));
             XMLSerializer serializer = new XMLSerializer(os, format);
             serializer.serialize(document);
-            
+            os.close();
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }

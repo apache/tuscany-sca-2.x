@@ -57,6 +57,7 @@ public class AdminTestCase extends TestCase {
         Writer writer = new OutputStreamWriter(os);
         writer.write(WORKSPACE_XML);
         writer.flush();
+        writer.close();
         
         // Create a workspace collection component
         contributionCollection = new ContributionCollectionImpl();
