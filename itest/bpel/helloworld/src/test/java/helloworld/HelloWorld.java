@@ -37,7 +37,7 @@ public class HelloWorld {
         this.helloService = helloService;
     }
     
-    public String hello(String hello) {
+    public String hello(String hello) throws java.rmi.RemoteException {
         System.out.println(">>> Invoking helloService.hello with : " + hello);
         return this.helloService.hello(hello);
     }
