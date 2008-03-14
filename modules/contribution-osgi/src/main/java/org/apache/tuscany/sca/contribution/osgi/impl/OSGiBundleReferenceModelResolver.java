@@ -131,6 +131,8 @@ public class OSGiBundleReferenceModelResolver implements ModelResolver {
     private String getBundleFileName(Object bundle) {
         if (bundle instanceof Bundle) {
             String path = ((Bundle)bundle).getLocation();
+            if (path.endsWith("/"))
+                path = path.substring(0, path.length()-1);
             if (path.startsWith(contribution.getLocation())) {
                 if (path.equals(contribution.getLocation())) {
                     int index = path.lastIndexOf('/');
@@ -141,7 +143,7 @@ public class OSGiBundleReferenceModelResolver implements ModelResolver {
                     if (path.startsWith("/"))
                         path = path.substring(1);
                 }
-            } else if (path.lastIndexOf('/') > 0)
+            } else if (path.lastIndexOf('/') >= 0)
                 path = path.substring(path.lastIndexOf('/')+1);
             return path;
         }
