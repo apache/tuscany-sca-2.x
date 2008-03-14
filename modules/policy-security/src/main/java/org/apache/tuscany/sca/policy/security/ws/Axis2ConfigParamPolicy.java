@@ -21,16 +21,32 @@ package org.apache.tuscany.sca.policy.security.ws;
 import java.util.Hashtable;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.apache.axiom.om.OMElement;
+import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.policy.Policy;
 
 /**
  * Implementation for policies that could be injected as parameter
  * into the axis2config.
  */
-public class Axis2ConfigParamPolicy {
+public class Axis2ConfigParamPolicy implements Policy {
+    public static final QName NAME = new QName(Constants.SCA10_TUSCANY_NS, "wsConfigParam");
     private Map<String, OMElement> paramElements = new Hashtable<String, OMElement>();
     
     public Map<String, OMElement> getParamElements() {
         return paramElements;
+    }
+
+    public QName getSchemaName() {
+        return NAME;
+    }
+
+    public boolean isUnresolved() {
+        return false;
+    }
+
+    public void setUnresolved(boolean unresolved) {
     }
 }

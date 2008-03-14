@@ -53,6 +53,7 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.description.AxisEndpoint;
 import org.apache.axis2.description.AxisService;
+import org.apache.axis2.description.Parameter;
 import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
 import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.transport.http.HTTPConstants;
@@ -73,6 +74,7 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerUtils;
@@ -107,6 +109,22 @@ public class Axis2ServiceClient {
     public ServiceClient getServiceClient() {
         return serviceClient;
     }
+    
+    protected void configurePolicy(ConfigurationContext context, PolicySet ps) throws AxisFault {
+        if (ps == null) {
+            return;
+        }
+        for (Object policy : ps.getPolicies()) {
+            if (policy instanceof Axis2ConfigParamPolicy) {
+                Axis2ConfigParamPolicy axis2ConfigParamPolicy = (Axis2ConfigParamPolicy)policy;
+                for (Map.Entry<String, OMElement> param : axis2ConfigParamPolicy.getParamElements().entrySet()) {
+                    Parameter configParam = new Parameter(param.getKey(), param.getValue().getFirstElement());
+                    configParam.setParameterElement(param.getValue());
+                    context.getAxisConfiguration().addParameter(configParam);
+                }
+            }
+        }
+    }
 
     /**
      * Create an Axis2 ServiceClient
@@ -115,6 +133,8 @@ public class Axis2ServiceClient {
         try {
             TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
             ConfigurationContext configContext = tuscanyAxisConfigurator.getConfigurationContext();
+            
+
             createPolicyHandlers();
             setupPolicyHandlers(policyHandlerList, configContext);
 

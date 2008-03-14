@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.policy.security.jaas;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-import java.util.logging.Level;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -41,10 +39,12 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
  *
  */
 public class JaasAuthenticationPolicyProcessor implements StAXArtifactProcessor<JaasAuthenticationPolicy> {
-    private static final QName JAAS_AUTHENTICATION_POLICY_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "jaasAuthentication");
+    private static final QName JAAS_AUTHENTICATION_POLICY_QNAME = JaasAuthenticationPolicy.NAME;
     private static final String callbackHandler = "callbackHandler";
     public static final QName CALLBACK_HANDLER_QNAME = new QName(Constants.SCA10_TUSCANY_NS,
                                                                callbackHandler);
+    public static final QName CONFIGURATION_QNAME = new QName(Constants.SCA10_TUSCANY_NS,
+                                                                 "configurationName");
     public QName getArtifactType() {
         return JAAS_AUTHENTICATION_POLICY_QNAME;
     }
@@ -63,10 +63,19 @@ public class JaasAuthenticationPolicyProcessor implements StAXArtifactProcessor<
             switch (event) {
                 case START_ELEMENT : {
                     name = reader.getName();
-                    if ( name.equals(CALLBACK_HANDLER_QNAME) ) {
+                    if (name.equals(CALLBACK_HANDLER_QNAME)) {
                         String callbackHandlerClassName = reader.getElementText();
-                        policy.setCallbackHandlerClassName(callbackHandlerClassName);
+                        if (callbackHandlerClassName != null) {
+                            policy.setCallbackHandlerClassName(callbackHandlerClassName.trim());
+                        }
+                    }
+                    if (name.equals(CONFIGURATION_QNAME)) {
+                        String configurationName = reader.getElementText();
+                        if (configurationName != null) {
+                            policy.setConfigurationName(configurationName.trim());
+                        }
                     } 
+
                     break;
                 }
             }
