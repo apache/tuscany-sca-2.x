@@ -22,35 +22,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /** 
  * Represents a component type.
  * 
  * @version $Rev$ $Date$
  */
-public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, Cloneable,
-    PolicySetAttachPoint, OperationsConfigurator {
+public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, Cloneable {
     private String uri;
     private ConstrainingType constrainingType;
     private List<Property> properties = new ArrayList<Property>();
     private List<Reference> references = new ArrayList<Reference>();
     private List<Service> services = new ArrayList<Service>();
-    private List<Intent> requiredIntents = new ArrayList<Intent>();
-    private List<PolicySet> policySets = new ArrayList<PolicySet>();
-    private IntentAttachPointType type = null;
-    private List<ConfiguredOperation> configuredOperations = new ArrayList<ConfiguredOperation>();
-    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
-
     /**
      * Constructs a new component type.
      */
@@ -104,30 +91,6 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
         this.constrainingType = constrainingType;
     }
 
-    public List<Intent> getRequiredIntents() {
-        return requiredIntents;
-    }
-
-    public List<PolicySet> getPolicySets() {
-        return policySets;
-    }
-
-    public IntentAttachPointType getType() {
-        return type;
-    }
-
-    public void setType(IntentAttachPointType type) {
-        this.type = type;
-    }
-
-    public void setPolicySets(List<PolicySet> policySets) {
-        this.policySets = policySets;
-    }
-
-    public void setRequiredIntents(List<Intent> intents) {
-        this.requiredIntents = intents;
-    }
-
     @Override
     public int hashCode() {
         return String.valueOf(getURI()).hashCode();
@@ -148,17 +111,5 @@ public class ComponentTypeImpl extends ExtensibleImpl implements ComponentType, 
                 return false;
             }
         }
-    }
-
-    public List<ConfiguredOperation> getConfiguredOperations() {
-        return configuredOperations;
-    }
-
-    public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
-        this.configuredOperations = configuredOperations;
-    }
-
-    public List<PolicySet> getApplicablePolicySets() {
-        return applicablePolicySets;
     }
 }

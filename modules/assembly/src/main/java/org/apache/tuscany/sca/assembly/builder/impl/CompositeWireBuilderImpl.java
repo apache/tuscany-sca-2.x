@@ -35,7 +35,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
-import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
@@ -47,7 +46,6 @@ import org.apache.tuscany.sca.assembly.Wire;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
 
@@ -501,7 +499,7 @@ public class CompositeWireBuilderImpl {
                 try  {
                     bindingPolicyComputer.determineApplicableBindingPolicySets(componentReference, targetComponentService);
                 } catch ( Exception e ) {
-                    warning("Theres been an exception relation to policies... " + e, e);
+                    warning("Policy related exception: " + e, e);
                     //throw new RuntimeException(e);
                 }
 
@@ -858,7 +856,7 @@ public class CompositeWireBuilderImpl {
                 bindingPolicyComputer.computeBindingIntentsAndPolicySets(service);
                 bindingPolicyComputer.determineApplicableBindingPolicySets(service, null);
             } catch ( Exception e ) {
-                warning("Theres been an exception related to policies... " + e, e);
+                warning("Policy related exception: " + e, e);
                 //throw new RuntimeException(e);
             }
                 
@@ -883,7 +881,7 @@ public class CompositeWireBuilderImpl {
                 bindingPolicyComputer.computeBindingIntentsAndPolicySets(reference);
                 bindingPolicyComputer.determineApplicableBindingPolicySets(reference, null);
             } catch ( Exception e ) {
-                warning("Theres been an exception related to policies... " + e, e);
+                warning("Policy related exception: " + e, e);
                 //throw new RuntimeException(e);
             }
         }
@@ -893,7 +891,7 @@ public class CompositeWireBuilderImpl {
             try {
                 implPolicyComputer.computeImplementationIntentsAndPolicySets(implemenation, component);
             } catch ( Exception e ) {
-                warning("Theres been an exception related to policies... " + e, e);
+                warning("Policy related exception: " + e, e);
                 //throw new RuntimeException(e);
             }
 
@@ -948,7 +946,7 @@ public class CompositeWireBuilderImpl {
                                            false);
                     }
                 } catch ( Exception e ) {
-                    warning("Theres been an exception related to policies... " + e, e);
+                    warning("Policy related exception: " + e, e);
                     //throw new RuntimeException(e);
                 }
             }
@@ -986,7 +984,7 @@ public class CompositeWireBuilderImpl {
                                                false);
                     }
                 } catch ( Exception e ) {
-                    warning("Theres been an exception related to policies... " + e, e);
+                    warning("Policy related exception: " + e, e);
                     //throw new RuntimeException(e);
                 }
             }

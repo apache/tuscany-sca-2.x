@@ -28,6 +28,9 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Helper for implementing Implementations, implements all the
@@ -42,6 +45,10 @@ public abstract class AbstractImplementation implements Implementation {
     private String uri;
     private boolean unresolved = true;
     private List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private IntentAttachPointType type = null;
 
     public AbstractImplementation() {
     }
@@ -116,5 +123,29 @@ public abstract class AbstractImplementation implements Implementation {
 
     public List<ConfiguredOperation> getConfiguredOperations() {
         return configuredOperations;
+    }
+
+    //    public void setConfiguredOperations(List<ConfiguredOperation> configuredOperations) {
+    //        this.configuredOperations = configuredOperations;
+    //    }
+    
+        public List<PolicySet> getApplicablePolicySets() {
+            return applicablePolicySets;
+        }
+
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public IntentAttachPointType getType() {
+        return type;
+    }
+
+    public void setType(IntentAttachPointType type) {
+        this.type = type;
     }
 }

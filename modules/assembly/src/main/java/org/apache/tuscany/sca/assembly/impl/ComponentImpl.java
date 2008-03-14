@@ -32,7 +32,6 @@ import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * Represents a component.
@@ -53,7 +52,6 @@ public class ComponentImpl extends ExtensibleImpl implements Component, Cloneabl
     private IntentAttachPointType type;
     private List<ConfiguredOperation>  configuredImplOperations = new ArrayList<ConfiguredOperation>();
     private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
-
     /**
      * Constructs a new component.
      */

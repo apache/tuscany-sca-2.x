@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import org.apache.tuscany.sca.interfacedef.Operation;
 
 /**
  * A factory for the assembly model
@@ -146,16 +145,11 @@ public interface AssemblyFactory {
      */
     Wire createWire();
 
-    /**
-     * Create a new operation.
-     * 
-     * @return a new operation
-     */
-    Operation createOperation();
-    
-    /** Create a new configured operation.
+    /** 
+     * Create a new configured operation.
      * 
      * @return a new ConfiguredOperation 
      */
     ConfiguredOperation createConfiguredOperation();
+    
 }

@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractImpl;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceImpl;
+import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 
 /**
  * TODO: couldn't something like this class be provided by the runtime?
@@ -108,19 +109,22 @@ public abstract class AbstractStAXArtifactProcessor<I extends Implementation> im
         Service dynamicService = assemblyFactory.createService();
         dynamicService.setName("$dynamic$");
         InterfaceContract dynamicInterfaceContract = new InterfaceContractImpl() {};
-        Interface dynamicInterface = new InterfaceImpl() {
-            @Override
-            public boolean isDynamic() {
-                return true;
-            }
-        };
-        Operation dynamicOperation = assemblyFactory.createOperation();
+        Interface dynamicInterface = new DynamicInterfaceImpl();
+        Operation dynamicOperation = new OperationImpl();
         dynamicOperation.setDynamic(true);
         dynamicInterface.getOperations().add(dynamicOperation);
         dynamicInterfaceContract.setInterface(dynamicInterface);
         dynamicService.setInterfaceContract(dynamicInterfaceContract);
 
         return dynamicService;
+    }
+    
+    private static class DynamicInterfaceImpl extends InterfaceImpl {
+        @Override
+        public boolean isDynamic() {
+            return true;
+        }
+        
     }
 
 }
