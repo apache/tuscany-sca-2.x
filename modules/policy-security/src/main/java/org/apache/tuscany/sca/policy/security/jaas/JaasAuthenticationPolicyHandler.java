@@ -1,10 +1,10 @@
 package org.apache.tuscany.sca.policy.security.jaas;
+
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginContext;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
@@ -32,33 +32,32 @@ import org.apache.tuscany.sca.policy.util.PolicyHandler;
  */
 public class JaasAuthenticationPolicyHandler implements PolicyHandler {
     private static final String jaasPolicy = "JaasPolicy";
-    public static final QName policySetQName = new QName(Constants.SCA10_TUSCANY_NS,
-                                                         jaasPolicy);
+    public static final QName policySetQName = new QName(Constants.SCA10_TUSCANY_NS, jaasPolicy);
     private PolicySet applicablePolicySet = null;
-    
+
     public void setUp(Object... context) {
-        if ( applicablePolicySet != null ) {
+        if (applicablePolicySet != null) {
         }
     }
-    
+
     public void cleanUp(Object... context) {
     }
-    
-    public void beforeInvoke(Object... context) { 
+
+    public void beforeInvoke(Object... context) {
         try {
-            CallbackHandler callbackHandler = (CallbackHandler)
-                Class.forName(((JaasAuthenticationPolicy)applicablePolicySet.getPolicies().get(0)).
-                              getCallbackHandlerClassName()).newInstance();
-            LoginContext lc = new LoginContext("Calculator", callbackHandler);
+            JaasAuthenticationPolicy policy = (JaasAuthenticationPolicy)applicablePolicySet.getPolicies().get(0);
+            CallbackHandler callbackHandler =
+                (CallbackHandler)Class.forName(policy.getCallbackHandlerClassName()).newInstance();
+            LoginContext lc = new LoginContext(policy.getConfigurationName(), callbackHandler);
             lc.login();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        
+
     }
-    
+
     public void afterInvoke(Object... context) {
-        
+
     }
 
     public PolicySet getApplicablePolicySet() {

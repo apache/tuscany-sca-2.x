@@ -19,7 +19,15 @@
 
 package org.apache.tuscany.sca.policy.security.jaas;
 
-public class JaasAuthenticationPolicy {
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.policy.Policy;
+
+public class JaasAuthenticationPolicy implements Policy {
+    public static final QName NAME = new QName(Constants.SCA10_TUSCANY_NS, "jaasAuthentication");
+
+    private String configurationName = "other";
     private String callbackHandlerClassName;
 
     public String getCallbackHandlerClassName() {
@@ -28,6 +36,25 @@ public class JaasAuthenticationPolicy {
 
     public void setCallbackHandlerClassName(String callbackHandlerClassName) {
         this.callbackHandlerClassName = callbackHandlerClassName;
+    }
+
+    public QName getSchemaName() {
+        return NAME;
+    }
+
+    public boolean isUnresolved() {
+        return false;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+    }
+
+    public String getConfigurationName() {
+        return configurationName;
+    }
+
+    public void setConfigurationName(String configurationName) {
+        this.configurationName = configurationName;
     }
 
 }

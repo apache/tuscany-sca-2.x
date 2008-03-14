@@ -1,14 +1,7 @@
 package org.apache.tuscany.sca.policy.security.ws;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.login.LoginContext;
-import javax.xml.namespace.QName;
-
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.description.Parameter;
-import org.apache.neethi.Policy;
-import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
