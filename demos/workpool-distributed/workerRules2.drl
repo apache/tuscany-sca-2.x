@@ -1,0 +1,8 @@
+package workpool
+import workpool.*;
+rule "WorkerAverageService"
+	when 
+		$workerBean: WorkpoolBean(jobComputed > 250)
+	then
+		$workerBean.addWorkerToNode("nodeB");
+end
