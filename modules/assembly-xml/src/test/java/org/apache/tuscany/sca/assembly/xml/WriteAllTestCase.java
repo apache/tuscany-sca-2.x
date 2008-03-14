@@ -73,7 +73,7 @@ public class WriteAllTestCase extends TestCase {
         scaBindingFactory = new TestSCABindingFactoryImpl();
         policyFactory = new DefaultPolicyFactory();
         mapper = new InterfaceContractMapperImpl();
-        compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null, null);
+        compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null);
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         staxProcessors.addArtifactProcessor(new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor));

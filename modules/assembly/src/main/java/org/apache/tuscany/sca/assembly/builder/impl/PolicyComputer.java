@@ -43,10 +43,9 @@ import org.apache.tuscany.sca.policy.util.PolicyValidationUtils;
  * This class contains policy computation methods common to computing implementation and binding policies
  */
 public abstract class PolicyComputer {
-    protected List<PolicySet> domainPolicySets;
     
-    protected PolicyComputer(List<PolicySet> domainPolicySets) {
-        this.domainPolicySets = domainPolicySets;
+    protected PolicyComputer() {
+        
     }
     
     protected List<Intent> computeInheritableIntents(IntentAttachPointType attachPointType, 

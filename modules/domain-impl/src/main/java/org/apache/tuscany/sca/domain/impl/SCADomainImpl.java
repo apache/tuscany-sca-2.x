@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.domain.impl;
+package org.apache.tuscany.sca.domain.impl; 
 
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -202,12 +202,6 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
                 contribution = domainManagementContributionService.contribute(domainModel.getDomainURI(), 
                                                                               contributionURL, 
                                                                               false);
-                
-                //update the runtime for all SCA Definitions processed from the contribution..
-                //so that the policyset determination done during 'build' has the all the defined
-                //intents and policysets
-                domainManagementRuntime.updateSCADefinitions(domainManagementContributionService.getContributionSCADefinitions());
-                
                 
                 //get the domain builder
                 domainBuilder = domainManagementRuntime.getDomainBuilder();

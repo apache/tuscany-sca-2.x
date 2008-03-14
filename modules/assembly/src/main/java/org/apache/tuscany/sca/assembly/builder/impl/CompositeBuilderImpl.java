@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly.builder.impl;
 
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +31,6 @@ import org.apache.tuscany.sca.assembly.builder.Problem;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * A builder that handles the configuration of the components inside a composite
@@ -57,7 +55,6 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                                 SCABindingFactory scaBindingFactory,
                                 IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
                                 InterfaceContractMapper interfaceContractMapper,
-                                List<PolicySet> domainPolicySets,
                                 CompositeBuilderMonitor monitor) {
         
         if (monitor == null) {
@@ -80,7 +77,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         }
 
         includeBuilder = new CompositeIncludeBuilderImpl(monitor);
-        wireBuilder = new CompositeWireBuilderImpl(assemblyFactory, interfaceContractMapper, domainPolicySets, monitor);
+        wireBuilder = new CompositeWireBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
         cloneBuilder = new CompositeCloneBuilderImpl(monitor);
         configurationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, interfaceContractMapper, monitor);
     }

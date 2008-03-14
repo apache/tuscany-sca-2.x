@@ -30,7 +30,7 @@
  <!-- POLICY SETS -->
   <sca:policySet name="SecureReliablePolicy"
  	provides="confidentiality.transport integrity"
- 	appliesTo="sca:binding.ws and sca:binding.sca"
+ 	appliesTo="sca:binding.ws"
  	xmlns="http://test"
  	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
  		<wsp:PolicyAttachment>
@@ -64,6 +64,7 @@
 </sca:policySet>
 
 <sca:policySet name="SecurityPolicy" provides="confidentiality"
+	appliesTo="sca:binding.ws"
 	xmlns="http://test"
 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" >
     <sca:intentMap provides="confidentiality" default="message">
@@ -110,7 +111,7 @@
 
 <sca:policySet name="ConfidentialityPolicies"
  provides="confidentiality"
- bindings="binding.ws"
+ appliesTo="sca:binding.ws"
  xmlns="http://test"
     xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
     <sca:intentMap provides="confidentiality"  default="transport">

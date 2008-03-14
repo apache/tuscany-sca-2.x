@@ -152,10 +152,6 @@ public class SCANode2Impl implements SCANode2, SCAClient {
         // Include the node composite in the top-level composite 
         tempComposite.getIncludes().add(composite);
         
-        // Update the policy definitions processed from the contribution.
-        // I'm not sure what that exactly does...
-        runtime.updateSCADefinitions(contributionService.getContributionSCADefinitions());
-
         // Build the composite
         runtime.buildComposite(composite);
 

@@ -46,7 +46,6 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-definitions</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>

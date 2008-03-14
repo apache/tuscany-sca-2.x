@@ -96,7 +96,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         policySet.setAppliesTo(appliesTo);
         policySet.setAlwaysAppliesTo(alwaysAppliesTo);
 
-        XPath path = xpathFactory.newXPath();
+        XPath path = xpathFactory.newXPath(); 
         path.setNamespaceContext(reader.getNamespaceContext());
         try {
             if (appliesTo != null) {

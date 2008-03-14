@@ -18,40 +18,18 @@
  */
 package org.apache.tuscany.sca.contribution.service.impl;
 
-import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
-
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
@@ -66,18 +44,11 @@ import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
-import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.ExtensibleContributionListener;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
-import org.apache.tuscany.sca.definitions.SCADefinitions;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * Service interface that manages artifacts contributed to a Tuscany runtime.
@@ -144,21 +115,12 @@ public class ContributionServiceImpl implements ContributionService {
     private ContributionFactory contributionFactory;
     
     
-    private List<SCADefinitions> contributionSCADefinitions = new ArrayList<SCADefinitions>(); 
-
     private ModelResolver domainResolver;
+
+
+    private List scaDefinitionsSink = null; 
     
-    private Map<QName, PolicySet> policySetMap = new Hashtable<QName, PolicySet>();
-    
-    private SCADefinitions systemSCADefinitions = null;
-    
-    private String COMPOSITE_FILE_EXTN = ".composite";
-    private String POLICYSET_PREFIX = "tp_";
-    private String APPLICABLE_POLICYSET_ATTR_NS = "http://tuscany.apache.org/xmlns/sca/1.0"; 
-    private String APPLICABLE_POLICYSET_ATTR = "applicablePolicySets"; 
-    private String POLICY_SETS_ATTR = "policySets"; 
-    private String APPLICABLE_POLICYSET_ATTR_PREFIX = "tuscany";
-    private String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    private String COMPOSITE_FILE_EXTN = ".composite";    
 
     public ContributionServiceImpl(ContributionRepository repository,
                                    PackageProcessor packageProcessor,
@@ -171,7 +133,7 @@ public class ContributionServiceImpl implements ContributionService {
                                    AssemblyFactory assemblyFactory,
                                    ContributionFactory contributionFactory,
                                    XMLInputFactory xmlFactory,
-                                   SCADefinitions scaDefinitions) {
+                                   List scaDefnSink) {
         super();
         this.contributionRepository = repository;
         this.packageProcessor = packageProcessor;
@@ -184,7 +146,7 @@ public class ContributionServiceImpl implements ContributionService {
         this.assemblyFactory = assemblyFactory;
         this.contributionFactory = contributionFactory;
         this.domainResolver = domainResolver;
-        this.systemSCADefinitions = scaDefinitions;
+        this.scaDefinitionsSink = scaDefnSink;
     }
 
     public Contribution contribute(String contributionURI, URL sourceURL, boolean storeInRepository)
@@ -372,11 +334,6 @@ public class ContributionServiceImpl implements ContributionService {
             contributionArtifacts = this.packageProcessor.getArtifacts(locationURL, contributionStream);
         }
         
-        //at this point the systemSCADefinitions will be updated by the runtime with all the 
-        //contents of definitions.xml in the META-INF/services subdirectory.  So first update the 
-        //policysetMap for the systemSCADefinitions
-        updatePolicySetMap(systemSCADefinitions);
-
         // Read all artifacts in the contribution
         try {
             processReadPhase(contribution, contributionArtifacts);
@@ -449,9 +406,8 @@ public class ContributionServiceImpl implements ContributionService {
                     // Add the loaded model to the model resolver
                     modelResolver.addModel(model);
                     
-                    if ( model instanceof SCADefinitions ) {
-                        contributionSCADefinitions.add((SCADefinitions)model);
-                        updatePolicySetMap((SCADefinitions)model);
+                    if ( isSCADefnsFile(anArtifactUri) ) {
+                        scaDefinitionsSink.add(model);
                     }
                 }
             }
@@ -467,17 +423,11 @@ public class ContributionServiceImpl implements ContributionService {
             contribution.getArtifacts().add(artifact);
             modelResolver.addModel(artifact);
             
-            byte[] transformedArtifactContent = addApplicablePolicySets(artifactURL);
-            artifact.setContents(transformedArtifactContent);
-            XMLStreamReader reader = xmlFactory.createXMLStreamReader(new ByteArrayInputStream(transformedArtifactContent));
-            reader.nextTag();
-            Composite composite = (Composite)staxProcessor.read(reader);
-            if (composite != null) {
-                composite.setURI(anArtifactUri.toString());
-
-                artifact.setModel(composite);
+            model = this.artifactProcessor.read(contributionURL, anArtifactUri, artifactURL);
+            if (model != null) {
+                artifact.setModel(model);
                 // Add the loaded model to the model resolver
-                modelResolver.addModel(composite);
+                modelResolver.addModel(model);
             }
         }
     }
@@ -527,155 +477,11 @@ public class ContributionServiceImpl implements ContributionService {
         contribution.getDeployables().addAll(resolvedDeployables);
     }
 
-    public List<SCADefinitions> getContributionSCADefinitions() {
-        return contributionSCADefinitions;
-    }
-    
-    private void updatePolicySetMap(SCADefinitions scaDefns) {
-        for ( PolicySet policySet : scaDefns.getPolicySets() ) {
-            policySetMap.put(policySet.getName(), policySet);
-        }
-    }
-    
-    private byte[] addApplicablePolicySets(Document doc, Collection<PolicySet> policySets) throws 
-                                                                XPathExpressionException,
-                                                                TransformerConfigurationException,
-                                                                TransformerException  {
-        int prefixCount = 1;
-        
-        for ( PolicySet policySet : policySets ) {
-            if ( policySet.getAppliesTo() != null ) {
-                addApplicablePolicySets(policySet, doc, prefixCount);
-            }
-            
-            if ( policySet.getAlwaysAppliesTo() != null ) {
-                addAlwaysApplicablePolicySets(policySet, doc, prefixCount);
-            }
-        }
-        
-        StringWriter sw = new StringWriter();
-        Source domSource = new DOMSource(doc);
-        Result finalResult = new StreamResult(sw);
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        //transformer.setOutputProperty("omit-xml-declaration", "yes");
-        transformer.transform(domSource, finalResult);
-        return sw.toString().getBytes();
-    }
-    
-    private void addAlwaysApplicablePolicySets(PolicySet policySet, Document doc, int prefixCount) throws XPathExpressionException {
-        XPathExpression expression = policySet.getAlwaysAppliesToXPathExpression();
-        NodeList result = (NodeList)expression.evaluate(doc, XPathConstants.NODESET);
-        
-        if ( result != null ) {
-            for ( int counter = 0 ; counter < result.getLength() ; ++counter ) {
-                Node aResultNode = result.item(counter);
-            
-                String alwaysApplicablePolicySets = null;
-                String policySetPrefix = POLICYSET_PREFIX + prefixCount++;
-                String policySetsAttrPrefix = "sca";
-                
-                policySetPrefix = declareNamespace((Element)aResultNode, policySetPrefix, policySet.getName().getNamespaceURI());
-                policySetsAttrPrefix = declareNamespace((Element)aResultNode, policySetsAttrPrefix, SCA10_NS);
-                if ( aResultNode.getAttributes().getNamedItem( POLICY_SETS_ATTR) != null ) {
-                    alwaysApplicablePolicySets =
-                        aResultNode.getAttributes().getNamedItem(POLICY_SETS_ATTR).getNodeValue();
-                }
-                
-                if ( alwaysApplicablePolicySets != null && alwaysApplicablePolicySets.length() > 0 ) {
-                    alwaysApplicablePolicySets = alwaysApplicablePolicySets + " " + policySetPrefix + ":" + policySet.getName().getLocalPart();
-                } else {
-                    alwaysApplicablePolicySets = policySetPrefix + ":" + policySet.getName().getLocalPart();
-                }
-                
-                ((Element)aResultNode).setAttribute(POLICY_SETS_ATTR, 
-                                                      alwaysApplicablePolicySets);
-            }
-        }
-    }
-    
-    private void addApplicablePolicySets(PolicySet policySet, Document doc, int prefixCount) throws XPathExpressionException {
-        XPathExpression expression = policySet.getAppliesToXPathExpression();
-        NodeList result = (NodeList)expression.evaluate(doc, XPathConstants.NODESET);
-        
-        if ( result != null ) {
-            for ( int counter = 0 ; counter < result.getLength() ; ++counter ) {
-                Node aResultNode = result.item(counter);
-            
-                String applicablePolicySets = null;
-                String policySetPrefix = POLICYSET_PREFIX + prefixCount++;
-                String appPolicyAttrPrefix = APPLICABLE_POLICYSET_ATTR_PREFIX;
-                
-                policySetPrefix = declareNamespace((Element)aResultNode, policySetPrefix, policySet.getName().getNamespaceURI());
-                appPolicyAttrPrefix = declareNamespace((Element)aResultNode, appPolicyAttrPrefix, APPLICABLE_POLICYSET_ATTR_NS);
-                if ( aResultNode.getAttributes().getNamedItemNS(APPLICABLE_POLICYSET_ATTR_NS, APPLICABLE_POLICYSET_ATTR) != null ) {
-                    applicablePolicySets =
-                        aResultNode.getAttributes().getNamedItemNS(APPLICABLE_POLICYSET_ATTR_NS, APPLICABLE_POLICYSET_ATTR).getNodeValue();
-                }
-                
-                if ( applicablePolicySets != null && applicablePolicySets.length() > 0 ) {
-                    applicablePolicySets = applicablePolicySets + " " + policySetPrefix + ":" + policySet.getName().getLocalPart();
-                } else {
-                    applicablePolicySets = policySetPrefix + ":" + policySet.getName().getLocalPart();
-                }
-                
-                ((Element)aResultNode).setAttributeNS(APPLICABLE_POLICYSET_ATTR_NS, 
-                                                      appPolicyAttrPrefix + ":" + APPLICABLE_POLICYSET_ATTR, 
-                                                 applicablePolicySets);
-            }
-        }
-    }
-    
-    private byte[] addApplicablePolicySets(URL artifactUrl) throws ContributionReadException {
-        try {
-            DocumentBuilderFactory dbFac = DocumentBuilderFactory.newInstance();
-            dbFac.setNamespaceAware(true);
-            DocumentBuilder db = dbFac.newDocumentBuilder();
-            Document doc = db.parse(artifactUrl.toURI().toString());
-            return addApplicablePolicySets(doc, policySetMap.values());
-        } catch ( Exception e ) {
-            throw new ContributionReadException(e);
-        }
-    }
-    
-    private String declareNamespace(Element element, String prefix, String ns) {
-        if (ns == null) {
-            ns = "";
-        }
-        if (prefix == null) {
-            prefix = "";
-        }
-        String qname = null;
-        if ("".equals(prefix)) {
-            qname = "xmlns";
-        } else {
-            qname = "xmlns:" + prefix;
-        }
-        Node node = element;
-        boolean declared = false;
-        while (node != null && node.getNodeType() == Node.ELEMENT_NODE) {
-            if ( node.lookupPrefix(ns) != null ) {
-                prefix = node.lookupPrefix(ns);
-                declared = true;
-                break;
-            } else {
-                /*NamedNodeMap attrs = node.getAttributes();
-                if (attrs == null) {
-                    break;
-                }
-                Node attr = attrs.getNamedItem(qname);
-                if (attr != null) {
-                    declared = ns.equals(attr.getNodeValue());
-                    break;
-                }*/
-                node = node.getParentNode();
-            }
-        }
-        if (!declared) {
-            org.w3c.dom.Attr attr = element.getOwnerDocument().createAttributeNS(XMLNS_ATTRIBUTE_NS_URI, qname);
-            attr.setValue(ns);
-            element.setAttributeNodeNS(attr);
-        }
-        return prefix;
-    }
+    private boolean isSCADefnsFile(URI uri) {
+        int index = uri.toString().lastIndexOf("/");
 
+        index = (index != -1) ? index + 1 : 0;
+
+        return uri.toString().substring(index).equals("definitions.xml");
+    }
 }

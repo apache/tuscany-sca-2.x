@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.assembly.xml;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -59,11 +61,12 @@ import org.apache.tuscany.sca.policy.xml.SimpleIntentProcessor;
 public class ResolvePolicyTestCase extends TestCase {
 
     private ExtensibleURLArtifactProcessor documentProcessor;
-    private TestModelResolver resolver; 
+    private TestModelResolver resolver;  
     SCADefinitionsDocumentProcessor scaDefnDocProcessor;
 
     @Override
     public void setUp() throws Exception {
+        List scaDefnSink = new ArrayList();
         AssemblyFactory factory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         resolver = new TestModelResolver();
@@ -86,7 +89,7 @@ public class ResolvePolicyTestCase extends TestCase {
         
         // Create document processors
         XMLInputFactory inputFactory = XMLInputFactory.newInstance(); 
-        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory));
+        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory, scaDefnSink));
         documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory));
         documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
         scaDefnDocProcessor = new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, inputFactory, policyFactory);

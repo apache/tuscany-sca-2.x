@@ -100,10 +100,6 @@ public class EmbeddedSCADomain extends SCADomain {
         domainComposite = null;
     }
     
-    public void updateContributionSCADefinitions(List<SCADefinitions> scaDefns) {
-        runtime.updateSCADefinitions(scaDefns);
-    }
-    
     public void buildComposite(Composite composite) throws CompositeBuilderException {
         runtime.buildComposite(composite);
     }

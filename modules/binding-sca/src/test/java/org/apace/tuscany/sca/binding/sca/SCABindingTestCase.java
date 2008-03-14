@@ -102,7 +102,7 @@ public class SCABindingTestCase {
 	       
 	        compositeReader.resolve(composite, resolver);
 	        
-	        CompositeBuilderImpl compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null, null);
+	        CompositeBuilderImpl compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null);
 	        compositeBuilder.build(composite);
 	        
 	        SCABinding referenceSCABinding = (SCABinding) composite.getComponents().get(0).getReferences().get(0).getBindings().get(0);
