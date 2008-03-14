@@ -30,7 +30,7 @@
  <!-- POLICY SETS -->
   <sca:policySet name="SecureReliablePolicy"
  	provides="confidentiality.transport integrity"
- 	appliesTo="sca:binding.ws sca:binding.sca"
+ 	appliesTo="sca:binding.ws and sca:binding.sca"
  	xmlns="http://test"
  	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
  		<wsp:PolicyAttachment>
