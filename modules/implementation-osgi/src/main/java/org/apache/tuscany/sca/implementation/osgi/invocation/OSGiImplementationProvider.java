@@ -911,13 +911,13 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                         resolveWireRegisterProxyService(osgiBundle, interfaceClasses[index], wire);
                     index++;
                 }
-                for (ComponentService service : runtimeComponent.getServices()) {
+/*                for (ComponentService service : runtimeComponent.getServices()) {
                     if (interfaceClasses[index] != null) {
                         registerCallbackProxyService(osgiBundle, interfaceClasses[index],
                                 ((RuntimeComponentService)service));
                     }
                     index++;
-                }
+                } */
             }
             else if (osgiBundle.getState() == Bundle.INSTALLED && packageAdmin != null) {
                 packageAdmin.resolveBundles(new Bundle[] {osgiBundle});

@@ -29,14 +29,16 @@ import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.context.OSGiAnnotations;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * An interceptor to enforce pass-by-value semantics for remotable interfaces
  * 
  */
-public class OSGiRemotableInvoker extends OSGiTargetInvoker {
+public class OSGiRemotableInvoker extends OSGiTargetInvoker implements DataExchangeSemantics {
     
     private DataBindingExtensionPoint registry;
     private Operation operation;
@@ -127,5 +129,13 @@ public class OSGiRemotableInvoker extends OSGiTargetInvoker {
         }
         return copiedArg;
     }
+
+
+    /**
+     * @see org.apache.tuscany.sca.invocation.PassByValueAware#allowsPassByReference()
+     */
+    public boolean allowsPassByReference() {
+		return true;
+	}
 
 }
