@@ -47,7 +47,7 @@ public class JaasAuthenticationPolicyHandler implements PolicyHandler {
         try {
             JaasAuthenticationPolicy policy = (JaasAuthenticationPolicy)applicablePolicySet.getPolicies().get(0);
             CallbackHandler callbackHandler =
-                (CallbackHandler)Class.forName(policy.getCallbackHandlerClassName()).newInstance();
+                (CallbackHandler)policy.getCallbackHandlerClass().newInstance();
             LoginContext lc = new LoginContext(policy.getConfigurationName(), callbackHandler);
             lc.login();
         } catch (Exception e) {

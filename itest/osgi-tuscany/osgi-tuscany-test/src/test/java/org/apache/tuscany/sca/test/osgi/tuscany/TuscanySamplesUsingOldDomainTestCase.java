@@ -36,7 +36,8 @@ public class TuscanySamplesUsingOldDomainTestCase {
         
         "binding-notification-consumer",
         "binding-notification-producer",
-        "calculator",           
+        "calculator",
+        "calculator-implementation-policies",
         "calculator-rmi-reference",
         "calculator-rmi-service",
         "helloworld-ws-service",
@@ -49,10 +50,6 @@ public class TuscanySamplesUsingOldDomainTestCase {
         "simple-callback",
         "simple-callback-ws",
         "supplychain"
-           
-
-        // FIXME: Policy security Jaas callback classloading
-        // "calculator-implementation-policies",  
         
         // FIXME: Groovy classloading TUSCANY-2083
         // "calculator-script",  

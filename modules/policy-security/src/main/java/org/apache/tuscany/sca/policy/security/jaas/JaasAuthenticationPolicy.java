@@ -29,6 +29,7 @@ public class JaasAuthenticationPolicy implements Policy {
 
     private String configurationName = "other";
     private String callbackHandlerClassName;
+    private Class<?> callbackHandlerClass;
 
     public String getCallbackHandlerClassName() {
         return callbackHandlerClassName;
@@ -38,6 +39,14 @@ public class JaasAuthenticationPolicy implements Policy {
         this.callbackHandlerClassName = callbackHandlerClassName;
     }
 
+    public Class<?> getCallbackHandlerClass() {
+        return callbackHandlerClass;
+    }
+
+    public void setCallbackHandlerClass(Class<?> callbackHandlerClass) {
+        this.callbackHandlerClass = callbackHandlerClass;
+    }
+    
     public QName getSchemaName() {
         return NAME;
     }

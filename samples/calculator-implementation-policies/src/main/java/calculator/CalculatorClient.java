@@ -33,7 +33,8 @@ public class CalculatorClient {
             Configuration secConf = Configuration.getConfiguration();
         } catch ( java.lang.SecurityException e ) {
             if ( e.getMessage().equals("Unable to locate a login configuration") ) {
-                System.setProperty("java.security.auth.login.config", "target/classes/CalculatorJass.config");
+                System.setProperty("java.security.auth.login.config", 
+                       CalculatorClient.class.getClassLoader().getResource("CalculatorJass.config").toString());
             } else {
                 throw e;
             }

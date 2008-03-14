@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
@@ -111,8 +112,17 @@ public class JaasAuthenticationPolicyProcessor implements StAXArtifactProcessor<
         return JaasAuthenticationPolicy.class;
     }
 
-    public void resolve(JaasAuthenticationPolicy arg0, ModelResolver arg1) throws ContributionResolveException {
+    public void resolve(JaasAuthenticationPolicy policy, ModelResolver resolver) throws ContributionResolveException {
 
+         if (policy.getCallbackHandlerClassName() != null) {
+             ClassReference classReference = new ClassReference(policy.getCallbackHandlerClassName());
+             classReference = resolver.resolveModel(ClassReference.class, classReference);
+             Class callbackClass = classReference.getJavaClass();
+             if (callbackClass == null) {
+                 throw new ContributionResolveException(new ClassNotFoundException(policy.getCallbackHandlerClassName()));
+             }
+             policy.setCallbackHandlerClass(callbackClass);
+         }
     }
     
 }
