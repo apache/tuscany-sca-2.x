@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.assembly;
 
+import javax.xml.xpath.XPathExpression;
+
 /**
  * Represents a configured property of a component.
  * 
@@ -56,6 +58,18 @@ public interface ComponentProperty extends Property {
      *            composite
      */
     void setSource(String source);
+    
+    /**
+     * Get the XPath expression for the source attribute
+     * @return the XPath expression for the source attribute
+     */
+    XPathExpression getSourceXPathExpression();
+    
+    /**
+     * Set the XPath expression for the source attribute
+     * @param sourceXPathExpression the XPath expression for the source attribute
+     */
+    void setSourceXPathExpression(XPathExpression sourceXPathExpression);
 
     /**
      * Returns a URI to a file containing the property value.

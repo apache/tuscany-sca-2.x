@@ -31,6 +31,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -75,7 +78,9 @@ import org.w3c.dom.Document;
  * @version $Rev$ $Date$
  */
 public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor<Composite> {
-
+    // FIXME: to be refactored
+    private XPathFactory xPathFactory = XPathFactory.newInstance();
+    
     /**
      * Construct a new composite processor
      * 
@@ -235,7 +240,33 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                             // Read a <component><property>
                             componentProperty = assemblyFactory.createComponentProperty();
                             property = componentProperty;
-                            componentProperty.setSource(getString(reader, SOURCE));
+                            String source = getString(reader, SOURCE);
+                            if(source!=null) {
+                                source = source.trim();
+                            }
+                            componentProperty.setSource(source);
+                            if (source != null) {
+                                // $<name>/...
+                                if (source.charAt(0) == '$') {
+                                    int index = source.indexOf('/');
+                                    if (index == -1) {
+                                        // Tolerating $prop
+                                        source = source + "/";
+                                        index = source.length() - 1;
+                                    }
+                                    source = source.substring(index + 1);
+                                    if ("".equals(source)) {
+                                        source = ".";
+                                    }
+                                }
+                                XPath xpath = xPathFactory.newXPath();
+                                xpath.setNamespaceContext(reader.getNamespaceContext());
+                                try {
+                                    componentProperty.setSourceXPathExpression(xpath.compile(source));
+                                } catch (XPathExpressionException e) {
+                                    throw new ContributionReadException(e);
+                                }
+                            }
                             componentProperty.setFile(getString(reader, FILE));
                             policyProcessor.readPolicies(property, reader);
                             readAbstractProperty(componentProperty, reader);
@@ -852,7 +883,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     component.setImplementation(implementation);
                 } catch ( PolicyValidationException e ) {
                     throw new ContributionResolveException("PolicyValidation exception when processing implementation of component '" 
-                                                           + component.getName() + "' due to " + e.getMessage());
+                                                           + component.getName() + "' due to " + e.getMessage(), e);
                 }
             
             }
