@@ -130,6 +130,36 @@
             <artifactId>tuscany-osgi-runtime</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node2-api</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node2-impl</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-workspace</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-workspace-admin</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-workspace-impl</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-workspace-xml</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 
@@ -151,21 +181,7 @@
                         <Embed-StripGroup>true</Embed-StripGroup>
                         <Embed-Dependency>tuscany*</Embed-Dependency>
                         <_exportcontents>
-                            !org.apache.tuscany.sca.core,
-                            org.apache.tuscany.sca.core.*,
-                            org.apache.tuscany.sca.contribution.*.impl,
-                            org.apache.tuscany.sca.contribution.service.util,
-                            org.apache.tuscany.sca.contribution.xml,
-                            org.apache.tuscany.sca.contribution.java,
-                            org.apache.tuscany.sca.contribution.namespace,
-                            org.apache.tuscany.sca.contribution.osgi,
-                            org.apache.tuscany.sca.contribution.resource,
-                            org.apache.tuscany.sca.domain*,
-                            org.apache.tuscany.sca.node*,
-                            org.apache.tuscany.sca.assembly.xml,
-                            org.apache.tuscany.sca.policy.xml,
-                            org.apache.tuscany.sca.definitions*,
-                            org.apache.tuscany.sca.osgi.runtime
+                            org.apache.tuscany.sca.*,
                         </_exportcontents>
                     </instructions>
                 </configuration>

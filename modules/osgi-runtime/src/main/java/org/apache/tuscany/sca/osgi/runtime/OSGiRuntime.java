@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.osgi.runtime;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,6 +44,8 @@ public abstract class OSGiRuntime {
     private BundleContext bundleContext;
     
     private PackageAdmin packageAdmin;
+    
+    private boolean tuscanyRunningInOSGiContainer;
     
     /**
      * System property org.apache.tuscany.implementation.osgi.runtime.OSGiRuntime can be set to the
@@ -120,6 +124,7 @@ public abstract class OSGiRuntime {
         if (instance != null) {
         	
         	if (instance.bundleContext == null) {
+                instance.tuscanyRunningInOSGiContainer = tuscanyRunningInOSGiContainer;
         		instance.startRuntime(tuscanyRunningInOSGiContainer);
         		instance.initialize();
         	}
@@ -136,6 +141,7 @@ public abstract class OSGiRuntime {
     }
 
     protected void setBundleContext(BundleContext bundleContext) {
+        instance.tuscanyRunningInOSGiContainer = true;
         this.bundleContext = bundleContext;
     }
     
@@ -171,14 +177,40 @@ public abstract class OSGiRuntime {
     
     public synchronized static Bundle findInstalledBundle(String bundleLocation) {
     	if (instance != null) {
-    		return instance.findBundle(bundleLocation);
+            if (bundleLocation.startsWith("bundle:")||bundleLocation.startsWith("bundleresource:")) {
+                try {
+                    return findInstalledBundle(new URL(bundleLocation));
+                } catch (MalformedURLException e) {
+                    // ignore
+                }
+            } else {
+                return instance.findBundle(bundleLocation);
+            }
     	}
     	return null;
+    }
+    
+    public synchronized static Bundle findInstalledBundle(URL bundleURL) {
+        if (instance != null) {
+            if (instance.bundleContext != null) {
+                Bundle[] installedBundles = instance.bundleContext.getBundles();
+                for (Bundle bundle : installedBundles) {
+                    try {
+                        if (bundle.getEntry("/").getHost().equals(bundleURL.getHost()))
+                        return bundle;
+                    } catch (Exception e) {
+                        // Ignore exception
+                    }
+                }
+            }
+            return null;
+        }
+        return null;
     }
 
     public Bundle findBundle(String bundleLocation) {
 
-        if (bundleContext != null) {
+        if (bundleContext != null) {        	
             Bundle[] installedBundles = bundleContext.getBundles();
             for (Bundle bundle : installedBundles) {
                 if (bundle.getLocation().equals(bundleLocation))
@@ -215,7 +247,7 @@ public abstract class OSGiRuntime {
      * @return the instance
      */
     public synchronized static void stop() throws Exception {
-        if (instance != null) {
+        if (instance != null && !instance.tuscanyRunningInOSGiContainer) {
             instance.shutdown();
             instance = null;
         }
