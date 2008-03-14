@@ -40,7 +40,8 @@ public class CalculatorTestCase extends TestCase {
         } catch ( java.lang.SecurityException e ) {
         	//FIXME: We should not compare exception strings as they are localized in various languages
             //if ( e.getMessage().equals("Unable to locate a login configuration") ) {
-                System.setProperty("java.security.auth.login.config", "target/classes/CalculatorJass.config");
+                System.setProperty("java.security.auth.login.config", 
+                       this.getClass().getClassLoader().getResource("CalculatorJass.config").toString());
             //} else {
             //    throw e;
             //}
