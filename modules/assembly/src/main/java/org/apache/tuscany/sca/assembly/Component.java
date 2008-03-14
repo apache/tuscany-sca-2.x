@@ -20,7 +20,6 @@ package org.apache.tuscany.sca.assembly;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
@@ -29,7 +28,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * 
  * @version $Rev$ $Date$
  */
-public interface Component extends Base, Extensible, IntentAttachPoint, PolicySetAttachPoint, Cloneable {
+public interface Component extends Base, Extensible, PolicySetAttachPoint, Cloneable {
     
     /**
      * Returns the URI of the component.
@@ -120,6 +119,7 @@ public interface Component extends Base, Extensible, IntentAttachPoint, PolicySe
      * @param autowire whether component references should be autowired
      */
     void setAutowire(Boolean autowire);
+    
 
     /**
      * Returns a clone of the component.

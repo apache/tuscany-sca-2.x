@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.w3c.dom.Document;
 
@@ -117,7 +118,7 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
                     } else if (OPERATION.equals(name)) {
 
                         // Read an <operation>
-                        Operation operation = assemblyFactory.createOperation();
+                        Operation operation = new OperationImpl();
                         operation.setName(getString(reader, NAME));
                         operation.setUnresolved(true);
                         policyProcessor.readPolicies(abstractContract, operation, reader);

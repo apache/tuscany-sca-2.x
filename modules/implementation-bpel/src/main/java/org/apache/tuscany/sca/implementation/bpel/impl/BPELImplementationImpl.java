@@ -26,7 +26,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
-import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
+import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
  * 
  * @version $Rev$ $Date$
  */
-public class BPELImplementationImpl extends ComponentTypeImpl implements BPELImplementation {
+public class BPELImplementationImpl extends ImplementationImpl implements BPELImplementation {
 
     private QName _processName;
     private BPELProcessDefinition _processDefinition;

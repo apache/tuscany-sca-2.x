@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
+import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.implementation.spring.xml.SpringBeanElement;
 import org.springframework.core.io.Resource;
 
@@ -36,7 +36,7 @@ import org.springframework.core.io.Resource;
  * 
  * @version $Rev: 511195 $ $Date: 2007-02-24 02:29:46 +0000 (Sat, 24 Feb 2007) $ 
  */
-public class SpringImplementation extends ComponentTypeImpl implements Implementation, Extensible {
+public class SpringImplementation extends ImplementationImpl implements Implementation, Extensible {
 
     // The location attribute which points to the Spring application-context XML file
     private String location;

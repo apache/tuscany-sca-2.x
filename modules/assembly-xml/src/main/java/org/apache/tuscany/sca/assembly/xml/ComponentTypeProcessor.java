@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
@@ -136,7 +137,7 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
                     } else if (OPERATION.equals(name)) {
 
                         // Read an <operation>
-                        Operation operation = assemblyFactory.createOperation();
+                        Operation operation = new OperationImpl();
                         operation.setName(getString(reader, NAME));
                         operation.setUnresolved(true);
                         if (callback != null) {

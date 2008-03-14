@@ -77,5 +77,5 @@ public interface Contract extends AbstractContract, PolicySetAttachPoint, Clonea
      * @throws CloneNotSupportedException
      */
     Object clone() throws CloneNotSupportedException;
-
+    
 }

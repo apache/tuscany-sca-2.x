@@ -22,13 +22,15 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+
 
 /**
  * Represents a composite.
  * 
  * @version $Rev$ $Date$
  */
-public interface Composite extends Implementation, Extensible, Cloneable {
+public interface Composite extends Implementation, Extensible, Cloneable, PolicySetAttachPoint {
 
     /**
      * Returns the name of the composite.

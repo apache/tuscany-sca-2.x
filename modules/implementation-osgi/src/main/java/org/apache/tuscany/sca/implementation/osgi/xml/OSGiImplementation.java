@@ -23,7 +23,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.ComponentProperty;
-import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
+import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
 
@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
  *    All attributes from <implementation.osgi> have getters in this class
  * This class implements OSGiImplementationInterface which is associated with OSGiImplementationProvider.
  */
-public class OSGiImplementation extends ComponentTypeImpl implements OSGiImplementationInterface {
+public class OSGiImplementation extends ImplementationImpl implements OSGiImplementationInterface {
     
     private String bundleSymbolicName;
     private String bundleVersion;

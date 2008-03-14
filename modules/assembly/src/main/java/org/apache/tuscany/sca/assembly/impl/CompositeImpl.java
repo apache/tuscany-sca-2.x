@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
 
-public class CompositeImpl extends ComponentTypeImpl implements Composite, Cloneable {
+public class CompositeImpl extends ImplementationImpl implements Composite, Cloneable {
     private List<Component> components = new ArrayList<Component>();
     private List<Composite> includes = new ArrayList<Composite>();
     private QName name;

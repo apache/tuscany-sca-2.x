@@ -24,14 +24,14 @@ import java.util.Map;
 
 import net.sf.saxon.query.XQueryExpression;
 
-import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
+import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.implementation.xquery.XQueryImplementation;
 
 /**
  * Actual implementation of the XQuery implementation
  * @version $Rev$ $Date$
  */
-public class XQueryImplementationImpl extends ComponentTypeImpl implements XQueryImplementation {
+public class XQueryImplementationImpl extends ImplementationImpl implements XQueryImplementation {
 
     private String location;
     private String locationURL;

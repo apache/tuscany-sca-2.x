@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.assembly;
 
 
+
 /**
  * An instance of a reference associated with a particular component.
  * 
@@ -60,7 +61,7 @@ public interface ComponentReference extends Reference {
      * 
      * @return the callback service
      */
-    public ComponentService getCallbackService();
+    ComponentService getCallbackService();
 
     /**
      * Sets the callback service created internally as a target endpoint
@@ -68,6 +69,6 @@ public interface ComponentReference extends Reference {
      * 
      * @param callbackService the callback service
      */
-    public void setCallbackService(ComponentService callbackService);
-
+    void setCallbackService(ComponentService callbackService);
+    
 }

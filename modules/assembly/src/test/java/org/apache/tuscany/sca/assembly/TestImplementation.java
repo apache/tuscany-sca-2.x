@@ -20,14 +20,14 @@ package org.apache.tuscany.sca.assembly;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.impl.ComponentTypeImpl;
+import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 
 /**
  * A test component implementation model.
  * 
  * @version $Rev$ $Date$
  */
-public class TestImplementation extends ComponentTypeImpl implements Implementation {
+public class TestImplementation extends ImplementationImpl implements Implementation {
     public TestImplementation(AssemblyFactory factory) {
 
         Property p = factory.createProperty();
