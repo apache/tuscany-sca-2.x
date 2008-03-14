@@ -99,18 +99,16 @@ public class PolicyComputationUtils {
 
     private static byte[] addApplicablePolicySets(Document doc, Collection<PolicySet> policySets)
         throws XPathExpressionException, TransformerConfigurationException, TransformerException {
-        XPathFactory xpathFactory = XPathFactory.newInstance();
-        XPath path = xpathFactory.newXPath();
-        path.setNamespaceContext(new DOMNamespaceContext(doc));
+        
         int prefixCount = 1;
 
         for (PolicySet policySet : policySets) {
             if (policySet.getAppliesTo() != null) {
-                addApplicablePolicySets(policySet, path, doc, prefixCount);
+                addApplicablePolicySets(policySet, doc, prefixCount);
             }
 
             if (policySet.getAlwaysAppliesTo() != null) {
-                addAlwaysApplicablePolicySets(policySet, path, doc, prefixCount);
+                addAlwaysApplicablePolicySets(policySet, doc, prefixCount);
             }
         }
 
@@ -124,10 +122,9 @@ public class PolicyComputationUtils {
     }
 
     private static void addAlwaysApplicablePolicySets(PolicySet policySet,
-                                               XPath path,
-                                               Document doc,
-                                               int prefixCount) throws XPathExpressionException {
-        XPathExpression expression = path.compile(policySet.getAlwaysAppliesTo());
+                                                      Document doc,
+                                                      int prefixCount) throws XPathExpressionException {
+        XPathExpression expression = policySet.getAlwaysAppliesToXPathExpression();
         NodeList result = (NodeList)expression.evaluate(doc, XPathConstants.NODESET);
 
         if (result != null) {
@@ -165,10 +162,9 @@ public class PolicyComputationUtils {
     }
 
     private static void addApplicablePolicySets(PolicySet policySet,
-                                         XPath path,
                                          Document doc,
                                          int prefixCount) throws XPathExpressionException {
-        XPathExpression expression = path.compile(policySet.getAppliesTo());
+        XPathExpression expression = policySet.getAppliesToXPathExpression();
         NodeList result = (NodeList)expression.evaluate(doc, XPathConstants.NODESET);
 
         if (result != null) {
