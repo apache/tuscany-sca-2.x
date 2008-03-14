@@ -34,6 +34,7 @@
     <policySet name="JaasPolicy" provides="tuscany:jaasAuthentication" appliesTo="sca:implementation.java"
         xmlns="http://www.osoa.org/xmlns/sca/1.0">
         <tuscany:jaasAuthentication>
+            <tuscany:configurationName>Calculator</tuscany:configurationName>
             <tuscany:callbackHandler>calculator.security.CalculatorCallbackHandler</tuscany:callbackHandler>
         </tuscany:jaasAuthentication>
     </policySet>
