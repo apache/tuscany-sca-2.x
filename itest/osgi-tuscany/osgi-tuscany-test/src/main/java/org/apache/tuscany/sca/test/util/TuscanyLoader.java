@@ -73,8 +73,7 @@ public class TuscanyLoader {
         Bundle tuscanyExtensionsBundle = bundleContext.installBundle(tuscanyExtensionsBundleName);
         
 
-        tuscanySpiBundle.start();    
-        tuscanyRuntimeBundle.start();    
+        tuscanySpiBundle.start();      
         tuscanyExtensionsBundle.start();    
         
         
@@ -85,6 +84,5 @@ public class TuscanyLoader {
         return tuscanyRuntimeBundle;
     
     }
-    
     
 }

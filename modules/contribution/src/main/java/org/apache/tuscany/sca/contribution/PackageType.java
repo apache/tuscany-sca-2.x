@@ -35,5 +35,8 @@ public interface PackageType {
      * Filesystem folder contribution package
      */
     String FOLDER = "application/vnd.tuscany.folder";
+    
+    
+    String BUNDLE = "application/osgi.bundle";
 
 }

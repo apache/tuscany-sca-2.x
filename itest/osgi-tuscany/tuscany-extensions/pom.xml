@@ -37,6 +37,21 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-atom</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-atom-abdera</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-feed-atom</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-sca</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
@@ -313,21 +328,7 @@
                         <Embed-StripGroup>true</Embed-StripGroup>
                         <Embed-Dependency>tuscany*</Embed-Dependency>
                         <_exportcontents>
-                            !org.apache.tuscany.sca.databinding.annotation,
-                            !org.apache.tuscany.sca.databinding.externalizable,
-                            !org.apache.tuscany.sca.databinding.impl,
-                            !org.apache.tuscany.sca.databinding.javabeans,
-                            !org.apache.tuscany.sca.databinding.xml,
-                            org.apache.tuscany.sca.binding.*,
-                            org.apache.tuscany.sca.contribution.groovy,
-                            org.apache.tuscany.sca.core.spring*,
-                            org.apache.tuscany.sca.databinding.*,
-                            org.apache.tuscany.sca.implementation.*,
-                            org.apache.tuscany.sca.host.*,
-                            org.apache.tuscany.sca.extension.helper*,
-                            org.apache.tuscany.sca.data.engine*,
-                            org.apache.tuscany.sca.policy.logging*,
-                            org.apache.tuscany.sca.policy.security*
+                            org.apache.tuscany.sca.*,
                         </_exportcontents>
                         <Import-Package>*;version="0"</Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>

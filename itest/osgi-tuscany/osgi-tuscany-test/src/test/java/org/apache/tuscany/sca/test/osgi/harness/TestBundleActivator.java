@@ -19,7 +19,6 @@
  */
 package org.apache.tuscany.sca.test.osgi.harness;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.osgi.framework.Bundle;
@@ -33,18 +32,21 @@ import org.osgi.framework.BundleContext;
  */
 public class TestBundleActivator implements BundleActivator {
     
-    private ClassLoader contextClassLoader;
+    private ClassLoader myContextClassLoader;
+    private ClassLoader origTCCL;
 
     public void start(BundleContext bundleContext) throws Exception {
         
-        contextClassLoader = Thread.currentThread().getContextClassLoader();
-        ClassLoader cl = new TestClassLoader(bundleContext.getBundle(), contextClassLoader);
-        Thread.currentThread().setContextClassLoader(cl);
+        origTCCL = Thread.currentThread().getContextClassLoader();
+        myContextClassLoader = new TestClassLoader(bundleContext.getBundle(), origTCCL);
+        Thread.currentThread().setContextClassLoader(myContextClassLoader);
+        
     }
 
     public void stop(BundleContext bundleContext) throws Exception {
 
-        Thread.currentThread().setContextClassLoader(contextClassLoader);
+        if (Thread.currentThread().getContextClassLoader() == myContextClassLoader)
+            Thread.currentThread().setContextClassLoader(origTCCL);
     }
 
 
@@ -64,30 +66,6 @@ public class TestBundleActivator implements BundleActivator {
             if (resource == null) {
                 resource = bundle.getResource(resName);
             
-            }
-
-            /* FIXME: Workaround Tuscany's handling of URLs
-             * Convert resource URLs using bundle: protocol into file: URLs
-             * This code can be removed when URL manipulation in Tuscany is fixed.
-             */
-            if (resource != null && resource.getProtocol().startsWith("bundle") && 
-                    (resName.endsWith(".composite") || resName.endsWith(".xml"))) {
-                try {
-                    String bundleId = resource.getHost();
-                    if (bundleId.indexOf('.') > 0)
-                        bundleId  = bundleId.substring(0, bundleId.indexOf('.'));
-                    long id = Long.parseLong(bundleId);
-                    Bundle[] allBundles = bundle.getBundleContext().getBundles();
-                    Bundle resourceBundle = bundle;
-                    for (Bundle b : allBundles) {
-                        if (b.getBundleId() == id) {
-                            resourceBundle = b;
-                            break;
-                        }
-                    }
-                    resource = new URL(resourceBundle.getLocation() + "/" + resource.getPath());
-                } catch (MalformedURLException e) {
-                }
             }
             
             return resource;

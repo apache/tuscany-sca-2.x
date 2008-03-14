@@ -114,36 +114,7 @@
                         <Embed-StripGroup>true</Embed-StripGroup>
                         <Embed-Dependency>tuscany*</Embed-Dependency>
                         <_exportcontents>
-                            org.apache.tuscany.sca.assembly,
-                            org.apache.tuscany.sca.assembly.builder,
-                            org.apache.tuscany.sca.assembly.builder.impl,
-                            org.apache.tuscany.sca.assembly.impl,
-                            org.apache.tuscany.sca.context,
-                            org.apache.tuscany.sca.core,
-                            org.apache.tuscany.sca.event,
-                            org.apache.tuscany.sca.invocation,
-                            org.apache.tuscany.sca.management,
-                            org.apache.tuscany.sca.provider,
-                            org.apache.tuscany.sca.runtime,
-                            org.apache.tuscany.sca.store,
-                            org.apache.tuscany.sca.work,
-                            org.apache.tuscany.sca.contribution,
-                            org.apache.tuscany.sca.contribution.impl,
-                            org.apache.tuscany.sca.contribution.processor,
-                            org.apache.tuscany.sca.contribution.resolver,
-                            org.apache.tuscany.sca.contribution.service,
-                            org.apache.tuscany.sca.contribution.util,
-                            org.apache.tuscany.sca.policy,
-                            org.apache.tuscany.sca.policy.impl,
-                            org.apache.tuscany.sca.policy.util,
-                            org.apache.tuscany.sca.interfacedef*,
-                            org.apache.tuscany.sca.databinding,
-                            org.apache.tuscany.sca.databinding.annotation,
-                            org.apache.tuscany.sca.databinding.externalizable,
-                            org.apache.tuscany.sca.databinding.impl,
-                            org.apache.tuscany.sca.databinding.javabeans,
-                            org.apache.tuscany.sca.databinding.xml,
-                            org.apache.tuscany.sca.extensibility
+                            org.apache.tuscany.sca.*,
                         </_exportcontents>
                     </instructions>
                 </configuration>

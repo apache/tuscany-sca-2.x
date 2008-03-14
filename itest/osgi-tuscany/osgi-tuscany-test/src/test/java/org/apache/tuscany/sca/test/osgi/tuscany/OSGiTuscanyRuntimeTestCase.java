@@ -66,6 +66,7 @@ public class OSGiTuscanyRuntimeTestCase {
         
         tuscanyRuntime = TuscanyLoader.loadTuscanyIntoOSGi(osgiRuntime.getBundleContext());
         Assert.assertNotNull(tuscanyRuntime);
+        tuscanyRuntime.start();
         Class<?> clazz = tuscanyRuntime.loadClass("org.apache.tuscany.sca.osgi.runtime.OSGiRuntime");
         Assert.assertNotNull(clazz);
                
@@ -85,6 +86,7 @@ public class OSGiTuscanyRuntimeTestCase {
     private void testOSGiTuscanyUsingOSGiClient(String contributionJarName) throws Exception {
         
         tuscanyRuntime = TuscanyLoader.loadTuscanyIntoOSGi(osgiRuntime.getBundleContext());
+        tuscanyRuntime.start();
         
         String folderName = "../test-bundles/target/"; 
         String supplychainJarName = contributionJarName;

@@ -51,73 +51,14 @@ import org.osgi.framework.BundleContext;
 /*
  * Test Tuscany running in an OSGi container
  * Harness can be used to run Tuscany samples with Tuscany running in OSGi
- * These tests are not intended to be run as part of the build
  */
 public class OSGiTuscanyTestHarness {
-    
-    
-    private static String[] SAMPLE_DIRECTORIES = {
-        
-            "osgi-supplychain",
-            "binding-notification-broker",
-            "binding-notification-consumer",
-            "binding-notification-producer",
-            "calculator",            
-            "calculator-rmi-reference",
-            "calculator-webapp",
-            "calculator-ws-webapp",
-            "chat-webapp",
-            "feed-aggregator",
-            "feed-aggregator-webapp",
-            "helloworld-dojo-webapp",
-            "helloworld-jsonrpc-webapp",
-            "helloworld-ws-service-secure",
-            "helloworld-ws-sdo-webapp", 
-            "implementation-composite",
-            "implementation-notification", 
-            "loanapplication", 
-            "simple-bigbank", 
-            "simple-callback",
-            "store", 
-            "supplychain", 
-            "web-resource" 
-            
-
-            // FIXME: The following tests dont currently work when Tuscany is running inside
-            //        OSGi. Known problems include classloading in some tests, classloading
-            //        in the new domain API, URL handling for bundle URLs
-            
-            // "binding-echo", 
-            // "binding-echo-extension",
-            // "calculator-distributed", 
-            // "calculator-implementation-policies",
-            // "calculator-rmi-service",
-            // "calculator-script", 
-            // "callback-ws-client",
-            // "callback-ws-service", 
-            // "databinding-echo",
-            // "domain-webapp",
-            // "helloworld-bpel",
-            // "helloworld-ws-service",
-            // "helloworld-ws-reference",
-            // "helloworld-ws-reference-jms,
-            // "helloworld-ws-reference-secure",
-            // "helloworld-ws-sdo", 
-            // "implementation-crud",
-            // "implementation-crud-extension", 
-            // "implementation-pojo-extension",
-            // "quote-xquery",
-            // "simple-bigbank-spring", 
-            // "simple-callback-ws",
-            
-            };
     
 
     private OSGiTestRuntime osgiRuntime;
     private Bundle tuscanyRuntime;
     private BundleContext bundleContext;
 
-    @Before
     public void setUp() throws Exception {
         
         osgiRuntime = OSGiRuntimeLoader.startOSGiTestRuntime();
@@ -125,7 +66,6 @@ public class OSGiTuscanyTestHarness {
     }
     
 
-    @After
     public void tearDown() throws Exception {
 
         if (tuscanyRuntime != null) {
@@ -135,31 +75,33 @@ public class OSGiTuscanyTestHarness {
         OSGiRuntimeLoader.shutdownOSGiRuntime();
     }
     
-
-    @Test
-    public void runTests() throws Exception {
-        
-        for (String testDir : SAMPLE_DIRECTORIES) {
-            runTest("../../../samples/" + testDir);
-        }
-    }
-     
    
-    public void runTest(String testDir) throws Exception {
+    public void runTest(String... testDirs) throws Exception {
         
-        System.out.println("Run tests from : " + testDir);
+        String mainTestDir = testDirs[0];
+        System.out.println("Run tests from : " + mainTestDir);
 
         tuscanyRuntime = TuscanyLoader.loadTuscanyIntoOSGi(bundleContext);
         
+        String[] dirs = new String[testDirs.length + 2];
+        int i = 0;
+        dirs[i++] = mainTestDir + "/target/test-classes";
+        dirs[i++] = "target/test-classes";
+        for (int j = 0; j < testDirs.length; j++) {
+            dirs[i++] = testDirs[j] + "/target/classes";
+        }
+        
+        String manifestFile = "target/test-classes/META-INF/MANIFEST.MF";
+        
         Bundle testBundle = createAndInstallBundle(
-                 "file:" + testDir + "/target/classes",        // Bundle location: used to get File URLs for DefaultSCADomain
-                 "target/test-classes/META-INF/MANIFEST.MF",   // Test bundle manifest file
-                 new String[]{
-                    testDir + "/target/classes",
-                    testDir + "/target/test-classes",
-                    "target/test-classes"
-                 });
+                 "file:" + mainTestDir + "/target/classes",    // Bundle location: used to get File URLs for DefaultSCADomain
+                 manifestFile,                                 // Test bundle manifest file
+                 dirs                                          // Directory entries to be added to bundle
+                 );
     
+        
+        tuscanyRuntime.start();
+        
         testBundle.start();
         
         Class<?> testClass = testBundle.loadClass(this.getClass().getName());
@@ -213,13 +155,15 @@ public class OSGiTuscanyTestHarness {
 
             if (files[i].isDirectory()) {
                 addFilesToJar(files[i], rootDirName, jarOut);
-                continue;
             }
             if (files[i].getName().endsWith("MANIFEST.MF"))
                 continue;
 
             String entryName = files[i].getPath().substring(rootDirName.length()+1);
             entryName = entryName.replaceAll("\\\\", "/");
+            if (files[i].isDirectory()) {
+                entryName += "/";
+            }
             ZipEntry ze = new ZipEntry(entryName);
 
             try {
