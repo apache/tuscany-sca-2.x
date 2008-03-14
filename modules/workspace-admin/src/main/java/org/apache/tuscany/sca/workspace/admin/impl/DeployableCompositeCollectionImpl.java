@@ -96,7 +96,6 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -181,7 +180,6 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
             IntentAttachPointTypeFactory intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
             InterfaceContractMapper contractMapper = new InterfaceContractMapperImpl();
-            List<PolicySet> domainPolicySets = new ArrayList<PolicySet>();
             
             // TODO need to get these messages back to the browser
             CompositeBuilderMonitor monitor = new CompositeBuilderMonitor() {
@@ -201,7 +199,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             };
             
             compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory,
-                                                        contractMapper, domainPolicySets, monitor);
+                                                        contractMapper, monitor);
             
             compositeConfigurationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, 
                                                                                  scaBindingFactory, 
