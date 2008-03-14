@@ -201,10 +201,6 @@ public class SCADomainProxyImpl extends SCADomainImpl {
                                                                                               contributionURL, 
                                                                                               false);
                 
-                //update runtime with contribution sca definitions
-                //this should be done before building the composite
-                domainManagementRuntime.updateSCADefinitions(domainManagementContributionService.getContributionSCADefinitions());
-                
                 Composite composite = null;
                 
                 for (Artifact artifact: domainManagementContribution.getArtifacts()) {

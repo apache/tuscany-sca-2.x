@@ -79,13 +79,13 @@ public class CompositeWireBuilderImpl {
         }
     };
     
-    public CompositeWireBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper, List<PolicySet> domainPolicySets, CompositeBuilderMonitor monitor) {
+    public CompositeWireBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper, CompositeBuilderMonitor monitor) {
         this.assemblyFactory = assemblyFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.monitor = monitor;
         
-        this.bindingPolicyComputer = new BindingPolicyComputer(domainPolicySets);
-        this.implPolicyComputer = new ImplementationPolicyComputer(domainPolicySets);
+        this.bindingPolicyComputer = new BindingPolicyComputer();
+        this.implPolicyComputer = new ImplementationPolicyComputer();
     }
 
     /**

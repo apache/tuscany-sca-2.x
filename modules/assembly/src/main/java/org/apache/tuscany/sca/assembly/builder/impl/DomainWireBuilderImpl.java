@@ -45,9 +45,8 @@ public class DomainWireBuilderImpl implements DomainBuilder {
             SCABindingFactory scaBindingFactory,
             IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
             InterfaceContractMapper interfaceContractMapper,
-            List<PolicySet> domainPolicySets,
             CompositeBuilderMonitor monitor) {
-        wireBuilder = new CompositeWireBuilderImpl(assemblyFactory, interfaceContractMapper, domainPolicySets, monitor);
+        wireBuilder = new CompositeWireBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
     }
     
     public String getComponentNameFromReference(String referenceName){

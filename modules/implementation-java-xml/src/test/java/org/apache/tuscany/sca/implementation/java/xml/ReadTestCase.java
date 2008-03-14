@@ -117,7 +117,7 @@ public class ReadTestCase extends TestCase {
         Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
 
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, mapper, null, null);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, mapper, null);
         compositeUtil.build(composite);
 
     }
@@ -139,7 +139,7 @@ public class ReadTestCase extends TestCase {
         staxProcessor.resolve(scaDefns, resolver);
         staxProcessor.resolve(composite, resolver);
 
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, mapper, scaDefns.getPolicySets(), null);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, mapper, null);
         compositeUtil.build(composite);
         
         //intents are computed and aggregate intents from ancestor elements
@@ -214,7 +214,7 @@ public class ReadTestCase extends TestCase {
         staxProcessor.resolve(scaDefns, resolver);
         staxProcessor.resolve(composite, resolver);
 
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, mapper, scaDefns.getPolicySets(), null);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, mapper, null);
         compositeUtil.build(composite);
         
         //test for determination of policysets for implementation

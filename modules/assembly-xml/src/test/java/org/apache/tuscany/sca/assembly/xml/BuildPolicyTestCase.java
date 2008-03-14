@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.assembly.xml;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
@@ -61,8 +63,7 @@ import org.apache.tuscany.sca.policy.xml.SimpleIntentProcessor;
  * 
  * @version $Rev: 561254 $ $Date: 2007-07-31 13:16:27 +0530 (Tue, 31 Jul 2007) $
  */
-public class BuildPolicyTestCase extends TestCase {
-
+public class BuildPolicyTestCase extends TestCase { 
     private ExtensibleURLArtifactProcessor documentProcessor;
     private TestModelResolver resolver; 
     private SCADefinitionsDocumentProcessor scaDefnDocProcessor;
@@ -71,10 +72,11 @@ public class BuildPolicyTestCase extends TestCase {
 
     @Override
     public void setUp() throws Exception {
+        List scaDefnSink = new ArrayList();
         AssemblyFactory factory = new DefaultAssemblyFactory();
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         resolver = new TestModelResolver();
-        compositeBuilder = new CompositeBuilderImpl(factory, new TestSCABindingFactoryImpl(), new DefaultIntentAttachPointTypeFactory(), new InterfaceContractMapperImpl(), null, null);
+        compositeBuilder = new CompositeBuilderImpl(factory, new TestSCABindingFactoryImpl(), new DefaultIntentAttachPointTypeFactory(), new InterfaceContractMapperImpl(), null);
         URLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors); 
         
@@ -94,7 +96,7 @@ public class BuildPolicyTestCase extends TestCase {
         XMLInputFactory inputFactory = XMLInputFactory.newInstance(); 
         
         // Create document processors
-        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory));
+        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory, scaDefnSink));
         documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory));
         documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
         scaDefnDocProcessor = new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, inputFactory, policyFactory);
@@ -115,6 +117,7 @@ public class BuildPolicyTestCase extends TestCase {
         uri = URI.create("another_test_definitions.xml");
         SCADefinitions scaDefns = (SCADefinitions)scaDefnDocProcessor.read(null, uri, url);
         assertNotNull(scaDefns);
+        scaDefnSink.add(scaDefns);
         
         //preResolvePolicyTests(composite);
         documentProcessor.resolve(scaDefns, resolver);

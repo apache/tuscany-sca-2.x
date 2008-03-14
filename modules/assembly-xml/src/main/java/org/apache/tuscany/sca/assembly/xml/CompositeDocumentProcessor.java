@@ -19,12 +19,17 @@
 
 package org.apache.tuscany.sca.assembly.xml;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -35,6 +40,9 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
 
 /**
  * A composite processor.
@@ -43,6 +51,8 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
  */
 public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements URLArtifactProcessor<Composite> {
     private XMLInputFactory inputFactory;
+    private List scaDefnSink;
+    private Collection<PolicySet> domainPolicySets = null;
 
     /**
      * Construct a new composite processor
@@ -50,20 +60,29 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
      * @param policyFactory
      * @param staxProcessor
      */
-    public CompositeDocumentProcessor(StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory) {
+    public CompositeDocumentProcessor(StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory, List scaDefnsSink) {
         super(null, null, staxProcessor);
         this.inputFactory = inputFactory;
+        this.scaDefnSink = scaDefnsSink;
     }
 
     public Composite read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
-        InputStream urlStream = null;
+        InputStream scdlStream = null;
         try {
+            if ( domainPolicySets == null ) {
+                fillDomainPolicySets(scaDefnSink);
+            }
             
-            // Create a stream reader
-            URLConnection connection = url.openConnection();
-            connection.setUseCaches(false);
-            urlStream = connection.getInputStream();
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
+            byte[] transformedArtifactContent = null;
+            try {
+                transformedArtifactContent =
+                    PolicyComputationUtils.addApplicablePolicySets(url, domainPolicySets);
+            } catch ( Exception e ) {
+                throw new ContributionReadException(e);
+            }
+            scdlStream = new ByteArrayInputStream(transformedArtifactContent);
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(scdlStream);
+            
             reader.nextTag();
             
             // Read the composite model
@@ -94,13 +113,11 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             
         } catch (XMLStreamException e) {
             throw new ContributionReadException(e);
-        } catch (IOException e) {
-            throw new ContributionReadException(e);
         } finally {
             try {
-                if (urlStream != null) {
-                    urlStream.close();
-                    urlStream = null;
+                if (scdlStream != null) {
+                    scdlStream.close();
+                    scdlStream = null;
                 }
             } catch (IOException ioe) {
                 //ignore
@@ -118,5 +135,19 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
     
     public Class<Composite> getModelType() {
         return Composite.class;
+    }
+    
+    private void fillDomainPolicySets(List scaDefnsSink) {
+        Map<QName, PolicySet> domainPolicySetMap = new Hashtable<QName, PolicySet>();
+        if ( scaDefnsSink != null ) {
+            for ( Object object : scaDefnsSink ) {
+                if ( object instanceof SCADefinitions ) {
+                    for ( PolicySet policySet : ((SCADefinitions)object).getPolicySets() ) {
+                        domainPolicySetMap.put( policySet.getName(), policySet);
+                    }
+                }
+            }
+        }
+        domainPolicySets =  domainPolicySetMap.values();
     }
 }

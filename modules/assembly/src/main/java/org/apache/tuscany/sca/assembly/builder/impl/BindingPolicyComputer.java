@@ -44,8 +44,8 @@ import org.apache.tuscany.sca.policy.util.PolicyValidationException;
  */
 public class BindingPolicyComputer extends PolicyComputer {
     
-    public BindingPolicyComputer(List<PolicySet> domainPolicySets) {
-        super(domainPolicySets);
+    public BindingPolicyComputer() {
+        super();
     }
     
     public void computeBindingIntentsAndPolicySets(Contract contract)  throws PolicyValidationException {
@@ -147,16 +147,14 @@ public class BindingPolicyComputer extends PolicyComputer {
                         trimProvidedIntents(confOp.getRequiredIntents(), confOp.getPolicySets());
                         trimProvidedIntents(confOp.getRequiredIntents(), policiedBinding.getPolicySets());
                         
-                        if (domainPolicySets != null) {
-                            determineApplicableDomainPolicySets(policiedBinding.getApplicablePolicySets(), 
-                                                                confOp,
-                                                                policiedBinding.getType());
-        
-                            if (confOp.getRequiredIntents().size() > 0) {
-                                new PolicyComputationException("The following are unfulfilled intents for operations configured in "
-                                        + "binding - " + aBinding.getName() + "\nUnfulfilled Intents = " +
-                                        confOp.getRequiredIntents());
-                            }
+                        determineApplicableDomainPolicySets(policiedBinding.getApplicablePolicySets(), 
+                                                            confOp,
+                                                            policiedBinding.getType());
+    
+                        if (confOp.getRequiredIntents().size() > 0) {
+                            new PolicyComputationException("The following are unfulfilled intents for operations configured in "
+                                    + "binding - " + aBinding.getName() + "\nUnfulfilled Intents = " +
+                                    confOp.getRequiredIntents());
                         }
                         
                         //the intents list could have been trimmed when matching for policysets

@@ -194,7 +194,7 @@ public class DefaultSCADomain extends SCADomain {
         //update the runtime for all SCA Definitions processed from the contribution..
         //so that the policyset determination done during 'build' has the all the defined
         //intents and policysets
-        runtime.updateSCADefinitions(contributionService.getContributionSCADefinitions());
+        //runtime.updateSCADefinitions(null);
 
         // Build the SCA composites
         for (Composite composite : domainComposite.getIncludes()) {

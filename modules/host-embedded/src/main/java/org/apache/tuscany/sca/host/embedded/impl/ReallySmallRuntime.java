@@ -81,7 +81,7 @@ public class ReallySmallRuntime {
     private WorkScheduler workScheduler;
     private ScopeRegistry scopeRegistry;
     private ProxyFactory proxyFactory;
-    private SCADefinitions scaDefinitions = new SCADefinitionsImpl();
+    private List scaDefnsSink = new ArrayList();
 
     public ReallySmallRuntime(ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -137,7 +137,7 @@ public class ReallySmallRuntime {
                                                                                   assemblyFactory,
                                                                                   policyFactory,
                                                                                   mapper,
-                                                                                  scaDefinitions);
+                                                                                  scaDefnsSink);
         
         // Create the ScopeRegistry
         scopeRegistry = ReallySmallRuntimeBuilder.createScopeRegistry(registry); 
@@ -196,19 +196,11 @@ public class ReallySmallRuntime {
         compositeBuilder = ReallySmallRuntimeBuilder.createCompositeBuilder(assemblyFactory,
                                                                             scaBindingFactory,
                                                                             intentAttachPointTypeFactory,
-                                                                            mapper,
-                                                                            scaDefinitions.getPolicySets());
+                                                                            mapper);
         compositeBuilder.build(composite);
         
     }
     
-    public void updateSCADefinitions(List<SCADefinitions> scaDefns) {
-        for ( SCADefinitions aDefn : scaDefns ) {
-            SCADefinitionsUtil.aggregateSCADefinitions(aDefn, scaDefinitions);
-        }
-        SCADefinitionsUtil.stripDuplicates(scaDefinitions);
-    }
-
     public ContributionService getContributionService() {
         return contributionService;
     }
@@ -236,13 +228,12 @@ public class ReallySmallRuntime {
             domainBuilder = ReallySmallRuntimeBuilder.createDomainBuilder(assemblyFactory,
                                                                           scaBindingFactory,
                                                                           intentAttachPointTypeFactory,
-                                                                          mapper,
-                                                                          scaDefinitions.getPolicySets());
+                                                                          mapper);
         }
         return domainBuilder;
     }
     
-    private SCADefinitions loadSCADefinitions(ExtensionPointRegistry registry) throws ActivationException {
+    private void  loadSCADefinitions(ExtensionPointRegistry registry) throws ActivationException {
         URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         SCADefinitionsDocumentProcessor definitionsProcessor = (SCADefinitionsDocumentProcessor)documentProcessors.getProcessor(SCADefinitions.class);
         
@@ -250,14 +241,16 @@ public class ReallySmallRuntime {
             Map<ClassLoader, Set<URL>> scaDefinitionFiles = 
             ServiceDiscovery.getInstance().getServiceResources("definitions.xml");
             
+            SCADefinitions systemSCADefinitions = new SCADefinitionsImpl();
             for ( ClassLoader cl : scaDefinitionFiles.keySet() ) {
                 for ( URL scaDefnUrl : scaDefinitionFiles.get(cl) ) {
                     SCADefinitions defnSubset = definitionsProcessor.read(null, null, scaDefnUrl);
-                    SCADefinitionsUtil.aggregateSCADefinitions(defnSubset, scaDefinitions);
+                    SCADefinitionsUtil.aggregateSCADefinitions(defnSubset, systemSCADefinitions);
                 }
             }
             
-            definitionsProcessor.resolve(scaDefinitions, definitionsProcessor.getSCADefinitionsResolver());
+            definitionsProcessor.resolve(systemSCADefinitions, definitionsProcessor.getSCADefinitionsResolver());
+            scaDefnsSink.add(systemSCADefinitions);
         } catch ( ContributionReadException e ) {
             throw new ActivationException(e);
         } catch ( ContributionResolveException e ) {
@@ -265,8 +258,6 @@ public class ReallySmallRuntime {
         } catch ( IOException e ) {
             throw new ActivationException(e);
         }
-    
-        return scaDefinitions;
     }
     
     @SuppressWarnings("unchecked")

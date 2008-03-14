@@ -81,7 +81,7 @@ public class ReadDocumentTestCase extends TestCase {
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
         
         inputFactory = XMLInputFactory.newInstance();
-        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory));
+        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory, null));
         documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory));
         documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
         
@@ -138,12 +138,12 @@ public class ReadDocumentTestCase extends TestCase {
         reader.parse(new InputSource(url.openStream()));
     }
         
-    public void testReadImplementation() throws Exception {
+    public void testReadImplementation() throws Exception { 
         
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
         schemas.addSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd").toString());
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas);
-        CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(staxProcessor, validatingInputFactory);
+        CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(staxProcessor, validatingInputFactory, null);
         
         URL url = getClass().getResource("JavaScriptReference.composite");
         URI uri = URI.create("JavaScriptReference.composite");
@@ -179,7 +179,7 @@ public class ReadDocumentTestCase extends TestCase {
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
         schemas.addSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd").toString());
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas);
-        CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(staxProcessor, validatingInputFactory);
+        CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(staxProcessor, validatingInputFactory, null);
         
         URL url = getClass().getResource("RMIBindingTest.composite");
         URI uri = URI.create("RMIBindingTest.composite");

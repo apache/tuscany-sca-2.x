@@ -107,7 +107,7 @@ public class WireTestCase extends TestCase {
         scaDefnDocProcessor.resolve(scaDefns, resolver);
         
         compositeReader.resolve(composite, resolver);
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null, null);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null);
         compositeUtil.build(composite);
         
         assertEquals(composite.getConstrainingType(), constrainingType);
@@ -137,7 +137,7 @@ public class WireTestCase extends TestCase {
         scaDefnDocProcessor.resolve(scaDefns, resolver);
         
         compositeReader.resolve(composite, resolver);
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null, null);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null);
         compositeUtil.build(composite);
         
         assertEquals(composite.getComponents().get(2).getImplementation(), nestedComposite);

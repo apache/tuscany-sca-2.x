@@ -74,7 +74,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 /**
- * A mini test runtime that uses the SCA assembly model variant implementation
+ * A mini test runtime that uses the SCA assembly model variant implementation 
  * backed by Spring bean definitions.
  * 
  * @version $Rev$ $Date$
@@ -180,7 +180,7 @@ public class SCADomainContext {
         };
 
         // Configure and wire the composite
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), interfaceContractMapper, null, monitor);
+        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), interfaceContractMapper, monitor);
         compositeUtil.build(composite);
 
     }

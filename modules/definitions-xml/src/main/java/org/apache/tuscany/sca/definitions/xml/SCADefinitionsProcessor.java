@@ -90,19 +90,22 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
                         Object extension = extensionProcessor.read(reader);
                         if (extension != null) {
                             if ( extension instanceof Intent ) {
-                                ((Intent)extension).setName(new QName(targetNamespace, 
-                                                                      ((Intent)extension).getName().getLocalPart()));
-                                if ( extension instanceof QualifiedIntent ) {
-                                    ((QualifiedIntent)extension).getQualifiableIntent().
-                                            setName(new QName(targetNamespace, 
-                                                              ((QualifiedIntent)extension).getQualifiableIntent().getName().getLocalPart()));
+                                Intent intent = (Intent)extension;
+                                intent.setName(new QName(targetNamespace, 
+                                                                      intent.getName().getLocalPart()));
+                                if ( intent instanceof QualifiedIntent ) {
+                                    QualifiedIntent qualifiedIntent = (QualifiedIntent)intent;
+                                    qualifiedIntent.getQualifiableIntent().
+                                            setName(new QName(targetNamespace,
+                                                              qualifiedIntent.getQualifiableIntent().getName().getLocalPart()));
                                 }
                                 
-                                definitions.getPolicyIntents().add((Intent)extension);
+                                definitions.getPolicyIntents().add(intent);
                             } else if ( extension instanceof PolicySet ) {
-                                ((PolicySet)extension).setName(new QName(targetNamespace, 
-                                                                         ((PolicySet)extension).getName().getLocalPart()));
-                                definitions.getPolicySets().add((PolicySet)extension);
+                                PolicySet policySet = (PolicySet)extension;
+                                policySet.setName(new QName(targetNamespace, 
+                                                            policySet.getName().getLocalPart()));
+                                definitions.getPolicySets().add(policySet);
                             } else if ( extension instanceof IntentAttachPointType ) {
                                 IntentAttachPointType type = (IntentAttachPointType)extension;
                                 if ( type.getName().getLocalPart().startsWith(BINDING)) {
