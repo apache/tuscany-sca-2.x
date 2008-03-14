@@ -65,6 +65,7 @@
                 <module>callback-complex-type</module>
                 <module>callback-id</module>
                 <module>callback-multiple-wires</module>
+                <module>callback-separatethread</module>
                 <module>callback-set-callback</module>
                 <module>callback-set-conversation</module>
                 <module>contribution</module>
