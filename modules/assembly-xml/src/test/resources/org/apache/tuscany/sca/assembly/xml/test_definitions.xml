@@ -30,7 +30,7 @@
  <!-- POLICY SETS -->
   <sca:policySet name="SecureReliablePolicy"
  	provides="confidentiality.transport integrity"
- 	appliesTo="sca:binding.ws"
+ 	appliesTo="//sca:binding.ws | //sca:binding.sca"
  	xmlns="http://test"
  	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
  		<wsp:PolicyAttachment>
@@ -45,7 +45,7 @@
  
  <sca:policySet name="SecureMessagingPolicies"
 	 provides="confidentiality"
-	 appliesTo="binding.ws"
+	 appliesTo="//sca:binding.ws"
 	 xmlns="http://test"
  	 xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
      <sca:intentMap provides="confidentiality" default="transport">
@@ -64,7 +64,6 @@
 </sca:policySet>
 
 <sca:policySet name="SecurityPolicy" provides="confidentiality"
-	appliesTo="sca:binding.ws"
 	xmlns="http://test"
 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" >
     <sca:intentMap provides="confidentiality" default="message">
@@ -92,7 +91,7 @@
 
 <sca:policySet name="BasicAuthMsgProtSecurity"
      provides="authentication confidentiality"
-     appliesTo="binding.ws"
+     appliesTo="//sca:binding.ws"
  		xmlns="http://test">
     <sca:policySetReference name="AuthenticationPolicies"/>
     <sca:policySetReference name="ConfidentialityPolicies"/>
@@ -100,7 +99,7 @@
 
 <sca:policySet name="AuthenticationPolicies"
 	provides="authentication"
-	appliesTo="binding.ws"
+	appliesTo="//sca:binding.ws"
 	xmlns="http://test"
 	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
     <wsp:PolicyAttachment>
@@ -111,7 +110,7 @@
 
 <sca:policySet name="ConfidentialityPolicies"
  provides="confidentiality"
- appliesTo="sca:binding.ws"
+ bindings="binding.ws"
  xmlns="http://test"
     xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
     <sca:intentMap provides="confidentiality"  default="transport">
