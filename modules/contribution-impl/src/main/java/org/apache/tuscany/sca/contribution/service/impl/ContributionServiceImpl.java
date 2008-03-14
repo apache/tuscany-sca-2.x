@@ -32,11 +32,9 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -51,11 +49,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
@@ -545,18 +541,15 @@ public class ContributionServiceImpl implements ContributionService {
                                                                 XPathExpressionException,
                                                                 TransformerConfigurationException,
                                                                 TransformerException  {
-        XPathFactory xpathFactory = XPathFactory.newInstance();
-        XPath path = xpathFactory.newXPath();
-        path.setNamespaceContext(new DOMNamespaceContext(doc));
         int prefixCount = 1;
         
         for ( PolicySet policySet : policySets ) {
             if ( policySet.getAppliesTo() != null ) {
-                addApplicablePolicySets(policySet, path, doc, prefixCount);
+                addApplicablePolicySets(policySet, doc, prefixCount);
             }
             
             if ( policySet.getAlwaysAppliesTo() != null ) {
-                addAlwaysApplicablePolicySets(policySet, path, doc, prefixCount);
+                addAlwaysApplicablePolicySets(policySet, doc, prefixCount);
             }
         }
         
@@ -569,8 +562,8 @@ public class ContributionServiceImpl implements ContributionService {
         return sw.toString().getBytes();
     }
     
-    private void addAlwaysApplicablePolicySets(PolicySet policySet, XPath path, Document doc, int prefixCount) throws XPathExpressionException {
-        XPathExpression expression = path.compile(policySet.getAlwaysAppliesTo());
+    private void addAlwaysApplicablePolicySets(PolicySet policySet, Document doc, int prefixCount) throws XPathExpressionException {
+        XPathExpression expression = policySet.getAlwaysAppliesToXPathExpression();
         NodeList result = (NodeList)expression.evaluate(doc, XPathConstants.NODESET);
         
         if ( result != null ) {
@@ -600,8 +593,8 @@ public class ContributionServiceImpl implements ContributionService {
         }
     }
     
-    private void addApplicablePolicySets(PolicySet policySet, XPath path, Document doc, int prefixCount) throws XPathExpressionException {
-        XPathExpression expression = path.compile(policySet.getAppliesTo());
+    private void addApplicablePolicySets(PolicySet policySet, Document doc, int prefixCount) throws XPathExpressionException {
+        XPathExpression expression = policySet.getAppliesToXPathExpression();
         NodeList result = (NodeList)expression.evaluate(doc, XPathConstants.NODESET);
         
         if ( result != null ) {
@@ -683,55 +676,6 @@ public class ContributionServiceImpl implements ContributionService {
             element.setAttributeNodeNS(attr);
         }
         return prefix;
-    }
-    
-    private static class DOMNamespaceContext implements NamespaceContext {
-        private Node node;
-
-        /**
-         * @param node
-         */
-        public DOMNamespaceContext(Node node) {
-            super();
-            this.node = node;
-        }
-
-        public String getNamespaceURI(String prefix) {
-            return node.lookupNamespaceURI(prefix);
-        }
-
-        public String getPrefix(String namespaceURI) {
-            return node.lookupPrefix(namespaceURI);
-        }
-
-        public Iterator<?> getPrefixes(String namespaceURI) {
-            return null;
-        }
-
-    }
-    
-    private static String print(Node node)  {
-        if ( node.getNodeType() != 3 ) {
-            System.out.println("********************************************************" + node.getNodeType());
-            StringWriter sw = new StringWriter();
-            Source domSource = new DOMSource(node);
-            Result finalResult = new StreamResult(sw);
-            
-            try {
-                Transformer t = TransformerFactory.newInstance().newTransformer();
-                
-                t.setOutputProperty("omit-xml-declaration", "yes");
-                //System.out.println(" ***** - " + t.getOutputProperties());
-                t.transform(domSource, finalResult);
-            } catch ( Exception e ) {
-                e.printStackTrace();
-             }
-            System.out.println(sw.toString());
-            System.out.println("********************************************************");
-            return sw.toString();
-        } else {
-            return null;
-        }
     }
 
 }

@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.assembly.impl;
 
+import javax.xml.xpath.XPathExpression;
+
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.Property;
 
@@ -31,6 +33,7 @@ public class ComponentPropertyImpl extends PropertyImpl implements ComponentProp
     private String file;
     private Property property;
     private String source;
+    private XPathExpression sourceXPathExpression;
     
     /**
      * Constructs a new component property.
@@ -77,6 +80,14 @@ public class ComponentPropertyImpl extends PropertyImpl implements ComponentProp
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public XPathExpression getSourceXPathExpression() {
+        return sourceXPathExpression;
+    }
+
+    public void setSourceXPathExpression(XPathExpression sourceXPathExpression) {
+        this.sourceXPathExpression = sourceXPathExpression;
     }
 
 }

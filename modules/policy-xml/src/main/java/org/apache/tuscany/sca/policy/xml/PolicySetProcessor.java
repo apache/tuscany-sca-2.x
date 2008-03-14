@@ -33,6 +33,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
@@ -59,6 +62,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
 
     private PolicyFactory policyFactory;
     private StAXArtifactProcessor<Object> extensionProcessor;
+    private XPathFactory xpathFactory = XPathFactory.newInstance();
     
     public PolicySetProcessor(ModelFactoryExtensionPoint modelFactories) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
@@ -91,6 +95,20 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
         
         policySet.setAppliesTo(appliesTo);
         policySet.setAlwaysAppliesTo(alwaysAppliesTo);
+
+        XPath path = xpathFactory.newXPath();
+        path.setNamespaceContext(reader.getNamespaceContext());
+        try {
+            if (appliesTo != null) {
+                policySet.setAppliesToXPathExpression(path.compile(appliesTo));
+            }
+            if (alwaysAppliesTo != null) {
+                policySet.setAlwaysAppliesToXPathExpression(path.compile(alwaysAppliesTo));
+            }
+        } catch (XPathExpressionException e) {
+            throw new ContributionReadException(e);
+        }  
+        
         readProvidedIntents(policySet, reader);
         
         int event = reader.getEventType();

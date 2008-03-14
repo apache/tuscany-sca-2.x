@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
+import javax.xml.xpath.XPathExpression;
 
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -45,6 +46,9 @@ public class PolicySetImpl implements PolicySet {
     Map<Intent, List<Object>>  mappedPolicies = new Hashtable<Intent, List<Object>>();
     private boolean unresolved = true;
     private String alwaysAppliesTo;
+    
+    private XPathExpression appliesToXPathExpression;
+    private XPathExpression alwaysAppliesToXPathExpression;
     
     public String getAlwaysAppliesTo() {
         return alwaysAppliesTo;
@@ -125,4 +129,21 @@ public class PolicySetImpl implements PolicySet {
     public String toString() {
         return getName().toString();
     }
+
+    public XPathExpression getAppliesToXPathExpression() {
+        return appliesToXPathExpression;
+    }
+
+    public void setAppliesToXPathExpression(XPathExpression appliesToXPathExpression) {
+        this.appliesToXPathExpression = appliesToXPathExpression;
+    }
+
+    public XPathExpression getAlwaysAppliesToXPathExpression() {
+        return alwaysAppliesToXPathExpression;
+    }
+
+    public void setAlwaysAppliesToXPathExpression(XPathExpression alwaysAppliesToXPathExpression) {
+        this.alwaysAppliesToXPathExpression = alwaysAppliesToXPathExpression;
+    }
+
 }

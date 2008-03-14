@@ -24,10 +24,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -36,7 +39,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.sax.SAXSource;
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
@@ -59,18 +61,11 @@ public class PropertyUtil {
     private static final DocumentBuilderFactory DOC_BUILDER_FACTORY = DocumentBuilderFactory.newInstance();
     private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
     
-    static private Document evaluate(NamespaceContext nsContext, Node node, String xPathExpression)
+    static private Document evaluate(Document node, XPathExpression expression)
         throws XPathExpressionException, ParserConfigurationException {
-        XPath path = XPATH_FACTORY.newXPath();
-        
-        if (nsContext != null) {
-            path.setNamespaceContext(nsContext);
-        } else {
-            path.setNamespaceContext(new DOMNamespaceContext(node));
-        }
-        
-        XPathExpression expression = path.compile(xPathExpression);
-        Node result = (Node)expression.evaluate(node, XPathConstants.NODE);
+
+        Node value = node.getDocumentElement();
+        Node result = (Node)expression.evaluate(value, XPathConstants.NODE);
         if (result == null) {
             return null;
         }
@@ -139,19 +134,8 @@ public class PropertyUtil {
 
                     Document compositePropDefValues = (Document)compositeProp.getValue();
 
-                    // Adding /value because the document root is "value"
-                    String path = source.substring(index);
-                    String xpath = null;
-
-                    if ("/".equals(path)) {
-                        // trailing / is not legal for xpath
-                        xpath = "/value";
-                    } else {
-                        xpath = "/value" + path;
-                    }
-
                     // FIXME: How to deal with namespaces?
-                    Document node = evaluate(null, compositePropDefValues, xpath);
+                    Document node = evaluate(compositePropDefValues, aProperty.getSourceXPathExpression());
 
                     if (node != null) {
                         aProperty.setValue(node);
@@ -178,15 +162,42 @@ public class PropertyUtil {
         }
 
         public String getNamespaceURI(String prefix) {
-            return node.lookupNamespaceURI(prefix);
+            if (prefix == null) {
+                throw new IllegalArgumentException("Prefix is null");
+            } else if (XMLConstants.XML_NS_PREFIX.equals(prefix)) {
+                return XMLConstants.XML_NS_URI;
+            } else if (XMLConstants.XMLNS_ATTRIBUTE.equals(prefix)) {
+                return XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
+            }
+            String ns = node.lookupNamespaceURI(prefix);
+            return ns == null ? XMLConstants.NULL_NS_URI : ns;
         }
 
         public String getPrefix(String namespaceURI) {
+            if (namespaceURI == null) {
+                throw new IllegalArgumentException("Namespace URI is null");
+            } else if (XMLConstants.XML_NS_URI.equals(namespaceURI)) {
+                return XMLConstants.XML_NS_PREFIX;
+            } else if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(namespaceURI)) {
+                return XMLConstants.XMLNS_ATTRIBUTE;
+            }
             return node.lookupPrefix(namespaceURI);
         }
 
         public Iterator<?> getPrefixes(String namespaceURI) {
-            return null;
+            // Not implemented
+            if (namespaceURI == null) {
+                throw new IllegalArgumentException("Namespace URI is null");
+            } else if (XMLConstants.XML_NS_URI.equals(namespaceURI)) {
+                return Arrays.asList(XMLConstants.XML_NS_PREFIX).iterator();
+            } else if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(namespaceURI)) {
+                return Arrays.asList(XMLConstants.XMLNS_ATTRIBUTE).iterator();
+            }
+            String prefix = getPrefix(namespaceURI);
+            if (prefix == null) {
+                return Collections.emptyList().iterator();
+            }
+            return Arrays.asList(prefix).iterator();
         }
 
     }
