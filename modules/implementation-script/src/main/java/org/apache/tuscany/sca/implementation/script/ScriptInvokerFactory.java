@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.implementation.script;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
 
 import javax.script.Invocable;
@@ -141,7 +143,26 @@ public class ScriptInvokerFactory implements InvokerFactory {
         if ("rb".equals(scriptExtn)) {
             return new TuscanyJRubyScriptEngine();
         } else {
+            if ("py".equals(scriptExtn)) {
+                pythonCachedir();
+            }
             return scriptEngineManager.getEngineByExtension(scriptExtn);
+        }
+    }
+
+    /**
+     * If the cachedir or python home properties are not set then create a temp folder for cachedir
+     * See TUSCANY-1950
+     */
+    protected void pythonCachedir() {
+        try {
+            if (System.getProperty("python.cachedir") == null || System.getProperty("python.home") == null) {
+                File cachedir = new File(File.createTempFile("tuscany", "sca").getParentFile(), "tuscany.python.cachedir");
+                cachedir.mkdir();
+                System.setProperty("python.cachedir", cachedir.getCanonicalPath());
+            }
+        } catch (IOException e) {
+            // ignore
         }
     }
 }
