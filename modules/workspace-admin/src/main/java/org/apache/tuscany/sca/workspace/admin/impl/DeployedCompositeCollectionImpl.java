@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -98,12 +99,13 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
     private AssemblyFactory assemblyFactory;
     private CompositeProcessor compositeProcessor;
     private XMLOutputFactory outputFactory;
+    private DocumentBuilder documentBuilder;
     
     /**
      * Initialize the component.
      */
     @Init
-    public void initialize() {
+    public void initialize() throws ParserConfigurationException {
         
         // Create factories
         modelFactories = new DefaultModelFactoryExtensionPoint();
@@ -115,6 +117,9 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
         compositeProcessor = new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, null);
+
+        // Create a document builder (used to pretty print XML)
+        documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
     }
     
     public Entry<String, Item>[] getAll() {
@@ -178,7 +183,8 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
             }
         }
         
-        // Read the composite file and write to response 
+        // Read the composite file and write to response
+        response.setContentType("text/xml");
         URLConnection connection = new URL(uri).openConnection();
         connection.setUseCaches(false);
         connection.connect();
@@ -330,7 +336,6 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
             compositeProcessor.write(compositeCollection, writer);
             
             // Parse again to pretty format the document
-            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = documentBuilder.parse(new ByteArrayInputStream(bos.toByteArray()));
             OutputFormat format = new OutputFormat();
             format.setIndenting(true);

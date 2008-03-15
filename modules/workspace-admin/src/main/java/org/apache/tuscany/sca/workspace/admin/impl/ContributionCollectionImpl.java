@@ -25,31 +25,29 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -65,7 +63,6 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
-import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
@@ -114,12 +111,13 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     private URLArtifactProcessor<Contribution> contributionInfoProcessor;
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
+    private DocumentBuilder documentBuilder;
     
     /**
      * Initialize the component.
      */
     @Init
-    public void initialize() throws IOException, ContributionReadException, XMLStreamException, ParserConfigurationException {
+    public void initialize() throws ParserConfigurationException {
         
         // Create model factories
         ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
@@ -147,18 +145,21 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         // Create contribution info processor
         contributionInfoProcessor = new ContributionInfoProcessor(modelFactories, modelResolvers, urlProcessor);
 
+        // Create a document builder (used to pretty print XML)
+        documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
     }
     
     public Entry<String, Item>[] getAll() {
 
         // Return all the contributions
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
-        Workspace workspace = readWorkspace();
+        Workspace workspace = readContributions(readWorkspace());
+        
         for (Contribution contribution: workspace.getContributions()) {
             if (contribution.getURI().equals(deploymentContributionURI)) {
                 continue;
             }
-            entries.add(entry(contribution));
+            entries.add(entry(workspace, contribution));
         }
         return entries.toArray(new Entry[entries.size()]);
     }
@@ -166,10 +167,10 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     public Item get(String key) throws NotFoundException {
 
         // Returns the contribution with the given URI key
-        Workspace workspace = readWorkspace();
+        Workspace workspace = readContributions(readWorkspace());
         for (Contribution contribution: workspace.getContributions()) {
             if (key.equals(contribution.getURI())) {
-                return item(contribution);
+                return item(workspace, contribution);
             }
         }
         throw new NotFoundException(key);
@@ -194,7 +195,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         }
 
         // Redirect to the actual contribution location
-        response.sendRedirect("/files/" + item.getLink());
+        response.sendRedirect("/files/" + item.getAlternate());
     }
 
     public String post(String key, Item item) {
@@ -251,33 +252,24 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
 
     public Entry<String, Item>[] query(String queryString) {
         if (queryString.startsWith("dependencies=") || queryString.startsWith("alldependencies=")) {
-            
+
             // Return the collection of dependencies of the specified contribution
             List<Entry<String, Item>> entries = new ArrayList<Entry<String,Item>>();
             
-            // Read the metadata for all the contributions into a temporary workspace
-            Workspace workspace = readWorkspace();
-            Workspace dependencyWorkspace = workspaceFactory.createWorkspace();
-            try {
-                for (Contribution c: workspace.getContributions()) {
-                    URI uri = URI.create(c.getURI());
-                    URL url = url(c.getLocation());
-                    Contribution contribution = (Contribution)contributionInfoProcessor.read(null, uri, url);
-                    dependencyWorkspace.getContributions().add(contribution);
-                }
-            } catch (Exception e) {
-                throw new ServiceRuntimeException(e);
-            }
+            // Extract the contribution URI
+            int eq = queryString.indexOf('=');
+            String key = queryString.substring(eq+1);
+            
+            // Read the metadata for all the contributions
+            Workspace workspace = readContributions(readWorkspace());
             
             // Look for the specified contribution
-            int e = queryString.indexOf('=');
-            String key = queryString.substring(e+1);
-            for (Contribution contribution: dependencyWorkspace.getContributions()) {
+            for (Contribution contribution: workspace.getContributions()) {
                 if (key.equals(contribution.getURI())) {
 
                     // Compute the contribution dependencies
                     ContributionDependencyAnalyzer analyzer = new ContributionDependencyAnalyzer();
-                    List<Contribution> dependencies = analyzer.calculateContributionDependencies(dependencyWorkspace, contribution);
+                    List<Contribution> dependencies = analyzer.calculateContributionDependencies(workspace, contribution);
                     
                     // Returns entries for the dependencies
                     // optionally skip the specified contribution
@@ -287,7 +279,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
                             // Skip the specified contribution
                             continue;
                         }
-                        entries.add(entry(dependency));
+                        entries.add(entry(workspace, dependency));
                     }
                     break;
                 }
@@ -325,10 +317,10 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
      * @param contribution
      * @return
      */
-    private static Entry<String, Item> entry(Contribution contribution) {
+    private static Entry<String, Item> entry(Workspace workspace, Contribution contribution) {
         Entry<String, Item> entry = new Entry<String, Item>();
         entry.setKey(contribution.getURI());
-        entry.setData(item(contribution));
+        entry.setData(item(workspace, contribution));
         return entry;
     }
     
@@ -338,22 +330,104 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
      * @param contribution
      * @return
      */
-    private static Item item(Contribution contribution) {
+    private static Item item(Workspace workspace, Contribution contribution) {
+        String contributionURI = contribution.getURI();
         Item item = new Item();
-        item.setTitle(title(contribution));
-        item.setLink(contribution.getLocation());
+        item.setTitle(title(contributionURI));
+        item.setLink(link(contributionURI));
+        item.setAlternate(contribution.getLocation());
+        
+        // List the contribution dependencies in the item contents
+        StringBuffer sb = new StringBuffer();
+        ContributionDependencyAnalyzer analyzer = new ContributionDependencyAnalyzer();
+        List<Contribution> dependencies = analyzer.calculateContributionDependencies(workspace, contribution);
+        if (dependencies.size() > 1) {
+            sb.append("Dependencies: <span id=\"dependencies\">");
+            for (int i = 0, n = dependencies.size(); i < n ; i++) {
+                if (i > 0) {
+                    sb.append("&nbsp;&nbsp");
+                }
+                Contribution dependency = dependencies.get(i);
+                if (dependency != contribution) {
+                    String dependencyURI = dependency.getURI();
+                    sb.append("<a href=\""+ link(dependencyURI) +"\">" + title(dependencyURI) + "</a>");
+                }
+            }
+            sb.append("</span><br>");
+        }
+        
+        // List the deployables
+        List<Composite> deployables = contribution.getDeployables();
+        if (!deployables.isEmpty()) {
+            sb.append("Deployables: <span id=\"deployables\">");
+            for (int i = 0, n = deployables.size(); i < n ; i++) {
+                if (i > 0) {
+                    sb.append("&nbsp;&nbsp");
+                }
+                Composite deployable = deployables.get(i);
+                QName qname = deployable.getName();
+                sb.append("<a href=\""+ compositeSourceLink(contributionURI, qname) +"\">" + compositeTitle(contributionURI, qname) + "</a>");
+            }
+            sb.append("</span><br>");
+        }
+        
+        // Store the two lists in the item contents
+        item.setContents(sb.toString());
+        
         return item;
+    }
+
+    /**
+     * Returns a link to a contribution.
+     * @param contributionURI
+     * @return
+     */
+    private static String link(String contributionURI) {
+        return "/contribution/" + contributionURI;
     }
     
     /**
-     * Returns a title for the given contribution
-     * 
-     * @param contribution
+     * Returns a composite title expressed as contributionURI - namespace;localpart.
+     * @param qname
      * @return
      */
-    private static String title(Contribution contribution) {
-        return contribution.getURI();
+    private static String compositeTitle(String uri, QName qname) {
+        if (uri.equals(deploymentContributionURI)) {
+            return qname.getLocalPart();
+        } else {
+            return qname.getNamespaceURI() + ";" + qname.getLocalPart();
+        }
     }
+
+    /**
+     * Returns a link to the source of a composite
+     * @param contributionURI
+     * @param qname
+     * @return
+     */
+    private static String compositeSourceLink(String contributionURI, QName qname) {
+        return "/composite-source/" + compositeKey(contributionURI, qname);
+    }
+    
+    /**
+     * Returns a composite key expressed as contributionURI;namespace;localpart.
+     * @param qname
+     * @return
+     */
+    private static String compositeKey(String uri, QName qname) {
+        return "composite:" + uri + ';' + qname.getNamespaceURI() + ';' + qname.getLocalPart();
+    }
+
+    /**
+     * Returns a title for the given contribution
+     * 
+     * @param contributionURI
+     * @return
+     */
+    private static String title(String contributionURI) {
+        return contributionURI;
+    }
+
     
     /**
      * Read the workspace.
@@ -408,7 +482,6 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
             staxProcessor.write(workspace, writer);
             
             // Parse again to pretty format the document
-            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = documentBuilder.parse(new ByteArrayInputStream(bos.toByteArray()));
             OutputFormat format = new OutputFormat();
             format.setIndenting(true);
@@ -423,4 +496,27 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
             throw new ServiceRuntimeException(e);
         }
     }
+
+    /**
+     * Returns a workspace populated with the contribution info read from
+     * the contributions.
+     * 
+     * @param workspace
+     * @return
+     */
+    private Workspace readContributions(Workspace workspace) {
+        Workspace dependencyWorkspace = workspaceFactory.createWorkspace();
+        try {
+            for (Contribution c: workspace.getContributions()) {
+                URI uri = URI.create(c.getURI());
+                URL url = url(c.getLocation());
+                Contribution contribution = (Contribution)contributionInfoProcessor.read(null, uri, url);
+                dependencyWorkspace.getContributions().add(contribution);
+            }
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
+        }
+        return dependencyWorkspace;
+    }
+    
 }
