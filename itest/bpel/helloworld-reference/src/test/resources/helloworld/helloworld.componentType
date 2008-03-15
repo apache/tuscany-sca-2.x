@@ -27,10 +27,10 @@
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
   </service>
 
-  <!--   
+  
   <reference name="greetingsService" target="GreetingsServiceComponent">
-        <binding.ws uri="http://localhost:8085/GreetingsService"/>
+        <interface.java interface="greetings.GreetingsService" />
   </reference>
-   -->
+
 </componentType>              
        
