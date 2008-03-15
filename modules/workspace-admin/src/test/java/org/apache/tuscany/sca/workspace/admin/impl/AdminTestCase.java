@@ -84,7 +84,7 @@ public class AdminTestCase extends TestCase {
 
     public void testGet() throws NotFoundException {
         Item item = contributionCollection.get("assets");
-        assertTrue(item.getLink().endsWith("contributions/assets"));
+        assertTrue(item.getAlternate().endsWith("contributions/assets/"));
     }
     
     public void testDependencies1() {

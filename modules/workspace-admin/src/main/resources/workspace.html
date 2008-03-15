@@ -37,15 +37,35 @@
 			var entries = feed.getElementsByTagName("entry");              
 			var contributions = "";
 			contributions += '<table width="100%">';
-			contributions += '<tr><th>Contribution</th><th>Dependencies</td><th>Deployables</th></tr>';
+			contributions += '<tr><th>Contribution</th><th>Dependencies</td><th>Deployable Composites</th></tr>';
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
 				var location = entries[i].getElementsByTagName("link")[0].getAttribute("href");
+				var content = '';
+				if (entries[i].getElementsByTagName("content")[0].firstChild != null) {
+					content = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
+				}
+				
 				contributions += '<tr>';
 				contributions += '<td><input name="contributions" type="checkbox" value="' + id + '">' +
 											'<a href=\"' + location + '\">' + id + '</a></td>';
-				contributions += '<td><a href=\"/workspace/?dependencies=' + id + '\"><img src="icons/feed-icon.png" border="0"></a></td>';
-				contributions += '<td><a href=\"/deployable/?contribution=' + id + '\"><img src="icons/feed-icon.png" border="0"></a></td>';
+
+				var dependencies = '';
+				var bs = content.indexOf('<span id="dependencies">');
+				if (bs != -1) {
+					var es = content.indexOf('</span>', bs); 
+					dependencies = content.substring(bs, es + 7);
+				}
+											
+				var deployables = '';
+				var bs = content.indexOf('<span id="deployables">');
+				if (bs != -1) {
+					var es = content.indexOf('</span>', bs); 
+					deployables = content.substring(bs, es + 7);
+				}
+											
+				contributions += '<td class=tdw>' + dependencies +' </td>';
+				contributions += '<td class=tdw>' + deployables + '</td>';
 				contributions += '</tr>';
 			}
 			contributions += '</table>';

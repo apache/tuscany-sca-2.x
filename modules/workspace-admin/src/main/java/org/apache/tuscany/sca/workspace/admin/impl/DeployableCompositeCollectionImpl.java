@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.workspace.admin.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,12 +39,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -97,14 +92,11 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
-import org.w3c.dom.Document;
 
 /**
  * Implementation of a deployable composite collection service. 
@@ -143,73 +135,67 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
      * Initialize the component.
      */
     @Init
-    public void initialize() throws IOException, ContributionReadException, XMLStreamException, ParserConfigurationException {
+    public void initialize() throws ParserConfigurationException {
         
-        try {
+        // FIXME Remove this later
+        // Bootstrap a registry
+        ExtensionPointRegistry registry = registry();
+        
+        // Get model factories
+        modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
+        outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
+        ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        
+        // Get and initialize artifact processors
+        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessor<Object> staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
+        staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory, staxProcessor));
+        compositeProcessor = (StAXArtifactProcessor<Composite>)staxProcessors.getProcessor(Composite.class);
 
-            // FIXME Remove this later
-            // Bootstrap a registry
-            ExtensionPointRegistry registry = registry();
-            
-            // Get model factories
-            modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
-            assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-            XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
-            outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
-            outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
-            ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-            PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
-            
-            // Get and initialize artifact processors
-            StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-            StAXArtifactProcessor<Object> staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
-            staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory, staxProcessor));
-            compositeProcessor = (StAXArtifactProcessor<Composite>)staxProcessors.getProcessor(Composite.class);
-    
-            URLArtifactProcessorExtensionPoint urlProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-            URLArtifactProcessor<Object> urlProcessor = new ExtensibleURLArtifactProcessor(urlProcessors);
-            urlProcessors.addArtifactProcessor(new ContributionMetadataDocumentProcessor(staxProcessor, inputFactory));
-            urlProcessors.addArtifactProcessor(new ContributionGeneratedMetadataDocumentProcessor(staxProcessor, inputFactory));
-            
-            // Create contribution processor
-            modelResolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);
-            contributionContentProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor);
-            contributionListeners = registry.getExtensionPoint(ContributionListenerExtensionPoint.class).getContributionListeners();
-    
-            // Create composite builder
-            SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
-            IntentAttachPointTypeFactory intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
-            InterfaceContractMapper contractMapper = new InterfaceContractMapperImpl();
-            
-            // TODO need to get these messages back to the browser
-            CompositeBuilderMonitor monitor = new CompositeBuilderMonitor() {
-                public void problem(Problem problem) {
-                    if (problem.getSeverity() == Severity.INFO) {
-                        logger.info(problem.toString());
-                    } else if (problem.getSeverity() == Severity.WARNING) {
-                        logger.warning(problem.toString());
-                    } else if (problem.getSeverity() == Severity.ERROR) {
-                        if (problem.getCause() != null) {
-                            logger.log(Level.SEVERE, problem.toString(), problem.getCause());
-                        } else {
-                            logger.severe(problem.toString());
-                        }
+        URLArtifactProcessorExtensionPoint urlProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        URLArtifactProcessor<Object> urlProcessor = new ExtensibleURLArtifactProcessor(urlProcessors);
+        urlProcessors.addArtifactProcessor(new ContributionMetadataDocumentProcessor(staxProcessor, inputFactory));
+        urlProcessors.addArtifactProcessor(new ContributionGeneratedMetadataDocumentProcessor(staxProcessor, inputFactory));
+        
+        // Create contribution processor
+        modelResolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);
+        contributionContentProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor);
+        contributionListeners = registry.getExtensionPoint(ContributionListenerExtensionPoint.class).getContributionListeners();
+
+        // Create composite builder
+        SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
+        IntentAttachPointTypeFactory intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
+        InterfaceContractMapper contractMapper = new InterfaceContractMapperImpl();
+        
+        // TODO need to get these messages back to the browser
+        CompositeBuilderMonitor monitor = new CompositeBuilderMonitor() {
+            public void problem(Problem problem) {
+                if (problem.getSeverity() == Severity.INFO) {
+                    logger.info(problem.toString());
+                } else if (problem.getSeverity() == Severity.WARNING) {
+                    logger.warning(problem.toString());
+                } else if (problem.getSeverity() == Severity.ERROR) {
+                    if (problem.getCause() != null) {
+                        logger.log(Level.SEVERE, problem.toString(), problem.getCause());
+                    } else {
+                        logger.severe(problem.toString());
                     }
                 }
-            };
-            
-            compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory,
-                                                        contractMapper, monitor);
-            
-            compositeConfigurationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, 
-                                                                                 scaBindingFactory, 
-                                                                                 intentAttachPointTypeFactory,
-                                                                                 contractMapper,
-                                                                                 monitor);
-            
-        } catch (Exception e) {
-            throw new ContributionReadException(e); 
-        }
+            }
+        };
+        
+        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory,
+                                                    contractMapper, monitor);
+        
+        compositeConfigurationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, 
+                                                                             scaBindingFactory, 
+                                                                             intentAttachPointTypeFactory,
+                                                                             contractMapper,
+                                                                             monitor);
     }
     
     public Entry<String, Item>[] getAll() {
@@ -221,9 +207,10 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
 
         // Read contribution metadata
         for (Entry<String, Item> contributionEntry: contributionEntries) {
+            Item contributionItem = contributionEntry.getData();
             Contribution contribution;
             try {
-                contribution = contribution(contributionEntry.getKey(), contributionEntry.getData().getLink());
+                contribution = contribution(contributionEntry.getKey(), contributionItem.getAlternate());
             } catch (ContributionReadException e) {
                 continue;
             }
@@ -246,7 +233,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         // Read the contribution
         Contribution contribution;
         try {
-            contribution = contribution(contributionURI, contributionItem.getLink());
+            contribution = contribution(contributionURI, contributionItem.getAlternate());
         } catch (ContributionReadException e) {
             throw new NotFoundException(key);
         }
@@ -295,7 +282,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             // Read the contribution
             Contribution contribution;
             try {
-                contribution = contribution(contributionURI, contributionItem.getLink());
+                contribution = contribution(contributionURI, contributionItem.getAlternate());
             } catch (ContributionReadException e) {
                 return entries.toArray(new Entry[entries.size()]);
             }
@@ -354,7 +341,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
                     // Read the contribution
                     Contribution c;
                     try {
-                        c = contribution(loadedContributions, entry.getKey(), contributionItem.getLink());
+                        c = contribution(loadedContributions, entry.getKey(), contributionItem.getAlternate());
                     } catch (ContributionReadException e) {
                         continue;
                     }
@@ -459,22 +446,9 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         
         // Write the deployable composite
         try {
-            // First write to a byte stream
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
+            response.setContentType("text/xml");
+            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(response.getOutputStream());
             compositeProcessor.write(compositeImage, writer);
-            
-            // Parse again to pretty format the document
-            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = documentBuilder.parse(new ByteArrayInputStream(bos.toByteArray()));
-            OutputFormat format = new OutputFormat();
-            format.setIndenting(true);
-            format.setIndent(2);
-            
-            // Write to the response stream
-            XMLSerializer serializer = new XMLSerializer(response.getOutputStream(), format);
-            serializer.serialize(document);
-            
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
         }
@@ -508,7 +482,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
                 
                 // Read the contribution
                 try {
-                    contribution = contribution(loadedContributions, contributionURI, contributionItem.getLink());
+                    contribution = contribution(loadedContributions, contributionURI, contributionItem.getAlternate());
                 } catch (ContributionReadException e) {
                     continue;
                 }
@@ -531,15 +505,17 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     /**
      * Returns the contribution with the given URI.
      * 
+     * @param contributions
      * @param contributionURI
+     * @param contributionLocation
      * @return
      * @throws NotFoundException
      */
-    private Contribution contribution(List<Contribution> contributions, String contributionURI, String contributionURL) throws ContributionReadException {
+    private Contribution contribution(List<Contribution> contributions, String contributionURI, String contributionLocation) throws ContributionReadException {
         try {
             URI uri = URI.create(contributionURI);
-            URL url = url(contributionURL);
-            Contribution contribution = (Contribution)contributionContentProcessor.read(null, uri, url);
+            URL location = url(contributionLocation);
+            Contribution contribution = (Contribution)contributionContentProcessor.read(null, uri, location);
             
             // FIXME simplify this later
             // Fix up contribution imports
@@ -571,8 +547,16 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         }
     }
 
-    private Contribution contribution(String contributionURI, String contributionURL) throws ContributionReadException {
-        return contribution(new ArrayList<Contribution>(), contributionURI, contributionURL);
+    /**
+     * Returns the contribution with the given URI.
+     * 
+     * @param contributionURI
+     * @param contributionLocation
+     * @return
+     * @throws NotFoundException
+     */
+    private Contribution contribution(String contributionURI, String contributionLocation) throws ContributionReadException {
+        return contribution(new ArrayList<Contribution>(), contributionURI, contributionLocation);
     }
     
     /**
@@ -607,6 +591,12 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         }
     }
     
+    /**
+     * Returns a link to the source of a composite
+     * @param contributionURI
+     * @param qname
+     * @return
+     */
     private static String sourceLink(String contributionURI, QName qname) {
         return "/composite-source/" + key(contributionURI, qname);
     }
