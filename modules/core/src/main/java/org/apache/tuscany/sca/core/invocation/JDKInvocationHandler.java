@@ -67,6 +67,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
     protected boolean conversational;
     protected ExtendedConversation conversation;
     protected MessageFactory messageFactory;
+    protected EndpointReference source;
     protected EndpointReference target;
     protected RuntimeWire wire;
     protected CallableReference<?> callableReference;
@@ -98,14 +99,12 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
 
     protected void init(RuntimeWire wire) {
         if (wire != null) {
-            /* [scn] no need to clone because the wire doesn't get modified
             try {
-                // Clone the wire so that reference parameters can be changed
-                this.wire = (RuntimeWire)wire.clone();
+                // Clone the endpoint reference so that reference parameters can be changed
+                source = (EndpointReference)wire.getSource().clone();
             } catch (CloneNotSupportedException e) {
                 throw new ServiceRuntimeException(e);
             }
-            [scn] */
             initConversational(wire);
         }
     }
@@ -152,7 +151,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         }
 
         // send the invocation down the wire
-        Object result = invoke(chain, args, wire);
+        Object result = invoke(chain, args, wire, source);
 
         return result;
     }
@@ -262,10 +261,10 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         this.target = endpoint;
     }
 
-    protected Object invoke(InvocationChain chain, Object[] args, RuntimeWire wire) throws Throwable {
-
+    protected Object invoke(InvocationChain chain, Object[] args, RuntimeWire wire, EndpointReference source)
+                         throws Throwable {
         Message msg = messageFactory.createMessage();
-        msg.setFrom(wire.getSource());
+        msg.setFrom(source);
         if (target != null) {
             msg.setTo(target);
         } else {
@@ -306,11 +305,11 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         throws TargetResolutionException {
         ReferenceParameters parameters = msg.getFrom().getReferenceParameters();
         parameters.setCallbackID(getCallbackID());
-        if (wire.getSource() == null || wire.getSource().getCallbackEndpoint() == null) {
+        if (msg.getFrom() == null || msg.getFrom().getCallbackEndpoint() == null) {
             return;
         }
 
-        parameters.setCallbackReference(wire.getSource().getCallbackEndpoint());
+        parameters.setCallbackReference(msg.getFrom().getCallbackEndpoint());
 
         // If we are passing out a callback target
         // register the calling component instance against this 

@@ -98,7 +98,7 @@ public class JDKCallbackInvocationHandler extends JDKInvocationHandler {
         }
 
         try {
-            return invoke(chain, args, wire);
+            return invoke(chain, args, wire, wire.getSource());
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
             if (t instanceof NoRegisteredCallbackException) {

@@ -149,9 +149,11 @@ public class EndpointReferenceImpl implements EndpointReference {
     @Override
     public Object clone() throws CloneNotSupportedException {
         EndpointReferenceImpl copy = (EndpointReferenceImpl)super.clone();
+        /* [nash] no need to copy callback endpoint
         if (callbackEndpoint != null) {
             copy.callbackEndpoint = (EndpointReference)callbackEndpoint.clone();
         }
+        */
         if (parameters != null) {
             copy.parameters = (ReferenceParameters)parameters.clone();
         }
