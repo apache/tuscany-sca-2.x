@@ -19,6 +19,14 @@
 
 package org.apache.tuscany.sca.workspace.admin.impl;
 
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.DEPLOYMENT_CONTRIBUTION_URI;
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeKey;
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeQName;
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeSourceLink;
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeTitle;
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.contributionURI;
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.locationURL;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -110,8 +118,6 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     
     private final static Logger logger = Logger.getLogger(DeployableCompositeCollectionImpl.class.getName());    
 
-    private static final String deploymentContributionURI = Constants.SCA10_TUSCANY_NS + "/cloud";
-    
     @Reference
     public LocalItemCollection contributionCollection;
     
@@ -227,7 +233,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     public Item get(String key) throws NotFoundException {
 
         // Get the specified contribution info 
-        String contributionURI = uri(key);
+        String contributionURI = contributionURI(key);
         Item contributionItem = contributionCollection.get(contributionURI);
         
         // Read the contribution
@@ -239,7 +245,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         }
 
         // Find the specified deployable composite
-        QName qname = qname(key);
+        QName qname = compositeQName(key);
         for (Composite deployable: contribution.getDeployables()) {
             if (qname.equals(deployable.getName())) {
                 
@@ -311,7 +317,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         String key = path.startsWith("/")? path.substring(1) : path;
         
         // Extract the composite qname from the key
-        QName qname = qname(key);
+        QName qname = compositeQName(key);
         
         // Somewhere to store the composite we expect to write out at the end
         Composite compositeImage = null;
@@ -329,7 +335,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         for (Entry<String, Item> domainEntry: domainEntries) {
             
             // Load the required contributions
-            String contributionURI = uri(domainEntry.getKey());
+            String contributionURI = contributionURI(domainEntry.getKey());
             Contribution contribution = contributionMap.get(contributionURI);
             if (contribution == null) {
                 
@@ -354,13 +360,13 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             }
             
             if (contribution == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, contributionURI);
                 return;
             }
             
             // Find the specified deployable composite in the contribution
             Composite deployable = null;
-            QName qn = qname(domainEntry.getKey());
+            QName qn = compositeQName(domainEntry.getKey());
             for (Composite d: contribution.getDeployables()) {
                 if (qn.equals(d.getName())) {
                     deployable = d;
@@ -380,6 +386,12 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
                 compositeImage = deployable;
             }
         }
+        
+        // Composite not found
+        if (compositeImage == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, key);
+            return;
+        }
 
         // Get the clouds composite
         Composite cloudsComposite;
@@ -395,7 +407,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         for (int i = 0, n =domainIncludes.size(); i < n; i++) {
             Composite composite = domainIncludes.get(i);
             QName compositeName = composite.getName();
-            String contributionURI = uri(domainEntries[i].getKey());
+            String contributionURI = contributionURI(domainEntries[i].getKey());
             
             // find the node that will run this composite and the default
             // bindings that it configures
@@ -451,6 +463,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             compositeProcessor.write(compositeImage, writer);
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+            return;
         }
                
     }
@@ -463,8 +476,8 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     private Composite cloud() throws NotFoundException {
 
         // Create a new composite for the clouds
-        Composite clouds = assemblyFactory.createComposite();
-        clouds.setName(new QName(Constants.SCA10_TUSCANY_NS, "cloud"));
+        Composite cloudComposite = assemblyFactory.createComposite();
+        cloudComposite.setName(new QName(Constants.SCA10_TUSCANY_NS, "cloud"));
         
         // Get the collection of cloud composites
         Entry<String, Item>[] cloudEntries = cloudCollection.getAll();
@@ -472,10 +485,12 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         // Load the cloud composites
         List<Contribution> loadedContributions = new ArrayList<Contribution>();
         Map<String, Contribution> contributionMap = new HashMap<String, Contribution>(); 
-        for (int i=0; i < cloudEntries.length; i++) {
+        for (Entry<String, Item> cloudEntry: cloudEntries) {
+            String key = cloudEntry.getKey();
+            String contributionURI = contributionURI(key);
+            QName qname = compositeQName(key);
 
-            // load the contribution
-            String contributionURI = uri(cloudEntries[i].getKey());
+            // Load the contribution
             Contribution contribution = contributionMap.get(contributionURI);
             if (contribution == null) {
                 Item contributionItem = contributionCollection.get(contributionURI);
@@ -494,12 +509,14 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             for (Artifact artifact : contribution.getArtifacts()) {
                 if (artifact.getModel() instanceof Composite) {
                     Composite composite = (Composite)artifact.getModel();
-                    clouds.getIncludes().add(composite);
+                    if (composite.getName().equals(qname)) {
+                        cloudComposite.getIncludes().add(composite);
+                    }
                 }
             } 
         }
         
-        return clouds;
+        return cloudComposite;
     }
 
     /**
@@ -514,7 +531,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     private Contribution contribution(List<Contribution> contributions, String contributionURI, String contributionLocation) throws ContributionReadException {
         try {
             URI uri = URI.create(contributionURI);
-            URL location = url(contributionLocation);
+            URL location = locationURL(contributionLocation);
             Contribution contribution = (Contribution)contributionContentProcessor.read(null, uri, location);
             
             // FIXME simplify this later
@@ -527,9 +544,9 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
             contributionContentProcessor.resolve(contribution, modelResolver);
             
-            // Special processing for the cloud contribution, make all the
-            // composites deployable
-            if (contribution.getURI().equals(deploymentContributionURI)) {
+            // Special processing for the cloud contribution, mark all its
+            // composites as deployable
+            if (contribution.getURI().equals(DEPLOYMENT_CONTRIBUTION_URI)) {
                 for (Artifact artifact: contribution.getArtifacts()) {
                     if (artifact.getModel() instanceof Composite) {
                         contribution.getDeployables().add((Composite)artifact.getModel());
@@ -592,16 +609,6 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     }
     
     /**
-     * Returns a link to the source of a composite
-     * @param contributionURI
-     * @param qname
-     * @return
-     */
-    private static String sourceLink(String contributionURI, QName qname) {
-        return "/composite-source/" + key(contributionURI, qname);
-    }
-    
-    /**
      * Returns the list of components in a composite.
      * 
      * @param composite
@@ -609,11 +616,17 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
      */
     private static String components(Composite composite) {
         StringBuffer sb = new StringBuffer();
-        for (Component component: composite.getComponents()) {
-            if (sb.length() != 0) {
-                sb.append(" ");
+        List<Component> components = composite.getComponents();
+        if (!components.isEmpty()) {
+            sb.append("Components: <span id=\"components\">");
+            for (int i = 0, n = components.size(); i < n; i++) {
+                Component component = components.get(i);
+                if (i != 0) {
+                    sb.append(" ");
+                }
+                sb.append(component.getName());
             }
-            sb.append(component.getName());
+            sb.append("</span>");
         }
         return sb.toString();
     }
@@ -631,7 +644,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
                 Composite deployable = nodeImplementation.getComposite();
                 String contributionURI = deployable.getURI();
                 QName qname = deployable.getName();
-                String key = key(contributionURI, qname);
+                String key = compositeKey(contributionURI, qname);
                 return "/composite-source/" + key;
             }
         }
@@ -647,7 +660,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
      */
     private static Entry<String, Item> entry(Contribution contribution, Composite deployable) {
         Entry<String, Item> entry = new Entry<String, Item>();
-        entry.setKey(key(contribution.getURI(), deployable.getName()));
+        entry.setKey(AdminCommons.compositeKey(contribution.getURI(), deployable.getName()));
         entry.setData(item(contribution, deployable));
         return entry;
     }
@@ -665,76 +678,12 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         QName qname = deployable.getName();
         String deployableURI = deployable.getURI();
         Item item = new Item();
-        item.setTitle(title(contributionURI, qname));
+        item.setTitle(compositeTitle(contributionURI, qname));
         item.setContents(components(deployable));
-        item.setLink(sourceLink(contributionURI, qname));
+        item.setLink(compositeSourceLink(contributionURI, qname));
         item.setAlternate(alternateLink(contributionLocation, deployableURI));
         item.setRelated(relatedLink(deployable));
         return item;
-    }
-
-    /**
-     * Extracts a qname from a key expressed as contributionURI;namespace;localpart.
-     * @param key
-     * @return
-     */
-    private static QName qname(String key) {
-        int i = key.indexOf(';');
-        key = key.substring(i + 1);
-        i = key.indexOf(';');
-        return new QName(key.substring(0, i), key.substring(i + 1));
-    }
-    
-    /**
-     * Extracts a contribution uri from a key expressed as contributionURI;namespace;localpart.
-     * @param key
-     * @return
-     */
-    private static String uri(String key) {
-        int i = key.indexOf(';');
-        return key.substring("composite:".length(), i);
-    }
-    
-    /**
-     * Returns a composite key expressed as contributionURI;namespace;localpart.
-     * @param qname
-     * @return
-     */
-    private static String key(String uri, QName qname) {
-        return "composite:" + uri + ';' + qname.getNamespaceURI() + ';' + qname.getLocalPart();
-    }
-
-    /**
-     * Returns a composite title expressed as contributionURI - namespace;localpart.
-     * @param qname
-     * @return
-     */
-    private static String title(String uri, QName qname) {
-        if (uri.equals(deploymentContributionURI)) {
-            return qname.getLocalPart();
-        } else {
-            return uri + " - " + qname.getNamespaceURI() + ";" + qname.getLocalPart();
-        }
-    }
-
-    /**
-     * Returns a URL from a location string.
-     * @param location
-     * @return
-     * @throws MalformedURLException
-     */
-    private static URL url(String location) throws MalformedURLException {
-        URI uri = URI.create(location);
-        String scheme = uri.getScheme();
-        if (scheme == null) {
-            File file = new File(location);
-            return file.toURI().toURL();
-        } else if (scheme.equals("file")) {
-            File file = new File(location.substring(5));
-            return file.toURI().toURL();
-        } else {
-            return uri.toURL();
-        }
     }
 
     /**

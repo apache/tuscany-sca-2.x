@@ -94,7 +94,7 @@
 
     <component name="FileServiceComponent">
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.FileServiceImpl"/>
-        <property name="directoryName">contributions</property>             
+        <property name="directoryName">files</property>             
    		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/files"/>
    		</service>

@@ -69,7 +69,7 @@ public class FileServiceImpl extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        // Upload contributions
+        // Upload files
         try {
             for (FileItem item: (List<FileItem>)upload.parseRequest(request)) {
                 if (!item.isFormField()) {
@@ -92,7 +92,7 @@ public class FileServiceImpl extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        // Download a contribution file
+        // Download a file
         String requestURI = URLDecoder.decode(request.getRequestURI(), "UTF-8");
         String path = requestURI.substring(request.getServletPath().length());
         if (path.startsWith("/")) {

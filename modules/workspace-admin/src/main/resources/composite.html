@@ -54,9 +54,25 @@
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
 				var link = entries[i].getElementsByTagName("link")[0].getAttribute("href");
-				var components = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
 				var uri = contributionURI(id);
 				var qname = compositeName(id);
+
+				var content = "";
+				if (entries[i].getElementsByTagName("content")[0].firstChild != null) {
+					content = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
+				}
+				var components = '';
+				var bs = content.indexOf('<span id="components">');
+				if (bs != -1) {
+					var es = content.indexOf('</span>', bs); 
+					components = content.substring(bs, es + 7);
+				} else {
+					bs = content.indexOf('<span id="problem"');
+					if (bs != -1) {
+						var es = content.indexOf('</span>', bs); 
+						components = content.substring(bs, es + 7);
+					}
+				}
 				
 				composites += '<tr>'
 				composites += '<td><input name="composites" type="checkbox" value="' + id + '">';

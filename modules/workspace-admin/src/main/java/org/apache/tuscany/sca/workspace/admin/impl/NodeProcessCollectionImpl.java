@@ -19,14 +19,16 @@
 
 package org.apache.tuscany.sca.workspace.admin.impl;
 
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeQName;
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeTitle;
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.contributionURI;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
-import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
@@ -36,7 +38,6 @@ import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.apache.tuscany.sca.node.launch.SCANode2Launcher;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
@@ -71,7 +72,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
     public Item get(String key) throws NotFoundException {
 
         // Return the specified VM
-        SCANodeVM vm = getVM(key);
+        SCANodeVM vm = vm(key);
         if (vm == null) {
             throw new NotFoundException();
         }
@@ -82,7 +83,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
     public String post(String key, Item item) {
         
         // Start a new VM and add it to the collection
-        SCANodeVM vm = getVM(key);
+        SCANodeVM vm = vm(key);
         if (vm != null) {
             return key;
         }
@@ -105,7 +106,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
     public void delete(String key) throws NotFoundException {
         
         // Stop a VM and remove it from the collection
-        SCANodeVM vm = getVM(key);
+        SCANodeVM vm = vm(key);
         if (vm != null) {
             try {
                 vm.stop();
@@ -142,7 +143,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
      * @param key
      * @return
      */
-    private SCANodeVM getVM(String key) {
+    private SCANodeVM vm(String key) {
         for (SCANodeVM vm: nodeVMs) {
             if (key.equals(vm.getComposite())) {
                 return vm;
@@ -173,43 +174,12 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
     private static Item item(SCANodeVM vm) {
         Item item = new Item();
         String key = vm.getComposite();
-        item.setTitle(title(uri(key), qname(key)));
+        item.setTitle(compositeTitle(contributionURI(key), compositeQName(key)));
         item.setLink("/composite-image?composite=" + vm.getComposite());
-        item.setContents("<span style=\"white-space: nowrap; font-size: small\">" + vm.getLog().toString() + "</span>");
+        item.setContents("<span id=\"log\" style=\"white-space: nowrap; font-size: small\">" + vm.getLog().toString() + "</span>");
         return item;
     }
     
-    /**
-     * Extracts a qname from a key expressed as contributionURI;namespace;localpart.
-     * @param key
-     * @return
-     */
-    private static QName qname(String key) {
-        int i = key.indexOf(';');
-        key = key.substring(i + 1);
-        i = key.indexOf(';');
-        return new QName(key.substring(0, i), key.substring(i + 1));
-    }
-    
-    /**
-     * Extracts a contribution uri from a key expressed as contributionURI;namespace;localpart.
-     * @param key
-     * @return
-     */
-    private static String uri(String key) {
-        int i = key.indexOf(';');
-        return key.substring("composite:".length(), i);
-    }
-    
-    /**
-     * Returns a composite title expressed as contributionURI - namespace;localpart.
-     * @param qname
-     * @return
-     */
-    private static String title(String uri, QName qname) {
-        return uri + " - " + qname.getNamespaceURI() + ";" + qname.getLocalPart();
-    }
-
     /**
      * Represent a child Java VM running an SCA node.
      */
