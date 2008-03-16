@@ -141,56 +141,6 @@ public class RuntimeWireInvoker {
     }
 
     /**
-     * This method has bugs in it and is not needed by this class.  It is no
-     * longer called and will be removed completely when I finish my cleanup
-     * of this class.
-     */
-    @SuppressWarnings("unchecked")
-    private void handleCallback(Message msg, Object currentConversationID) throws TargetResolutionException {
-        EndpointReference from = msg.getFrom();
-        ReferenceParameters parameters = from.getReferenceParameters();
-        parameters.setCallbackID(callbackID);
-        if (from == null || from.getCallbackEndpoint() == null) {
-            return;
-        }
-        // If we are passing out a callback target
-        // register the calling component instance against this 
-        // new conversation id so that stateful callbacks will be
-        // able to find it
-        if (conversational && callbackObject == null) {
-            // the component instance is already registered
-            // so add another registration
-            ScopeContainer scopeContainer = getConversationalScopeContainer(msg);
-
-            if (scopeContainer != null) {
-                scopeContainer.addWrapperReference(currentConversationID, parameters.getConversationID());
-            }
-        }
-
-        Interface interfaze = msg.getOperation().getInterface();
-        if (callbackObject != null) {
-            if (callbackObject instanceof ServiceReference) {
-                EndpointReference callbackRef = ((CallableReferenceImpl)callbackObject).getEndpointReference();
-                parameters.setCallbackReference(callbackRef);
-            } else {
-                if (interfaze != null) {
-                    if (!interfaze.isConversational()) {
-                        throw new IllegalArgumentException(
-                                                           "Callback object for stateless callback is not a ServiceReference");
-                    } else {
-                        ScopeContainer scopeContainer = getConversationalScopeContainer(msg);
-                        if (scopeContainer != null) {
-                            InstanceWrapper wrapper = new CallbackObjectWrapper(callbackObject);
-                            scopeContainer.registerWrapper(wrapper, conversation.getConversationID());
-                        }
-                        parameters.setCallbackObjectID(callbackObject);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      * Pre-invoke for the conversation handling
      * @param msg
      * @throws TargetResolutionException
