@@ -20,10 +20,6 @@ and on *nix do
 
 java -cp ../../lib/tuscany-sca-manifest.jar:target/sample-calculator-script.jar calculator.CalculatorClient
 
-Note: on the first run you may see several *sys-package-mgr* messages. These are from Jython and only occur on the 
-      as the cachedir gets initialized. You can set Jython system properties to manage the cachedir, for more
-      information see http://www.jython.org/Project/userguide.html#registry-properties
-
 Sample Overview
 ---------------
 The sample provides a single calculator service with a default SCA (java) 
