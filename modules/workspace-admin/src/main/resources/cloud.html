@@ -84,18 +84,27 @@
 				}
 				compositeIds[i] = compositeId;
 
-				var content = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
-				var name = compositeLocalName(nodeId);
+				var content = "";
+				if (entries[i].getElementsByTagName("content")[0].firstChild != null) {
+					content = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
+				}
+				var bs = content.indexOf('<span id="components">');
+				if (bs != -1) {
+					var es = content.indexOf('</span>', bs); 
+					nodeName = content.substring(bs, es + 7);
+				}
+
+				var nodeName = compositeLocalName(nodeId);
 				
 				composites += '<tr>'
-				if (content.indexOf('<span ') != -1) {
+				if (content.indexOf('<span id="problem"') != -1) {
 					composites += '<td><input name="composites" type="checkbox" value="' + nodeId + '">' +
-											'<a href=\"' + nodeLink + '\">' + name + '</a></td>';
+											'<a href=\"' + nodeLink + '\">' + nodeName + '</a></td>';
 					composites += '<td>' + content + '</td>';
 					composites += '<td>' + uri + '</td>';
 				} else {
 					composites += '<td><input name="composites" type="checkbox" value="' + nodeId + '">' +
-											'<a href=\"' + nodeLink + '\">' + content + '</a></td>';
+											'<a href=\"' + nodeLink + '\">' + nodeName + '</a></td>';
 					composites += '<td><a href=\"' + compositeLink + '\">' + qname + '</a></td>';
 					composites += '<td><a href="/contribution/' + uri + '">' + uri + '</a></td>';
 				}
@@ -130,7 +139,7 @@
 		var contributionURI = document.newCompositeForm.contributionURI.value;
 		var id  = 'composite:' +
 			'http://tuscany.apache.org/xmlns/sca/1.0/cloud' + ';' +
-			'http://tuscany.apache.org/xmlns/sca/1.0/cloud' + ';' +
+			'cloud:/' + ';' +
 			nodeName;
 			
 		var entry = '<entry xmlns="http://www.w3.org/2005/Atom">\n' +
@@ -138,7 +147,7 @@
               	'<content type="text/xml"\n>\n' + 
   				'<composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"\n' +
 				'	xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"\n' +
-				'	targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0/cloud"\n' +
+				'	targetNamespace="cloud:/"\n' +
 				'	xmlns:c="' + compositeNamespace + '"\n' +
 				'	name="' + nodeName + '">\n' +
 				'\n' +

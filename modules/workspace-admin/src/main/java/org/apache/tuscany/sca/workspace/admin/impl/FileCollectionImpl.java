@@ -53,7 +53,7 @@ public class FileCollectionImpl implements ItemCollection {
     }
     
     public Entry<String, Item>[] getAll() {
-        // Return all the contributions
+        // Return all the files
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
         File directory = new File(directoryName);
         if (directory.exists()) {

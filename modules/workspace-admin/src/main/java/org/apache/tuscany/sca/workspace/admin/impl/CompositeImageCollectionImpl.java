@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.workspace.admin.impl;
 
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeQName;
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeTitle;
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.contributionURI;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,8 +84,8 @@ public class CompositeImageCollectionImpl implements ItemCollection, LocalItemCo
             // composite:contributionURI;namespace;localName
             int e = queryString.indexOf('=');
             String key = queryString.substring(e + 1);
-            String contributionURI = uri(key);
-            QName qname = qname(key);
+            String contributionURI = contributionURI(key);
+            QName qname = compositeQName(key);
             
             // Return a collection containing the following entries:
             // the resolved version of the specified composite
@@ -91,7 +95,7 @@ public class CompositeImageCollectionImpl implements ItemCollection, LocalItemCo
             // Add the resolved composite entry
             Entry<String, Item> compositeEntry = new Entry<String, Item>();
             Item compositeItem = new Item();
-            compositeItem.setTitle(title(contributionURI, qname));
+            compositeItem.setTitle(compositeTitle(contributionURI, qname));
             compositeItem.setLink("/composite-resolved/" + key);
             compositeEntry.setKey(key);
             compositeEntry.setData(compositeItem);
@@ -108,37 +112,6 @@ public class CompositeImageCollectionImpl implements ItemCollection, LocalItemCo
         } else {
             throw new UnsupportedOperationException();
         }
-    }
-    
-    /**
-     * Extracts a qname from a key expressed as contributionURI;namespace;localpart.
-     * @param key
-     * @return
-     */
-    private static QName qname(String key) {
-        int i = key.indexOf(';');
-        key = key.substring(i + 1);
-        i = key.indexOf(';');
-        return new QName(key.substring(0, i), key.substring(i + 1));
-    }
-    
-    /**
-     * Extracts a contribution uri from a key expressed as contributionURI;namespace;localpart.
-     * @param key
-     * @return
-     */
-    private static String uri(String key) {
-        int i = key.indexOf(';');
-        return key.substring("composite:".length(), i);
-    }
-    
-    /**
-     * Returns a composite title expressed as contributionURI - namespace;localpart.
-     * @param qname
-     * @return
-     */
-    private static String title(String uri, QName qname) {
-        return uri + " - " + qname.getNamespaceURI() + ";" + qname.getLocalPart();
     }
 
 }

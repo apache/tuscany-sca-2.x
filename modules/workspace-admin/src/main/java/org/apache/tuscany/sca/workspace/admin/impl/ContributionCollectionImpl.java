@@ -19,13 +19,17 @@
 
 package org.apache.tuscany.sca.workspace.admin.impl;
 
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.DEPLOYMENT_CONTRIBUTION_URI;
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeSimpleTitle;
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeSourceLink;
+import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.locationURL;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -48,7 +52,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
@@ -100,8 +103,6 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     
     @Property
     public String deploymentContributionDirectory;
-    
-    private static final String deploymentContributionURI = Constants.SCA10_TUSCANY_NS + "/cloud";
     
     private ContributionFactory contributionFactory;
     private AssemblyFactory assemblyFactory;
@@ -156,7 +157,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         Workspace workspace = readContributions(readWorkspace());
         
         for (Contribution contribution: workspace.getContributions()) {
-            if (contribution.getURI().equals(deploymentContributionURI)) {
+            if (contribution.getURI().equals(DEPLOYMENT_CONTRIBUTION_URI)) {
                 continue;
             }
             entries.add(entry(workspace, contribution));
@@ -293,26 +294,6 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     }
     
     /**
-     * Returns a URL from a location string.
-     * @param location
-     * @return
-     * @throws MalformedURLException
-     */
-    private static URL url(String location) throws MalformedURLException {
-        URI uri = URI.create(location);
-        String scheme = uri.getScheme();
-        if (scheme == null) {
-            File file = new File(location);
-            return file.toURI().toURL();
-        } else if (scheme.equals("file")) {
-            File file = new File(location.substring(5));
-            return file.toURI().toURL();
-        } else {
-            return uri.toURL();
-        }
-    }
-
-    /**
      * Returns an entry representing a contribution
      * @param contribution
      * @return
@@ -345,7 +326,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
             sb.append("Dependencies: <span id=\"dependencies\">");
             for (int i = 0, n = dependencies.size(); i < n ; i++) {
                 if (i > 0) {
-                    sb.append("&nbsp;&nbsp");
+                    sb.append("  ");
                 }
                 Contribution dependency = dependencies.get(i);
                 if (dependency != contribution) {
@@ -362,11 +343,11 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
             sb.append("Deployables: <span id=\"deployables\">");
             for (int i = 0, n = deployables.size(); i < n ; i++) {
                 if (i > 0) {
-                    sb.append("&nbsp;&nbsp");
+                    sb.append("  ");
                 }
                 Composite deployable = deployables.get(i);
                 QName qname = deployable.getName();
-                sb.append("<a href=\""+ compositeSourceLink(contributionURI, qname) +"\">" + compositeTitle(contributionURI, qname) + "</a>");
+                sb.append("<a href=\""+ compositeSourceLink(contributionURI, qname) +"\">" + compositeSimpleTitle(contributionURI, qname) + "</a>");
             }
             sb.append("</span><br>");
         }
@@ -386,38 +367,6 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         return "/contribution/" + contributionURI;
     }
     
-    /**
-     * Returns a composite title expressed as contributionURI - namespace;localpart.
-     * @param qname
-     * @return
-     */
-    private static String compositeTitle(String uri, QName qname) {
-        if (uri.equals(deploymentContributionURI)) {
-            return qname.getLocalPart();
-        } else {
-            return qname.getNamespaceURI() + ";" + qname.getLocalPart();
-        }
-    }
-
-    /**
-     * Returns a link to the source of a composite
-     * @param contributionURI
-     * @param qname
-     * @return
-     */
-    private static String compositeSourceLink(String contributionURI, QName qname) {
-        return "/composite-source/" + compositeKey(contributionURI, qname);
-    }
-    
-    /**
-     * Returns a composite key expressed as contributionURI;namespace;localpart.
-     * @param qname
-     * @return
-     */
-    private static String compositeKey(String uri, QName qname) {
-        return "composite:" + uri + ';' + qname.getNamespaceURI() + ';' + qname.getLocalPart();
-    }
-
     /**
      * Returns a title for the given contribution
      * 
@@ -455,13 +404,13 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         // SCA nodes declared in the cloud
         Contribution cloudContribution = null;
         for (Contribution contribution: workspace.getContributions()) {
-            if (contribution.getURI().equals(deploymentContributionURI)) {
+            if (contribution.getURI().equals(DEPLOYMENT_CONTRIBUTION_URI)) {
                 cloudContribution = contribution;
             }
         }
         if (cloudContribution == null) {
             Contribution contribution = contributionFactory.createContribution();
-            contribution.setURI(deploymentContributionURI);
+            contribution.setURI(DEPLOYMENT_CONTRIBUTION_URI);
             File cloudDirectory = new File(deploymentContributionDirectory);
             contribution.setLocation(cloudDirectory.toURI().toString());
             workspace.getContributions().add(contribution);
@@ -509,7 +458,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         try {
             for (Contribution c: workspace.getContributions()) {
                 URI uri = URI.create(c.getURI());
-                URL url = url(c.getLocation());
+                URL url = locationURL(c.getLocation());
                 Contribution contribution = (Contribution)contributionInfoProcessor.read(null, uri, url);
                 dependencyWorkspace.getContributions().add(contribution);
             }
