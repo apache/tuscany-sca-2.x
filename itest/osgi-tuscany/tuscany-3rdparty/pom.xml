@@ -282,6 +282,17 @@
             <artifactId>tuscany-policy-security</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>apache-activemq</artifactId>
+            <version>4.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>6.1.7</version>
+        </dependency>
+  
 
     </dependencies>
 

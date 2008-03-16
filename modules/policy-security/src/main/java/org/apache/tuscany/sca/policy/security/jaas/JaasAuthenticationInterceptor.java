@@ -62,7 +62,7 @@ public class JaasAuthenticationInterceptor implements Interceptor {
         try {
             for (JaasAuthenticationPolicy policy : authenticationPolicies) {
                 CallbackHandler callbackHandler =
-                    (CallbackHandler)Class.forName(policy.getCallbackHandlerClassName()).newInstance();
+                    (CallbackHandler)policy.getCallbackHandlerClass().newInstance();
                 LoginContext lc = new LoginContext(policy.getConfigurationName(), callbackHandler);
                 lc.login();
                 // Subject subject = lc.getSubject();

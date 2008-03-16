@@ -105,7 +105,6 @@ public class FelixTestRuntime extends OSGiTestRuntime implements BundleActivator
                 "javax.xml.validation, " +
                 "javax.xml.xpath, " +
                 "javax.sql," +
-                "org.apache.xerces.jaxp.datatype, " +
                 "org.w3c.dom, " +
                 "org.xml.sax, " +
                 "org.xml.sax.ext, " +
@@ -118,6 +117,7 @@ public class FelixTestRuntime extends OSGiTestRuntime implements BundleActivator
                 "javax.naming.directory, " +
                 "javax.management, " + 
                 "sun.misc, " +
+                "javax.net, " +
                 "org.apache.felix.main";
         
         

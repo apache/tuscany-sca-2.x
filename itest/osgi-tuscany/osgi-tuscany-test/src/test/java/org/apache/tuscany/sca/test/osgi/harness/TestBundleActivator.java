@@ -19,71 +19,20 @@
  */
 package org.apache.tuscany.sca.test.osgi.harness;
 
-import java.net.URL;
-
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 
 /*
  * Bundle activator for running the Tuscany SCA tests under OSGi
- * Tuscany samples are run inside an OSGi container when the bundle is started.
  */
 public class TestBundleActivator implements BundleActivator {
     
-    private ClassLoader myContextClassLoader;
-    private ClassLoader origTCCL;
-
     public void start(BundleContext bundleContext) throws Exception {
-        
-        origTCCL = Thread.currentThread().getContextClassLoader();
-        myContextClassLoader = new TestClassLoader(bundleContext.getBundle(), origTCCL);
-        Thread.currentThread().setContextClassLoader(myContextClassLoader);
         
     }
 
     public void stop(BundleContext bundleContext) throws Exception {
-
-        if (Thread.currentThread().getContextClassLoader() == myContextClassLoader)
-            Thread.currentThread().setContextClassLoader(origTCCL);
     }
 
-
-    
-    private class TestClassLoader extends ClassLoader {
-        
-        private Bundle bundle;
-        
-        private TestClassLoader(Bundle bundle, ClassLoader parent) {
-            super(parent);
-            this.bundle = bundle;
-        }
-
-        @Override
-        public URL getResource(String resName) {
-            URL resource = getParent().getResource(resName);
-            if (resource == null) {
-                resource = bundle.getResource(resName);
-            
-            }
-            
-            return resource;
-        }
-
-        @Override
-        public Class<?> loadClass(String className) throws ClassNotFoundException {
-            Class clazz = findLoadedClass(className);            
-            if (clazz != null)
-                return clazz;
-
-            try {
-                return getParent().loadClass(className);                    
-            } catch (Exception e) {
-                return bundle.loadClass(className);
-            }
-        }
-        
-        
-    }
 }
