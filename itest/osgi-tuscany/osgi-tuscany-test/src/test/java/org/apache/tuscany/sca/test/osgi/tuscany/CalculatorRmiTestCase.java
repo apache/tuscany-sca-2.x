@@ -27,25 +27,9 @@ import org.junit.Test;
 /*
  * Test Tuscany running in an OSGi container
  * 
- * Run samples which use old domain code
+ * Run samples-calculator-rmi-reference and samples-calculator-rmi-service
  */
-public class TuscanySamplesUsingOldDomainTestCase {
-    
-    
-    private static String[] SAMPLES = {
-                
-        "binding-notification-consumer",
-        "binding-notification-producer",
-        "calculator",
-        "implementation-composite",
-        "implementation-notification", 
-        "loanapplication", 
-        "quote-xquery",
-        "simple-bigbank", 
-        "simple-callback",
-        "supplychain"
-        
-    };
+public class CalculatorRmiTestCase {
     
 
     private OSGiTuscanyTestHarness testHarness;
@@ -63,18 +47,16 @@ public class TuscanySamplesUsingOldDomainTestCase {
 
         if (testHarness != null) {
             testHarness.tearDown();
-            testHarness = null;
         }
     }
     
 
     @Test
-    public void runTestsUsingOldDomainCode() throws Exception {
+    public void runTest() throws Exception {
         
-        for (String testDir : SAMPLES) {
-            testHarness.runTest("../../../samples/" + testDir);
-        }
+        testHarness.runTest("../../../samples/" + "calculator-rmi-reference");
+        testHarness.runTest("../../../samples/" + "calculator-rmi-service");
+        
     }
-    
     
 }

@@ -40,7 +40,8 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
 	public void stop(BundleContext bundleContext) throws Exception {
 		runtime.shutdown();
 		
-		Thread.currentThread().setContextClassLoader(origTCCL);
+        if (Thread.currentThread().getContextClassLoader() == threadContextClassLoader)
+            Thread.currentThread().setContextClassLoader(origTCCL);
 	}
 	
 	/**
@@ -173,27 +174,27 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
 			    bundles.remove(bundle);
 		}
 		
+        
 		@Override
-		public Class<?> loadClass(String className) throws ClassNotFoundException {
-			Class<?> clazz = null;
-			synchronized (this) {
-				for (Bundle bundle : bundles) {
-					try {
-						clazz = bundle.loadClass(className);
-						break;
-					} catch (ClassNotFoundException e) {
-					} catch (NoClassDefFoundError e) {
-					}
+        protected Class<?> findClass(String className) throws ClassNotFoundException {
+            Class<?> clazz = null;
+            synchronized (this) {
+                for (Bundle bundle : bundles) {
+                    try {
+                        clazz = bundle.loadClass(className);
+                        break;
+                    } catch (ClassNotFoundException e) {
+                    } catch (NoClassDefFoundError e) {
+                    }
 
-				}
-			}			
-			if (clazz != null) {
-			    return clazz;
-			}
-			return super.loadClass(className);
-		}
-		
-		
+                }
+            }           
+            if (clazz != null) {
+                return clazz;
+            }
+            return super.findClass(className);
+        }
+
 
 		@Override
 		@SuppressWarnings("unchecked")

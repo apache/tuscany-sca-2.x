@@ -79,6 +79,13 @@ public class OSGiTuscanyTestHarness {
     public void runTest(String... testDirs) throws Exception {
         
         String mainTestDir = testDirs[0];
+        
+        File testDir = new File(mainTestDir + "/target/test-classes");
+        if (!testDir.exists()) {
+            System.err.println("Test directory " + testDir + " does not exist");
+            return;
+        }
+
         System.out.println("Run tests from : " + mainTestDir);
 
         tuscanyRuntime = TuscanyLoader.loadTuscanyIntoOSGi(bundleContext);

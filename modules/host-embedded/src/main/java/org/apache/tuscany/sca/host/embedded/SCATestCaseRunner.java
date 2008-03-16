@@ -52,35 +52,38 @@ public class SCATestCaseRunner {
      */
     public SCATestCaseRunner(Class testClass) {
         try {
+            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             classLoader = testClass.getClassLoader();
             if (classLoader instanceof URLClassLoader) {
                 URL[] urls = ((URLClassLoader)classLoader).getURLs();
                 classLoader = new URLClassLoader(urls, classLoader.getParent());
-            } else {
+            } else if (classLoader == tccl || classLoader.getParent() == tccl) {
                 classLoader = new URLClassLoader(new URL[0], classLoader);
+            } else {
+                classLoader = tccl;
             }
 
-            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(classLoader);
 
                 testCaseClass = Class.forName(testClass.getName(), true, classLoader);
                 testCase = testCaseClass.newInstance();
+                ClassLoader testClassLoader = testCaseClass.getClassLoader();
 
-                junit3TestCaseClass = Class.forName("junit.framework.TestCase", true, classLoader);
+                junit3TestCaseClass = Class.forName("junit.framework.TestCase", true, testClassLoader);
 
-                testSuiteClass = Class.forName("junit.framework.TestSuite", true, classLoader);
+                testSuiteClass = Class.forName("junit.framework.TestSuite", true, testClassLoader);
                 Constructor testSuiteConstructor = testSuiteClass.getConstructor(Class.class);
                 testSuite = testSuiteConstructor.newInstance(testCaseClass);
 
-                testResultClass = Class.forName("junit.framework.TestResult", true, classLoader);
+                testResultClass = Class.forName("junit.framework.TestResult", true, testClassLoader);
 
                 try {
-                    beforeAnnotation = Class.forName("org.junit.Before", true, classLoader);
-                    afterAnnotation = Class.forName("org.junit.After", true, classLoader);
-                    beforeClassAnnotation = Class.forName("org.junit.BeforeClass", true, classLoader);
-                    afterClassAnnotation = Class.forName("org.junit.AfterClass", true, classLoader);
-                    junit4AdapterClass = Class.forName("junit.framework.JUnit4TestAdapter", true, classLoader);
+                    beforeAnnotation = Class.forName("org.junit.Before", true, testClassLoader);
+                    afterAnnotation = Class.forName("org.junit.After", true, testClassLoader);
+                    beforeClassAnnotation = Class.forName("org.junit.BeforeClass", true, testClassLoader);
+                    afterClassAnnotation = Class.forName("org.junit.AfterClass", true, testClassLoader);
+                    junit4AdapterClass = Class.forName("junit.framework.JUnit4TestAdapter", true, testClassLoader);
                 } catch (Exception e) {
                     // Unexpected
                     throw new AssertionError(e);
