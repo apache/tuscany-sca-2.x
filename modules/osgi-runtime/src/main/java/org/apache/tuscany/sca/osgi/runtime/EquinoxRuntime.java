@@ -78,6 +78,12 @@ public class EquinoxRuntime extends OSGiRuntime  {
     }
 
     @Override
+    protected void setBundleContext(BundleContext bundleContext) {
+        super.setBundleContext(bundleContext);
+        EquinoxRuntime.bundleContext = bundleContext;
+    }
+    
+    @Override
     public void shutdown() throws Exception {
 
         if (bundleContext == null)

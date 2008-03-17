@@ -128,6 +128,12 @@ public class KnopflerfishRuntime extends OSGiRuntime  {
     public BundleContext getBundleContext() {
         return bundleContext;
     }
+    
+    @Override
+    protected void setBundleContext(BundleContext bundleContext) {
+        super.setBundleContext(bundleContext);
+        KnopflerfishRuntime.bundleContext = bundleContext;
+    }
 
     @Override
     public void shutdown() throws Exception {
