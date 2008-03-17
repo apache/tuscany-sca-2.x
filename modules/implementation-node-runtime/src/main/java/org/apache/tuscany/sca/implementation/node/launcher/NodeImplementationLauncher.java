@@ -49,7 +49,7 @@ public class NodeImplementationLauncher {
             
             // We use Java reflection here as only the runtime class
             // loader knows the runtime classes required by the node
-            nodeClass = runtimeClassLoader.loadClass("org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncherBootstrap"); 
+            nodeClass = Class.forName("org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncherBootstrap", true, runtimeClassLoader); 
             node = nodeClass.getConstructor(String.class).newInstance(configurationURI);
             
             // Start the node
