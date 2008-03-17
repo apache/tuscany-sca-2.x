@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,14 +16,21 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
- */
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
+	xmlns:c="http://catalog"
+	targetNamespace="cloud:/"
+	name="CatalogWebAppNode">
 
-package launch;
-
-import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncher;
-
-public class LaunchStoreEUNode {
-    public static void main(String[] args) throws Exception {
-        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/node-image/node:StoreEUNode"});
-    }
-}
+	<component name="CatalogWebAppNode">
+		<t:implementation.node uri="catalog-webapp" composite="c:catalog-web" />
+		<service name="Node">
+			<binding.ws uri="http://localhost:8080/CatalogWebAppNode" />
+			<t:binding.http uri="http://localhost:8080/CatalogWebAppNode" />
+			<t:binding.jsonrpc uri="http://localhost:8080/CatalogWebAppNode" />
+			<t:binding.atom uri="http://localhost:8080/CatalogWebAppNode" />
+		</service>
+	</component>
+	
+</composite>

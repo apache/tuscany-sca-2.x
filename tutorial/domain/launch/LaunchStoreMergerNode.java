@@ -23,6 +23,6 @@ import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLau
 
 public class LaunchStoreMergerNode {
     public static void main(String[] args) throws Exception {
-        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/composite-image/?composite=composite:store-merger;http://store;store-merger"});
+        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/node-image/node:StoreMergerNode"});
     }
 }

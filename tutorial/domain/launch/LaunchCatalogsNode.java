@@ -23,6 +23,6 @@ import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLau
 
 public class LaunchCatalogsNode {
     public static void main(String[] args) throws Exception {
-        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/composite-image/?composite=composite:cloud;http://cloud;catalogs"});
+        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/node-image/node:CatalogsNode"});
     }
 }
