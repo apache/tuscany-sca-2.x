@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.policy.transaction;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -32,45 +31,37 @@ import org.apache.tuscany.sca.definitions.SCADefinitionsProviderException;
 import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
 
 /**
- * Provider for Policy Intents and PolicySet definitions related to security
+ * Provider for Policy Intents and PolicySet definitions related to transaction
  */
 public class TransactionPolicyDefinitionsProvider implements SCADefinitionsProvider {
-    private String scaDefinitionsFile = "org/apache/tuscany/sca/policy/transaction/definitions.xml";
-    private String tuscanyDefinitionsFile = "org/apache/tuscany/sca/policy/transaction/tuscany_definitions.xml";
-    URLArtifactProcessor urlArtifactProcessor = null;
-    
+    private final static String scaDefinitionsFile = "definitions.xml";
+    private final static String tuscanyDefinitionsFile = "tuscany_definitions.xml";
+    private URLArtifactProcessor urlArtifactProcessor;
+
     public TransactionPolicyDefinitionsProvider(ExtensionPointRegistry registry) {
-        URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        URLArtifactProcessorExtensionPoint documentProcessors =
+            registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         urlArtifactProcessor = (URLArtifactProcessor)documentProcessors.getProcessor(SCADefinitions.class);
     }
 
     public SCADefinitions getSCADefinition() throws SCADefinitionsProviderException {
-        
-        Object scaDefn = null;
+
         try {
             SCADefinitions scaTransactionPolicyDefns = null;
             SCADefinitions tuscanyTransactionPolicyDefns = null;
-            
+
             URI uri = new URI(scaDefinitionsFile);
-            URL defintionsFileUrl = getClass().getClassLoader().getResource(scaDefinitionsFile);
-            scaTransactionPolicyDefns = (SCADefinitions)urlArtifactProcessor.read(null, 
-                                                                               uri, 
-                                                                               defintionsFileUrl);
-            
+            URL defintionsFileUrl = getClass().getResource(scaDefinitionsFile);
+            scaTransactionPolicyDefns = (SCADefinitions)urlArtifactProcessor.read(null, uri, defintionsFileUrl);
+
             uri = new URI(tuscanyDefinitionsFile);
-            defintionsFileUrl = getClass().getClassLoader().getResource(tuscanyDefinitionsFile);
-            tuscanyTransactionPolicyDefns = (SCADefinitions)urlArtifactProcessor.read(null, 
-                                                                                  uri, 
-                                                                                  defintionsFileUrl);
-            
-            
-            SCADefinitionsUtil.aggregateSCADefinitions(tuscanyTransactionPolicyDefns, 
-                                                       scaTransactionPolicyDefns);
-            
-            
-            
+            defintionsFileUrl = getClass().getResource(tuscanyDefinitionsFile);
+            tuscanyTransactionPolicyDefns = (SCADefinitions)urlArtifactProcessor.read(null, uri, defintionsFileUrl);
+
+            SCADefinitionsUtil.aggregateSCADefinitions(tuscanyTransactionPolicyDefns, scaTransactionPolicyDefns);
+
             return scaTransactionPolicyDefns;
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             throw new SCADefinitionsProviderException(e);
         }
     }
