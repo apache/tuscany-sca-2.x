@@ -19,10 +19,10 @@
 
 package node;
 
-import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncher;
+import org.apache.tuscany.sca.node.launcher.NodeLauncher;
 
 public class LaunchCalculatorNodeC {
     public static void main(String[] args) throws Exception {
-        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/node-image/NodeC"});
+        NodeLauncher.main(new String[] {"http://localhost:9990/node-image/NodeC"});
     }
 }
