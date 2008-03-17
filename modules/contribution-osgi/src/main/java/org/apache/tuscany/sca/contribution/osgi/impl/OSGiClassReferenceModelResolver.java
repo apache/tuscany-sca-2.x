@@ -40,6 +40,7 @@ public class OSGiClassReferenceModelResolver implements ModelResolver {
     private Map<String, ClassReference> map = new HashMap<String, ClassReference>();
     private Bundle bundle;
     private boolean initialized;
+    private boolean useOSGi;
 
     public OSGiClassReferenceModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
@@ -83,6 +84,8 @@ public class OSGiClassReferenceModelResolver implements ModelResolver {
             return modelClass.cast(resolved);
         }
         initialize();
+        if (!useOSGi)
+            return unresolved;
 
         //Load a class on demand
         Class clazz = null;
@@ -126,7 +129,9 @@ public class OSGiClassReferenceModelResolver implements ModelResolver {
         initialized = true;
         try {
             bundle = OSGiRuntime.findInstalledBundle(contribution.getLocation());
-        } catch (Exception e) {
+            useOSGi = bundle != null;
+        } catch (Throwable e) {
+            // Ignore errors, default to ClassReferenceModelResolver
         }
     }
 }

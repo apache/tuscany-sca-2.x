@@ -39,7 +39,7 @@ public class OSGiRuntimeModuleActivator implements ModuleActivator {
     public void stop(ExtensionPointRegistry registry) {
         try {
             OSGiRuntime.stop();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // Ignore the exception
         }
     }
