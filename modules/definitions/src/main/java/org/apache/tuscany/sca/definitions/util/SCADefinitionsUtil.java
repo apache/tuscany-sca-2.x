@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.definitions.util;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,6 +71,14 @@ public class SCADefinitionsUtil {
         target.getPolicySets().addAll(source.getPolicySets());
         target.getBindingTypes().addAll(source.getBindingTypes());
         target.getImplementationTypes().addAll(source.getImplementationTypes());
+    }
+    
+    public static boolean isSCADefnsFile(URI uri) {
+        int index = uri.toString().lastIndexOf("/");
+
+        index = (index != -1) ? index + 1 : 0;
+
+        return uri.toString().substring(index).equals("definitions.xml");
     }
 
 }

@@ -20,38 +20,6 @@
 <definitions xmlns="http://www.osoa.org/xmlns/sca/1.0" targetNamespace="http://www.osoa.org/xmlns/sca/1.0"
     xmlns:sca="http://www.osoa.org/xmlns/sca/1.0" xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0">
 
-    <policySet name="tuscany:ManagedTransactionPolicySet" provides="managedTransaction" appliesTo="implementation">
-        <intentMap provides="managedTransaction" default="global">
-            <qualifier name="global">
-                <tuscany:transactionPolicy transactionTimeout="1200" action="REQUIRE_GLOBAL" />
-            </qualifier>
-            <qualifier name="local">
-                <tuscany:transactionPolicy transactionTimeout="1200" action="REQUIRE_LOCAL" />
-            </qualifier>
-        </intentMap>
-    </policySet>
-
-    <policySet name="tuscany:NoManagedTransactionPolicySet" provides="noManagedTransaction"
-        appliesTo="implementation">
-        <tuscany:transactionPolicy action="REQUIRE_NONE" />
-    </policySet>
-
-    <policySet name="tuscany:PropagatesTransactionPolicySet" provides="propagatesTransaction" appliesTo="binding">
-        <tuscany:transactionPolicy action="PROPAGATE" />
-    </policySet>
-
-    <policySet name="tuscany:SuspendsTransactionPolicySet" provides="suspendsTransaction" appliesTo="binding">
-        <tuscany:transactionPolicy action="SUSPEND" />
-    </policySet>
-
-    <policySet name="tuscany:TransactedOneWayPolicySet" provides="transactedOneWay" appliesTo="binding">
-        <tuscany:transactionPolicy action="PROPAGATE" />
-    </policySet>
-
-    <policySet name="tuscany:ImmediateOneWayPolicySet" provides="immediateOneWay" appliesTo="binding">
-        <tuscany:transactionPolicy action="SUSPEND" />
-    </policySet>
-
     <intent name="managedTransaction" constrains="implementation">
         <description>Used to indicate the transaction environment desired by a component implementation.</description>
     </intent>
@@ -95,5 +63,4 @@
             messages immediately, regardless of any transaction under which the sending/receiving component runs.
         </description>
     </intent>
-
 </definitions>

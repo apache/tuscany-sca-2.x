@@ -103,6 +103,7 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, C
     }
     
     public void resolve(SCABinding model, ModelResolver resolver) throws ContributionResolveException {
+        policyProcessor.resolvePolicies(model, resolver);
     }    
 
     public void write(SCABinding scaBinding, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {

@@ -22,8 +22,13 @@ package org.apache.tuscany.sca.policy.xml;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.impl.BindingTypeImpl;
+import org.apache.tuscany.sca.policy.impl.ImplementationTypeImpl;
 
 
 /* 
@@ -37,5 +42,16 @@ public class ImplementationTypeProcessor extends IntentAttachPointTypeProcessor 
 
     public QName getArtifactType() {
         return IMPLEMENTATION_TYPE_QNAME;
+    }
+    
+    @Override
+    public IntentAttachPointType resolveExtensionType(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException {
+        if ( extnType instanceof ImplementationTypeImpl ) {
+            ImplementationTypeImpl implType = (ImplementationTypeImpl)extnType;
+            return resolver.resolveModel(ImplementationTypeImpl.class, implType);
+        } else {
+            return extnType;
+        }
+        
     }
 }

@@ -53,6 +53,8 @@ import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.definitions.SCADefinitionsProvider;
+import org.apache.tuscany.sca.definitions.SCADefinitionsProviderExtensionPoint;
 import org.apache.tuscany.sca.definitions.impl.SCADefinitionsImpl;
 import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
 import org.apache.tuscany.sca.definitions.xml.SCADefinitionsDocumentProcessor;
@@ -63,8 +65,11 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 public class ReallySmallRuntime {
@@ -234,7 +239,44 @@ public class ReallySmallRuntime {
     }
     
     private void  loadSCADefinitions(ExtensionPointRegistry registry) throws ActivationException {
-        URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        try {
+            URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+            SCADefinitionsDocumentProcessor definitionsProcessor = (SCADefinitionsDocumentProcessor)documentProcessors.getProcessor(SCADefinitions.class);
+            SCADefinitionsProviderExtensionPoint scaDefnProviders = registry.getExtensionPoint(SCADefinitionsProviderExtensionPoint.class);
+            
+            SCADefinitions systemSCADefinitions = new SCADefinitionsImpl();
+            SCADefinitions aSCADefn = null;
+            for ( SCADefinitionsProvider aProvider : scaDefnProviders.getSCADefinitionsProviders() ) {
+               aSCADefn = aProvider.getSCADefinition(); 
+               SCADefinitionsUtil.aggregateSCADefinitions(aSCADefn, systemSCADefinitions);
+            }
+            
+            //we cannot expect that providers will add the intents and policysets into the resolver
+            //so we do this here explicitly
+            for ( Intent intent : systemSCADefinitions.getPolicyIntents() ) {
+                definitionsProcessor.getSCADefinitionsResolver().addModel(intent);
+            }
+            
+            for ( PolicySet policySet : systemSCADefinitions.getPolicySets() ) {
+                definitionsProcessor.getSCADefinitionsResolver().addModel(policySet);
+            }
+            
+            for ( IntentAttachPointType attachPoinType : systemSCADefinitions.getBindingTypes() ) {
+                definitionsProcessor.getSCADefinitionsResolver().addModel(attachPoinType);
+            }
+            
+            for ( IntentAttachPointType attachPoinType : systemSCADefinitions.getImplementationTypes() ) {
+                definitionsProcessor.getSCADefinitionsResolver().addModel(attachPoinType);
+            }
+            
+            //now that all system sca definitions have been read, lets resolve them rightaway
+            definitionsProcessor.resolve(systemSCADefinitions, 
+                                         definitionsProcessor.getSCADefinitionsResolver());
+        } catch ( Exception e ) {
+            throw new ActivationException(e);
+        }
+        
+        /*URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         SCADefinitionsDocumentProcessor definitionsProcessor = (SCADefinitionsDocumentProcessor)documentProcessors.getProcessor(SCADefinitions.class);
         
         try {
@@ -257,7 +299,7 @@ public class ReallySmallRuntime {
             throw new ActivationException(e);
         } catch ( IOException e ) {
             throw new ActivationException(e);
-        }
+        }*/
     }
     
     @SuppressWarnings("unchecked")
