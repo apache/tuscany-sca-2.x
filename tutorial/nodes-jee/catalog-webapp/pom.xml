@@ -44,6 +44,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node2-launcher-webapp</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        
     </dependencies>
     
     <build>
