@@ -48,6 +48,7 @@ public class PackageTypeDescriberImpl implements TypeDescriber {
      */
     private void init() {
         contentTypeRegistry.put("JAR", PackageType.JAR);
+        contentTypeRegistry.put("WAR", PackageType.JAR);
     }
 
     protected String resolveContentyTypeByExtension(URL resourceURL) {
