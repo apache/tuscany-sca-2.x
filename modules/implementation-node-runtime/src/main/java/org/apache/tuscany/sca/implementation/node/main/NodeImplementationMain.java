@@ -17,28 +17,25 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.node.provider;
+package org.apache.tuscany.sca.implementation.node.main;
 
-import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationDaemon;
+import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncher;
 
 /**
- * Implements an invoker for node component implementations.
- * 
+ * Main class for this JAR.
+ * With no arguments this class launches the SCA Node Daemon.
+ * With an argument it launches an SCA node. 
+ *  
  * @version $Rev$ $Date$
  */
-class NodeImplementationInvoker implements Invoker {
-    private Composite composite;
-    
-    NodeImplementationInvoker(Composite composite) {
-        this.composite = composite;
-    }
-    
-    public Message invoke(Message msg) {
-        //FIXME Implement later
-        msg.setBody(composite);
-        return msg;
-    }
+public class NodeImplementationMain {
 
+    public static void main(String[] args) throws Exception {
+        if (args.length != 0) {
+            NodeImplementationLauncher.main(args);
+        } else {
+            NodeImplementationDaemon.main(args);
+        }
+    }
 }

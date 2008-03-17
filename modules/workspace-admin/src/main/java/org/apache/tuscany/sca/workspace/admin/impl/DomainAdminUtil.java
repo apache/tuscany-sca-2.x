@@ -31,7 +31,7 @@ import javax.xml.namespace.QName;
  *
  * @version $Rev$ $Date$
  */
-public final class AdminCommons {
+public final class DomainAdminUtil {
 
     static final String DEPLOYMENT_CONTRIBUTION_URI = "http://tuscany.apache.org/xmlns/sca/1.0/cloud";
 
@@ -95,7 +95,7 @@ public final class AdminCommons {
      * @return
      */
     static String compositeSimpleTitle(String uri, QName qname) {
-        if (uri.equals(AdminCommons.DEPLOYMENT_CONTRIBUTION_URI)) {
+        if (uri.equals(DomainAdminUtil.DEPLOYMENT_CONTRIBUTION_URI)) {
             return qname.getLocalPart();
         } else {
             return qname.getNamespaceURI() + ";" + qname.getLocalPart();

@@ -23,6 +23,8 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
+ * Test case for node component implementations.
+ * 
  * @version $Rev$ $Date$
  */
 public class NodeImplementationTestCase extends TestCase {

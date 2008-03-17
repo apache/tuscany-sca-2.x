@@ -17,29 +17,19 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.workspace.admin.launch;
+package org.apache.tuscany.sca.workspace.admin.main;
 
-import java.io.IOException;
-
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.workspace.admin.launcher.DomainAdminLauncher;
 
 /**
- * Simple launcher for the SCA domain administration application. 
+ * Main class for this JAR.
  *
  * @version $Rev$ $Date$
  */
-public class LaunchDomainAdmin {
-    
-    public static void main(String[] args) {
-        System.out.println("Apache Tuscany SCA Domain administration starting...");
-        
-        SCADomain.newInstance("Admin.composite");
-        
-        System.out.println("SCA Domain administration started.");
-        System.out.println("Press enter to shutdown.");
-        try {
-            System.in.read();
-        } catch (IOException e) {}
+public class DomainAdminMain {
+
+    public static void main(String[] args) throws Exception {
+        DomainAdminLauncher.main(args);
     }
 
 }

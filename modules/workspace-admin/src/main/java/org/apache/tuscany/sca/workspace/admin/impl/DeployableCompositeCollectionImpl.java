@@ -19,13 +19,13 @@
 
 package org.apache.tuscany.sca.workspace.admin.impl;
 
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.DEPLOYMENT_CONTRIBUTION_URI;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeKey;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeQName;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeSourceLink;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeTitle;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.contributionURI;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.locationURL;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.DEPLOYMENT_CONTRIBUTION_URI;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeKey;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeQName;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeSourceLink;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeTitle;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.contributionURI;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.locationURL;
 
 import java.io.File;
 import java.io.IOException;
@@ -660,7 +660,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
      */
     private static Entry<String, Item> entry(Contribution contribution, Composite deployable) {
         Entry<String, Item> entry = new Entry<String, Item>();
-        entry.setKey(AdminCommons.compositeKey(contribution.getURI(), deployable.getName()));
+        entry.setKey(DomainAdminUtil.compositeKey(contribution.getURI(), deployable.getName()));
         entry.setData(item(contribution, deployable));
         return entry;
     }

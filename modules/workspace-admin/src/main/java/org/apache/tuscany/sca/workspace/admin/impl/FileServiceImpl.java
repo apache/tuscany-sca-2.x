@@ -27,6 +27,7 @@ import java.net.URI;
 import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -53,6 +54,8 @@ import org.osoa.sca.annotations.Service;
 public class FileServiceImpl extends HttpServlet {
     private static final long serialVersionUID = -4560385595481971616L;
     
+    private final static Logger logger = Logger.getLogger(FileServiceImpl.class.getName());    
+
     @Property
     public String directoryName;
     

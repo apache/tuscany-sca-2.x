@@ -26,7 +26,9 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
- * The model representing a node implementation in an SCA assembly model.
+ * An implementation provider for node component implementations.
+ * 
+ * @version $Rev$ $Date$
  */
 class NodeImplementationProvider implements ImplementationProvider {
     
@@ -34,6 +36,9 @@ class NodeImplementationProvider implements ImplementationProvider {
 
     /**
      * Constructs a new node implementation provider.
+     * 
+     * @param component
+     * @param implementation
      */
     NodeImplementationProvider(RuntimeComponent component, NodeImplementation implementation) {
         this.implementation = implementation;

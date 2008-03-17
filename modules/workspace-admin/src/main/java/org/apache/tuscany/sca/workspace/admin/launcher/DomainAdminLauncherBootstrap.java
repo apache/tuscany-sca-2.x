@@ -17,28 +17,30 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.node.provider;
+package org.apache.tuscany.sca.workspace.admin.launcher;
 
-import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
- * Implements an invoker for node component implementations.
- * 
+ * Bootstrap class for the SCA domain admin app, used by DomainAdminLauncher.
+ *  
  * @version $Rev$ $Date$
  */
-class NodeImplementationInvoker implements Invoker {
-    private Composite composite;
+public class DomainAdminLauncherBootstrap {
+
+    private SCADomain admin;
     
-    NodeImplementationInvoker(Composite composite) {
-        this.composite = composite;
-    }
-    
-    public Message invoke(Message msg) {
-        //FIXME Implement later
-        msg.setBody(composite);
-        return msg;
+    /**
+     * Constructs a new admin bootstrap.
+     */
+    public DomainAdminLauncherBootstrap() throws Exception {
     }
 
+    public void start() throws Exception {
+        admin = SCADomain.newInstance("DomainAdmin.composite");
+    }
+    
+    public void stop() throws Exception {
+        admin.close();
+    }
 }
