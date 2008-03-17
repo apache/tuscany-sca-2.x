@@ -100,25 +100,30 @@ public class ExtendedConversationImpl implements ExtendedConversation, Runnable 
      * will check whether this conversation has expired and update state if it has 
      * @return true if it has expired
      */
-    public boolean isExpired() 
-    {
-    	long currentTime;
-    	synchronized (stateSync){
-    	
-    		// check state first
-    		if (state == ConversationState.EXPIRED){
-    			return true;
-    		}
-    	
-    		// check whether the time is finished
-    		currentTime = System.currentTimeMillis();
-    		if (((this.lastReferencedTime + this.maxIdleTime) <= currentTime) ||
-    				(this.expirationTime <= currentTime)){
-    			setState(ConversationState.EXPIRED);
-    			return true;
-    		}
-    	}
-    	scheduleNextExpiryTime(currentTime);
+    public boolean isExpired() {
+        long currentTime;
+        synchronized (stateSync) {
+
+            // if the attributes haven't been initialized then
+            // this conversation object can't expire
+            if (conversationAttributesInitialized == false) {
+                return false;
+            }
+
+            // check state first
+            if (state == ConversationState.EXPIRED) {
+                return true;
+            }
+
+            // check whether the time is finished
+            currentTime = System.currentTimeMillis();
+            if (((this.lastReferencedTime + this.maxIdleTime) <= currentTime)
+                    || (this.expirationTime <= currentTime)) {
+                setState(ConversationState.EXPIRED);
+                return true;
+            }
+        }
+        scheduleNextExpiryTime(currentTime);
         return false;
     }
 

@@ -161,8 +161,7 @@ public class RuntimeWireInvoker {
                 conversation.initializeConversationAttributes(wire.getTarget().getComponent());
             } else if (conversation.conversationalAttributesInitialized() == false) {
                 conversation.initializeConversationAttributes(wire.getTarget().getComponent());
-            }
-            else if (conversation.isExpired()){
+            } else if (conversation.isExpired()){
             	throw new ConversationEndedException("Conversation has expired.");
             }
             
