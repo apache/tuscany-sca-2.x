@@ -365,15 +365,27 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
         if (conversation == null || conversation.getState() == ConversationState.ENDED) {
 
             conversation = conversationManager.startConversation(getConversationID());
-            conversation.initializeConversationAttributes(wire.getTarget().getComponent());
+            
+            // if this is a local wire then set up the conversation timeouts here based on the 
+            // parameters from the component
+            if (wire.getTarget().getComponent() != null){
+                conversation.initializeConversationAttributes(wire.getTarget().getComponent());
+            }
+            
+            // connect the conversation to the callable reference so it can be retrieve in the future
             if (callableReference != null) {
                 ((CallableReferenceImpl)callableReference).attachConversation(conversation);
             }
         } else if (conversation.isExpired()) {
-            throw new ConversationEndedException("Conversation has expired.");
+            throw new ConversationEndedException("Conversation " +  conversation.getConversationID() + " has expired.");
         }
 
-        conversation.updateLastReferencedTime();
+        // if this is a local wire then schedule conversation timeouts based on the timeout
+        // parameters from the service implementation. If this isn't a local wire then
+        // the RuntimeWireInvker will take care of this
+        if (wire.getTarget().getComponent() != null){
+            conversation.updateLastReferencedTime();
+        }
 
         msg.getFrom().getReferenceParameters().setConversationID(conversation.getConversationID());
 
