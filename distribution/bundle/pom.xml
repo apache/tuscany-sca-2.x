@@ -49,6 +49,11 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-binding-atom-abdera</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-binding-dwr</artifactId>
             <version>${pom.version}</version>
         </dependency>
@@ -85,6 +90,11 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-binding-rmi</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-binding-rss-rome</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
@@ -468,6 +478,12 @@
                                 </transformer>
                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.binding.feed.RSSBindingFactory</resource>
+                                </transformer>
+                               <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.binding.atom.AtomBindingFactory</resource>
+                                </transformer>
+                               <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.binding.rss.RSSBindingFactory</resource>
                                 </transformer>
                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.binding.http.HTTPResourceBindingFactory</resource>
