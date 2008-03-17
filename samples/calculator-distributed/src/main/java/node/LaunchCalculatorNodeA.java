@@ -33,7 +33,7 @@ public class LaunchCalculatorNodeA {
         try {
             
             SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-            node = nodeFactory.createSCANode("http://localhost:9990/composite-image/?composite=composite:nodeA;http://sample;CalculatorA");
+            node = nodeFactory.createSCANode("http://localhost:9990/node-image/NodeA");
 
             node.start();
             

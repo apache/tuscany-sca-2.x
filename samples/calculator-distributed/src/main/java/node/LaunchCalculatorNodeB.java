@@ -23,6 +23,6 @@ import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLau
 
 public class LaunchCalculatorNodeB {
     public static void main(String[] args) throws Exception {
-        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/composite-image/?composite=composite:nodeB;http://sample;CalculatorB"});
+        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/node-image/NodeB"});
     }
 }

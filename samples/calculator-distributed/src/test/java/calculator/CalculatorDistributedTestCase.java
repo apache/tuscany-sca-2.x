@@ -51,12 +51,10 @@ public class CalculatorDistributedTestCase {
             
             SCADomain.newInstance("DomainAdmin.composite");
             
-            NodeProcessCollectionImpl nodes = new NodeProcessCollectionImpl();
-            
             SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-            nodeC  = nodeFactory.createSCANode("http://localhost:9990/composite-image/?composite=composite:nodeC;http://sample;CalculatorC");
-            nodeB  = nodeFactory.createSCANode("http://localhost:9990/composite-image/?composite=composite:nodeB;http://sample;CalculatorB");
-            nodeA  = nodeFactory.createSCANode("http://localhost:9990/composite-image/?composite=composite:nodeA;http://sample;CalculatorA");
+            nodeC  = nodeFactory.createSCANode("http://localhost:9990/node-image/NodeC");
+            nodeB  = nodeFactory.createSCANode("http://localhost:9990/node-image/NodeB");
+            nodeA  = nodeFactory.createSCANode("http://localhost:9990/node-image/NodeA");
 
             nodeC.start();
             nodeB.start();
