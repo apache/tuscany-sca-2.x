@@ -25,12 +25,16 @@ import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
- * The model representing a node implementation in an SCA assembly model.
+ * Factory for node component implementation providers.
+ * 
+ * @version $Rev$ $Date$
  */
 public class NodeImplementationProviderFactory implements ImplementationProviderFactory<NodeImplementation> {
 
     /**
-     * Constructs a node implementation.
+     * Constructs a new factory.
+     * 
+     * @param extensionPoints
      */
     public NodeImplementationProviderFactory(ExtensionPointRegistry extensionPoints) {
     }

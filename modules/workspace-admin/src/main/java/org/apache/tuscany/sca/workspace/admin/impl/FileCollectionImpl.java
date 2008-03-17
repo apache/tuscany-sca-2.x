@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
@@ -42,6 +43,8 @@ import org.osoa.sca.annotations.Service;
 @Service(ItemCollection.class)
 public class FileCollectionImpl implements ItemCollection {
     
+    private final static Logger logger = Logger.getLogger(FileCollectionImpl.class.getName());    
+
     @Property
     public String directoryName;
 

@@ -19,12 +19,13 @@
 
 package org.apache.tuscany.sca.workspace.admin.impl;
 
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeQName;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeTitle;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.contributionURI;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeQName;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeTitle;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.contributionURI;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
@@ -46,6 +47,8 @@ import org.osoa.sca.annotations.Service;
 @Scope("COMPOSITE")
 @Service(interfaces={ItemCollection.class, LocalItemCollection.class})
 public class CompositeImageCollectionImpl implements ItemCollection, LocalItemCollection {
+
+    private final static Logger logger = Logger.getLogger(CompositeImageCollectionImpl.class.getName());    
 
     @Reference
     public LocalItemCollection contributionCollection;

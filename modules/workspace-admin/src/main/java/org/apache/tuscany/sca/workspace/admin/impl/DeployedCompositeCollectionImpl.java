@@ -19,12 +19,12 @@
 
 package org.apache.tuscany.sca.workspace.admin.impl;
 
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.DEPLOYMENT_CONTRIBUTION_URI;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeKey;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeQName;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.contributionURI;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeTitle;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeSourceLink;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.DEPLOYMENT_CONTRIBUTION_URI;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeKey;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeQName;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.contributionURI;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeTitle;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeSourceLink;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -40,6 +40,7 @@ import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -88,6 +89,8 @@ import org.w3c.dom.Document;
 @Service(interfaces={ItemCollection.class,LocalItemCollection.class, Servlet.class})
 public class DeployedCompositeCollectionImpl extends HttpServlet implements ItemCollection, LocalItemCollection {
     private static final long serialVersionUID = -3477992129462720901L;
+
+    private final static Logger logger = Logger.getLogger(DeployedCompositeCollectionImpl.class.getName());    
 
     @Property
     public String compositeFile;

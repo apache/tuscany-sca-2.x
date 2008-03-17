@@ -17,11 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.workspace.admin.impl;
-
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeQName;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeTitle;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.contributionURI;
+package org.apache.tuscany.sca.implementation.node.launcher;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,13 +25,15 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
+
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
-import org.apache.tuscany.sca.node.launch.SCANode2Launcher;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
@@ -49,6 +47,8 @@ import org.osoa.sca.annotations.Service;
 @Scope("COMPOSITE")
 @Service(interfaces={ItemCollection.class, LocalItemCollection.class})
 public class NodeProcessCollectionImpl implements ItemCollection, LocalItemCollection {
+
+    private final static Logger logger = Logger.getLogger(NodeProcessCollectionImpl.class.getName());    
 
     private List<SCANodeVM> nodeVMs = new ArrayList<SCANodeVM>();
 
@@ -204,7 +204,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
             Properties props = System.getProperties();
             String java = props.getProperty("java.home") + "/bin/java";
             String cp = props.getProperty("java.class.path");
-            String main = SCANode2Launcher.class.getName();
+            String main = NodeImplementationLauncher.class.getName();
             String url = "http://localhost:9990/composite-image?composite=" + composite;
             final String[] command = new String[]{ java, "-cp", cp, main , url};
             
@@ -282,4 +282,35 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
         }
     }
     
+    /**
+     * Extracts a qname from a key expressed as contributionURI;namespace;localpart.
+     * @param key
+     * @return
+     */
+    private static QName compositeQName(String key) {
+        int i = key.indexOf(';');
+        key = key.substring(i + 1);
+        i = key.indexOf(';');
+        return new QName(key.substring(0, i), key.substring(i + 1));
+    }
+
+    /**
+     * Returns a composite title expressed as contributionURI - namespace;localpart.
+     * @param qname
+     * @return
+     */
+    private static String compositeTitle(String uri, QName qname) {
+        return uri + " - " + qname.getNamespaceURI() + ";" + qname.getLocalPart();
+    }
+
+    /**
+     * Extracts a contribution uri from a key expressed as contributionURI;namespace;localpart.
+     * @param key
+     * @return
+     */
+    private static String contributionURI(String key) {
+        int i = key.indexOf(';');
+        return key.substring("composite:".length(), i);
+    }
+
 }

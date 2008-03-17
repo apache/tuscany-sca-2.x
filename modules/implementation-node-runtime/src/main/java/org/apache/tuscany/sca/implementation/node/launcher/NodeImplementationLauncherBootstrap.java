@@ -17,28 +17,34 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.node.provider;
+package org.apache.tuscany.sca.implementation.node.launcher;
 
-import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode2Factory;
 
 /**
- * Implements an invoker for node component implementations.
- * 
+ * Bootstrap class for standalone SCA nodes, used by NodeImplementationLauncher
+ * to launch SCA nodes.
+ *  
  * @version $Rev$ $Date$
  */
-class NodeImplementationInvoker implements Invoker {
-    private Composite composite;
+public class NodeImplementationLauncherBootstrap {
+
+    private SCANode2 node;
     
-    NodeImplementationInvoker(Composite composite) {
-        this.composite = composite;
-    }
-    
-    public Message invoke(Message msg) {
-        //FIXME Implement later
-        msg.setBody(composite);
-        return msg;
+    /**
+     * Constructs a new node bootstrap.
+     */
+    public NodeImplementationLauncherBootstrap(String configurationURI) throws Exception {
+        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        node = nodeFactory.createSCANode(configurationURI);
     }
 
+    public void start() throws Exception {
+        node.start();
+    }
+    
+    public void stop() throws Exception {
+        node.stop();
+    }
 }

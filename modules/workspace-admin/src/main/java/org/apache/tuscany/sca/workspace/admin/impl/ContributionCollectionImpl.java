@@ -19,10 +19,10 @@
 
 package org.apache.tuscany.sca.workspace.admin.impl;
 
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.DEPLOYMENT_CONTRIBUTION_URI;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeSimpleTitle;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.compositeSourceLink;
-import static org.apache.tuscany.sca.workspace.admin.impl.AdminCommons.locationURL;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.DEPLOYMENT_CONTRIBUTION_URI;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeSimpleTitle;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeSourceLink;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.locationURL;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -35,6 +35,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -97,6 +98,8 @@ import org.w3c.dom.Document;
 @Service(interfaces={ItemCollection.class, LocalItemCollection.class, Servlet.class})
 public class ContributionCollectionImpl extends HttpServlet implements ItemCollection, LocalItemCollection {
     private static final long serialVersionUID = -4759297945439322773L;
+
+    private final static Logger logger = Logger.getLogger(ContributionCollectionImpl.class.getName());    
 
     @Property
     public String workspaceFile;
