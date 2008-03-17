@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node.launcher;
+package org.apache.tuscany.sca.node.launcher.webapp;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -45,13 +45,13 @@ public class NodeServletFilter implements Filter {
     private Object servletHost;
     private Filter filter;
 
-    public void init(final FilterConfig config) throws ServletException {
+    public void init(FilterConfig filterConfig) throws ServletException {
         logger.info("Apache Tuscany SCA WebApp Node starting...");
 
         try {
             // Get the Tuscany runtime classloader
             ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-            runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader(tccl);
+            runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader(getClass().getClassLoader());
             
             try {
                 if (runtimeClassLoader != null) {
@@ -60,7 +60,7 @@ public class NodeServletFilter implements Filter {
         
                 // Load the Tuscany WebApp servlet host and get the host instance
                 // for the current webapp
-                String className = "org.apache.tuscany.sca.node.webapp.NodeWebAppServletHost"; 
+                String className = "org.apache.tuscany.sca.implementation.node.webapp.NodeWebAppServletHost"; 
                 if (runtimeClassLoader != null) {
                     servletHostClass = Class.forName(className, true, runtimeClassLoader);
                 } else {
@@ -69,7 +69,7 @@ public class NodeServletFilter implements Filter {
                 servletHost = servletHostClass.getMethod("servletHost").invoke(null);
         
                 // Initialize the servlet host
-                servletHostClass.getMethod("init", FilterConfig.class).invoke(config);
+                servletHostClass.getMethod("init", FilterConfig.class).invoke(servletHost, filterConfig);
     
                 // The servlet host also implements the filter interface 
                 filter = (Filter)servletHost;

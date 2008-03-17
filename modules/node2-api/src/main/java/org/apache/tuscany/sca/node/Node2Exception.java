@@ -26,11 +26,11 @@ import org.osoa.sca.ServiceRuntimeException;
  *
  * @version $Rev: 568826 $ $Date: 2007-08-23 06:27:34 +0100 (Thu, 23 Aug 2007) $
  */
-public class NodeException extends ServiceRuntimeException {
+public class Node2Exception extends ServiceRuntimeException {
 
     static final long serialVersionUID = 2096658015909178325L;
 
-    public NodeException() {
+    public Node2Exception() {
         super();
     }
 
@@ -38,21 +38,21 @@ public class NodeException extends ServiceRuntimeException {
      * @param message
      * @param cause
      */
-    public NodeException(String message, Throwable cause) {
+    public Node2Exception(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
      * @param message
      */
-    public NodeException(String message) {
+    public Node2Exception(String message) {
         super(message);
     }
 
     /**
      * @param cause
      */
-    public NodeException(Throwable cause) {
+    public Node2Exception(Throwable cause) {
         super(cause);
     }
 }

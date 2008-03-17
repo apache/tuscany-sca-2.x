@@ -17,26 +17,26 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node;
+package org.apache.tuscany.sca.implementation.node.webapp;
 
-
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 
 /**
- * Represents an SCA processing node.
- * A node is loaded with an SCA composites. It can start and stop that composite. 
- * 
- * @version $Rev$ $Date$
+ * Activates the webapp host by registering the webapp ServletHost.
  */
-public interface SCANode2 {
+public class NodeWebAppModuleActivator implements ModuleActivator {
 
-    /**
-     * Start the composite loaded in the node.
-     */
-    public void start() throws Node2Exception;    
-    
-    /**
-     * Stop the composite loaded in the node.
-     */
-    public void stop() throws Node2Exception;    
+    public void start(ExtensionPointRegistry extensionPointRegistry) {
+
+        ServletHostExtensionPoint servletHosts =
+            extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
+
+        servletHosts.addServletHost(NodeWebAppServletHost.servletHost());
+    }
+
+    public void stop(ExtensionPointRegistry registry) {
+    }
 
 }

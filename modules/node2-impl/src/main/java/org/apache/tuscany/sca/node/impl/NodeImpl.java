@@ -50,7 +50,7 @@ import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.node.NodeException;
+import org.apache.tuscany.sca.node.Node2Exception;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -83,14 +83,14 @@ public class NodeImpl implements SCANode2, SCAClient {
      * Constructs a new SCA node.
      *  
      * @param configurationURI the URI of the node configuration information.
-     * @throws NodeException
+     * @throws Node2Exception
      */
-    public NodeImpl(String configurationURI) throws NodeException {
+    public NodeImpl(String configurationURI) throws Node2Exception {
         try {
             init(configurationURI);
 
         } catch (Exception e) {
-            throw new NodeException(e);
+            throw new Node2Exception(e);
         }        
     }
     
@@ -159,7 +159,7 @@ public class NodeImpl implements SCANode2, SCAClient {
         activator.activate(composite);
     }
     
-    public void start() throws NodeException {
+    public void start() throws Node2Exception {
         logger.log(Level.INFO, "Starting node: " + configurationURI);               
         
         try {
@@ -168,11 +168,11 @@ public class NodeImpl implements SCANode2, SCAClient {
             activator.start(composite);
             
         } catch (ActivationException e) {
-            throw new NodeException(e);
+            throw new Node2Exception(e);
         }
     }
     
-    public void stop() throws NodeException {
+    public void stop() throws Node2Exception {
         logger.log(Level.INFO, "Stopping node: " + configurationURI);               
         
         try {
@@ -181,7 +181,7 @@ public class NodeImpl implements SCANode2, SCAClient {
             activator.stop(composite);
             
         } catch (ActivationException e) {
-            throw new NodeException(e);
+            throw new Node2Exception(e);
         }
     }
     
