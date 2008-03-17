@@ -46,7 +46,7 @@ public class NodeImplementationDaemon {
             
             // We use Java reflection here as only the runtime class
             // loader knows the runtime classes required by the daemon
-            daemonClass = runtimeClassLoader.loadClass("org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationDaemonBootstrap"); 
+            daemonClass = Class.forName("org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationDaemonBootstrap", true, runtimeClassLoader); 
             daemon = daemonClass.getConstructor().newInstance();
             
             // Start the daemon
