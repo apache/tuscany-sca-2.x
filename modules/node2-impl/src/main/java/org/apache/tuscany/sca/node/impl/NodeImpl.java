@@ -65,9 +65,9 @@ import org.osoa.sca.ServiceRuntimeException;
  * 
  * @version $Rev$ $Date$
  */
-public class SCANode2Impl implements SCANode2, SCAClient {
+public class NodeImpl implements SCANode2, SCAClient {
 	
-    private final static Logger logger = Logger.getLogger(SCANode2Impl.class.getName());
+    private final static Logger logger = Logger.getLogger(NodeImpl.class.getName());
 	     
     // The node configuration URI
     private String configurationURI;
@@ -85,7 +85,7 @@ public class SCANode2Impl implements SCANode2, SCAClient {
      * @param configurationURI the URI of the node configuration information.
      * @throws NodeException
      */
-    public SCANode2Impl(String configurationURI) throws NodeException {
+    public NodeImpl(String configurationURI) throws NodeException {
         try {
             init(configurationURI);
 

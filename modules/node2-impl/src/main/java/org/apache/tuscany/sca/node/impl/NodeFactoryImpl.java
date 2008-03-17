@@ -16,16 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package calculator;
+
+package org.apache.tuscany.sca.node.impl;
+
+import org.apache.tuscany.sca.node.NodeException;
+import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode2Factory;
 
 /**
- * An implementation of the subtract service.
+ * Default implementation of an SCA node factory.
+ * 
+ * @version $Rev$ $Date$
  */
-public class SubtractServiceImpl implements SubtractService {
-
-    public double subtract(double n1, double n2) {
-        System.out.println("SubtractService - subtract " + n1 + " and " + n2);
-        return n1 - n2;
+public class NodeFactoryImpl extends SCANode2Factory {
+    
+    public NodeFactoryImpl() {
     }
 
+    public SCANode2 createSCANode(String configurationURI) throws NodeException {
+        return new NodeImpl(configurationURI);
+    }
 }
