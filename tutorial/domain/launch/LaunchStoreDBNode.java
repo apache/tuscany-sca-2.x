@@ -19,11 +19,11 @@
 
 package launch;
 
-import org.apache.tuscany.sca.node.launch.SCANode2Launcher;
+import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncher;
 
 
 public class LaunchStoreDBNode {
     public static void main(String[] args) throws Exception {
-        SCANode2Launcher.main(new String[] {"http://localhost:9990/composite-image/?composite=composite:store-db;http://store;store-db"});
+        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/composite-image/?composite=composite:store-db;http://store;store-db"});
     }
 }

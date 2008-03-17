@@ -22,7 +22,7 @@ package launch;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.tuscany.sca.node.launch.SCANode2Launcher;
+import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncher;
 
 public class LaunchAllTutorialNodes {
     public static void main(String[] args) throws Exception {
@@ -47,7 +47,7 @@ public class LaunchAllTutorialNodes {
         Properties props = System.getProperties();
         String java = props.getProperty("java.home") + "/bin/java";
         String cp = props.getProperty("java.class.path");
-        String main = SCANode2Launcher.class.getName();
+        String main = NodeImplementationLauncher.class.getName();
         final String[] command = new String[]{ java, "-cp", cp, main , url};
         Thread thread = new Thread(new Runnable() {
             public void run() {
