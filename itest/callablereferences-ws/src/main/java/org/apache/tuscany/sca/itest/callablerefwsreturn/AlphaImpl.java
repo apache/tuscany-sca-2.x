@@ -34,6 +34,8 @@ public class AlphaImpl implements Alpha {
 
     @Context
     protected ComponentContext componentContext;
+    
+    Object conversationId0 = null;
 
     public boolean run() {
         CallableReference<Gamma> gammaRef = null;
@@ -48,10 +50,10 @@ public class AlphaImpl implements Alpha {
             // no Conversation exists
             Conversation con = gammaRef.getConversation();
             if (con == null) {
-                System.out.println("Alpha: Conversation to gamma is null");
+                System.out.println("Alpha1: Conversation to gamma is null");
             } else {
                 System.out
-                        .println("Alpha: Conversation to gamma exists. conversationId="
+                        .println("Alpha1: Conversation to gamma exists. conversationId="
                                 + con.getConversationID());
                 conversationId1 = con.getConversationID();                
             }
@@ -59,18 +61,28 @@ public class AlphaImpl implements Alpha {
             // this call should reuse a Conversation, but as none exists it
             // creates a new conversation
             gammaRef.getService().doSomething();
+            gammaRef.getService().doSomething();
+            gammaRef.getService().doSomething();
+            
             con = gammaRef.getConversation();
             if (con == null) {
-                System.out.println("Alpha: Conversation to gamma is null");
+                System.out.println("Alpha2: Conversation to gamma is null");
             } else {
                 System.out
-                        .println("Alpha: Conversation to gamma exists. conversationId="
+                        .println("Alpha2: Conversation to gamma exists. conversationId="
                                 + con.getConversationID());
                 conversationId2 = con.getConversationID();                
             }
             
             boolean testPassed = conversationId1.equals(conversationId2);
-            return testPassed;
+            
+            if (conversationId0 == null){
+                conversationId0 = conversationId1;
+                return testPassed;
+            } else {
+                return testPassed && (!conversationId0.equals(conversationId1));
+            }
+            
         } catch (Exception e) {
             e.printStackTrace();
             return false;

@@ -371,7 +371,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
             }
             if (refParams == null) {
                 refParams = new ReferenceParametersImpl();
-                
+               
                 // remove any existing reference parameters from the clone                
                 Object toRemove = null;
                 for (Object extension : clonedRef.getExtensions()){
@@ -379,12 +379,10 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                         toRemove = extension;
                     }
                 }
-                
+               
                 if (toRemove != null){
                     clonedRef.getExtensions().remove(toRemove);
                 }
-
-                clonedRef.getExtensions().clear();
                 
                 // add the new reference parameter object
                 clonedRef.getExtensions().add(refParams);
