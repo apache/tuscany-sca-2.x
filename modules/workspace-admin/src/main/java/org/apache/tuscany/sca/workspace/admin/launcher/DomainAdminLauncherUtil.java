@@ -82,10 +82,10 @@ public final class DomainAdminLauncherUtil {
         // Add all the JARs found under $TUSCANY_HOME, $TUSCANY_HOME/modules
         // and $TUSCANY_HOME/lib
         String home = System.getProperty(DomainAdminLauncherUtil.TUSCANY_HOME);
-        if (home == null || home.isEmpty()) {
+        if (home == null || home.length() == 0) {
             home = System.getenv(DomainAdminLauncherUtil.TUSCANY_HOME);
         }
-        if (home != null && !home.isEmpty()) {
+        if (home != null && home.length() != 0) {
             DomainAdminLauncherUtil.logger.info(DomainAdminLauncherUtil.TUSCANY_HOME + ": " + home);
             File homeDirectory = new File(home);
             if (homeDirectory.exists()) {
