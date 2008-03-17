@@ -213,7 +213,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
                         impl.getBundleSymbolicName());
             
             String bundleName = resolvedBundle.getBundleRelativePath();
-            String ctURI = bundleName.lastIndexOf(".") > 0? 
+            String ctURI = bundleName.endsWith(".jar") || bundleName.endsWith(".JAR")? 
                     bundleName.substring(0, bundleName.lastIndexOf(".")) : bundleName;
             ctURI = ctURI.replaceAll("\\.", "/");
             ctURI = ctURI + ".componentType";
