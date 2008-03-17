@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
@@ -43,7 +44,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletMappingException;
-import org.apache.tuscany.sca.node.NodeException;
+import org.apache.tuscany.sca.node.Node2Exception;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
 
@@ -52,7 +53,7 @@ import org.apache.tuscany.sca.node.SCANode2Factory;
  * 
  * @version $Rev$ $Date$
  */
-public class NodeWebAppServletHost implements ServletHost {
+public class NodeWebAppServletHost implements ServletHost, Filter {
     private static final Logger logger = Logger.getLogger(NodeWebAppServletHost.class.getName());
 
     public static final String SCA_NODE_ATTRIBUTE = "org.apache.tuscany.sca.SCANode";
@@ -64,7 +65,6 @@ public class NodeWebAppServletHost implements ServletHost {
     
     private String contextPath = "/";
     private int defaultPort = 8080;
-    private String contributionRoot;
 
     /**
      * Constructs a new NodeWebAppServletHost.
@@ -129,7 +129,7 @@ public class NodeWebAppServletHost implements ServletHost {
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
         try {
             node = nodeFactory.createSCANode(nodeImage);
-        } catch (NodeException e) {
+        } catch (Node2Exception e) {
             throw new ServletException(e);
         }
 
@@ -139,7 +139,7 @@ public class NodeWebAppServletHost implements ServletHost {
         // Start the node
         try {
             node.start();
-        } catch (NodeException e) {
+        } catch (Node2Exception e) {
             throw new ServletException(e);
         }
 
@@ -279,7 +279,7 @@ public class NodeWebAppServletHost implements ServletHost {
      * 
      * @throws ServletException
      */
-    public void destroy() throws ServletException {
+    public void destroy() {
 
         // Destroy the registered servlets
         for (Servlet servlet : servlets.values()) {
@@ -290,8 +290,8 @@ public class NodeWebAppServletHost implements ServletHost {
         if (node != null) {
             try {
                 node.stop();
-            } catch (NodeException e) {
-                throw new ServletException(e);
+            } catch (Node2Exception e) {
+                throw new RuntimeException(e);
             }
         }
     }

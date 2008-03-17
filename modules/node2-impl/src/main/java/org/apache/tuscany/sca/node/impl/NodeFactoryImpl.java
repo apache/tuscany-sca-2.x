@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.node.impl;
 
-import org.apache.tuscany.sca.node.NodeException;
+import org.apache.tuscany.sca.node.Node2Exception;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
 
@@ -33,7 +33,7 @@ public class NodeFactoryImpl extends SCANode2Factory {
     public NodeFactoryImpl() {
     }
 
-    public SCANode2 createSCANode(String configurationURI) throws NodeException {
+    public SCANode2 createSCANode(String configurationURI) throws Node2Exception {
         return new NodeImpl(configurationURI);
     }
 }

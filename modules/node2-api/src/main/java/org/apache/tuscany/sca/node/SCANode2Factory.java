@@ -71,6 +71,6 @@ public abstract class SCANode2Factory {
      * @param configurationURI the URI of the node configuration 
      * @return a new SCA node.
      */
-    public abstract SCANode2 createSCANode(String configurationURI) throws NodeException;
+    public abstract SCANode2 createSCANode(String configurationURI) throws Node2Exception;
 
 }
