@@ -24,7 +24,7 @@ package launch;
  *
  * @version $Rev$ $Date$
  */
-public class LaunchTutorialAdmin {
+public class LaunchTutorialDomainAdmin {
     
     public static void main(String[] args) throws Exception {
         org.apache.tuscany.sca.workspace.admin.launcher.DomainAdminLauncher.main(args);
