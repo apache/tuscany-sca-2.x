@@ -43,6 +43,7 @@ public class CallableReferenceReturnTestCase {
     @Test
     public void testCallableReferenceReturn() {
         Assert.assertTrue(alpha.run());
+        Assert.assertTrue(alpha.run());
     }
 
 }
