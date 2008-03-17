@@ -19,10 +19,10 @@
 
 package launch;
 
-import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncher;
+import org.apache.tuscany.sca.node.launcher.NodeLauncher;
 
 public class LaunchStoreEUNode {
     public static void main(String[] args) throws Exception {
-        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/node-image/node:StoreEUNode"});
+        NodeLauncher.main(new String[] {"http://localhost:9990/node-image/StoreEUNode"});
     }
 }
