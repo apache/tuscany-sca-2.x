@@ -82,10 +82,10 @@ public final class NodeLauncherUtil {
         // Add all the JARs found under $TUSCANY_HOME, $TUSCANY_HOME/modules
         // and $TUSCANY_HOME/lib
         String home = System.getProperty(NodeLauncherUtil.TUSCANY_HOME);
-        if (home == null || home.isEmpty()) {
+        if (home == null || home.length() == 0) {
             home = System.getenv(NodeLauncherUtil.TUSCANY_HOME);
         }
-        if (home != null && !home.isEmpty()) {
+        if (home != null && home.length() != 0) {
             NodeLauncherUtil.logger.info(NodeLauncherUtil.TUSCANY_HOME + ": " + home);
             File homeDirectory = new File(home);
             if (homeDirectory.exists()) {
