@@ -63,7 +63,8 @@ public class ClassReferenceModelResolver implements ModelResolver {
                     osgiResolverClass.getConstructor(Contribution.class, ModelFactoryExtensionPoint.class);
                 this.osgiResolver = (ModelResolver)constructor.newInstance(contribution, modelFactories);
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
+            // Ignore error, non-OSGi classloading is used in this case
         }
     }
 
