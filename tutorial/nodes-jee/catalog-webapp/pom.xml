@@ -58,6 +58,7 @@
                   <exclude>pom.xml</exclude>
                   <exclude>build.xml</exclude>
                   <exclude>target/**</exclude>
+                  <exclude>webapp/**</exclude>
               </excludes>
           </resource>
        </resources>
@@ -67,8 +68,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                  <warSourceDirectory>.</warSourceDirectory>  
-                  <warSourceExcludes>target/**,.*/**</warSourceExcludes>    
+                  <warSourceDirectory>webapp</warSourceDirectory>  
                 </configuration>
             </plugin>
             <plugin>
