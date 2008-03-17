@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.implementation.node.webapp;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
@@ -32,8 +31,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.FilterConfig;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
@@ -44,7 +41,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletMappingException;
 import org.apache.tuscany.sca.node.NodeException;

@@ -17,10 +17,8 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.node.main;
+package org.apache.tuscany.sca.node.launcher;
 
-import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationDaemon;
-import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncher;
 
 /**
  * Main class for this JAR.
@@ -29,13 +27,13 @@ import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLau
  *  
  * @version $Rev$ $Date$
  */
-public class NodeImplementationMain {
+public class NodeMain {
 
     public static void main(String[] args) throws Exception {
         if (args.length != 0) {
-            NodeImplementationLauncher.main(args);
+            NodeLauncher.main(args);
         } else {
-            NodeImplementationDaemon.main(args);
+            NodeDaemon.main(args);
         }
     }
 }

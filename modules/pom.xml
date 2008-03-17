@@ -131,6 +131,7 @@
                 <module>node2-api</module>
                 <module>node-impl</module>
                 <module>node2-impl</module>
+                <module>node2-launcher</module>
                 <module>osgi-runtime</module>
                 <module>policy</module>
                 <module>policy-xml</module>

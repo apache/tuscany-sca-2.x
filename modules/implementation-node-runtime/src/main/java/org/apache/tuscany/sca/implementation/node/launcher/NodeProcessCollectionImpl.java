@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.apache.tuscany.sca.node.launcher.NodeLauncher;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
@@ -202,7 +203,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
             Properties props = System.getProperties();
             String java = props.getProperty("java.home") + "/bin/java";
             String cp = props.getProperty("java.class.path");
-            String main = NodeImplementationLauncher.class.getName();
+            String main = NodeLauncher.class.getName();
             String url = "http://localhost:9990/node-image/" + nodeName;
             final String[] command = new String[]{ java, "-cp", cp, main , url};
             

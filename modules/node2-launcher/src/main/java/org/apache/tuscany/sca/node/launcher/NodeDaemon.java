@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.node.launcher;
+package org.apache.tuscany.sca.node.launcher;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -28,9 +28,9 @@ import java.util.logging.Logger;
  *  
  * @version $Rev$ $Date$
  */
-public class NodeImplementationDaemon {
+public class NodeDaemon {
 
-    private final static Logger logger = Logger.getLogger(NodeImplementationDaemon.class.getName());
+    private final static Logger logger = Logger.getLogger(NodeDaemon.class.getName());
     
     public static void main(String[] args) throws Exception {
         logger.info("Apache Tuscany SCA Node Daemon starting...");
@@ -39,14 +39,21 @@ public class NodeImplementationDaemon {
         Object daemon;
         try {
             // Set up runtime classloader
-            ClassLoader runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader();
-            Thread.currentThread().setContextClassLoader(runtimeClassLoader);
+            ClassLoader runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader(Thread.currentThread().getContextClassLoader());
+            if (runtimeClassLoader != null) {
+                Thread.currentThread().setContextClassLoader(runtimeClassLoader);
+            }
 
             // Create the daemon
             
             // We use Java reflection here as only the runtime class
             // loader knows the runtime classes required by the daemon
-            daemonClass = Class.forName("org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationDaemonBootstrap", true, runtimeClassLoader); 
+            String className = "org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationDaemonBootstrap";
+            if (runtimeClassLoader != null) {
+                daemonClass = Class.forName(className, true, runtimeClassLoader);
+            } else {
+                daemonClass = Class.forName(className);
+            }
             daemon = daemonClass.getConstructor().newInstance();
             
             // Start the daemon

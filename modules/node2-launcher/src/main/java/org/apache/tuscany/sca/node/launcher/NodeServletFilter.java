@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.node.launcher;
+package org.apache.tuscany.sca.node.launcher;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -50,18 +50,33 @@ public class NodeServletFilter implements Filter {
 
         try {
             // Get the Tuscany runtime classloader
-            runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader();
+            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+            runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader(tccl);
+            
+            try {
+                if (runtimeClassLoader != null) {
+                    Thread.currentThread().setContextClassLoader(runtimeClassLoader);
+                }
+        
+                // Load the Tuscany WebApp servlet host and get the host instance
+                // for the current webapp
+                String className = "org.apache.tuscany.sca.node.webapp.NodeWebAppServletHost"; 
+                if (runtimeClassLoader != null) {
+                    servletHostClass = Class.forName(className, true, runtimeClassLoader);
+                } else {
+                    servletHostClass = Class.forName(className);
+                }
+                servletHost = servletHostClass.getMethod("servletHost").invoke(null);
+        
+                // Initialize the servlet host
+                servletHostClass.getMethod("init", FilterConfig.class).invoke(config);
     
-            // Load the Tuscany WebApp servlet host and get the host instance
-            // for the current webapp
-            servletHostClass = Class.forName("org.apache.tuscany.sca.implementation.node.webapp.NodeWebAppServletHost", true, runtimeClassLoader);
-            servletHost = servletHostClass.getMethod("servletHost").invoke(null);
-    
-            // Initialize the servlet host
-            servletHostClass.getMethod("init", FilterConfig.class).invoke(config);
-
-            // The servlet host also implements the filter interface 
-            filter = (Filter)servletHost;
+                // The servlet host also implements the filter interface 
+                filter = (Filter)servletHost;
+                
+            } finally {
+                Thread.currentThread().setContextClassLoader(tccl);
+            }
             
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error Starting SCA WebApp Node", e);
@@ -74,10 +89,18 @@ public class NodeServletFilter implements Filter {
     public void destroy() {
         logger.info("Apache Tuscany WebApp Node stopping...");
         if (servletHost != null) {
+            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             try {
+                if (runtimeClassLoader != null) {
+                    Thread.currentThread().setContextClassLoader(runtimeClassLoader);
+                }
+                
                 servletHostClass.getMethod("destroy").invoke(servletHost);
+                
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "Error Stopping SCA WebApp Node", e);
+            } finally {
+                Thread.currentThread().setContextClassLoader(tccl);
             }
         }
         logger.info("SCA WebApp Node stopped.");
@@ -87,7 +110,17 @@ public class NodeServletFilter implements Filter {
         throws IOException, ServletException {
 
         // Delegate to the servlet host filter
-        filter.doFilter(request, response, chain);
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            if (runtimeClassLoader != null) {
+                Thread.currentThread().setContextClassLoader(runtimeClassLoader);
+            }
+            
+            filter.doFilter(request, response, chain);
+            
+        } finally {
+            Thread.currentThread().setContextClassLoader(tccl);
+        }
     }
 
 }
