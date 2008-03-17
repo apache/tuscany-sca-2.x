@@ -282,7 +282,7 @@
                 <include>org.apache.tuscany.sca:tuscany-bundle</include>
             </includes>
             <scope>runtime</scope>
-            <outputFileNameMapping>tuscany-sca-all-${version}.${extension}</outputFileNameMapping>
+            <outputFileNameMapping>tuscany-sca-all-${version}.jar</outputFileNameMapping>
         </dependencySet>
 
     </dependencySets>
