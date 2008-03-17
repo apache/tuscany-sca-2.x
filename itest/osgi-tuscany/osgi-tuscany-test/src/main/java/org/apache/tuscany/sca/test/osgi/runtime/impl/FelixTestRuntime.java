@@ -118,6 +118,7 @@ public class FelixTestRuntime extends OSGiTestRuntime implements BundleActivator
                 "javax.management, " + 
                 "sun.misc, " +
                 "javax.net, " +
+                "javax.crypto, " +
                 "org.apache.felix.main";
         
         
