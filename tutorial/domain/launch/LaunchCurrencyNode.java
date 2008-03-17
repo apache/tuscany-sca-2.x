@@ -23,6 +23,6 @@ import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLau
 
 public class LaunchCurrencyNode {
     public static void main(String[] args) throws Exception {
-        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/composite-image/?composite=composite:cloud;http://cloud;currency"});
+        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/node-image/node:CurrencyNode"});
     }
 }

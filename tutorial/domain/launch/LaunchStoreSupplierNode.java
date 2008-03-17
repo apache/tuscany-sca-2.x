@@ -23,6 +23,6 @@ import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLau
 
 public class LaunchStoreSupplierNode {
     public static void main(String[] args) throws Exception {
-        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/composite-image/?composite=composite:store-supplier;http://store;store-supplier"});
+        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/node-image/node:StoreSupplierNode"});
     }
 }

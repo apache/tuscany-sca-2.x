@@ -24,6 +24,6 @@ import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLau
 
 public class LaunchStoreDBNode {
     public static void main(String[] args) throws Exception {
-        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/composite-image/?composite=composite:store-db;http://store;store-db"});
+        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/node-image/node:StoreDBNode"});
     }
 }
