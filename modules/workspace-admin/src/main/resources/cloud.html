@@ -51,10 +51,10 @@
     	return name.substring(i + 1);
 	}
 	
-	var compositeIds;
+	var nodeNames;
 	
 	function getCompositesResponse(feed) {
-		compositeIds = new Array();      
+		nodeNames = new Array();      
 		if (feed != null) {
 			var entries = feed.getElementsByTagName("entry");
 			var composites = "";
@@ -82,7 +82,6 @@
 					  qname = compositeName(compositeId);
 					}
 				}
-				compositeIds[i] = compositeId;
 
 				var content = "";
 				if (entries[i].getElementsByTagName("content")[0].firstChild != null) {
@@ -95,6 +94,7 @@
 				}
 
 				var nodeName = compositeLocalName(nodeId);
+				nodeNames[i] = nodeName;
 				
 				composites += '<tr>'
 				if (content.indexOf('<span id="problem"') != -1) {
@@ -108,8 +108,8 @@
 					composites += '<td><a href=\"' + compositeLink + '\">' + qname + '</a></td>';
 					composites += '<td><a href="/contribution/' + uri + '">' + uri + '</a></td>';
 				}
-				composites += '<td><a href="/composite-image/?composite=' + compositeId + '"><img src="icons/feed-icon.png" border="0"></a></td>';
-				composites += '<td><a href="/process/?composite=' + compositeId + '"><img src="icons/feed-icon.png" border="0"></a></td>';
+				composites += '<td><a href="/node-image/' + nodeName + '"><img src="icons/feed-icon.png" border="0"></a></td>';
+				composites += '<td><a href="/process/?node=' + nodeName + '"><img src="icons/feed-icon.png" border="0"></a></td>';
 				composites += '</tr>';
 			}
 			composites += '</table>';
@@ -179,7 +179,7 @@
 		var composites  = array(document.cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
-			    var id = compositeIds[i];
+			    var id = nodeNames[i];
 			    
 				var entry = '<entry xmlns="http://www.w3.org/2005/Atom">' +
               	'<id>' + id + '</id>' +
@@ -201,7 +201,7 @@
 		var composites  = array(document.cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
-			    var id = compositeIds[i];
+			    var id = nodeNames[i];
 				processCollection.del(id, stopCompositeResponse);
 			}
 		}

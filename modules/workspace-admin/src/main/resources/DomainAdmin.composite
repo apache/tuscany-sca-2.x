@@ -143,7 +143,11 @@
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/composite-image" title="Composite Images"/>
    		</service>
+   		<service name="Servlet">
+   	 		<t:binding.http uri="http://localhost:9990/node-image"/>
+   		</service>
    		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalItemCollection"/>
+   		<reference name="cloudCollection" target="CloudCollectionComponent/LocalItemCollection"/>
     </component>
 
     <component name="NodeProcessCollectionComponent">
