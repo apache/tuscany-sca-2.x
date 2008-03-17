@@ -19,20 +19,16 @@
 package calculator;
 
 
-import javax.xml.namespace.QName;
-
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.implementation.node.launcher.NodeProcessCollectionImpl;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
-import org.apache.tuscany.sca.workspace.admin.impl.NodeProcessCollectionImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import calculator.CalculatorService;
 
 /**
  * Runs a distributed domain in a single VM by using and in memory 
@@ -53,7 +49,7 @@ public class CalculatorDistributedTestCase {
         try {
             System.out.println("Setting up domain");
             
-            SCADomain.newInstance("Admin.composite");
+            SCADomain.newInstance("DomainAdmin.composite");
             
             NodeProcessCollectionImpl nodes = new NodeProcessCollectionImpl();
             
