@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
@@ -120,13 +118,13 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
     }
     
     public Entry<String, Item>[] query(String queryString) {
-        if (queryString.startsWith("composite=")) {
+        if (queryString.startsWith("node=")) {
             
             // Return the log for the specified VM
             String key = queryString.substring(queryString.indexOf('=') + 1);
             List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
             for (SCANodeVM vm: nodeVMs) {
-                if (vm.getComposite().equals(key)) {
+                if (vm.getNodeName().equals(key)) {
                     entries.add(entry(vm));
                 }
             }
@@ -145,7 +143,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
      */
     private SCANodeVM vm(String key) {
         for (SCANodeVM vm: nodeVMs) {
-            if (key.equals(vm.getComposite())) {
+            if (key.equals(vm.getNodeName())) {
                 return vm;
             }
         }
@@ -160,7 +158,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
      */
     private static Entry<String, Item> entry(SCANodeVM vm) {
         Entry<String, Item> entry = new Entry<String, Item>();
-        entry.setKey(vm.getComposite());
+        entry.setKey(vm.getNodeName());
         entry.setData(item(vm));
         return entry;
     }
@@ -173,9 +171,9 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
      */
     private static Item item(SCANodeVM vm) {
         Item item = new Item();
-        String key = vm.getComposite();
-        item.setTitle(compositeTitle(contributionURI(key), compositeQName(key)));
-        item.setLink("/composite-image?composite=" + vm.getComposite());
+        String key = vm.getNodeName();
+        item.setTitle(title(key));
+        item.setLink("/node-image/" + vm.getNodeName());
         item.setContents("<span id=\"log\" style=\"white-space: nowrap; font-size: small\">" + vm.getLog().toString() + "</span>");
         return item;
     }
@@ -184,15 +182,15 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
      * Represent a child Java VM running an SCA node.
      */
     private static class SCANodeVM {
-        private String composite;
+        private String nodeName;
         private StringBuffer log;
         private Process process;
         private Thread monitor;
         private int status;
         
-        SCANodeVM(String composite) {
+        SCANodeVM(String nodeName) {
             log = new StringBuffer();
-            this.composite =composite;
+            this.nodeName =nodeName;
         }
         
         /**
@@ -205,7 +203,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
             String java = props.getProperty("java.home") + "/bin/java";
             String cp = props.getProperty("java.class.path");
             String main = NodeImplementationLauncher.class.getName();
-            String url = "http://localhost:9990/composite-image?composite=" + composite;
+            String url = "http://localhost:9990/node-image/" + nodeName;
             final String[] command = new String[]{ java, "-cp", cp, main , url};
             
             // Start the VM
@@ -241,8 +239,8 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
          * Returns the composite used to start this VM.
          * @return
          */
-        String getComposite() {
-            return composite;
+        String getNodeName() {
+            return nodeName;
         }
         
         /**
@@ -283,34 +281,13 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
     }
     
     /**
-     * Extracts a qname from a key expressed as contributionURI;namespace;localpart.
+     * Returns a node title.
+     * 
      * @param key
      * @return
      */
-    private static QName compositeQName(String key) {
-        int i = key.indexOf(';');
-        key = key.substring(i + 1);
-        i = key.indexOf(';');
-        return new QName(key.substring(0, i), key.substring(i + 1));
-    }
-
-    /**
-     * Returns a composite title expressed as contributionURI - namespace;localpart.
-     * @param qname
-     * @return
-     */
-    private static String compositeTitle(String uri, QName qname) {
-        return uri + " - " + qname.getNamespaceURI() + ";" + qname.getLocalPart();
-    }
-
-    /**
-     * Extracts a contribution uri from a key expressed as contributionURI;namespace;localpart.
-     * @param key
-     * @return
-     */
-    private static String contributionURI(String key) {
-        int i = key.indexOf(';');
-        return key.substring("composite:".length(), i);
+    private static String title(String key) {
+        return key;
     }
 
 }

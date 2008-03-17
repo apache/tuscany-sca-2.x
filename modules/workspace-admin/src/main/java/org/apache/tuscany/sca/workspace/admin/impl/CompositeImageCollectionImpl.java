@@ -19,21 +19,32 @@
 
 package org.apache.tuscany.sca.workspace.admin.impl;
 
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeKey;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeQName;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeTitle;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.contributionURI;
 
+import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.apache.tuscany.sca.implementation.node.NodeImplementation;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
@@ -45,13 +56,17 @@ import org.osoa.sca.annotations.Service;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-@Service(interfaces={ItemCollection.class, LocalItemCollection.class})
-public class CompositeImageCollectionImpl implements ItemCollection, LocalItemCollection {
+@Service(interfaces={ItemCollection.class, LocalItemCollection.class, Servlet.class})
+public class CompositeImageCollectionImpl extends HttpServlet implements ItemCollection, LocalItemCollection, Servlet {
+    private static final long serialVersionUID = 1L;
 
     private final static Logger logger = Logger.getLogger(CompositeImageCollectionImpl.class.getName());    
 
     @Reference
     public LocalItemCollection contributionCollection;
+    
+    @Reference
+    public LocalItemCollection cloudCollection;
     
     /**
      * Initialize the component.
@@ -117,4 +132,39 @@ public class CompositeImageCollectionImpl implements ItemCollection, LocalItemCo
         }
     }
 
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        // Get the request path
+        String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
+        String key = path.startsWith("/")? path.substring(1) : path;
+        
+        // The key contains a node name, redirect 
+        // to the corresponding composite image
+            
+        // Get the collection of cloud composites
+        Entry<String, Item>[] cloudEntries = cloudCollection.getAll();
+
+        // Find the specified node
+        for (Entry<String, Item> cloudEntry: cloudEntries) {
+            QName qname = compositeQName(cloudEntry.getKey());
+            if (qname.getLocalPart().equals(key)) {
+                
+                // Found the specified node
+                String related = cloudEntry.getData().getRelated();
+                int i = related.indexOf("composite:");
+                if (i != -1) {
+                    
+                    // Redirect to its composite image
+                    String compositeImage = "/composite-image/?composite=" + related.substring(i);
+                    response.sendRedirect(compositeImage);
+                    return;
+                }
+            }
+        }
+        
+        // Node not found
+        response.sendError(HttpServletResponse.SC_NOT_FOUND, key);
+        return;
+    }
 }

@@ -308,13 +308,13 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        // Expect a key in the form
-        // composite:contributionURI;namespace;localName
-        // and return the corresponding resolved composite
-        
         // Get the request path
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
         String key = path.startsWith("/")? path.substring(1) : path;
+        
+        // Expect a key in the form
+        // composite:contributionURI;namespace;localName
+        // and return the corresponding resolved composite
         
         // Extract the composite qname from the key
         QName qname = compositeQName(key);
@@ -465,7 +465,6 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
             return;
         }
-               
     }
 
     /**
