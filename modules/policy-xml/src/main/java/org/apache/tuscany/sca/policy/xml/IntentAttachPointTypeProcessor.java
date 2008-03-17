@@ -50,6 +50,7 @@ public abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactPro
     private IntentAttachPointTypeFactory attachPointTypeFactory;
     private PolicyFactory policyFactory; 
     
+    public abstract IntentAttachPointType resolveExtensionType(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException;
 
     public IntentAttachPointTypeProcessor(PolicyFactory policyFactory, IntentAttachPointTypeFactory attachPointTypeFactory, StAXArtifactProcessor<Object> extensionProcessor) {
         this.policyFactory = policyFactory;
@@ -63,6 +64,7 @@ public abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactPro
             if ( type.getLocalPart().startsWith(BINDING) ) {
                 IntentAttachPointType bindingType = attachPointTypeFactory.createBindingType();
                 bindingType.setName(type);
+                bindingType.setUnresolved(false);
                 
                 readAlwaysProvidedIntents(bindingType, reader);
                 readMayProvideIntents(bindingType, reader);
@@ -70,6 +72,7 @@ public abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactPro
             } else if ( type.getLocalPart().startsWith(IMPLEMENTATION) ) {
                 IntentAttachPointType implType = attachPointTypeFactory.createImplementationType();
                 implType.setName(type);
+                implType.setUnresolved(false);
                 
                 readAlwaysProvidedIntents(implType, reader);
                 readMayProvideIntents(implType, reader);
@@ -151,19 +154,14 @@ public abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactPro
         }
     }
     
-    private void resolveExtensionType(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException {
-        //FIXME: need to resolve the binding and implementations across the assembly model
-        extnType.setUnresolved(false);
-    }
-    
     public void resolve(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException {
         resolveAlwaysProvidedIntents(extnType, resolver);
         resolveMayProvideIntents(extnType, resolver);
         resolveExtensionType(extnType, resolver);
         
-        if ( !extnType.isUnresolved() ) {
+/*        if ( !extnType.isUnresolved() ) {
              resolver.addModel(extnType);
-        }
+        }*/
     }
 
     private void resolveAlwaysProvidedIntents(IntentAttachPointType extensionType,

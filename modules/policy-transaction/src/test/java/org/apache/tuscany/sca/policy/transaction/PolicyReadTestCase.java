@@ -44,7 +44,7 @@ public class PolicyReadTestCase extends TestCase {
 
         TransactionPolicyProcessor processor = new TransactionPolicyProcessor(null);
 
-        URL url = getClass().getResource("/META-INF/services/definitions.xml");
+        URL url = getClass().getResource("/org/apache/tuscany/sca/policy/transaction/tuscany_definitions.xml");
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
         InputStream urlStream = url.openStream();

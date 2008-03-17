@@ -40,6 +40,12 @@
             <artifactId>tuscany-policy</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
+
+	<dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-core-spi</artifactId>
+            <version>1.2-incubating-SNAPSHOT</version>
+        </dependency>
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
