@@ -44,13 +44,7 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node2-api</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node2-impl</artifactId>
+            <artifactId>tuscany-implementation-node-runtime</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
         </dependency>
 

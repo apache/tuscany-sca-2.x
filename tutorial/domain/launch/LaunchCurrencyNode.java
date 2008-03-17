@@ -19,10 +19,10 @@
 
 package launch;
 
-import org.apache.tuscany.sca.node.launch.SCANode2Launcher;
+import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncher;
 
 public class LaunchCurrencyNode {
     public static void main(String[] args) throws Exception {
-        SCANode2Launcher.main(new String[] {"http://localhost:9990/composite-image/?composite=composite:cloud;http://cloud;currency"});
+        NodeImplementationLauncher.main(new String[] {"http://localhost:9990/composite-image/?composite=composite:cloud;http://cloud;currency"});
     }
 }
