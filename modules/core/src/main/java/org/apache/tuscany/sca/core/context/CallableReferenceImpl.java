@@ -278,7 +278,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                         ExtendedConversation conversation = conversationManager.getConversation(parameters.getConversationID());
                         
                         if (conversation == null){
-                            conversationManager.startConversation(parameters.getConversationID());
+                            conversation = conversationManager.startConversation(parameters.getConversationID());
                         }
                         this.conversation = conversation;
                     } else {
@@ -371,6 +371,22 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
             }
             if (refParams == null) {
                 refParams = new ReferenceParametersImpl();
+                
+                // remove any existing reference parameters from the clone                
+                Object toRemove = null;
+                for (Object extension : clonedRef.getExtensions()){
+                    if (extension instanceof ReferenceParameters){
+                        toRemove = extension;
+                    }
+                }
+                
+                if (toRemove != null){
+                    clonedRef.getExtensions().remove(toRemove);
+                }
+
+                clonedRef.getExtensions().clear();
+                
+                // add the new reference parameter object
                 clonedRef.getExtensions().add(refParams);
             }
             refParams.setCallbackID(callbackID);
