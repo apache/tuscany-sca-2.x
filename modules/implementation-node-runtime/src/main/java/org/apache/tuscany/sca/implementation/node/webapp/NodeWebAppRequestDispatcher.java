@@ -117,4 +117,3 @@ class NodeWebAppRequestDispatcher implements RequestDispatcher {
         servlet.service(createRequestWrapper(request), response);
     }
 }
-

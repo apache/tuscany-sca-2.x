@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.implementation.node.launcher;
+package org.apache.tuscany.sca.node.launcher;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -46,9 +46,11 @@ public final class NodeLauncherUtil {
     /**
      * Returns a classloader for the Tuscany runtime JARs.
      * 
+     * @param parentClassLoader
+     * 
      * @return
      */
-    static ClassLoader runtimeClassLoader() throws FileNotFoundException, URISyntaxException, MalformedURLException {
+    static ClassLoader runtimeClassLoader(ClassLoader parentClassLoader) throws FileNotFoundException, URISyntaxException, MalformedURLException {
         
         // Build list of runtime JARs
         List<URL> jarURLs = new ArrayList<URL>();
@@ -108,16 +110,14 @@ public final class NodeLauncherUtil {
         }
     
         // Return the runtime class loader
-        if (jarURLs.isEmpty()) {
-            
-            // Just return the current context class loader
-            return Thread.currentThread().getContextClassLoader();
-            
-        } else {
+        if (!jarURLs.isEmpty()) {
             
             // Return a classloader configured with the runtime JARs
-            ClassLoader classLoader = new URLClassLoader(jarURLs.toArray(new URL[0]), Object.class.getClassLoader());
+            ClassLoader classLoader = new URLClassLoader(jarURLs.toArray(new URL[0]), parentClassLoader);
             return classLoader;
+            
+        } else {
+            return null;
         }
     }
 

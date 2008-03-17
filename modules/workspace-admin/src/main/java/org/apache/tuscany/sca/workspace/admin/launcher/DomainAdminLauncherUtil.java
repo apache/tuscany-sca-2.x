@@ -46,9 +46,11 @@ public final class DomainAdminLauncherUtil {
     /**
      * Returns a classloader for the Tuscany runtime JARs.
      * 
+     * @param parentClassLoader
+     * 
      * @return
      */
-    static ClassLoader runtimeClassLoader() throws FileNotFoundException, URISyntaxException, MalformedURLException {
+    static ClassLoader runtimeClassLoader(ClassLoader parentClassLoader) throws FileNotFoundException, URISyntaxException, MalformedURLException {
         
         // Build list of runtime JARs
         List<URL> jarURLs = new ArrayList<URL>();
@@ -108,16 +110,14 @@ public final class DomainAdminLauncherUtil {
         }
     
         // Return the runtime class loader
-        if (jarURLs.isEmpty()) {
-            
-            // Just return the current context class loader
-            return Thread.currentThread().getContextClassLoader();
-            
-        } else {
+        if (!jarURLs.isEmpty()) {
             
             // Return a classloader configured with the runtime JARs
             ClassLoader classLoader = new URLClassLoader(jarURLs.toArray(new URL[0]), Object.class.getClassLoader());
             return classLoader;
+            
+        } else {
+            return null;
         }
     }
 

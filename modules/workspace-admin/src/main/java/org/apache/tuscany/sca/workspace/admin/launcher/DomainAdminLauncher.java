@@ -39,14 +39,21 @@ public class DomainAdminLauncher {
         Object admin;
         try {
             // Set up runtime classloader
-            ClassLoader runtimeClassLoader = DomainAdminLauncherUtil.runtimeClassLoader();
-            Thread.currentThread().setContextClassLoader(runtimeClassLoader);
+            ClassLoader runtimeClassLoader = DomainAdminLauncherUtil.runtimeClassLoader(Object.class.getClassLoader());
+            if (runtimeClassLoader != null) {
+                Thread.currentThread().setContextClassLoader(runtimeClassLoader);
+            }
 
             // Create the daemon
             
             // We use Java reflection here as only the runtime class
             // loader knows the runtime classes required by the daemon
-            adminClass = runtimeClassLoader.loadClass("org.apache.tuscany.sca.workspace.admin.launcher.DomainAdminLauncherBootstrap"); 
+            String className = "org.apache.tuscany.sca.workspace.admin.launcher.DomainAdminLauncherBootstrap";
+            if (runtimeClassLoader != null) {
+                adminClass = Class.forName(className, true, runtimeClassLoader);
+            } else {
+                adminClass = Class.forName(className);
+            }
             admin = adminClass.getConstructor().newInstance();
             
             // Start the daemon
