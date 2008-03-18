@@ -17,16 +17,11 @@
  * under the License.
 --%>
 
-<%@ page import="org.apache.tuscany.sca.host.embedded.SCADomain"%>
-<%@ page import="calculator.CalculatorService" %>
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%
-%>
 <html>
 <head><title>Apache Tuscany SCA Node</title></head>
 
 <body>
-<p>It works!
+<h1>It works!</h1>
 </body>
 </html>
