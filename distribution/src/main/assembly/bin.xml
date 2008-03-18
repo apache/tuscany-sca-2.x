@@ -64,22 +64,60 @@
                 <include>**/*</include>
             </includes>
             <excludes>
+                <!-- General file/folders to exclude -->
+                <exclude>*/.classpath</exclude>
+                <exclude>*/.project</exclude>
+                <exclude>*/.settings</exclude>
+                <exclude>*/.settings/**/*</exclude>
+                <exclude>*/.externalToolBuilders</exclude>
+                <exclude>*/.externalToolBuilders/**/*</exclude>
+                <exclude>*/work</exclude>
+                <exclude>*/work/**/*</exclude>
+                <exclude>*/target/mvn-eclipse-cache.properties</exclude>
+                <exclude>*/target/classes</exclude>
+                <exclude>*/target/classes/**/*</exclude>
+                <exclude>*/target/dependency-maven-plugin-markers</exclude>
+                <exclude>*/target/dependency-maven-plugin-markers/**/*</exclude>
+                <exclude>*/target/test-classes</exclude>
+                <exclude>*/target/test-classes/**/*</exclude>
+                <exclude>*/target/surefire-reports</exclude>
+                <exclude>*/target/surefire-reports/**/*</exclude>
+                <exclude>*/target/sdo-source</exclude>
+                <exclude>*/target/sdo-source/**/*</exclude>
+                <exclude>*/target/wsdl2java-source</exclude>
+                <exclude>*/target/wsdl2java-source/**/*</exclude>
+                <exclude>*/**/derby.log</exclude>
+                <exclude>*/**/*.svg</exclude>
+                <!-- Sample specific work file/folders to exclude -->
                 <exclude>pom.xml</exclude>
-                <exclude>old</exclude>
-                <exclude>old/**/*</exclude>
-                <exclude>das-service</exclude>
-                <exclude>das-service/**/*</exclude>
-                <exclude>das-service-web</exclude>
-                <exclude>das-service-web/**/*</exclude>
-                <exclude>company-das</exclude>
-                <exclude>company-das/**/*</exclude>
-                <exclude>company-das-webapp</exclude>
-                <exclude>company-das-webapp/**/*</exclude>
+                <exclude>calculator-distributed/work</exclude>
+                <exclude>calculator-distributed/work/**/*</exclude>
+                <exclude>calculator-webapp/target/sample-calculator-webapp</exclude>
+                <exclude>calculator-webapp/target/sample-calculator-webapp/**/*</exclude>
+                <exclude>calculator-ws-webapp/target/sample-calculator-ws-webapp</exclude>
+                <exclude>calculator-ws-webapp/target/sample-calculator-ws-webapp/**/*</exclude>
+                <exclude>calculator-ws-secure-webapp</exclude>
+                <exclude>calculator-ws-secure-webapp/**/*</exclude>
+                <exclude>calculator-ws-secure-webapp/work</exclude>
+                <exclude>callback-ws-client/work</exclude>
+                <exclude>callback-ws-client/work/**/*</exclude>
+                <exclude>callback-ws-service/work</exclude>
+                <exclude>callback-ws-service/work/**/*</exclude>
+                <exclude>chat-webapp/target/sample-chat-webapp</exclude>
+                <exclude>chat-webapp/target/sample-chat-webapp/**/*</exclude>
+                <exclude>domain-webapp</exclude>
+                <exclude>domain-webapp/**/*</exclude>
+                <exclude>feed-aggregator-webapp/target/sample-feed-aggregator-webapp</exclude>
+                <exclude>feed-aggregator-webapp/target/sample-feed-aggregator-webapp/**/*</exclude>
                 <exclude>helloworld-dojo-webapp/src/main/webapp/dojo</exclude>
                 <exclude>helloworld-dojo-webapp/src/main/webapp/dojo/**/*</exclude>
+                <exclude>helloworld-dojo-webapp/target/sample-helloworld-dojo-webapp</exclude>
+                <exclude>helloworld-dojo-webapp/target/sample-helloworld-dojo-webapp/**/*</exclude>
                 <exclude>helloworld-jms-webapp</exclude>
                 <exclude>helloworld-jms-webapp/**/*</exclude>
                 <exclude>helloworld-jms-webapp/work</exclude>
+                <exclude>helloworld-jsonrpc-webapp/target/sample-helloworld-jsonrpc-webapp</exclude>
+                <exclude>helloworld-jsonrpc-webapp/target/sample-helloworld-jsonrpc-webapp/**/*</exclude>
                 <exclude>helloworld-ws-deep-webapp</exclude>
                 <exclude>helloworld-ws-deep-webapp/**/*</exclude>
                 <exclude>helloworld-ws-deep-webapp/work</exclude>
@@ -106,69 +144,28 @@
                 <exclude>helloworld-ws-sdo/work/**/*</exclude>
                 <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-ws-sdo-webapp</exclude>
                 <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-ws-sdo-webapp/**/*</exclude>
-                <exclude>calculator-distributed/work</exclude>
-                <exclude>calculator-distributed/work/**/*</exclude>
-                <exclude>calculator-webapp/target/sample-calculator-webapp</exclude>
-                <exclude>calculator-webapp/target/sample-calculator-webapp/**/*</exclude>
-                <exclude>calculator-ws-webapp/target/sample-calculator-ws-webapp</exclude>
-                <exclude>calculator-ws-webapp/target/sample-calculator-ws-webapp/**/*</exclude>
-                <exclude>calculator-ws-secure-webapp</exclude>
-                <exclude>calculator-ws-secure-webapp/**/*</exclude>
-                <exclude>calculator-ws-secure-webapp/work</exclude>
-                <exclude>callback-ws-client/work</exclude>
-                <exclude>callback-ws-client/work/**/*</exclude>
-                <exclude>callback-ws-service/work</exclude>
-                <exclude>callback-ws-service/work/**/*</exclude>
-                <exclude>chat-webapp/target/sample-chat-webapp</exclude>
-                <exclude>chat-webapp/target/sample-chat-webapp/**/*</exclude>
-                <exclude>domain-webapp</exclude>
-                <exclude>domain-webapp/**/*</exclude>
-                <exclude>feed-aggregator-webapp/target/sample-feed-aggregator-webapp</exclude>
-                <exclude>feed-aggregator-webapp/target/sample-feed-aggregator-webapp/**/*</exclude>
-                <exclude>helloworld-dojo-webapp/target/sample-helloworld-dojo-webapp</exclude>
-                <exclude>helloworld-dojo-webapp/target/sample-helloworld-dojo-webapp/**/*</exclude>
-                <exclude>helloworld-jsonrpc-webapp/target/sample-helloworld-jsonrpc-webapp</exclude>
-                <exclude>helloworld-jsonrpc-webapp/target/sample-helloworld-jsonrpc-webapp/**/*</exclude>
                 <exclude>osgi-supplychain/.felix</exclude>
                 <exclude>osgi-supplychain/.felix/**/*</exclude>
                 <exclude>osgi-supplychain/target/sample-osgi-supplychain</exclude>
                 <exclude>osgi-supplychain/target/sample-osgi-supplychain/**/*</exclude>
                 <exclude>loanapplication</exclude>
                 <exclude>loanapplication/**/*</exclude>
-                <!--exclude>quote-xquery</exclude-->
-                <!--exclude>quote-xquery/**/*</exclude-->
                 <exclude>simple-callback-ws/work</exclude>
                 <exclude>simple-callback-ws/work/**/*</exclude>
                 <exclude>spi-implementation-pojo</exclude>
                 <exclude>spi-implementation-pojo/**/*</exclude>
-                <exclude>*/.classpath</exclude>
-                <exclude>*/.project</exclude>
-                <exclude>*/.settings</exclude>
-                <exclude>*/.settings/**/*</exclude>
-                <exclude>*/.externalToolBuilders</exclude>
-                <exclude>*/.externalToolBuilders/**/*</exclude>
-                <exclude>*/target/mvn-eclipse-cache.properties</exclude>
-                <exclude>*/target/classes</exclude>
-                <exclude>*/target/classes/**/*</exclude>
-                <exclude>*/target/dependency-maven-plugin-markers</exclude>
-                <exclude>*/target/dependency-maven-plugin-markers/**/*</exclude>
-                <exclude>*/target/test-classes</exclude>
-                <exclude>*/target/test-classes/**/*</exclude>
-                <exclude>*/target/surefire-reports</exclude>
-                <exclude>*/target/surefire-reports/**/*</exclude>
-                <exclude>*/target/sdo-source</exclude>
-                <exclude>*/target/sdo-source/**/*</exclude>
-                <exclude>*/target/wsdl2java-source</exclude>
-                <exclude>*/target/wsdl2java-source/**/*</exclude>
-                <exclude>*/**/derby.log</exclude>
-                <exclude>*/**/*.svg</exclude>
+                <!-- Sample war files to exclude -->
+                <exclude>calculator-ws-secure-webapp/target/sample-calculator-ws-secure-webapp.war</exclude>
                 <exclude>calculator-ws-webapp/target/sample-calculator-ws-webapp.war</exclude>
+                <exclude>chat-webapp/target/sample-chat-webapp.war</exclude>
+                <exclude>domain-webapp/target/sample-domain-webapp.war</exclude>
+                <exclude>feed-aggregator-webapp/target/sample-feed-aggregator-webapp.war</exclude>
+                <exclude>helloworld-dojo-webapp/target/sample-helloworld-dojo-webapp.war</exclude>
+                <exclude>helloworld-jms-webapp/target/sample-helloworld-jms-webapp.war</exclude>
+                <exclude>helloworld-jsonrpc-webapp/target/sample-helloworld-jsonrpc-webapp.war</exclude>
+                <exclude>helloworld-ws-deep-webapp/target/sample-helloworld-ws-deep-webapp.war</exclude>
                 <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-ws-sdo-webapp.war</exclude>
                 <exclude>helloworld-ws-service-webapp/target/sample-helloworld-ws-service-webapp.war</exclude>
-                <exclude>helloworld-dojo-webapp/target/sample-helloworld-dojo-webapp.war</exclude>
-                <exclude>helloworld-jsonrpc-webapp/target/sample-helloworld-jsonrpc-webapp.war</exclude>
-                <exclude>chat-webapp/target/sample-chat-webapp.war</exclude>
-                <exclude>feed-aggregator-webapp/target/sample-feed-aggregator-webapp.war</exclude>
             </excludes>
         </fileSet>
         <!-- Add all the demos to the demos directory -->
@@ -188,6 +185,8 @@
                 <exclude>alert-aggregator-webapp/target/sdo-source/**/*</exclude>
                 <exclude>helloworld-ws-sdo/work</exclude>
                 <exclude>helloworld-ws-sdo/work/**/*</exclude>
+                <exclude>bigbank/target</exclude>
+                <exclude>bigbank/target/**/*</exclude>
                 <exclude>bigbank-account/src/main/resources/web/dojo</exclude> 
                 <exclude>bigbank-account/src/main/resources/web/dojo/**/*</exclude>
                 <exclude>secure-bigbank/secure-bigbank-account/src/main/resources/web/dojo</exclude> 
