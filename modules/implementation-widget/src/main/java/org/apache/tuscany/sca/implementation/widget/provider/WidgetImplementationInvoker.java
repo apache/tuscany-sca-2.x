@@ -32,7 +32,6 @@ import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
-import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -137,13 +136,15 @@ class WidgetImplementationInvoker implements Invoker {
      * and embedded the javascript into this js
      */
     private void generateJavaScriptBindingProxy(PrintWriter pw, String bindingProxyName) throws IOException {
-        
-        URL url = getClass().getClassLoader().getResource(bindingProxyName);
-        InputStream is = url.openStream();
-        int i;
-        while ((i = is.read()) != -1) {
-            pw.write(i);
+        //FIXME: Handle the case where the javascript binding client is not found
+        InputStream is = getClass().getClassLoader().getResourceAsStream(bindingProxyName);
+        if (is != null) {
+            int i;
+            while ((i = is.read()) != -1) {
+                pw.write(i);
+            }        	
         }
+        
         pw.println();
         pw.println();
     }
