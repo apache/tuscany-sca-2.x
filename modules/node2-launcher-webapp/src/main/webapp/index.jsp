@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<%--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,28 +15,18 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
--->
-<project>
+--%>
 
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-modules</artifactId>
-        <version>1.2-incubating-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+<%@ page import="org.apache.tuscany.sca.host.embedded.SCADomain"%>
+<%@ page import="calculator.CalculatorService" %>
 
-    <artifactId>tuscany-node2-launcher-webapp</artifactId>
-    <packaging>war</packaging>
-    <name>Apache Tuscany SCA Node WebApp</name>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+%>
+<html>
+<head><title>Apache Tuscany SCA Node</title></head>
 
-    <dependencies>   
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node2-launcher</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-    </dependencies>
-
-</project>
+<body>
+<p>It works!
+</body>
+</html>
