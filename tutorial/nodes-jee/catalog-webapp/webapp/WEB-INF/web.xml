@@ -22,11 +22,11 @@
 Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
 
-  <display-name>Fruit Catalog Web App</display-name>
+  <display-name>Fruit Catalog</display-name>
   
   <filter>
     <filter-name>tuscany</filter-name> 
-    <filter-class>org.apache.tuscany.sca.node.launcher.webapp.NodeServletFilter</filter-class> 
+    <filter-class>org.apache.tuscany.sca.node.launcher.NodeServletFilter</filter-class> 
   </filter>
 
   <filter-mapping>

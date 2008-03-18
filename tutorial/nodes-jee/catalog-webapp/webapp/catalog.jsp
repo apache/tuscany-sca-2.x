@@ -17,15 +17,36 @@
  * under the License.
 --%>
 
+<%@ page import="org.apache.tuscany.sca.node.SCAClient"%>
+<%@ page import="services.Catalog" %>
+<%@page import="services.Item"%>
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<%
+  
+  SCAClient client = (SCAClient) application.getAttribute("org.apache.tuscany.sca.node.SCAClient");
+   
+  Catalog catalog = (Catalog)client.getService(Catalog.class, "WebFruitsCatalog");
+  Item[] items = catalog.get();
+  
+%>
 
 <html>
 <head><title>Catalog</title></head>
 
 <body>
-<table>
-    <tr>
-        <th>Item</th>
-    </tr>  
+<h1>Catalog</h1>
+
+<table border="0">
+
+<% for (Item item: items) { %>>
+
+    <tr><td><%=item.getName() %></td><td><%=item.getPrice() %></td></tr>
+
+<% } %>
+
 </table>
+
 </body>
 </html>
