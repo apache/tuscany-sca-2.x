@@ -154,15 +154,15 @@ public class NodeImpl implements SCANode2, SCAClient {
         
         // Build the composite
         runtime.buildComposite(composite);
-
-        // Activate the composite
-        activator.activate(composite);
     }
     
     public void start() throws Node2Exception {
         logger.log(Level.INFO, "Starting node: " + configurationURI);               
         
         try {
+            
+            // Activate the composite
+            activator.activate(composite);
             
             // Start the composite
             activator.start(composite);
@@ -180,9 +180,21 @@ public class NodeImpl implements SCANode2, SCAClient {
             // Stop the composite
             activator.stop(composite);
             
+            // Deactivate the composite
+            activator.deactivate(composite);
+            
         } catch (ActivationException e) {
             throw new Node2Exception(e);
         }
+    }
+    
+    /**
+     * Returns the extension point registry used by this node.
+     * 
+     * @return
+     */
+    public ExtensionPointRegistry getExtensionPointRegistry() {
+        return runtime.getExtensionPointRegistry();
     }
     
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
