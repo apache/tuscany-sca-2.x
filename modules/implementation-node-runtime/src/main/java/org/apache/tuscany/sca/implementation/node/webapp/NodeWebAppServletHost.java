@@ -42,7 +42,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletMappingException;
 import org.apache.tuscany.sca.node.Node2Exception;
 import org.apache.tuscany.sca.node.SCANode2;
@@ -56,7 +58,9 @@ import org.apache.tuscany.sca.node.SCANode2Factory;
 public class NodeWebAppServletHost implements ServletHost, Filter {
     private static final Logger logger = Logger.getLogger(NodeWebAppServletHost.class.getName());
 
-    public static final String SCA_NODE_ATTRIBUTE = "org.apache.tuscany.sca.SCANode";
+    private static final String SCA_NODE_ATTRIBUTE = "org.apache.tuscany.sca.SCANode";
+    private static final String TUSCANY_DOMAIN = "TUSCANY_DOMAIN";
+    private static final String DEFAULT_DOMAIN = "http://localhost:9990";
 
     private static final NodeWebAppServletHost servletHost = new NodeWebAppServletHost();
 
@@ -90,32 +94,15 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
     public void init(final FilterConfig filterConfig) throws ServletException {
         
         // Create a servlet config wrappering the given filter config
-        ServletConfig servletConfig = new ServletConfig() {
-            public String getInitParameter(String name) {
-                return filterConfig.getInitParameter(name);
-            }
-
-            public Enumeration getInitParameterNames() {
-                return filterConfig.getInitParameterNames();
-            }
-
-            public ServletContext getServletContext() {
-                return filterConfig.getServletContext();
-            }
-
-            public String getServletName() {
-                return filterConfig.getFilterName();
-            }
-        };
+        ServletConfig servletConfig = servletConfig(filterConfig);
 
         // Get the servlet context
         ServletContext servletContext = servletConfig.getServletContext();
 
         // Initialize the context path
-        initContextPath(servletContext);
+        contextPath = contextPath(servletContext);
 
-        // Derive the node name and node image from the Webapp
-        // context path
+        // Derive the node name from the Webapp context path
         String nodeName = contextPath;
         if (nodeName.startsWith("/")) {
             nodeName = nodeName.substring(1); 
@@ -123,7 +110,17 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
         if (nodeName.endsWith("/")) {
             nodeName = nodeName.substring(0, nodeName.length() - 1); 
         }
-        String nodeImage = "http://localhost:9990/node-image/" + nodeName;
+        
+        // Determine the node image, the domain URI can be configured
+        // using a TUSCANY_DOMAIN system property or environment variable
+        String domain = System.getProperty(TUSCANY_DOMAIN);
+        if (domain == null || domain.length() == 0) {
+            domain = System.getenv(TUSCANY_DOMAIN);
+        }
+        if (domain == null || domain.length() ==0) {
+            domain = DEFAULT_DOMAIN;
+        }
+        String nodeImage = domain + "/node-image/" + nodeName;
         
         // Create the SCA node
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
@@ -132,6 +129,11 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
         } catch (Node2Exception e) {
             throw new ServletException(e);
         }
+        
+        // Register the servlet host
+        ServletHostExtensionPoint servletHosts = servletHosts(node);
+        servletHosts.getServletHosts().clear();
+        servletHosts.addServletHost(servletHost);
 
         // Save the node in the servlet context 
         servletContext.setAttribute(SCA_NODE_ATTRIBUTE, node);
@@ -344,7 +346,8 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
      * The 2.5 Servlet API has a getter for this, for pre 2.5 servlet
      * containers use an init parameter.
      */
-    private void initContextPath(ServletContext context) {
+    private static String contextPath(ServletContext context) {
+        String contextPath = "/";
 
         // The getContextPath() is introduced since Servlet 2.5
         Method m;
@@ -362,6 +365,51 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
         }
 
         logger.info("ContextPath: " + contextPath);
+        return contextPath;
     }
 
+    /**
+     * Returns the servlet host extension point used by the given node.
+     * 
+     * @return
+     */
+    private static ServletHostExtensionPoint servletHosts(SCANode2 node) {
+        //FIXME Need a clean way to get the extension point registry
+        // from the node
+        ExtensionPointRegistry registry;
+        try {
+            registry = (ExtensionPointRegistry)node.getClass().getMethod("getExtensionPointRegistry").invoke(node);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        ServletHostExtensionPoint servletHosts = registry.getExtensionPoint(ServletHostExtensionPoint.class);
+        return servletHosts;
+    }
+
+    /**
+     * Returns a servlet config wrappering a filter config.
+     * 
+     * @param filterConfig
+     * @return
+     */
+    private static ServletConfig servletConfig(final FilterConfig filterConfig) {
+        ServletConfig servletConfig = new ServletConfig() {
+            public String getInitParameter(String name) {
+                return filterConfig.getInitParameter(name);
+            }
+
+            public Enumeration getInitParameterNames() {
+                return filterConfig.getInitParameterNames();
+            }
+
+            public ServletContext getServletContext() {
+                return filterConfig.getServletContext();
+            }
+
+            public String getServletName() {
+                return filterConfig.getFilterName();
+            }
+        };
+        return servletConfig;
+    }
 }
