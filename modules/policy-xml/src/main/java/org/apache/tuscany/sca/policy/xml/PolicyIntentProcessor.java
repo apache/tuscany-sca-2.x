@@ -71,8 +71,7 @@ public abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXAr
             int qualifierIndex = policyIntentName.lastIndexOf(QUALIFIER);
             Intent qualifiableIntent = policyFactory.createIntent();
             qualifiableIntent.setUnresolved(true);
-            qualifiableIntent.setName(getQNameValue(reader, 
-                                                    policyIntentName.substring(0, qualifierIndex)));
+            qualifiableIntent.setName(new QName(policyIntentName.substring(0, qualifierIndex)));
             
             ((QualifiedIntent)policyIntent).setQualifiableIntent(qualifiableIntent);
         } else {
