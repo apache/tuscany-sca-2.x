@@ -47,6 +47,7 @@ import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletMappingException;
 import org.apache.tuscany.sca.node.Node2Exception;
+import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
 
@@ -58,7 +59,6 @@ import org.apache.tuscany.sca.node.SCANode2Factory;
 public class NodeWebAppServletHost implements ServletHost, Filter {
     private static final Logger logger = Logger.getLogger(NodeWebAppServletHost.class.getName());
 
-    private static final String SCA_NODE_ATTRIBUTE = "org.apache.tuscany.sca.SCANode";
     private static final String TUSCANY_DOMAIN = "TUSCANY_DOMAIN";
     private static final String DEFAULT_DOMAIN = "http://localhost:9990";
 
@@ -136,7 +136,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
         servletHosts.addServletHost(servletHost);
 
         // Save the node in the servlet context 
-        servletContext.setAttribute(SCA_NODE_ATTRIBUTE, node);
+        servletContext.setAttribute(SCAClient.class.getName(), node);
         
         // Start the node
         try {
