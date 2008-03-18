@@ -73,14 +73,27 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
         DataType<?> faultBeanType = exceptionType.getLogical();
         Class<?> faultBeanClass = faultBeanType.getPhysical();
         try {
+            Exception exc = null;
             try {
                 Constructor<?> constructor =
                     exceptionClass.getConstructor(new Class[] {String.class, faultBeanClass, Throwable.class});
-                return (Exception)constructor.newInstance(new Object[] {message, faultInfo, cause});
+                exc = (Exception)constructor.newInstance(new Object[] {message, faultInfo, cause});
             } catch (NoSuchMethodException e) {
                 // Create a generic fault exception
-                return new FaultException(message, faultInfo, cause);
+                exc = new FaultException(message, faultInfo, cause);
             }
+            // Include the elem name into the FaultException we build so it can be used for matching in the DataTransformationInterceptor
+            // 
+            // Note this may happen even if we find a constructor above, that is the type of the non-generic fault exc may be an instance
+            // of FaultException
+            //
+            if ((exc instanceof FaultException) && (faultBeanType.getLogical() instanceof XMLType)) {
+                FaultException faultExc = (FaultException)exc;
+                DataType<XMLType> faultBeanXMLType = (DataType<XMLType>)faultBeanType;
+                XMLType faultLogical = faultBeanXMLType.getLogical();
+                faultExc.setFaultName(faultLogical.getElementName());
+            }
+            return exc;
         } catch (Throwable e) {
             throw new IllegalArgumentException(e);
         }
@@ -171,6 +184,9 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
 
     @SuppressWarnings("unchecked")
     public boolean introspectFaultDataType(DataType<DataType> exceptionType) {
+        QName faultName = null;
+        boolean result = false;
+
         Class<?> cls = exceptionType.getPhysical();
         if (cls == FaultException.class) {
             return true;
@@ -179,7 +195,7 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
         Class<?> faultBean = null;
         WebFault fault = cls.getAnnotation(WebFault.class);
         if (fault != null) {
-            QName faultName = new QName(fault.targetNamespace(), fault.name());
+            faultName = new QName(fault.targetNamespace(), fault.name());
             XMLType xmlType = new XMLType(faultName, null);
             faultType.setLogical(xmlType);
             if (!"".equals(fault.faultBean())) {
@@ -211,12 +227,23 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
         faultType.setPhysical(faultBean);
         // TODO: Use the databinding framework to introspect the fault bean class
         if (dataBindingExtensionPoint != null) {
-            return dataBindingExtensionPoint.introspectType(faultType, null, Throwable.class
-                .isAssignableFrom(faultBean));
+            result =
+                dataBindingExtensionPoint.introspectType(faultType, null, Throwable.class.isAssignableFrom(faultBean));
         }
 
-        return false;
+        /*
+         The introspection of the fault DT may not have calculated the correct element name, 
+         though we may have already done this in this method.  Let's look at the DataType now 
+         that introspection is done, and, if it has an XMLType, let's set the element to the 
+         'faultName' if we calculated one.
+         */
+        if ((faultName != null) && (faultType.getLogical() instanceof XMLType)) {
+            XMLType faultTypeXML = (XMLType)faultType.getLogical();
+            // The element name (if set) should match the fault name
+            faultTypeXML.setElementName(faultName);
+        }
 
+        return result;
     }
 
     public void setDataBindingExtensionPoint(DataBindingExtensionPoint dataBindingExtensionPoint) {
