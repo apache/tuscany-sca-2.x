@@ -143,7 +143,8 @@ public final class DomainAdminLauncherUtil {
                 }
                 
                 // Filter out the Jetty and Webapp hosts
-                if (name.startsWith("tuscany-host-jetty") || name.startsWith("tuscany-host-webapp")) {
+                if (name.startsWith("tuscany-host-jetty") ||
+                    name.startsWith("tuscany-host-webapp")) {
                     //FIXME This is temporary
                     return false;
                 }
