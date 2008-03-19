@@ -58,19 +58,25 @@ public class OSGiTuscanyTestHarness {
     private OSGiTestRuntime osgiRuntime;
     private Bundle tuscanyRuntime;
     private BundleContext bundleContext;
+    private Bundle testBundle;
 
     public void setUp() throws Exception {
         
         osgiRuntime = OSGiRuntimeLoader.startOSGiTestRuntime();
         bundleContext = osgiRuntime.getBundleContext();
+        
+        // Uninstall any previously installed test bundles
+        for (Bundle bundle : bundleContext.getBundles()) {
+            if ("org.apache.tuscany.sca.test.samples".equals(bundle.getSymbolicName())) {
+                bundle.uninstall();
+            }
+        }
     }
     
 
     public void tearDown() throws Exception {
-
         if (tuscanyRuntime != null) {
             tuscanyRuntime.stop();
-            tuscanyRuntime.uninstall();
         }
         OSGiRuntimeLoader.shutdownOSGiRuntime();
     }
@@ -100,14 +106,14 @@ public class OSGiTuscanyTestHarness {
         
         String manifestFile = "target/test-classes/META-INF/MANIFEST.MF";
         
-        Bundle testBundle = createAndInstallBundle(
+        testBundle = createAndInstallBundle(
                  "file:" + mainTestDir + "/target/classes",    // Bundle location: used to get File URLs for DefaultSCADomain
                  manifestFile,                                 // Test bundle manifest file
                  dirs                                          // Directory entries to be added to bundle
                  );
     
         
-        tuscanyRuntime.start();
+        TuscanyLoader.startTuscany(tuscanyRuntime);
         
         testBundle.start();
         

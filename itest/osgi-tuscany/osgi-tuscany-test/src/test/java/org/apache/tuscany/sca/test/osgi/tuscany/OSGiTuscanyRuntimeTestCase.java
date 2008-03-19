@@ -31,6 +31,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 /*
@@ -46,6 +47,17 @@ public class OSGiTuscanyRuntimeTestCase {
     public void setUp() throws Exception {
         
         osgiRuntime = OSGiRuntimeLoader.startOSGiTestRuntime();
+        BundleContext bundleContext = osgiRuntime.getBundleContext();
+        
+        // Uninstall any previously installed test bundles
+        for (Bundle bundle : bundleContext.getBundles()) {
+            String bundleName = bundle.getSymbolicName();
+            if (bundleName != null && 
+               (bundleName.equals("org.apache.tuscany.sca.test.samples")||
+               bundleName.startsWith("supplychain"))) {
+                  bundle.uninstall();
+            }
+        }
     }
     
 
@@ -54,7 +66,6 @@ public class OSGiTuscanyRuntimeTestCase {
 
         if (tuscanyRuntime != null) {
             tuscanyRuntime.stop();
-            tuscanyRuntime.uninstall();
         }
         OSGiRuntimeLoader.shutdownOSGiRuntime();
     }
@@ -66,7 +77,7 @@ public class OSGiTuscanyRuntimeTestCase {
         
         tuscanyRuntime = TuscanyLoader.loadTuscanyIntoOSGi(osgiRuntime.getBundleContext());
         Assert.assertNotNull(tuscanyRuntime);
-        tuscanyRuntime.start();
+        TuscanyLoader.startTuscany(tuscanyRuntime);
         Class<?> clazz = tuscanyRuntime.loadClass("org.apache.tuscany.sca.osgi.runtime.OSGiRuntime");
         Assert.assertNotNull(clazz);
                
@@ -86,7 +97,7 @@ public class OSGiTuscanyRuntimeTestCase {
     private void testOSGiTuscanyUsingOSGiClient(String contributionJarName) throws Exception {
         
         tuscanyRuntime = TuscanyLoader.loadTuscanyIntoOSGi(osgiRuntime.getBundleContext());
-        tuscanyRuntime.start();
+        TuscanyLoader.startTuscany(tuscanyRuntime);
         
         String folderName = "../test-bundles/target/"; 
         String supplychainJarName = contributionJarName;
@@ -108,6 +119,9 @@ public class OSGiTuscanyRuntimeTestCase {
         m.invoke(testService, contributionJarName);
         
         System.out.println("OSGi Client test completed successfully.");
+        
+        supplyChainBundle.uninstall();
+        clientBundle.uninstall();
     }
     
    

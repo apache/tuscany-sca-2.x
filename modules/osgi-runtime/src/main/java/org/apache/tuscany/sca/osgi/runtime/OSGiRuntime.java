@@ -47,6 +47,8 @@ public abstract class OSGiRuntime {
     
     private boolean tuscanyRunningInOSGiContainer;
     
+    private ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+    
     /**
      * System property org.apache.tuscany.implementation.osgi.runtime.OSGiRuntime can be set to the
      * name of the OSGiRuntime class (eg. EquinoxRuntime). If set, start this runtime and return the
@@ -145,6 +147,16 @@ public abstract class OSGiRuntime {
         this.bundleContext = bundleContext;
     }
     
+    
+    
+    public ClassLoader getContextClassLoader() {
+        return contextClassLoader;
+    }
+
+    protected void setContextClassLoader(ClassLoader contextClassLoader) {
+        this.contextClassLoader = contextClassLoader;
+    }
+
     protected void initialize() {
     	
         bundleContext = getBundleContext();

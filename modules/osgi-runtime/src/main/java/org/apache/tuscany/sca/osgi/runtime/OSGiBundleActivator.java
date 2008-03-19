@@ -33,6 +33,7 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
 		
 		runtime = OSGiRuntime.findRuntime();
 		runtime.setBundleContext(bundleContext);
+        runtime.setContextClassLoader(threadContextClassLoader);
 		runtime.initialize();
 		
 	}

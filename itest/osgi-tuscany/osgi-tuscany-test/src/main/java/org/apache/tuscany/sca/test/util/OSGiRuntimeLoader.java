@@ -33,7 +33,7 @@ public  class OSGiRuntimeLoader  {
         setUpFelixTestRuntime();
         
 
-        System.setProperty("felix.cache.profiledir", ".felix.test");
+        System.setProperty("felix.cache.profiledir", "target/.felix.test");
         
         OSGiTestRuntime osgiRuntime = OSGiTestRuntime.getRuntime();
 

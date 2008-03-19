@@ -62,15 +62,15 @@ public class FelixTestRuntime extends OSGiTestRuntime implements BundleActivator
         
     }
     
-    private void deleteProfile() {
-        String profileDirName = System.getProperty("felix.cache.profiledir");
-        if (profileDirName == null) profileDirName = ".felix";
-        File profileDir = new File(profileDirName); 
-        if (profileDir.isDirectory())  
-            deleteDirectory(profileDir);
-        else
-            profileDir.delete();
-    }
+//    private void deleteProfile() {
+//        String profileDirName = System.getProperty("felix.cache.profiledir");
+//        if (profileDirName == null) profileDirName = ".felix";
+//        File profileDir = new File(profileDirName); 
+//        if (profileDir.isDirectory())  
+//            deleteDirectory(profileDir);
+//        else
+//            profileDir.delete();
+//    }
     
     protected BundleContext startRuntime() throws Exception {
         
@@ -79,7 +79,7 @@ public class FelixTestRuntime extends OSGiTestRuntime implements BundleActivator
         
         Properties props = Main.loadConfigProperties();
         
-        deleteProfile();
+        //deleteProfile();
         // Create profile directory
         String profileDirName = System.getProperty("felix.cache.profiledir");
         if (profileDirName == null) profileDirName = ".felix";
