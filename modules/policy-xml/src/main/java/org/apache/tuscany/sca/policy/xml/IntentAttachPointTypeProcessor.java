@@ -50,7 +50,7 @@ public abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactPro
     private IntentAttachPointTypeFactory attachPointTypeFactory;
     private PolicyFactory policyFactory; 
     
-    public abstract IntentAttachPointType resolveExtensionType(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException;
+    protected abstract IntentAttachPointType resolveExtensionType(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException;
 
     public IntentAttachPointTypeProcessor(PolicyFactory policyFactory, IntentAttachPointTypeFactory attachPointTypeFactory, StAXArtifactProcessor<Object> extensionProcessor) {
         this.policyFactory = policyFactory;
@@ -64,7 +64,7 @@ public abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactPro
             if ( type.getLocalPart().startsWith(BINDING) ) {
                 IntentAttachPointType bindingType = attachPointTypeFactory.createBindingType();
                 bindingType.setName(type);
-                bindingType.setUnresolved(false);
+                bindingType.setUnresolved(true);
                 
                 readAlwaysProvidedIntents(bindingType, reader);
                 readMayProvideIntents(bindingType, reader);
@@ -72,7 +72,7 @@ public abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactPro
             } else if ( type.getLocalPart().startsWith(IMPLEMENTATION) ) {
                 IntentAttachPointType implType = attachPointTypeFactory.createImplementationType();
                 implType.setName(type);
-                implType.setUnresolved(false);
+                implType.setUnresolved(true);
                 
                 readAlwaysProvidedIntents(implType, reader);
                 readMayProvideIntents(implType, reader);
@@ -157,11 +157,8 @@ public abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactPro
     public void resolve(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException {
         resolveAlwaysProvidedIntents(extnType, resolver);
         resolveMayProvideIntents(extnType, resolver);
-        resolveExtensionType(extnType, resolver);
-        
-/*        if ( !extnType.isUnresolved() ) {
-             resolver.addModel(extnType);
-        }*/
+        extnType.setUnresolved(false);
+        //resolveExtensionType(extnType, resolver);
     }
 
     private void resolveAlwaysProvidedIntents(IntentAttachPointType extensionType,
@@ -171,9 +168,9 @@ public abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactPro
             List<Intent> alwaysProvided = new ArrayList<Intent>();
             for (Intent providedIntent : extensionType.getAlwaysProvidedIntents()) {
                 if (providedIntent.isUnresolved()) {
-                    Intent resolvedProvidedIntent = resolver.resolveModel(Intent.class, providedIntent);
-                    if (resolvedProvidedIntent != null) {
-                        alwaysProvided.add(resolvedProvidedIntent);
+                    providedIntent = resolver.resolveModel(Intent.class, providedIntent);
+                    if (!providedIntent.isUnresolved()) {
+                        alwaysProvided.add(providedIntent);
                     } else {
                         throw new ContributionResolveException(
                                                                  "Always Provided Intent - " + providedIntent
@@ -197,9 +194,9 @@ public abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactPro
             List<Intent> mayProvide = new ArrayList<Intent>();
             for (Intent providedIntent : extensionType.getMayProvideIntents()) {
                 if (providedIntent.isUnresolved()) {
-                    Intent resolvedProvidedIntent = resolver.resolveModel(Intent.class, providedIntent);
-                    if (resolvedProvidedIntent != null) {
-                        mayProvide.add(resolvedProvidedIntent);
+                    providedIntent = resolver.resolveModel(Intent.class, providedIntent);
+                    if (!providedIntent.isUnresolved()) {
+                        mayProvide.add(providedIntent);
                     } else {
                         throw new ContributionResolveException(
                                                                  "May Provide Intent - " + providedIntent

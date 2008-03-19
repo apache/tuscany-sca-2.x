@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
@@ -69,18 +70,26 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
     public Composite read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
         InputStream scdlStream = null;
         try {
-            if ( domainPolicySets == null ) {
+            if (scaDefnSink != null ) {
                 fillDomainPolicySets(scaDefnSink);
             }
+
             
             byte[] transformedArtifactContent = null;
             try {
-                transformedArtifactContent =
-                    PolicyComputationUtils.addApplicablePolicySets(url, domainPolicySets);
+                if ( domainPolicySets != null ) {
+                    transformedArtifactContent =
+                        PolicyComputationUtils.addApplicablePolicySets(url, domainPolicySets);
+                    scdlStream = new ByteArrayInputStream(transformedArtifactContent);
+                } else {
+                    URLConnection connection = url.openConnection();
+                    connection.setUseCaches(false);
+                    scdlStream = connection.getInputStream();
+                }
             } catch ( Exception e ) {
                 throw new ContributionReadException(e);
             }
-            scdlStream = new ByteArrayInputStream(transformedArtifactContent);
+            
             XMLStreamReader reader = inputFactory.createXMLStreamReader(scdlStream);
             
             reader.nextTag();
@@ -138,8 +147,16 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
     }
     
     private void fillDomainPolicySets(List scaDefnsSink) {
-        Map<QName, PolicySet> domainPolicySetMap = new Hashtable<QName, PolicySet>();
-        if ( scaDefnsSink != null ) {
+        Map<QName, PolicySet> domainPolicySetMap = null;
+        if ( !scaDefnsSink.isEmpty() ) {
+            domainPolicySetMap = new Hashtable<QName, PolicySet>();
+            
+            if ( domainPolicySets != null ) {
+                for ( PolicySet policySet : domainPolicySets ) {
+                    domainPolicySetMap.put(policySet.getName(), policySet);
+                } 
+            }
+            
             for ( Object object : scaDefnsSink ) {
                 if ( object instanceof SCADefinitions ) {
                     for ( PolicySet policySet : ((SCADefinitions)object).getPolicySets() ) {
@@ -147,7 +164,8 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
                     }
                 }
             }
+            domainPolicySets =  domainPolicySetMap.values();
+            scaDefnsSink.clear();
         }
-        domainPolicySets =  domainPolicySetMap.values();
     }
 }
