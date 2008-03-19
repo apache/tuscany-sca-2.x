@@ -19,10 +19,6 @@
 
 package org.apache.tuscany.sca.node;
 
-import java.net.URL;
-
-import javax.xml.namespace.QName;
-
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
 
