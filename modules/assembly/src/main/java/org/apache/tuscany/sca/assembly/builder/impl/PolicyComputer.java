@@ -26,7 +26,6 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.policy.Intent;
