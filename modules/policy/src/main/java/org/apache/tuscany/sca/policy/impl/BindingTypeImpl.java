@@ -25,7 +25,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Concrete implementation for a BindingType
