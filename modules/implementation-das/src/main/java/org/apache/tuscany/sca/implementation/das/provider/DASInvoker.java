@@ -20,10 +20,8 @@
 package org.apache.tuscany.sca.implementation.das.provider;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import org.apache.tuscany.sca.data.engine.DataAccessEngine;
-import org.apache.tuscany.sca.implementation.das.annotations.Command;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
