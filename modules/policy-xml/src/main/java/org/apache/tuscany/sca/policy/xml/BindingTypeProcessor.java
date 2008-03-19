@@ -44,7 +44,7 @@ public class BindingTypeProcessor extends IntentAttachPointTypeProcessor {
     }
 
     @Override
-    public IntentAttachPointType resolveExtensionType(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException {
+    protected IntentAttachPointType resolveExtensionType(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException {
         if ( extnType instanceof BindingTypeImpl ) {
             BindingTypeImpl bindingType = (BindingTypeImpl)extnType;
             return resolver.resolveModel(BindingTypeImpl.class, bindingType);

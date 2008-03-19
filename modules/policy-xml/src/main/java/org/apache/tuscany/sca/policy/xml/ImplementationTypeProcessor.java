@@ -45,7 +45,7 @@ public class ImplementationTypeProcessor extends IntentAttachPointTypeProcessor 
     }
     
     @Override
-    public IntentAttachPointType resolveExtensionType(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException {
+    protected IntentAttachPointType resolveExtensionType(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException {
         if ( extnType instanceof ImplementationTypeImpl ) {
             ImplementationTypeImpl implType = (ImplementationTypeImpl)extnType;
             return resolver.resolveModel(ImplementationTypeImpl.class, implType);
