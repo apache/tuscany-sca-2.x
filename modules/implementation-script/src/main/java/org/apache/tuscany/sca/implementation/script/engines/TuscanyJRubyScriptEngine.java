@@ -66,7 +66,6 @@ import org.jruby.internal.runtime.ReadonlyAccessor;
 import org.jruby.javasupport.Java;
 import org.jruby.javasupport.JavaObject;
 import org.jruby.javasupport.JavaUtil;
-import org.jruby.javasupport.bsf.JRubyEngine;
 import org.jruby.runtime.Block;
 import org.jruby.runtime.IAccessor;
 import org.jruby.runtime.builtin.IRubyObject;
