@@ -21,29 +21,23 @@ package org.apache.tuscany.sca.binding.sca.axis2;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
-import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;

@@ -18,10 +18,6 @@
  */
 package org.apache.tuscany.sca.binding.sca.axis2;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 public class BaseTest {
 
     public static String DEFULT_DOMAIN_NAME = "mydomain";
