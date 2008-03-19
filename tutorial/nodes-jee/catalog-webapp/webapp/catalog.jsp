@@ -27,7 +27,7 @@
   
   SCAClient client = (SCAClient) application.getAttribute("org.apache.tuscany.sca.node.SCAClient");
    
-  Catalog catalog = (Catalog)client.getService(Catalog.class, "WebFruitsCatalog");
+  Catalog catalog = (Catalog)client.getService(Catalog.class, "LocalFruitsCatalog");
   Item[] items = catalog.get();
   
 %>
@@ -40,7 +40,7 @@
 
 <table border="0">
 
-<% for (Item item: items) { %>>
+<% for (Item item: items) { %>
 
     <tr><td><%=item.getName() %></td><td><%=item.getPrice() %></td></tr>
 

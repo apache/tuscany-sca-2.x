@@ -63,7 +63,8 @@ public final class DomainAdminLauncherUtil {
         }
         URI uri = url.toURI();
             
-        // If the launcher class is in a JAR, add all runtime JARs from the same directory
+        // If the launcher class is in a JAR, add all runtime JARs from directory containing
+        // that JAR (e.g. the Tuscany modules directory) as well as the ../lib directory
         String scheme = uri.getScheme();
         if (scheme.equals("jar")) {
             String path = uri.toString().substring(4);
@@ -75,20 +76,35 @@ public final class DomainAdminLauncherUtil {
     
             File file = new File(uri);
             if (file.exists()) {
-                File directory = file.getParentFile();
-                collectJARFiles(directory, jarURLs);
+                File modulesDirectory = file.getParentFile();
+                if (modulesDirectory != null && modulesDirectory.exists()) {
+
+                    // Collect JAR files in the directory containing the input JAR
+                    // (e.g. the Tuscany modules directory)
+                    collectJARFiles(modulesDirectory, jarURLs);
+                    
+                    File homeDirectory = modulesDirectory.getParentFile();
+                    if (homeDirectory != null && homeDirectory.exists()) {
+                        
+                        // Collect JARs from the ../lib directory
+                        File libDirectory = new File(homeDirectory, "lib");
+                        if (libDirectory.exists() && !libDirectory.getAbsolutePath().equals(modulesDirectory.getAbsolutePath())) {
+                            collectJARFiles(libDirectory, jarURLs);
+                        }
+                    }
+                }
             }
         }
         
         // Look for a TUSCANY_HOME system property or environment variable
         // Add all the JARs found under $TUSCANY_HOME, $TUSCANY_HOME/modules
         // and $TUSCANY_HOME/lib
-        String home = System.getProperty(DomainAdminLauncherUtil.TUSCANY_HOME);
+        String home = System.getProperty(TUSCANY_HOME);
         if (home == null || home.length() == 0) {
-            home = System.getenv(DomainAdminLauncherUtil.TUSCANY_HOME);
+            home = System.getenv(TUSCANY_HOME);
         }
         if (home != null && home.length() != 0) {
-            DomainAdminLauncherUtil.logger.info(DomainAdminLauncherUtil.TUSCANY_HOME + ": " + home);
+            logger.info(TUSCANY_HOME + ": " + home);
             File homeDirectory = new File(home);
             if (homeDirectory.exists()) {
                 
@@ -113,7 +129,7 @@ public final class DomainAdminLauncherUtil {
         if (!jarURLs.isEmpty()) {
             
             // Return a classloader configured with the runtime JARs
-            ClassLoader classLoader = new URLClassLoader(jarURLs.toArray(new URL[0]), Object.class.getClassLoader());
+            ClassLoader classLoader = new URLClassLoader(jarURLs.toArray(new URL[0]), parentClassLoader);
             return classLoader;
             
         } else {

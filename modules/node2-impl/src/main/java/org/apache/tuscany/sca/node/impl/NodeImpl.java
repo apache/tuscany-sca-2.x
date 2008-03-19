@@ -21,8 +21,11 @@ package org.apache.tuscany.sca.node.impl;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -100,7 +103,8 @@ public class NodeImpl implements SCANode2, SCAClient {
         this.configurationURI = configurationURI;
 
         // Create a node runtime for the domain contributions to run on
-        runtime = new ReallySmallRuntime(Thread.currentThread().getContextClassLoader());
+        ClassLoader contextClassLoader =  Thread.currentThread().getContextClassLoader();
+        runtime = new ReallySmallRuntime(contextClassLoader);
         runtime.start();
         activator = runtime.getCompositeActivator();
         
@@ -121,12 +125,34 @@ public class NodeImpl implements SCANode2, SCAClient {
         reader.nextTag();
         ConfiguredNodeImplementation configuration = configurationProcessor.read(reader);
         is.close();
+        
+        // Find if any contribution JARs already available locally on the classpath
+        Map<String, URL> localContributions = new HashMap<String, URL>();
+        collectJARs(localContributions, contextClassLoader);
 
         // Load the specified contributions
         ContributionService contributionService = runtime.getContributionService();
         List<Contribution> contributions = new ArrayList<Contribution>();
         for (Contribution contribution: configuration.getContributions()) {
+            
+            // Build contribution URL
             URL contributionURL = new URL(configurationURL, contribution.getLocation());
+
+            // Extract contribution file name
+            String file =contributionURL.getPath();
+            int i = file.lastIndexOf('/');
+            if (i != -1 && i < file.length() -1 ) {
+                file = file.substring(i +1);
+                
+                // If we find the local contribution file on the classpath, use it in
+                // place of the original contribution URL
+                URL localContributionURL = localContributions.get(file);
+                if (localContributionURL != null) {
+                    contributionURL = localContributionURL;
+                }
+            }
+            
+            // Load the contribution
             logger.log(Level.INFO, "Loading contribution: " + contributionURL);
             contributions.add(contributionService.contribute(contribution.getURI(), contributionURL, false));
         }
@@ -302,4 +328,29 @@ public class NodeImpl implements SCANode2, SCAClient {
         }
     }    
 
+    /**
+     * Collect JARs on the classpath of a URLClassLoader
+     * @param urls
+     * @param cl
+     */
+    private static void collectJARs(Map<String, URL> urls, ClassLoader cl) {
+        if (cl == null) {
+            return;
+        }
+        
+        // Collect JARs from the URLClassLoader's classpath
+        if (cl instanceof URLClassLoader) {
+            for (URL jarURL: ((URLClassLoader)cl).getURLs()) {
+                String file =jarURL.getPath();
+                int i = file.lastIndexOf('/');
+                if (i != -1 && i < file.length() -1 ) {
+                    file = file.substring(i +1);
+                    urls.put(file, jarURL);
+                }
+            }
+        }
+        
+        // Collect JARs from the parent classloader
+        collectJARs(urls, cl.getParent());
+    }
 }

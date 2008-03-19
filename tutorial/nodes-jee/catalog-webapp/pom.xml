@@ -41,21 +41,20 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-sca-api</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
-            <scope>provided</scope>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node2-api</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
-            <scope>provided</scope>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tutorial-assets</artifactId>
             <version>1.2-incubating-SNAPSHOT</version>
-            <scope>provided</scope>
         </dependency>
         
         <dependency>

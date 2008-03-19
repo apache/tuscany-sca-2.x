@@ -32,4 +32,12 @@
         </reference>   
     </component>     
 
+    <component name="LocalFruitsCatalog">
+        <implementation.java class="services.FruitsCatalogImpl"/>
+        <property name="currencyCode">USD</property>
+        <reference name="currencyConverter" target="CloudCurrencyConverter">
+        	<binding.ws/>
+        </reference>   
+    </component>     
+
 </composite>
