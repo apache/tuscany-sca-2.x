@@ -19,11 +19,7 @@
 
 package org.apache.tuscany.sca.binding.http.provider;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
