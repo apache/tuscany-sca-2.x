@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.contribution.groovy;
 
 import groovy.lang.GroovyClassLoader;
 
-import java.io.File;
-
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
