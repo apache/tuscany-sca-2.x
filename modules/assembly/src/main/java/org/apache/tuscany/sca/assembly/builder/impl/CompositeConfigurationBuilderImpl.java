@@ -420,6 +420,9 @@ public class CompositeConfigurationBuilderImpl {
 
         // Connect each component reference to the corresponding reference
         for (ComponentReference componentReference : component.getReferences()) {
+            if(componentReference.isCallback()) {
+                continue;
+            }
             Reference reference = references.get(componentReference.getName());
             if (reference != null) {
                 componentReference.setReference(reference);
@@ -529,6 +532,9 @@ public class CompositeConfigurationBuilderImpl {
 
         // Connect each component service to the corresponding service
         for (ComponentService componentService : component.getServices()) {
+            if(componentService.isCallback()) {
+                continue;
+            }
             Service service = services.get(componentService.getName());
             if (service != null) {
                 componentService.setService(service);
