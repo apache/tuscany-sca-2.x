@@ -19,14 +19,7 @@
 
 package org.apache.tuscany.sca.domain;
 
-import java.util.List;
-
-import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.domain.DomainException;
-import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.model.DomainModel;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.annotations.Remotable;
 
 /**
  * Represents an SCA domain SPI.

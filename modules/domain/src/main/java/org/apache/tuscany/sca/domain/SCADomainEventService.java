@@ -20,11 +20,7 @@
 package org.apache.tuscany.sca.domain;
 
 import java.io.Externalizable;
-import java.util.List;
-import java.util.logging.Level;
 
-import org.apache.tuscany.sca.domain.model.NodeModel;
-import org.apache.tuscany.sca.domain.model.NodeModel.LifecyleState;
 import org.osoa.sca.annotations.Remotable;
 
 
