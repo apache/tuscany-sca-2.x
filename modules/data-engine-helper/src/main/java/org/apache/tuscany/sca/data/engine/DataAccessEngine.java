@@ -30,7 +30,6 @@ import org.apache.tuscany.das.rdb.DAS;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
-import commonj.sdo.helper.XMLHelper;
 
 /**
  * Facade to hide DAS implementation details of handling commands
