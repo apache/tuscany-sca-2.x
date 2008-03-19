@@ -23,13 +23,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
-
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding;
 import org.apache.tuscany.sca.binding.jsonrpc.JSONRPCServiceServlet;
 import org.apache.tuscany.sca.binding.jsonrpc.ScaDomainScriptServlet;
-import org.apache.tuscany.sca.core.invocation.JDKProxyFactory;
-import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.databinding.javabeans.SimpleJavaDataBinding;
 import org.apache.tuscany.sca.databinding.json.JSONDataBinding;
 import org.apache.tuscany.sca.host.http.ServletHost;
