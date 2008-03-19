@@ -25,14 +25,12 @@ import org.apache.tuscany.sca.assembly.Contract;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.core.assembly.RuntimeWireImpl;
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
-import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.runtime.EndpointReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Returns proxy instance for a wire callback

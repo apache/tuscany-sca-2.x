@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.core.conversation;
 
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
-
 /**
  * The manager of conversations
  * 
