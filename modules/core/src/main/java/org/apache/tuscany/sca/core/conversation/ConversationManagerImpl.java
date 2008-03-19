@@ -29,12 +29,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.tuscany.sca.core.scope.ScopedImplementationProvider;
-import org.apache.tuscany.sca.provider.ImplementationProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
-
-
 /**
  * @version $Rev$ $Date$
  */

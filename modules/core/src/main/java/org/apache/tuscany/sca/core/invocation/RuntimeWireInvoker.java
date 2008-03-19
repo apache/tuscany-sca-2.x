@@ -20,9 +20,7 @@
 package org.apache.tuscany.sca.core.invocation;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.UUID;
 
-import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.context.InstanceWrapper;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
 import org.apache.tuscany.sca.core.conversation.ConversationState;
@@ -33,7 +31,6 @@ import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.core.scope.TargetDestructionException;
 import org.apache.tuscany.sca.core.scope.TargetResolutionException;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
-import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
@@ -45,7 +42,6 @@ import org.apache.tuscany.sca.runtime.ReferenceParameters;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.ConversationEndedException;
-import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**

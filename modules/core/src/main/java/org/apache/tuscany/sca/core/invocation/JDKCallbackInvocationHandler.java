@@ -21,15 +21,11 @@ package org.apache.tuscany.sca.core.invocation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.core.assembly.RuntimeWireImpl;
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.conversation.ConversationState;
 import org.apache.tuscany.sca.invocation.InvocationChain;
-import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.runtime.EndpointReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.NoRegisteredCallbackException;
 import org.osoa.sca.ServiceRuntimeException;
