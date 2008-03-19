@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.binding.sca.axis2;
 
 import java.io.Externalizable;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -32,7 +30,6 @@ import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainEventService;
-import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.domain.model.DomainModel;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.osoa.sca.CallableReference;
