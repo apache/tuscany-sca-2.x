@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.binding.ws.axis2;
 import java.net.URI;
 import java.net.URL;
 
-import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
