@@ -25,7 +25,6 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.sca.contribution.ContentType;
 import org.apache.tuscany.sca.contribution.PackageType;
 import org.apache.tuscany.sca.contribution.service.TypeDescriber;
 import org.apache.tuscany.sca.contribution.service.util.FileHelper;
