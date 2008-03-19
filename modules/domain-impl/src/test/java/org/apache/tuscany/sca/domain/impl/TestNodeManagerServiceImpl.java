@@ -19,27 +19,9 @@
 
 package org.apache.tuscany.sca.domain.impl;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.xml.namespace.QName;
-
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.core.assembly.RuntimeComponentImpl;
 import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter.Base64Binary;
-import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.node.ComponentInfo;
-import org.apache.tuscany.sca.node.ComponentManagerService;
 import org.apache.tuscany.sca.node.NodeException;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.management.SCANodeManagerInitService;
 import org.apache.tuscany.sca.node.management.SCANodeManagerService;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
 
 /**
  * A dummy interface for the domain to talk to when testing the domain and no nodes are running

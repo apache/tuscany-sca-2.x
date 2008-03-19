@@ -19,23 +19,17 @@
 package org.apache.tuscany.sca.domain.impl;
 
 import java.io.Externalizable;
-import java.net.URL;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.domain.SCADomainFactory;
-import org.apache.tuscany.sca.domain.SCADomainSPI;
-import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.management.SCANodeManagerService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osoa.sca.CallableReference;
-
-import calculator.AddService;
-import calculator.CalculatorService;
 
 
 /**

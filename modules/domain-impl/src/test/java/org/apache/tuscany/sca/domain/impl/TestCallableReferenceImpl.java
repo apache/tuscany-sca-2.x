@@ -22,34 +22,11 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.UUID;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.OptimizableBinding;
-import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.core.assembly.CompositeActivator;
-import org.apache.tuscany.sca.core.assembly.CompositeActivatorImpl;
-import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
-import org.apache.tuscany.sca.core.assembly.ReferenceParametersImpl;
-import org.apache.tuscany.sca.core.conversation.ConversationManager;
-import org.apache.tuscany.sca.core.conversation.ConversationState;
-import org.apache.tuscany.sca.core.conversation.ExtendedConversation;
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
-import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.interfacedef.Interface;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.runtime.EndpointReference;
-import org.apache.tuscany.sca.runtime.ReferenceParameters;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.Conversation;
-import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Test callable reference used to test the domain when no nodes are running

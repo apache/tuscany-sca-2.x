@@ -29,7 +29,6 @@ import org.apache.tuscany.sca.domain.model.CompositeModel;
 import org.apache.tuscany.sca.domain.model.ContributionModel;
 import org.apache.tuscany.sca.domain.model.NodeModel;
 import org.apache.tuscany.sca.domain.model.ServiceModel;
-import org.apache.tuscany.sca.domain.model.NodeModel.LifecyleState;
 import org.apache.tuscany.sca.node.management.SCANodeManagerService;
 import org.osoa.sca.CallableReference;
 
