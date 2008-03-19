@@ -19,12 +19,6 @@
 
 package org.apache.tuscany.sca.node.management;
 
-import java.net.URL;
-import java.util.logging.Level;
-
-import javax.xml.namespace.QName;
-
-import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.node.NodeException;
 import org.osoa.sca.annotations.OneWay;
 import org.osoa.sca.annotations.Remotable;

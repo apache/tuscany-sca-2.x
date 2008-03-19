@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.node;
 
 import org.apache.tuscany.sca.domain.DomainException;
-import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.domain.SCADomainSPI;
 
 /**
  * The SPI for a domain proxy

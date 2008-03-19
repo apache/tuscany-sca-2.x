@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.node;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.osoa.sca.annotations.Remotable;
 
 /**
