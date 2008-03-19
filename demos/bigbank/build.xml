@@ -25,7 +25,7 @@
     <path id="test.classpath">
     	<pathelement location="target/classes"/>
     	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>    	
-        <pathelement location="../bigbank-account/target/demo-bigbank-account-1.2-incubating-SNAPSHOT.jar"/>    	
+        <pathelement location="../bigbank-account/target/demo-bigbank-account.jar"/>    	
     </path>
 	
     <target name="init">
@@ -54,7 +54,7 @@
                target="1.5">
             <classpath>
             	<pathelement location="../../lib/tuscany-sca-manifest.jar"/>
-                <pathelement location="../bigbank-account/target/demo-bigbank-account-1.2-incubating-SNAPSHOT.jar"/>
+                <pathelement location="../bigbank-account/target/demo-bigbank-account.jar"/>
             </classpath>
         </javac> 
         <copy todir="target/classes">
