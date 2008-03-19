@@ -19,18 +19,14 @@
 package org.apache.tuscany.sca.databinding.axiom;
 
 import java.util.Iterator;
+
 import javax.xml.namespace.QName;
 
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.om.OMNode;
 import org.apache.axiom.om.OMText;
-import org.apache.tuscany.sca.databinding.TransformationContext;
-import org.apache.tuscany.sca.databinding.javabeans.XML2JavaMapperException;
 import org.apache.tuscany.sca.databinding.javabeans.XML2JavaBeanTransformer;
+import org.apache.tuscany.sca.databinding.javabeans.XML2JavaMapperException;
 
 /**
  * Transformer to convert data from an OMElement to a Java Exception
