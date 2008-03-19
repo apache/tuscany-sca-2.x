@@ -151,7 +151,7 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
                                binding.getClass().getName());                    
                 }
                 
-                if (endpointURL.equals(domainProxy.SERVICE_NOT_REGISTERED)){
+                if (endpointURL.equals(SCADomainEventService.SERVICE_NOT_REGISTERED)){
                     throw new IllegalStateException("Can't resolve reference as no SCA binding URI is available while trying to find target service. Component: "+
                                                     component.getName() +
                                                     " and reference: " + 
