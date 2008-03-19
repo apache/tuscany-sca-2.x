@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.workspace.admin.impl;
 
-import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeKey;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeQName;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeTitle;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.contributionURI;
@@ -37,14 +36,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
-import org.apache.tuscany.sca.implementation.node.NodeImplementation;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
