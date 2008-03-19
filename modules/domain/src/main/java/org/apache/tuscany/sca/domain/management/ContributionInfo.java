@@ -21,13 +21,8 @@ package org.apache.tuscany.sca.domain.management;
 
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.namespace.QName;
-
-import org.apache.tuscany.sca.domain.model.CompositeModel;
-import org.apache.tuscany.sca.domain.model.ContributionModel;
-import org.apache.tuscany.sca.domain.model.ServiceModel;
 
 
 /**

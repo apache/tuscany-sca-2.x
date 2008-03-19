@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.domain.model;
 
-import java.net.URL;
-import java.util.Map;
 
 /**
  * A service

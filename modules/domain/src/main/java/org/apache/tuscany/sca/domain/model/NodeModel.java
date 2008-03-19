@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.domain.model;
 
 import java.io.Externalizable;
-import java.net.URL;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;

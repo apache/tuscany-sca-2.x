@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.domain.management;
 
-import org.apache.tuscany.sca.domain.model.DomainModel;
 import org.osoa.sca.annotations.Remotable;
 
 
