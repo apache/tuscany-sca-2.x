@@ -23,14 +23,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.core.assembly.RuntimeComponentImpl;
-import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.node.ComponentInfo;
 import org.apache.tuscany.sca.node.ComponentManagerService;
 import org.apache.tuscany.sca.node.NodeException;

@@ -24,16 +24,10 @@ import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.domain.SCADomainFactory;
-import org.apache.tuscany.sca.node.SCADomainFinder;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import calculator.AddService;
 import calculator.CalculatorService;
 import calculator.SubtractService;
 
