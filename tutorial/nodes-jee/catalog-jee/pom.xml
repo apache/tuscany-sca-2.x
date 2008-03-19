@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-tutorial</artifactId>
-        <version>1.2-incubating-SNAPSHOT</version>
+        <version>2.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tutorial-catalog-jee</artifactId>
@@ -57,7 +57,7 @@
             <plugin>
                 <groupId>org.apache.tuscany.sca</groupId>
                 <artifactId>tuscany-maven-ant-generator</artifactId>
-                <version>1.2-incubating-SNAPSHOT</version>
+                <version>2.0-incubating-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <goals>

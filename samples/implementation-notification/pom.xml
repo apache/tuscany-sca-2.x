@@ -22,30 +22,30 @@
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>tuscany-sca</artifactId>
-        <version>1.2-incubating-SNAPSHOT</version>
+        <version>2.0-incubating-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>sample-implementation-notification</artifactId>
     <name>Apache Tuscany SCA Notification Implementation Sample</name>
-    <version>1.2-incubating-SNAPSHOT</version>
+    <version>2.0-incubating-SNAPSHOT</version>
     <description>A sample illustrating use of implementation.notification</description>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-notification</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
+            <version>2.0-incubating-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
+            <version>2.0-incubating-SNAPSHOT</version>
         </dependency>
         <!-- if this is not in, BuilderRegistryImpl throws NPE (line 96) -->
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>1.2-incubating-SNAPSHOT</version>
+            <version>2.0-incubating-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <!-- end -->
