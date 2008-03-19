@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.policy.impl.BindingTypeImpl;
 import org.apache.tuscany.sca.policy.impl.ImplementationTypeImpl;
 
 
