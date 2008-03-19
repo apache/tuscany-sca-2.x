@@ -26,7 +26,6 @@ import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.ConversationID;
-import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.Scope;
 
 /**
