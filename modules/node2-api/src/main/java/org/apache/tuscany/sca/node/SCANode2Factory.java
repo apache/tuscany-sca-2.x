@@ -41,7 +41,7 @@ public abstract class SCANode2Factory {
         SCANode2Factory scaNodeFactory = null;
         
         try {
-            final ClassLoader classLoader = SCANode2Factory.class.getClassLoader();
+            final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             String className =  "org.apache.tuscany.sca.node.impl.NodeFactoryImpl";  
                             
             Class<?> cls = Class.forName(className, true, classLoader);
