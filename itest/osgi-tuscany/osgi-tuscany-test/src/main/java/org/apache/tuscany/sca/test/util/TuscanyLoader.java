@@ -3,9 +3,11 @@ package org.apache.tuscany.sca.test.util;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.lang.reflect.Method;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 
 /**
  * Load Tuscany into an OSGi runtime
@@ -18,8 +20,6 @@ public class TuscanyLoader {
     private static final String tuscanyRuntimeDir = "tuscany-runtime";
     private static final String tuscanyExtensionsDir = "tuscany-extensions";
     private static final String thirdPartyDir = "tuscany-3rdparty";
-    
-    private static Bundle tuscanyRuntimeBundle;
     
     
     private static String findBundle(String subDirName) throws Exception {
@@ -48,9 +48,6 @@ public class TuscanyLoader {
      * @param bundleContext
      */
     public static Bundle loadTuscanyIntoOSGi(BundleContext bundleContext) throws Exception {
-        
-        if (tuscanyRuntimeBundle != null)
-            return tuscanyRuntimeBundle;
         
         long startTime = System.currentTimeMillis();
         
@@ -83,6 +80,26 @@ public class TuscanyLoader {
         
         return tuscanyRuntimeBundle;
     
+    }
+    
+    public static void startTuscany(Bundle tuscanyRuntimeBundle) throws BundleException {
+        if (tuscanyRuntimeBundle != null) {
+            tuscanyRuntimeBundle.start();
+            
+            // Tuscany runtime is started on a different thread when previously cached bundle is used.
+            // Set this thread's TCCL to the on used by the runtime.
+            try {
+                Class<?> runtimeClass = tuscanyRuntimeBundle.loadClass("org.apache.tuscany.sca.osgi.runtime.OSGiRuntime");
+                Method getRuntimeMethod = runtimeClass.getMethod("findRuntime");
+                Object runtime = getRuntimeMethod.invoke(runtimeClass);
+                Method getTCCLMethod = runtimeClass.getMethod("getContextClassLoader");
+                ClassLoader runtimeTCCL = (ClassLoader) getTCCLMethod.invoke(runtime);
+                Thread.currentThread().setContextClassLoader(runtimeTCCL);
+                
+                
+            } catch (Throwable e) {
+            }
+        }
     }
     
 }
