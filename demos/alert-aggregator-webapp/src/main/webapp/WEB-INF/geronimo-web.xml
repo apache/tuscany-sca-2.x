@@ -23,7 +23,7 @@
         <d:moduleId>
             <d:groupId>org.apache.tuscany.sca</d:groupId>
             <d:artifactId>demo-alert-aggregator-webapp</d:artifactId>
-            <d:version>1.2-incubating-SNAPSHOT</d:version>
+            <d:version>2.0-incubating-SNAPSHOT</d:version>
             <d:type>war</d:type>
         </d:moduleId>
         <!-- TUSCANY-1986 -->
