@@ -19,18 +19,10 @@
 
 package org.apache.tuscany.sca.node.impl;
 
-import java.io.Externalizable;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.net.URL;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomainAPIService;
-import org.apache.tuscany.sca.domain.SCADomainEventService;
-import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 

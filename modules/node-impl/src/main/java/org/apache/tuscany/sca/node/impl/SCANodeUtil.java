@@ -19,24 +19,7 @@
 
 package org.apache.tuscany.sca.node.impl;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.ServerSocket;
-import java.net.URI;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.List;
 import java.util.logging.Logger;
-
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.ComponentService;
-import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.service.util.FileHelper;
-import org.apache.tuscany.sca.core.assembly.ActivationException;
 
 
 /**
