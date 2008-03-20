@@ -134,7 +134,7 @@ public class SCADomainContext {
         staxProcessors.addArtifactProcessor(new JavaImplementationProcessor(modelFactories));
         
         // Create a resolver
-        //FIXME The classloader should be passed in 
+        //FIXME The ClassLoader should be passed in 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         ModelResolverImpl resolver = new ModelResolverImpl(classLoader);
 
