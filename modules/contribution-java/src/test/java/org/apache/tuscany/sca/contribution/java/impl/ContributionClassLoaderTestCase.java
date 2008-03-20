@@ -78,7 +78,7 @@ public class ContributionClassLoaderTestCase  {
         Assert.assertNotNull(testClassA);
         Assert.assertSame(this.getClass(), testClassA);
         
-        // Class not present in contribution, but present in parent classloader
+        // Class not present in contribution, but present in parent ClassLoader
         Class<?> testClassB = contribB.getClassLoader().loadClass(this.getClass().getName());
         Assert.assertNotNull(testClassB);
         Assert.assertSame(this.getClass(), testClassB);
@@ -111,7 +111,7 @@ public class ContributionClassLoaderTestCase  {
         URL resA = contribA.getClassLoader().getResource("deployables/sample-calculator.jar");
         Assert.assertNotNull(resA);
         
-        // Resource not present in contribution, but present in parent classloader
+        // Resource not present in contribution, but present in parent ClassLoader
         URL resB = contribB.getClassLoader().getResource("deployables/sample-calculator.jar");
         Assert.assertNotNull(resB);
         
