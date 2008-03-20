@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.store;
 
 
 /**
- * A generic monintor interface for services to log events
+ * A generic monitor interface for services to log events
  * 
  * @version $Rev$ $Date$
  */

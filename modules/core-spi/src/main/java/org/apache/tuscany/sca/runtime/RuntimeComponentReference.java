@@ -79,7 +79,7 @@ public interface RuntimeComponentReference extends ComponentReference {
     /**
      * Get a list of policy providers for the given binding
      * @param binding The assembly model binding
-     * @return A list of policy proviers for the given binding
+     * @return A list of policy providers for the given binding
      */
     List<PolicyProvider> getPolicyProviders(Binding binding);    
     

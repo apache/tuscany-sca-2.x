@@ -27,8 +27,8 @@ package org.apache.tuscany.sca.event;
 public interface EventPublisher {
 
     /**
-     * Publish an event to all regisitered listeners
-     * @param object The event to publich
+     * Publish an event to all registered listeners
+     * @param object The event to publish
      */
     void publish(Event object);
 

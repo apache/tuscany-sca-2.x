@@ -32,7 +32,7 @@ package org.apache.tuscany.sca.core;
  * will be used to invoke all the methods during different phases of the module 
  * activation. Note that the start and stop methods defined by this interface
  * take a reference to the Tuscany SCA runtime ExtensionPointRegistry. This 
- * gives the ModuleActivator the oppotunity to add extension points to the
+ * gives the ModuleActivator the opportunity to add extension points to the
  * registry as it is requested to start up and remove them when it is requested
  * to shut down.
  * 
@@ -42,7 +42,7 @@ public interface ModuleActivator {
 
     /**
      * This method is invoked when the module is started by the Tuscany system.
-     * It can be used by this module to registr extensions against extension
+     * It can be used by this module to register extensions against extension
      * points.
      * 
      * @param registry The extension point registry

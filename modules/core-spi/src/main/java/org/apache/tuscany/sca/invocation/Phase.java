@@ -25,7 +25,7 @@ package org.apache.tuscany.sca.invocation;
  * @version $Rev$ $Date$
  */
 public interface Phase {
-    // The fisrt phase for outgoing invocations via a reference
+    // The first phase for outgoing invocations via a reference
     String REFERENCE = "component.reference";
 
     // data transformation and validation
