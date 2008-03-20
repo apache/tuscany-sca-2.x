@@ -71,7 +71,7 @@ public interface SCADomain {
       throws DomainException;
     
     /**
-     * Update an SCA contribution that has previousle been added to the domain.
+     * Update an SCA contribution that has previously been added to the domain.
      *  
      * @param contributionURI the URI of the contribution
      * @param contributionURL the URL of the contribution
@@ -130,7 +130,7 @@ public interface SCADomain {
     /**
      * Returns an XML string representation of the domain level composite
      * 
-     * @return xml representing the domain level composite
+     * @return XML representing the domain level composite
      */
     public String getDomainLevelComposite()
       throws DomainException;
@@ -139,7 +139,7 @@ public interface SCADomain {
      * Returns an XML String representation of a artifact from within the 
      * domain namespace formed by the domain level composite
      * 
-     * @return xml representing the specified artifact
+     * @return XML representing the specified artifact
      */
     public String getQNameDefinition(QName artifact)
       throws DomainException;
