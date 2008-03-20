@@ -43,7 +43,7 @@ public class JavaToSmd {
             for (int j = 0; j < params.length; j++) {
                 if (j != 0) smdSb.append(",");
                 // right now Dojo doesn't look at the type value, so we'll default it to STRING
-                // also, since we can't introspect the method paramater names we'll just create an incrementing parameter name
+                // also, since we can't introspect the method parameter names we'll just create an incrementing parameter name
                 smdSb.append("{\"name\":\"param" + j + "\",\"type\":\"STRING\"}");  
             }
             smdSb.append("]}");

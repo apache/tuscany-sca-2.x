@@ -47,7 +47,7 @@ import com.metaparadigm.jsonrpc.JSONRPCServlet;
 /**
  * Servlet that handles JSON-RPC requests invoking SCA services.
  * 
- * There is an instance of this servlet for each <binding.jsonrpc>
+ * There is an instance of this Servlet for each <binding.jsonrpc>
  */
 public class JSONRPCServiceServlet extends JSONRPCServlet {
     private static final long serialVersionUID = 1L;
