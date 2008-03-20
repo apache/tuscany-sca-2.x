@@ -95,7 +95,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         // Create a Java proxy to the target service
 		Object proxy = component.getComponentContext().createSelfReference(serviceInterface, service).getService();
 
-        // Create and register a servlet for this service
+        // Create and register a Servlet for this service
         JSONRPCServiceServlet serviceServlet =
             new JSONRPCServiceServlet(binding, service, serviceContract, serviceInterface, proxy);
         String mapping = binding.getURI();
@@ -123,7 +123,7 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
         }
         
         // get the ScaDomainScriptServlet, if it doesn't yet exist create one
-        // this uses removeServletMapping / addServletMapping as theres no getServletMapping facility
+        // this uses removeServletMapping / addServletMapping as there is no getServletMapping facility
         domainScriptMapping = URI.create("http://localhost:" + port + SCA_DOMAIN_SCRIPT).toString();
         ScaDomainScriptServlet scaDomainServlet =
             (ScaDomainScriptServlet)servletHost.getServletMapping(domainScriptMapping);
@@ -132,23 +132,23 @@ public class JSONRPCServiceBindingProvider implements ServiceBindingProvider {
             servletHost.addServletMapping(domainScriptMapping, scaDomainServlet);
         }
 
-        // Add this service to the scadomain script servlet
+        // Add this service to the SCA Domain Script Servlet
         scaDomainServlet.addService(binding.getName());
     }
 
     public void stop() {
 
-        // Remove the servlet mappings we've added
+        // Remove the Servlet mappings we've added
         for (String mapping: servletMappings) {
             servletHost.removeServletMapping(mapping);
         }
 
-        // Unregister the service from the scaDomain script servlet
+        // Unregister the service from the SCA Domain Script Servlet
         ScaDomainScriptServlet scaDomainServlet = (ScaDomainScriptServlet) servletHost.getServletMapping(domainScriptMapping);
         if (scaDomainServlet != null) {
             scaDomainServlet.removeService(binding.getName());
 
-            // Remove the servlet if there's no more registered services
+            // Remove the Servlet if there's no more registered services
             if (scaDomainServlet.getServiceNames().isEmpty()) {
                 servletHost.removeServletMapping(domainScriptMapping);
             }
