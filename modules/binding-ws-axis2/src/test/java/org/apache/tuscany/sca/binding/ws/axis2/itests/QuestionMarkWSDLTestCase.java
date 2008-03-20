@@ -35,7 +35,7 @@ import org.apache.axis2.transport.http.server.HttpUtils;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
- * Test ?wsdl works and that the returned wsdl has the correct endpoint
+ * Test ?wsdl works and that the returned WSDL has the correct endpoint
  */
 public class QuestionMarkWSDLTestCase extends TestCase {
 

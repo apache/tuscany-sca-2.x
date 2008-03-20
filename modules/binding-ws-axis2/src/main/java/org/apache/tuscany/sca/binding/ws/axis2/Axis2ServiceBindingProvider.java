@@ -63,7 +63,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
         
         // TODO - fix up the conversational flag and operation sequences in case the contract has come from WSDL
         // as we don't yet support requires="conversational" or sca:endConversation annotations
-        // in WSDL interface descriptions (see section 1.5.4 of the assembly spec V1.0)
+        // in WSDL interface descriptions (see section 1.5.4 of the Assembly Specification V1.0)
         if (service.getInterfaceContract().getInterface() != null ) {
             contract.getInterface().setConversational(service.getInterfaceContract().getInterface().isConversational());
             

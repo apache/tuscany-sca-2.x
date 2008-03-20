@@ -46,10 +46,10 @@ import org.apache.axis2.util.Loader;
  */
 public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements AxisConfigurator {
     
-    /* these two fields are part of a temporary fix to solve problems that maven has with including
+    /* these two fields are part of a temporary fix to solve problems that Maven has with including
      * rampart-1.3.mar into the classpath and also at the time of Release 1.0 rampart-1.3.mar seems
      * to pull in a SNAPSHOT version of rampart-project pom.  Hence rampart.mar has been excluded
-     * as a maven dependency and has been packed with this module 
+     * as a Maven dependency and has been packed with this module 
      */
     /************start of fix *********************************************************************/
     private URL axis2_xml = 
@@ -73,10 +73,10 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
         return configContext;
     }
     
-    /* these three methods are part of a temporary fix to solve problems that maven has with including
+    /* these three methods are part of a temporary fix to solve problems that Maven has with including
      * rampart-1.3.mar into the classpath and also at the time of Release 1.0 rampart-1.3.mar seems
      * to pull in a SNAPSHOT version of rampart-project pom.  Hence rampart.mar has been excluded
-     * as a maven dependency and has been packed with this module 
+     * as a Maven dependency and has been packed with this module 
      */
     /************start of fix *********************************************************************/
     public AxisConfiguration getAxisConfiguration() throws AxisFault {
