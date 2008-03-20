@@ -75,7 +75,11 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
         Method propsMethod = felixMainClass.getMethod("loadConfigProperties");
         Properties props = (Properties)propsMethod.invoke(null);
         
-        File profileDir = new File(".felix"); 
+        String profileDirName = ".felix";
+        File targetDir = new File("target");
+        if (targetDir.exists() && targetDir.isDirectory())
+            profileDirName = "target/" + profileDirName;
+        File profileDir = new File(profileDirName);
         if (profileDir.isDirectory()) 
             deleteDirectory(profileDir);
         else
