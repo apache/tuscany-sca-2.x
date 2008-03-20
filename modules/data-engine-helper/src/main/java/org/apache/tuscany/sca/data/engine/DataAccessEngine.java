@@ -52,7 +52,7 @@ public class DataAccessEngine {
                 if(keyVals != null && keyVals.size() == 1) {
                     sqlQuery += " where ID = " + keyVals.get(0);
                 }            	
-            } else {//can be other than ID , can be compount keys
+            } else {//can be other than ID , can be compound keys
             	keys = getKeys(key);
             	if(keyVals.size() != keys.size()) {
             		throw new RuntimeException("One or more PK values missing");
@@ -209,7 +209,7 @@ public class DataAccessEngine {
                 if(keyVals != null && keyVals.size() == 1) {
                     sqlQuery += " where ID = " + keyVals.get(0);
                 }            	
-            } else {//can be other than ID , can be compount keys
+            } else {//can be other than ID , can be compound keys
             	keys = getKeys(key);
             	if(keyVals.size() != keys.size()) {
             		throw new RuntimeException("One or more PK values missing");
