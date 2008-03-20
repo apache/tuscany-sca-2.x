@@ -124,7 +124,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
 
             // Load a StAX artifact processor
 
-            // Get the model qname
+            // Get the model QName
             QName artifactType = getQName(attributes.get("qname"));
 
             // Get the model class name
@@ -211,7 +211,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
                     }
                 } else {
 
-                    // Load and instanciate the processor class
+                    // Load and instantiate the processor class
                     try {
                         Class<StAXArtifactProcessor> processorClass =
                             (Class<StAXArtifactProcessor>)processorDeclaration.loadClass();

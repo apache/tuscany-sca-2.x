@@ -92,22 +92,22 @@ public interface Contribution extends Artifact {
     void setModelResolver(ModelResolver modelResolver);
     
     /**
-     * Returns the classloader used to load classes and resources from
+     * Returns the ClassLoader used to load classes and resources from
      * this contribution
      * 
      * FIXME Remove this, the base contribution model should not depend
-     * on Java classloaders. 
+     * on Java ClassLoaders. 
      * 
-     * @return The contribution classloader
+     * @return The contribution ClassLoader
      */
     ClassLoader getClassLoader();
     
     /**
-     * Sets the classloader used to load classes and resources from
+     * Sets the ClassLoader used to load classes and resources from
      * this contribution
      * 
      * FIXME Remove this, the base contribution model should not depend
-     * on Java classloaders. 
+     * on Java ClassLoaders. 
      * 
      * @param classLoader the contribution class loader
      */

@@ -46,7 +46,7 @@ class ContributionImpl implements Contribution {
     private List<Artifact> artifacts = new ArrayList<Artifact>();
     private ModelResolver modelResolver;
     
-    // FIXME remove this dependency on Java classloaders
+    // FIXME remove this dependency on Java ClassLoaders
     private ClassLoader classLoader;
 
     ContributionImpl() {
@@ -60,12 +60,12 @@ class ContributionImpl implements Contribution {
         this.location = location;
     }
 
-    //FIXME Remove dependency on Java classloaders
+    //FIXME Remove dependency on Java ClassLoaders
     public ClassLoader getClassLoader() {
         return classLoader;
     }
     
-    //FIXME Remove dependency on Java classloaders
+    //FIXME Remove dependency on Java ClassLoaders
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
