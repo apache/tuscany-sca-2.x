@@ -60,7 +60,7 @@ import org.omg.IOP.Encoding;
 /**
  * Various utility functions.
  * <p/>
- * Note: #getORB() and #getCodec() rely on UtilInitializer to initialze the ORB and codec.
+ * Note: #getORB() and #getCodec() rely on UtilInitializer to initialize the ORB and codec.
  *
  * @version $Rev$ $Date$
  * @see UtilInitializer
@@ -101,7 +101,7 @@ public final class Java2IDLUtil {
     private static final Pattern SCOPED_NAME_EXTRACTION_PATTERN = Pattern.compile("(\\\\\\\\)|(\\\\@)|(@)|(\\z)");
 
     /**
-     * See csiv2 spec 16.2.5 par. 63-64.  We extract the username if any and un-escape any
+     * See csiv2 Specification 16.2.5 par. 63-64.  We extract the username if any and un-escape any
      * escaped \ and @ characters.
      * 
      * @param scopedNameBytes
@@ -192,15 +192,15 @@ public final class Java2IDLUtil {
         } else if (type == Short.TYPE) {
             out.write_short(((Short) object).shortValue());
         }  else {
-            // object types must bbe written in the context of the corba application server
-            // which properly write replaces our objects for corba
+            // object types must be written in the context of the CORBA application server
+            // which properly write replaces our objects for CORBA
             // ApplicationServer oldApplicationServer = ServerFederation.getApplicationServer();
             try {
                 // ServerFederation.setApplicationServer(corbaApplicationServer);
 
                 // todo check if
                 // copy the result to force replacement
-                // corba does not call writeReplace on remote proxies
+                // CORBA does not call writeReplace on remote proxies
                 //
                 // HOWEVER, if this is an array, then we don't want to do the replacement 
                 // because we can end up with a replacement element that's not compatible with the 
@@ -460,7 +460,7 @@ public final class Java2IDLUtil {
                 continue;
             }
 
-            // setter property must match gettter return value
+            // setter property must match getter return value
             if (!method.getParameterTypes()[0].equals(getter.getReturnType())) {
                 continue;
             }
@@ -577,9 +577,9 @@ public final class Java2IDLUtil {
     }
 
     /**
-     * Return the a string containing an underscore '_' index of each uppercase character in the iiop name.
+     * Return the a string containing an underscore '_' index of each uppercase character in the IIOP name.
      *
-     * This is used for distinction of names that only differ by case, since corba does not support case sensitive names.
+     * This is used for distinction of names that only differ by case, since CORBA does not support case sensitive names.
      */
     private static String upperCaseIndexString(String iiopName) {
         StringBuffer stringBuffer = new StringBuffer();
@@ -593,9 +593,9 @@ public final class Java2IDLUtil {
     }
 
     /**
-     * Replaces any occurnace of the specified "oldChar" with the nes string.
+     * Replaces any occurances of the specified "oldChar" with the new string.
      *
-     * This is used to replace occurances if '$' in corba names since '$' is a special character
+     * This is used to replace occurances if '$' in CORBA names since '$' is a special character
      */
     private static String replace(String source, char oldChar, String newString) {
         StringBuffer stringBuffer = new StringBuffer(source.length());
@@ -675,7 +675,7 @@ public final class Java2IDLUtil {
     }
 
     /**
-     * Returns a string contianing an encoded class name.
+     * Returns a string containing an encoded class name.
      */
     private static String buildClassName(Class type) {
         if (type.isArray()) {

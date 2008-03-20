@@ -30,8 +30,6 @@ import java.util.WeakHashMap;
 
 import org.apache.tuscany.sca.binding.ejb.corba.Java2IDLUtil;
 
-// import commonj.sdo.DataObject;
-
 /**
  * The signature for a java interface
  */

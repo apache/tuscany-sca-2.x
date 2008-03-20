@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.binding.ejb.provider;
 
 import org.apache.tuscany.sca.binding.ejb.EJBBinding;
-import org.apache.tuscany.sca.binding.ejb.EJBBindingException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
