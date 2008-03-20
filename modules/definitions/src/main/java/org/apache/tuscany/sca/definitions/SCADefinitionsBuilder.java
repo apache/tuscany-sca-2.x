@@ -20,12 +20,12 @@ package org.apache.tuscany.sca.definitions;
 
 
 /**
- * Interface to abstract building of SCA Defintions for a Domain
+ * Interface to abstract building of SCA Definitions for a Domain
  *
  */
 public interface SCADefinitionsBuilder {
     /**
-     * Builds the sca definitions 
+     * Builds the SCA definitions 
      * 
      * @param scaDefns
      */
