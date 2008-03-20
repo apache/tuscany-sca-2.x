@@ -99,7 +99,7 @@ public class OSGiClassReferenceModelResolver implements ModelResolver {
 
         if (clazz != null) {
             //if we load the class            
-            // Store a new ClassReference wrappering the loaded class
+            // Store a new ClassReference wrapping the loaded class
             ClassReference classReference = new ClassReference(clazz);
             map.put(getPackageName(classReference), classReference);
 
