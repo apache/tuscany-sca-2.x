@@ -32,28 +32,28 @@ import javax.xml.namespace.QName;
 public interface NodeInfo {
     
     /**
-     * Retrieve the node uri
+     * Retrieve the node URI
      * 
-     * @return node uri
+     * @return node URI
      */
     public String getNodeURI();
     
     /**
-     * Set the node uri
+     * Set the node URI
      * 
      * @param nodeURI
      */    
     public void setNodeURI(String nodeURI);    
     
     /**
-     * Retrieve the node url
+     * Retrieve the node URL
      *
-     * @return node url
+     * @return node URL
      */    
     public String getNodeURL();
    
     /**
-     * Set the node url
+     * Set the node URL
      * 
      * @param nodeURL
      */    

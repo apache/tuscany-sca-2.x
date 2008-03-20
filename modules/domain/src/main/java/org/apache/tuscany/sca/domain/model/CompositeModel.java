@@ -33,14 +33,14 @@ import org.apache.tuscany.sca.assembly.Composite;
 public interface CompositeModel {
     
     /**
-     * Retrieve the composite qname
+     * Retrieve the composite QName
      * 
-     * @return composite qname
+     * @return composite QName
      */
     public QName getCompositeQName();
     
     /**
-     * Set the composite qname
+     * Set the composite QName
      * 
      * @param compositeQName
      */    

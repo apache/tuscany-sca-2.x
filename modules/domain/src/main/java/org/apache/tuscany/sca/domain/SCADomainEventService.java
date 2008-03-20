@@ -25,7 +25,7 @@ import org.osoa.sca.annotations.Remotable;
 
 
 /**
- * The management interface for distributed domain. This is resposible for 
+ * The management interface for distributed domain. This is responsible for 
  * creating appropriate configuration on all the nodes that are running 
  * domain nodes for the distributed domain. 
  * 
@@ -77,8 +77,8 @@ public interface SCADomainEventService {
      * record the relationship directly. This is different from adding a contribution
      * to a domain as the contribution has already been allocated to a node
      * 
-     * @param nodeURI the string uri for the node
-     * @param contributionURI the string uri for the contribution
+     * @param nodeURI the string URI for the node
+     * @param contributionURI the string URI for the contribution
      * @param nodeURL the location of the contribution
      * @return
      */
@@ -89,8 +89,8 @@ public interface SCADomainEventService {
      * In the case where a contribution is removed from a node locally this method is
      * used to remove the contribution from the domain
      * 
-     * @param nodeURI the string uri for the node
-     * @param contributionURI the string uri for the contribution
+     * @param nodeURI the string URI for the node
+     * @param contributionURI the string URI for the contribution
      * @return
      */
     public void unregisterContribution(String nodeURI, String contributionURI) throws DomainException;     
@@ -99,7 +99,7 @@ public interface SCADomainEventService {
      * In the case where a composite is added to the domain level composite at a node this 
      * method is used to record the event with the domain. 
      * 
-     * @param nodeURI the string uri for the node
+     * @param nodeURI the string URI for the node
      * @param compositeQNameString the string QName of the composite
      * @throws DomainException
      */
@@ -108,11 +108,11 @@ public interface SCADomainEventService {
     /**
      * Accepts information about a service endpoint and holds onto it
      * 
-     * @param domainUri the string uri for the distributed domain
-     * @param nodeUri the string uri for the current node
+     * @param domainUri the string URI for the distributed domain
+     * @param nodeUri the string URI for the current node
      * @param serviceName the name of the service that is exposed and the provided endpoint
      * @param bindingName the remote binding that is providing the endpoint
-     * @param url the endpoint url
+     * @param url the endpoint URL
      * @return TBD - information about the registration
      */
     public void registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL) throws DomainException;
@@ -120,8 +120,8 @@ public interface SCADomainEventService {
     /**
      * Removes information about a service endpoint
      * 
-     * @param domainUri the string uri for the distributed domain
-     * @param nodeUri the string uri for the current node
+     * @param domainUri the string URI for the distributed domain
+     * @param nodeUri the string URI for the current node
      * @param serviceName the name of the service that is exposed and the provided endpoint
      * @param bindingName the remote binding that is providing the endpoint
      */    
@@ -130,16 +130,16 @@ public interface SCADomainEventService {
     /**
      * Locates information about a service endpoint 
      * 
-     * @param domainUri the string uri for the distributed domain
+     * @param domainUri the string URI for the distributed domain
      * @param serviceName the name of the service to be found
      * @param bindingName the remote binding that we want to find an endpoint for
-     * @return url the endpoint url or SERVICE_NOT_REGISTERED
+     * @return url the endpoint URL or SERVICE_NOT_REGISTERED
      */
     public String findServiceEndpoint(String domainUri, String serviceName, String bindingName) throws DomainException;
     
     /**
-     * Determines node that a service is avaialable on
-     * @param domainURI the string uri for the distributed domain
+     * Determines node that a service is available on
+     * @param domainURI the string URI for the distributed domain
      * @param serviceName the name of the service to be found
      * @param bindingName the remote binding that we want to find an endpoint for
      * @return name of node running service or SERVICE_NOT_KNOWN (it's not been contributed) or SERVICE_NOT_REGISTERED (it's been contributed but isn;t running)
