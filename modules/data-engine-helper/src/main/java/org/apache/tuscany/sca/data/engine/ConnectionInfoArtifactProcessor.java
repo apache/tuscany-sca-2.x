@@ -54,7 +54,7 @@ public class ConnectionInfoArtifactProcessor implements StAXArtifactProcessor<Co
     }
 
     public QName getArtifactType() {
-        // Returns the qname of the XML element processed by this processor
+        // Returns the QName of the XML element processed by this processor
         return CONNECTION_INFO;
     }
 
