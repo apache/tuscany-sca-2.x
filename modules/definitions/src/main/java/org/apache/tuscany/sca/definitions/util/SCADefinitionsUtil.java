@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
- * Some utility funtions to deal with SCADefinitions
+ * Some utility functions to deal with SCADefinitions
  */
 public class SCADefinitionsUtil {
     
