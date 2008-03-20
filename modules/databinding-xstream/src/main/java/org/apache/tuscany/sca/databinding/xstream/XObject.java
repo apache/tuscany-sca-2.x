@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.databinding.xstream;
 
 /**
- * Marker interface for XStream serializable objects
+ * Marker interface for XStream Serializable objects
  * 
  * @version $Rev$ $Date$
  */
