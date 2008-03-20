@@ -291,7 +291,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                         }
                         
                         // TUSCANY-1949
-                        // If the proerty doesn't have a value, the END_ELEMENT event is read by the readPropertyValue
+                        // If the property doesn't have a value, the END_ELEMENT event is read by the readPropertyValue
                         if (reader.getEventType() == END_ELEMENT && PROPERTY_QNAME.equals(reader.getName())) {
                             property = null;
                             componentProperty = null;
@@ -855,7 +855,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                 }
             }
             
-            //resolve component implemenation
+            //resolve component implementation
             Implementation implementation = component.getImplementation();
             if (implementation != null) {
                 try {

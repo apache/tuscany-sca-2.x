@@ -93,7 +93,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
     protected IntentAttachPointTypeFactory intentAttachPointTypeFactory;
 
     /**
-     * Construcst a new BaseArtifactProcessor.
+     * Constructs a new BaseArtifactProcessor.
      * @param contribFactory
      * @param factory
      * @param policyFactory
@@ -112,7 +112,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
     }
 
     /**
-     * Construcst a new BaseArtifactProcessor.
+     * Constructs a new BaseArtifactProcessor.
      * @param factory
      * @param policyFactory
      */
