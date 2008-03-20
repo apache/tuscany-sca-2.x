@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
- * An interceptor to transform data accross databindings on the wire
+ * An interceptor to transform data across databindings on the wire
  * 
  * @version $Rev$ $Date$
  */
