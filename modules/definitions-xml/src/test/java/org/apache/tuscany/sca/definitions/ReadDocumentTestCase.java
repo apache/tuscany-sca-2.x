@@ -81,7 +81,7 @@ public class ReadDocumentTestCase extends TestCase {
         PolicyFactory policyFactory = new DefaultPolicyFactory();
         IntentAttachPointTypeFactory intentAttachPointFactory = new DefaultIntentAttachPointTypeFactory();
         
-        // Create Stax processors
+        // Create StAX processors
         DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
         ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         staxProcessors.addArtifactProcessor(new MockPolicyProcessor());
