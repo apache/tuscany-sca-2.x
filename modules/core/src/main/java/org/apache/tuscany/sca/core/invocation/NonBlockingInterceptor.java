@@ -52,7 +52,7 @@ public class NonBlockingInterceptor implements Interceptor {
     }
 
     /**
-     * Sets desired workScheduler to NonBlockingInterceptor. This is a usefull function for the extension framework
+     * Sets desired workScheduler to NonBlockingInterceptor. This is a useful function for the extension framework
      * to set desired workmanager on the InvocationChain, other than default workmanager which is set per Tuscany runtime.
      * Using this function, extension framework can set desired workmanager on InvocationChain during post wire processing.
      * @param workScheduler workScheduler which contains workmanager

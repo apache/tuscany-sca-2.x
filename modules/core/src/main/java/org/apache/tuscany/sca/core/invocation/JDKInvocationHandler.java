@@ -372,7 +372,7 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
                 conversation.initializeConversationAttributes(wire.getTarget().getComponent());
             }
             
-            // connect the conversation to the callable reference so it can be retrieve in the future
+            // connect the conversation to the CallableReference so it can be retrieve in the future
             if (callableReference != null) {
                 ((CallableReferenceImpl)callableReference).attachConversation(conversation);
             }

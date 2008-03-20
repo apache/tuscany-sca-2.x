@@ -126,7 +126,7 @@ public class ThreadPoolWorkManager implements WorkManager {
     }
 
     /**
-     * Method provided for subclasses to indicate a work accptance.
+     * Method provided for subclasses to indicate a work acceptance.
      *
      * @param workItem Work item representing the work that was accepted.
      * @param work     Work that was accepted.
@@ -175,7 +175,7 @@ public class ThreadPoolWorkManager implements WorkManager {
     }
 
     /*
-     * Schedules the work using the threadpool.
+     * Schedules the work using the ThreadPool.
      */
     private boolean scheduleWork(final Work work, final WorkItemImpl workItem) {
         try {

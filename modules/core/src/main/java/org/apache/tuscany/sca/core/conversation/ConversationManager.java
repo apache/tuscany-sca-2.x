@@ -48,7 +48,7 @@ public interface ConversationManager {
     void expireConversation(Object conversationID);
 
     /**
-     * Add a listner to this conversation
+     * Add a listener to this conversation
      * @param listener
      */
     void addListener(ConversationListener listener);

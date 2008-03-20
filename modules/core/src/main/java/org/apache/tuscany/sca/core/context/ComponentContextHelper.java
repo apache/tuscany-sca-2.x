@@ -71,7 +71,7 @@ public class ComponentContextHelper {
 
     /**
      * @param assemblyFactory The factory to create assembly models
-     * @param processors The extension point for stax artifact processors
+     * @param processors The extension point for StAX artifact processors
      */
     public ComponentContextHelper(AssemblyFactory assemblyFactory,
                                   JavaInterfaceFactory javaInterfaceFactory,

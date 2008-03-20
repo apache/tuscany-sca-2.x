@@ -36,7 +36,7 @@ public class ComponentStart implements Event {
      * Creates a component start event
      *
      * @param source       the source of the event
-     * @param componentURI the uri of the component being started
+     * @param componentURI the URI of the component being started
      */
     public ComponentStart(Object source, URI componentURI) {
         this.source = source;
