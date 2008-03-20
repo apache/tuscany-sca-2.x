@@ -212,7 +212,7 @@ public class XmlNodeIterator implements Iterator<XmlNode> {
      */
     public static class FastStack<T> extends ArrayList<T> {
 
-        /** Ensure serialization compatibility */
+        /** Ensure Serialization compatibility */
         private static final long serialVersionUID = 2130079159931574599L;
 
         /**

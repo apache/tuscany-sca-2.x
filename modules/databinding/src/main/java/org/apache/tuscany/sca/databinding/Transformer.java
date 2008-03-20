@@ -20,14 +20,14 @@ package org.apache.tuscany.sca.databinding;
 
 /**
  * A transformer provides the data transformation from source type to target type. The cost of the transformation is
- * modeled as weight.
+ * modelled as weight.
  */
 public interface Transformer {
     /**
      * Get the source type that this transformer transforms data from. The type is used as the key when the transformer
      * is registered with TransformerRegistry.
      * 
-     * @return A key indentifying the source type
+     * @return A key identifying the source type
      */
     String getSourceDataBinding();
 
@@ -35,7 +35,7 @@ public interface Transformer {
      * Get the target type that this transformer transforms data into. The type is used as the key when the transformer
      * is registered with TransformerRegistry.
      * 
-     * @return A key indentifying the target type
+     * @return A key identifying the target type
      */
     String getTargetDataBinding();
 

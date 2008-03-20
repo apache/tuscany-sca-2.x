@@ -51,7 +51,7 @@ public class NameValueArrayStreamReader implements XMLFragmentStreamReader {
     }
 
     public void init() {
-        // todo what if the Qname namespace has not been declared
+        // TODO what if the QName namespace has not been declared
     }
 
     public Object getProperty(String string) throws IllegalArgumentException {
@@ -121,7 +121,7 @@ public class NameValueArrayStreamReader implements XMLFragmentStreamReader {
 
     public String getAttributeValue(String string, String string1) {
         if (state == TEXT_STATE) {
-            // todo something
+            // TODO something
             return null;
         } else {
             return null;
@@ -343,7 +343,7 @@ public class NameValueArrayStreamReader implements XMLFragmentStreamReader {
     }
 
     public String getVersion() {
-        return null; // todo 1.0 ?
+        return null; // TODO 1.0 ?
     }
 
     public boolean isStandalone() {

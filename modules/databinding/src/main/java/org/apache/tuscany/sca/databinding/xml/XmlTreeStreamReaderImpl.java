@@ -488,7 +488,7 @@ public class XmlTreeStreamReaderImpl implements XMLStreamReader {
     }
 
     /**
-     * todo implement this
+     * TODO implement this
      * 
      * @throws XMLStreamException
      */

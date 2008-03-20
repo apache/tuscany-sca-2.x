@@ -85,7 +85,7 @@ public class NameValuePairStreamReader implements XMLFragmentStreamReader {
     }
 
     public int nextTag() throws XMLStreamException {
-        return 0; // todo
+        return 0; // TODO
     }
 
     public boolean hasNext() throws XMLStreamException {
@@ -149,7 +149,7 @@ public class NameValuePairStreamReader implements XMLFragmentStreamReader {
     }
 
     public boolean isAttributeSpecified(int i) {
-        return false; // no attribs here
+        return false; // no attributes here
     }
 
     public int getNamespaceCount() {
@@ -292,7 +292,7 @@ public class NameValuePairStreamReader implements XMLFragmentStreamReader {
     }
 
     public String getVersion() {
-        return null; // todo 1.0 ?
+        return null; // TODO 1.0 ?
     }
 
     public boolean isStandalone() {
@@ -335,7 +335,7 @@ public class NameValuePairStreamReader implements XMLFragmentStreamReader {
      * @param uri
      */
     private void addToNsMap(String prefix, String uri) {
-        // todo - need to fix this up to cater for cases where
+        // TODO - need to fix this up to cater for cases where
         // namespaces are having no prefixes
         if (!uri.equals(namespaceContext.getNamespaceURI(prefix))) {
             // this namespace is not there. Need to declare it

@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.databinding.TransformationContext;
  * PullTransformer
  * 
  * @param <S> Source type
- * @param <I> Intermidate type
+ * @param <I> Intermediate type
  * @param <R> Result type
  */
 public class PipedTransformer<S, I, R> implements PullTransformer<S, R> {

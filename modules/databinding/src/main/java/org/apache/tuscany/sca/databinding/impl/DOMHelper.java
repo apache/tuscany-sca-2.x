@@ -140,7 +140,7 @@ public final class DOMHelper {
                 Element newElement = element.getOwnerDocument().createElementNS(newName.getNamespaceURI(), qname);
                 // newElement.setPrefix(prefix);
                 NodeList nodeList = element.getChildNodes();
-                // Need to copy the nodes from the list fisrt as the appendChild() will change the list
+                // Need to copy the nodes from the list first as the appendChild() will change the list
                 int length = nodeList.getLength();
                 List<Node> nodes = new ArrayList<Node>();
                 for (int i = 0; i < length; i++) {
