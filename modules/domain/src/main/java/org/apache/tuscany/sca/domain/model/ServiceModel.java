@@ -28,28 +28,28 @@ package org.apache.tuscany.sca.domain.model;
 public interface ServiceModel {
     
     /**
-     * Retrieve the service uri
+     * Retrieve the service URI
      * 
-     * @return service uri
+     * @return service URI
      */
     public String getServiceURI();
     
     /**
-     * Set the service uri
+     * Set the service URI
      * 
      * @param serviceURI
      */    
     public void setServiceURI(String serviceURI);    
     
     /**
-     * Retrieve the service url
+     * Retrieve the service URL
      * 
-     * @return service url
+     * @return service URL
      */    
     public String getServiceURL();
    
     /**
-     * Set the service url
+     * Set the service URL
      * 
      * @param serviceURL
      */    

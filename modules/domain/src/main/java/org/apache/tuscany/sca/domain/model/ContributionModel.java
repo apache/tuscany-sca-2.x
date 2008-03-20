@@ -47,28 +47,28 @@ public interface ContributionModel {
     public void setContribution(Contribution contribution);        
     
     /**
-     * Retrieve the contribution uri
+     * Retrieve the contribution URI
      * 
-     * @return contribution uri
+     * @return contribution URI
      */
     public String getContributionURI();
     
     /**
-     * Set the contribution uri
+     * Set the contribution URI
      * 
      * @param contributionURI
      */    
     public void setContributionURI(String contributionURI);    
     
     /**
-     * Retrieve the contribution url
+     * Retrieve the contribution URL
      * 
-     * @return contribution url
+     * @return contribution URL
      */    
     public String getContributionURL();
    
     /**
-     * Set the contribution url
+     * Set the contribution URL
      * 
      * @param contributionURL
      */    

@@ -35,28 +35,28 @@ public interface DomainModel {
 
     
     /**
-     * Retrieve the domain uri
+     * Retrieve the domain URI
      * 
-     * @return domain uri
+     * @return domain URI
      */
     public String getDomainURI();
     
     /**
-     * Set the domain uri
+     * Set the domain URI
      * 
      * @param domainURI
      */    
     public void setDomainURI(String domainURI);    
     
     /**
-     * Retrieve the domain url
+     * Retrieve the domain URL
      * 
-     * @return domain url
+     * @return domain URL
      */    
     public String  getDomainURL();
    
     /**
-     * Set the domain url
+     * Set the domain URL
      * 
      * @param domainURL
      */    
