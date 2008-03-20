@@ -55,8 +55,8 @@ public class OSGiImportExportListener implements ContributionListener {
     /**
      * Initialize the import/export model resolvers
      * Export model resolvers are same as Contribution model resolver
-     * Import model resolvers are matched to a specific contribution if a location uri is specified, 
-     *    otherwise it try to resolve agains all the other contributions
+     * Import model resolvers are matched to a specific contribution if a location URI is specified, 
+     *    otherwise it try to resolve against all the other contributions
      */
     public void contributionAdded(ContributionRepository repository, Contribution contribution) {
 
