@@ -26,6 +26,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.MetaComponent;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -110,7 +111,7 @@ public class CompositeUpdaterImpl implements CompositeUpdater {
 
     public Component findComponent(String componentName) {
         Contribution contrib = contribService.getContribution(contribURI);
-        List<DeployedArtifact> artifacts = contrib.getArtifacts();
+        List<Composite> artifacts = contrib.getDeployables();
         Composite composite = ArtifactsFinder.findComposite(compositeURI,
                 artifacts);
         return ArtifactsFinder.findComponent(composite, componentName);

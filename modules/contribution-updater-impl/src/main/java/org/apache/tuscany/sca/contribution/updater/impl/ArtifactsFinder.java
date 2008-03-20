@@ -28,14 +28,11 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 public class ArtifactsFinder {
 
     public static Composite findComposite(String compositeURI,
-            List<DeployedArtifact> artifacts) {
-        for (DeployedArtifact artifact : artifacts) {
-            if (artifact.getModel() instanceof Composite) {
-                Composite composite = (Composite) artifact.getModel();
+            List<Composite> artifacts) {
+        for (Composite composite : artifacts) {
                 if (composite.getURI().equals(compositeURI))
                     return composite;
             }
-        }
         return null;
     }
 

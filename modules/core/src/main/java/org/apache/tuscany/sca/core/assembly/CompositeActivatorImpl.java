@@ -152,6 +152,20 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
         }
     }
+    
+    public void stop(Component component, ComponentReference reference)
+    {
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Starting component reference: " + component.getURI() + "#" + reference.getName());
+        }
+        RuntimeComponentReference runtimeRef = ((RuntimeComponentReference)reference);
+        for (Binding binding : reference.getBindings()) {
+            ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(binding);
+            if (bindingProvider != null) {
+                bindingProvider.stop();
+            }
+        }
+    }    
 
     public void deactivate(RuntimeComponent component, RuntimeComponentReference ref) {
         if (logger.isLoggable(Level.FINE)) {
@@ -761,6 +775,64 @@ public class CompositeActivatorImpl implements CompositeActivator {
         }        
         runtimeComponent.setScopeContainer(null);
     }
+    
+    public void activateComponent(Component component)
+            throws ActivationException {
+        try {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Activating component: " + component.getURI());
+            }
+
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                activate((Composite) implementation);
+            } else if (implementation != null) {
+                addImplementationProvider((RuntimeComponent) component,
+                        implementation);
+                addScopeContainer(component);
+            }
+
+            for (ComponentService service : component.getServices()) {
+                activate((RuntimeComponent) component,
+                        (RuntimeComponentService) service);
+            }
+
+            for (ComponentReference reference : component.getReferences()) {
+                activate((RuntimeComponent) component,
+                        (RuntimeComponentReference) reference);
+            }
+        } catch (Exception e) {
+            throw new ActivationException(e);
+        }
+    }
+
+    public void deactivateComponent(Component component)
+            throws ActivationException {
+        try {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Deactivating component: " + component.getURI());
+            }
+            for (ComponentService service : component.getServices()) {
+                deactivate((RuntimeComponent) component,
+                        (RuntimeComponentService) service);
+            }
+
+            for (ComponentReference reference : component.getReferences()) {
+                deactivate((RuntimeComponent) component,
+                        (RuntimeComponentReference) reference);
+            }
+
+            Implementation implementation = component.getImplementation();
+            if (implementation instanceof Composite) {
+                deactivate((Composite) implementation);
+            } else if (implementation != null) {
+                removeImplementationProvider((RuntimeComponent) component);
+                removeScopeContainer(component);
+            }
+        } catch (Exception e) {
+            throw new ActivationException(e);
+        }
+    }    
 
     public void activate(Composite composite) throws ActivationException {
         try {
@@ -891,5 +963,5 @@ public class CompositeActivatorImpl implements CompositeActivator {
     public ConversationManager getConversationManager() {
         return conversationManager;
     }
-
+    
 }
