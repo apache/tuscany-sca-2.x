@@ -39,7 +39,7 @@ import commonj.sdo.impl.HelperProvider;
 /**
  * SDO Databinding
  * 
- * @version $Reve$ $Date$
+ * @version $Rev$ $Date$
  */
 public class SDODataBinding extends BaseDataBinding {
     public static final String NAME = DataObject.class.getName();
