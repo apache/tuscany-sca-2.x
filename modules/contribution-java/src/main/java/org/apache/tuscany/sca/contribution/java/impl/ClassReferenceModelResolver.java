@@ -99,7 +99,7 @@ public class ClassReferenceModelResolver implements ModelResolver {
         
         if (clazz == null) {
             try {
-            	// Search contribution classloader (which has visibility of classes in the contribution
+            	// Search contribution ClassLoader (which has visibility of classes in the contribution
             	// as well as explicitly imported packages from other contributions)
                 clazz = Class.forName(((ClassReference)unresolved).getClassName(), true, classLoader.get());
             } catch (ClassNotFoundException e) {
@@ -108,7 +108,7 @@ public class ClassReferenceModelResolver implements ModelResolver {
 
         if (clazz != null) {
             //if we load the class            
-            // Store a new ClassReference wrappering the loaded class
+            // Store a new ClassReference wrapping the loaded class
             ClassReference classReference = new ClassReference(clazz);
             map.put(clazz.getName(), classReference);
 

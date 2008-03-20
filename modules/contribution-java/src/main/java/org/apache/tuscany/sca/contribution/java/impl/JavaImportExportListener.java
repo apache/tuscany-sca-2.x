@@ -58,9 +58,9 @@ public class JavaImportExportListener implements ContributionListener {
     /**
      * Initialize the import/export model resolvers
      * Export model resolvers are same as Contribution model resolver
-     * Import model resolvers are matched to a specific contribution if a location uri is specified, 
-     *    otherwise it try to resolve agains all the other contributions
-     * Also set the exporting contributions used by contribution classloaders to 
+     * Import model resolvers are matched to a specific contribution if a location URI is specified, 
+     *    otherwise it try to resolve against all the other contributions
+     * Also set the exporting contributions used by contribution ClassLoaders to 
      * match import/export for class loading.
      */
     public void contributionAdded(ContributionRepository repository, Contribution contribution) {

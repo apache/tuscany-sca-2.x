@@ -40,7 +40,7 @@ public class ContributionClassLoader extends URLClassLoader {
 
     
     /**
-     * Constructor for contribution classloader 
+     * Constructor for contribution ClassLoader 
      * 
      * @param contribution
      * @param parent
@@ -50,7 +50,7 @@ public class ContributionClassLoader extends URLClassLoader {
         
         // To enable contributions to access code outside of SCA contributions
         // (typically by providing them on CLASSPATH), use the thread context
-        // classloader as the parent of all contribution classloaders.
+        // ClassLoader as the parent of all contribution ClassLoaders.
         
         super(new URL[0], parent == null?Thread.currentThread().getContextClassLoader(): null);
         this.contribution = contribution;
@@ -64,8 +64,8 @@ public class ContributionClassLoader extends URLClassLoader {
     }
 
     /*
-     * Return the classloader corresponding to a contribution providing an export
-     * Create a new classloader for the contribution if one does not exist
+     * Return the ClassLoader corresponding to a contribution providing an export
+     * Create a new ClassLoader for the contribution if one does not exist
      */
     private ClassLoader getExportClassLoader(Contribution exportingContribution) {
     	ClassLoader cl = exportingContribution.getClassLoader();
@@ -128,7 +128,7 @@ public class ContributionClassLoader extends URLClassLoader {
      * @see java.lang.ClassLoader#loadClass(java.lang.String, boolean)
      * 
      * Search path for class:
-     *     Parent classloader
+     *     Parent ClassLoader
      *     This contribution
      *     Imported contributions
      *     
@@ -212,7 +212,7 @@ public class ContributionClassLoader extends URLClassLoader {
      * 
      * Find a resource. 
      * Search path for resource:
-     *     Parent classloader
+     *     Parent ClassLoader
      *     This contribution
      *     Imported contributions
      */
@@ -237,7 +237,7 @@ public class ContributionClassLoader extends URLClassLoader {
      * 
      * Return list of resources from this contribution, resources
      * imported through imported contributions and resources from parent 
-     * classloader.
+     * ClassLoader.
      */
     @Override
     public Enumeration<URL> getResources(String resName) throws IOException {
