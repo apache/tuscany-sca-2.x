@@ -39,7 +39,7 @@ public class DomainNodeLauncher {
         Object admin;
         try {
             // Set up runtime classloader
-            ClassLoader runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader(Object.class.getClassLoader());
+            ClassLoader runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader(DomainNodeLauncher.class.getClassLoader());
             if (runtimeClassLoader != null) {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
             }

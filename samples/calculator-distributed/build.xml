@@ -17,8 +17,6 @@
  * under the License.    
 -->
 <project name="calculator" default="runDomain">
-    <property name="node.class" value="node.CalculatorNode" />
-	<property name="domain.class" value="node.DomainNode" />
 	<property name="test.jar"   value="sample-calculator-distributed.jar" />
 	
     <target name="init">

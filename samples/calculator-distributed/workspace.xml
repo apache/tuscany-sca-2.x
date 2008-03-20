@@ -18,8 +18,8 @@
  * under the License.    
 -->
 <workspace xmlns="http://tuscany.apache.org/xmlns/sca/1.0" xmlns:ns1="http://tuscany.apache.org/xmlns/sca/1.0">
-  <contribution location="file:./target/classes/nodeA"  uri="nodeA"/>
-  <contribution location="file:./target/classes/nodeB"  uri="nodeB"/>
-  <contribution location="file:./target/classes/nodeC"  uri="nodeC"/>  
-  <contribution location="file:./target/classes/cloud" uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud"/>  
+  <contribution location="file:./src/main/resources/nodeA"  uri="nodeA"/>
+  <contribution location="file:./src/main/resources/nodeB"  uri="nodeB"/>
+  <contribution location="file:./src/main/resources/nodeC"  uri="nodeC"/>  
+  <contribution location="file:./src/main/resources/cloud" uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud"/>  
 </workspace>
