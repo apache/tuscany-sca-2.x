@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
 
 /**
- * Uses a wire to return a callable reference
+ * Uses a wire to return a CallableReference
  * 
  * @version $Rev: 574648 $ $Date: 2007-09-11 18:45:36 +0100 (Tue, 11 Sep 2007) $
  */

@@ -134,7 +134,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
         this.instanceLifecycleCollection.put(contextId, anInstanceWrapper);
     }
 
-    // The remove is invoked when a conversation is explicitly ended. This can ccur by using the @EndsConversation or API.  
+    // The remove is invoked when a conversation is explicitly ended. This can occur by using the @EndsConversation or API.  
     // In this case the instance is immediately removed. A new conversation will be started on the next operation
     // associated with this conversationId's service reference. 
     //

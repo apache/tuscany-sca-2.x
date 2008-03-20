@@ -35,7 +35,7 @@ import commonj.work.WorkManager;
  * <p/>
  * This needs a JSR 237 work manager implementation available for scheduling work. Instances can be configured with a
  * work manager implementation that is injected in. It is the responsibility of the runtime environment to make a work
- * manager implementaion available. For example, if the managed environment supports work manager the runtime can use
+ * manager implementation available. For example, if the managed environment supports work manager the runtime can use
  * the appropriate lookup mechanism to inject the work manager implementation. </p>
  */
 public class Jsr237WorkScheduler implements WorkScheduler {
@@ -113,7 +113,7 @@ public class Jsr237WorkScheduler implements WorkScheduler {
     }
 
     /*
-     * Worklistener for keeping track of work status callbacks.
+     * WorkListener for keeping track of work status callbacks.
      *
      */
     private class Jsr237WorkListener<T extends Runnable> implements WorkListener {

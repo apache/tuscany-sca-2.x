@@ -108,7 +108,8 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         this.component = component;
         this.reference = reference;
         this.binding = binding;
-        // FIXME: The SCA spec is not clear how we should handle multiplicty for CallableReference
+        // FIXME: The SCA Specification is not clear how we should handle multiplicity 
+        // for CallableReference
         if (this.binding == null) {
             this.binding = this.reference.getBinding(SCABinding.class);
             if (this.binding == null) {
@@ -210,8 +211,8 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
 
     public Conversation getConversation() {
         try {
-            // resolve from XML just in case this callable reference is the result of
-            // passing a callable reference as a parameter
+            // resolve from XML just in case this CallableReference is the result of
+            // passing a CallableReference as a parameter
             resolve();
             
             if (conversation == null || conversation.getState() == ConversationState.ENDED) {
@@ -325,7 +326,8 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                         }
                     }
                 }
-                // FIXME: The SCA spec is not clear how we should handle multiplicty for CallableReference
+                // FIXME: The SCA Specification is not clear how we should handle multiplicity 
+                // for CallableReference
                 if (binding == null) {
                     binding = reference.getBinding(SCABinding.class);
                     if (binding == null) {

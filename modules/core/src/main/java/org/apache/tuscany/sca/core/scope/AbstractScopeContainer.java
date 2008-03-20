@@ -68,7 +68,7 @@ public abstract class AbstractScopeContainer<KEY> implements ScopeContainer<KEY>
     }
 
     public InstanceWrapper getAssociatedWrapper(KEY contextId) throws TargetResolutionException {
-        return getWrapper(contextId); // TODO: what is this method spossed to do diff than getWrapper? 
+        return getWrapper(contextId); // TODO: what is this method supposed to do diff than getWrapper? 
     }
 
     public Scope getScope() {
@@ -104,7 +104,7 @@ public abstract class AbstractScopeContainer<KEY> implements ScopeContainer<KEY>
     }
     
     /**
-     * Default implmentation of remove which does nothing 
+     * Default implementation of remove which does nothing 
      * 
      * @param contextId the identifier of the context to remove. 
      */

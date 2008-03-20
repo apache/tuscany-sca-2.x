@@ -22,7 +22,7 @@ import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
 import org.apache.tuscany.sca.invocation.Message;
 
 /**
- * Class for tunneling a WorkContext through the invocation of a user class.
+ * Class for tunnelling a WorkContext through the invocation of a user class.
  *
  * @version $Rev$ $Date$
  */

@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.osoa.sca.CallableReference;
 
 /**
- * Uses a wire to return a callable reference
+ * Uses a wire to return a CallableReference
  * 
  * @version $Rev$ $Date$
  */
