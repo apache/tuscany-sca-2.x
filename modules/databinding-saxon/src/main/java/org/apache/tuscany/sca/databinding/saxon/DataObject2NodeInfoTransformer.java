@@ -35,7 +35,7 @@ import commonj.sdo.helper.XMLHelper;
 /**
  * Transforms SDO DataObject-s to NodeInfo objects needed by Saxon parser
  * @version $Rev$ $Date$
- * For root element when serializing the DataObject the name of its 
+ * For root element when Serializing the DataObject the name of its 
  * implemented interface is used with its first letter made lowercase.
  * Also any namespaces that are defined are deleted, because otherwise
  * the SaxonB parser does not work
