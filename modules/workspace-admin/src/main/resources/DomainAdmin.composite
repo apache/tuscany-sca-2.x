@@ -141,7 +141,7 @@
     <component name="CompositeImageCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.CompositeImageCollectionImpl"/>
    		<service name="ItemCollection">
-   	 		<t:binding.atom uri="http://localhost:9990/composite-image" title="Composite Images"/>
+   	 		<t:binding.atom uri="http://localhost:9990/composite-image" title="Install Image"/>
    		</service>
    		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/node-image"/>
@@ -153,7 +153,7 @@
     <component name="NodeProcessCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.implementation.node.launcher.NodeProcessCollectionImpl"/>
    		<service name="ItemCollection">
-   	 		<t:binding.atom uri="http://localhost:9990/process" title="Running Nodes"/>
+   	 		<t:binding.atom uri="http://localhost:9990/process" title="Log"/>
    		</service>
     </component>
 

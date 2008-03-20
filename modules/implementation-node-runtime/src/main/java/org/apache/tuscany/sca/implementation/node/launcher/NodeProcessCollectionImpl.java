@@ -59,6 +59,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
     }
     
     public Entry<String, Item>[] getAll() {
+        logger.info("getAll");
         
         // Return all the running VMs
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
@@ -69,6 +70,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
     }
 
     public Item get(String key) throws NotFoundException {
+        logger.info("get " + key);
 
         // Return the specified VM
         SCANodeVM vm = vm(key);
@@ -80,6 +82,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
     }
 
     public String post(String key, Item item) {
+        logger.info("post " + key);
         
         // Start a new VM and add it to the collection
         SCANodeVM vm = vm(key);
@@ -103,6 +106,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
     }
 
     public void delete(String key) throws NotFoundException {
+        logger.info("delete " + key);
         
         // Stop a VM and remove it from the collection
         SCANodeVM vm = vm(key);
@@ -114,11 +118,13 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
             }
             nodeVMs.remove(vm);
         } else {
-            throw new NotFoundException();
+            //throw new NotFoundException();
         }
     }
     
     public Entry<String, Item>[] query(String queryString) {
+        logger.info("query " + queryString);
+        
         if (queryString.startsWith("node=")) {
             
             // Return the log for the specified VM
@@ -198,29 +204,35 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
          * Starts a node in a new VM.
          */
         private void start() throws IOException {
+
+            // Determine the node image URI
+            String nodeImageURI = NodeImplementationLauncherUtil.nodeImageURI(nodeName);
             
             // Build the Java VM command line
             Properties props = System.getProperties();
             String java = props.getProperty("java.home") + "/bin/java";
             String cp = props.getProperty("java.class.path");
             String main = NodeLauncher.class.getName();
-            String url = "http://localhost:9990/node-image/" + nodeName;
-            final String[] command = new String[]{ java, "-cp", cp, main , url};
+            final String[] command = new String[]{ java, "-cp", cp, main , nodeImageURI};
+
+            logger.info("Starting " + "java " + main + " " + nodeImageURI);
             
             // Start the VM
             ProcessBuilder builder = new ProcessBuilder(command);
             builder.redirectErrorStream(true);
             process = builder.start();
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
+            
+            logger.info("Started " + process);
+            
             // Start a thread to monitor the process
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             monitor = new Thread(new Runnable() {
                 public void run() {
                     try {
                         for (;;) {
                             String s = reader.readLine();
                             if (s != null) {
-                                System.out.println(s);
+                                logger.info(s);
                                 log.append(s + "<br>");
                             } else {
                                 break;
@@ -276,8 +288,12 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
          * @throws InterruptedException
          */
         private void stop() throws InterruptedException {
+            logger.info("Stopping " + process);
+            
             process.destroy();
             monitor.join();
+            
+            logger.info("Stopped " + process);
         }
     }
     

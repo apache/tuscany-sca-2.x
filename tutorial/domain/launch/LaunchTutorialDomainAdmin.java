@@ -27,7 +27,7 @@ package launch;
 public class LaunchTutorialDomainAdmin {
     
     public static void main(String[] args) throws Exception {
-        org.apache.tuscany.sca.workspace.admin.launcher.DomainAdminLauncher.main(args);
+        org.apache.tuscany.sca.node.launcher.DomainNodeLauncher.main(args);
     }
 
 }

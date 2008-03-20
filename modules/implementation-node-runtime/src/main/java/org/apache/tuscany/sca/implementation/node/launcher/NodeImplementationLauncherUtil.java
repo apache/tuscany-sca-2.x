@@ -19,32 +19,33 @@
 
 package org.apache.tuscany.sca.implementation.node.launcher;
 
-import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
-
 /**
- * Bootstrap class for standalone SCA nodes, used by NodeImplementationLauncher
- * to launch SCA nodes.
- *  
+ * Utility methods for node implementation launchers.
+ *
  * @version $Rev$ $Date$
  */
-public class NodeImplementationLauncherBootstrap {
+public class NodeImplementationLauncherUtil {
 
-    private SCANode2 node;
-    
+    private static final String TUSCANY_DOMAIN = "TUSCANY_DOMAIN";
+    private static final String DEFAULT_DOMAIN = "http://localhost:9990";
+
     /**
-     * Constructs a new node bootstrap.
+     * Determine the URI of a node image. The domain URI can be configured
+     * using a TUSCANY_DOMAIN system property or environment variable.
+     * 
+     * @param nodeName
+     * @return
      */
-    public NodeImplementationLauncherBootstrap(String nodeImageURI) throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-        node = nodeFactory.createSCANode(nodeImageURI);
-    }
-
-    public void start() throws Exception {
-        node.start();
+    public static String nodeImageURI(String nodeName) {
+        String domain = System.getProperty(TUSCANY_DOMAIN);
+        if (domain == null || domain.length() == 0) {
+            domain = System.getenv(TUSCANY_DOMAIN);
+        }
+        if (domain == null || domain.length() ==0) {
+            domain = DEFAULT_DOMAIN;
+        }
+        String nodeImage = domain + "/node-image/" + nodeName;
+        return nodeImage;
     }
     
-    public void stop() throws Exception {
-        node.stop();
-    }
 }

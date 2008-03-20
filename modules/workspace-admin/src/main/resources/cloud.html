@@ -59,7 +59,7 @@
 			var entries = feed.getElementsByTagName("entry");
 			var composites = "";
 			composites += '<table width="100%">';
-			composites += '<tr><th>Node</th><th>Composite</th><th>Contribution</th><th>Composite Install Image</th>' +
+			composites += '<tr><th>Node</th><th>Composite</th><th>Contribution</th><th>Install Image</th>' +
 			'<th>Log</th></tr>';
 			
 			for (var i=0; i<entries.length; i++) {
@@ -121,6 +121,8 @@
 		var composites  = array(document.cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
+			    var id = nodeNames[i];
+				processCollection.del(id, stopCompositeResponse);
 			    var id = composites[i].value;
 				cloudComposite.del(id, deleteCompositeResponse);
 			}
@@ -249,7 +251,7 @@
   <form name="newCompositeForm">
     <table width="100%">
     <tr><th>Add a Node</th></tr>
-    <tr><td>Add a node to the cloud. The node will run the specified SCA composite.</td></tr>
+    <tr><td>Add a node to the cloud. The node will run the SCA components declared in the specified composite.</td></tr>
     </table>
     <br>
     <table>
