@@ -78,8 +78,8 @@ public class HTTPServiceBindingProvider implements ServiceBindingProvider {
             throw new IllegalStateException("No get or service method found on the service");
         }
                 
-        // Create our HTTP service listener servlet and register it with the
-        // servlet host
+        // Create our HTTP service listener Servlet and register it with the
+        // Servlet host
         servletMapping = binding.getURI();
         if (!servletMapping.endsWith("/")) {
             servletMapping += "/";
@@ -95,7 +95,7 @@ public class HTTPServiceBindingProvider implements ServiceBindingProvider {
 
     public void stop() {
         
-        // Unregister the servlet from the servlet host
+        // Unregister the Servlet from the Servlet host
         servletHost.removeServletMapping(servletMapping);
     }
 
