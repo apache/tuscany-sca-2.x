@@ -23,7 +23,7 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 
 /**
- * An implementation of RuntimeBeanReference wrappering an SCA assembly
+ * An implementation of RuntimeBeanReference wrapping an SCA assembly
  * Reference
  * 
  * @version $Rev$ $Date$
