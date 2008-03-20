@@ -22,9 +22,7 @@ package org.apache.tuscany.sca.interfacedef.java.jaxws;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.jws.Oneway;
 import javax.jws.WebMethod;
@@ -32,6 +30,7 @@ import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
+import javax.jws.soap.SOAPBinding.Style;
 import javax.xml.namespace.QName;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
@@ -41,6 +40,7 @@ import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
@@ -81,12 +81,9 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
         // SOAP binding (doc/lit/wrapped|bare or rpc/lit)
         SOAPBinding soapBinding = clazz.getAnnotation(SOAPBinding.class);
 
-        Map<String, Operation> operations = new HashMap<String, Operation>();
         for (Operation op : contract.getOperations()) {
-            operations.put(op.getName(), op);
-        }
-        for (Method method : clazz.getMethods()) {
-            Operation operation = operations.get(method.getName());
+            JavaOperation operation = (JavaOperation)op;
+            Method method = operation.getJavaMethod();
             introspectFaultTypes(operation);
 
             // SOAP binding (doc/lit/wrapped|bare or rpc/lit)
@@ -94,8 +91,11 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
             if (methodSOAPBinding == null) {
                 methodSOAPBinding = soapBinding;
             }
+
+            boolean documentStyle = true;
             if (methodSOAPBinding != null) {
                 operation.setWrapperStyle(methodSOAPBinding.parameterStyle() == SOAPBinding.ParameterStyle.WRAPPED);
+                documentStyle = methodSOAPBinding.style() == Style.DOCUMENT;
             }
 
             // WebMethod
@@ -103,6 +103,8 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
             if (webMethod == null) {
                 continue;
             }
+            String operationName = getValue(webMethod.operationName(), operation.getName());
+            operation.setName(operationName);
 
             // Is one way?
             Oneway oneway = method.getAnnotation(Oneway.class);
@@ -117,7 +119,10 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 for (int i = 0; i < method.getParameterTypes().length; i++) {
                     WebParam param = getAnnotation(method, i, WebParam.class);
                     if (param != null) {
-                        QName element = new QName(param.targetNamespace(), param.name());
+                        String ns = getValue(param.targetNamespace(), tns);
+                        // Default to <operationName> for doc-bare
+                        String name = getValue(param.name(), documentStyle ? operationName : "arg" + i);
+                        QName element = new QName(ns, name);
                         Object logical = operation.getInputType().getLogical().get(i).getLogical();
                         if (logical instanceof XMLType) {
                             ((XMLType)logical).setElementName(element);
@@ -126,16 +131,16 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 }
                 WebResult result = method.getAnnotation(WebResult.class);
                 if (result != null) {
-                    QName element = new QName(result.targetNamespace(), result.name());
+                    String ns = getValue(result.targetNamespace(), tns);
+                    // Default to <operationName>Response for doc-bare
+                    String name = getValue(result.name(), documentStyle ? operationName + "Response" : "return");
+                    QName element = new QName(ns, name);
                     Object logical = operation.getOutputType().getLogical();
                     if (logical instanceof XMLType) {
                         ((XMLType)logical).setElementName(element);
                     }
                 }
             }
-
-            String operationName = getValue(webMethod.operationName(), operation.getName());
-            operation.setName(operationName);
 
             RequestWrapper requestWrapper = method.getAnnotation(RequestWrapper.class);
             ResponseWrapper responseWrapper = method.getAnnotation(ResponseWrapper.class);
@@ -156,12 +161,20 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
             for (int i = 0; i < method.getParameterTypes().length; i++) {
                 WebParam param = getAnnotation(method, i, WebParam.class);
                 assert param != null;
-                inputElements.add(new ElementInfo(new QName(param.targetNamespace(), param.name()), null));
+                // Default to "" for doc-lit-wrapped && non-header
+                ns = getValue(param.targetNamespace(), documentStyle && !param.header() ? "" : tns);
+                name = getValue(param.name(), "arg" + i);
+                QName element = new QName(ns, name);
+                inputElements.add(new ElementInfo(element, null));
             }
 
             List<ElementInfo> outputElements = new ArrayList<ElementInfo>();
             WebResult result = method.getAnnotation(WebResult.class);
-            outputElements.add(new ElementInfo(new QName(result.targetNamespace(), result.name()), null));
+            // Default to "" for doc-lit-wrapped && non-header
+            ns = getValue(result.targetNamespace(), documentStyle && !result.header() ? "" : tns);
+            name = getValue(result.name(), "return");
+            QName element = new QName(ns, name);
+            outputElements.add(new ElementInfo(element, null));
 
             WrapperInfo wrapperInfo =
                 new WrapperInfo(JAXB_DATABINDING, new ElementInfo(inputWrapper, null), new ElementInfo(outputWrapper,
