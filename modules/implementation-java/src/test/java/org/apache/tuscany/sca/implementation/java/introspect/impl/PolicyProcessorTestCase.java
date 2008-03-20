@@ -32,6 +32,8 @@ import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFacto
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.impl.PolicyJavaInterfaceVisitor;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
@@ -44,6 +46,7 @@ import org.osoa.sca.annotations.Service;
 public class PolicyProcessorTestCase extends TestCase {
     private ServiceProcessor serviceProcessor;
     private PolicyProcessor policyProcessor;
+    private PolicyJavaInterfaceVisitor visitor;
     private JavaImplementation type;
 
     // This actually is a test for PolicyJavaInterfaceProcessor. It will get
@@ -51,36 +54,42 @@ public class PolicyProcessorTestCase extends TestCase {
     // ServiceProcessor. Of course ServiceProcessor class has to be working.
     public void stestSingleInterfaceWithIntentsOnInterfaceAtInterfaceLevel() throws Exception {
         serviceProcessor.visitClass(Service1.class, type);
+        visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
         policyProcessor.visitClass(Service1.class, type);
         verifyIntents(Service1.class, type);
     }
 
     public void stestMultipleInterfacesWithIntentsOnInterfaceAtInterfaceLevel() throws Exception {
         serviceProcessor.visitClass(Service2.class, type);
+        visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
         policyProcessor.visitClass(Service2.class, type);
         verifyIntents(Service2.class, type);
     }
 
     public void stestSingleInterfaceWithIntentsOnImplAtClassLevel() throws Exception {
         serviceProcessor.visitClass(Service3.class, type);
+        visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
         policyProcessor.visitClass(Service3.class, type);
         verifyIntents(Service3.class, type);
     }
 
     public void stestMultipleInterfacesWithIntentsOnImplAtClassLevel() throws Exception {
         serviceProcessor.visitClass(Service4.class, type);
+        visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
         policyProcessor.visitClass(Service4.class, type);
         verifyIntents(Service4.class, type);
     }
 
     public void stestSingleInterfaceWithIntentsOnInterfaceAtMethodLevel() throws Exception {
         serviceProcessor.visitClass(Service5.class, type);
+        visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
         policyProcessor.visitClass(Service5.class, type);
         verifyIntents(Service5.class, type);
     }
 
     public void testSingleInterfaceWithIntentsOnServiceAndInterfaceAtImplAndInertfaceAndMethodLevel() throws Exception {
         serviceProcessor.visitClass(Service6.class, type);
+        visitor.visitInterface((JavaInterface)type.getServices().get(0).getInterfaceContract().getInterface());
         policyProcessor.visitClass(Service6.class, type);
         for (Method method : Service6.class.getDeclaredMethods()) {
             policyProcessor.visitMethod(method, type);
@@ -132,7 +141,7 @@ public class PolicyProcessorTestCase extends TestCase {
 
             if (interfaceIntentAnnotation != null) {
                 String[] interfaceIntents = interfaceIntentAnnotation.value();
-                List<Intent> requiredIntents = service.getRequiredIntents();
+                List<Intent> requiredIntents = service.getInterfaceContract().getInterface().getRequiredIntents();
                 if (interfaceIntents.length > 0) {
                     if (requiredIntents == null || requiredIntents.size() == 0) {
                         fail("No Intents on the service " + service.getName());
@@ -227,6 +236,7 @@ public class PolicyProcessorTestCase extends TestCase {
         super.setUp();
         serviceProcessor = new ServiceProcessor(new DefaultAssemblyFactory(), new DefaultJavaInterfaceFactory());
         policyProcessor = new PolicyProcessor(new DefaultAssemblyFactory(), new DefaultPolicyFactory());
+        visitor = new PolicyJavaInterfaceVisitor(new DefaultPolicyFactory());
         JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
         type = javaImplementationFactory.createJavaImplementation();
     }

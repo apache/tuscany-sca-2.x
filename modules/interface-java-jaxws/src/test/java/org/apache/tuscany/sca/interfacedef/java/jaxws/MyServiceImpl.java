@@ -30,6 +30,10 @@ import javax.jws.WebService;
 @WebService
 public class MyServiceImpl {
     
+    public MyServiceImpl() {
+        super();
+    }
+
     @WebMethod
     public <T extends Bean1> T getBean(T b, Bean2 b2) {
         return null;
@@ -38,6 +42,11 @@ public class MyServiceImpl {
     @WebMethod
     public List<? extends Bean1> getBeans() {
         return null;
+    }
+    
+    @WebMethod
+    public String convert(String str, int i) throws MyException {
+        return "ME";
     }
     
 }

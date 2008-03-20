@@ -22,19 +22,26 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceFactoryImpl;
+import org.apache.tuscany.sca.interfacedef.java.impl.PolicyJavaInterfaceVisitor;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
  * A factory for the Java interface model.
  */
 public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
-    
+    private ModelFactoryExtensionPoint modelFactoryExtensionPoint;
     private boolean loadedVisitors; 
     
     public DefaultJavaInterfaceFactory() {
+    }
+    
+    public DefaultJavaInterfaceFactory(ModelFactoryExtensionPoint modelFactoryExtensionPoint) {
+        this.modelFactoryExtensionPoint = modelFactoryExtensionPoint;
     }
     
     @Override
@@ -50,7 +57,14 @@ public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implem
     private void loadVisitors() {
         if (loadedVisitors)
             return;
-
+        
+        if (modelFactoryExtensionPoint != null) {
+            PolicyFactory policyFactory = modelFactoryExtensionPoint.getFactory(PolicyFactory.class);
+            if (policyFactory != null) {
+                addInterfaceVisitor(new PolicyJavaInterfaceVisitor(policyFactory));
+            }
+        }
+        
         // Get the databinding service declarations
         Set<ServiceDeclaration> visitorDeclarations; 
         try {

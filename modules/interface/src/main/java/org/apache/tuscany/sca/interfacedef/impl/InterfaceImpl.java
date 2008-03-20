@@ -26,6 +26,9 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Represents a service interface.
@@ -38,6 +41,12 @@ public class InterfaceImpl implements Interface {
     private boolean conversational;
     private OperationList operations = new OperationList();
     private boolean unresolved;
+
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
+    private IntentAttachPointType type;
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+
 
     public boolean isRemotable() {
         return remotable;
@@ -212,9 +221,29 @@ public class InterfaceImpl implements Interface {
     public boolean isDynamic() {
         return false;
     }
+    
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
+    }
+
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public IntentAttachPointType getType() {
+        return type;
+    }
+
+    public void setType(IntentAttachPointType type) {
+        this.type = type;
+    }
 
     @Override
-    public InterfaceImpl clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         InterfaceImpl copy = (InterfaceImpl)super.clone();
         copy.operations = new OperationList();
         for (Operation operation : this.operations) {

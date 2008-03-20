@@ -54,7 +54,26 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
             extensionPoints.put(i, extensionPoint);
         }
     }
-
+    
+    private Constructor<?> getConstructor(Constructor<?>[] constructors, Class<?>[] paramTypes) {
+        for (Constructor<?> c : constructors) {
+            Class<?> types[] = c.getParameterTypes();
+            if (c.getParameterTypes().length == paramTypes.length) {
+                boolean found = true;
+                for (int i = 0; i < types.length; i++) {
+                    if (types[i] != paramTypes[i]) {
+                        found = false;
+                        break;
+                    }
+                }
+                if (found) {
+                    return c;
+                }
+            }
+        }
+        return null;
+    }
+    
     /**
      * Get the extension point by the interface that it implements
      * 
@@ -71,23 +90,26 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
                 	ServiceDiscovery.getInstance().loadFirstServiceClass(extensionPointType);
                 if (extensionPointClass != null) {
                     // Construct the extension point
-                    try {
-                        Constructor constructor = extensionPointClass.getConstructor();
-                        extensionPoint = constructor.newInstance();
-                    } catch (NoSuchMethodException e) {
-                        try {
-                            Constructor constructor = extensionPointClass.getConstructor(ModelFactoryExtensionPoint.class);
-                            extensionPoint = constructor.newInstance(getExtensionPoint(ModelFactoryExtensionPoint.class));
-                        } catch (NoSuchMethodException e2) {
-                            try {
-                                Constructor constructor = extensionPointClass.getConstructor(ExtensionPointRegistry.class);
-                                extensionPoint = constructor.newInstance(this);
-                            } catch (NoSuchMethodException e3) {
-                                throw new IllegalArgumentException(e3);
+                    Constructor<?>[] constructors = extensionPointClass.getConstructors();
+                    Constructor constructor =
+                        getConstructor(constructors, new Class<?>[] {ModelFactoryExtensionPoint.class});
+                    if (constructor != null) {
+                        extensionPoint = constructor.newInstance(getExtensionPoint(ModelFactoryExtensionPoint.class));
+                    } else {
+                        constructor = getConstructor(constructors, new Class<?>[] {ExtensionPointRegistry.class});
+                        if (constructor != null) {
+                            extensionPoint = constructor.newInstance(this);
+                        } else {
+                            constructor = getConstructor(constructors, new Class<?>[] {});
+                            if (constructor != null) {
+                                extensionPoint = constructor.newInstance();
+                            } else {
+                                throw new IllegalArgumentException(
+                                                                   "No valid constructor is found for " + extensionPointClass);
                             }
                         }
                     }
-                    
+                   
                     // Cache the loaded extension point
                     addExtensionPoint(extensionPoint);
                 }

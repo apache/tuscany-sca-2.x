@@ -36,7 +36,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
-import org.osoa.sca.annotations.Reference;
 
 /**
  * The databinding annotation processor for java interfaces
@@ -46,8 +45,7 @@ import org.osoa.sca.annotations.Reference;
 public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
     private DataBindingExtensionPoint dataBindingRegistry;
 
-    public DataBindingJavaInterfaceProcessor(@Reference
-    DataBindingExtensionPoint dataBindingRegistry) {
+    public DataBindingJavaInterfaceProcessor(DataBindingExtensionPoint dataBindingRegistry) {
         super();
         this.dataBindingRegistry = dataBindingRegistry;
     }
