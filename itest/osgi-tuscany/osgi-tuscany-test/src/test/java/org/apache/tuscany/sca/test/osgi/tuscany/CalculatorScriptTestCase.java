@@ -39,6 +39,8 @@ public class CalculatorScriptTestCase {
         
         testHarness = new OSGiTuscanyTestHarness();
         testHarness.setUp();
+
+        System.setProperty("python.cachedir", "target/cachedir");
     }
     
 
