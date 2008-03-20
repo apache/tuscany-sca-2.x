@@ -169,7 +169,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
      * @return The Destination queue.
      * @throws NamingException Failed to lookup JMS queue
      * @throws JMSBindingException Failed to lookup JMS Queue. Probable cause is that the JMS queue's current
-     *             existance/non-existance is not compatible with the create mode specified on the binding
+     *             existence/non-existence is not compatible with the create mode specified on the binding
      */
     private Destination lookupDestinationQueue() throws NamingException, JMSBindingException {
         Destination destination = jmsResourceFactory.lookupDestination(jmsBinding.getDestinationName());

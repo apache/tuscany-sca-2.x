@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessorImpl;
 
 public interface JMSBindingConstants {
 
-    // Contants used when describing the JMS binding
+    // Constants used when describing the JMS binding
     // model and for setting up defaults
     public final static String BINDING_JMS = "binding.jms";
     public final static QName BINDING_JMS_QNAME = new QName(Constants.SCA10_NS, BINDING_JMS);
@@ -49,7 +49,7 @@ public interface JMSBindingConstants {
     public final static String DEFAULT_CONNECTION_FACTORY_NAME = "ConnectionFactory";
     public final static String DEFAULT_CONTEXT_FACTORY_NAME = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
     public final static String DEFAULT_JNDI_URL = "tcp://localhost:61616";
-    public final static int DEFAULT_TIME_TO_LIVE = 20000; // in milli seconds
+    public final static int DEFAULT_TIME_TO_LIVE = 20000; // in milliseconds
     public final static int DEFAULT_PRIORITY = 1;
     public final static String DEFAULT_RF_CLASSNAME = "org.apache.tuscany.sca.host.jms.activemq.JMSResourceFactoryImpl";
     public final static String DEFAULT_MP_CLASSNAME = JMSMessageProcessorImpl.class.getName();

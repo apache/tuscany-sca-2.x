@@ -153,7 +153,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
             jmsBinding.setInitialContextFactoryName(initialContextFactory);
         }
 
-        // Read jndi URL
+        // Read JNDI URL
         String jndiURL = reader.getAttributeValue(null, "jndiURL");
         if (jndiURL != null && jndiURL.length() > 0) {
             jmsBinding.setJndiURL(jndiURL);
@@ -173,7 +173,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
         // Read operationProperties
         // TODO
 
-        // Read subelements of binding.jms
+        // Read sub-elements of binding.jms
         boolean endFound = false;
         while (!endFound) {
             switch (reader.next()) {
@@ -334,7 +334,7 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
     }
 
     private void parseResponse(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
-        // Read subelements of response
+        // Read sub-elements of response
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
