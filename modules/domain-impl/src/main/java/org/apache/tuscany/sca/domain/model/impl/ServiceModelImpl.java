@@ -33,16 +33,16 @@ public class ServiceModelImpl implements ServiceModel {
     private String serviceBinding;
     
     /**
-     * Retrieve the service uri
+     * Retrieve the service URI
      * 
-     * @return service uri
+     * @return service URI
      */
     public String getServiceURI(){
         return serviceURI;
     }
     
     /**
-     * Set the service uri
+     * Set the service URI
      * 
      * @param serviceURI
      */    
@@ -51,16 +51,16 @@ public class ServiceModelImpl implements ServiceModel {
     }
     
     /**
-     * Retrieve the service url
+     * Retrieve the service URL
      * 
-     * @return service url
+     * @return service URL
      */    
     public String getServiceURL(){
         return serviceURL;
     }
    
     /**
-     * Set the service url
+     * Set the service URL
      * 
      * @param serviceURL
      */    

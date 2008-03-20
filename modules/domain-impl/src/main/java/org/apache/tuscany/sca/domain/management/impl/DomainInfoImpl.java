@@ -43,16 +43,16 @@ public class DomainInfoImpl implements DomainInfo, Serializable {
     private List<QName> composites = new ArrayList<QName>();
     
     /**
-     * Retrieve the domain uri
+     * Retrieve the domain URI
      * 
-     * @return domain uri
+     * @return domain URI
      */
     public String getDomainURI(){
         return domainURI;
     }
     
     /**
-     * Set the domain uri
+     * Set the domain URI
      * 
      * @param domainURI
      */    
@@ -61,16 +61,16 @@ public class DomainInfoImpl implements DomainInfo, Serializable {
     }
     
     /**
-     * Retrieve the domain url
+     * Retrieve the domain URL
      * 
-     * @return domain url
+     * @return domain URL
      */    
     public String getDomainURL(){
         return domainURL;
     }
    
     /**
-     * Set the domain url
+     * Set the domain URL
      * 
      * @param domainURL
      */    

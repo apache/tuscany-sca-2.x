@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.node.SCANode;
 
 /**
  * A dummy representation of and SCA Node used simply to allow
- * callable references in the JVM where the domain is being run
+ * CallableReferences in the JVM where the domain is being run
  * to be looked up
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-09 23:54:46 +0100 (Sun, 09 Sep 2007) $

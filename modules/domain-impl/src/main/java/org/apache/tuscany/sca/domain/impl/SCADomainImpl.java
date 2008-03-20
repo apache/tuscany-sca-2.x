@@ -141,7 +141,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
      */
     protected void init() throws DomainException {
         try {
-            // check whether domain uri is a url
+            // check whether domain URI is a URL
             URI tmpURI;
             try {
                 tmpURI = new URI(domainModel.getDomainURI()); 
@@ -182,7 +182,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             
             domainModel.setDomainLeveComposite(domainComposite);
             
-            // Set up the domain so that local callable references can find 
+            // Set up the domain so that local CallableReferences can find 
             // service out there in the domain
             SCADummyNodeImpl node = new SCADummyNodeImpl(this);
             ModelFactoryExtensionPoint factories = domainManagementRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);

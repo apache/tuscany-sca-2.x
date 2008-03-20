@@ -29,7 +29,7 @@ import org.osoa.sca.CallableReference;
 import org.osoa.sca.Conversation;
 
 /**
- * Test callable reference used to test the domain when no nodes are running
+ * Test Callablereference used to test the domain when no nodes are running
  * 
  * @version $Rev: 597679 $ $Date: 2007-11-23 15:21:29 +0000 (Fri, 23 Nov 2007) $
  * @param <B> the type of the business interface

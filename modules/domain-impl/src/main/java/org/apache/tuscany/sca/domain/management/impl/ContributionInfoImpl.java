@@ -43,16 +43,16 @@ public class ContributionInfoImpl implements ContributionInfo, Serializable {
     
     
     /**
-     * Retrieve the contribution uri
+     * Retrieve the contribution URI
      * 
-     * @return contribution uri
+     * @return contribution URI
      */
     public String getContributionURI() {
         return contributionURI;
     }
     
     /**
-     * Set the contribution uri
+     * Set the contribution URI
      * 
      * @param contributionURI
      */    
@@ -61,16 +61,16 @@ public class ContributionInfoImpl implements ContributionInfo, Serializable {
     }
     
     /**
-     * Retrieve the contribution url
+     * Retrieve the contribution URL
      * 
-     * @return contribution url
+     * @return contribution URL
      */    
     public URL getContributionURL(){
         return contributionURL;
     }
    
     /**
-     * Set the contribution url
+     * Set the contribution URL
      * 
      * @param contributionURL
      */    

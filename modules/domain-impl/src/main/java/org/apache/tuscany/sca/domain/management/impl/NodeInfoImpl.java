@@ -43,16 +43,16 @@ public class NodeInfoImpl implements NodeInfo, Serializable {
     private List<String> services = new ArrayList<String>();
     
     /**
-     * Retrieve the node uri
+     * Retrieve the node URI
      * 
-     * @return node uri
+     * @return node URI
      */
     public String getNodeURI(){
         return nodeURI;
     }
     
     /**
-     * Set the node uri
+     * Set the node URI
      * 
      * @param nodeURI
      */    
@@ -61,16 +61,16 @@ public class NodeInfoImpl implements NodeInfo, Serializable {
     }
     
     /**
-     * Retrieve the node url
+     * Retrieve the node URL
      *
-     * @return node url
+     * @return node URL
      */    
     public String getNodeURL() {
         return nodeURL;
     }
    
     /**
-     * Set the node url
+     * Set the node URL
      * 
      * @param nodeURL
      */    
