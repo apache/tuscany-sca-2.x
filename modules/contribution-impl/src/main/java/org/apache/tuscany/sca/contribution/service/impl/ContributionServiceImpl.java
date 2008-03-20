@@ -77,7 +77,7 @@ public class ContributionServiceImpl implements ContributionService {
     private URLArtifactProcessor artifactProcessor;
 
     /**
-     * Registry of available stax processors,
+     * Registry of available StAX processors,
      * used for loading contribution metadata in a extensible way
      */
     private StAXArtifactProcessor staxProcessor;
@@ -100,7 +100,7 @@ public class ContributionServiceImpl implements ContributionService {
     private ModelFactoryExtensionPoint modelFactories;
 
     /**
-     * xml factory used to create reader instance to load contribution metadata
+     * XML factory used to create reader instance to load contribution metadata
      */
     private XMLInputFactory xmlFactory;
 
@@ -218,7 +218,7 @@ public class ContributionServiceImpl implements ContributionService {
      */
 
     /**
-     * Perform read of the contribution metada loader (sca-contribution.xml and sca-contribution-generated.xml)
+     * Perform read of the contribution metadata loader (sca-contribution.xml and sca-contribution-generated.xml)
      * When the two metadata files are available, the information provided are merged, and the sca-contribution has priorities
      * 
      * @param sourceURL
