@@ -39,7 +39,7 @@ public interface ResourceExport extends Export {
     /**
      * Set Resource that identifies the export
      * 
-     * @param resource uri The exported namespace
+     * @param resource URI The exported namespace
      */
     void setURI(String URI);
     

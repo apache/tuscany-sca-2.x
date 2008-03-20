@@ -86,7 +86,7 @@ public class ResourceImportImpl implements ResourceImport {
     /**
      * Match a ResourceImport to a given ResourceExport based on :
      *    location is not provided
-     *    import and export resource uri match
+     *    import and export resource URI match
      */
     public boolean match(Export export) {
         if (export instanceof ResourceExport) {
