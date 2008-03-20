@@ -193,7 +193,7 @@ public class PassByValueInterceptor implements Interceptor {
         // Use the JAXB databinding to copy non-Serializable data
         if (dataBinding == javaBeanDataBinding) {
 
-            // If the input data is an array containing non serializable elements
+            // If the input data is an array containing non Serializable elements
             // use JAXB
             Class<?> clazz = data.getClass();
             if (clazz.isArray()) {
@@ -205,7 +205,7 @@ public class PassByValueInterceptor implements Interceptor {
                 }
             } else {
 
-                // If the input data is not serializable use JAXB
+                // If the input data is not Serializable use JAXB
                 if (!(data instanceof Serializable)) {
                     dataBinding = jaxbDataBinding;
                 }
