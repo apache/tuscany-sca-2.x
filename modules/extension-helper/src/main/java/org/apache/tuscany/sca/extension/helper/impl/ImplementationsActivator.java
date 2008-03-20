@@ -43,7 +43,7 @@ import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
- * A Tuscany ModuleActivator which acitvates all the ImplementationActivators
+ * A Tuscany ModuleActivator which activates all the ImplementationActivators
  */
 public class ImplementationsActivator implements ModuleActivator {
 

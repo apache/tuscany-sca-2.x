@@ -56,7 +56,7 @@ public class DefaultPropertyValueObjectFactory implements PropertyValueObjectFac
         Element rootElement = doc.getDocumentElement();
         
         //FIXME : since scripts use dynamic types we need to generate a dynamic java type using the 
-        //xml structure of the property value.  Should this be done in the JavaBeansDataBinding... 
+        //XML structure of the property value.  Should this be done in the JavaBeansDataBinding... 
         Class javaType = null;
         
         if (property.isMany()) {

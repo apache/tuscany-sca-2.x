@@ -26,7 +26,7 @@ import java.io.Reader;
 import java.net.URL;
 
 /**
- * TODO: Shouldn't this be using the contrabution service?
+ * TODO: Shouldn't this be using the contribution service?
  */
 public class ResourceHelper {
 
