@@ -39,7 +39,7 @@ public class EJBReferenceTestCase extends TestCase {
 
         scaDomain = SCADomain.newInstance("account/account.composite");
 
-        // To capture the network traffice for the MockServer, uncomment the next line
+        // To capture the network traffic for the MockServer, uncomment the next line
         // new Thread(new SocketTracer(MOCK_PORT, OPENEJB_PORT)).start();
 
         // Start the mock server to simulate the remote EJB

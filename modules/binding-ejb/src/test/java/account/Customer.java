@@ -28,7 +28,7 @@ public interface Customer {
      * current balance and add the amount to existing balance.
      *
      * @param String amount to be deposited
-     * @return total amount in customer accound after deposit
+     * @return total amount in customer account after deposit
      */
     Double depositAmount(java.lang.String accountNo, Double amount);
 

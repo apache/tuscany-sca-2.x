@@ -48,7 +48,7 @@ public class DynamicStubClassLoader extends ClassLoader {
         } catch (ClassNotFoundException e) {
         }
 
-        // if this is not a class from the org.omb.stub name space don't attempt to generate
+        // if this is not a class from the org.omg.stub name space don't attempt to generate
         if (!name.startsWith(PACKAGE_PREFIX)) {
             throw new ClassNotFoundException("Could not load class: " + name);
         }

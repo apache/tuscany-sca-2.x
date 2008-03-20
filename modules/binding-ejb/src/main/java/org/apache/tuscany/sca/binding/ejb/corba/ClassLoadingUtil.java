@@ -259,7 +259,7 @@ public class ClassLoadingUtil {
     private static Class getArrayClass(Class type, int dimension) {
         // Array.newInstance() requires an array of the requested number of dimensions
         // that gives the size for each dimension.  We just request 0 in each of the
-        // dimentions, which is not unlike a black hole sigularity.
+        // dimensions, which is not unlike a black hole singularity.
         int dimensions[] = new int[dimension];
         // create an instance and return the associated class object.
         return Array.newInstance(type, dimensions).getClass();
@@ -313,7 +313,7 @@ public class ClassLoadingUtil {
      * @return the equal or smaller list of interfaces
      */
     public static Class[] reduceInterfaces(Class[] source) {
-        // use a copy of the sorce array
+        // use a copy of the source array
         source = (Class[]) source.clone();
 
         for (int leftIndex = 0; leftIndex < source.length-1; leftIndex++) {

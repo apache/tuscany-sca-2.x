@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.assembly.xml.Constants;
  * An implementation of EJBBinding.
  */
 public interface EJBBinding extends Binding, Base {
-    // Contants used when describing the EJB binding
+    // Constants used when describing the EJB binding
     // model and for setting up defaults
     String BINDING_EJB = "binding.ejb";
     QName BINDING_JMS_QNAME = new QName(Constants.SCA10_NS, BINDING_EJB);

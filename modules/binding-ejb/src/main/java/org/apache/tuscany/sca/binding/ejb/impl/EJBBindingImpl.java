@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.binding.ejb.EJBBinding;
 public class EJBBindingImpl implements EJBBinding {
 
     /**
-     * corba location For exmaple,
+     * CORBA location For example,
      * "corbaname:iiop:localhost:2809/NameServiceServerRoot#ejb/MyEJBHome"
      */
     private String uri;

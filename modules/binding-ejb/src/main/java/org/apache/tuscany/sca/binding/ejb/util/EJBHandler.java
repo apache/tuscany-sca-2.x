@@ -109,7 +109,7 @@ public class EJBHandler {
             } else {
                 /*
                  * A generated ejb stub or it must be an EJB in the same ear as
-                 * the client or an AppServer with a single classloader, so
+                 * the client or an AppServer with a single ClassLoader, so
                  * reflection can be used directly on the JNDI
                  */
                 JavaReflectionAdapter reflectionAdapter =

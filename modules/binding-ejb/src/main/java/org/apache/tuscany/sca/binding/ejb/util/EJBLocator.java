@@ -53,7 +53,7 @@ public class EJBLocator {
 
     public static final String DEFAULT_HOST = "127.0.0.1"; // Default host name
     // or IP address for
-    // Websphere
+    // WebSphere
     public static final int DEFAULT_NAMING_PORT = 2809; // Default port
     public static final String NAMING_SERVICE = "NameService"; // The name of
     // the naming
@@ -115,7 +115,7 @@ public class EJBLocator {
         if (url != null && (url.startsWith("corbaname:iiop:") || url.startsWith("corbaloc:iiop:"))) {
             /**
              * corbaname:iiop:<hostName>:<port>/<root>#name corbaloc:iiop:<hostname>:<port>/<root>
-             * For exmaple,
+             * For example,
              * "corbaname:iiop:localhost:2809/NameServiceServerRoot#ejb/MyEJBHome";
              * or "corbaloc:iiop:myhost:2809/NameServiceServerRoot"
              */
@@ -209,7 +209,7 @@ public class EJBLocator {
         int index = source.indexOf(match, 0);
         if (index >= 0) {
 
-            // We have at least one match, so gotta do the
+            // We have at least one match, so got to do the
             // work...
 
             StringBuffer result = new StringBuffer(source.length() + 16);
@@ -237,10 +237,10 @@ public class EJBLocator {
     }
 
     /**
-     * Resovled the JNDI name from the initial CosNaming context
+     * Resolved the JNDI name from the initial CosNaming context
      * 
      * @param jndiName
-     * @return resovled CORBA ojbect
+     * @return resolved CORBA object
      * @throws NamingException
      */
     private static org.omg.CORBA.Object resovleString(NamingContextExt initCtx, String jndiName) throws NamingException {
@@ -387,7 +387,7 @@ public class EJBLocator {
      * @return Escaped stringified name for CosNaming
      */
     private static String stringify(String jndiName) {
-        // Esacpe . into \. since it's an INS naming delimeter
+        // Escape . into \. since it's an INS naming delimiter
         return replace(encode2396(jndiName), ".", "\\.");
     }
 
@@ -398,7 +398,7 @@ public class EJBLocator {
      * @return corbaname treating "." as a literal
      */
     private static String toCorbaname(String jndiName) {
-        // Esacpe . into %5C%2E (\.) since it's an INS naming delimeter
+        // Escape . into %5C%2E (\.) since it's an INS naming delimiter
         // For example, sca.sample.StockQuote --->
         // sca%5C%2Esample%5C%2EStockQuote/StockQuote
         return replace(encode2396(jndiName), ".", "%5C%2E");
@@ -409,14 +409,14 @@ public class EJBLocator {
             return locator;
         }
         /*
-         * For managed env, jndi is assumed to be configured by default For
-         * unmanaged environment, jndi could have configured through
+         * For managed env, JNDI is assumed to be configured by default For
+         * unmanaged environment, JNDI could have configured through
          * jndi.properties file
          */
         if (isJndiConfigured()) {
             locator = new JndiLocator();
-        } else { // this is definitely JSE env without jndi configured. Use
-            // Corba.
+        } else { // this is definitely JSE env without JNDI configured. Use
+            // CORBA.
             locator = new CosNamingLocator();
         }
         return locator;

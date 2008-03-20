@@ -51,7 +51,7 @@ public class NamingEndpoint {
         if ((!managed) && name.startsWith("corbaname:iiop:")) {
             /**
              * if (name.startsWith("corbaname:iiop:")) { corbaname:iiop:<hostName>:<port>/<root>#name
-             * For exmaple,
+             * For example,
              * "corbaname:iiop:localhost:2809/NameServiceServerRoot#ejb/MyEJBHome";
              */
 
@@ -60,7 +60,7 @@ public class NamingEndpoint {
                 throw new IllegalArgumentException("Invalid corbaname: " + name);
             }    
 
-            this.jndiName = name; // The logical jndi name
+            this.jndiName = name; // The logical JNDI name
             this.locator = new EJBLocator(parts[0], managed);
 
         } else {

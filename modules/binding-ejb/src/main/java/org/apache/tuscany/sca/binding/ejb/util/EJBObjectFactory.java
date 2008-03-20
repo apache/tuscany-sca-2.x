@@ -50,7 +50,7 @@ public final class EJBObjectFactory {
      * <p>
      * The returned EJB stub may be either the pregenerated EJB stub or a
      * dynamic stub. This allows a client to invoke an EJB without requiring any
-     * of the pregenerated EJB stub classes be avaiable in the classpath.
+     * of the pregenerated EJB stub classes be available in the classpath.
      * <p>
      */
     public static Object createStub(NamingEndpoint namingEndpoint, InterfaceInfo ejbInterface) throws NamingException,
@@ -100,7 +100,7 @@ public final class EJBObjectFactory {
                 ObjectImpl objectImpl = (ObjectImpl)homeObject;
                 stub = createEJBObject(objectImpl);
             }/**
-                       	* Above checks will be satisfied if Bean is running on servers like Websphere. With this 
+                       	* Above checks will be satisfied if Bean is running on servers like WebSphere. With this 
                        	* logic, client (SCA composite with EJB ref binding) doesn't need to include home class or 
                        	* client stubs.
                        	* 
