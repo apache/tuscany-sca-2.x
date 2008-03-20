@@ -43,7 +43,7 @@ public class GroovyModelResolver implements ModelResolver {
         ClassLoader cl = contribution.getClassLoader();
         if (!(cl instanceof GroovyClassLoader)) {
             // replace the contribution class loader with a Groovy one
-        	// If the contribution does not have a classloader, use this classloader as parent
+        	// If the contribution does not have a ClassLoader, use this ClassLoader as parent
         	if (cl == null) cl = this.getClass().getClassLoader();            
             cl = new GroovyClassLoader(cl);
             contribution.setClassLoader(cl);

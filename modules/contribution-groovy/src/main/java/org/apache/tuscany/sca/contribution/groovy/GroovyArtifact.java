@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.contribution.groovy;
 import java.net.URL;
 
 /**
- * GroovyArtifact holds the URL to the groovy script.
+ * GroovyArtifact holds the URL to the Groovy script.
  */
 public class GroovyArtifact {
 
