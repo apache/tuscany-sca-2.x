@@ -93,7 +93,7 @@ public class AxiomHelper {
             }
             XMLType xmlType = (XMLType)logical;
             if (xmlType.isElement() && !xmlType.getElementName().equals(element.getQName())) {
-                // FIXME:: Throw expection or switch to the new Element?
+                // FIXME:: Throw exception or switch to the new Element?
                 OMFactory factory = OMAbstractFactory.getOMFactory();
                 QName name = xmlType.getElementName();
                 OMNamespace namespace = factory.createOMNamespace(name.getNamespaceURI(), name.getPrefix());
