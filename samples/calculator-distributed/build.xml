@@ -58,7 +58,7 @@
     </target>
 	
     <target name="runNodeA">
-        <java classname="node.LaunchNodeA"
+        <java classname="node.LaunchCalculatorNodeA"
               fork="true">
             <classpath>
             	<pathelement path="src/main/resources"/>
@@ -70,7 +70,7 @@
     </target>
 	
     <target name="runNodeB">
-        <java classname="node.LaunchNodeB"
+        <java classname="node.LaunchCalculatorNodeB"
               fork="true">
             <classpath>
             	<pathelement path="src/main/resources"/>
@@ -82,7 +82,7 @@
     </target>	
 	
     <target name="runNodeC">
-        <java classname="node.LaunchNodeC"
+        <java classname="node.LaunchCalculatorNodeC"
               fork="true">
             <classpath>
             	<pathelement path="src/main/resources"/>

@@ -64,7 +64,7 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-binding-feed</artifactId>
+            <artifactId>tuscany-binding-atom</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
@@ -90,6 +90,11 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-binding-rmi</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-binding-rss</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
@@ -380,7 +385,22 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-node2-api</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-node-impl</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-node2-impl</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-node2-launcher</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>
@@ -507,12 +527,6 @@
                                 </transformer>
                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.assembly.SCABindingFactory</resource>
-                                </transformer>
-                               <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/services/org.apache.tuscany.sca.binding.feed.AtomBindingFactory</resource>
-                                </transformer>
-                               <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/services/org.apache.tuscany.sca.binding.feed.RSSBindingFactory</resource>
                                 </transformer>
                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.binding.atom.AtomBindingFactory</resource>
