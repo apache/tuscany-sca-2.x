@@ -57,7 +57,7 @@ public class DistributedSCABindingImpl implements DistributedSCABinding {
     /**
      * Returns the binding URI.
      * 
-     * @return the binding uri
+     * @return the binding URI
      */
     public String getURI(){
         return null;
@@ -66,7 +66,7 @@ public class DistributedSCABindingImpl implements DistributedSCABinding {
     /**
      * Sets the binding URI.
      * 
-     * @param uri the binding uri
+     * @param uri the binding URI
      */
     public void setURI(String uri){
     }

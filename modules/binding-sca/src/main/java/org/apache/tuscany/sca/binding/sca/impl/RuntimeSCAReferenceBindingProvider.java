@@ -95,7 +95,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         // first look at the target service and see if this has been resolved
         OptimizableBinding optimizableBinding = (OptimizableBinding)binding;
 
-        // The descision is based primary on the results of the wiring process in the assembly model
+        // The decision is based primary on the results of the wiring process in the assembly model
         // however there are two notable situations when this process doesn't give the right answer
         // 1. When a callback is in operation. A callback reference bindings sometimes has to 
         //    act as though there is a local wire and sometimes as if there is a remote wire
