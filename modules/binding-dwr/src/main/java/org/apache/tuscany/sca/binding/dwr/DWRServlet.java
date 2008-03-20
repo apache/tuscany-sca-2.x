@@ -79,8 +79,8 @@ public class DWRServlet extends DwrServlet {
     }
 
     /**
-     * Initialize the servlet
-     * There is a single instance of this servlet which is registered
+     * Initialize the Servlet
+     * There is a single instance of this Servlet which is registered
      * for multiple path mappings, but the init should only run once.
      */
     @Override
@@ -94,7 +94,7 @@ public class DWRServlet extends DwrServlet {
     }
 
     /**
-     * Add in the handler to process the http get for /sca/scaDomain.js
+     * Add in the handler to process the HTTP get for /sca/scaDomain.js
      * 
      * This wrappers the DWR Engine handler which returns the DWR engine.js script,
      * this wrappers that handler so as to add Tuscany specific header and footer code
