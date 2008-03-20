@@ -28,7 +28,7 @@ import org.osoa.sca.ServiceUnavailableException;
 
 
 /**
- * A wrapper for the Axis2BindingInvoker that ensures that the url of the target
+ * A wrapper for the Axis2BindingInvoker that ensures that the URL of the target
  * service is correct by looking it up in the service registry if it is not provided
  * 
  * @version $Rev: 563772 $ $Date: 2007-08-08 07:50:49 +0100 (Wed, 08 Aug 2007) $
@@ -67,7 +67,7 @@ public class Axis2SCABindingInvoker implements Interceptor {
         // field of the message
         EndpointReference to = msg.getTo();
 
-        // check to see if we either don't have an endpoint set or if the uri 
+        // check to see if we either don't have an endpoint set or if the URI 
         // is dynamic or the target service is marked as unresolved
         if ((to == null) || (to.getURI().equals("/") || (to.getContract() == null) || (to.getContract().isUnresolved()))) {
 

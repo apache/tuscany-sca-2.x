@@ -69,7 +69,7 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
         this.binding = binding.getSCABinding();
         wsBinding = (new DefaultWebServiceBindingFactory()).createWebServiceBinding();
         
-        // Turn the java interface contract into a wsdl interface contract
+        // Turn the java interface contract into a WSDL interface contract
         InterfaceContract contract = service.getInterfaceContract();
         if ((contract instanceof JavaInterfaceContract)) {
             contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract);
@@ -100,7 +100,7 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
             if (domainProxy != null) {
 
                 // work out what the component service name is that will be registered
-                // it should be the path element of the binding uri
+                // it should be the path element of the binding URI
                 String componentServiceName = this.binding.getURI();
     		        
         	try {
@@ -112,11 +112,11 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
                         componentServiceName = componentServiceName.substring(1, componentServiceName.length());
                     }
                 } catch(Exception ex) {
-                    // do nothing, the binding uri string will be used
+                    // do nothing, the binding URI string will be used
                 }
     		        
                 // work out what the endpoint address is that the component service name will be registered
-                // against. Be default this is the url calculated by the web services binding but
+                // against. Be default this is the URL calculated by the web services binding but
                 // we have to adjust that to:
                 // 1. correct the host and port in the case that this is a web app as the container controls the port
                 // 2. correct the host name in the case that it's localhost		        
@@ -130,8 +130,8 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
                 //        host if it is controlling the URL
                 if (servletHost.getClass().getName().equals("WebbAppServletHost")){
                     // the service URL will likely be completely different to that 
-                    // calculated by the ws binding so replace it with the node url
-                    // The node url will have been set via init parameters in the web app
+                    // calculated by the ws binding so replace it with the node URL
+                    // The node URL will have been set via init parameters in the web app
                     URL nodeUrl;
                     try {
                         URI tmpURI = new URI(nodeFactory.getNode().getURI());
