@@ -58,8 +58,8 @@ import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
 
 /**
- * A resource collection binding listener, implemented as a servlet and
- * registered in a servlet host provided by the SCA hosting runtime.
+ * A resource collection binding listener, implemented as a Servlet and
+ * registered in a Servlet host provided by the SCA hosting runtime.
  */
 class RSSBindingListenerServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(RSSBindingListenerServlet.class.getName());
