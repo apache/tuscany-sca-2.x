@@ -82,7 +82,7 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
         this.binding = binding.getSCABinding();
         wsBinding = (new DefaultWebServiceBindingFactory()).createWebServiceBinding();
        
-        // Turn the java interface contract into a wsdl interface contract
+        // Turn the java interface contract into a WSDL interface contract
         InterfaceContract contract = reference.getInterfaceContract();
         if ((contract instanceof JavaInterfaceContract)) {
             contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract);
@@ -232,7 +232,7 @@ public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvide
     }
     
     /**
-     * Retrieves the uri of the callback service (that this reference has created)
+     * Retrieves the URI of the callback service (that this reference has created)
      * returns null if there is no callback service for the sca binding
      * 
      * @return the callback endpoint
