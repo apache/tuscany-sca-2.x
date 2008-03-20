@@ -74,10 +74,9 @@ public class SCADomainManagerServiceImpl implements SCADomainEventService, SCADo
     // DomainEventService methods
     
     public void registerNode(String nodeURI, String nodeURL, Externalizable nodeManagerReference) throws DomainException{
-        // get a reference to the node manager here so that the callable reference
+        // get a reference to the node manager here so that the CallableReference
         // the right context to construct itself. Don't actually have to do 
-        // anything with the result as the context is cached inside the callable
-        // reference
+        // anything with the result as the context is cached inside the CallableReference
         ((CallableReference<SCANodeManagerService>)nodeManagerReference).getService();
         
         // pass on to the domain

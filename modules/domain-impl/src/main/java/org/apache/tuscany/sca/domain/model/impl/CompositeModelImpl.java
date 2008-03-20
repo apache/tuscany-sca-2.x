@@ -37,16 +37,16 @@ public class CompositeModelImpl implements CompositeModel {
     private Composite composite;
     
     /**
-     * Retrieve the composite qname
+     * Retrieve the composite QName
      * 
-     * @return composite qname
+     * @return composite QName
      */
     public QName getCompositeQName(){
         return compositeQName;
     }
     
     /**
-     * Set the composite qname
+     * Set the composite QName
      * 
      * @param compositeQName
      */    

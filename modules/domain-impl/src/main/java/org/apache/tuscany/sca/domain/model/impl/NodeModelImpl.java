@@ -49,16 +49,16 @@ public class NodeModelImpl implements NodeModel {
     private Map<String, ServiceModel> services = new HashMap<String, ServiceModel>();
     
     /**
-     * Retrieve the node uri
+     * Retrieve the node URI
      * 
-     * @return node uri
+     * @return node URI
      */
     public String getNodeURI(){
         return nodeURI;
     }
     
     /**
-     * Set the node uri
+     * Set the node URI
      * 
      * @param nodeURI
      */    
@@ -67,16 +67,16 @@ public class NodeModelImpl implements NodeModel {
     }
     
     /**
-     * Retrieve the node url
+     * Retrieve the node URL
      *
-     * @return node url
+     * @return node URL
      */    
     public String getNodeURL() {
         return nodeURL;
     }
    
     /**
-     * Set the node url
+     * Set the node URL
      * 
      * @param nodeURL
      */    
@@ -112,7 +112,7 @@ public class NodeModelImpl implements NodeModel {
     }
    
     /**
-     * Set the node url
+     * Set the node URL
      * 
      * @param nodeURL
      */    
@@ -121,7 +121,7 @@ public class NodeModelImpl implements NodeModel {
     }
     
     /** 
-     * Get the service proxy for the node mamager
+     * Get the service proxy for the node manager
      * 
      * @return node manager service proxy
      */

@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.domain.model.DomainModel;
 
 /**
  * A model of the domain and the artifacts that it managers. Acts as a holder for the 
- * various other tuscany models involved
+ * various other Tuscany models involved
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
@@ -48,16 +48,16 @@ public class DomainModelImpl implements DomainModel {
        
     
     /**
-     * Retrieve the domain uri
+     * Retrieve the domain URI
      * 
-     * @return domain uri
+     * @return domain URI
      */
     public String getDomainURI(){
         return domainURI;
     }
     
     /**
-     * Set the domain uri
+     * Set the domain URI
      * 
      * @param domainURI
      */    
@@ -66,9 +66,9 @@ public class DomainModelImpl implements DomainModel {
     }
     
     /**
-     * Retrieve the domain url
+     * Retrieve the domain URL
      * 
-     * @return domain url
+     * @return domain URL
      */    
     public String getDomainURL(){
         return domainURL;
@@ -93,7 +93,7 @@ public class DomainModelImpl implements DomainModel {
     }
    
     /**
-     * Set the domain url
+     * Set the domain URL
      * 
      * @param domainURL
      */    
