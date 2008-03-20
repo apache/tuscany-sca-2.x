@@ -40,7 +40,7 @@ public interface RuntimeComponent extends Component {
     void setImplementationProvider(ImplementationProvider implementationProvider);
 
     /**
-     * Get the implementation-specific configuation for this component
+     * Get the implementation-specific configuration for this component
      * @return The implementation provider for this component
      */
     ImplementationProvider getImplementationProvider();

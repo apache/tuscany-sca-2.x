@@ -56,7 +56,7 @@ public interface RuntimeComponentContext extends ComponentContext {
     void write(RuntimeComponentReference reference, Writer writer) throws IOException;
 
     /**
-     * Get the callable reference for a given component reference
+     * Get the CallableReference for a given component reference
      * @param <B>
      * @param businessInterface The business interface
      * @param reference The reference to be wired
@@ -83,7 +83,7 @@ public interface RuntimeComponentContext extends ComponentContext {
                                                 RuntimeComponentService service);
 
     /**
-     * Create a callable reference for the given component service
+     * Create a CallableReference for the given component service
      * @param <B>
      * @param businessInterface
      * @param component

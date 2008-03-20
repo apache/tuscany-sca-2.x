@@ -53,7 +53,7 @@ public interface RuntimeComponentService extends ComponentService {
     RuntimeWire getRuntimeWire(Binding binding);
     
     /**
-     * Get the callback wires assoicated with this service
+     * Get the callback wires associated with this service
      * 
      * @return The list of runtime callback wires
      */
@@ -131,7 +131,7 @@ public interface RuntimeComponentService extends ComponentService {
     /**
      * Get a list of policy providers for the given binding
      * @param binding The assembly model binding
-     * @return A list of policy proviers for the given binding
+     * @return A list of policy providers for the given binding
      */
     List<PolicyProvider> getPolicyProviders(Binding binding);
 

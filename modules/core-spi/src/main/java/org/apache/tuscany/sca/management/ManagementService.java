@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.management;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
- * Interface for the management service abstraction. The implementaion
+ * Interface for the management service abstraction. The implementation
  * could be based on a variety of technologies including JMX, WSDM,
  * SNMP etc.
  *

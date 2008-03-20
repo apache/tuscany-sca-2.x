@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.work;
 
 /**
- * A callback inyterface that can be optionally used for registering 
+ * A callback interface that can be optionally used for registering 
  * interest in status of asynchronously scheduled unit of work.
  *
  */
@@ -35,7 +35,7 @@ public interface NotificationListener<T extends Runnable> {
     /**
      * Callback method when the unit of work is successfully completed.
      * 
-     * @param work Work that was succesfully completed.
+     * @param work Work that was successfully completed.
      */
     void workCompleted(T work);
     
@@ -54,7 +54,7 @@ public interface NotificationListener<T extends Runnable> {
     void workRejected(T work);
     
     /**
-     * Callnack when the unit of work fails to complete.
+     * Callback when the unit of work fails to complete.
      * 
      * @param work Unit of work that failed to complete.
      * @param error Error that caused the unit of work to fail.
