@@ -62,7 +62,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
- * The runtime representaion of the local service binding
+ * The runtime representation of the local service binding
  *
  * @version $Rev$ $Date$
  */

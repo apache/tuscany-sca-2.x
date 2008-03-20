@@ -31,7 +31,7 @@ public interface EncodingRegistry {
      * Registers an en/de coder.
      * 
      * @param <E> Encoding object type.
-     * @param encodingClass Encoding obejct class.
+     * @param encodingClass Encoding object class.
      * @param qname Qualified name of the root element of the encoded XML.
      * @param enDeCoder Encoding object enDeCoder.
      */
