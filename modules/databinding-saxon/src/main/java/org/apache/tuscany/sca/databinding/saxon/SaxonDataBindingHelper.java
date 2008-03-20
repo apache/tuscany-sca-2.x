@@ -21,12 +21,12 @@ package org.apache.tuscany.sca.databinding.saxon;
 import net.sf.saxon.Configuration;
 
 /**
- * Provides helper functionality for saxon data bindings
+ * Provides helper functionality for Saxon data bindings
  * @version $Rev$ $Date$
  */
 public class SaxonDataBindingHelper {
     /**
-     * This variable is meaningfull only in the context of XQoery expression
+     * This variable is meaningful only in the context of XQoery expression
      * execution. It is used by the DataObject2NodeInfoTransformer and
      * Node2NodeInfoTransformer to create the correct NodeInfo objects
      * in the Output2Output transformations. 
