@@ -49,7 +49,7 @@ class AtomBindingInvoker implements Invoker {
     HttpClient httpClient;
     String authorizationHeader;
     
-    //FIXME Support conversion to/from data api entries 
+    //FIXME Support conversion to/from data API entries 
 
     AtomBindingInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader) {
         this.operation = operation;
