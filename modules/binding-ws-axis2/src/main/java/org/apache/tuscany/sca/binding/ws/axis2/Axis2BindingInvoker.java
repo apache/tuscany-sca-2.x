@@ -121,7 +121,7 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
 
         OMElement response = responseMC.getEnvelope().getBody().getFirstElement();
 
-        // FIXME: [rfeng] We have to pay performance penality to build the complete OM as the operationClient.complete() will
+        // FIXME: [rfeng] We have to pay performance penalty to build the complete OM as the operationClient.complete() will
         // release the underlying HTTP connection. 
         // Force the response to be populated, see https://issues.apache.org/jira/browse/TUSCANY-1541
         if (response != null) {

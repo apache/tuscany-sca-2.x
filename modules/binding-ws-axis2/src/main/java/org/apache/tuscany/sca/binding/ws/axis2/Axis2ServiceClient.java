@@ -176,7 +176,7 @@ public class Axis2ServiceClient {
     }
 
     /**
-     * URI resolver implementation for xml schema
+     * URI resolver implementation for XML schema
      */
     public static class URIResolverImpl implements URIResolver {
         private Definition definition;
@@ -288,7 +288,7 @@ public class Axis2ServiceClient {
         // only contains a portType and not a service and port.  Synthesize a
         // service and port using WSDL4J and add them to the wsdlDefinition to
         // keep Axis happy.
-        //FIXME: it would be better to do this for all WSDLs to explictly control the
+        //FIXME: it would be better to do this for all WSDLs to explicitly control the
         // service and port that Axis will use, rather than just hoping the user has
         // placed a suitable service and/or port first in the WSDL.
         WSDLDefinitionHelper helper = new WSDLDefinitionHelper();

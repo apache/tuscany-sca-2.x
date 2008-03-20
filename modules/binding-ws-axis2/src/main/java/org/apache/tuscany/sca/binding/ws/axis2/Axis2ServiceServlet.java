@@ -45,7 +45,7 @@ import org.apache.axis2.transport.http.ListingAgent;
 import org.apache.axis2.transport.http.server.HttpUtils;
 
 /**
- * This overrides the servlet init of the AxisServlet so Tuscany can use
+ * This overrides the Servlet init of the AxisServlet so Tuscany can use
  * a single Axis2 ConfigurationContext instance shared between AxisServlet 
  * instances for each SCA service with a ws binding. 
  * TODO: need to review if thats really what we want to be doing
@@ -71,7 +71,7 @@ public class Axis2ServiceServlet extends AxisServlet {
     }
 
     /**
-     * Override Axis2 servlet method to avoid loop when init 
+     * Override Axis2 Servlet method to avoid loop when init 
      * is called after servletConfig already initialized by
      * this classes init(ConfigurationContext) method.
      */
@@ -121,7 +121,7 @@ public class Axis2ServiceServlet extends AxisServlet {
                         return null;
                     }
 
-                    @SuppressWarnings("unused") // it's on the servlet 2.5 api so we need it
+                    @SuppressWarnings("unused") // it's on the Servlet 2.5 API so we need it
                     public String getContextPath() {
                         return null;
                     }
@@ -261,7 +261,7 @@ public class Axis2ServiceServlet extends AxisServlet {
     /**
 
     /**
-     * Override the AxisServlet method so as to not add "/services" into the url
+     * Override the AxisServlet method so as to not add "/services" into the URL
      * and to work with Tuscany service names. can go once moved to Axis2 1.3
      */
     @Override

@@ -175,8 +175,8 @@ public class Axis2ServiceProvider {
                 uri = "jms:" + uri;
             }
             
-            // construct the rest of the uri based on the policy. All the details are put
-            // into the uri here rather than being place directly into the Axis configuration 
+            // construct the rest of the URI based on the policy. All the details are put
+            // into the URI here rather than being place directly into the Axis configuration 
             // as the Axis JMS sender relies on parsing the target URI      
             Axis2ConfigParamPolicy axis2ConfigParamPolicy = null;
             for ( Object policy : transportJmsPolicySet.getPolicies() ) {
@@ -227,7 +227,7 @@ public class Axis2ServiceProvider {
 
     public void start() {
 
-        // TODO: if <binding.ws> specifies the wsdl service then should create a
+        // TODO: if <binding.ws> specifies the WSDL service then should create a
         // service for every port
 
         try {
@@ -252,7 +252,7 @@ public class Axis2ServiceProvider {
                 ListenerManager listenerManager = configContext.getListenerManager();
                 TransportInDescription trsIn = configContext.getAxisConfiguration().getTransportIn(Constants.TRANSPORT_JMS);
                                 
-                // get JMS transport parameters from the binding uri
+                // get JMS transport parameters from the binding URI
                 Map<String, String> jmsProps = JMSUtils.getProperties( wsBinding.getURI() );
 
                 // collect the parameters used to configure the JMS transport
@@ -328,14 +328,14 @@ public class Axis2ServiceProvider {
     }
 
     /**
-     * Compute the endpoint URI based on section 2.1.1 of the WS binding spec 1.
+     * Compute the endpoint URI based on section 2.1.1 of the WS binding Specification 1.
      * The URIs in the endpoint(s) of the referenced WSDL, which may be relative
      * 2. The URI specified by the wsa:Address element of the
      * wsa:EndpointReference, which may be relative 3. The explicitly stated URI
      * in the "uri" attribute of the binding.ws element, which may be relative,
-     * 4. The implicit URI as defined by in section 1.7 in the SCA Assembly spec
+     * 4. The implicit URI as defined by in section 1.7 in the SCA Assembly Specification
      * If the <binding.ws> has no wsdlElement but does have a uri attribute then
-     * the uri takes precidence over any implicitly used WSDL.
+     * the uri takes precedence over any implicitly used WSDL.
      * 
      */
     protected String computeActualURI(RuntimeComponent component, AbstractContract contract) {
@@ -351,11 +351,11 @@ public class Axis2ServiceProvider {
 
         URI wsdlURI = null;
         if (wsBinding.getServiceName() != null && wsBinding.getBindingName() == null) {
-            // <binding.ws> explicitly points at a wsdl port, may be a relative URI
+            // <binding.ws> explicitly points at a WSDL port, may be a relative URI
             wsdlURI = getEndpoint(wsBinding.getPort());
         }
 
-        // if the wsdl port/endpoint has an absolute URI use that
+        // if the WSDL port/endpoint has an absolute URI use that
         if (wsdlURI != null && wsdlURI.isAbsolute()) {
             return wsdlURI.toString();
         }
@@ -365,7 +365,7 @@ public class Axis2ServiceProvider {
             return eprURI.toString();
         }
         
-        // either there is no wsdl port endpoint URI or that URI is relative
+        // either there is no WSDL port endpoint URI or that URI is relative
         String actualURI = wsBinding.getURI();
         if (eprURI != null && eprURI.toString().length() != 0) {
             // there is a relative URI in the binding EPR
@@ -373,7 +373,7 @@ public class Axis2ServiceProvider {
         }
 
         if (wsdlURI != null && wsdlURI.toString().length() != 0) {
-            // there is a relative URI in the wsdl port
+            // there is a relative URI in the WSDL port
             actualURI = actualURI + "/" + wsdlURI;
         }
         
