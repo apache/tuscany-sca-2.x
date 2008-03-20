@@ -191,7 +191,7 @@ public class JMSBinding implements Binding {
     /**
      * Returns the binding URI.
      * 
-     * @return the binding uri
+     * @return the binding URI
      */
     public String getURI() {
         return this.uri;
@@ -200,7 +200,7 @@ public class JMSBinding implements Binding {
     /**
      * Sets the binding URI.
      * 
-     * @param uri the binding uri
+     * @param uri the binding URI
      */
     public void setURI(String uri) {
         this.uri = uri;
@@ -464,10 +464,10 @@ public class JMSBinding implements Binding {
 
     /**
      * Used to create instances of the JMSResourceFactory and RequestMessageProcessor and ResponseMessageProcessor from
-     * sting based classname provided in the configuration
+     * string based class name provided in the configuration
      * 
-     * @param cl classloader
-     * @param className the string based classname to load and instantiate
+     * @param cl ClassLoader
+     * @param className the string based class name to load and instantiate
      * @return the new object
      */
     private Object instantiate(ClassLoader cl, String className) {
@@ -507,9 +507,9 @@ public class JMSBinding implements Binding {
          * Now some cross field validation
          */
 
-        // connection factory doesn't contradict detsination type
-        // connection factory and activation spec are mutually exclusive
-        // TODO check spec for all validations
+        // connection factory doesn't contradict destination type
+        // connection factory and activation Specification are mutually exclusive
+        // TODO check Specification for all validations
     }
 
     // TODO...
