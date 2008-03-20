@@ -26,7 +26,7 @@ import java.lang.ref.WeakReference;
  * with an ArtifactResolver and resolve these classes later.
  * 
  * FIXME The core contribution model should not have dependencies on classes
- * and classloaders. This should move to the Java import support module.
+ * and ClassLoaders. This should move to the Java import support module.
  *
  * @version $Rev$ $Date$
  */
@@ -79,7 +79,7 @@ public class ClassReference {
     /**
      * Returns true if the class reference is unresolved.
      * 
-     * @return Wether or not the class has been resolved
+     * @return Whether or not the class has been resolved
      */
     public boolean isUnresolved() {
         return clazz == null;

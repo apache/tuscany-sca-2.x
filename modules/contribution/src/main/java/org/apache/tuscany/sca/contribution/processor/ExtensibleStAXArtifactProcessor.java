@@ -70,7 +70,7 @@ public class ExtensibleStAXArtifactProcessor
 
     public Object read(XMLStreamReader source) throws ContributionReadException, XMLStreamException {
         
-        // Delegate to the processor associated with the element qname
+        // Delegate to the processor associated with the element QName
         QName name = source.getName();
         StAXArtifactProcessor<?> processor = (StAXArtifactProcessor<?>)processors.getProcessor(name);
         if (processor == null) {
@@ -112,8 +112,8 @@ public class ExtensibleStAXArtifactProcessor
     }
     
     /**
-     * Read a model from an input stream.
-     * @param is The artifact inputstream
+     * Read a model from an InputStream.
+     * @param is The artifact InputStream
      * @param type Model type
      * @return The model
      * @throws ContributionReadException
@@ -159,7 +159,7 @@ public class ExtensibleStAXArtifactProcessor
     }
 
     /**
-     * Write a model to an ouput stream.
+     * Write a model to an OutputStream.
      * @param model
      * @param os
      * @throws ContributionWriteException

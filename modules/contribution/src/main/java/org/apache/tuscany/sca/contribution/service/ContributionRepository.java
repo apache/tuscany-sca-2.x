@@ -46,7 +46,7 @@ public interface ContributionRepository {
      * 
      * @param contribution A URl pointing to the contribution being copied to
      *            the repository
-     * @param sourceURL url of the source. this would be used to calculate the right
+     * @param sourceURL URL of the source. this would be used to calculate the right
      *            filename to be stored on the repository when a inputStream is being
      *            provided
      * @param contributionStream InputStream with the content of the
@@ -61,7 +61,7 @@ public interface ContributionRepository {
      * 
      * @param contribution A URl pointing to the contribution being copied to
      *            the repository
-     * @param sourceURL url of the source. this would be used to calculate the right
+     * @param sourceURL URL of the source. this would be used to calculate the right
      *            filename to be stored on the repository when a inputStream is being
      *            provided
      * @return A URL pointing to the content of the contribution in the

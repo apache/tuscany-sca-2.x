@@ -44,7 +44,7 @@ import javax.xml.stream.XMLStreamWriter;
 public abstract class BaseStAXArtifactProcessor {
 
     /**
-     * Returns a qname from a string.  
+     * Returns a QName from a string.  
      * @param reader
      * @param value
      * @return
@@ -79,7 +79,7 @@ public abstract class BaseStAXArtifactProcessor {
     }
 
     /**
-     * Returns the qname value of an attribute.
+     * Returns the QName value of an attribute.
      * @param reader
      * @param name
      * @return
@@ -90,7 +90,7 @@ public abstract class BaseStAXArtifactProcessor {
     }
 
     /**
-     * Returns the value of an attribute as a list of qnames.
+     * Returns the value of an attribute as a list of QNames.
      * @param reader
      * @param name
      * @return
@@ -194,7 +194,7 @@ public abstract class BaseStAXArtifactProcessor {
             return null;
         } else {
             
-            // Find an available prefix and bind it to the given uri 
+            // Find an available prefix and bind it to the given URI 
             NamespaceContext nsc = writer.getNamespaceContext();
             for (int i=1; ; i++) {
                 prefix = "ns" + i;
@@ -355,7 +355,7 @@ public abstract class BaseStAXArtifactProcessor {
         }
 
         /**
-         * Writes a string from a qname and registers a prefix for its namespace.  
+         * Writes a string from a QName and registers a prefix for its namespace.  
          * @param reader
          * @param value
          * @return
@@ -367,11 +367,11 @@ public abstract class BaseStAXArtifactProcessor {
                 prefix = writer.getPrefix(uri);
                 if (prefix != null && prefix.length() > 0) {
 
-                    // Use the prefix already bound to the given uri
+                    // Use the prefix already bound to the given URI
                     return prefix + ":" + qname.getLocalPart();
                 } else {
                     
-                    // Find an available prefix and bind it to the given uri 
+                    // Find an available prefix and bind it to the given URI 
                     NamespaceContext nsc = writer.getNamespaceContext();
                     for (int i=1; ; i++) {
                         prefix = "ns" + i;
@@ -403,7 +403,7 @@ public abstract class BaseStAXArtifactProcessor {
                     return;
                 } else {
                     
-                    // Find an available prefix and bind it to the given uri 
+                    // Find an available prefix and bind it to the given URI 
                     NamespaceContext nsc = writer.getNamespaceContext();
                     for (int i=1; ; i++) {
                         prefix = "ns" + i;
@@ -452,7 +452,7 @@ public abstract class BaseStAXArtifactProcessor {
                         buffer.append(' ');
                     }
                     if (v instanceof QName) {
-                        // Write a qname value
+                        // Write a QName value
                         buffer.append(writeQNameValue(writer, (QName)v));
                     } else {
                         // Write value as a string 

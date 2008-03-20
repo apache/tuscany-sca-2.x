@@ -34,14 +34,14 @@ public class ExtensibleContributionListener implements ContributionListener {
     }
 
     /**
-     * Process "contributionAdded" event to all resigtered listeners
+     * Process "contributionAdded" event to all registered listeners
      */
     public void contributionAdded(ContributionRepository repository, Contribution contribution) {
         for (ContributionListener listener : listeners.getContributionListeners()) {
             try {
                 listener.contributionAdded(repository, contribution);
             } catch (Exception e) {
-                // ignore, contiue to the next listener
+                // ignore, continue to the next listener
             }
         }
     }
@@ -54,7 +54,7 @@ public class ExtensibleContributionListener implements ContributionListener {
             try {
                 listener.contributionRemoved(repository, contribution);
             } catch (Exception e) {
-                // ignore, contiue to the next listener
+                // ignore, continue to the next listener
             }
 
         }
@@ -68,7 +68,7 @@ public class ExtensibleContributionListener implements ContributionListener {
             try {
                 listener.contributionUpdated(repository, oldContribution, contribution);
             } catch (Exception e) {
-                // ignore, contiue to the next listener
+                // ignore, continue to the next listener
             }
 
         }

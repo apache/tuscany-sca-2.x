@@ -37,7 +37,7 @@ public class ResourceReference {
      * Constructs a new ResourceReference.
      * 
      * @param resourceName Name of resource
-     * @param resourceURL  The resource url
+     * @param resourceURL  The resource URL
      */
     public ResourceReference(String resourceName, URL resourceURL) {
         this.resourceURL = resourceURL;
