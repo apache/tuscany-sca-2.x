@@ -49,7 +49,7 @@ public class JAXBWrapperHandler implements WrapperHandler<JAXBElement<?>> {
             String factoryClassName = packageName + ".ObjectFactory";
             ClassLoader classLoader = context != null ? context.getClassLoader() : null;
             if (classLoader == null) {
-                //FIXME Understand why we need this, the classloader should be passed in
+                //FIXME Understand why we need this, the ClassLoader should be passed in
                 classLoader = Thread.currentThread().getContextClassLoader();
             }
             Class<?> factoryClass = Class.forName(factoryClassName, true, classLoader);
@@ -134,7 +134,7 @@ public class JAXBWrapperHandler implements WrapperHandler<JAXBElement<?>> {
             String factoryClassName = packageName + ".ObjectFactory";
             ClassLoader classLoader = context != null ? context.getClassLoader() : null;
             if (classLoader == null) {
-                //FIXME Understand why we need this, the classloader should be passed in
+                //FIXME Understand why we need this, the ClassLoader should be passed in
                 classLoader = Thread.currentThread().getContextClassLoader();
             }
             Class<?> factoryClass = Class.forName(factoryClassName, true, classLoader);
