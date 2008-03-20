@@ -46,7 +46,7 @@ class AtomReferenceBindingProvider implements ReferenceBindingProvider {
     private HttpClient httpClient;
 
     /**
-     * Construcst a new AtomReferenceBindingProvider
+     * Constructs a new AtomReferenceBindingProvider
      * @param component
      * @param reference
      * @param binding

@@ -33,7 +33,7 @@ public interface Collection {
     /**
      * Get an RSS or Atom feed for a collection of resources.
      * 
-     * @param uri the uri of the feed
+     * @param uri the URI of the feed
      * @return the RSS or Atom feed
      */
     Feed getFeed();

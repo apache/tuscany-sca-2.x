@@ -59,8 +59,8 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 
 /**
- * A resource collection binding listener, implemented as a servlet and
- * registered in a servlet host provided by the SCA hosting runtime.
+ * A resource collection binding listener, implemented as a Servlet and
+ * registered in a Servlet host provided by the SCA hosting runtime.
  */
 class AtomBindingListenerServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(AtomBindingListenerServlet.class.getName());
