@@ -81,7 +81,7 @@ public class MetaObjectImpl implements MetaObject {
         return this.obInstance;
     }
     /*
-     * TODO Add bytecode with serialization
+     * TODO Add bytecode with Serialization
     public byte[] getByteCode() {
     	return bytecode;
     }
