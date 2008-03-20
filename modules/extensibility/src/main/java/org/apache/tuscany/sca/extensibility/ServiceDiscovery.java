@@ -37,8 +37,8 @@ import java.util.logging.Logger;
 /**
  * Service discovery for Tuscany based on J2SE Jar service provider spec.
  * Services are described using configuration files in META-INF/services.
- * Service description specifies a classname followed by optional properties.
- * Multi-classloader environments are supported through a classloader
+ * Service description specifies a class name followed by optional properties.
+ * Multi-ClassLoader environments are supported through a ClassLoader
  * registration API
  */
 public class ServiceDiscovery {
@@ -50,7 +50,7 @@ public class ServiceDiscovery {
 
     /**
      * Get an instance of Service discovery, one instance is created per
-     * classloader that this class is loaded from
+     * ClassLoader that this class is loaded from
      * 
      * @return
      */
@@ -65,8 +65,8 @@ public class ServiceDiscovery {
     }
 
     /**
-     * Register a classloader with this discovery mechanism. Tuscany extension
-     * classloaders are registered here.
+     * Register a ClassLoader with this discovery mechanism. Tuscany extension
+     * ClassLoaders are registered here.
      * 
      * @param classLoader
      */
@@ -129,11 +129,11 @@ public class ServiceDiscovery {
 
     /**
      * Returns a unique list of resource URLs of name META-INF/services/<name>
-     * Each URL is associated with the first classloader that it was visible
+     * Each URL is associated with the first ClassLoader that it was visible
      * from
      * 
      * @param name Name of resource
-     * @return Table of URLs with associated classloaders
+     * @return Table of URLs with associated ClassLoaders
      * @throws IOException
      */
     public Hashtable<ClassLoader, Set<URL>> getServiceResources(String name) throws IOException {
