@@ -123,7 +123,7 @@ public abstract class PolicyComputer {
             //validateIntents(confOp, attachPointType);
             
             //add intents specified for parent intent attach point (binding / implementation)
-            //wherever its not overriden in the operation
+            //wherever its not overridden in the operation
             Intent tempIntent = null;
             List<Intent> attachPointOpIntents = new ArrayList<Intent>();
             for (Intent anIntent : parentIntents) {

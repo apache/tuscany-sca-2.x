@@ -80,7 +80,7 @@ public class CalculateBindingURITestCase extends TestCase {
     }
     
     /**
-     * Test that URI are generated in accordance with the assembly spec section 1.7.2.1 as
+     * Test that URI are generated in accordance with the Assembly Specification section 1.7.2.1 as
      * follows. For the 3 parts that make up the URI;
      * 
      *   BaseURI / Component URI / Service Binding URI

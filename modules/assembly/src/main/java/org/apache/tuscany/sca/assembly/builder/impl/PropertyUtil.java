@@ -85,7 +85,7 @@ public class PropertyUtil {
     static private Document loadFromFile(String file) throws MalformedURLException, IOException,
         TransformerException, ParserConfigurationException {
         URI uri = URI.create(file);
-        // URI resolution for relative uris is done when the composite is resolved.
+        // URI resolution for relative URIs is done when the composite is resolved.
         URL url = uri.toURL();
         URLConnection connection = url.openConnection();
         connection.setUseCaches(false);
