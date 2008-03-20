@@ -64,8 +64,8 @@ public class PackageTypeDescriberImpl implements TypeDescriber {
      * If not found, we try to check file contentType Or we return
      * defaultContentType provided
      * 
-     * @param resourceURL The artifact url
-     * @param defaultContentType The default content type if we can't find the correc one
+     * @param resourceURL The artifact URL
+     * @param defaultContentType The default content type if we can't find the correct one
      * @return The content type
      */
     public String getType(URL resourceURL, String defaultContentType) {

@@ -112,7 +112,7 @@ public class ContributionRepositoryImpl implements ContributionRepository {
     }
 
     /**
-     * Write a specific source inputstream to a file on disk
+     * Write a specific source InputStream to a file on disk
      * 
      * @param source contents of the file to be written to disk
      * @param target file to be written
