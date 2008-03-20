@@ -21,11 +21,12 @@ package org.apache.tuscany.sca.interfacedef;
 import java.util.List;
 
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * Represents an operation on a service interface.
  */
-public interface Operation extends Cloneable {
+public interface Operation extends Cloneable, PolicySetAttachPoint {
     /**
      * Returns the name of the operation.
      * 

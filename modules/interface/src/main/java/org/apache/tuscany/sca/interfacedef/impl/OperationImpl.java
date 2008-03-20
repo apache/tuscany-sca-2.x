@@ -26,6 +26,9 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Represents an operation on a service interface.
@@ -46,6 +49,11 @@ public class OperationImpl implements Operation {
     private WrapperInfo wrapper;
     private String dataBinding;
     private boolean dynamic;
+    
+    private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private IntentAttachPointType type;
 
     /**
      * @param name
@@ -290,6 +298,26 @@ public class OperationImpl implements Operation {
         }
         
         return copy;
+    }
+
+    public List<PolicySet> getApplicablePolicySets() {
+        return applicablePolicySets;
+    }
+
+    public List<PolicySet> getPolicySets() {
+        return policySets;
+    }
+
+    public List<Intent> getRequiredIntents() {
+        return requiredIntents;
+    }
+
+    public IntentAttachPointType getType() {
+        return type;
+    }
+
+    public void setType(IntentAttachPointType type) {
+        this.type = type;
     }
     
 }

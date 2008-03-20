@@ -97,7 +97,7 @@ public class SCADomainContext {
         modelFactories.addFactory(policyFactory);
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         InterfaceContractMapper interfaceContractMapper = new InterfaceContractMapperImpl();
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(modelFactories);
         modelFactories.addFactory(javaFactory);
         JavaImplementationFactory javaImplementationFactory = new BeanJavaImplementationFactory(beanFactory);
         modelFactories.addFactory(javaImplementationFactory);

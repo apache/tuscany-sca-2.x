@@ -20,12 +20,14 @@ package org.apache.tuscany.sca.interfacedef;
 
 import java.util.List;
 
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+
 /**
  * Represents a service interface. This interface will typically be extended to
  * support concrete interface type systems, such as Java interfaces, WSDL 1.1
  * portTypes and WSDL 2.0 interfaces.
  */
-public interface Interface extends Cloneable {
+public interface Interface extends Cloneable, PolicySetAttachPoint {
 
     /**
      * Returns true if the interface is a remotable interface..

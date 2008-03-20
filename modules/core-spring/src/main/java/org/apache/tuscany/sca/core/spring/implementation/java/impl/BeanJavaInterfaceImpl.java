@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceImpl;
 import org.apache.tuscany.sca.policy.Intent;
 
 /**
@@ -31,7 +32,7 @@ import org.apache.tuscany.sca.policy.Intent;
  * 
  * @version $Rev$ $Date$
  */
-public class BeanJavaInterfaceImpl implements JavaInterface {
+public class BeanJavaInterfaceImpl extends JavaInterfaceImpl implements JavaInterface {
 
     private String className;
     private Class<?> javaClass;
