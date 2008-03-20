@@ -67,7 +67,7 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPo
      * name of the service or reference with which the binding is
      * associated
      * 
-     * @return the biniding name
+     * @return the binding name
      */
     public String getName() {
         return name;
@@ -84,20 +84,20 @@ public class SCABindingImpl implements SCABinding, Extensible, PolicySetAttachPo
 
     /**
      * Getters for the binding URI. The computed URI for the 
-     * service that the reference is targetting or which the service represents
+     * service that the reference is targeting or which the service represents
      * depending on whether the biding is associated with a reference or
      * service
      * 
-     * @return the binding uri
+     * @return the binding URI
      */
     public String getURI() {
         return uri;
     }
 
     /**
-     * Setter for the binding uri
+     * Setter for the binding URI
      * 
-     * @param uri the binding uri
+     * @param uri the binding URI
      */
     public void setURI(String uri) {
         this.uri = uri;
