@@ -114,7 +114,7 @@ public class RMIService implements ComponentLifecycle {
      * if the interface of the component whose serviceBindings must be exposed as RMI Service, does not
      * implement java.rmi.Remote, then generate such an interface. This method will stop with just 
      * generating the bytecode. Defining the class from the byte code must be the responsibility of the 
-     * caller of this method, since it requires a classloader to be created to define and load this interface.
+     * caller of this method, since it requires a ClassLoader to be created to define and load this interface.
      */
     protected byte[] generateRemoteInterface(Class serviceInterface) {
         String interfazeName = serviceInterface.getCanonicalName();
