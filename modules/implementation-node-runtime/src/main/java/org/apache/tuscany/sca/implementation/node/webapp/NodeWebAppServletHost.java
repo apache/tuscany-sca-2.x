@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletMappingException;
+import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncherUtil;
 import org.apache.tuscany.sca.node.Node2Exception;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
@@ -58,9 +59,6 @@ import org.apache.tuscany.sca.node.SCANode2Factory;
  */
 public class NodeWebAppServletHost implements ServletHost, Filter {
     private static final Logger logger = Logger.getLogger(NodeWebAppServletHost.class.getName());
-
-    private static final String TUSCANY_DOMAIN = "TUSCANY_DOMAIN";
-    private static final String DEFAULT_DOMAIN = "http://localhost:9990";
 
     private static final NodeWebAppServletHost servletHost = new NodeWebAppServletHost();
 
@@ -111,16 +109,8 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
             nodeName = nodeName.substring(0, nodeName.length() - 1); 
         }
         
-        // Determine the node image, the domain URI can be configured
-        // using a TUSCANY_DOMAIN system property or environment variable
-        String domain = System.getProperty(TUSCANY_DOMAIN);
-        if (domain == null || domain.length() == 0) {
-            domain = System.getenv(TUSCANY_DOMAIN);
-        }
-        if (domain == null || domain.length() ==0) {
-            domain = DEFAULT_DOMAIN;
-        }
-        String nodeImage = domain + "/node-image/" + nodeName;
+        // Determine the node image URI
+        String nodeImage = NodeImplementationLauncherUtil.nodeImageURI(nodeName);
         
         // Create the SCA node
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();

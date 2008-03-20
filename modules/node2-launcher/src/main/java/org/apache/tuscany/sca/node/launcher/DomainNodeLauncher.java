@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.workspace.admin.launcher;
+package org.apache.tuscany.sca.node.launcher;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -28,9 +28,9 @@ import java.util.logging.Logger;
  *
  * @version $Rev$ $Date$
  */
-public class DomainAdminLauncher {
+public class DomainNodeLauncher {
     
-    private final static Logger logger = Logger.getLogger(DomainAdminLauncher.class.getName());    
+    private final static Logger logger = Logger.getLogger(DomainNodeLauncher.class.getName());    
 
     public static void main(String[] args) throws Exception {
         logger.info("Apache Tuscany SCA Domain Administration starting...");
@@ -39,7 +39,7 @@ public class DomainAdminLauncher {
         Object admin;
         try {
             // Set up runtime classloader
-            ClassLoader runtimeClassLoader = DomainAdminLauncherUtil.runtimeClassLoader(Object.class.getClassLoader());
+            ClassLoader runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader(Object.class.getClassLoader());
             if (runtimeClassLoader != null) {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
             }

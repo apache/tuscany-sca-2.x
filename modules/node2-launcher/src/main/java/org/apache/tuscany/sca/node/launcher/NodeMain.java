@@ -23,7 +23,8 @@ package org.apache.tuscany.sca.node.launcher;
 /**
  * Main class for this JAR.
  * With no arguments this class launches the SCA Node Daemon.
- * With an argument it launches an SCA node. 
+ * With a "domain" argument it launches the SCA domain admin node.
+ * With any other argument it launches an SCA Node. 
  *  
  * @version $Rev$ $Date$
  */
@@ -31,7 +32,11 @@ public class NodeMain {
 
     public static void main(String[] args) throws Exception {
         if (args.length != 0) {
-            NodeLauncher.main(args);
+            if (args[0].equals("domain")) {
+                DomainNodeLauncher.main(args);
+            } else {
+                NodeLauncher.main(args);
+            }
         } else {
             NodeDaemon.main(args);
         }

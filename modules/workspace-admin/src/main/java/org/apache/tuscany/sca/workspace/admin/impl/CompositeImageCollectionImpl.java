@@ -118,6 +118,8 @@ public class CompositeImageCollectionImpl extends HttpServlet implements ItemCol
             // Get the collection of required contributions
             Entry<String, Item>[] contributionEntries = contributionCollection.query("alldependencies=" + contributionURI);
             for (Entry<String, Item> entry: contributionEntries) {
+                Item item = entry.getData();
+                item.setContents(null);
                 entries.add(entry);
             }
 

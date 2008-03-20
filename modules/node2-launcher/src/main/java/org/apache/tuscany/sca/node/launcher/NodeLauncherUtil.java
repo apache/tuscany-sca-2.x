@@ -64,7 +64,8 @@ public final class NodeLauncherUtil {
         URI uri = url.toURI();
             
         // If the launcher class is in a JAR, add all runtime JARs from directory containing
-        // that JAR (e.g. the Tuscany modules directory) as well as the ../lib directory
+        // that JAR (e.g. the Tuscany modules directory) as well as the ../modules and
+        // ../lib directories
         String scheme = uri.getScheme();
         if (scheme.equals("jar")) {
             String path = uri.toString().substring(4);
@@ -76,21 +77,28 @@ public final class NodeLauncherUtil {
     
             File file = new File(uri);
             if (file.exists()) {
-                File modulesDirectory = file.getParentFile();
-                if (modulesDirectory != null && modulesDirectory.exists()) {
+                File jarDirectory = file.getParentFile();
+                if (jarDirectory != null && jarDirectory.exists()) {
 
-                    // Collect JAR files in the directory containing the input JAR
+                    // Collect JAR files from the directory containing the input JAR
                     // (e.g. the Tuscany modules directory)
-                    collectJARFiles(modulesDirectory, jarURLs);
+                    collectJARFiles(jarDirectory, jarURLs);
                     
-                    File homeDirectory = modulesDirectory.getParentFile();
+                    File homeDirectory = jarDirectory.getParentFile();
                     if (homeDirectory != null && homeDirectory.exists()) {
                         
+                        // Collect JARs from the ../modules directory
+                        File modulesDirectory = new File(homeDirectory, "modules");
+                        if (modulesDirectory.exists() && !modulesDirectory.getAbsolutePath().equals(jarDirectory.getAbsolutePath())) {
+                            collectJARFiles(modulesDirectory, jarURLs);
+                        }
+
                         // Collect JARs from the ../lib directory
                         File libDirectory = new File(homeDirectory, "lib");
-                        if (libDirectory.exists() && !libDirectory.getAbsolutePath().equals(modulesDirectory.getAbsolutePath())) {
+                        if (libDirectory.exists() && !libDirectory.getAbsolutePath().equals(jarDirectory.getAbsolutePath())) {
                             collectJARFiles(libDirectory, jarURLs);
                         }
+
                     }
                 }
             }
@@ -112,9 +120,9 @@ public final class NodeLauncherUtil {
                 collectJARFiles(homeDirectory, jarURLs);
                 
                 // Collect files under $TUSCANY_HOME/modules
-                File moduleDirectory = new File(homeDirectory, "modules");
-                if (moduleDirectory.exists()) {
-                    collectJARFiles(moduleDirectory, jarURLs);
+                File modulesDirectory = new File(homeDirectory, "modules");
+                if (modulesDirectory.exists()) {
+                    collectJARFiles(modulesDirectory, jarURLs);
                 }
     
                 // Collect files under $TUSCANY_HOME/lib
