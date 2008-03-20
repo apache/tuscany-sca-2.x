@@ -84,7 +84,7 @@ class PrintUtil {
         int id = System.identityHashCode(object);
         if (printed.contains(id)) {
 
-            // If we've already printed an object, print just it's hashcode
+            // If we've already printed an object, print just it's HashCode
             indent();
             out.println(object.getClass().getName() + "@" + id);
         } else {
@@ -250,7 +250,7 @@ class PrintUtil {
     }
 
     /**
-     * Recursively evaluates the type hierachy to return all fields 
+     * Recursively evaluates the type hierarchy to return all fields 
      */
     private static List<Field> getAllFields(Class<?> clazz, List<Field> fields) {
         if (clazz == null || clazz.isArray() || Object.class.equals(clazz)) {

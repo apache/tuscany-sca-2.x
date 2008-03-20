@@ -29,14 +29,14 @@ public interface Binding extends Base, Cloneable {
     /**
      * Returns the binding URI.
      * 
-     * @return the binding uri
+     * @return the binding URI
      */
     String getURI();
 
     /**
      * Sets the binding URI.
      * 
-     * @param uri the binding uri
+     * @param uri the binding URI
      */
     void setURI(String uri);
 

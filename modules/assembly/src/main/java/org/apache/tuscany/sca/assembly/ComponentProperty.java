@@ -42,19 +42,19 @@ public interface ComponentProperty extends Property {
     void setProperty(Property property);
 
     /**
-     * Returns an xpath expression referencing a property of the enclosing
+     * Returns an XPath expression referencing a property of the enclosing
      * composite.
      * 
-     * @return an xpath expression referencing a property of the enclosing
+     * @return an XPath expression referencing a property of the enclosing
      *         composite
      */
     String getSource();
 
     /**
-     * Sets an xpath expression referencing a property of the enclosing
+     * Sets an XPath expression referencing a property of the enclosing
      * composite.
      * 
-     * @param source an xpath expression referencing a property of the enclosing
+     * @param source an XPath expression referencing a property of the enclosing
      *            composite
      */
     void setSource(String source);

@@ -1188,7 +1188,7 @@ public class CompositeConfigurationBuilderImpl {
     }
 
     /**
-     * URI construction for composite bindings based on Assembly spec section 1.7.2, This method
+     * URI construction for composite bindings based on Assembly Specification section 1.7.2, This method
      * assumes that the component URI part of the binding URI is formed from the part to the 
      * composite in question and just calls the generic constructBindingURI method with this 
      * information
@@ -1208,7 +1208,7 @@ public class CompositeConfigurationBuilderImpl {
     }
 
      /**
-      * URI construction for component bindings based on Assembly spec section 1.7.2. This method
+      * URI construction for component bindings based on Assembly Specification section 1.7.2. This method
       * calculates the component URI part based on component information before calling the generic
       * constructBindingURI method
       *
@@ -1224,7 +1224,7 @@ public class CompositeConfigurationBuilderImpl {
     }
             
     /**
-     * Generic URI construction for bindings based on Assembly spec section 1.7.2
+     * Generic URI construction for bindings based on Assembly Specification section 1.7.2
      * 
      * @param componentURIString the string version of the URI part that comes from the component name
      * @param service the service in question
@@ -1335,11 +1335,11 @@ public class CompositeConfigurationBuilderImpl {
     }
     
     /**
-     * Concatenate binding URI parts together based on Assembly spec section 1.7.2
+     * Concatenate binding URI parts together based on Assembly Specification section 1.7.2
      * 
      * @param baseURI the base of the binding URI
-     * @param componentURI the middle part of the binding uri derived from the component name
-     * @param bindingURI the end part of the binding uri
+     * @param componentURI the middle part of the binding URI derived from the component name
+     * @param bindingURI the end part of the binding URI
      * @param includeBindingName when set true the binding name part should be used
      * @param bindingName the binding name
      * @return the resulting URI as a string
