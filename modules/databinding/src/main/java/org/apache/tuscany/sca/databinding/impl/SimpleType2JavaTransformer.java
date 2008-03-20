@@ -62,7 +62,7 @@ public abstract class SimpleType2JavaTransformer<T> extends BaseTransformer<T, O
 
     @Override
     public int getWeight() {
-        // Cannot be used for imtermediate
+        // Cannot be used for intermediate
         return 10000;
     }
 

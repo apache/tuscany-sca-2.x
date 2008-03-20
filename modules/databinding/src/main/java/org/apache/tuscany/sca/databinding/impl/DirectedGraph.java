@@ -265,7 +265,7 @@ public class DirectedGraph<V, E> implements Cloneable {
     }
 
     /**
-     * Get the shortes path from the source vertex to the target vertex using
+     * Get the shortest path from the source vertex to the target vertex using
      * Dijkstra's algorithm. If there's no path, null will be returned. If the
      * source is the same as the target, it returns a path with empty edges with
      * weight 0.

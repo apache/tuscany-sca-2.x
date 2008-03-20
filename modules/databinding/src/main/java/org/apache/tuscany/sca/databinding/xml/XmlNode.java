@@ -44,7 +44,7 @@ public interface XmlNode {
     List<XmlNode> attributes();
     
     /**
-     * Retunrs a map of prefix to namespace URI
+     * Returns a map of prefix to namespace URI
      * @return
      */
     Map<String, String> namespaces();

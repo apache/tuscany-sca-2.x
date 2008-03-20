@@ -65,7 +65,7 @@ public interface DataBindingExtensionPoint {
      * 
      * @param DataType The initial data type
      * @param annotations The java annotations
-     * @param boolean Should be set to true if DataType parm represents an Exception
+     * @param boolean Should be set to true if DataType parameter represents an Exception
      * @return A DataType representing the java type or null if no databinding
      *         recognizes the java type
      */

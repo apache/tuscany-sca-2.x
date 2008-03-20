@@ -64,7 +64,7 @@ public class DelegatingNamespaceContext implements NamespaceContext {
 
     private FastStack<String> prefixStack = new FastStack<String>();
 
-    // Keep two arraylists for the prefixes and namespaces. They should be in
+    // Keep two ArrayLists for the prefixes and namespaces. They should be in
     // sync
     // since the index of the entry will be used to relate them
     // use the minimum initial capacity to let things handle memory better
@@ -87,7 +87,7 @@ public class DelegatingNamespaceContext implements NamespaceContext {
     }
 
     public String getNamespaceURI(String prefix) {
-        // do the corrections as per the javadoc
+        // do the corrections as per the Javadoc
         int index = prefixStack.search(prefix);
         if (index != -1) {
             return uriStack.get(index);
@@ -103,7 +103,7 @@ public class DelegatingNamespaceContext implements NamespaceContext {
     }
 
     public String getPrefix(String uri) {
-        // do the corrections as per the javadoc
+        // do the corrections as per the Javadoc
         int index = uriStack.search(uri);
         if (index != -1) {
             return prefixStack.get(index);
@@ -116,7 +116,7 @@ public class DelegatingNamespaceContext implements NamespaceContext {
     }
 
     public Iterator getPrefixes(String uri) {
-        // create an arraylist that contains the relevant prefixes
+        // create an ArrayList that contains the relevant prefixes
         String[] uris = uriStack.toArray(new String[uriStack.size()]);
         List<String> tempList = new ArrayList<String>();
         for (int i = uris.length - 1; i >= 0; i--) {
@@ -168,7 +168,7 @@ public class DelegatingNamespaceContext implements NamespaceContext {
      */
     public static class FastStack<T> extends ArrayList<T> {
 
-        /** Ensure serialization compatibility */
+        /** Ensure Serialization compatibility */
         private static final long serialVersionUID = 2130079159931574599L;
 
         /**

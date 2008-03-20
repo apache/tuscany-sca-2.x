@@ -115,7 +115,7 @@ public class JavaBeansDataBinding extends BaseDataBinding {
                     return Class.forName(desc.getName(), false, cl);
                 } catch (ClassNotFoundException e) {
                     try {
-                        // For OSGi, use context classloader if the bundle classloader cannot load the class
+                        // For OSGi, use context ClassLoader if the bundle ClassLoader cannot load the class
                         if (cl != Thread.currentThread().getContextClassLoader()) {
                             return Class.forName(desc.getName(), false, Thread.currentThread().getContextClassLoader());
                         }

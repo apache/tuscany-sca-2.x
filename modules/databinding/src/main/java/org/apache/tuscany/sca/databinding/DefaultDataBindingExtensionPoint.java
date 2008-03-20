@@ -231,7 +231,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
                     // Next look to see if the DB's exceptionHandler handles this exception
                     ExceptionHandler excHandler = binding.getExceptionHandler();
                     if (excHandler != null) {
-                        // Assymetric to have the introspect() methods set the DataBindings themselves
+                        // Asymmetric to have the introspect() methods set the DataBindings themselves
                         // whereas we're setting it ourselves here.   
                         DataType faultType = excHandler.getFaultType(dataType);
                         if (faultType != null) {

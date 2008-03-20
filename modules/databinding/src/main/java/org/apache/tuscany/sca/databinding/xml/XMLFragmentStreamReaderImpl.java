@@ -31,7 +31,7 @@ import javax.xml.stream.XMLStreamReader;
 /**
  * This is the new implementation of the XMLFramentStreamReader. The approach
  * here is simple When the pull parser needs to generate events for a particular
- * name-value(s) pair it always handes over (delegates) the task to another pull
+ * name-value(s) pair it always hands over (delegates) the task to another pull
  * parser which knows how to deal with it The common types of name value pairs
  * we'll come across are
  * <ul>
@@ -180,7 +180,7 @@ public class XMLFragmentStreamReaderImpl implements XMLFragmentStreamReader {
                 }
             }
         } else {
-            throw new IllegalStateException(); // as per the api contract
+            throw new IllegalStateException(); // as per the API contract
         }
 
     }
@@ -271,11 +271,11 @@ public class XMLFragmentStreamReaderImpl implements XMLFragmentStreamReader {
     }
 
     public String getCharacterEncodingScheme() {
-        return null; // todo - should we return something for this ?
+        return null; // TODO - should we return something for this ?
     }
 
     /**
-     * todo implement the right contract for this
+     * TODO implement the right contract for this
      * 
      * @throws XMLStreamException
      */
@@ -545,7 +545,7 @@ public class XMLFragmentStreamReaderImpl implements XMLFragmentStreamReader {
     }
 
     public boolean hasName() {
-        // since this parser always has a name, the hasname
+        // since this parser always has a name, the hasName
         // has to return true if we are still navigating this element
         // if not we should ask the child reader for it.
         if (state == DELEGATED_STATE) {
@@ -562,7 +562,7 @@ public class XMLFragmentStreamReaderImpl implements XMLFragmentStreamReader {
         if (state == DELEGATED_STATE) {
             if (childReader.isDone()) {
                 // the child reader is done. We shouldn't be getting the
-                // hasnext result from the child pullparser then
+                // hasNext result from the child pullparser then
                 return true;
             } else {
                 return childReader.hasNext();
@@ -586,14 +586,14 @@ public class XMLFragmentStreamReaderImpl implements XMLFragmentStreamReader {
     }
 
     /**
-     * we need to split out the calling to the populate namespaces seperately
+     * we need to split out the calling to the populate namespaces separately
      * since this needs to be done *after* setting the parent namespace context.
      * We cannot assume it will happen at construction!
      */
     public void init() {
         // here we have an extra issue to attend to. we need to look at the
-        // prefixes and uris (the combination) and populate a hashmap of
-        // namespaces. The hashmap of namespaces will be used to serve the
+        // prefixes and URIs (the combination) and populate a HashMap of
+        // namespaces. The HashMap of namespaces will be used to serve the
         // namespace context
 
         populateNamespaceContext();
@@ -647,7 +647,7 @@ public class XMLFragmentStreamReaderImpl implements XMLFragmentStreamReader {
     }
 
     /**
-     * Get the prefix list from the hastable and take that into an array
+     * Get the prefix list from the HashTable and take that into an array
      */
     private String[] makePrefixArray() {
         String[] prefixes = declaredNamespaceMap.keySet().toArray(new String[declaredNamespaceMap.size()]);
@@ -667,7 +667,7 @@ public class XMLFragmentStreamReaderImpl implements XMLFragmentStreamReader {
                 // property list and making a pullparser for the property value
                 if (getElements() == null || getElements().length == 0) {
                     // no properties - move to the end element state
-                    // straightaway
+                    // straight away
                     state = END_ELEMENT_STATE;
                     returnEvent = END_ELEMENT;
                 } else {
@@ -717,7 +717,7 @@ public class XMLFragmentStreamReaderImpl implements XMLFragmentStreamReader {
     // ////////////////////////////////////////////////////////////////////////
 
     /**
-     * todo implement this
+     * TODO implement this
      * 
      * @throws XMLStreamException
      */
@@ -773,7 +773,7 @@ public class XMLFragmentStreamReaderImpl implements XMLFragmentStreamReader {
             textFound = true;
         }
 
-        // ok! we got the key. Now look at the value
+        // OK! we got the key. Now look at the value
         Object propertyValue = getElements()[index].getValue();
         // cater for the special case now
         if (textFound) {
@@ -832,7 +832,7 @@ public class XMLFragmentStreamReaderImpl implements XMLFragmentStreamReader {
             }
 
         } else {
-            // all special possiblilities has been tried! Let's treat
+            // all special possibilities has been tried! Let's treat
             // the thing as a bean and try generating events from it
             childReader = new WrappingXMLStreamReader(new BeanXMLStreamReaderImpl(propertyQName, propertyValue));
             // we cannot register the namespace context here
