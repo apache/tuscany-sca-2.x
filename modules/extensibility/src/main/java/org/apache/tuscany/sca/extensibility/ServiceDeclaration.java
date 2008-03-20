@@ -25,7 +25,7 @@ import java.util.Map;
 
 /**
  * Service declaration using J2SE Jar service provider spec Classes specified
- * inside this declaration are loaded using the classloader used to read the
+ * inside this declaration are loaded using the ClassLoader used to read the
  * configuration file corresponding to this declaration.
  */
 public class ServiceDeclaration {
@@ -39,8 +39,8 @@ public class ServiceDeclaration {
     /**
      * Service declaration constructor
      * 
-     * @param className Service implementation classname
-     * @param classLoader Classloader corresponding to this service
+     * @param className Service implementation class name
+     * @param classLoader ClassLoader corresponding to this service
      *                implementation
      * @param attributes Optional attributes for this service declaration
      */
@@ -64,7 +64,7 @@ public class ServiceDeclaration {
     }
 
     /**
-     * Load another class using the classloader of this service implementation
+     * Load another class using the ClassLoader of this service implementation
      * 
      * @param anotherClassName
      * @return Class
@@ -85,9 +85,9 @@ public class ServiceDeclaration {
     }
 
     /**
-     * Classloader associated with this service declaration
+     * ClassLoader associated with this service declaration
      * 
-     * @return classloader
+     * @return ClassLoader
      */
     public ClassLoader getClassLoader() {
         return classLoader.get();
@@ -96,7 +96,7 @@ public class ServiceDeclaration {
     /**
      * Service implementation class corresponding to this declaration
      * 
-     * @return classname
+     * @return The Service implementation class corresponding to this declaration 
      */
     public String getClassName() {
         return className;
