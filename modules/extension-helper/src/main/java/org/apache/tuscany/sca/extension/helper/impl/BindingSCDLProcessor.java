@@ -94,7 +94,7 @@ public class BindingSCDLProcessor implements StAXArtifactProcessor {
     }
 
     public Class getModelType() {
-        //FIXME Having two different bindings, PojoBinding wrappering
+        //FIXME Having two different bindings, PojoBinding wrapping
         // the real binding is pretty confusing, looks like if you don't return
         // PojoBinding here, the write and resolve methods will never be
         // called, returning PojoBinding.class seems to fix that issue without
