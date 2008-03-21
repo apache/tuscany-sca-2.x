@@ -21,28 +21,28 @@ package org.apache.tuscany.sca.host.http;
 import java.util.List;
 
 /**
- * An extension point for servlet hosts.
+ * An extension point for Servlet hosts.
  * 
  * @version $Rev$ $Date$
  */
 public interface ServletHostExtensionPoint {
 
     /**
-     * Adds a servlet host extension.
+     * Adds a Servlet host extension.
      * 
      * @param servletHost
      */
     void addServletHost(ServletHost servletHost);
 
     /**
-     * Removes a servlet host extension.
+     * Removes a Servlet host extension.
      * 
      * @param servletHost
      */
     void removeServletHost(ServletHost servletHost);
     
     /**
-     * Returns a list of servlet host extensions.
+     * Returns a list of Servlet host extensions.
      * 
      * @return
      */

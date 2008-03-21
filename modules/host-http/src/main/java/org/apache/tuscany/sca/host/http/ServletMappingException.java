@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.host.http;
 
 /**
- * Indicates an exception while registering a servlet mapping.
+ * Indicates an exception while registering a Servlet mapping.
  * 
  * @version $Rev$ $Date$
  */

@@ -27,7 +27,7 @@ import javax.servlet.Servlet;
  * Interface implemented by host environments that allow Servlets to be
  * registered. 
  * <p/> 
- * This interface allows a system service to register a servlet
+ * This interface allows a system service to register a Servlet
  * to handle inbound requests.
  * 
  * @version $Rev$ $Date$
@@ -50,41 +50,41 @@ public interface ServletHost {
     
     /**
      * Add a mapping for an instance of a Servlet. This requests that the
-     * servlet container direct all requests to the designated mapping to the
+     * Servlet container direct all requests to the designated mapping to the
      * supplied Servlet instance.
      * 
-     * @param uri the uri-mapping for the Servlet
+     * @param uri the URI-mapping for the Servlet
      * @param servlet the Servlet that should be invoked
      * @throws ServletMappingException
      */
     void addServletMapping(String uri, Servlet servlet) throws ServletMappingException;
 
     /**
-     * Remove a servlet mapping. This directs the servlet container not to direct
+     * Remove a Servlet mapping. This directs the Servlet container not to direct
      * any more requests to a previously registered Servlet.
      * 
-     * @param uri the uri-mapping for the Servlet
-     * @return the servlet that was registered to the mapping, null if nothing
+     * @param uri the URI-mapping for the Servlet
+     * @return the Servlet that was registered to the mapping, null if nothing
      *         was registered to the mapping
      * @throws ServletMappingException
      */
     Servlet removeServletMapping(String uri) throws ServletMappingException;
 
     /**
-     * Returns the servlet mapped to the given uri.
+     * Returns the Servlet mapped to the given URI.
      * 
-     * @param uri the uri-mapping for the Servlet
-     * @return the servlet registered with the mapping
+     * @param uri the URI-mapping for the Servlet
+     * @return the Servlet registered with the mapping
      * @throws ServletMappingException
      */
     Servlet getServletMapping(String uri) throws ServletMappingException;
 
     /**
-     * Returns a servlet request dispatcher for the servlet mapped to the specified uri.
+     * Returns a Servlet request dispatcher for the Servlet mapped to the specified URI.
      * 
-     * @param uri the uri mapped to a Servlet
+     * @param uri the URI mapped to a Servlet
      * @return a RequestDispatcher that can be used to dispatch requests to
-     * that servlet
+     * that Servlet
      * @throws ServletMappingException
      */
     RequestDispatcher getRequestDispatcher(String uri) throws ServletMappingException;

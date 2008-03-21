@@ -32,12 +32,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * A minimal implementation of a servlet that serves documents in a document root
+ * A minimal implementation of a Servlet that serves documents in a document root
  * directory.
  * 
- * A servlet host implementation is not required to use this implementation and can map
+ * A Servlet host implementation is not required to use this implementation and can map
  * the URI and document root to a more complete and more efficient implementation of  
- * a resource servlet, for example the Tomcat or Jetty default servlets.
+ * a resource Servlet, for example the Tomcat or Jetty default Servlets.
  *
  * @version $Rev$ $Date$
  */
