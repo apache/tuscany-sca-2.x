@@ -71,7 +71,7 @@ public class JDBCHelper {
     }
 
     /**
-     * Initializes a DB connection on a managed environmet (e.g inside Tomcat)
+     * Initializes a DB connection on a managed environment (e.g inside Tomcat)
      * 
      * @param connectionInfo
      * @return
@@ -136,7 +136,7 @@ public class JDBCHelper {
 
             DriverManager.setLoginTimeout(loginTimeout);
             if( (userName == null || userName.length() ==0) && (userPassword == null || userPassword.length()==0) ){
-                //no username or password suplied
+                //no username or password supplied
                 connection = DriverManager.getConnection(databaseUrl);
             }else{
                 connection = DriverManager.getConnection(databaseUrl, userName, userPassword);
@@ -159,10 +159,10 @@ public class JDBCHelper {
     }
     
     /**
-     * Cleanup and close all jdbc resources in the proper order and ignoring erros
+     * Cleanup and close all JDBC resources in the proper order and ignoring erros
      * @param connection The connection to be closed
      * @param queryStatement The statement to be closed
-     * @param resultSet The Resultset to be closed
+     * @param resultSet The ResultSet to be closed
      */
     public static void cleanupResources(Connection connection, PreparedStatement queryStatement, ResultSet resultSet) {
         cleanupResultSet(resultSet);
@@ -171,7 +171,7 @@ public class JDBCHelper {
     }
 
     /**
-     * Proper cleanup the resultset
+     * Proper cleanup the ResultSet
      * @param resultSet
      */
     private static void cleanupResultSet(ResultSet resultSet) {
