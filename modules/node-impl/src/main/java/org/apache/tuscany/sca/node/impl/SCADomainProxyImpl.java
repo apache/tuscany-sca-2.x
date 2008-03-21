@@ -63,7 +63,7 @@ import org.osoa.sca.ServiceReference;
 
 
 /**
- * A local representation of the sca domain running on a single node
+ * A local representation of the SCA Domain running on a single node
  * 
  * @version $Rev$ $Date$
  */
@@ -108,7 +108,7 @@ public class SCADomainProxyImpl extends SCADomainImpl {
      */
     protected void init() throws DomainException {
         try {
-            // check where domain uris are urls, they will be used to configure various
+            // check where domain URIs are URLs, they will be used to configure various
             // endpoints if they are
             URI tmpURI;
             try {
@@ -220,7 +220,7 @@ public class SCADomainProxyImpl extends SCADomainImpl {
                         int domainPort = domainURI.getPort();
                         
                         // override any domain URLs in node.composite and replace with the
-                        // domain url provided on start up
+                        // domain URL provided on start up
                         for ( Component component : composite.getComponents()){
                             for (ComponentReference reference : component.getReferences() ){
                                 for (Binding binding : reference.getBindings() ) {
@@ -350,7 +350,7 @@ public class SCADomainProxyImpl extends SCADomainImpl {
         
             try {
                 // create the node manager endpoint
-                // TODO - we really need to pass in a callable reference
+                // TODO - we really need to pass in a CallableReference
                 URI nodeURI = new URI(node.getURI());
                 String nodeHost = nodeURI.getHost();
                 

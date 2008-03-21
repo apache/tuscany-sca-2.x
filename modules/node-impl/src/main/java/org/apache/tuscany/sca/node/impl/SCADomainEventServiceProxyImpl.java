@@ -52,7 +52,7 @@ public class SCADomainEventServiceProxyImpl implements SCADomainEventService{
 
     public void registerNode(String nodeURI, String nodeURL, Externalizable nodeManagerService) throws DomainException {
               
-        // a rety loop is included on node registration in case the node
+        // a retry loop is included on node registration in case the node
         // comes up before the domain it is registering with
         for (int i =0; i < retryCount; i++){
             try {        

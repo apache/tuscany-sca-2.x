@@ -83,7 +83,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
     private String logicalNodeURI;
     private String domainURI; 
 
-    // The tuscany runtime that does the hard work
+    // The Tuscany runtime that does the hard work
     private ReallySmallRuntime nodeRuntime;
     
     // the top level components in this node. A subset of the the domain level composite
@@ -114,9 +114,9 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
      * Creates a node connected to a wider domain.  To find its place in the domain 
      * node and domain identifiers must be provided. 
      *  
-     * @param physicalNodeUri - if this is a url it is assumed that this will be used as root url for management components, e.g. http://localhost:8082
+     * @param physicalNodeUri - if this is a URL it is assumed that this will be used as root URL for management components, e.g. http://localhost:8082
      * @param domainUri - identifies what host and port the domain service is running on, e.g. http://localhost:8081
-     * @param logicalNodeURI the uri of the node group. This is the enpoint URI of the head of the
+     * @param logicalNodeURI the URI of the node group. This is the endpoint URI of the head of the
      * group of nodes. For example, in load balancing scenarios this will be the loaded balancer itself 
      * @throws ActivationException
      */
@@ -132,9 +132,9 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
      * Creates a node connected to a wider domain and allows a classpath to be specified.  
      * To find its place in the domain node and domain identifiers must be provided. 
      * 
-     * @param physicalNodeUri - if this is a url it is assumed that this will be used as root url for management components, e.g. http://localhost:8082
+     * @param physicalNodeUri - if this is a URL it is assumed that this will be used as root URL for management components, e.g. http://localhost:8082
      * @param domainUri - identifies what host and port the domain service is running on, e.g. http://localhost:8081
-     * @param logicalNodeURI the uri of the node group. This is the enpoint URI of the head of the
+     * @param logicalNodeURI the URI of the node group. This is the endpoint URI of the head of the
      * group of nodes. For example, in load balancing scenarios this will be the loaded balancer itself 
      * @param cl - the ClassLoader to use for loading system resources for the node
      * @throws ActivationException
@@ -164,7 +164,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
                socket.close();
             } 
             
-            // check whether node uri is an absolute url,  
+            // check whether node URI is an absolute URL,  
             try {
                 URI tmpURI = new URI(nodeURI); 
                 nodeURL = tmpURI.toURL(); 
@@ -610,7 +610,7 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
 
     /**
      * Configure the default HTTP port for this node.
-     * The motivation here is to set the default binding on the servlet container
+     * The motivation here is to set the default binding on the Servlet container
      * based on whatever information is available. In particular if no Node URL is 
      * provided then one of the ports from the first composite is used so that 
      * some recognizable default is provided for any bindings that are specified
