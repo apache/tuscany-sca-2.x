@@ -83,13 +83,24 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
 
     public String post(String key, Item item) {
         logger.info("post " + key);
-        
-        // Start a new VM and add it to the collection
+
+        // If the VM is already running just return it
         SCANodeVM vm = vm(key);
         if (vm != null) {
-            return key;
+            if (vm.isAlive()) {
+                return key;
+            } else {
+                // Remove dead VM entry
+                try {
+                    vm.stop();
+                } catch (InterruptedException e) {
+                    throw new ServiceRuntimeException(e);
+                }
+                nodeVMs.remove(vm);
+            }
         }
-        
+
+        // Start a new VM and add it to the collection
         vm = new SCANodeVM(key);
         nodeVMs.add(0, vm);
         try {

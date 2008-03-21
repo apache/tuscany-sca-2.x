@@ -80,6 +80,7 @@ public class FileServiceImpl extends HttpServlet {
                     if (!directory.exists()) {
                         directory.mkdirs();
                     }
+                    logger.info("post " + item.getName());
                     item.write(new File(directory, item.getName()));
                 }
             }
@@ -101,6 +102,8 @@ public class FileServiceImpl extends HttpServlet {
         if (path.startsWith("/")) {
             path = path.substring(1);
         }
+        logger.info("get " + path);
+        
         try {
             
             // Analyze the given path

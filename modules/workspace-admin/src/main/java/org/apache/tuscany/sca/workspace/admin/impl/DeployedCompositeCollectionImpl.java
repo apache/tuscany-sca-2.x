@@ -129,6 +129,7 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
     }
     
     public Entry<String, Item>[] getAll() {
+        logger.info("getAll");
 
         // Return all the composites in the domain composite
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
@@ -155,8 +156,20 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
     }
 
     public Item get(String key) throws NotFoundException {
-        // Returns the composite with the given key
-        return deployableCollection.get(key);
+        logger.info("get " + key);
+        
+        String contributionURI = contributionURI(key);
+        QName qname = compositeQName(key);
+
+        // Look for the specified composite in the domain composite
+        List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
+        Composite compositeCollection = readCompositeCollection();
+        for (Composite composite: compositeCollection.getIncludes()) {
+            if (contributionURI.equals(composite.getURI()) && qname.equals(composite.getName())) {
+                return deployableCollection.get(key);
+            }
+        }
+        throw new NotFoundException(key);
     }
     
     @Override
@@ -169,6 +182,7 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
         // Get the request path
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
         String key = path.startsWith("/")? path.substring(1) : path;
+        logger.info("get " + key);
         
         // Get the item describing the composite
         Item item;
@@ -211,6 +225,8 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
     }
 
     public String post(String key, Item item) {
+        logger.info("post " + key);
+        
         String contributionURI = contributionURI(key);
         QName qname = compositeQName(key);
 
@@ -248,6 +264,8 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
     }
 
     public void put(String key, Item item) throws NotFoundException {
+        logger.info("put " + key);
+
         String contributionURI = contributionURI(key);
         QName qname = compositeQName(key);
         
@@ -273,6 +291,8 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
     }
 
     public void delete(String key) throws NotFoundException {
+        logger.info("delete " + key);
+        
         String contributionURI = contributionURI(key);
         QName qname = compositeQName(key);
         

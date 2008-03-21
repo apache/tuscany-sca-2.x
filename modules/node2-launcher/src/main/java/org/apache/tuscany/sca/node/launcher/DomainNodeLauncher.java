@@ -33,7 +33,7 @@ public class DomainNodeLauncher {
     private final static Logger logger = Logger.getLogger(DomainNodeLauncher.class.getName());    
 
     public static void main(String[] args) throws Exception {
-        logger.info("Apache Tuscany SCA Domain Administration starting...");
+        logger.info("Apache Tuscany SCA Domain Manager starting...");
 
         Class<?> adminClass;
         Object admin;
@@ -60,11 +60,11 @@ public class DomainNodeLauncher {
             adminClass.getMethod("start").invoke(admin);
             
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "SCA Domain Administration could not be started", e);
+            logger.log(Level.SEVERE, "SCA Domain Manager could not be started", e);
             throw e;
         }
         
-        logger.info("SCA Domain Administration started.");
+        logger.info("SCA Domain Manager started.");
         logger.info("Press enter to shutdown.");
         try {
             System.in.read();
@@ -74,7 +74,7 @@ public class DomainNodeLauncher {
         try {
             adminClass.getMethod("stop").invoke(admin);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "SCA Domain Administration could not be stopped", e);
+            logger.log(Level.SEVERE, "SCA Domain Manager could not be stopped", e);
             throw e;
         }
     }

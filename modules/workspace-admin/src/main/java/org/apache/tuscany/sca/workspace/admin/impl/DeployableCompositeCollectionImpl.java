@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.workspace.admin.impl;
 
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.DEPLOYMENT_CONTRIBUTION_URI;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeAlternateLink;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeKey;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeQName;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeSourceLink;
@@ -27,7 +28,6 @@ import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compos
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.contributionURI;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.locationURL;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -55,6 +55,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
@@ -205,6 +206,8 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     }
     
     public Entry<String, Item>[] getAll() {
+        logger.info("getAll");
+        
         // Return all the deployable composites in the contributions
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
         
@@ -231,6 +234,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     }
 
     public Item get(String key) throws NotFoundException {
+        logger.info("get " + key);
 
         // Get the specified contribution info 
         String contributionURI = contributionURI(key);
@@ -270,6 +274,8 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     }
     
     public Entry<String, Item>[] query(String queryString) {
+        logger.info("query " + queryString);
+        
         if (queryString.startsWith("contribution=")) {
 
             // Return all the deployable composites in the specified
@@ -311,6 +317,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         // Get the request path
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
         String key = path.startsWith("/")? path.substring(1) : path;
+        logger.info("get " + key);
         
         // Expect a key in the form
         // composite:contributionURI;namespace;localName
@@ -576,55 +583,40 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     }
     
     /**
-     * Returns a link to a deployable composite.
-     * 
-     * If the containing contribution is a local directory, return the URI of  the local composite file
-     * inside the contribution.
-     * 
-     * If the containing contribution is a local or remote file, return a URI of the form:
-     * jar: contribution URI !/ composite URI.
-     *  
-     * @param contributionLocation
-     * @param deployableURI
-     * @return
-     */
-    private static String alternateLink(String contributionLocation, String deployableURI) {
-        URI uri = URI.create(contributionLocation);
-        if ("file".equals(uri.getScheme())) {
-            String path = uri.toString().substring(5);
-            File file = new File(path);
-            if (file.isDirectory()) {
-                if (contributionLocation.endsWith("/")) {
-                    return contributionLocation + deployableURI;
-                } else {
-                    return contributionLocation + "/" + deployableURI;
-                }
-            } else {
-                return contributionLocation + "!/" + deployableURI; 
-            }
-        } else {
-            return contributionLocation + "!/" + deployableURI;
-        }
-    }
-    
-    /**
-     * Returns the list of components in a composite.
+     * Returns the entry contents describing a composite.
      * 
      * @param composite
      * @return
      */
-    private static String components(Composite composite) {
+    private static String content(Composite composite) {
         StringBuffer sb = new StringBuffer();
         List<Component> components = composite.getComponents();
-        if (!components.isEmpty()) {
-            sb.append("Components: <span id=\"components\">");
-            for (int i = 0, n = components.size(); i < n; i++) {
-                Component component = components.get(i);
-                if (i != 0) {
+        for (int i = 0, n = components.size(); i < n; i++) {
+            Component component = components.get(i);
+            if (component.getImplementation() instanceof NodeImplementation) {
+                List<ComponentService> services = component.getServices();
+                if (!services.isEmpty()) {
+                    List<Binding> bindings = services.get(0).getBindings();
+                    if (!bindings.isEmpty()) {
+                        
+                        // List node URIs
+                        sb.append("Node URI: <span id=\"nodeURI\">");
+                        sb.append(component.getServices().get(0).getBindings().get(0).getURI());
+                        break;
+                    }
+                }
+            } else {
+                
+                // List component names
+                if (sb.length() == 0) {
+                    sb.append("Components: <span id=\"components\">");
+                } else {
                     sb.append(" ");
                 }
                 sb.append(component.getName());
             }
+        }
+        if (sb.length() != 0) {
             sb.append("</span>");
         }
         return sb.toString();
@@ -678,9 +670,9 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         String deployableURI = deployable.getURI();
         Item item = new Item();
         item.setTitle(compositeTitle(contributionURI, qname));
-        item.setContents(components(deployable));
+        item.setContents(content(deployable));
         item.setLink(compositeSourceLink(contributionURI, qname));
-        item.setAlternate(alternateLink(contributionLocation, deployableURI));
+        item.setAlternate(compositeAlternateLink(contributionLocation, deployableURI));
         item.setRelated(relatedLink(deployable));
         return item;
     }
