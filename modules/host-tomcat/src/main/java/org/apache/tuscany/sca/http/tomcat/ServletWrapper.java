@@ -24,7 +24,7 @@ import javax.servlet.ServletException;
 import org.apache.catalina.core.StandardWrapper;
 
 /**
- * A servlet wrapper.
+ * A Servlet wrapper.
  * 
  * @version $Rev$ $Date$
  */

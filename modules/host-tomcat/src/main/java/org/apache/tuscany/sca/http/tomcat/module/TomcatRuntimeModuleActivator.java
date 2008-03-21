@@ -34,7 +34,7 @@ public class TomcatRuntimeModuleActivator implements ModuleActivator {
 
     public void start(ExtensionPointRegistry extensionPointRegistry) {
 
-        // Register a Tomcat servlet host
+        // Register a Tomcat Servlet host
         ServletHostExtensionPoint servletHosts =
             extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
         WorkScheduler workScheduler = extensionPointRegistry.getExtensionPoint(WorkScheduler.class);

@@ -77,7 +77,7 @@ public class TomcatServerTestCase extends TestCase {
     };      
 
     /**
-     * Verifies requests are properly routed according to the servlet mapping
+     * Verifies requests are properly routed according to the Servlet mapping
      */
     public void testRegisterServletMapping() throws Exception {
         TomcatServer service = new TomcatServer(workScheduler);
@@ -93,7 +93,7 @@ public class TomcatServerTestCase extends TestCase {
     }
 
     /**
-     * Verifies that servlets can be registered with multiple ports
+     * Verifies that Servlets can be registered with multiple ports
      */
     public void testRegisterMultiplePorts() throws Exception {
         TomcatServer service = new TomcatServer(workScheduler);
