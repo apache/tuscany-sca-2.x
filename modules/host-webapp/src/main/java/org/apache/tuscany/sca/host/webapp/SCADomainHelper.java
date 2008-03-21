@@ -50,11 +50,11 @@ public class SCADomainHelper {
         try {
             URL rootURL = servletContext.getResource("/");
             if (rootURL.getProtocol().equals("jndi")) {
-                //this is tomcat case, we should use getRealPath
+                //this is Tomcat case, we should use getRealPath
                 File warRootFile = new File(servletContext.getRealPath("/"));
                 contributionRoot = warRootFile.toURL().toString();
             } else {
-                //this is jetty case
+                //this is Jetty case
                 contributionRoot  = rootURL.toString();
             }
         } catch(MalformedURLException mf) {

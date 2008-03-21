@@ -120,7 +120,7 @@ public class WebAppServletHost implements ServletHost {
             suri = contextPath + suri;
         }
 
-        // Get the servlet mapped to the given path
+        // Get the Servlet mapped to the given path
         Servlet servlet = servlets.get(suri);
         return servlet;
     }
@@ -174,7 +174,7 @@ public class WebAppServletHost implements ServletHost {
 
         suri = contextPath + suri;
 
-        // Get the servlet mapped to the given path
+        // Get the Servlet mapped to the given path
         Servlet servlet = servlets.get(suri);
         if (servlet != null) {
             return new WebAppRequestDispatcher(suri, servlet);
@@ -194,7 +194,7 @@ public class WebAppServletHost implements ServletHost {
             }
         }
 
-        // No servlet found
+        // No Servlet found
         return null;
     }
 
@@ -216,7 +216,7 @@ public class WebAppServletHost implements ServletHost {
             servletContext.setAttribute(SCA_DOMAIN_ATTRIBUTE, scaDomain);
         }
 
-        // Initialize the registered servlets
+        // Initialize the registered Servlets
         for (Servlet servlet : servlets.values()) {
             servlet.init(config);
         }
@@ -243,11 +243,11 @@ public class WebAppServletHost implements ServletHost {
                 }
                 URL rootURL = servletContext.getResource(root);
                 if (rootURL.getProtocol().equals("jndi")) {
-                    //this is tomcat case, we should use getRealPath
+                    //this is Tomcat case, we should use getRealPath
                     File warRootFile = new File(servletContext.getRealPath(root));
                     contributionRoot = warRootFile.toURL().toString();
                 } else {
-                    //this is jetty case
+                    //this is Jetty case
                     contributionRoot = rootURL.toString();
                 }
 
@@ -261,7 +261,7 @@ public class WebAppServletHost implements ServletHost {
 
     /**
      * Initializes the contextPath
-     * The 2.5 Servlet API has a getter for this, for pre 2.5 servlet
+     * The 2.5 Servlet API has a getter for this, for pre 2.5 Servlet
      * containers use an init parameter.
      */
     @SuppressWarnings("unchecked")
@@ -286,7 +286,7 @@ public class WebAppServletHost implements ServletHost {
 
     void destroy() {
 
-        // Destroy the registered servlets
+        // Destroy the registered Servlets
         for (Servlet servlet : servlets.values()) {
             servlet.destroy();
         }

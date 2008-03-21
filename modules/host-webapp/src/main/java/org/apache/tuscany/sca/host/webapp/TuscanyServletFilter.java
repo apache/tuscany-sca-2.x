@@ -33,7 +33,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * A servlet filter that forwards service requests to the servlets registered with
+ * A Servlet filter that forwards service requests to the Servlets registered with
  * the Tuscany ServletHost.
  */
 public class TuscanyServletFilter implements Filter {
@@ -46,7 +46,7 @@ public class TuscanyServletFilter implements Filter {
         // TODO: must be a better way to get this than using a static
         servletHost = WebAppServletHost.getInstance();
 
-        // Initialize the servlet host
+        // Initialize the Servlet host
         servletHost.init(new ServletConfig() {
             public String getInitParameter(String name) {
                 return config.getInitParameter(name);
@@ -73,7 +73,7 @@ public class TuscanyServletFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, javax.servlet.FilterChain chain)
         throws IOException, ServletException {
 
-        // Get the servlet path
+        // Get the Servlet path
         HttpServletRequest httpRequest = (HttpServletRequest)request;
         String path = httpRequest.getPathInfo();
         if (path == null) {
@@ -83,11 +83,11 @@ public class TuscanyServletFilter implements Filter {
             path = "/";
         }
 
-        // Get a request dispatcher for the servlet mapped to that path
+        // Get a request dispatcher for the Servlet mapped to that path
         RequestDispatcher dispatcher = servletHost.getRequestDispatcher(path);
         if (dispatcher != null) {
 
-            // Let the dispatcher forward the request to the servlet 
+            // Let the dispatcher forward the request to the Servlet 
             dispatcher.forward(request, response);
 
         } else {
