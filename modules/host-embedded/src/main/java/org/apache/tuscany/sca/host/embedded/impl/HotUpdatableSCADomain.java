@@ -50,11 +50,11 @@ import org.osoa.sca.ServiceRuntimeException;
  * SCA contribution jars. All contribution jars found in a repository
  * directory will be contributed to the SCA domain. Any changes to the
  * contributions in that repository will be automatically detected and
- * the sca domain updated accordingly.
+ * the SCADomain updated accordingly.
  * 
- *  TODO: find how to properly add/remove contributions and start/activate the doamain
+ *  TODO: find how to properly add/remove contributions and start/activate the SCADomain
  *  TODO: support contributions that are folders as well as jar's
- *  TODO: needs to restart the entire scadomain when a contribution changes
+ *  TODO: needs to restart the entire SCADomain when a contribution changes
  *        as the domain classpath includes all the contribution jar's, would
  *        be nice to find a way to avoid this
  *  TODO: hot update requires copying contribution jars to a temp location
@@ -282,10 +282,10 @@ public class HotUpdatableSCADomain extends SCADomain {
 
 
     /**
-     * Checks if any of the contributions have been updated and if so restarts the sca domain
+     * Checks if any of the contributions have been updated and if so restarts the SCADomain
      * TODO: Ideally just the altered contribution would be restarted but thats not possible
-     *       as the classloader used by the SCADomain includes the old contribution so need
-     *       to restart the entire domain to use a new ClassLoader. Should there be seperate 
+     *       as the ClassLoader used by the SCADomain includes the old contribution so need
+     *       to restart the entire domain to use a new ClassLoader. Should there be separate 
      *       ClassLoader per contribution? But then have all the issues with sharing classes
      *       across contributions.
      */

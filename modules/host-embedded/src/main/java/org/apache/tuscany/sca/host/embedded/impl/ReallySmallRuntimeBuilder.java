@@ -117,7 +117,7 @@ public class ReallySmallRuntimeBuilder {
             registry.getExtensionPoint(RuntimeWireProcessorExtensionPoint.class);
         RuntimeWireProcessor wireProcessor = new ExtensibleWireProcessor(wireProcessors);
 
-        // Retireve the processors extension point
+        // Retrieve the processors extension point
         StAXArtifactProcessorExtensionPoint processors =
             registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);        
 

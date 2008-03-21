@@ -384,14 +384,14 @@ public class DefaultSCADomain extends SCADomain {
                 // directory contribution
                 if (url.endsWith(contributionArtifactPath)) {
                     String location = url.substring(0, url.lastIndexOf(contributionArtifactPath));
-                    // workaround from evil url/uri form maven
+                    // workaround from evil URL/URI form Maven
                     contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
                 }
 
             } else if ("jar".equals(protocol)) {
                 // jar contribution
                 String location = url.substring(4, url.lastIndexOf("!/"));
-                // workaround for evil url/uri from maven
+                // workaround for evil URL/URI from Maven
                 contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
                 
             } else if (protocol != null && (protocol.equals("bundle")||protocol.equals("bundleresource"))){

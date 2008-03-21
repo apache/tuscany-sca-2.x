@@ -193,9 +193,9 @@ public abstract class SCADomain {
      * "org.apache.tuscany.sca.host.embedded.SCADomain" is set, its value is used as
      * the name of the implementation class. Otherwise, if the resource
      * "META-INF/services/org.apache.tuscany.sca.host.embedded.SCADomain" can be
-     * loaded from the supplied classloader. Otherwise, it will use
+     * loaded from the supplied ClassLoader. Otherwise, it will use
      * "org.apache.tuscany.sca.host.embedded.impl.DefaultSCADomain" as the default.
-     * The named class is loaded from the supplied classloader.
+     * The named class is loaded from the supplied ClassLoader.
      * 
      * @param classLoader
      * @param domainURI
@@ -208,7 +208,7 @@ public abstract class SCADomain {
         SCADomain domain = null;
 
         try {
-            // Determine the runtime and application classloader
+            // Determine the runtime and application ClassLoader
             final ClassLoader runtimeClassLoader = SCADomain.class.getClassLoader();
             final ClassLoader applicationClassLoader = Thread.currentThread().getContextClassLoader();
             
