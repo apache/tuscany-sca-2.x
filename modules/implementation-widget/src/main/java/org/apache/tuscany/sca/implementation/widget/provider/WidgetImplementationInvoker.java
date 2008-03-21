@@ -70,7 +70,7 @@ class WidgetImplementationInvoker implements Invoker {
                 
             } else if (id.equals(widgetName)) {
                 
-                // Generate Javascript header for use in the Widget
+                // Generate JavaScript header for use in the Widget
                 InputStream is = generateWidgetCode();
                 msg.setBody(is);
                 
@@ -95,8 +95,8 @@ class WidgetImplementationInvoker implements Invoker {
     }
 
     /**
-     * This helper class concatenates the necessary javascript client code into a
-     * single javascript per component
+     * This helper class concatenates the necessary JavaScript client code into a
+     * single JavaScript per component
      */
     private InputStream generateWidgetCode() throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -133,10 +133,10 @@ class WidgetImplementationInvoker implements Invoker {
 
     /**
      * Retrieve the binding proxy based on the bind name
-     * and embedded the javascript into this js
+     * and embedded the JavaScript into this js
      */
     private void generateJavaScriptBindingProxy(PrintWriter pw, String bindingProxyName) throws IOException {
-        //FIXME: Handle the case where the javascript binding client is not found
+        //FIXME: Handle the case where the JavaScript binding client is not found
         InputStream is = getClass().getClassLoader().getResourceAsStream(bindingProxyName);
         if (is != null) {
             int i;
