@@ -29,7 +29,7 @@ import org.mortbay.resource.Resource;
 import org.mortbay.resource.URLResource;
 
 /**
- * Customizes the Jetty default servlet.
+ * Customizes the Jetty default Servlet.
  *
  * @version $Rev$ $Date$
  */
