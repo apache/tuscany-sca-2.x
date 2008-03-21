@@ -25,7 +25,14 @@
     <component name="NodeProcessCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.implementation.node.launcher.NodeProcessCollectionImpl"/>
    		<service name="ItemCollection">
-   	 		<t:binding.atom uri="http://localhost:9991/process" title="Running Nodes"/>
+   	 		<t:binding.atom uri="http://localhost:9990/process" title="Log"/>
+   		</service>
+    </component>
+
+    <component name="PingServiceComponent">
+        <implementation.java class="org.apache.tuscany.sca.implementation.node.launcher.PingServiceImpl"/>
+   		<service name="Servlet">
+   	 		<t:binding.http uri="http://localhost:9990/ping"/>
    		</service>
     </component>
 

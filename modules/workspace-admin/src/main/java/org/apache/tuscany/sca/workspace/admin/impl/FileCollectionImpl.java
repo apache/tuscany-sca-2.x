@@ -56,6 +56,8 @@ public class FileCollectionImpl implements ItemCollection {
     }
     
     public Entry<String, Item>[] getAll() {
+        logger.info("getAll");
+        
         // Return all the files
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
         File directory = new File(directoryName);
@@ -71,6 +73,7 @@ public class FileCollectionImpl implements ItemCollection {
     }
 
     public Item get(String key) throws NotFoundException {
+        logger.info("get " + key);
         return item(key);
     }
 
@@ -83,6 +86,8 @@ public class FileCollectionImpl implements ItemCollection {
     }
 
     public void delete(String key) throws NotFoundException {
+        logger.info("delete " + key);
+
         File directory = new File(directoryName);
         File file = new File(directory, key);
         if (file.exists()) {

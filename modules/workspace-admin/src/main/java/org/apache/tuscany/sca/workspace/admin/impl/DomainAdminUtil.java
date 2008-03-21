@@ -33,7 +33,7 @@ import javax.xml.namespace.QName;
  */
 public final class DomainAdminUtil {
 
-    static final String DEPLOYMENT_CONTRIBUTION_URI = "http://tuscany.apache.org/xmlns/sca/1.0/cloud";
+    static final String DEPLOYMENT_CONTRIBUTION_URI = "http://tuscany.apache.org/cloud";
 
     /**
      * Extracts a qname from a key expressed as contributionURI;namespace;localpart.
@@ -119,6 +119,38 @@ public final class DomainAdminUtil {
             return file.toURI().toURL();
         } else {
             return uri.toURL();
+        }
+    }
+
+    /**
+     * Returns a link to a deployable composite.
+     * 
+     * If the containing contribution is a local directory, return the URI of  the local composite file
+     * inside the contribution.
+     * 
+     * If the containing contribution is a local or remote file, return a URI of the form:
+     * jar: contribution URI !/ composite URI.
+     *  
+     * @param contributionLocation
+     * @param deployableURI
+     * @return
+     */
+    static String compositeAlternateLink(String contributionLocation, String deployableURI) {
+        URI uri = URI.create(contributionLocation);
+        if ("file".equals(uri.getScheme())) {
+            String path = uri.toString().substring(5);
+            File file = new File(path);
+            if (file.isDirectory()) {
+                if (contributionLocation.endsWith("/")) {
+                    return contributionLocation + deployableURI;
+                } else {
+                    return contributionLocation + "/" + deployableURI;
+                }
+            } else {
+                return contributionLocation + "!/" + deployableURI; 
+            }
+        } else {
+            return contributionLocation + "!/" + deployableURI;
         }
     }
 

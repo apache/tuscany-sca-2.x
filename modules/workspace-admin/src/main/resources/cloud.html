@@ -83,19 +83,14 @@
 					}
 				}
 
+				var nodeName = compositeLocalName(nodeId);
+				nodeNames[i] = nodeName;
+				
 				var content = "";
 				if (entries[i].getElementsByTagName("content")[0].firstChild != null) {
 					content = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
 				}
-				var bs = content.indexOf('<span id="components">');
-				if (bs != -1) {
-					var es = content.indexOf('</span>', bs); 
-					nodeName = content.substring(bs, es + 7);
-				}
 
-				var nodeName = compositeLocalName(nodeId);
-				nodeNames[i] = nodeName;
-				
 				composites += '<tr>'
 				if (content.indexOf('<span id="problem"') != -1) {
 					composites += '<td><input name="composites" type="checkbox" value="' + nodeId + '">' +
@@ -140,16 +135,16 @@
 		var compositeName = document.newCompositeForm.compositeName.value;
 		var contributionURI = document.newCompositeForm.contributionURI.value;
 		var id  = 'composite:' +
-			'http://tuscany.apache.org/xmlns/sca/1.0/cloud' + ';' +
-			'cloud:/' + ';' +
+			'http://tuscany.apache.org/cloud' + ';' +
+			'http://tuscany.apache.org/cloud' + ';' +
 			nodeName;
 			
 		var entry = '<entry xmlns="http://www.w3.org/2005/Atom">\n' +
               	'<id>' + id + '</id>\n' +
-              	'<content type="text/xml"\n>\n' + 
+              	'<content type="text/xml">\n' + 
   				'<composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"\n' +
 				'	xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"\n' +
-				'	targetNamespace="cloud:/"\n' +
+				'	targetNamespace="http://tuscany.apache.org/cloud"\n' +
 				'	xmlns:c="' + compositeNamespace + '"\n' +
 				'	name="' + nodeName + '">\n' +
 				'\n' +
@@ -231,7 +226,7 @@
   <br>
   <span class=hd1>
   SCA Domain<br><br>
-  Cloud</b>&nbsp;<a href="/process/"><img src="icons/feed-icon.png" border="0"></a>
+  Cloud</b>&nbsp;<a href="/cloud/"><img src="icons/feed-icon.png" border="0"></a>
   </span>
   <br><br>
   Here is the list of SCA nodes configured in your SCA domain cloud.

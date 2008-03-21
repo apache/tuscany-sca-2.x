@@ -150,10 +150,29 @@
    		<reference name="cloudCollection" target="CloudCollectionComponent/LocalItemCollection"/>
     </component>
 
+    <component name="QuickStartServiceComponent">
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.QuickStartServiceImpl"/>
+   		<service name="Servlet">
+   	 		<t:binding.http uri="http://localhost:9990/quickstart"/>
+   		</service>
+   		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalItemCollection"/>
+        <reference name="deployableCollection" target="DeployableCompositeCollectionComponent/LocalItemCollection"/>
+   		<reference name="domainCompositeCollection" target="DomainCompositeCollectionComponent/LocalItemCollection"/>
+   		<reference name="cloudCollection" target="CloudCollectionComponent/LocalItemCollection"/>
+   		<reference name="processCollection" target="NodeProcessCollectionComponent/LocalItemCollection"/>
+    </component>
+
     <component name="NodeProcessCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.implementation.node.launcher.NodeProcessCollectionImpl"/>
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/process" title="Log"/>
+   		</service>
+    </component>
+
+    <component name="PingServiceComponent">
+        <implementation.java class="org.apache.tuscany.sca.implementation.node.launcher.PingServiceImpl"/>
+   		<service name="Servlet">
+   	 		<t:binding.http uri="http://localhost:9990/ping"/>
    		</service>
     </component>
 

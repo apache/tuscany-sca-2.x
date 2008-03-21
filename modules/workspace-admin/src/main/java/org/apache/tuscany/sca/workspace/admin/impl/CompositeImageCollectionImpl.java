@@ -92,6 +92,8 @@ public class CompositeImageCollectionImpl extends HttpServlet implements ItemCol
     }
     
     public Entry<String, Item>[] query(String queryString) {
+        logger.info("query " + queryString);
+        
         if (queryString.startsWith("composite=")) {
 
             // Expecting a key in the form:
@@ -136,6 +138,7 @@ public class CompositeImageCollectionImpl extends HttpServlet implements ItemCol
         // Get the request path
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
         String key = path.startsWith("/")? path.substring(1) : path;
+        logger.info("get " + key);
         
         // The key contains a node name, redirect 
         // to the corresponding composite image
