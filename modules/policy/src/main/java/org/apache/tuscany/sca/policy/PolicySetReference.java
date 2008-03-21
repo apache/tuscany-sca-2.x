@@ -29,12 +29,12 @@ public interface PolicySetReference {
     /**
      * Returns the name of the policyset being referred to
      * 
-     * @return the qname of the referred policyset
+     * @return the QName of the referred policyset
      */
     QName getReferredPolicySetName();
     
     /**
-     * @param refPolicySetName the name of the policyset being referrred to
+     * @param refPolicySetName the name of the policyset being referred to
      * 
      */
     void setReferredPolicySetName(QName refPolicySetName);
