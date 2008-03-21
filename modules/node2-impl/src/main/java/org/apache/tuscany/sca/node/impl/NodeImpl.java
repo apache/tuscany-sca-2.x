@@ -64,7 +64,7 @@ import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
- * A local representation of the sca domain running on a single node
+ * A local representation of the SCADomain running on a single node
  * 
  * @version $Rev$ $Date$
  */
@@ -75,7 +75,7 @@ public class NodeImpl implements SCANode2, SCAClient {
     // The node configuration URI
     private String configurationURI;
 
-    // The tuscany runtime that does the hard work
+    // The Tuscany runtime that does the hard work
     private ReallySmallRuntime runtime;
     private CompositeActivator activator;
 
@@ -350,7 +350,7 @@ public class NodeImpl implements SCANode2, SCAClient {
             }
         }
         
-        // Collect JARs from the parent classloader
+        // Collect JARs from the parent ClassLoader
         collectJARs(urls, cl.getParent());
     }
 }
