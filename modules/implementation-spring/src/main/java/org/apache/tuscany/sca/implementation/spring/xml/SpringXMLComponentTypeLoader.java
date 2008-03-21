@@ -441,7 +441,7 @@ public class SpringXMLComponentTypeLoader {
     /**
      * Gets hold of the application-context.xml file as a Spring resource
      * @param locationAttr - the location attribute from the <implementation.spring../> element
-     * @param cl - the classloader for the Spring implementation
+     * @param cl - the ClassLoader for the Spring implementation
      */
     protected Resource getApplicationContextResource(String locationAttr, ClassLoader cl)
         throws ContributionReadException {
@@ -493,7 +493,7 @@ public class SpringXMLComponentTypeLoader {
                     if (appCtxPath != null) {
                         je = jf.getJarEntry(appCtxPath);
                         if (je != null) {
-                            // TODO return a Spring specific Resouce type for jars
+                            // TODO return a Spring specific Resource type for jars
                             return new UrlResource(new URL("jar:" + locationFile.toURL() + "!/" + appCtxPath));
                         }
                     }

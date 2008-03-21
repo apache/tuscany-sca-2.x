@@ -94,7 +94,7 @@ class SCAParentApplicationContext implements ApplicationContext {
                     JavaInterface javaInterface = (JavaInterface)reference.getInterfaceContract().getInterface();
                     requiredType = javaInterface.getJavaClass();
                 }
-                // Create and return eturn the proxy for the reference
+                // Create and return the proxy for the reference
                 return getService(requiredType, reference.getName());
             } // end if
         } // end for
