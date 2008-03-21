@@ -45,7 +45,7 @@ public class FieldInjector<T> implements Injector<T> {
     }
 
     /**
-     * Inject a new value on the given isntance
+     * Inject a new value on the given instance
      */
     public void inject(T instance) throws ObjectCreationException {
         try {
