@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
 public class GeronimoTxFactory {
     private static final Log __log = LogFactory.getLog(GeronimoTxFactory.class);
 
-    /* Public no-arg contructor is required */
+    /* Public no-arg constructor is required */
     public GeronimoTxFactory() {
     }
 

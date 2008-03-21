@@ -47,7 +47,7 @@ public interface BPELProcessDefinition extends Base {
     
     /**
      * Get BPEL process URI
-     * @return uri for the process
+     * @return URI for the process
      */
     public URI getURI();
     

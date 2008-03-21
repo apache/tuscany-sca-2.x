@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.implementation.bpel.impl;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
- * Class for tuneling a RuntimeComponent for invocation of a BPEL process
+ * Class for tunnelling a RuntimeComponent for invocation of a BPEL process
  * This is used for BPEL to invoke references
  * 
 * @version $Rev$ $Date$

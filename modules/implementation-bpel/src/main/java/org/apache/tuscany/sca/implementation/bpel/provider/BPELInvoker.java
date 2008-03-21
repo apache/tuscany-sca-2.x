@@ -32,7 +32,6 @@ import org.apache.ode.bpel.iapi.MyRoleMessageExchange;
 import org.apache.ode.bpel.iapi.MessageExchange.Status;
 import org.apache.ode.utils.DOMUtils;
 import org.apache.ode.utils.GUID;
-import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.implementation.bpel.impl.ThreadRuntimeComponentContext;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.interfacedef.Interface;
