@@ -199,7 +199,7 @@ public class JettyServer implements ServletHost {
                 server.setSendServerVersion(sendServerVersion);
                 server.start();
                 
-                // Keep track of the new server and servlet handler 
+                // Keep track of the new server and Servlet handler 
                 port = new Port(server, servletHandler);
                 ports.put(portNumber, port);
                 
@@ -208,13 +208,13 @@ public class JettyServer implements ServletHost {
             }
         }
 
-        // Register the servlet mapping
+        // Register the Servlet mapping
         ServletHandler servletHandler = port.getServletHandler();
         ServletHolder holder;
         if (servlet instanceof DefaultResourceServlet) {
             
-            // Optimize the handling of resource requests, use the Jetty default servlet
-            // instead of our default resource servlet
+            // Optimize the handling of resource requests, use the Jetty default Servlet
+            // instead of our default resource Servlet
             String servletPath = uri.getPath();
             if (servletPath.endsWith("*")) {
                 servletPath = servletPath.substring(0, servletPath.length()-1);
@@ -329,7 +329,7 @@ public class JettyServer implements ServletHost {
             return null;
         }
         
-        // Remove the servlet mapping for the given servlet 
+        // Remove the Servlet mapping for the given Servlet 
         ServletHandler servletHandler = port.getServletHandler();
         Servlet servlet = null;
         List<ServletMapping> mappings =
@@ -372,7 +372,7 @@ public class JettyServer implements ServletHost {
             throw new IllegalStateException("No servlet registered at this URI: " + suri);
         }
         
-        // Remove the servlet mapping for the given servlet 
+        // Remove the Servlet mapping for the given Servlet 
         ServletHandler servletHandler = port.getServletHandler();
         Servlet removedServlet = null;
         List<ServletMapping> mappings =

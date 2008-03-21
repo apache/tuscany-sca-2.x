@@ -78,7 +78,7 @@ public class JettyServerTestCase extends TestCase {
     };
 
     /**
-     * Verifies requests are properly routed according to the servlet mapping
+     * Verifies requests are properly routed according to the Servlet mapping
      */
     public void testRegisterServletMapping() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
@@ -94,7 +94,7 @@ public class JettyServerTestCase extends TestCase {
     }
 
     /**
-     * Verifies that servlets can be registered with multiple ports
+     * Verifies that Servlets can be registered with multiple ports
      */
     public void testRegisterMultiplePorts() throws Exception {
         JettyServer service = new JettyServer(workScheduler);
