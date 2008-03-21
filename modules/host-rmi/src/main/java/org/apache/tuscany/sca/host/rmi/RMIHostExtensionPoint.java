@@ -28,21 +28,21 @@ import java.util.List;
 public interface RMIHostExtensionPoint {
 
     /**
-     * Adds a servlet host extension.
+     * Adds a Servlet host extension.
      * 
      * @param rmiHost
      */
     void addRMIHost(RMIHost rmiHost);
 
     /**
-     * Removes a servlet host extension.
+     * Removes a Servlet host extension.
      * 
      * @param rmiHost
      */
     void removeRMIHost(RMIHost rmiHost);
     
     /**
-     * Returns a list of servlet host extensions.
+     * Returns a list of Servlet host extensions.
      * 
      * @return
      */

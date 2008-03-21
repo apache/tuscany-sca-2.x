@@ -62,7 +62,7 @@ public interface RMIHost {
                                                                 RMIHostRuntimeException;
 
     /**
-     * Unregister a service registered under the given service name and defalut port number (1099)
+     * Unregister a service registered under the given service name and default port number (1099)
      * 
      * @param serviceName the name of the service that has to be unregistered
      * @throws RMIHostException
@@ -75,7 +75,7 @@ public interface RMIHost {
     /**
      * find a remote service hosted on the given host, port and service name
      * 
-     * @param host the name of the host on which the rmi service to be unregistered is running
+     * @param host the name of the host on which the RMI service to be unregistered is running
      * @param port the port against which the server is to be unregistered is running
      * @param svcName serviceName against which the server is to be unregistered is running
      * @return the RMI server object 
