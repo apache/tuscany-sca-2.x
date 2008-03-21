@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
- * A factory for xquery implementation providers
+ * A factory for XQuery implementation providers
  * @version $Rev$ $Date$
  */
 public class XQueryImplementationProviderFactory implements ImplementationProviderFactory<XQueryImplementation> {

@@ -44,19 +44,19 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
- * Provides the runtime configuration of xquery-typed component.
+ * Provides the runtime configuration of XQuery-typed component.
  * @version $Rev$ $Date$
  * 
  * Generally the following is done:
- * 1. During constructuion all services and references are provided
- *    with the saxon data binding, which is the one required by the 
+ * 1. During construction all services and references are provided
+ *    with the Saxon data binding, which is the one required by the 
  *    XQueryInvoker
  * 
  * 2. During startup:
  *    - a proxy is created for each reference and it is kept in the referenceProxies
- *      map, which is used later by the invoker to configure the saxon parser;
+ *      map, which is used later by the invoker to configure the Saxon parser;
  *    - each property value is read and put into the properties map. This is
- *      again used by the invoker to configure the saxon parser
+ *      again used by the invoker to configure the Saxon parser
  */
 public class XQueryImplementationProvider implements ImplementationProvider {
 

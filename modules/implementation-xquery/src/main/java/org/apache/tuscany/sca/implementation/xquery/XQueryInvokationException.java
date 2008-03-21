@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.implementation.xquery;
 
 /**
  * Exception class used by the XQueryInvoker to report problems in
- * xquery script invokaion
+ * XQuery script invocation
  * @version $Rev$ $Date$
  */
 public class XQueryInvokationException extends Exception {

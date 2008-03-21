@@ -50,7 +50,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 
 /**
- * This class introspects an XQuery file and extrats out of it
+ * This class introspects an XQuery file and extracts out of it
  * all implemented service, references and properties
  * It also creates expression extensions for each operation
  * in the implemented services
@@ -120,7 +120,7 @@ public class XQueryIntrospector {
     }
 
     /**
-     * Loads the xquery expression from the location that is provided with the implementation
+     * Loads the XQuery expression from the location that is provided with the implementation
      */
     private String loadXQExpression(URL locationURL) throws FileNotFoundException, IOException {
     	
@@ -156,8 +156,8 @@ public class XQueryIntrospector {
     }
 
     /**
-     * From the compiled xquery expression get all namespaces and see if they
-     * are services, references or properties declaraions
+     * From the compiled XQuery expression get all namespaces and see if they
+     * are services, references or properties declarations
      */
     private void introspectServicesAndReferences(XQueryImplementation xqueryImplementation, XQueryExpression exp, ModelResolver resolver)
         throws ClassNotFoundException, InvalidInterfaceException {

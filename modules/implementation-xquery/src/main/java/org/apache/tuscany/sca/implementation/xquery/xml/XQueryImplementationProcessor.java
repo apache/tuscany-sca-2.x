@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.implementation.xquery.XQueryImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 /**
- * Processor for the xquery implementation type artifact
+ * Processor for the XQuery implementation type artifact
  * @version $Rev$ $Date$
  */
 public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQueryImplementation> {
@@ -71,7 +71,7 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
     public XQueryImplementation read(XMLStreamReader reader)
         throws ContributionReadException, XMLStreamException {
 
-        /* Read the location attribute for the xquery implementation  */
+        /* Read the location attribute for the XQuery implementation  */
         String xqueryLocation = reader.getAttributeValue(null, LOCATION);
         if (xqueryLocation == null) {
             throw new ContributionReadException(MSG_LOCATION_MISSING);
@@ -109,7 +109,7 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
     }
 
     /**
-     * Resolves the implementation: its services and references, by invoking the xquery
+     * Resolves the implementation: its services and references, by invoking the XQuery
      * introspector
      */
     public void resolve(XQueryImplementation xqueryImplementation, ModelResolver resolver)

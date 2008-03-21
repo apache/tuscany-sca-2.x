@@ -58,7 +58,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Performs the invokation of a requested xquery function
+ * Performs the invocation of a requested XQuery function
  * @version $Rev$ $Date$
  */
 public class XQueryInvoker implements Invoker {
@@ -90,10 +90,10 @@ public class XQueryInvoker implements Invoker {
     }
 
     /**
-     * This mehtod contains the XQuery invokation logic
+     * This method contains the XQuery invocation logic
      * The following steps are performed:
      * 1. XQuery expression is produced by combining the original expression
-     *    and the function invokation extension (See XQueryImplementation.getXqExpressionExtensionsMap()
+     *    and the function invocation extension (See XQueryImplementation.getXqExpressionExtensionsMap()
      *    for details)
      * 2. A check is performed if this expression has been invoked already. If yes -
      *    it is taken from the cache
@@ -103,20 +103,20 @@ public class XQueryInvoker implements Invoker {
      *    payload and transformed to ones that are built with the current 
      *    configuration. 
      *    NOTE: This is unnecessary overhead - can the Configuration
-     *    object be attached in some way to the invokation request?
+     *    object be attached in some way to the invocation request?
      * 5. All parameters, reference proxies and property values are mapped
      *    to external variables of the XQuery script
      * 6. The query is executed and the result is returned depending on its type
      *    (i.e. it could be either a node NodeInfo or Value object). Currently
      *    no collections are supported, i.e. if there is more then one element
-     *    in the result ony the first one will be returned
+     *    in the result only the first one will be returned
      *    
      *    NOTE: During execution of the XQuery a static variable is set with
      *    the current configuration. This variable is used by the NodeInfo transformers
-     *    to produce the correct NodeInfo for all Output2Output tranformations, which
+     *    to produce the correct NodeInfo for all Output2Output transformations, which
      *    happen as result of the XQuery component invoking some reference components
-     *    The old state of the static configuraton is preserved and in this way allowing
-     *    to nest XQuery component invokations (i.e. one XQuery component invokes another
+     *    The old state of the static configuration is preserved and in this way allowing
+     *    to nest XQuery component invocations (i.e. one XQuery component invokes another
      *    one)
      */
     private Object doInvoke(Object payload) throws XQueryInvokationException, XPathException {
@@ -145,7 +145,7 @@ public class XQueryInvoker implements Invoker {
 
         DynamicQueryContext dynamicContext = new DynamicQueryContext(config);
 
-        // Setting the parameters for function invokation
+        // Setting the parameters for function invocation
         String methodName = theMethod.getName();
         for (int i = 0; i < params.length; i++) {
             dynamicContext.setParameter(methodName + "_" + i, params[i]);
