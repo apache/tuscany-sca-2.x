@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
 
 /**
- * Implements a STAX artifact processor for Widget implementations.
+ * Implements a StAX artifact processor for Widget implementations.
  *
  * @version $Rev$ $Date$
  */
@@ -59,7 +59,7 @@ public class WidgetImplementationProcessor implements StAXArtifactProcessor<Widg
     }
 
     public QName getArtifactType() {
-        // Returns the qname of the XML element processed by this processor
+        // Returns the QName of the XML element processed by this processor
         return IMPLEMENTATION_WIDGET;
     }
 
