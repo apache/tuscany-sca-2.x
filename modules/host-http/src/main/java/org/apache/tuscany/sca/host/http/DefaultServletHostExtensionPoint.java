@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Default implementation of a servlet host extension point.
+ * Default implementation of a Servlet host extension point.
  * 
  * @version $Rev$ $Date$
  */

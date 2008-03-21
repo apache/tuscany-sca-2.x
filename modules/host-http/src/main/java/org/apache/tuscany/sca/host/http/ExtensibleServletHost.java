@@ -25,7 +25,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 
 /**
- * Default implementation of an extensible servlet host.
+ * Default implementation of an extensible Servlet host.
  * 
  * @version $Rev$ $Date$
  */
@@ -64,7 +64,7 @@ public class ExtensibleServletHost implements ServletHost {
             throw new ServletMappingException("No servlet host available");
         }
 
-        // TODO implement selection of the correct servlet host based on the mapping
+        // TODO implement selection of the correct Servlet host based on the mapping
         // For now just select the first one
         getDefaultServletHost().addServletMapping(uri, servlet);
     }
@@ -74,7 +74,7 @@ public class ExtensibleServletHost implements ServletHost {
             throw new ServletMappingException("No servlet host available");
         }
 
-        // TODO implement selection of the correct servlet host based on the mapping
+        // TODO implement selection of the correct Servlet host based on the mapping
         // For now just select the first one
         return getDefaultServletHost().getServletMapping(uri);
     }
@@ -84,7 +84,7 @@ public class ExtensibleServletHost implements ServletHost {
             throw new ServletMappingException("No servlet host available");
         }
 
-        // TODO implement selection of the correct servlet host based on the mapping
+        // TODO implement selection of the correct Servlet host based on the mapping
         // For now just select the first one
         return getDefaultServletHost().removeServletMapping(uri);
     }
@@ -94,7 +94,7 @@ public class ExtensibleServletHost implements ServletHost {
             throw new ServletMappingException("No servlet host available");
         }
 
-        // TODO implement selection of the correct servlet host based on the mapping
+        // TODO implement selection of the correct Servlet host based on the mapping
         // For now just select the first one
         return getDefaultServletHost().getRequestDispatcher(uri);
     }
@@ -104,7 +104,7 @@ public class ExtensibleServletHost implements ServletHost {
             throw new ServletMappingException("No servlet host available");
         }
 
-        // TODO implement selection of the correct servlet host based on the mapping
+        // TODO implement selection of the correct Servlet host based on the mapping
         // For now just select the first one
         return getDefaultServletHost().getContextPath();
     }
