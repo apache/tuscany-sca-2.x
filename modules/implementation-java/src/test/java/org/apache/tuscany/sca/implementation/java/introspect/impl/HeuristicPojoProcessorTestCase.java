@@ -38,7 +38,7 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
 
 /**
- * Verfies component type information is properly introspected from an unadorned
+ * Verifies component type information is properly introspected from an unadorned
  * POJO according to the SCA Java Client and Implementation Model Specification
  * 
  * @version $Rev$ $Date$
@@ -122,7 +122,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
 
     /**
      * Verifies collection generic types or array types are introspected as
-     * references according to spec rules
+     * references according to specification rules
      */
     public void testReferenceCollectionType() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -135,7 +135,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
 
     /**
      * Verifies collection generic types or array types are introspected as
-     * properties according to spec rules
+     * properties according to specification rules
      */
     public void testPropertyCollectionType() throws Exception {
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
@@ -169,7 +169,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
     }
 
     /**
-     * Verifies a service inteface is calculated when only props and refs are
+     * Verifies a service interface is calculated when only props and refs are
      * given
      */
     public void testExcludedPropertyAndReference() throws Exception {
@@ -341,7 +341,7 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         }
 
         public void setNonGenericCollectionReference(Collection ref) {
-            // [rfeng] By the SCA spec, this should be classified as property
+            // [rfeng] By the SCA specification, this should be classified as property
         }
 
         public void setListReference(List<Ref> ref) {

@@ -23,7 +23,7 @@ import java.lang.reflect.Member;
 import org.apache.tuscany.sca.implementation.java.IntrospectionException;
 
 /**
- * Denotes an illegcal use of {@link org.osoa.sca.annotations.Callback} on a reference
+ * Denotes an illegal use of {@link org.osoa.sca.annotations.Callback} on a reference
  *
  * @version $Rev$ $Date$
  */

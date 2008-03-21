@@ -57,7 +57,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
         org.osoa.sca.annotations.Service annotation = clazz.getAnnotation(org.osoa.sca.annotations.Service.class);
         if (annotation == null) {
-            // scan intefaces for remotable
+            // scan interfaces for remotable
             Set<Class> interfaces = getAllInterfaces(clazz);
             for (Class<?> interfaze : interfaces) {
                 if (interfaze.isAnnotationPresent(Remotable.class) || interfaze.isAnnotationPresent(Callback.class)) {

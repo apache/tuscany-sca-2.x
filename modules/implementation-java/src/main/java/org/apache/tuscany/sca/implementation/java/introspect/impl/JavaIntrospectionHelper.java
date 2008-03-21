@@ -73,7 +73,7 @@ public final class JavaIntrospectionHelper {
     }
 
     /**
-     * Recursively evaluates the type hierachy to return all fields that are
+     * Recursively evaluates the type hierarchy to return all fields that are
      * public or protected
      */
     private static Set<Field> getAllPublicAndProtectedFields(Class clazz, Set<Field> fields, boolean validating) {
@@ -98,7 +98,7 @@ public final class JavaIntrospectionHelper {
 
     /**
      * Returns a collection of public and protected methods declared by a class
-     * or one of its supertypes. Note that overriden methods will not be
+     * or one of its supertypes. Note that overridden methods will not be
      * returned in the collection (i.e. only the method override will be). <p/>
      * This method can potentially be expensive as reflection information is not
      * cached. It is assumed that this method will be used during a
@@ -131,9 +131,8 @@ public final class JavaIntrospectionHelper {
                 List<Method> temp = new ArrayList<Method>();
                 boolean matched = false;
                 for (Method method : methods) {
-                    // only add if not already in the set from a supclass (i.e.
-                    // the
-                    // method is not overrided)
+                    // only add if not already in the set from a superclass (i.e.
+                    // the method is not overridden)
                     if (exactMethodMatch(declaredMethod, method)) {
                         matched = true;
                         break;
@@ -267,7 +266,7 @@ public final class JavaIntrospectionHelper {
      * Returns the simple name of a class - i.e. the class name devoid of its
      * package qualifier
      * 
-     * @param implClass the implmentation class
+     * @param implClass the implementation class
      */
     public static String getBaseName(Class<?> implClass) {
         return implClass.getSimpleName();

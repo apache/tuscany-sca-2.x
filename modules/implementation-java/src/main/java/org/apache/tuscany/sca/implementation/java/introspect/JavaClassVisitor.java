@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.implementation.java.impl.JavaParameterImpl;
  * may, for example, create a Property which is responsible for injecting a
  * complex type on a component implementation instance when it is instantiated.
  * <p/> Processors will receive callbacks as the implementation class is walked
- * while evalauting an assembly. It is the responsibility of the parser to
+ * while evaluating an assembly. It is the responsibility of the parser to
  * determine whether to perform an action during the callback.
  * 
  * @version $Rev$ $Date$
