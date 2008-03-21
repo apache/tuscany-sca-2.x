@@ -46,7 +46,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 
 /**
- * Implements a STAX artifact processor for DAS implementations.
+ * Implements a StAX artifact processor for DAS implementations.
  * 
  * The artifact processor is responsible for processing <implementation.das>
  * elements in SCA assembly XML composite files and populating the DAS
@@ -75,7 +75,7 @@ public class DASImplementationProcessor implements StAXArtifactProcessor<DASImpl
     }
 
     public QName getArtifactType() {
-        // Returns the qname of the XML element processed by this processor
+        // Returns the QName of the XML element processed by this processor
         return IMPLEMENTATION_DAS;
     }
 
@@ -106,7 +106,7 @@ public class DASImplementationProcessor implements StAXArtifactProcessor<DASImpl
         String config = reader.getAttributeValue(null, "config");
 
         // Read the data access type attribute
-        // This is the type of data store in use (e.g rdb, xml, etc)
+        // This is the type of data store in use (e.g RDB, XML, etc)
         String dataAccessType = reader.getAttributeValue(null, "dataAccessType");
 
         // Create an initialize the DAS implementation model
