@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * A servlet that forwards requests to the servlets registered with the Tuscany
+ * A Servlet that forwards requests to the Servlets registered with the Tuscany
  * ServletHost.
  * 
  * @deprecated Not needed anymore, TuscanyServletFilter is sufficient
