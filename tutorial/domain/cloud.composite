@@ -20,12 +20,12 @@
 <composite name="cloud"
   targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0/"
   xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:ns1="http://www.osoa.org/xmlns/sca/1.0">
-  <include name="ns2:CurrencyNode" uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud" xmlns:ns2="cloud:/"/>
-  <include name="ns2:CatalogsNode" uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud" xmlns:ns2="cloud:/"/>
-  <include name="ns2:StoreNode" uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud" xmlns:ns2="cloud:/"/>
-  <include name="ns2:StoreMergerNode" uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud" xmlns:ns2="cloud:/"/>
-  <include name="ns2:StoreDBNode" uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud" xmlns:ns2="cloud:/"/>
-  <include name="ns2:StoreSupplierNode" uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud" xmlns:ns2="cloud:/"/>
-  <include name="ns2:StoreEUNode" uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud" xmlns:ns2="cloud:/"/>
-  <include name="ns2:CatalogWebAppNode" uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud" xmlns:ns2="cloud:/"/>
+  <include name="ns2:CurrencyNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
+  <include name="ns2:CatalogsNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
+  <include name="ns2:StoreNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
+  <include name="ns2:StoreMergerNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
+  <include name="ns2:StoreDBNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
+  <include name="ns2:StoreSupplierNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
+  <include name="ns2:StoreEUNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
+  <include name="ns2:CatalogWebAppNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
 </composite>
