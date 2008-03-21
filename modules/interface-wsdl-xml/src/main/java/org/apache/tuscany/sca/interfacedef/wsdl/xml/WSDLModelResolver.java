@@ -72,12 +72,12 @@ public class WSDLModelResolver implements ModelResolver {
     //Schema element names
     public static final String ELEM_SCHEMA = "schema";
 
-    //Schema uri
+    //Schema URI
     public static final String NS_URI_XSD_1999 = "http://www.w3.org/1999/XMLSchema";
     public static final String NS_URI_XSD_2000 = "http://www.w3.org/2000/10/XMLSchema";
     public static final String NS_URI_XSD_2001 = "http://www.w3.org/2001/XMLSchema";
 
-    //Schema qnames
+    //Schema QNames
     public static final QName Q_ELEM_XSD_1999 = new QName(NS_URI_XSD_1999, ELEM_SCHEMA);
     public static final QName Q_ELEM_XSD_2000 = new QName(NS_URI_XSD_2000, ELEM_SCHEMA);
     public static final QName Q_ELEM_XSD_2001 = new QName(NS_URI_XSD_2001, ELEM_SCHEMA);
@@ -209,7 +209,7 @@ public class WSDLModelResolver implements ModelResolver {
     }
 
     /**
-     * Create a facade Definition which imports all the defintions
+     * Create a facade Definition which imports all the definitions
      * 
      * @param definitions A list of the WSDL definitions under the same target namespace
      * @return The aggregated WSDL definition
