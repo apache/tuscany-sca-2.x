@@ -41,7 +41,7 @@ public class WSDLInterfaceIntrospectorImpl {
         this.wsdlFactory = wsdlFactory;
     }
 
-    // FIXME: Do we want to deal with document-literal wrapped style based on the JAX-WS spec?
+    // FIXME: Do we want to deal with document-literal wrapped style based on the JAX-WS Specification?
     private List<Operation> introspectOperations(PortType portType, WSDLDefinition wsdlDefinition, ModelResolver resolver) throws InvalidWSDLException {
         List<Operation> operations = new ArrayList<Operation>();
         for (Object o : portType.getOperations()) {
