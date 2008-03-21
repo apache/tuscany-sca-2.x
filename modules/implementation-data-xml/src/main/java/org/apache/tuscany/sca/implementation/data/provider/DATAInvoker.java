@@ -43,7 +43,7 @@ import org.osoa.sca.ServiceRuntimeException;
  *
  * The target invoker is responsible for dispatching invocations to the particular
  * component implementation logic. The current component implementation will
- * dispatch calls to the DAS apis to retrieve the requested data from the backend store
+ * dispatch calls to the DAS APIs to retrieve the requested data from the back-end store
  *
  * @version $Rev$ $Date$
  */

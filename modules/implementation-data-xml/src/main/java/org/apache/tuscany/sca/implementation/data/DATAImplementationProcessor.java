@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 
 
 /**
- * Implements a STAX artifact processor for DATA implementations.
+ * Implements a StAX artifact processor for DATA implementations.
  * 
  * The artifact processor is responsible for processing <implementation.data>
  * elements in SCA assembly XML composite files and populating the DATA
