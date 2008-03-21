@@ -38,7 +38,7 @@ public interface ComponentListener extends EventListener {
     void componentStarted(Component component);
     
     /** 
-     * Compoent has been stopped
+     * Component has been stopped
      * 
      * @param component
      */
