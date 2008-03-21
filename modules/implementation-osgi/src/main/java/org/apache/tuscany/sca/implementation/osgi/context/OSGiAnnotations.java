@@ -61,7 +61,7 @@ import org.osgi.framework.Bundle;
  * OSGi bundles are not introspected by OSGiImplementation when a component is created.
  * Instead if the list of implementation classes is specified in <implementation.osgi/>,
  * the classes are introspected when the bundle is resolved. The classes are loaded using
- * the bundle classloader, and hence the delay in annotation processing is inevitable.
+ * the bundle ClassLoader, and hence the delay in annotation processing is inevitable.
  * There is one other difference compared to implementation.java. While instances (and
  * the instance class) are associated with a component in Java, all Java annotations from
  * the component implementation class apply to all the component instances. In OSGi, 
