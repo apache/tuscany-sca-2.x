@@ -38,7 +38,7 @@ public class NodeDaemon {
         Class<?> daemonClass;
         Object daemon;
         try {
-            // Set up runtime classloader
+            // Set up runtime ClassLoader
             ClassLoader runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader(Thread.currentThread().getContextClassLoader());
             if (runtimeClassLoader != null) {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
