@@ -31,8 +31,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
- * A servlet request dispatcher that can be used to delegate requests to a
- * serlvet registered with the Webapp servlet host.
+ * A Servlet request dispatcher that can be used to delegate requests to a
+ * Serlvet registered with the Webapp Servlet host.
  * 
  * @version $Rev$ $Date$
  */
@@ -58,7 +58,7 @@ class NodeWebAppRequestDispatcher implements RequestDispatcher {
     }
 
     /**
-     * Returns a request wrapper which will return the correct servlet path
+     * Returns a request wrapper which will return the correct Servlet path
      * and path info.
      * 
      * @param request
@@ -89,7 +89,7 @@ class NodeWebAppRequestDispatcher implements RequestDispatcher {
     }
 
     /**
-     * Remove any path suffix thats part of the servlet context path.
+     * Remove any path suffix thats part of the Servlet context path.
      * 
      * @param path
      * @param servletPath
