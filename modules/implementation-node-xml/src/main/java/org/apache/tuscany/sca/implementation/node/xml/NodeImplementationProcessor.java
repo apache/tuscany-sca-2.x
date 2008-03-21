@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 
 
 /**
- * Implements a STAX artifact processor for node implementations.
+ * Implements a StAX artifact processor for node implementations.
  */
 public class NodeImplementationProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<NodeImplementation> {
     private static final QName IMPLEMENTATION_NODE = new QName(Constants.SCA10_TUSCANY_NS, "implementation.node");
@@ -54,7 +54,7 @@ public class NodeImplementationProcessor extends BaseStAXArtifactProcessor imple
     }
 
     public QName getArtifactType() {
-        // Returns the qname of the XML element processed by this processor
+        // Returns the QName of the XML element processed by this processor
         return IMPLEMENTATION_NODE;
     }
 

@@ -45,7 +45,7 @@ import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 
 
 /**
- * Implements a STAX artifact processor for configured node implementations.
+ * Implements a StAX artifact processor for configured node implementations.
  */
 public class ConfiguredNodeImplementationProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<ConfiguredNodeImplementation> {
     
