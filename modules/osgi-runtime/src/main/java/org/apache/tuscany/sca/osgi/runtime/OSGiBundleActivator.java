@@ -46,9 +46,9 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
 	}
 	
 	/**
-	 * Create a bundle classloader which has visibility of all Tuscany related
-	 * bundles. Use this classloader as TCCL, and the Tuscany service discovery
-	 * classloader.
+	 * Create a bundle ClassLoader which has visibility of all Tuscany related
+	 * bundles. Use this ClassLoader as TCCL, and the Tuscany service discovery
+	 * ClassLoader.
 	 * 
 	 * @param bundleContext
 	 */
@@ -81,11 +81,11 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
 	 * if the installed bundle is a Tuscany bundle using the same Core-SPI bundle.
 	 * Since the bundle containing this activator is in Tuscany Runtime, this bundle
 	 * will provide access to Runtime and its dependencies (SPI, SCA-API). Third party
-	 * bundles dont need to be in the service discovery classpath, since they will be automatically
+	 * bundles don't need to be in the service discovery classpath, since they will be automatically
 	 * imported by bundles which require them. That leaves Tuscany extension bundles,
 	 * which are added to the service discovery classpath here.
 	 * 
-	 * 3rd party bundle should be explicity added to TCCL since classes from these
+	 * 3rd party bundle should be explicitly added to TCCL since classes from these
 	 * bundles use TCCL to load other classes from the bundle.
 	 * 
 	 * Load one class from the bundle to check if the new bundle matches this runtime bundle.
@@ -147,8 +147,8 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
 
 
 	/**
-	 * Bundle classloader that searches a bundle classpath consisting of
-	 * a list of bundles. The parent classloader is searched only if a class
+	 * Bundle ClassLoader that searches a bundle classpath consisting of
+	 * a list of bundles. The parent ClassLoader is searched only if a class
 	 * cannot be loaded from the bundle classpath. Tuscany bundles are
 	 * dynamically added and removed from the bundle classpath when the bundles
 	 * are installed and uninstalled.
