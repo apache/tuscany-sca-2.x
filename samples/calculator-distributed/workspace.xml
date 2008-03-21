@@ -21,5 +21,5 @@
   <contribution location="file:./src/main/resources/nodeA"  uri="nodeA"/>
   <contribution location="file:./src/main/resources/nodeB"  uri="nodeB"/>
   <contribution location="file:./src/main/resources/nodeC"  uri="nodeC"/>  
-  <contribution location="file:./src/main/resources/cloud" uri="http://tuscany.apache.org/xmlns/sca/1.0/cloud"/>  
+  <contribution location="file:./src/main/resources/cloud" uri="http://tuscany.apache.org/cloud"/>  
 </workspace>
