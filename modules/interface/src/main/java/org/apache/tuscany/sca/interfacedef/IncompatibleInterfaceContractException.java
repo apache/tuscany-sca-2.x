@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.interfacedef;
 
 /**
- * Denotes imcompatible service contracts for a wire
+ * Denotes incompatible service contracts for a wire
  * 
  * @version $Rev$ $Date$
  */

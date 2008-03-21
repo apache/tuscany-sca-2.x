@@ -26,7 +26,7 @@ package org.apache.tuscany.sca.interfacedef;
  */
 public interface InterfaceContractMapper {
     /**
-     * Check the compatiblity of the source and the target interface contracts.
+     * Check the compatibility of the source and the target interface contracts.
      * <p>
      * A wire may only connect a source to a target if the target implements an
      * interface that is compatible with the interface required by the source.
@@ -47,7 +47,7 @@ public interface InterfaceContractMapper {
      * </ol>
      * <p/>
      * <p>
-     * Please note this test is not symetric: the success of isCompatible(A, B)
+     * Please note this test is not symmetric: the success of isCompatible(A, B)
      * does NOT imply isCompatible(B, A)
      * 
      * @param source The source interface contract
