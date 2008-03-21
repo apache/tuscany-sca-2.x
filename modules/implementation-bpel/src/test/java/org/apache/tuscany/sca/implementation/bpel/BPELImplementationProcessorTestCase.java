@@ -74,7 +74,7 @@ public class BPELImplementationProcessorTestCase extends TestCase {
     }
 
     /**
-     * Test parsing valid composite definition. Valid coposite populated with correct values expected.
+     * Test parsing valid composite definition. Valid composite populated with correct values expected.
      * @throws Exception
      */
     public void testLoadValidComposite() throws Exception {

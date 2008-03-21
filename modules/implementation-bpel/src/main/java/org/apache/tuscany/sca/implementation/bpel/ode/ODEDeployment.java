@@ -27,7 +27,7 @@ import java.io.File;
  * @version $Rev$ $Date$
  */
 public class ODEDeployment {
-    /** The directory containing the deploy.xml and artefacts. */
+    /** The directory containing the deploy.xml and artifacts. */
     public File deployDir;
 
     /** If non-null the type of exception we expect to get when we deploy. */

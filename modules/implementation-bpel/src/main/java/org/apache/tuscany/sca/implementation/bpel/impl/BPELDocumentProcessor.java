@@ -70,7 +70,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
         try {
             //for now we are just using process name
             //and relying on componentType file for service definition
-            //so it's ok to set resolved for now
+            //so it's OK to set resolved for now
             processDefinition = indexRead(artifactURL);
             processDefinition.setURI(artifactURI);
             processDefinition.setUnresolved(false);
