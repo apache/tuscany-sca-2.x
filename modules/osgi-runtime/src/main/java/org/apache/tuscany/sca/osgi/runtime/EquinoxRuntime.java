@@ -55,7 +55,7 @@ public class EquinoxRuntime extends OSGiRuntime  {
         }
         else {
             
-            // Older versions of Equinox dont have a public method to obtain system bundlecontext
+            // Older versions of Equinox don't have a public method to obtain system bundlecontext
             // Extract bundleContext from the private field 'context'. We are assuming that 
             // there is no access restriction
             Method mainMethod = eclipseStarterClass.getMethod("main", String [].class);
