@@ -42,7 +42,7 @@ import org.apache.tuscany.sca.implementation.resource.ResourceImplementationFact
 
 
 /**
- * Implements a STAX artifact processor for resource implementations.
+ * Implements a StAX artifact processor for resource implementations.
  *
  * @version $Rev$ $Date$
  */
@@ -58,7 +58,7 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
     }
 
     public QName getArtifactType() {
-        // Returns the qname of the XML element processed by this processor
+        // Returns the QName of the XML element processed by this processor
         return IMPLEMENTATION_RESOURCE;
     }
 
@@ -75,7 +75,7 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
         // resources
         String location = reader.getAttributeValue(null, "location");
 
-        // Create an initialize the resource implementationmodel
+        // Create an initialize the resource implementation model
         ResourceImplementation implementation = implementationFactory.createResourceImplementation();
         implementation.setLocation(location);
         implementation.setUnresolved(true);
