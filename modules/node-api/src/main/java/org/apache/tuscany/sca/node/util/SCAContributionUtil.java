@@ -64,14 +64,14 @@ public class SCAContributionUtil {
                 // directory contribution
                 if (contributionURLString.endsWith(compositeString)) {
                     String location = contributionURLString.substring(0, contributionURLString.lastIndexOf(compositeString));
-                    // workaround from evil url/uri form maven
+                    // workaround from evil URL/URI form Maven
                     contributionURL = toFile(new URL(location)).toURI().toURL();
                 }
     
             } else if ("jar".equals(protocol)) {
                 // jar contribution
                 String location = contributionURLString.substring(4, contributionURLString.lastIndexOf("!/"));
-                // workaround for evil url/uri from maven
+                // workaround for evil URL/URI from Maven
                 contributionURL = toFile(new URL(location)).toURI().toURL();
             }
         } 
