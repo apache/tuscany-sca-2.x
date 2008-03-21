@@ -64,7 +64,7 @@ public class SCANodeFactoryImpl extends SCANodeFactory {
      *        don't provide this information
      * @param domainURI the URI of the domain that the node belongs to. This URI is 
      *        used to locate the domain manager on the network
-     * @param logicalNodeURI the uri of the node to be used in situations where more than one node 
+     * @param logicalNodeURI the URI of the node to be used in situations where more than one node 
      *        are grouped together for failover or load balancing scenarios. The logicalNodeURI
      *        will typically identify the logical node where requests are sent
      * @return a new SCA node.
@@ -77,7 +77,7 @@ public class SCANodeFactoryImpl extends SCANodeFactory {
      *  Creates a new SCA node. Many physical nodes may share the same logical URL in load balancing
      *  and failover scenarios where each node in the group runs the same contribution and 
      *  active composites. Also allows a class loaded to b specified. This is the 
-     *  classloader that will be used to load the management application used by the 
+     *  ClassLoader that will be used to load the management application used by the 
      *  node to talk to the domain
      * 
      * @param physicalNodeURI the URI of the node, this URI is used to provide the default 
@@ -85,12 +85,12 @@ public class SCANodeFactoryImpl extends SCANodeFactory {
      *        don't provide this information
      * @param domainURI the URI of the domain that the node belongs to. This URI is 
      *        used to locate the domain manager on the network
-     * @param logicalNodeURI the uri of the node to be used in situations where more than one node 
+     * @param logicalNodeURI the URI of the node to be used in situations where more than one node 
      *        are grouped together for failover or load balancing scenarios. The logicalNodeURI
      *        will typically identify the logical node where requests are sent. If null is provided
      *        no logicalNodeURI is set.
      * @param classLoader the class loader to use by default when loading contributions. If null is provided
-     *        the classloader the dervied automatically. 
+     *        the ClassLoader the derived automatically. 
      * @return a new SCA node.
      */
     public SCANode createSCANode(String physicalNodeURI, String domainURI, String logicalNodeURI, ClassLoader classLoader) throws NodeException {

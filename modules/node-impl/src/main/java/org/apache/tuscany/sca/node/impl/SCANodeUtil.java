@@ -126,17 +126,17 @@ public class SCANodeUtil {
     }	
 */   
     /** 
-     * A rather ugly method to find and fix the url of the service, assuming that there
+     * A rather ugly method to find and fix the URL of the service, assuming that there
      * is one. 
      *  
      * we can't get this out of a service reference
      * the component itself doesn't know how to get it  
      * the binding can't to do it automatically as it's not the sca binding
      * 
-     * TODO - This would be better done by passing out a serializable reference to service discovery 
+     * TODO - This would be better done by passing out a Serializable reference to service discovery 
      *         but this doesn't work yet     
      * 
-     * @return node manager url
+     * @return node manager URL
      */
 /*	
     public static void fixUpNodeServiceUrls(List<Component> nodeComponents, URL nodeUrlString)
@@ -175,7 +175,7 @@ public class SCANodeUtil {
 */   
     
     /**
-     * For node management services that use the http(s) protocol then use the node url as the enpoint
+     * For node management services that use the HTTP(S) protocol then use the node URL as the enpoint
      * if it has been specified otherwise find a port that isn't in use and make sure the domain name 
      * is the real domain name
      * 
@@ -242,7 +242,7 @@ public class SCANodeUtil {
     
     /**
      * For node services that have to talk to the domain fix up the reference URL using the 
-     * provided domain url if it has been provided
+     * provided domain URL if it has been provided
      * 
      * @param nodeComponents
      * @param domainUrlString
