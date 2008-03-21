@@ -176,7 +176,7 @@ public class JavaInterfaceIntrospectorImpl {
             List<DataType> faultDataTypes = new ArrayList<DataType>(faultTypes.length);
             for (Class<?> faultType : faultTypes) {
                 // Only add checked exceptions
-                // JAXWS Spec v2.1 section 3.7 says RemoteException should not be mapped
+                // JAXWS Specification v2.1 section 3.7 says RemoteException should not be mapped
                 if (Exception.class.isAssignableFrom(faultType) && (!RuntimeException.class.isAssignableFrom(faultType))
                     && (!RemoteException.class.isAssignableFrom(faultType))) {
                     XMLType xmlFaultType = new XMLType(new QName(ns, faultType.getSimpleName()), null);
