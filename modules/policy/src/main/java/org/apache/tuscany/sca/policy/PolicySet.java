@@ -88,15 +88,15 @@ public interface PolicySet {
     void setUnresolved(boolean unresolved);
 
     /**
-     * Returns the xpath expression that is to be used to evaluate
+     * Returns the XPath expression that is to be used to evaluate
      * if this PolicySet applies to specific attachment point
      * 
-     * @return the xpath expression
+     * @return the XPath expression
      */
     String getAppliesTo();
 
     /**
-     * Sets the xpath expression that is to be used to evaluate
+     * Sets the XPath expression that is to be used to evaluate
      * if this PolicySet applies to specific attachment point
      * 
      */
@@ -110,16 +110,16 @@ public interface PolicySet {
     Map<Intent, List<Object>> getMappedPolicies();
 
     /**
-     * Gets the xpath expression that is to be used to evaluate
+     * Gets the XPath expression that is to be used to evaluate
      * the SCA Artifacts that this policyset will always apply to
      * immaterial of an intent declared on the SCA Artifact
      * 
-     * @return the xpath expression
+     * @return the XPath expression
      */
     String getAlwaysAppliesTo();
 
     /**
-     * Sets the xpath expression that is to be used to evaluate
+     * Sets the XPath expression that is to be used to evaluate
      * the SCA Artifacts that this policyset will always apply to
      * immaterial of an intent declared on the SCA Artifact
      * 

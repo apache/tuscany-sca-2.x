@@ -42,14 +42,14 @@ public interface IntentAttachPointType {
     
     /**
      * Returns the list of names of policy intents that will always be provided by this Extension Type
-     * @ruturn list of Policy Intent names
+     * @return list of Policy Intent names
      */
     List<Intent> getAlwaysProvidedIntents();
     
     /**
      * Returns the list of names of policy intents that may be provided by this Extension Type thro
      * appropriate configuration
-     * @ruturn list of Policy Intent names
+     * @return list of Policy Intent names
      */
     List<Intent> getMayProvideIntents();
     

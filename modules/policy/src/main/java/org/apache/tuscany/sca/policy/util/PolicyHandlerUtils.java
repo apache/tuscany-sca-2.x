@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
- * Utitlity methods to deal with PolicyHandlers
+ * Utility methods to deal with PolicyHandlers
  */
 public class PolicyHandlerUtils {
     public static PolicyHandler findPolicyHandler(PolicySet policySet, 

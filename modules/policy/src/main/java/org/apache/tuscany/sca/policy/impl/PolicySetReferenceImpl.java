@@ -23,7 +23,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.policy.PolicySetReference;
 
 /**
- * Concrete implementatoin for a PolicySetReference
+ * Concrete implementation for a PolicySetReference
  *
  */
 public class PolicySetReferenceImpl implements PolicySetReference {
