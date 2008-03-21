@@ -75,7 +75,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
     }
 
     /**
-     * Returns the servlet host for the current Web app.
+     * Returns the Servlet host for the current Web app.
      * 
      * @return
      */
@@ -84,17 +84,17 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
     }
 
     /**
-     * Initialize the servlet host.
+     * Initialize the Servlet host.
      * 
      * @param filterConfig
      * @throws ServletException
      */
     public void init(final FilterConfig filterConfig) throws ServletException {
         
-        // Create a servlet config wrappering the given filter config
+        // Create a Servlet config wrapping the given filter config
         ServletConfig servletConfig = servletConfig(filterConfig);
 
-        // Get the servlet context
+        // Get the Servlet context
         ServletContext servletContext = servletConfig.getServletContext();
 
         // Initialize the context path
@@ -120,12 +120,12 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
             throw new ServletException(e);
         }
         
-        // Register the servlet host
+        // Register the Servlet host
         ServletHostExtensionPoint servletHosts = servletHosts(node);
         servletHosts.getServletHosts().clear();
         servletHosts.addServletHost(servletHost);
 
-        // Save the node in the servlet context 
+        // Save the node in the Servlet context 
         servletContext.setAttribute(SCAClient.class.getName(), node);
         
         // Start the node
@@ -135,7 +135,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
             throw new ServletException(e);
         }
 
-        // Initialize the registered servlets
+        // Initialize the registered Servlets
         for (Servlet servlet : servlets.values()) {
             servlet.init(servletConfig);
         }
@@ -188,7 +188,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
             suri = contextPath + suri;
         }
 
-        // Get the servlet mapped to the given path
+        // Get the Servlet mapped to the given path
         Servlet servlet = servlets.get(suri);
         return servlet;
     }
@@ -242,7 +242,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
 
         suri = contextPath + suri;
 
-        // Get the servlet mapped to the given path
+        // Get the Servlet mapped to the given path
         Servlet servlet = servlets.get(suri);
         if (servlet != null) {
             return new NodeWebAppRequestDispatcher(suri, servlet);
@@ -262,18 +262,18 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
             }
         }
 
-        // No servlet found
+        // No Servlet found
         return null;
     }
 
     /**
-     * Destroy the servlet host.
+     * Destroy the Servlet host.
      * 
      * @throws ServletException
      */
     public void destroy() {
 
-        // Destroy the registered servlets
+        // Destroy the registered Servlets
         for (Servlet servlet : servlets.values()) {
             servlet.destroy();
         }
@@ -291,7 +291,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
     public void doFilter(ServletRequest request, ServletResponse response, javax.servlet.FilterChain chain)
         throws IOException, ServletException {
 
-        // Get the servlet path
+        // Get the Servlet path
         HttpServletRequest httpRequest = (HttpServletRequest)request;
         String path = httpRequest.getPathInfo();
         if (path == null) {
@@ -301,11 +301,11 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
             path = "/";
         }
 
-        // Get a request dispatcher for the servlet mapped to that path
+        // Get a request dispatcher for the Servlet mapped to that path
         RequestDispatcher dispatcher = getRequestDispatcher(path);
         if (dispatcher != null) {
 
-            // Let the dispatcher forward the request to the servlet
+            // Let the dispatcher forward the request to the Servlet
             dispatcher.forward(request, response);
 
         } else {
@@ -333,7 +333,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
 
     /**
      * Initializes the contextPath
-     * The 2.5 Servlet API has a getter for this, for pre 2.5 servlet
+     * The 2.5 Servlet API has a getter for this, for pre 2.5 Servlet
      * containers use an init parameter.
      */
     private static String contextPath(ServletContext context) {
@@ -359,7 +359,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
     }
 
     /**
-     * Returns the servlet host extension point used by the given node.
+     * Returns the Servlet host extension point used by the given node.
      * 
      * @return
      */
@@ -377,7 +377,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
     }
 
     /**
-     * Returns a servlet config wrappering a filter config.
+     * Returns a Servlet config wrapping a filter config.
      * 
      * @param filterConfig
      * @return
