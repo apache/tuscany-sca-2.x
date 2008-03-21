@@ -108,7 +108,7 @@ public class ScriptInvokerFactory implements InvokerFactory {
             throw new ObjectCreationException(e);
         }
 
-        // set the databinding and xmlhelper for wsdl interfaces
+        // set the databinding and XMLHelper for WSDL interfaces
         for (Service service : rc.getServices()) {
             InterfaceContract ic = service.getInterfaceContract();
             if (ic instanceof WSDLInterfaceContract) {
@@ -149,7 +149,7 @@ public class ScriptInvokerFactory implements InvokerFactory {
     }
 
     /**
-     * If the python home isn't set then let Tuscany suppress messages other than errors
+     * If the Python home isn't set then let Tuscany suppress messages other than errors
      * See TUSCANY-1950
      */
     protected void pythonCachedir() {
