@@ -38,7 +38,7 @@ public class DomainNodeLauncher {
         Class<?> adminClass;
         Object admin;
         try {
-            // Set up runtime classloader
+            // Set up runtime ClassLoader
             ClassLoader runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader(DomainNodeLauncher.class.getClassLoader());
             if (runtimeClassLoader != null) {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);

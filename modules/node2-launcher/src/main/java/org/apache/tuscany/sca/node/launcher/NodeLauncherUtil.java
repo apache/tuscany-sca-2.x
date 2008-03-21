@@ -44,7 +44,7 @@ public final class NodeLauncherUtil {
 
 
     /**
-     * Returns a classloader for the Tuscany runtime JARs.
+     * Returns a ClassLoader for the Tuscany runtime JARs.
      * 
      * @param parentClassLoader
      * 
@@ -136,7 +136,7 @@ public final class NodeLauncherUtil {
         // Return the runtime class loader
         if (!jarURLs.isEmpty()) {
             
-            // Return a classloader configured with the runtime JARs
+            // Return a ClassLoader configured with the runtime JARs
             ClassLoader classLoader = new URLClassLoader(jarURLs.toArray(new URL[0]), parentClassLoader);
             return classLoader;
             

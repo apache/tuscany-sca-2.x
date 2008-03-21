@@ -30,7 +30,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 /**
- * A servlet filter that forwards service requests to the servlets registered with
+ * A Servlet filter that forwards service requests to the Servlets registered with
  * the Tuscany ServletHost.
  * 
  * @version $Rev$ $Date$
@@ -49,7 +49,7 @@ public class NodeServletFilter implements Filter {
         logger.info("Apache Tuscany SCA WebApp Node starting...");
 
         try {
-            // Get the Tuscany runtime classloader
+            // Get the Tuscany runtime ClassLoader
             ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader(getClass().getClassLoader());
             
@@ -58,7 +58,7 @@ public class NodeServletFilter implements Filter {
                     Thread.currentThread().setContextClassLoader(runtimeClassLoader);
                 }
         
-                // Load the Tuscany WebApp servlet host and get the host instance
+                // Load the Tuscany WebApp Servlet host and get the host instance
                 // for the current webapp
                 String className = "org.apache.tuscany.sca.implementation.node.webapp.NodeWebAppServletHost"; 
                 if (runtimeClassLoader != null) {
@@ -68,10 +68,10 @@ public class NodeServletFilter implements Filter {
                 }
                 servletHost = servletHostClass.getMethod("servletHost").invoke(null);
         
-                // Initialize the servlet host
+                // Initialize the Servlet host
                 servletHostClass.getMethod("init", FilterConfig.class).invoke(servletHost, filterConfig);
     
-                // The servlet host also implements the filter interface 
+                // The Servlet host also implements the filter interface 
                 filter = (Filter)servletHost;
                 
             } finally {
@@ -109,7 +109,7 @@ public class NodeServletFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, javax.servlet.FilterChain chain)
         throws IOException, ServletException {
 
-        // Delegate to the servlet host filter
+        // Delegate to the Servlet host filter
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         try {
             if (runtimeClassLoader != null) {
