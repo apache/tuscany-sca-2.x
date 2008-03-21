@@ -28,7 +28,7 @@ import javax.wsdl.WSDLElement;
  */
 public interface WSDLObject<T extends WSDLElement> {
     /**
-     * Get the owning defintion where the element is declared
+     * Get the owning definition where the element is declared
      * @return The owning definition
      */
     Definition getDefinition();

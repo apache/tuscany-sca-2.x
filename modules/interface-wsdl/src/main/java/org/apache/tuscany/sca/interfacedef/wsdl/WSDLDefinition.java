@@ -40,7 +40,7 @@ public interface WSDLDefinition extends Base {
 
     /**
      * Returns the WSDL definition model, if there are more than one WSDL definition under the 
-     * same namespace, the defintion will be a facade which imports all the physical WSDL 
+     * same namespace, the definition will be a facade which imports all the physical WSDL 
      * definitions
      * 
      * @return the WSDL definition model
@@ -66,7 +66,7 @@ public interface WSDLDefinition extends Base {
     void setNamespace(String namespace);
 
     /**
-     * Get a list of inline XML schema defintions
+     * Get a list of inline XML schema definitions
      * @return A list of inline XML schema definitions
      */
     List<XSDefinition> getXmlSchemas();

@@ -101,7 +101,7 @@ public class WSDLOperationIntrospectorImpl {
 
     /**
      * Test if the operation qualifies wrapper style as defined by the JAX-WS
-     * 2.0 spec
+     * 2.0 Specification
      * 
      * @return true if the operation qualifies wrapper style, otherwise false
      */
