@@ -265,7 +265,7 @@ public class ReallySmallRuntime {
                 definitionsProcessor.getSCADefinitionsResolver().addModel(attachPoinType);
             }
             
-            //now that all system sca definitions have been read, lets resolve them rightaway
+            //now that all system sca definitions have been read, lets resolve them right away
             definitionsProcessor.resolve(systemSCADefinitions, 
                                          definitionsProcessor.getSCADefinitionsResolver());
         } catch ( Exception e ) {
@@ -301,7 +301,7 @@ public class ReallySmallRuntime {
     @SuppressWarnings("unchecked")
     private List<ModuleActivator> loadModules(ExtensionPointRegistry registry) throws ActivationException {
 
-        // Load and instantiate the modules found on the classpath (or any registered classloaders)
+        // Load and instantiate the modules found on the classpath (or any registered ClassLoaders)
         modules = new ArrayList<ModuleActivator>();
         try {
             Set<ServiceDeclaration> moduleActivators =
