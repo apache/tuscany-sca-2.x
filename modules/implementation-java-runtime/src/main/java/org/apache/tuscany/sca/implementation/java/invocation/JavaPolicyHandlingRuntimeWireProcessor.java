@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 
 /**
- * Processor to inject policy handling interceptor wheneve PolicySets are specified in a Java Implementation 
+ * Processor to inject policy handling interceptor whenever PolicySets are specified in a Java Implementation 
  */
 public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProcessor {
     private final static Logger logger = Logger.getLogger(JavaPolicyHandlingRuntimeWireProcessor.class.getName());

@@ -45,7 +45,7 @@ import org.apache.tuscany.sca.implementation.java.injection.MethodInjector;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 
 /**
- * Encapsulates confuration for a Java-based atomic component
+ * Encapsulates configuration for a Java-based atomic component
  * 
  * @version $Rev$ $Date$
  */

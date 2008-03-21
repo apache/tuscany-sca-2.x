@@ -31,7 +31,7 @@ public class MethodEventInvoker<T> implements EventInvoker<T> {
     private final Method method;
 
     /**
-     * Intantiates an  invoker for the given method
+     * Instantiates an  invoker for the given method
      */
     public MethodEventInvoker(Method method) {
         assert method != null;
