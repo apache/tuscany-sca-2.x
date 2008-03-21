@@ -79,7 +79,7 @@ public class TestModelResolver implements ModelResolver {
                 return unresolved;
             }
             
-            // Store a new ClassReference wrappering the loaded class
+            // Store a new ClassReference wrapping the loaded class
             resolved = new ClassReference(clazz);
             map.put(resolved, resolved);
             

@@ -698,8 +698,8 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         
 
         // FIXME: At the moment injection of values into instances require an instance to be obtained
-        // throught the instance wrapper, and hence requires a proxy. When we do this processing here,
-        // we dont yet know whether the target requires any property or callback injection. So it is
+        // through the instance wrapper, and hence requires a proxy. When we do this processing here,
+        // we don't yet know whether the target requires any property or callback injection. So it is
         // safer to create a proxy all the time. 
         boolean createProxy = true; 
        
