@@ -20,7 +20,7 @@
 <feature
       id="org.apache.tuscany.sca.feature"
       label="Apache Tuscany SCA Tools"
-      version="1.1.0"
+      version="1.2.0"
       provider-name="Apache Software Foundation">
 
    <description url="http://incubator.apache.org/tuscany">
@@ -55,13 +55,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
          id="org.apache.tuscany.sca.core"
          download-size="0"
          install-size="0"
-         version="1.1.0"
+         version="1.2.0"
          unpack="false"/>
-
-   <plugin
-         id="org.apache.tuscany.sca.runtime"
-         download-size="0"
-         install-size="0"
-         version="1.1.0"/>
 
 </feature>

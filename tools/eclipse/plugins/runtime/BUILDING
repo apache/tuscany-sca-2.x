@@ -1,7 +1,0 @@
-To build this plugin, do the following:
-
-- copy the JARs in the lib directory of the Tuscany release 1.0 binary distribution to the plugin lib directory
-- copy apache-tuscany-sca-1.0-incubating-src.zip from the Tuscany release 1.0 binary distribution to the plugin src directory
-
-Eventually these steps should be automated as part of the build process for this plugin.
-     

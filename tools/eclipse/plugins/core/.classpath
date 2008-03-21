@@ -1,6 +1,5 @@
 <classpath>
-  <classpathentry kind="src" path="." excluding="**/*.java|**/.*/**|pom.xml|build.*|**/*.java"/>
-  <classpathentry kind="src" path="src/main/java"/>
+  <classpathentry kind="src" path="."/>
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/debug/ui/3.2.100-v20070531-1800/ui-3.2.100-v20070531-1800.jar"/>
