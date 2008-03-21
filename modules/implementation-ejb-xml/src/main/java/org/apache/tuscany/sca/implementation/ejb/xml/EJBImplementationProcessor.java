@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.implementation.ejb.EJBImplementationFactory;
 
 
 /**
- * Implements a STAX artifact processor for EJB implementations.
+ * Implements a StAX artifact processor for EJB implementations.
  */
 public class EJBImplementationProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<EJBImplementation> {
     private static final QName IMPLEMENTATION_EJB = new QName(Constants.SCA10_NS, "implementation.ejb");
@@ -54,7 +54,7 @@ public class EJBImplementationProcessor extends BaseStAXArtifactProcessor implem
     }
 
     public QName getArtifactType() {
-        // Returns the qname of the XML element processed by this processor
+        // Returns the QName of the XML element processed by this processor
         return IMPLEMENTATION_EJB;
     }
 
