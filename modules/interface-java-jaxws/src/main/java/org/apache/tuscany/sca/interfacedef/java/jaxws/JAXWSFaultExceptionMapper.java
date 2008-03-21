@@ -50,7 +50,7 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
     }
 
     /**
-     * The following is quoted from the JAX-WS spec v2.1
+     * The following is quoted from the JAX-WS Specification v2.1
      * <ul>
      * <li>WrapperException(String message, FaultBean faultInfo) <br>
      * A constructor where WrapperException is replaced with the name of the
@@ -113,7 +113,7 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
             Method method = exception.getClass().getMethod("getFaultInfo", EMPTY_CLASS_ARRAY);
             return method.invoke(exception, (Object[])null);
         } catch (NoSuchMethodException e) {
-            // Follow the JAX-WS v2.1 spec section 3.7
+            // Follow the JAX-WS v2.1 Specification section 3.7
             return createFaultBean(exception, faultBeanClass);
         } catch (Throwable e) {
             throw new IllegalArgumentException(e);
