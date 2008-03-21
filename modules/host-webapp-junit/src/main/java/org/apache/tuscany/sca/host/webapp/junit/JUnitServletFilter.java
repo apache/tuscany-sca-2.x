@@ -142,7 +142,7 @@ public class JUnitServletFilter implements Filter {
         if (url != null) {
             allTestCases = findTestCases(testsPath);
             if (!(testsPath.startsWith("/WEB-INF/lib/") || testsPath.startsWith("/WEB-INF/classes/"))) {
-                // Create a new classloader to load the test jar
+                // Create a new ClassLoader to load the test jar
                 testClassLoader = new URLClassLoader(new URL[] {url}, testClassLoader);
             }
         }

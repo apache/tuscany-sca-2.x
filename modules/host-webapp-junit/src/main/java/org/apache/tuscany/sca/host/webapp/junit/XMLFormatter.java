@@ -39,12 +39,12 @@ import org.junit.runner.notification.Failure;
  */
 public class XMLFormatter {
     /**
-     * Errors attribute for testsuite elements
+     * Errors attribute for TestSuite elements
      */
     public static final String ATTR_ERRORS = "errors";
 
     /**
-     * Failures attribute for testsuite elements
+     * Failures attribute for TestSuite elements
      */
     public static final String ATTR_FAILURES = "failures";
 
@@ -54,17 +54,17 @@ public class XMLFormatter {
     public static final String ATTR_MESSAGE = "message";
 
     /**
-     * Name attribute for property, testcase and testsuite elements
+     * Name attribute for property, TestCase and TestSuite elements
      */
     public static final String ATTR_NAME = "name";
 
     /**
-     * Tests attribute for testsuite elements (number of tests executed)
+     * Tests attribute for TestSuite elements (number of tests executed)
      */
     public static final String ATTR_TESTS = "tests";
 
     /**
-     * Time attribute for testcase and testsuite elements
+     * Time attribute for TestCase and TestSuite elements
      */
     public static final String ATTR_TIME = "time";
 
@@ -99,7 +99,7 @@ public class XMLFormatter {
     public static final String FAILURE = "failure";
 
     /**
-     * A single testcase element
+     * A single TestCase element
      */
     public static final String TESTCASE = "testcase";
 
@@ -141,7 +141,7 @@ public class XMLFormatter {
 
     /**
      * Returns the stack trace of an exception as String, optionally filtering
-     * out line from the stack trac
+     * out line from the stack trace
      * 
      * @param theThrowable the exception from which to extract the stack trace
      *        as a String
@@ -206,7 +206,7 @@ public class XMLFormatter {
     }
 
     /**
-     * Comvert a duration expressed as a long into a string.
+     * Convert a duration expressed as a long into a string.
      *
      * @param theDuration the duration to convert to string
      * @return the total duration as a string
