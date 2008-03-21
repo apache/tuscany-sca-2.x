@@ -261,7 +261,7 @@ public class TomcatServer implements ServletHost {
             ports.put(portNumber, port);
         }
 
-        // Register the servlet mapping
+        // Register the Servlet mapping
         String path = uri.getPath();
 
         if (!path.startsWith("/")) {
@@ -276,8 +276,8 @@ public class TomcatServer implements ServletHost {
         if (servlet instanceof DefaultResourceServlet) {
             String defaultServletPath = path;
 
-            // Optimize the handling of resource requests, use the Tomcat default servlet
-            // instead of our default resource servlet
+            // Optimize the handling of resource requests, use the Tomcat default Servlet
+            // instead of our default resource Servlet
             if (defaultServletPath.endsWith("*")) {
                 defaultServletPath = defaultServletPath.substring(0, defaultServletPath.length() - 1);
             }
@@ -299,7 +299,7 @@ public class TomcatServer implements ServletHost {
         context.addServletMapping(path, path);
         port.getConnector().getMapper().addWrapper("localhost", "", path, wrapper);
 
-        // Initialize the servlet
+        // Initialize the Servlet
         try {
             wrapper.initServlet();
         } catch (ServletException e) {
@@ -452,15 +452,15 @@ public class TomcatServer implements ServletHost {
                 context.removeServletMapping(mapping);
             } catch (NegativeArraySizeException e) {
                 // JIRA TUSCANY-1599
-                //FIXME Looks like a bug in Tomcat when removing the last
-                // servlet in the list, catch the exception for now as it doesn't
+                // FIXME Looks like a bug in Tomcat when removing the last
+                // Servlet in the list, catch the exception for now as it doesn't
                 // seem harmful, will find a better solution for the next release
             }
             context.removeChild(servletWrapper);
             try {
                 servletWrapper.destroyServlet();
             } catch (Exception ex) {
-                // Temporary hack to stop destruction of servlets without servlet
+                // Temporary hack to stop destruction of Servlets without Servlet
                 // context 
             }
             //logger.info("Remove Servlet mapping: " + suri);
@@ -489,7 +489,7 @@ public class TomcatServer implements ServletHost {
         private class CustomHttpProtocolHandler extends Http11Protocol {
 
             /**
-             * An Executor wrappering our WorkScheduler
+             * An Executor wrapping our WorkScheduler
              */
             private class WorkSchedulerExecutor implements Executor {
                 public void execute(Runnable command) {
