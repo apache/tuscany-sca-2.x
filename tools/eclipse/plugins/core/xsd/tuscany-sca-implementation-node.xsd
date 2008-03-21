@@ -34,6 +34,7 @@
                     <any namespace="##targetNamespace" processContents="lax" 
                     	minOccurs="0" maxOccurs="unbounded"/>
                 </sequence>
+                <attribute name="uri" type="string" use="required"/>
                 <attribute name="composite" type="QName" use="required"/>
             </extension>
         </complexContent>

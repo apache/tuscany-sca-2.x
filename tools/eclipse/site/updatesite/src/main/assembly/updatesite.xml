@@ -41,7 +41,6 @@
             <unpack>false</unpack>
             <includes>
                 <include>org.apache.tuscany.sca:org.apache.tuscany.sca.core</include>
-                <include>org.apache.tuscany.sca:org.apache.tuscany.sca.runtime</include>
             </includes>
             <scope>runtime</scope>
             <outputFileNameMapping>${artifactId}_1.1.0.${extension}</outputFileNameMapping>

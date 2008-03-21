@@ -17,18 +17,22 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<schema xmlns="http://www.w3.org/2001/XMLSchema"
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
     targetNamespace="http://www.osoa.org/xmlns/sca/1.0" 
-    xmlns:sca="http://www.osoa.org/xmlns/sca/1.0">
+    xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+        elementFormDefault="qualified">
 
-    <include schemaLocation="sca.xsd"/>
+    <include schemaLocation="sca-core.xsd"/>
 
-    <include schemaLocation="sca-contribution.xsd"/>
+    <element name="contribution" type="sca:Contribution"/>
     
-    <include schemaLocation="sca-binding-ejb.xsd"/>
-
-    <include schemaLocation="sca-implementation-bpel.xsd"/>
-    <include schemaLocation="sca-implementation-spring.xsd"/>
-    <include schemaLocation="sca-implementation-ejb.xsd"/>
-
+    <complexType name="Contribution">
+        <sequence>
+            <choice minOccurs="0" maxOccurs="unbounded">
+                <any namespace="##any" processContents="lax"/>
+            </choice>
+        </sequence>
+        <anyAttribute namespace="##any" processContents="lax"/>
+    </complexType>
+    
 </schema>
