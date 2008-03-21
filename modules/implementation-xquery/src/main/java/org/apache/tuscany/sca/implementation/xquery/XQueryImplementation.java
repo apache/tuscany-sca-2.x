@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.assembly.Implementation;
 public interface XQueryImplementation extends Implementation {
 
     /**
-     * Location of the xquery implementation file
+     * Location of the XQuery implementation file
      * @return
      */
     public String getLocation();
@@ -44,7 +44,7 @@ public interface XQueryImplementation extends Implementation {
     public void setLocationURL(String location);
 
     /**
-     * The XQuery expression that is loaded from the xquery implementation file
+     * The XQuery expression that is loaded from the XQuery implementation file
      * @return
      */
     public String getXqExpression();
@@ -65,9 +65,9 @@ public interface XQueryImplementation extends Implementation {
     public Map<Method, String> getXqExpressionExtensionsMap();
 
     /**
-     * This map is a kind of cache for function invokations. If a given
-     * xquery function of this implementation has been invoked already
-     * its compiled expression can be reused. In this manner the preformance
+     * This map is a kind of cache for function invocations. If a given
+     * XQuery function of this implementation has been invoked already
+     * its compiled expression can be reused. In this manner the performance
      * can be increased
      * @return
      */
