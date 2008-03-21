@@ -59,7 +59,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         WSDLInterface wsdlInterface = wsdlFactory.createWSDLInterface();
         wsdlInterface.setUnresolved(true);
 
-        // Read a qname in the form:
+        // Read a QName in the form:
         // namespace#wsdl.interface(name)
         int index = uri.indexOf('#');
         if (index == -1) {

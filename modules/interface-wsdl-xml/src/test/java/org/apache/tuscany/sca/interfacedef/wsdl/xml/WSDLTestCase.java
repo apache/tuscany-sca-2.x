@@ -98,7 +98,7 @@ public class WSDLTestCase extends TestCase {
         wsdlResolver.addModel(test2Defn);
         test2Defn = wsdlResolver.resolveModel(WSDLDefinition.class, test2Defn);
 
-        //bindigs are a part of test1.wsdl so should not be found
+        //bindings are a part of test1.wsdl so should not be found
         assertNull(test2Defn.getDefinition().getBinding(aBinding));
         assertNotNull(test2Defn.getDefinition().getPortType(aPortType));
 

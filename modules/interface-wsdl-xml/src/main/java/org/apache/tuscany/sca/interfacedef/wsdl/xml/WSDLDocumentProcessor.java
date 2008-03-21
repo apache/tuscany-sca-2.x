@@ -80,7 +80,7 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
                         continue;
                     }
                     if (imp.getLocationURI() == null) {
-                        // FIXME: [rfeng] By the WSDL 1.1 spec, the location attribute is required
+                        // FIXME: [rfeng] By the WSDL 1.1 Specification, the location attribute is required
                         // We need to resolve it by QName
                         WSDLDefinition proxy = factory.createWSDLDefinition();
                         proxy.setUnresolved(true);

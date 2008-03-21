@@ -154,7 +154,7 @@ public class XSDModelResolver implements ModelResolver {
     }
 
     /**
-     * Create a facade XmlSchema which includes all the defintions
+     * Create a facade XmlSchema which includes all the definitions
      * 
      * @param definitions A list of the XmlSchema under the same target
      *                namespace
@@ -198,7 +198,7 @@ public class XSDModelResolver implements ModelResolver {
     }
 
     /**
-     * URI resolver implementation for xml schema
+     * URI resolver implementation for XML schema
      */
     public static class URIResolverImpl implements URIResolver {
         private Contribution contribution;
