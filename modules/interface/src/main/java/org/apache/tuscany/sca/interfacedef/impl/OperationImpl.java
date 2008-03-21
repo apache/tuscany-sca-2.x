@@ -122,14 +122,14 @@ public class OperationImpl implements Operation {
     }
 
     /**
-     * @return the interfaze
+     * @return the interface
      */
     public Interface getInterface() {
         return interfaze;
     }
 
     /**
-     * @param interfaze the interfaze to set
+     * @param interfaze the interface to set
      */
     public void setInterface(Interface interfaze) {
         this.interfaze = interfaze;

@@ -54,7 +54,7 @@ public abstract class InterfaceContractImpl implements InterfaceContract {
         if (isCallback && callInterface == null)
             return this; // already a unidirectional callback interface contract
 
-        // contract is bidrectional, so create a new unidirectional contract        
+        // contract is bidirectional, so create a new unidirectional contract        
         try {
             InterfaceContract newContract = clone();
             if (!isCallback) {

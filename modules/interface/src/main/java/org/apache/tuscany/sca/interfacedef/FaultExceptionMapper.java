@@ -32,7 +32,7 @@ public interface FaultExceptionMapper {
      * type
      * 
      * @param exceptionDataType The data type representing a java exception class
-     * @return true if the introspection can recoganize the exception data type 
+     * @return true if the introspection can recognize the exception data type 
      */
     boolean introspectFaultDataType(DataType<DataType> exceptionDataType);
     

@@ -187,7 +187,7 @@ public class ContractCompatibilityTestCase extends TestCase {
     }
 
     /**
-     * Verfies a return type that is a supertype of of the target is compatible
+     * Verifies a return type that is a supertype of of the target is compatible
      */
     public void testSupertypeOutputTypes() throws Exception {
         // InterfaceContract source = new MockContract("FooContract");
@@ -281,7 +281,7 @@ public class ContractCompatibilityTestCase extends TestCase {
 
     /**
      * Verifies a source's fault which is a supertype of the target's fault are
-     * compatibile
+     * compatible
      * 
      * @throws Exception
      */
@@ -315,7 +315,7 @@ public class ContractCompatibilityTestCase extends TestCase {
 
     /**
      * Verifies a source's faults which are supertypes and a superset of the
-     * target's faults are compatibile
+     * target's faults are compatible
      */
     public void testFaultSuperTypesAndSuperset() throws Exception {
         // InterfaceContract source = new MockContract("FooContract");
