@@ -55,7 +55,7 @@ public class HeutisticExtensibleConstructorTestCase extends AbstractProcessorTes
     }
 
     /**
-     * Verifies heuristic processing can be called priot to an extension
+     * Verifies heuristic processing can be called prior to an extension
      * annotation processors being called.
      */
     public void testBarAnnotationProcessedFirst() throws Exception {

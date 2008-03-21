@@ -62,7 +62,7 @@ import org.osoa.sca.annotations.Service;
  * Heuristically evaluates an un-annotated Java implementation type to determine
  * services, references, and properties according to the algorithm described in
  * the SCA Java Client and Implementation Model Specification <p/> TODO
- * Implement: <p/> When no service inteface is annotated, need to calculate a
+ * Implement: <p/> When no service interface is annotated, need to calculate a
  * single service comprising all public methods that are not reference or
  * property injection sites. If that service can be exactly mapped to an
  * interface implemented by the class then the service interface will be defined
@@ -84,7 +84,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
         if (services.isEmpty()) {
             // heuristically determine the service
             /**
-             * The following is quoted from Java spec 1.2.1.3. Introspecting services offered by a Java implementation
+             * The following is quoted from Java Specification 1.2.1.3. Introspecting services offered by a Java implementation
              * In the cases described below, the services offered by a Java implementation class may be determined
              * through introspection, eliding the need to specify them using @Service. The following algorithm is used 
              * to determine how services are introspected from an implementation class:
@@ -447,7 +447,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
      *             Collection; otherwise the basetype is the member type. If the
      *             basetype is an interface with an
      * @Remotable or
-     * @Service annotation then the memberis defined as a reference. Otherwise,
+     * @Service annotation then the member is defined as a reference. Otherwise,
      *          it is defined as a property.
      *          </ol>
      *          <p>
