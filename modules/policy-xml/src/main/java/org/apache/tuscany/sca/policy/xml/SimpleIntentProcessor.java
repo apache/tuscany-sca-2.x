@@ -24,9 +24,8 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /* 
- * Processor for handling xml models of PolicyIntent definitions
+ * Processor for handling XML models of PolicyIntent definitions
  */
-
 public class SimpleIntentProcessor extends PolicyIntentProcessor<Intent> {
 
     public SimpleIntentProcessor(PolicyFactory policyFactory, StAXArtifactProcessor<Object> extensionProcessor) {
