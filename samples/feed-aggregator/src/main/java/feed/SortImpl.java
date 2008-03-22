@@ -23,9 +23,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.abdera.model.Entry;
 import org.osoa.sca.annotations.Property;
-
-import com.sun.syndication.feed.atom.Entry;
 
 /**
  * Implementation of a Feed Sort service component.

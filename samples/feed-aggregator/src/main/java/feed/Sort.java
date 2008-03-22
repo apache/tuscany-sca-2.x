@@ -20,7 +20,7 @@ package feed;
 
 import java.util.List;
 
-import com.sun.syndication.feed.atom.Entry;
+import org.apache.abdera.model.Entry;
 
 /**
  * The Sort service business interface.

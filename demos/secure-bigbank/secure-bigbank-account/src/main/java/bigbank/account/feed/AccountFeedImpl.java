@@ -18,77 +18,53 @@
  */
 package bigbank.account.feed;
 
-import java.util.Collections;
-
-import org.apache.tuscany.sca.binding.feed.collection.Collection;
+import org.apache.tuscany.sca.implementation.data.collection.Collection;
+import org.apache.tuscany.sca.implementation.data.collection.Entry;
+import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
 import bigbank.account.AccountService;
 
-import com.sun.syndication.feed.atom.Content;
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.feed.atom.Link;
-
 /**
- * @version $$Rev: 592280 $$ $$Date: 2007-11-06 10:29:48 +0530 (Tue, 06 Nov 2007) $$
+ * @version $$Rev: 635617 $$ $$Date: 2008-03-10 10:44:54 -0700 (Mon, 10 Mar 2008) $$
  */
 
 @Service(Collection.class)
-public class AccountFeedImpl implements Collection {
+public class AccountFeedImpl implements Collection<String, String> {
 
     @Reference
     protected AccountService accountService;
     
-    @SuppressWarnings("unchecked")
-    public com.sun.syndication.feed.atom.Feed getFeed() {
-        
-        // Create a new Feed
-        Feed feed = new Feed();
-        feed.setId("accounts");
-        feed.setTitle("Account Report Feed");
-        Content subtitle = new Content();
-        subtitle.setValue("This is a sample feed");
-        feed.setSubtitle(subtitle);
-        Link link = new Link();
-        link.setHref("http://incubator.apache.org/tuscany");
-        feed.getAlternateLinks().add(link);
+    public Entry<String, String>[] getAll() {
 
         // Add the Account report entry 
-        Entry entry = get("1234");
-        feed.getEntries().add(entry);
+        String report = get("1234");
+        Entry<String, String> entry = new Entry<String, String>("1234", report);
 
-        return feed;
+        return new Entry[] { entry } ;
     }
 
-    public void delete(String id) {
-    }
-
-    public Entry get(String id) {
+    public String get(String id) {
 
         // Get the account report for the specified customer ID
         double balance = accountService.getAccountReport(id); 
-        String value = Double.toString(balance);
+        String report = Double.toString(balance);
         
-        Entry entry = new Entry();
-        entry.setId("account-" + id);
-        entry.setTitle("Account Report Entry");
-        Content summary = new Content();
-        summary.setType(Content.HTML);
-        summary.setValue("This is your account report: <b>" + value + "</b>");
-        entry.setSummary(summary);
-        Content content = new Content();
-        content.setValue(value);
-        entry.setContents(Collections.singletonList(content));
-        return entry;
+        return report;
     }
 
-    public Entry post(Entry entry) {
+    public void delete(String key) throws NotFoundException {
+    }
+
+    public String post(String key, String item) {
         return null;
     }
 
-    public void put(String id, Entry entry) {
+    public void put(String key, String item) throws NotFoundException {
     }
 
+    public Entry<String, String>[] query(String queryString) {
+        return null;
+    }
 }

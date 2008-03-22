@@ -18,18 +18,27 @@
  */
 package feed;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.tuscany.sca.binding.feed.collection.NotFoundException;
+import org.apache.abdera.Abdera;
+import org.apache.abdera.factory.Factory;
+import org.apache.abdera.model.Document;
+import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.Feed;
+import org.apache.abdera.model.Person;
+import org.apache.abdera.parser.Parser;
+import org.apache.tuscany.sca.binding.atom.collection.Collection;
+import org.apache.tuscany.sca.binding.atom.collection.NotFoundException;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
-import com.sun.syndication.feed.atom.Content;
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Link;
-import com.sun.syndication.feed.atom.Person;
+import com.sun.syndication.feed.synd.SyndFeed;
+import com.sun.syndication.feed.synd.SyndFeedImpl;
+import com.sun.syndication.io.SyndFeedOutput;
 
 /**
  * Implementation of an SCA component that aggregates several
@@ -37,12 +46,18 @@ import com.sun.syndication.feed.atom.Person;
  *
  * @version $Rev$ $Date$
  */
-public class AggregatorImpl implements org.apache.tuscany.sca.binding.feed.collection.Collection {
+public class AggregatorImpl implements org.apache.tuscany.sca.binding.atom.collection.Collection {
 
-    @Reference
-    public org.apache.tuscany.sca.binding.feed.collection.Collection feed1;
-    @Reference
-    public org.apache.tuscany.sca.binding.feed.collection.Collection feed2;
+    @Reference(required = false)
+    public Collection atomFeed1;
+    @Reference(required = false)
+    public Collection atomFeed2;
+    
+    @Reference(required = false)
+    public org.apache.tuscany.sca.binding.rss.collection.Collection rssFeed1;
+    @Reference(required = false)
+    public org.apache.tuscany.sca.binding.rss.collection.Collection rssFeed2;
+    
     @Reference(required = false)
     public Sort sort;
 
@@ -52,33 +67,52 @@ public class AggregatorImpl implements org.apache.tuscany.sca.binding.feed.colle
     public String feedDescription = "Anonymous Aggregated Feed";
     @Property
     public String feedAuthor = "anonymous";
-
-    @SuppressWarnings("unchecked")
-    public com.sun.syndication.feed.atom.Feed getFeed() {
+    
+    public Feed getFeed() {
         
         // Create a new Feed
-        com.sun.syndication.feed.atom.Feed feed = new com.sun.syndication.feed.atom.Feed();
+        Factory factory = Abdera.getNewFactory();
+        Feed feed = factory.newFeed();
         feed.setTitle(feedTitle);
-        Content subtitle = new Content();
-        subtitle.setValue(feedDescription);
-        feed.setSubtitle(subtitle);
-        Person author = new Person();
+        feed.setSubtitle(feedDescription);
+        Person author = factory.newAuthor();
         author.setName(feedAuthor);
-        feed.setAuthors(Collections.singletonList(author));
-        Link link = new Link();
-        link.setHref("http://incubator.apache.org/tuscany");
-        feed.getAlternateLinks().add(link);
+        feed.addAuthor(author);
+        feed.addLink("http://incubator.apache.org/tuscany", "alternate");
 
-        // Aggregate entries from feed1 and feed2
+        // Aggregate entries from atomFeed1, atomFeed2, rssFeed1 and rssFeed2
         List<Entry> entries = new ArrayList<Entry>();
-        entries.addAll(feed1.getFeed().getEntries());
-        entries.addAll(feed2.getFeed().getEntries());
+        if (atomFeed1 != null) {
+            try {
+                entries.addAll(atomFeed1.getFeed().getEntries());
+            } catch (Exception e) {}
+        }
+        if (atomFeed2 != null) {
+            try {
+                entries.addAll(atomFeed2.getFeed().getEntries());
+            } catch (Exception e) {}
+        }
+        if (rssFeed1 != null) {
+            try {
+                entries.addAll(atomFeed(rssFeed1.getFeed()).getEntries());
+            } catch (Exception e) {}
+        }
+        if (rssFeed2 != null) {
+            try {
+                entries.addAll(atomFeed(rssFeed2.getFeed()).getEntries());
+            } catch (Exception e) {}
+        }
 
         // Sort entries by published date
-        if (sort != null)
-            feed.setEntries(sort.sort(entries));
-        else
-            feed.setEntries(entries);
+        if (sort != null) {
+            entries = sort.sort(entries);
+        }
+        
+        // Add the entries to the new feed
+        for (Entry entry: entries) {
+            feed.addEntry(entry);
+        }
+        
         return feed;
     }
 
@@ -96,4 +130,26 @@ public class AggregatorImpl implements org.apache.tuscany.sca.binding.feed.colle
     public void put(String id, Entry entry) throws NotFoundException {
     }
 
+    /**
+     * Convert a ROME feed to an Abdera feed.
+     * 
+     * @param romeFeed
+     * @return
+     */
+    private static Feed atomFeed(com.sun.syndication.feed.atom.Feed romeFeed) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        
+        SyndFeed syndFeed = new SyndFeedImpl(romeFeed);
+        syndFeed.setFeedType("atom_1.0");
+        SyndFeedOutput syndOutput = new SyndFeedOutput();
+        try {
+            syndOutput.output(syndFeed, new OutputStreamWriter(bos));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Parser parser = Abdera.getNewParser();
+        Document<Feed> document = parser.parse(new ByteArrayInputStream(bos.toByteArray()));
+        
+        return document.getRoot();
+    }
 }

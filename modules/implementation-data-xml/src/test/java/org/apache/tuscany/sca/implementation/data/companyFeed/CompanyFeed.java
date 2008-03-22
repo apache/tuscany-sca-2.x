@@ -19,83 +19,44 @@
 
 package org.apache.tuscany.sca.implementation.data.companyFeed;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.tuscany.sca.binding.feed.collection.Collection;
-import org.apache.tuscany.sca.binding.feed.collection.NotFoundException;
 import org.apache.tuscany.sca.implementation.data.DATA;
+import org.apache.tuscany.sca.implementation.data.collection.Collection;
+import org.apache.tuscany.sca.implementation.data.collection.Entry;
+import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.osoa.sca.annotations.Reference;
 
-import com.sun.syndication.feed.atom.Content;
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.feed.atom.Link;
-import com.sun.syndication.feed.atom.Person;
 import commonj.sdo.DataObject;
 
-public class CompanyFeed implements Collection {
+public class CompanyFeed implements Collection<String, DataObject> {
     
     @Reference
     protected DATA dataService;
     
-    public Feed getFeed() {
-        
-        // Create a new Feed
-        Feed feed = new Feed();
-        feed.setTitle("Company Feed");
-        Content subtitle = new Content(); 
-        subtitle.setValue("A sample company feed");
-        feed.setSubtitle(subtitle);
-        Person author = new Person();
-        author.setName("anonymous");
-        feed.setAuthors(Collections.singletonList(author));
-        Link link = new Link();
-        link.setHref("http://incubator.apache.org/tuscany");
-        feed.setAlternateLinks(Collections.singletonList(link));
-
-        return feed;
+    public Entry<String, DataObject>[] getAll() {
+        return null;
     }
 
-    public Entry get(String id) throws NotFoundException{
+    public DataObject get(String id) throws NotFoundException{
         
         DataObject data = null;//dataService.get(id);        
         if(data == null) {
             throw new NotFoundException();
+        } else {
+            return data;
         }
-        
-        Entry entry = new Entry();
-        entry.setId(id);
-        entry.setTitle(data.getString("name"));
-        List<Link> links = new ArrayList<Link>();
-        Link link = new Link();
-        link.setRel("edit");
-        link.setHref("entry/" + id);
-        links.add(link);
-        entry.setOtherLinks(links);
-
-        links = new ArrayList<Link>();
-        link = new Link();
-        link.setRel("alternate");
-        link.setHref("entry/" + id);
-        links.add(link);
-        entry.setAlternateLinks(links);
-
-        entry.setCreated(new Date());
-
-        return entry;
     }
 
     public void delete(String id) throws NotFoundException {
     }
 
-    public Entry post(Entry entry) {
+    public String post(String key, DataObject item) {
         return null;
     }
-
-    public void put(String id, Entry entry) throws NotFoundException {
+    
+    public void put(String key, DataObject item) throws NotFoundException {
     }
-
+    
+    public Entry<String, DataObject>[] query(String queryString) {
+        return null;
+    }
 }

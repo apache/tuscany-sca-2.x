@@ -23,7 +23,7 @@
     name="FeedAggregator">
 
 	<service name="rssSample" promote="RssAggregator">
-		<tuscany:binding.rss uri="http://localhost:8083/rssAggregator"/>
+		<tuscany:binding.atom uri="http://localhost:8083/rssAggregator"/>
 	</service>
 	<service name="atomSample" promote="AtomAggregator">
 		<tuscany:binding.atom  uri="http://localhost:8083/atomAggregator"/>
@@ -31,14 +31,14 @@
 
     <component name="RssAggregator">
         <implementation.java class="feed.AggregatorImpl"/>             
-		<reference name="feed1">
+		<reference name="rssfeed1">
    	 		<tuscany:binding.rss uri="http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/world/rss.xml"/>
    		</reference>
-   		<reference name="feed2"> 	
+   		<reference name="rssFeed2"> 	
    	 		<tuscany:binding.rss uri="http://www.engadget.com/rss.xml"/>
    		</reference>
    		<reference name="sort" target="Sort"/> 	 		
-        <property name="feedTitle">Rss Sample</property> 
+        <property name="feedTitle">RSS Aggregator Sample</property> 
     </component>
     <component name="Sort">
         <implementation.java class="feed.SortImpl"/>       
@@ -48,13 +48,13 @@
     <component name="AtomAggregator">
         <implementation.java class="feed.AggregatorImpl"/>        
         <reference name="sort" target="Sort"/>          
-		<reference name="feed1">
+		<reference name="atomFeed1">
    	 		<tuscany:binding.atom uri="http://www.oreillynet.com/pub/feed/1"/>
    		</reference>
-   		<reference name="feed2"> 	
-   	 		<tuscany:binding.atom uri="http://www.apachenews.org/atom.xml"/>
+   		<reference name="atomFeed2"> 	
+   	 		<tuscany:binding.atom uri="http://feeds.feedburner.com/blogspot/Dcni?format=xml"/>
    		</reference>
-        <property name="feedTitle">Atom Sample</property>    		           
+        <property name="feedTitle">Atom Aggregator Sample</property>    		           
     </component>      
 
 </composite>
