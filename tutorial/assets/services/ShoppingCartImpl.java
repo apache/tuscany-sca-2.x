@@ -19,7 +19,9 @@
 
 package services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -82,8 +84,17 @@ public class ShoppingCartImpl implements Cart, Total {
     }
 
     public Entry<String, Item>[] query(String queryString) {
-        // Implement queries later
-        return null;
+        List<Entry<String, Item>> entries = new ArrayList<Entry<String,Item>>();
+        if (queryString.startsWith("name=")) {
+            String name = queryString.substring(5);
+            for (Map.Entry<String, Item> e: cart.entrySet()) {
+                Item item = e.getValue();
+                if (item.getName().equals(name)) {
+                    entries.add(new Entry<String, Item>(e.getKey(), e.getValue()));
+                }
+            }
+        }
+        return entries.toArray(new Entry[entries.size()]);
     }
     
     public String getTotal() {
