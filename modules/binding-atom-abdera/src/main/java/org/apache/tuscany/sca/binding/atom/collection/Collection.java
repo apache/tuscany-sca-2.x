@@ -31,12 +31,20 @@ import org.osoa.sca.annotations.Remotable;
 public interface Collection {
 
     /**
-     * Get an RSS or Atom feed for a collection of resources.
+     * Get an Atom feed for a collection of resources.
      * 
-     * @param uri the URI of the feed
-     * @return the RSS or Atom feed
+     * @return the Atom feed
      */
     Feed getFeed();
+
+    /**
+     * Get an Atom feed for a collection of resources resulting
+     * from a query.
+     * 
+     * @param queryString a query string
+     * @return the Atom feed
+     */
+    Feed query(String queryString);
 
     /**
      * Creates a new entry.

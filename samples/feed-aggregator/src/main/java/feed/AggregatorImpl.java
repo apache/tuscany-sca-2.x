@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.abdera.Abdera;
@@ -116,6 +117,29 @@ public class AggregatorImpl implements org.apache.tuscany.sca.binding.atom.colle
         return feed;
     }
 
+    public Feed query(String queryString) {
+        Factory factory = Abdera.getNewFactory();
+        Feed feed = factory.newFeed();
+        feed.setTitle(feedTitle);
+        feed.setSubtitle(feedDescription);
+        Person author = factory.newAuthor();
+        author.setName(feedAuthor);
+        feed.addAuthor(author);
+        feed.addLink("http://incubator.apache.org/tuscany", "alternate");
+        
+        Feed allFeed = getFeed();
+        if (queryString.startsWith("title=")) {
+            String title = queryString.substring(6);
+
+            for (Entry entry: allFeed.getEntries()) {
+                if (entry.getTitle().contains(title)) {
+                    feed.addEntry(entry);
+                }
+            }
+        }
+        return feed;
+    }
+
     public void delete(String id) throws NotFoundException {
     }
 
@@ -136,10 +160,9 @@ public class AggregatorImpl implements org.apache.tuscany.sca.binding.atom.colle
      * @param romeFeed
      * @return
      */
-    private static Feed atomFeed(com.sun.syndication.feed.atom.Feed romeFeed) {
+    private static Feed atomFeed(SyndFeed syndFeed) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         
-        SyndFeed syndFeed = new SyndFeedImpl(romeFeed);
         syndFeed.setFeedType("atom_1.0");
         SyndFeedOutput syndOutput = new SyndFeedOutput();
         try {

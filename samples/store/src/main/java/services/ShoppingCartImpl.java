@@ -47,6 +47,26 @@ public class ShoppingCartImpl implements Collection {
         return feed;
     }
 
+    public Feed query(String queryString) {
+        if (queryString.startsWith("name=")) {
+            String name = queryString.substring(5);
+
+            Feed feed = Abdera.getNewFactory().newFeed();
+            feed.setTitle("shopping cart");
+            feed.setSubtitle("Total : " + getTotal());
+            
+            for (Entry entry : cart.values()) {
+                if (entry.getTitle().contains(name)) {
+                    feed.addEntry(entry);
+                }
+            }
+            return feed;
+            
+        } else {
+            return getFeed();
+        }
+    }
+
     public Entry get(String id) throws NotFoundException {
         return cart.get(id);
     }
