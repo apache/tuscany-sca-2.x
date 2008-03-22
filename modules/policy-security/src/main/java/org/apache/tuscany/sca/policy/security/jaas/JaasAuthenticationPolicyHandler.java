@@ -1,13 +1,3 @@
-package org.apache.tuscany.sca.policy.security.jaas;
-
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.login.LoginContext;
-import javax.xml.namespace.QName;
-
-import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.util.PolicyHandler;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -26,6 +16,16 @@ import org.apache.tuscany.sca.policy.util.PolicyHandler;
  * specific language governing permissions and limitations
  * under the License.    
  */
+
+package org.apache.tuscany.sca.policy.security.jaas;
+
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.login.LoginContext;
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
 /**
  * Policy handler to handle PolicySet containing JaasAuthenticationPolicy instances
