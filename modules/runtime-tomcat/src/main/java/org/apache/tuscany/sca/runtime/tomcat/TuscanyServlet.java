@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
 
 /**
- * A servlet that forwards requests to the servlets registered with the Tuscany
+ * A Servlet that forwards requests to the Servlets registered with the Tuscany
  * ServletHost.
  * 
  * TODO: Copy of host-webapp TuscanyServlet. Can be removed once host-webapp TuscanyServlet
