@@ -25,9 +25,8 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
 
 /* 
- * Processor for handling xml models of PolicyIntent definitions that are QualifiedIntents
+ * Processor for handling XML models of PolicyIntent definitions that are QualifiedIntents
  */
-
 public class QualifiedIntentProcessor extends PolicyIntentProcessor<QualifiedIntent> {
 
     public QualifiedIntentProcessor(ModelFactoryExtensionPoint modelFactories) {

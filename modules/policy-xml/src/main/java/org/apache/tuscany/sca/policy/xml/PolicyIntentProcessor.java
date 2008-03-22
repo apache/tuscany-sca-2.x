@@ -43,8 +43,8 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.ProfileIntent;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
 
-/* 
- * Processor for handling xml models of PolicyIntent definitions
+/* *
+ * Processor for handling XML models of PolicyIntent definitions
  */
 
 public abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<T>, PolicyConstants {

@@ -23,10 +23,9 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.ProfileIntent;
 
-/* 
- * Processor for handling xml models of PolicyIntent definitions that are ProfileIntents
+/** 
+ * Processor for handling XML models of PolicyIntent definitions that are ProfileIntents
  */
-
 public class ProfileIntentProcessor extends PolicyIntentProcessor<ProfileIntent> {
 
     public ProfileIntentProcessor(PolicyFactory policyFactory, StAXArtifactProcessor<Object> extensionProcessor) {

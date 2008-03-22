@@ -55,8 +55,8 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 
-/* 
- * Processor for handling xml models of PolicySet definitions
+/**
+ * Processor for handling XML models of PolicySet definitions
  */
 public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<PolicySet>, PolicyConstants {
 
