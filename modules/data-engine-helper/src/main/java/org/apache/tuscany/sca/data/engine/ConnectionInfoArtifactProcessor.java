@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.data.engine.config.ConnectionInfo;
 import org.apache.tuscany.sca.data.engine.config.ConnectionProperties;
 
 /**
- * Implements a STAX artifact processor for ConnectionInfo.
+ * Implements a StAX artifact processor for ConnectionInfo.
  * This processor is shared between implementation.das and implementation.data component type  implementations,
  * and can be used for other applications that require database connectivity information.
  * 

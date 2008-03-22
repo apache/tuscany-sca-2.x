@@ -180,11 +180,11 @@ public class ReallySmallRuntimeBuilder {
         // Create a validating XML input factory
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas);
         
-        // Create STAX artifact processor extension point
+        // Create StAX artifact processor extension point
         StAXArtifactProcessorExtensionPoint staxProcessors =
             registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
 
-        // Create and register STAX processors for SCA assembly XML
+        // Create and register StAX processors for SCA assembly XML
         ExtensibleStAXArtifactProcessor staxProcessor =
             new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, XMLOutputFactory.newInstance());
         staxProcessors.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, staxProcessor));
@@ -192,7 +192,7 @@ public class ReallySmallRuntimeBuilder {
         staxProcessors
             .addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
 
-        // Register STAX processors for Contribution Metadata
+        // Register StAX processors for Contribution Metadata
         staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory,
                                                                               staxProcessor));
 
