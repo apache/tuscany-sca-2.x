@@ -20,10 +20,11 @@ package org.apache.tuscany.sca.binding.rss.collection;
 
 import org.osoa.sca.annotations.Remotable;
 
-import com.sun.syndication.feed.atom.Entry;
+import com.sun.syndication.feed.synd.SyndFeed;
+
 
 /**
- * Provides access to a collection of resources using Atom.
+ * Provides access to a collection of resources using RSS.
  * 
  * @version $Rev$ $Date$
  */
@@ -31,43 +32,18 @@ import com.sun.syndication.feed.atom.Entry;
 public interface Collection {
 
     /**
-     * Get an RSS or Atom feed for a collection of resources.
+     * Get an RSS feed for a collection of resources.
      * 
-     * @param uri the URI of the feed
-     * @return the RSS or Atom feed
+     * @return the RSS feed
      */
-    com.sun.syndication.feed.atom.Feed getFeed();
+    SyndFeed getFeed();
 
     /**
-     * Creates a new entry.
+     * Get an RSS feed for a collection of resources resulting from a query.
      * 
-     * @param entry
-     * @return
+     * @param query the query string
+     * @return the RSS feed
      */
-    Entry post(Entry entry);
-
-    /**
-     * Retrieves an entry.
-     * 
-     * @param id
-     * @return
-     */
-    Entry get(String id) throws NotFoundException;
-
-    /**
-     * Update an entry.
-     * 
-     * @param id
-     * @param entry
-     * @return
-     */
-    void put(String id, Entry entry) throws NotFoundException;
-
-    /**
-     * Delete an entry.
-     * 
-     * @param id
-     */
-    void delete(String id) throws NotFoundException;
+    SyndFeed query(String queryString);
 
 }

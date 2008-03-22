@@ -27,11 +27,9 @@ import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 
-import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedInput;
-import com.sun.syndication.io.WireFeedInput;
 import com.sun.syndication.io.XmlReader;
 
 /**
@@ -45,27 +43,15 @@ class RSSBindingInvoker implements Invoker , DataExchangeSemantics {
 
     RSSBindingInvoker(String uri, String feedType) {
         this.uri = uri;
-        this.feedType = feedType;
     }
 
     public Message invoke(Message msg) {
         try {
             logger.info(">>> RSSBindingInvoker (" + feedType + ") " + uri);
 
-            // Read the configured feed URI into a Feed object
-            Feed feed;
-            if (feedType.startsWith("atom_")) {
-
-                // Read an Atom feed
-                WireFeedInput input = new WireFeedInput();
-                feed = (Feed)input.build(new XmlReader(new URL(uri)));
-            } else {
-
-                // Read an RSS feed and convert it to an Atom feed
-                SyndFeedInput input = new SyndFeedInput();
-                SyndFeed syndFeed = input.build(new XmlReader(new URL(uri)));
-                feed = (Feed)syndFeed.createWireFeed("atom_1.0");
-            }
+            // Read an RSS feed into a Synd feed
+            SyndFeedInput input = new SyndFeedInput();
+            SyndFeed feed = input.build(new XmlReader(new URL(uri)));
             
             //FIXME Support conversion to data-api entries
             

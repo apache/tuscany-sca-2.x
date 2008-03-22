@@ -48,17 +48,19 @@ import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
-import com.sun.syndication.feed.atom.Content;
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.feed.atom.Link;
+import com.sun.syndication.feed.synd.SyndContent;
+import com.sun.syndication.feed.synd.SyndContentImpl;
+import com.sun.syndication.feed.synd.SyndEntry;
+import com.sun.syndication.feed.synd.SyndEntryImpl;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
+import com.sun.syndication.feed.synd.SyndLink;
+import com.sun.syndication.feed.synd.SyndLinkImpl;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
 
 /**
- * A resource collection binding listener, implemented as a Servlet and
+ * An RSS binding listener, implemented as a Servlet and
  * registered in a Servlet host provided by the SCA hosting runtime.
  */
 class RSSBindingListenerServlet extends HttpServlet {
@@ -69,9 +71,7 @@ class RSSBindingListenerServlet extends HttpServlet {
     private Invoker getFeedInvoker;
     private Invoker getAllInvoker;
     private Invoker queryInvoker;
-    private Invoker getInvoker;
     private MessageFactory messageFactory;
-    private String feedType;
     private Mediator mediator;
     private DataType<?> itemClassType;
     private DataType<?> itemXMLType;
@@ -82,13 +82,11 @@ class RSSBindingListenerServlet extends HttpServlet {
      * 
      * @param wire
      * @param messageFactory
-     * @param feedType
      */
-    RSSBindingListenerServlet(RuntimeWire wire, MessageFactory messageFactory, Mediator mediator, String feedType) {
+    RSSBindingListenerServlet(RuntimeWire wire, MessageFactory messageFactory, Mediator mediator) {
         this.wire = wire;
         this.messageFactory = messageFactory;
         this.mediator = mediator;
-        this.feedType = feedType;
 
         // Get the invokers for the supported operations
         Operation getOperation = null;
@@ -103,7 +101,6 @@ class RSSBindingListenerServlet extends HttpServlet {
             } else if (operationName.equals("query")) {
                 queryInvoker = invocationChain.getHeadInvoker();
             } else if (operationName.equals("get")) {
-                getInvoker = invocationChain.getHeadInvoker();
                 getOperation = operation;
             }
         }
@@ -111,7 +108,7 @@ class RSSBindingListenerServlet extends HttpServlet {
         // Determine the collection item type
         itemXMLType = new DataTypeImpl<Class<?>>(String.class.getName(), String.class, String.class);
         Class<?> itemClass = getOperation.getOutputType().getPhysical();
-        if (itemClass == Entry.class) {
+        if (itemClass == SyndEntry.class) {
             supportsFeedEntries = true;
         }
         DataType<XMLType> outputType = getOperation.getOutputType();
@@ -129,24 +126,13 @@ class RSSBindingListenerServlet extends HttpServlet {
         // Get the request path
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
 
-        // The feedType parameter is used to override what type of feed is going
-        // to be produced
-        String requestFeedType = request.getParameter("feedType");
-        if (requestFeedType == null) {
-            requestFeedType = feedType;
-        }
-        
-        if (requestFeedType.startsWith("atom_")) {
-        	throw new UnsupportedOperationException(requestFeedType + " Not supported !");
-        }
-
-        logger.info(">>> FeedEndPointServlet (" + requestFeedType + ") " + request.getRequestURI());
+        logger.info(">>> RSSBindingListenerServlet " + request.getRequestURI());
 
         // Handle an RSS request
         if (path == null || path.length() == 0 || path.equals("/")) {
 
             // Return an RSS feed containing the entries in the collection
-            Feed feed = null;
+            SyndFeed feed = null;
             if (supportsFeedEntries) {
 
                 // The service implementation supports feed entries, invoke its getFeed operation
@@ -155,7 +141,7 @@ class RSSBindingListenerServlet extends HttpServlet {
                 if (responseMessage.isFault()) {
                     throw new ServletException((Throwable)responseMessage.getBody());
                 }
-                feed = (Feed)responseMessage.getBody();
+                feed = (SyndFeed)responseMessage.getBody();
                 
             } else {
 
@@ -177,11 +163,11 @@ class RSSBindingListenerServlet extends HttpServlet {
                     (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>[])responseMessage.getBody();
                 if (collection != null) {
                     // Create the feed
-                    feed = new Feed();
+                    feed = new SyndFeedImpl();
                     feed.setTitle("Feed");
                     
                     for (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry: collection) {
-                        Entry feedEntry = createFeedEntry(entry);
+                        SyndEntry feedEntry = createFeedEntry(entry);
                         feed.getEntries().add(feedEntry);
                     }
                 }
@@ -190,13 +176,11 @@ class RSSBindingListenerServlet extends HttpServlet {
             // Convert to an RSS feed
             if (feed != null) {
                 response.setContentType("application/rss+xml; charset=utf-8");
-                feed.setFeedType("atom_1.0");
-                SyndFeed syndFeed = new SyndFeedImpl(feed);
-                syndFeed.setFeedType(requestFeedType);
-                syndFeed.setLink(path);
+                feed.setFeedType("rss_2.0");
+                feed.setLink(path);
                 SyndFeedOutput syndOutput = new SyndFeedOutput();
                 try {
-                    syndOutput.output(syndFeed, getWriter(response));
+                    syndOutput.output(feed, getWriter(response));
                 } catch (FeedException e) {
                     throw new ServletException(e);
                 }
@@ -214,22 +198,22 @@ class RSSBindingListenerServlet extends HttpServlet {
      * @param entry 
      * @return
      */
-    private Entry createFeedEntry(org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry) {
+    private SyndEntry createFeedEntry(org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry) {
         Object key = entry.getKey();
         Object data = entry.getData();
         if (data instanceof Item) {
             Item item = (Item)data;
             
-            Entry feedEntry = new Entry();
-            feedEntry.setId(key.toString());
+            SyndEntry feedEntry = new SyndEntryImpl();
+            feedEntry.setUri(key.toString());
             feedEntry.setTitle(item.getTitle());
     
             String value = item.getContents();
             if (value != null) {
-                Content content = new Content();
+                SyndContent content = new SyndContentImpl();
                 content.setType("text/xml");
                 content.setValue(value);
-                List<Content> contents = new ArrayList<Content>();
+                List<SyndContent> contents = new ArrayList<SyndContent>();
                 contents.add(content);
                 feedEntry.setContents(contents);
             }
@@ -238,47 +222,47 @@ class RSSBindingListenerServlet extends HttpServlet {
             if (href == null) {
                 href = key.toString();
             }
-            Link link = new Link();
+            SyndLink link = new SyndLinkImpl();
             link.setRel("edit");
             link.setHref(href);
-            feedEntry.getOtherLinks().add(link);
-            link = new Link();
+            feedEntry.getLinks().add(link);
+            link = new SyndLinkImpl();
             link.setRel("alternate");
             link.setHref(href);
-            feedEntry.getAlternateLinks().add(link);
+            feedEntry.getLinks().add(link);
     
             Date date = item.getDate();
             if (date == null) {
                 date = new Date();
             }
-            feedEntry.setCreated(date);
+            feedEntry.setPublishedDate(date);
             return feedEntry;
             
         } else if (data != null) {
-            Entry feedEntry = new Entry();
-            feedEntry.setId(key.toString());
+            SyndEntry feedEntry = new SyndEntryImpl();
+            feedEntry.setUri(key.toString());
             feedEntry.setTitle("item");
     
             // Convert the item to XML
             String value = mediator.mediate(data, itemClassType, itemXMLType, null).toString();
             
-            Content content = new Content();
+            SyndContent content = new SyndContentImpl();
             content.setType("text/xml");
             content.setValue(value);
-            List<Content> contents = new ArrayList<Content>();
+            List<SyndContent> contents = new ArrayList<SyndContent>();
             contents.add(content);
             feedEntry.setContents(contents);
     
-            Link link = new Link();
+            SyndLink link = new SyndLinkImpl();
             link.setRel("edit");
             link.setHref(key.toString());
-            feedEntry.getOtherLinks().add(link);
-            link = new Link();
+            feedEntry.getLinks().add(link);
+            link = new SyndLinkImpl();
             link.setRel("alternate");
             link.setHref(key.toString());
-            feedEntry.getAlternateLinks().add(link);
+            feedEntry.getLinks().add(link);
     
-            feedEntry.setCreated(new Date());
+            feedEntry.setPublishedDate(new Date());
             return feedEntry;
         } else {
             return null;
@@ -286,27 +270,27 @@ class RSSBindingListenerServlet extends HttpServlet {
     }
 
     /**
-     * Create a data collection entry from an Atom entry.
+     * Create a data collection entry from an RSS entry.
      * @param feedEntry
      * @return
      */
-    private org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> createEntry(Entry feedEntry) {
+    private org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> createEntry(SyndEntry feedEntry) {
         if (feedEntry != null) {
             if (itemClassType.getPhysical() == Item.class) {
-                String key = feedEntry.getId();
+                String key = feedEntry.getUri();
                 
                 Item item = new Item();
                 item.setTitle(feedEntry.getTitle());
                 
                 List<?> contents = feedEntry.getContents();
                 if (!contents.isEmpty()) {
-                    Content content = (Content)contents.get(0);
+                    SyndContent content = (SyndContent)contents.get(0);
                     String value = content.getValue();
                     item.setContents(value);
                 }
                 
-                for (Object l : feedEntry.getOtherLinks()) {
-                    Link link = (Link)l;
+                for (Object l : feedEntry.getLinks()) {
+                    SyndLink link = (SyndLink)l;
                     if (link.getRel() == null || "edit".equals(link.getRel())) {
                         String href = link.getHref();
                         if (href.startsWith("null/")) {
@@ -317,19 +301,19 @@ class RSSBindingListenerServlet extends HttpServlet {
                     }
                 }
                 
-                item.setDate(feedEntry.getCreated());
+                item.setDate(feedEntry.getPublishedDate());
                 
                 return new org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>(key, item);
                 
             } else {
-                String key = feedEntry.getId();
+                String key = feedEntry.getUri();
                 
                 // Create the item from XML
                 List<?> contents = feedEntry.getContents();
                 if (contents.isEmpty()) {
                     return null;
                 }
-                Content content = (Content)contents.get(0);
+                SyndContent content = (SyndContent)contents.get(0);
                 String value = content.getValue();
                 Object data = mediator.mediate(value, itemXMLType, itemClassType, null);
 

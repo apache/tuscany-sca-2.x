@@ -82,7 +82,6 @@ class AtomBindingListenerServlet extends HttpServlet {
     private Invoker putMediaInvoker;
     private Invoker deleteInvoker;
     private MessageFactory messageFactory;
-    private String feedType;
     private String title;
     private Mediator mediator;
     private DataType<?> itemClassType;
@@ -96,11 +95,10 @@ class AtomBindingListenerServlet extends HttpServlet {
      * @param messageFactory
      * @param feedType
      */
-    AtomBindingListenerServlet(RuntimeWire wire, MessageFactory messageFactory, Mediator mediator, String feedType, String title) {
+    AtomBindingListenerServlet(RuntimeWire wire, MessageFactory messageFactory, Mediator mediator, String title) {
         this.wire = wire;
         this.messageFactory = messageFactory;
         this.mediator = mediator;
-        this.feedType = feedType;
         this.title = title;
 
         // Get the invokers for the supported operations
@@ -152,17 +150,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         // Get the request path
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
 
-        // The feedType parameter is used to override what type of feed is going
-        // to be produced
-        String requestFeedType = request.getParameter("feedType");
-        if (requestFeedType == null)
-            requestFeedType = feedType;
-
-        if (! requestFeedType.startsWith("atom_")) {
-                throw new UnsupportedOperationException(requestFeedType + " Not supported !");
-        }
-        
-        logger.info(">>> FeedEndPointServlet (" + requestFeedType + ") " + request.getRequestURI());
+        logger.info(">>> FeedEndPointServlet " + request.getRequestURI());
 
         // Handle an Atom request
         if (path != null && path.equals("/atomsvc")) {
@@ -217,7 +205,13 @@ class AtomBindingListenerServlet extends HttpServlet {
 
                 // The service implementation supports feed entries, invoke its getFeed operation
                 Message requestMessage = messageFactory.createMessage();
-                Message responseMessage = getFeedInvoker.invoke(requestMessage);
+                Message responseMessage;
+                if (request.getQueryString() != null) {
+                    requestMessage.setBody(new Object[] {request.getQueryString()});
+                    responseMessage = queryInvoker.invoke(requestMessage);
+                } else {
+                    responseMessage = getFeedInvoker.invoke(requestMessage);
+                }
                 if (responseMessage.isFault()) {
                     throw new ServletException((Throwable)responseMessage.getBody());
                 }

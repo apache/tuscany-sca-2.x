@@ -111,14 +111,17 @@ public class CustomerCollectionImpl implements Collection {
         feed.setUpdated(new Date());
         feed.addLink("");
         feed.addLink("","self");
-        
-        
 
         for (Entry entry : entries.values()) {
         	feed.addEntry(entry);
         }
 
         return feed;
+    }
+
+    public Feed query(String queryString) {
+        System.out.println(">>> ResourceCollectionImpl.query collection " + queryString);
+        return getFeed();
     }
 
 }

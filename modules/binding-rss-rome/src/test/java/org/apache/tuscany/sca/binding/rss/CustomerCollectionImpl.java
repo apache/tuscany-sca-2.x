@@ -31,104 +31,71 @@ import org.apache.tuscany.sca.binding.rss.collection.Collection;
 import org.osoa.sca.annotations.Scope;
 
 import com.sun.syndication.feed.atom.Content;
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.feed.atom.Link;
+import com.sun.syndication.feed.synd.SyndContent;
+import com.sun.syndication.feed.synd.SyndContentImpl;
+import com.sun.syndication.feed.synd.SyndEntry;
+import com.sun.syndication.feed.synd.SyndEntryImpl;
+import com.sun.syndication.feed.synd.SyndFeed;
+import com.sun.syndication.feed.synd.SyndFeedImpl;
+import com.sun.syndication.feed.synd.SyndLink;
+import com.sun.syndication.feed.synd.SyndLinkImpl;
 
 @Scope("COMPOSITE")
 public class CustomerCollectionImpl implements Collection {
 
-    private Map<String, Entry> entries = new HashMap<String, Entry>();
+    private Map<String, SyndEntry> entries = new HashMap<String, SyndEntry>();
 
     public CustomerCollectionImpl() {
 
         for (int i = 0; i < 4; i++) {
             String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
 
-            Entry entry = new Entry();
+            SyndEntry entry = new SyndEntryImpl();
             entry.setTitle("customer " + "Jane Doe_" + String.valueOf(i));
-            entry.setId(id);
+            entry.setUri(id);
 
-            Content content = new Content();
+            SyndContent content = new SyndContentImpl();
             content.setValue("Jane Doe_" + String.valueOf(i));
             content.setType(Content.TEXT);
             entry.setContents(Collections.singletonList(content));
 
-            List<Link> links = new ArrayList<Link>();
-            Link link = new Link();
+            List<SyndLink> links = new ArrayList<SyndLink>();
+            SyndLink link = new SyndLinkImpl();
             link.setRel("edit");
             link.setHref("" + id);
             links.add(link);
-            entry.setOtherLinks(links);
+            entry.setLinks(links);
 
-            links = new ArrayList<Link>();
-            link = new Link();
+            links = new ArrayList<SyndLink>();
+            link = new SyndLinkImpl();
             link.setRel("alternate");
             link.setHref("" + id);
             links.add(link);
-            entry.setAlternateLinks(links);
+            entry.setLinks(links);
 
-            entry.setCreated(new Date());
+            entry.setPublishedDate(new Date());
 
             entries.put(id, entry);
             System.out.println(">>> id=" + id);
         }
     }
 
-    public Entry post(Entry entry) {
-        System.out.println(">>> ResourceCollectionImpl.post entry=" + entry.getTitle());
+    public SyndFeed getFeed() {
+        System.out.println(">>> CustomerCollectionImpl.getFeed");
 
-        String id = "urn:uuid:customer-" + UUID.randomUUID().toString();
-        entry.setId(id);
-
-        List<Link> links = new ArrayList<Link>();
-        Link link = new Link();
-        link.setRel("edit");
-        link.setHref("" + id);
-        links.add(link);
-        entry.setOtherLinks(links);
-
-        links = new ArrayList<Link>();
-        link = new Link();
-        link.setRel("alternate");
-        link.setHref("" + id);
-        links.add(link);
-        entry.setAlternateLinks(links);
-
-        entry.setCreated(new Date());
-
-        entries.put(id, entry);
-        System.out.println(">>> ResourceCollectionImpl.post return id=" + id);
-
-        return entry;
-    }
-
-    public Entry get(String id) {
-        System.out.println(">>> ResourceCollectionImpl.get id=" + id);
-        return entries.get(id);
-    }
-
-    public void put(String id, Entry entry) {
-        System.out.println(">>> ResourceCollectionImpl.put id=" + id + " entry=" + entry.getTitle());
-
-        entry.setUpdated(new Date());
-        entries.put(id, entry);
-    }
-
-    public void delete(String id) {
-        System.out.println(">>> ResourceCollectionImpl.delete id=" + id);
-        entries.remove(id);
-    }
-
-    @SuppressWarnings("unchecked")
-    public Feed getFeed() {
-        System.out.println(">>> ResourceCollectionImpl.get collection");
-
-        Feed feed = new Feed();
+        SyndFeed feed = new SyndFeedImpl();
         feed.setTitle("customers");
-        Content subtitle = new Content();
-        subtitle.setValue("This is a sample feed");
-        feed.setSubtitle(subtitle);
+        feed.setDescription("This is a sample feed");
+        feed.getEntries().addAll(entries.values());
+        return feed;
+    }
+
+    public SyndFeed query(String queryString) {
+        System.out.println(">>> CustomerCollectionImpl.query");
+
+        SyndFeed feed = new SyndFeedImpl();
+        feed.setTitle("customers");
+        feed.setDescription("This is a sample feed");
         feed.getEntries().addAll(entries.values());
         return feed;
     }

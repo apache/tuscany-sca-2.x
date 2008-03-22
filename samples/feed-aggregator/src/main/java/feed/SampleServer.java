@@ -34,8 +34,6 @@ public class SampleServer {
             System.out.println("http://localhost:8083/atomAggregator");
             System.out.println("http://localhost:8083/atomAggregator/atomsvc (for the Atom service document)");
             System.out.println("http://localhost:8083/rssAggregator");
-            System.out.println("http://localhost:8083/atomAggregator?feedType=rss_2.0");
-            System.out.println("http://localhost:8083/rssAggregator?feedType=atom_1.0");
             System.out.println();
             System.in.read();
         } catch (IOException e) {

@@ -84,6 +84,10 @@ public class AlertsFeedServiceImpl implements Collection {
         
         return feed;
     }
+    
+    public Feed query(String queryString) {
+        return getFeed();
+    }
 
     public void delete(String id) throws NotFoundException {
     }
