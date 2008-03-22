@@ -1,18 +1,3 @@
-package org.apache.tuscany.sca.policy.security.jaas;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
-import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
-import org.apache.tuscany.sca.invocation.Phase;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.provider.PolicyProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -31,6 +16,21 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * specific language governing permissions and limitations
  * under the License.    
  */
+
+package org.apache.tuscany.sca.policy.security.jaas;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
+import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.provider.PolicyProvider;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * Policy handler to handle PolicySet containing JaasAuthenticationPolicy instances

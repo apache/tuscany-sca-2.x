@@ -1,10 +1,3 @@
-package org.apache.tuscany.sca.policy.security.ws;
-import org.apache.axis2.AxisFault;
-import org.apache.axis2.context.ConfigurationContext;
-import org.apache.axis2.description.Parameter;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.policy.util.PolicyHandler;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -23,6 +16,14 @@ import org.apache.tuscany.sca.policy.util.PolicyHandler;
  * specific language governing permissions and limitations
  * under the License.    
  */
+
+package org.apache.tuscany.sca.policy.security.ws;
+
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.description.Parameter;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
 /**
  * Policy handler to handle PolicySet that contain Axis2ConfigParamPolicy instances
