@@ -25,6 +25,7 @@ import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
+import org.apache.abdera.parser.ParserOptions;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -103,7 +104,8 @@ class AtomBindingInvoker implements Invoker {
             } catch (Exception e) {
                 msg.setFaultBody(new ServiceRuntimeException(e));
             } finally {
-                getMethod.releaseConnection();
+                // Will be released by the abdera parser
+                //getMethod.releaseConnection();
             }
 
             return msg;
@@ -155,7 +157,8 @@ class AtomBindingInvoker implements Invoker {
             } catch (Exception e) {
                 msg.setFaultBody(new ServiceRuntimeException(e));
             } finally {
-                postMethod.releaseConnection();
+                // Will be released by the abdera parser
+                //postMethod.releaseConnection();
             }
 
             return msg;
@@ -212,7 +215,8 @@ class AtomBindingInvoker implements Invoker {
             } catch (Exception e) {
                 msg.setFaultBody(new ServiceRuntimeException(e));
             } finally {
-                putMethod.releaseConnection();
+                // Will be released by the abdera parser
+                //putMethod.releaseConnection();
             }
 
             return msg;
@@ -298,7 +302,8 @@ class AtomBindingInvoker implements Invoker {
             } catch (Exception e) {
                 msg.setFaultBody(new ServiceRuntimeException(e));
             } finally {
-                getMethod.releaseConnection();
+                // Will be released by the abdera parser
+                //getMethod.releaseConnection();
             }
 
             return msg;
