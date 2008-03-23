@@ -18,14 +18,19 @@
  */
 package org.apache.tuscany.sca.binding.atom.provider;
 
+import static org.apache.tuscany.sca.binding.atom.provider.AtomBindingUtil.entry;
+import static org.apache.tuscany.sca.binding.atom.provider.AtomBindingUtil.feedEntry;
+
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.abdera.Abdera;
+import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Document;
-import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
-import org.apache.abdera.parser.ParserOptions;
+import org.apache.abdera.parser.Parser;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -33,6 +38,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.tuscany.sca.binding.atom.collection.NotFoundException;
+import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -44,21 +50,24 @@ import org.osoa.sca.ServiceRuntimeException;
  * @version $Rev$ $Date$
  */
 class AtomBindingInvoker implements Invoker {
+    
+    private final static Factory abderaFactory = Abdera.getNewFactory();
+    private final static Parser abderaParser = Abdera.getNewParser();
 
     Operation operation;
     String uri;
     HttpClient httpClient;
     String authorizationHeader;
+    AtomReferenceBindingProvider provider;
     
-    //FIXME Support conversion to/from data API entries 
-
-    AtomBindingInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader) {
+    AtomBindingInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader, AtomReferenceBindingProvider bindingProvider) {
         this.operation = operation;
         this.uri = uri;
         this.httpClient = httpClient;
         this.authorizationHeader = authorizationHeader;
+        this.provider = bindingProvider;
     }
-
+    
     public Message invoke(Message msg) {
         // Shouldn't get here, as the only supported methods are
         // defined in the ResourceCollection interface, and implemented
@@ -71,8 +80,8 @@ class AtomBindingInvoker implements Invoker {
      */
     public static class GetInvoker extends AtomBindingInvoker {
 
-        public GetInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader) {
-            super(operation, uri, httpClient, authorizationHeader);
+        public GetInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader, AtomReferenceBindingProvider bindingProvider) {
+            super(operation, uri, httpClient, authorizationHeader, bindingProvider);
         }
 
         @Override
@@ -84,16 +93,29 @@ class AtomBindingInvoker implements Invoker {
             // Send an HTTP GET
             GetMethod getMethod = new GetMethod(uri + "/" + id);
             getMethod.setRequestHeader("Authorization", authorizationHeader);
+            boolean parsing = false;
             try {
                 httpClient.executeMethod(getMethod);
                 int status = getMethod.getStatusCode();
 
                 // Read the Atom entry
                 if (status == 200) {
-                	Document<Entry> doc = Abdera.getNewParser().parse(new InputStreamReader(getMethod.getResponseBodyAsStream()));
-                    Entry feedEntry = doc.getRoot();
-
-                    msg.setBody(feedEntry);
+                    Document<org.apache.abdera.model.Entry> doc = abderaParser.parse(new InputStreamReader(getMethod.getResponseBodyAsStream()));
+                    parsing = true;
+                    org.apache.abdera.model.Entry feedEntry = doc.getRoot();
+                    
+                    if (provider.supportsFeedEntries()) {
+                        
+                        // Return the Atom entry
+                        msg.setBody(feedEntry);
+                        
+                    } else {
+                        
+                        // Convert the feed entry to a data entry and return the data item
+                        Entry<Object, Object> entry = entry(feedEntry, provider.getItemClassType(),
+                                                            provider.getItemXMLType(), provider.getMediator());
+                        msg.setBody(entry.getData());
+                    }
 
                 } else if (status == 404) {
                     msg.setFaultBody(new NotFoundException());
@@ -104,8 +126,11 @@ class AtomBindingInvoker implements Invoker {
             } catch (Exception e) {
                 msg.setFaultBody(new ServiceRuntimeException(e));
             } finally {
-                // Will be released by the abdera parser
-                //getMethod.releaseConnection();
+                if (!parsing) {
+                    // Release the connection unless the Abdera parser is
+                    // parsing the response, in this case it will release it
+                    getMethod.releaseConnection();
+                }
             }
 
             return msg;
@@ -117,19 +142,32 @@ class AtomBindingInvoker implements Invoker {
      */
     public static class PostInvoker extends AtomBindingInvoker {
 
-        public PostInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader) {
-            super(operation, uri, httpClient, authorizationHeader);
+        public PostInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader, AtomReferenceBindingProvider bindingProvider) {
+            super(operation, uri, httpClient, authorizationHeader, bindingProvider);
         }
 
         @Override
         public Message invoke(Message msg) {
 
             // Post an entry
-            Entry feedEntry = (Entry)((Object[])msg.getBody())[0];
+            Object[] args = (Object[])msg.getBody();
+            org.apache.abdera.model.Entry feedEntry;
+            if (provider.supportsFeedEntries()) {
+                
+                // Expect an Atom entry
+                feedEntry = (org.apache.abdera.model.Entry)args[0];
+            } else {
+                
+                // Expect a key and data item
+                Entry<Object, Object> entry = new Entry<Object, Object>(args[0], args[1]);
+                feedEntry = feedEntry(entry, provider.getItemClassType(),
+                                      provider.getItemXMLType(), provider.getMediator(), abderaFactory);
+            }
 
             // Send an HTTP POST
             PostMethod postMethod = new PostMethod(uri);
             postMethod.setRequestHeader("Authorization", authorizationHeader);
+            boolean parsing = false;
             try {
 
                 // Write the Atom entry
@@ -143,10 +181,21 @@ class AtomBindingInvoker implements Invoker {
 
                 // Read the Atom entry
                 if (status == 200 || status == 201) {
-                	Document<Entry> doc = Abdera.getNewParser().parse(new InputStreamReader(postMethod.getResponseBodyAsStream()));
-                    Entry createdEntry = doc.getRoot();
+                    Document<org.apache.abdera.model.Entry> doc = abderaParser.parse(new InputStreamReader(postMethod.getResponseBodyAsStream()));
+                    parsing = true;
+                    org.apache.abdera.model.Entry createdEntry = doc.getRoot();
 
-                    msg.setBody(createdEntry);
+                    // Returns the created Atom entry ID
+                    if (provider.supportsFeedEntries()) {
+                        
+                        // Returns the created entry
+                        msg.setBody(createdEntry);
+                        
+                    } else {
+                        
+                        // Returns the id of the created entry 
+                        msg.setBody(createdEntry.getId().toString());
+                    }
 
                 } else if (status == 404) {
                     msg.setFaultBody(new NotFoundException());
@@ -157,8 +206,11 @@ class AtomBindingInvoker implements Invoker {
             } catch (Exception e) {
                 msg.setFaultBody(new ServiceRuntimeException(e));
             } finally {
-                // Will be released by the abdera parser
-                //postMethod.releaseConnection();
+                if (!parsing) {
+                    // Release the connection unless the Abdera parser is
+                    // parsing the response, in this case it will release it
+                    postMethod.releaseConnection();
+                }
             }
 
             return msg;
@@ -170,16 +222,30 @@ class AtomBindingInvoker implements Invoker {
      */
     public static class PutInvoker extends AtomBindingInvoker {
 
-        public PutInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader) {
-            super(operation, uri, httpClient, authorizationHeader);
+        public PutInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader, AtomReferenceBindingProvider bindingProvider) {
+            super(operation, uri, httpClient, authorizationHeader, bindingProvider);
         }
 
         @Override
         public Message invoke(Message msg) {
+
             // Put an entry
             Object[] args = (Object[])msg.getBody();
-            String id = (String)args[0];
-            Entry feedEntry = (Entry)args[1];
+            String id;
+            org.apache.abdera.model.Entry feedEntry;
+            if (provider.supportsFeedEntries()) {
+                
+                // Expect a key and Atom entry
+                id = (String)args[0];
+                feedEntry = (org.apache.abdera.model.Entry)args[1];
+            } else {
+                
+                // Expect a key and data item
+                id = (String)args[0];
+                Entry<Object, Object> entry = new Entry<Object, Object>(id, args[1]);
+                feedEntry = feedEntry(entry, provider.getItemClassType(),
+                                      provider.getItemXMLType(), provider.getMediator(), abderaFactory);
+            }
 
             // Send an HTTP PUT
             PutMethod putMethod = new PutMethod(uri + "/" + id);
@@ -194,17 +260,9 @@ class AtomBindingInvoker implements Invoker {
 
                 httpClient.executeMethod(putMethod);
                 int status = putMethod.getStatusCode();
-
-                // Read the Atom entry
                 if (status == 200 || status == 201) {
-                    try {
-                    	Document<Entry> doc = Abdera.getNewParser().parse(new InputStreamReader(putMethod.getResponseBodyAsStream()));
-                        Entry updatedEntry = doc.getRoot();
 
-                        msg.setBody(updatedEntry);
-                    } catch (Exception e) {
-                        // Returning the updated entry is optional
-                    }
+                    msg.setBody(null);
 
                 } else if (status == 404) {
                     msg.setFaultBody(new NotFoundException());
@@ -215,8 +273,7 @@ class AtomBindingInvoker implements Invoker {
             } catch (Exception e) {
                 msg.setFaultBody(new ServiceRuntimeException(e));
             } finally {
-                // Will be released by the abdera parser
-                //putMethod.releaseConnection();
+                putMethod.releaseConnection();
             }
 
             return msg;
@@ -228,8 +285,8 @@ class AtomBindingInvoker implements Invoker {
      */
     public static class DeleteInvoker extends AtomBindingInvoker {
 
-        public DeleteInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader) {
-            super(operation, uri, httpClient, authorizationHeader);
+        public DeleteInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader, AtomReferenceBindingProvider bindingProvider) {
+            super(operation, uri, httpClient, authorizationHeader, bindingProvider);
         }
 
         @Override
@@ -244,8 +301,6 @@ class AtomBindingInvoker implements Invoker {
             try {
                 httpClient.executeMethod(deleteMethod);
                 int status = deleteMethod.getStatusCode();
-
-                // Read the Atom entry
                 if (status == 200) {
                     msg.setBody(null);
 
@@ -270,8 +325,8 @@ class AtomBindingInvoker implements Invoker {
      */
     public static class GetAllInvoker extends AtomBindingInvoker {
 
-        public GetAllInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader) {
-            super(operation, uri, httpClient, authorizationHeader);
+        public GetAllInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader, AtomReferenceBindingProvider bindingProvider) {
+            super(operation, uri, httpClient, authorizationHeader, bindingProvider);
         }
 
         @Override
@@ -282,16 +337,33 @@ class AtomBindingInvoker implements Invoker {
             // Send an HTTP GET
             GetMethod getMethod = new GetMethod(uri);
             getMethod.setRequestHeader("Authorization", authorizationHeader);
+            boolean parsing = false;
             try {
                 httpClient.executeMethod(getMethod);
                 int status = getMethod.getStatusCode();
 
                 // Read the Atom feed
                 if (status == 200) {
-                    Document<Feed> doc = Abdera.getNewParser().parse(new InputStreamReader(getMethod.getResponseBodyAsStream()));
+                    Document<Feed> doc = abderaParser.parse(new InputStreamReader(getMethod.getResponseBodyAsStream()));
+                    parsing = true;
                     Feed feed = doc.getRoot();
 
-                    msg.setBody(feed);
+                    if (provider.supportsFeedEntries()) {
+                        
+                        // Returns the Atom feed
+                        msg.setBody(feed);
+                        
+                    } else {
+                        
+                        // Returns an array of data entries
+                        List<Entry<Object, Object>> entries = new ArrayList<Entry<Object,Object>>();
+                        for (org.apache.abdera.model.Entry feedEntry: feed.getEntries()) {
+                            Entry<Object, Object> entry = entry(feedEntry, provider.getItemClassType(),
+                                                                provider.getItemXMLType(), provider.getMediator());
+                            entries.add(entry);
+                        }
+                        msg.setBody(entries.toArray(new Entry[entries.size()]));
+                    }
 
                 } else if (status == 404) {
                     msg.setFaultBody(new NotFoundException());
@@ -302,8 +374,78 @@ class AtomBindingInvoker implements Invoker {
             } catch (Exception e) {
                 msg.setFaultBody(new ServiceRuntimeException(e));
             } finally {
-                // Will be released by the abdera parser
-                //getMethod.releaseConnection();
+                if (!parsing) {
+                    // Release the connection unless the Abdera parser is
+                    // parsing the response, in this case it will release it
+                    getMethod.releaseConnection();
+                }
+            }
+
+            return msg;
+        }
+    }
+
+    /**
+     * Query operation invoker
+     */
+    public static class QueryInvoker extends AtomBindingInvoker {
+
+        public QueryInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader, AtomReferenceBindingProvider bindingProvider) {
+            super(operation, uri, httpClient, authorizationHeader, bindingProvider);
+        }
+
+        @Override
+        public Message invoke(Message msg) {
+
+            // Get a feed from a query
+            String queryString = (String)((Object[])msg.getBody())[0];
+
+            // Send an HTTP GET
+            GetMethod getMethod = new GetMethod(uri);
+            getMethod.setRequestHeader("Authorization", authorizationHeader);
+            getMethod.setQueryString(queryString);
+            boolean parsing = false;
+            try {
+                httpClient.executeMethod(getMethod);
+                int status = getMethod.getStatusCode();
+
+                // Read the Atom feed
+                if (status == 200) {
+                    Document<Feed> doc = abderaParser.parse(new InputStreamReader(getMethod.getResponseBodyAsStream()));
+                    parsing = true;
+                    Feed feed = doc.getRoot();
+
+                    if (provider.supportsFeedEntries()) {
+                        
+                        // Returns the Atom feed
+                        msg.setBody(feed);
+                        
+                    } else {
+                        
+                        // Returns an array of data entries
+                        List<Entry<Object, Object>> entries = new ArrayList<Entry<Object,Object>>();
+                        for (org.apache.abdera.model.Entry feedEntry: feed.getEntries()) {
+                            Entry<Object, Object> entry = entry(feedEntry, provider.getItemClassType(),
+                                                                provider.getItemXMLType(), provider.getMediator());
+                            entries.add(entry);
+                        }
+                        msg.setBody(entries.toArray(new Entry[entries.size()]));
+                    }
+
+                } else if (status == 404) {
+                    msg.setFaultBody(new NotFoundException());
+                } else {
+                    msg.setFaultBody(new ServiceRuntimeException("HTTP status code: " + status));
+                }
+
+            } catch (Exception e) {
+                msg.setFaultBody(new ServiceRuntimeException(e));
+            } finally {
+                if (!parsing) {
+                    // Release the connection unless the Abdera parser is
+                    // parsing the response, in this case it will release it
+                    getMethod.releaseConnection();
+                }
             }
 
             return msg;
@@ -315,8 +457,8 @@ class AtomBindingInvoker implements Invoker {
      */
     public static class PostMediaInvoker extends AtomBindingInvoker {
 
-        public PostMediaInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader) {
-            super(operation, uri, httpClient, authorizationHeader);
+        public PostMediaInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader, AtomReferenceBindingProvider bindingProvider) {
+            super(operation, uri, httpClient, authorizationHeader, bindingProvider);
         }
 
         @Override
@@ -331,8 +473,8 @@ class AtomBindingInvoker implements Invoker {
      */
     public static class PutMediaInvoker extends AtomBindingInvoker {
 
-        public PutMediaInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader) {
-            super(operation, uri, httpClient, authorizationHeader);
+        public PutMediaInvoker(Operation operation, String uri, HttpClient httpClient, String authorizationHeader, AtomReferenceBindingProvider bindingProvider) {
+            super(operation, uri, httpClient, authorizationHeader, bindingProvider);
         }
 
         @Override

@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
- * Implementation of the Atom binding model.
+ * Implementation of a Binding provider factory for the Atom binding.
  */
 public class AtomBindingProviderFactory implements BindingProviderFactory<AtomBinding> {
 
@@ -57,7 +57,7 @@ public class AtomBindingProviderFactory implements BindingProviderFactory<AtomBi
     public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
                                                                    RuntimeComponentReference reference,
                                                                    AtomBinding binding) {
-        return new AtomReferenceBindingProvider(component, reference, binding);
+        return new AtomReferenceBindingProvider(component, reference, binding, mediator);
     }
 
     public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,

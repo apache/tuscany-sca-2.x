@@ -18,12 +18,14 @@
  */
 package org.apache.tuscany.sca.binding.atom.provider;
 
+import static org.apache.tuscany.sca.binding.atom.provider.AtomBindingUtil.entry;
+import static org.apache.tuscany.sca.binding.atom.provider.AtomBindingUtil.feedEntry;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLDecoder;
-import java.util.Date;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
@@ -34,18 +36,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
 import org.apache.abdera.Abdera;
+import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Collection;
-import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Document;
-import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
 import org.apache.abdera.model.Service;
 import org.apache.abdera.model.Workspace;
 import org.apache.abdera.parser.ParseException;
+import org.apache.abdera.parser.Parser;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.tuscany.sca.databinding.Mediator;
-import org.apache.tuscany.sca.implementation.data.collection.Item;
+import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
@@ -57,7 +59,6 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 
-
 /**
  * A resource collection binding listener, implemented as a Servlet and
  * registered in a Servlet host provided by the SCA hosting runtime.
@@ -66,10 +67,8 @@ class AtomBindingListenerServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(AtomBindingListenerServlet.class.getName());
     private static final long serialVersionUID = 1L;
 
-    //private final static Namespace APP_NS = Namespace.getNamespace("app", "http://purl.org/atom/app#");
-    //private final static Namespace ATOM_NS = Namespace.getNamespace("atom", "http://www.w3.org/2005/Atom");
-
-    private final Abdera abdera = new Abdera();
+    private final static Factory abderaFactory = Abdera.getNewFactory();
+    private final static Parser abderaParser = Abdera.getNewParser();
     
     private RuntimeWire wire;
     private Invoker getFeedInvoker;
@@ -100,7 +99,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         this.messageFactory = messageFactory;
         this.mediator = mediator;
         this.title = title;
-
+        
         // Get the invokers for the supported operations
         Operation getOperation = null;
         for (InvocationChain invocationChain : this.wire.getInvocationChains()) {
@@ -132,7 +131,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         // Determine the collection item type
         itemXMLType = new DataTypeImpl<Class<?>>(String.class.getName(), String.class, String.class);
         Class<?> itemClass = getOperation.getOutputType().getPhysical();
-        if (itemClass == Entry.class) {
+        if (itemClass == org.apache.abdera.model.Entry.class) {
             supportsFeedEntries = true;
         }
         DataType<XMLType> outputType = getOperation.getOutputType();
@@ -171,10 +170,10 @@ class AtomBindingListenerServlet extends HttpServlet {
             // Return the Atom service document
             response.setContentType("application/atomsvc+xml; charset=utf-8");
             
-            Service service = this.abdera.getFactory().newService();
+            Service service = abderaFactory.newService();
             //service.setText("service");
             
-            Workspace workspace = this.abdera.getFactory().newWorkspace();
+            Workspace workspace = abderaFactory.newWorkspace();
             workspace.setTitle("resource");
 
             String href = request.getRequestURL().toString();
@@ -233,12 +232,12 @@ class AtomBindingListenerServlet extends HttpServlet {
                 if (responseMessage.isFault()) {
                     throw new ServletException((Throwable)responseMessage.getBody());
                 }
-                org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>[] collection =
-                    (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>[])responseMessage.getBody();
+                Entry<Object, Object>[] collection =
+                    (Entry<Object, Object>[])responseMessage.getBody();
                 if (collection != null) {
                     
                     // Create the feed
-                    feed = this.abdera.getFactory().newFeed();
+                    feed = abderaFactory.newFeed();
                     
                     // Set the feed title
                     if (title != null) {
@@ -248,8 +247,8 @@ class AtomBindingListenerServlet extends HttpServlet {
                     }
                     
                     // Add entries to the feed
-                    for (org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry: collection) {
-                        Entry feedEntry = createFeedEntry(entry);
+                    for (Entry<Object, Object> entry: collection) {
+                        org.apache.abdera.model.Entry feedEntry = feedEntry(entry, itemClassType, itemXMLType, mediator, abderaFactory);
                         feed.addEntry(feedEntry);
                     }
                 }
@@ -270,7 +269,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         } else if (path.startsWith("/")) {
 
             // Return a specific entry in the collection
-            Entry feedEntry;
+            org.apache.abdera.model.Entry feedEntry;
 
             // Invoke the get operation on the service implementation
             Message requestMessage = messageFactory.createMessage();
@@ -287,7 +286,8 @@ class AtomBindingListenerServlet extends HttpServlet {
             } else {
                 // The service implementation only returns a data item, create an entry
                 // from it
-                feedEntry = createFeedEntry(new org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>(id, responseMessage.getBody()));
+                Entry<Object, Object> entry = new Entry<Object, Object>(id, responseMessage.getBody()); 
+                feedEntry = feedEntry(entry, itemClassType, itemXMLType, mediator, abderaFactory);
             }
 
             // Write the Atom entry
@@ -308,123 +308,6 @@ class AtomBindingListenerServlet extends HttpServlet {
         
     }
 
-    /**
-     * Create an Atom entry for a key and item from a collection.
-     * @param key
-     * @param item
-     * @return
-     */
-    private Entry createFeedEntry(org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry) {
-        Object key = entry.getKey();
-        Object data = entry.getData();
-        if (data instanceof Item) {
-            Item item = (Item)data;
-            
-            Entry feedEntry = abdera.getFactory().newEntry();
-            if (key != null) {
-                feedEntry.setId(key.toString());
-            }
-            feedEntry.setTitle(item.getTitle());
-            feedEntry.setContentAsHtml(item.getContents());
-
-            String href = item.getLink();
-            if (href == null && key != null) {
-                href = key.toString();
-            }
-
-            if (href != null) {
-                feedEntry.addLink(href);
-            }
-            String related = item.getRelated();
-            if (related != null) {
-                feedEntry.addLink(related, "related");
-            }
-            String alternate = item.getAlternate();
-            if (alternate != null) {
-                feedEntry.addLink(alternate, "alternate");
-            }
-                
-            Date date = item.getDate();
-            if (date != null) {
-                feedEntry.setUpdated(date);
-            }
-            return feedEntry;
-            
-        } else if (data != null) {
-            Entry feedEntry = abdera.getFactory().newEntry();
-             feedEntry.setId(key.toString());
-             feedEntry.setTitle("item");
-             
-             
-             // Convert the item to XML
-             String value = mediator.mediate(data, itemClassType, itemXMLType, null).toString();
-             
-             Content content = this.abdera.getFactory().newContent();
-             content.setContentType(Content.Type.XML);
-             content.setValue(value);
-             
-             feedEntry.setContentElement(content);
-
-             feedEntry.addLink(key.toString());
-                  
-             return feedEntry;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Create a data item from an Atom entry.
-     * @param key
-     * @param item
-     * @return
-     */
-    private org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> createEntry(Entry feedEntry) {
-        if (feedEntry != null) {
-            if (itemClassType.getPhysical() == Item.class) {
-                String key = feedEntry.getId().toString();
-                
-                Item item = new Item();
-                item.setTitle(feedEntry.getTitle());
-                item.setContents(feedEntry.getContent());
-                
-                for (Link link : feedEntry.getLinks()) {
-                    if (link.getRel() == null || "self".equals(link.getRel())) {
-                        if (item.getLink() == null) {
-                            item.setLink(link.getHref().toString());
-                        }
-                    } else if ("related".equals(link.getRel())) {
-                        item.setRelated(link.getHref().toString());
-                    } else if ("alternate".equals(link.getRel())) {
-                        item.setAlternate(link.getHref().toString());
-                    }
-                }
-                
-                item.setDate(feedEntry.getUpdated());
-                
-                return new org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>(key, item);
-                
-            } else {
-                String key = null; 
-                if ( feedEntry.getId() != null) {
-                        feedEntry.getId().toString();
-                }
-                
-                // Create the item from XML
-                if (feedEntry.getContentElement().getElements().size() == 0) {
-                        return null;
-                }
-                
-                String value = feedEntry.getContent();
-                Object data = mediator.mediate(value, itemXMLType, itemClassType, null);
-
-                return new org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object>(key, data);
-            }
-        } else {
-            return null;
-        }
-    }
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
         IOException {
@@ -440,16 +323,16 @@ class AtomBindingListenerServlet extends HttpServlet {
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
 
         if (path == null || path.length() == 0 || path.equals("/")) {
-            Entry createdFeedEntry = null;
+            org.apache.abdera.model.Entry createdFeedEntry = null;
 
             // Create a new Atom entry
             String contentType = request.getContentType();
             if (contentType.startsWith("application/atom+xml")) {
 
                 // Read the entry from the request
-                Entry feedEntry;
+                org.apache.abdera.model.Entry feedEntry;
                 try {
-                        Document<Entry> doc = Abdera.getNewParser().parse(request.getReader());
+                        Document<org.apache.abdera.model.Entry> doc = abderaParser.parse(request.getReader());
                         feedEntry = doc.getRoot();
                 } catch (ParseException pe) {
                     throw new ServletException(pe);
@@ -470,14 +353,14 @@ class AtomBindingListenerServlet extends HttpServlet {
                     
                     // The service implementation does not support feed entries, pass the data item to it
                     Message requestMessage = messageFactory.createMessage();
-                    org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry = createEntry(feedEntry);
+                    Entry<Object, Object> entry = entry(feedEntry, itemClassType, itemXMLType, mediator);
                     requestMessage.setBody(new Object[] {entry.getKey(), entry.getData()});
                     Message responseMessage = postInvoker.invoke(requestMessage);
                     if (responseMessage.isFault()) {
                         throw new ServletException((Throwable)responseMessage.getBody());
                     }
                     entry.setKey(responseMessage.getBody());
-                    createdFeedEntry = createFeedEntry(entry);
+                    createdFeedEntry = feedEntry(entry, itemClassType, itemXMLType, mediator, abderaFactory);
                 }
 
             } else if (contentType != null) {
@@ -553,9 +436,9 @@ class AtomBindingListenerServlet extends HttpServlet {
             if (contentType.startsWith("application/atom+xml")) {
 
                 // Read the entry from the request
-                Entry feedEntry;
+                org.apache.abdera.model.Entry feedEntry;
                 try {
-                        Document<Entry> doc = Abdera.getNewParser().parse(request.getReader());
+                        Document<org.apache.abdera.model.Entry> doc = abderaParser.parse(request.getReader());
                         feedEntry = doc.getRoot();
                 } catch (ParseException pe) {
                     throw new ServletException(pe);
@@ -580,7 +463,7 @@ class AtomBindingListenerServlet extends HttpServlet {
                     
                     // The service implementation does not support feed entries, pass the data item to it
                     Message requestMessage = messageFactory.createMessage();
-                    org.apache.tuscany.sca.implementation.data.collection.Entry<Object, Object> entry = createEntry(feedEntry);
+                    Entry<Object, Object> entry = entry(feedEntry, itemClassType, itemXMLType, mediator);
                     requestMessage.setBody(new Object[] {entry.getKey(), entry.getData()});
                     Message responseMessage = putInvoker.invoke(requestMessage);
                     if (responseMessage.isFault()) {
