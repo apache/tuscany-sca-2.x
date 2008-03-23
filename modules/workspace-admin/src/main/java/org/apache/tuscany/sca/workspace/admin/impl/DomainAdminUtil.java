@@ -154,4 +154,23 @@ public final class DomainAdminUtil {
         }
     }
 
+    /**
+     * Extract a node URI from an ATOM entry content.
+     * 
+     * @param content
+     * @return
+     */
+    static String nodeURI(String content) {
+        if (content != null) {
+            int bs = content.indexOf("<span id=\"nodeURI\">");
+            if (bs != -1) {
+                content = content.substring(bs + 19);
+                int es = content.indexOf("</span>");
+                if (es != -1) {
+                    return content.substring(0, es);
+                }
+            }
+        }
+        return null;
+    }
 }

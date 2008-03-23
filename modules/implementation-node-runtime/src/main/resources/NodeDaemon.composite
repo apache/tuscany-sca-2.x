@@ -25,7 +25,7 @@
     <component name="NodeProcessCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.implementation.node.launcher.NodeProcessCollectionImpl"/>
    		<service name="ItemCollection">
-   	 		<t:binding.atom uri="http://localhost:9990/process" title="Log"/>
+   	 		<t:binding.atom uri="http://localhost:9990/node/processes" title="Log"/>
    		</service>
     </component>
 

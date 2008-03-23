@@ -102,4 +102,9 @@ public class JavaImportImpl implements JavaImport {
         
         return false;
     }
+    
+    @Override
+    public String toString() {
+        return String.valueOf(packageName);
+    }
 }

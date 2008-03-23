@@ -63,8 +63,18 @@
 					var es = content.indexOf('</span>', bs); 
 					deployables = content.substring(bs, es + 7);
 				}
+				
+				var problems = "";
+				var bs = content.indexOf('<span id="problems" ');
+				if (bs != -1) {
+					var es = content.indexOf('</span>', bs);
+					if (dependencies.length != 0) {
+					  problems = '<br>';
+					} 
+					problems += content.substring(bs, es + 7);
+				}
 											
-				contributions += '<td class=tdw>' + dependencies +' </td>';
+				contributions += '<td class=tdw>' + dependencies + ' </td>';
 				contributions += '<td class=tdw>' + deployables + '</td>';
 				contributions += '</tr>';
 			}
@@ -138,7 +148,7 @@
     <br>
     <table>
     <tr><td>Contribution URI:</td><td><input type="text" name="contributionID" size="50"/></td></td><td>e.g. mycontrib, http://mycontrib</td></tr> 
-    <tr><td>Address:</td><td><input type="text" name="contributionLocation" size="50"/></td></td><td>e.g. http://host/myjar.jar, file:/mydir, file:/myjar.jar</td></tr>
+    <tr><td>Location:</td><td><input type="text" name="contributionLocation" size="50"/></td></td><td>e.g. http://host/myjar.jar, file:/mydir, file:/myjar.jar</td></tr>
     </table>
     <input type="button" onClick="addContribution()" value="Add" />
   </form>

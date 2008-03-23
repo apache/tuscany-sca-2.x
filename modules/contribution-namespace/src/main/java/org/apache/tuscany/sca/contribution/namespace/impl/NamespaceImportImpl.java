@@ -84,4 +84,9 @@ public class NamespaceImportImpl implements NamespaceImport {
         }
         return false;
     }
+    
+    @Override
+    public String toString() {
+        return String.valueOf(namespace);
+    }
 }

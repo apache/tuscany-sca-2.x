@@ -67,7 +67,7 @@
 		 <reference name="cloudComposite" target="CloudCollectionComponent/ItemCollection">
 		 	<t:binding.atom/>
 		 </reference>
-		 <reference name="processCollection" target="NodeProcessCollectionComponent/ItemCollection">
+		 <reference name="processCollection" target="NodeProcessCollectionFacadeComponent/ItemCollection">
 		 	<t:binding.atom/>
 		 </reference>
     </component>
@@ -162,10 +162,21 @@
    		<reference name="processCollection" target="NodeProcessCollectionComponent/LocalItemCollection"/>
     </component>
 
+    <component name="NodeProcessCollectionFacadeComponent">
+        <implementation.java class="org.apache.tuscany.sca.workspace.admin.impl.NodeProcessCollectionFacadeImpl"/>
+   		<service name="ItemCollection">
+   	 		<t:binding.atom uri="http://localhost:9990/processes" title="Log"/>
+   		</service>
+   		<reference name="cloudCollection" target="CloudCollectionComponent/LocalItemCollection"/>
+   		<reference name="processCollection" target="NodeProcessCollectionComponent/ItemCollection">
+   	 		<t:binding.atom/>
+   		</reference>
+    </component>
+
     <component name="NodeProcessCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.implementation.node.launcher.NodeProcessCollectionImpl"/>
    		<service name="ItemCollection">
-   	 		<t:binding.atom uri="http://localhost:9990/process" title="Log"/>
+   	 		<t:binding.atom uri="http://localhost:9990/node/processes" title="Log"/>
    		</service>
     </component>
 
