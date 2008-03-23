@@ -76,5 +76,10 @@ public class Entry <K, D> {
     public void setData(D data) {
         this.data = data;
     }
+
+    //FIXME Temporary methods to make JAXB register the Item
+    // class when the Entry class is registered in a JAXB context  
+    public void setDummy(Item item) {}
+    public Item getDummy() { return null; }
     
 }
