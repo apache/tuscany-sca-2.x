@@ -38,7 +38,6 @@
             </activation>
             <modules>
                 <module>maven-ant-generator</module>
-                <module>maven-definitions</module>
                 <module>maven-dependency-lister</module>
                 <module>maven-incremental-build</module>
                 <module>maven-java2wsdl</module>
