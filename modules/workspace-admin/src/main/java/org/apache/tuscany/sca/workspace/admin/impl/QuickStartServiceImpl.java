@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.workspace.admin.impl;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeKey;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeQName;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.contributionURI;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.nodeURI;
 
 import java.io.IOException;
 import java.net.URI;
@@ -174,20 +175,12 @@ public class QuickStartServiceImpl extends HttpServlet {
                 Set<Integer> nodePorts = new HashSet<Integer>(); 
                 for (Entry<String, Item> entry: nodeEntries) {
                     Item item = entry.getData();
-                    String content = item.getContents();
-                    if (content != null) {
-                        int bs = content.indexOf("<span id=\"nodeURI\">");
-                        if (bs != -1) {
-                            content = content.substring(bs + 19);
-                            int es = content.indexOf("</span>");
-                            if (es != -1) {
-                                content = content.substring(0, es);
-                                URI uri = URI.create(content);
-                                int port = uri.getPort();
-                                if (port != -1) {
-                                    nodePorts.add(port);
-                                }
-                            }
+                    String uri = nodeURI(item.getContents());
+                    if (uri != null) {
+                        URI u = URI.create(uri);
+                        int port = u.getPort();
+                        if (port != -1) {
+                            nodePorts.add(port);
                         }
                     }
                 }

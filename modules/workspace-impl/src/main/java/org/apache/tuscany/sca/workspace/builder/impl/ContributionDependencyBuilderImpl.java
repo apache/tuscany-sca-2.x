@@ -17,31 +17,61 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.workspace.dependency.impl;
+package org.apache.tuscany.sca.workspace.builder.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.apache.tuscany.sca.assembly.builder.Problem;
+import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.workspace.Workspace;
+import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
+import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilderMonitor;
 
 /**
- * A contribution dependency analyzer.
+ * A contribution dependency builder.
  *
  * @version $Rev$ $Date$
  */
-public class ContributionDependencyAnalyzer {
+public class ContributionDependencyBuilderImpl implements ContributionDependencyBuilder {
+    private final static Logger logger = Logger.getLogger(ContributionDependencyBuilderImpl.class.getName());
+    
+    private ContributionDependencyBuilderMonitor monitor;
     
     /**
-     * Constructs a new WorkspaceDependencyAnalyzer.
+     * Constructs a new ContributionDependencyBuilder.
      */
-    public ContributionDependencyAnalyzer() {
-        // TODO Auto-generated constructor stub
+    public ContributionDependencyBuilderImpl(ContributionDependencyBuilderMonitor monitor) {
+        
+        if (monitor == null) {
+            // Create a default monitor that logs using the JDK logger.
+            monitor = new ContributionDependencyBuilderMonitor() {
+                public void problem(Problem problem) {
+                    if (problem.getSeverity() == Severity.INFO) {
+                        logger.info(problem.toString());
+                    } else if (problem.getSeverity() == Severity.WARNING) {
+                        logger.warning(problem.toString());
+                    } else if (problem.getSeverity() == Severity.ERROR) {
+                        if (problem.getCause() != null) {
+                            logger.log(Level.SEVERE, problem.toString(), problem.getCause());
+                        } else {
+                            logger.severe(problem.toString());
+                        }
+                    }
+                }
+            };
+        }
+        
+        this.monitor = monitor;
     }
     
     /**
@@ -50,7 +80,7 @@ public class ContributionDependencyAnalyzer {
      * @param contribution
      * @return
      */
-    public List<Contribution> calculateContributionDependencies(Workspace workspace, Contribution contribution) {
+    public List<Contribution> buildContributionDependencies(Workspace workspace, Contribution contribution) {
         List<Contribution> dependencies = new ArrayList<Contribution>();
         Set<Contribution> set = new HashSet<Contribution>();
 
@@ -73,6 +103,7 @@ public class ContributionDependencyAnalyzer {
         
         // Go through the contribution imports
         for (Import import_: contribution.getImports()) {
+            boolean resolved = false;
             
             // Go through all contribution candidates and their exports
             for (Contribution dependency: workspace.getContributions()) {
@@ -81,6 +112,8 @@ public class ContributionDependencyAnalyzer {
                     // If an export from a contribution matches the import in hand
                     // add that contribution to the dependency set
                     if (import_.match(export)) {
+                        resolved = true;
+
                         if (!set.contains(dependency)) {
                             set.add(dependency);
                             dependencies.add(dependency);
@@ -90,6 +123,11 @@ public class ContributionDependencyAnalyzer {
                         }
                     }
                 }
+            }
+            
+            if (!resolved) {
+                // Record import resolution issue
+                monitor.problem(new ProblemImpl(Severity.WARNING, "Unresolved import", import_));
             }
         }
     }

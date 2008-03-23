@@ -99,4 +99,9 @@ public class ResourceImportImpl implements ResourceImport {
         }
         return false;
     }
+    
+    @Override
+    public String toString() {
+        return String.valueOf(uri);
+    }
 }

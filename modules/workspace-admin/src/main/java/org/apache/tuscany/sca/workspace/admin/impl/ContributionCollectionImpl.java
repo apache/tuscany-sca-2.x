@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -53,6 +54,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.builder.Problem;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
@@ -77,7 +79,9 @@ import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
-import org.apache.tuscany.sca.workspace.dependency.impl.ContributionDependencyAnalyzer;
+import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
+import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilderMonitor;
+import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor;
 import org.apache.tuscany.sca.workspace.xml.WorkspaceProcessor;
 import org.apache.xml.serialize.OutputFormat;
@@ -212,7 +216,11 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         Workspace workspace = readWorkspace();
         Contribution contribution = contributionFactory.createContribution();
         contribution.setURI(key);
-        contribution.setLocation(item.getLink());
+        try {
+            contribution.setLocation(locationURL(item.getLink()).toString());
+        } catch (MalformedURLException e) {
+            throw new ServiceRuntimeException(e);
+        }
         workspace.getContributions().add(contribution);
         
         // Write the workspace
@@ -227,7 +235,11 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         Workspace workspace = readWorkspace();
         Contribution newContribution = contributionFactory.createContribution();
         newContribution.setURI(key);
-        newContribution.setLocation(item.getLink());
+        try {
+            newContribution.setLocation(locationURL(item.getLink()).toString());
+        } catch (MalformedURLException e) {
+            throw new ServiceRuntimeException(e);
+        }
         List<Contribution> contributions = workspace.getContributions();
         for (int i = 0, n = contributions.size(); i < n; i++) {
             if (contributions.get(i).getURI().equals(key)) {
@@ -279,8 +291,8 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
                 if (key.equals(contribution.getURI())) {
 
                     // Compute the contribution dependencies
-                    ContributionDependencyAnalyzer analyzer = new ContributionDependencyAnalyzer();
-                    List<Contribution> dependencies = analyzer.calculateContributionDependencies(workspace, contribution);
+                    ContributionDependencyBuilder analyzer = new ContributionDependencyBuilderImpl(null);
+                    List<Contribution> dependencies = analyzer.buildContributionDependencies(workspace, contribution);
                     
                     // Returns entries for the dependencies
                     // optionally skip the specified contribution
@@ -329,9 +341,16 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         item.setAlternate(contribution.getLocation());
         
         // List the contribution dependencies in the item contents
+        final List<String> problems = new ArrayList<String>();
+        ContributionDependencyBuilderMonitor monitor = new ContributionDependencyBuilderMonitor() {
+            public void problem(Problem problem) {
+                problems.add(problem.getMessage() + " " + problem.getModel());
+            }
+        };
+        
         StringBuffer sb = new StringBuffer();
-        ContributionDependencyAnalyzer analyzer = new ContributionDependencyAnalyzer();
-        List<Contribution> dependencies = analyzer.calculateContributionDependencies(workspace, contribution);
+        ContributionDependencyBuilderImpl analyzer = new ContributionDependencyBuilderImpl(monitor);
+        List<Contribution> dependencies = analyzer.buildContributionDependencies(workspace, contribution);
         if (dependencies.size() > 1) {
             sb.append("Dependencies: <span id=\"dependencies\">");
             for (int i = 0, n = dependencies.size(); i < n ; i++) {
@@ -362,7 +381,16 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
             sb.append("</span><br>");
         }
         
-        // Store the two lists in the item contents
+        // List the dependency problems
+        if (problems.size() > 1) {
+            sb.append("<span id=\"problems\" style=\"color: red\">");
+            for (int i = 0, n = problems.size(); i < n ; i++) {
+                sb.append("Problem: "+ problems.get(i) + "<br>");
+            }
+            sb.append("</span>");
+        }
+        
+        // Store in the item contents
         item.setContents(sb.toString());
         
         return item;

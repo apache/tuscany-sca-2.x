@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.workspace.dependency.impl;
+package org.apache.tuscany.sca.workspace.builder.impl;
 
 import java.util.List;
 
@@ -33,13 +33,14 @@ import org.apache.tuscany.sca.contribution.namespace.impl.NamespaceImportExportF
 import org.apache.tuscany.sca.workspace.DefaultWorkspaceFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
+import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
 
 /**
  * Test the contribution dependency analyzer.
  * 
  * @version $Rev$ $Date$
  */
-public class ContributionDependencyAnalyzerTestCase extends TestCase {
+public class ContributionDependencyBuilderTestCase extends TestCase {
 
     private ContributionFactory contributionFactory;
     private WorkspaceFactory workspaceFactory;
@@ -89,8 +90,8 @@ public class ContributionDependencyAnalyzerTestCase extends TestCase {
         export.setNamespace("http://another");
         another.getExports().add(export);
         
-        ContributionDependencyAnalyzer analyzer = new ContributionDependencyAnalyzer();
-        List<Contribution> dependencies = analyzer.calculateContributionDependencies(workspace, importer);
+        ContributionDependencyBuilderImpl analyzer = new ContributionDependencyBuilderImpl(null);
+        List<Contribution> dependencies = analyzer.buildContributionDependencies(workspace, importer);
         assertTrue(dependencies.size() == 3);
         assertTrue(dependencies.contains(importer));
         assertTrue(dependencies.contains(imported));
