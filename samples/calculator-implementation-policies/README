@@ -114,7 +114,7 @@ Building And Running The Sample Using Ant
 With the binary distribution the sample can be built and run using Ant as 
 follows
 
-cd calculator
+cd calculator-implementation-policies
 ant compile
 ant run
 
