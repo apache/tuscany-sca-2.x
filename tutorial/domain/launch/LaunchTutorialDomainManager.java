@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,28 +15,19 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
-		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
-		targetNamespace="http://cloud"			
-		name="catalogs">
-		
-	<component name="CloudFruitsCatalog">
-		<implementation.java class="services.FruitsCatalogImpl"/>
-		<service name="Catalog">
-			<binding.ws/>
-		</service> 
-		<property name="currencyCode">USD</property>
-		<reference name="currencyConverter" target="CloudCurrencyConverter">
-			<binding.ws/>
-		</reference>
-	</component> 
- 	
-	<component name="CloudVegetablesCatalog">
-		<implementation.java class="services.VegetablesCatalogImpl"/>
-		<service name="Catalog">
-			<binding.ws/>
-		</service> 
-	</component>
- 	
-</composite>
+ */
+
+package launch;
+
+/**
+ * Launches the domain manager from this module.
+ *
+ * @version $Rev$ $Date$
+ */
+public class LaunchTutorialDomainManager {
+    
+    public static void main(String[] args) throws Exception {
+        org.apache.tuscany.sca.node.launcher.DomainNodeLauncher.main(args);
+    }
+
+}

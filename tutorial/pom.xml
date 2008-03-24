@@ -36,15 +36,18 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>assets</module>
-                <module>cloud</module>
                 <module>domain</module>
-                <module>nodes-jee</module>
+                <module>assets</module>
                 <module>store</module>
-                <module>store-db</module>
-                <module>store-eu</module>
                 <module>store-merger</module>
+                <module>store-db</module>
                 <module>store-supplier</module>
+                <module>store-eu</module>
+                <module>web-services</module>
+                <module>catalog-webapp</module>
+                <!--
+                <module>jee-services</module>
+                -->
             </modules>
         </profile>
 

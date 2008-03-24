@@ -25,8 +25,8 @@
         <version>2.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tutorial-cloud</artifactId>
-    <name>Apache Tuscany SCA Tutorial Service Cloud</name>
+    <artifactId>tutorial-web-services</artifactId>
+    <name>Apache Tuscany SCA Tutorial Web Services</name>
 
     <repositories>
        <repository>
@@ -64,9 +64,6 @@
                 <version>2.0-incubating-SNAPSHOT</version>
                 <executions>
                     <execution>
-                        <configuration>
-                            <mainClass>launch.LaunchCloud</mainClass>
-                        </configuration>
                         <goals>
                             <goal>generate</goal>
                         </goals>

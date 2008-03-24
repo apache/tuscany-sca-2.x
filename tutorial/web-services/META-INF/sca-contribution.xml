@@ -18,7 +18,7 @@
     * under the License.    
 -->
 <contribution xmlns="http://www.osoa.org/xmlns/sca/1.0"
-   xmlns:c="http://cloud">
+   xmlns:c="http://services">
    <import.java package="services"/>
    <deployable composite="c:catalogs"/>
    <deployable composite="c:currency"/>
