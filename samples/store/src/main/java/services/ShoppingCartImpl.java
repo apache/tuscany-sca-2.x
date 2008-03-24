@@ -19,101 +19,93 @@
 
 package services;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.abdera.Abdera;
-import org.apache.abdera.model.Entry;
-import org.apache.abdera.model.Feed;
-import org.apache.tuscany.sca.binding.atom.collection.Collection;
-import org.apache.tuscany.sca.binding.atom.collection.NotFoundException;
+import org.apache.tuscany.sca.implementation.data.collection.Entry;
+import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
 
-
-public class ShoppingCartImpl implements Collection {
-
-    private static Map<String, Entry> cart = new HashMap<String, Entry>();
-
-    public Feed getFeed() {
-        Feed feed = Abdera.getNewFactory().newFeed();
-        feed.setTitle("shopping cart");
-        feed.setSubtitle("Total : " + getTotal());
-        
-        for (Entry entry : cart.values()) {
-        	feed.addEntry(entry);
-        }
-
-        return feed;
+@Scope("COMPOSITE")
+public class ShoppingCartImpl implements Cart, Total {
+    
+    private Map<String, Item> cart;
+    
+    @Init
+    protected void init() {
+        cart = new HashMap<String, Item>();
     }
 
-    public Feed query(String queryString) {
+    public Entry<String, Item>[] getAll() {
+        Entry<String, Item>[] entries = new Entry[cart.size()];
+        int i = 0;
+        for (Map.Entry<String, Item> e: cart.entrySet()) {
+            entries[i++] = new Entry<String, Item>(e.getKey(), e.getValue());
+        }
+        return entries;
+    }
+
+    public Item get(String key) throws NotFoundException {
+        Item item = cart.get(key);
+        if (item == null) {
+            throw new NotFoundException(key);
+        } else {
+            return item;
+        }
+    }
+
+    public String post(String key, Item item) {
+        if (key == null) {
+            key ="cart-" + UUID.randomUUID().toString();
+        }
+        cart.put(key, item);
+        return key;
+    }
+
+    public void put(String key, Item item) throws NotFoundException {
+        if (!cart.containsKey(key)) {
+            throw new NotFoundException(key);
+        }
+        cart.put(key, item);
+    }
+    
+    public void delete(String key) throws NotFoundException {
+        if (key == null || key.equals("")) {
+            cart.clear();
+        } else {
+            Item item = cart.remove(key);
+            if (item == null)
+                throw new NotFoundException(key);
+        }
+    }
+
+    public Entry<String, Item>[] query(String queryString) {
+        List<Entry<String, Item>> entries = new ArrayList<Entry<String,Item>>();
         if (queryString.startsWith("name=")) {
             String name = queryString.substring(5);
-
-            Feed feed = Abdera.getNewFactory().newFeed();
-            feed.setTitle("shopping cart");
-            feed.setSubtitle("Total : " + getTotal());
-            
-            for (Entry entry : cart.values()) {
-                if (entry.getTitle().contains(name)) {
-                    feed.addEntry(entry);
+            for (Map.Entry<String, Item> e: cart.entrySet()) {
+                Item item = e.getValue();
+                if (item.getName().equals(name)) {
+                    entries.add(new Entry<String, Item>(e.getKey(), e.getValue()));
                 }
             }
-            return feed;
-            
-        } else {
-            return getFeed();
         }
+        return entries.toArray(new Entry[entries.size()]);
     }
-
-    public Entry get(String id) throws NotFoundException {
-        return cart.get(id);
-    }
-
-    public Entry post(Entry entry) {
-        System.out.println("post" + entry);
-        String id = "cart-" + UUID.randomUUID().toString();
-        entry.setId(id);
-
-        entry.addLink(id, "edit");
-        entry.addLink(id, "alternate");
-        
-        entry.setEdited(new Date());
-
-        cart.put(id, entry);
-        return entry;
-    }
-
-    public void put(String id, Entry entry) throws NotFoundException {
-        entry.setUpdated(new Date());
-        cart.put(id, entry);
-    }
-
-    public void delete(String id) throws NotFoundException {
-        if (id.equals(""))
-            cart.clear();
-        else
-            cart.remove(id);
-    }
-
-    private String getTotal() {
-        float total = 0;
+    
+    public String getTotal() {
+        double total = 0;
         String currencySymbol = "";
         if (!cart.isEmpty()) {
-            String item = ((Entry)cart.values().iterator().next()).getContent();
-            currencySymbol = item.substring(item.indexOf("-") + 2, item.indexOf("-") + 3);
+            Item item = cart.values().iterator().next();
+            currencySymbol = item.getPrice().substring(0, 1);
         }
-        for (Entry entry : cart.values()) {
-            String item = entry.getContent();
-            
-            int index = item.length()-1;
-            char digit;
-            while ((digit = item.charAt(index)) == '.' || Character.isDigit(digit)) {
-                index--;
-            }
-            
-            total += Float.valueOf(item.substring(index));
+        for (Item item : cart.values()) {
+            total += Double.valueOf(item.getPrice().substring(1));
         }
         return currencySymbol + String.valueOf(total);
     }

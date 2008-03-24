@@ -19,24 +19,27 @@
 -->
 <composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
 		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
-		targetNamespace="http://store"			
+		targetNamespace="http://store"
 		name="store">
 		
-    <component name="store">
-        <t:implementation.widget location="ufservices/store.html"/>
+    <component name="Store">
+        <t:implementation.widget location="uiservices/store.html"/>
         <service name="Widget">
-        	<t:binding.http/> 
+        	<t:binding.http uri="/store"/>
         </service>
 		<reference name="catalog" target="Catalog">
 		 	<t:binding.jsonrpc/>
 		 </reference>
-		 <reference name="shoppingCart" target="ShoppingCart">
+		 <reference name="shoppingCart" target="ShoppingCart/Cart">
 		 	<t:binding.atom/>
+		 </reference>
+		 <reference name="shoppingTotal" target="ShoppingCart/Total">
+		 	<t:binding.jsonrpc/>
 		 </reference>
     </component>
     
 	<component name="Catalog">
-		<implementation.java class="services.CatalogImpl"/> 
+		<implementation.java class="services.FruitsCatalogImpl"/> 
 		<property name="currencyCode">USD</property>
 		<service name="Catalog">
 			<t:binding.jsonrpc/>
@@ -46,14 +49,16 @@
  	
 	<component name="ShoppingCart">
 		<implementation.java class="services.ShoppingCartImpl"/>
-		<service name="Collection">
-			<t:binding.atom/>
+		<service name="Cart">
+			<t:binding.atom uri="/ShoppingCart/Cart"/>
+		</service>    	
+		<service name="Total">
+			<t:binding.jsonrpc/>
 		</service>    	
 	</component>
     
 	<component name="CurrencyConverter">
 		<implementation.java class="services.CurrencyConverterImpl"/>
-		<property name="rate">0.7256</property>
 	</component>     
 
 </composite>
