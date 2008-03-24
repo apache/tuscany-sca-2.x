@@ -26,23 +26,26 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
-public class CatalogImpl implements Catalog {
+public class FruitsCatalogImpl implements Catalog {
+    
     @Property
     public String currencyCode = "USD";
+    
     @Reference
     public CurrencyConverter currencyConverter;
-    private List<String> catalog = new ArrayList<String>();
+    
+    private List<Item> catalog = new ArrayList<Item>();
 
     @Init
     public void init() {
         String currencySymbol = currencyConverter.getCurrencySymbol(currencyCode);
-        catalog.add("Apple - " + currencySymbol + currencyConverter.getConversion("USD", currencyCode, 2.99f));
-        catalog.add("Orange - " + currencySymbol + currencyConverter.getConversion("USD", currencyCode, 3.55f));
-        catalog.add("Pear - " + currencySymbol + currencyConverter.getConversion("USD", currencyCode, 1.55f));
+        catalog.add(new Item("Apple",  currencySymbol + currencyConverter.getConversion("USD", currencyCode, 2.99)));
+        catalog.add(new Item("Orange", currencySymbol + currencyConverter.getConversion("USD", currencyCode, 3.55)));
+        catalog.add(new Item("Pear", currencySymbol + currencyConverter.getConversion("USD", currencyCode, 1.55)));
     }
 
-    public String[] get() {
-        String[] catalogArray = new String[catalog.size()];
+    public Item[] get() {
+        Item[] catalogArray = new Item[catalog.size()];
         catalog.toArray(catalogArray);
         return catalogArray;
     }
