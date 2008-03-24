@@ -19,12 +19,12 @@
 -->
 <workspace xmlns="http://tuscany.apache.org/xmlns/sca/1.0" xmlns:ns1="http://tuscany.apache.org/xmlns/sca/1.0">
   <contribution location="file:../assets/target/tutorial-assets.jar" uri="assets"/>
-  <contribution location="file:../cloud/target/tutorial-cloud.jar" uri="cloud"/>
   <contribution location="file:../store/target/tutorial-store.jar" uri="store"/>
   <contribution location="file:../store-merger/target/tutorial-store-merger.jar" uri="store-merger"/>
   <contribution location="file:../store-db/target/tutorial-store-db.jar" uri="store-db"/>
   <contribution location="file:../store-supplier/target/tutorial-store-supplier.jar" uri="store-supplier"/>
   <contribution location="file:../store-eu/target/tutorial-store-eu.jar" uri="store-eu"/>
-  <contribution location="file:../nodes-jee/catalog-webapp/target/tutorial-catalog-webapp.war" uri="catalog-webapp"/>
+  <contribution location="file:../web-services/target/tutorial-web-services.jar" uri="web-services"/>
+  <contribution location="file:../catalog-webapp/target/tutorial-catalog-webapp.war" uri="catalog-webapp"/>
   <contribution location="file:../domain/cloud" uri="http://tuscany.apache.org/cloud"/>
 </workspace>

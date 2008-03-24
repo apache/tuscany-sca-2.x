@@ -25,9 +25,9 @@
         <version>2.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tutorial-nodes-jee</artifactId>
+    <artifactId>tutorial-jee-services</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Tutorial JEE Nodes</name>
+    <name>Apache Tuscany SCA Tutorial JEE Services</name>
 
     <profiles>
         <profile>
@@ -38,7 +38,6 @@
             <modules>
                 <module>catalog-ejb</module>
                 <module>catalog-jee</module>
-                <module>catalog-webapp</module>
             </modules>
         </profile>
 

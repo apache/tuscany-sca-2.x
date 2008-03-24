@@ -17,16 +17,27 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+<composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
 		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
-		targetNamespace="http://cloud"	
-		name="currency">
+		targetNamespace="http://services"			
+		name="catalogs">
 		
-	<component name="CloudCurrencyConverter">
-		<implementation.java class="services.CurrencyConverterImpl"/>
-		<service name="CurrencyConverter">
+	<component name="FruitsCatalogWebService">
+		<implementation.java class="services.FruitsCatalogImpl"/>
+		<service name="Catalog">
 			<binding.ws/>
-		</service>
+		</service> 
+		<property name="currencyCode">USD</property>
+		<reference name="currencyConverter" target="CurrencyConverterWebService">
+			<binding.ws/>
+		</reference>
+	</component> 
+ 	
+	<component name="VegetablesCatalogWebService">
+		<implementation.java class="services.VegetablesCatalogImpl"/>
+		<service name="Catalog">
+			<binding.ws/>
+		</service> 
 	</component>
-
+ 	
 </composite>

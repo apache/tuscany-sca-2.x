@@ -21,7 +21,6 @@ package launch;
 
 import org.apache.tuscany.sca.node.launcher.NodeLauncher;
 
-
 public class LaunchStoreDBNode {
     public static void main(String[] args) throws Exception {
         NodeLauncher.main(new String[] {"http://localhost:9990/node-image/StoreDBNode"});

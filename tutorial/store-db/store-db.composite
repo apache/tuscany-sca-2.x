@@ -45,7 +45,7 @@
 			<t:binding.jsonrpc/>
    		</service>
 		<reference name="fruitsCatalog" target="StoreDBFruitsCatalog"/>	
-		<reference name="vegetablesCatalog" target="CloudVegetablesCatalog">
+		<reference name="vegetablesCatalog" target="VegetablesCatalogWebService">
 			<binding.ws/>
 		</reference>	
 		<reference name="currencyConverter" target="StoreDBCurrencyConverter"/>	

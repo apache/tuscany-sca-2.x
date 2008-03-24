@@ -46,7 +46,7 @@
 			<binding.ws uri="/CatalogWebService"/>
    		</service>
 		<reference name="fruitsCatalog" target="StoreSupplierFruitsCatalog"/>	
-		<reference name="vegetablesCatalog" target="CloudVegetablesCatalog">
+		<reference name="vegetablesCatalog" target="VegetablesCatalogWebService">
 			<binding.ws/>
 		</reference>	
 		<reference name="currencyConverter" target="StoreSupplierCurrencyConverter"/>	
