@@ -19,10 +19,8 @@
 package org.apache.tuscany.sca.itest.callableref;
 
 import java.io.ByteArrayOutputStream;
-import java.io.Externalizable;
 import java.io.ObjectOutputStream;
 
-import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter.Base64Binary;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
@@ -89,8 +87,8 @@ public class AComponentImpl implements AComponent {
     
     /**
      * A test case to work out what needs to be done in a transformer to get the 
-     * callable reference across the wire. Let here for interest in case anyone 
-     * is looking for how to get at the innards of callable references
+     * CallableReference across the wire. Let here for interest in case anyone 
+     * is looking for how to get at the innards of CallableReferences
      */
     public String fooStringD() {
         CallableReference<AComponent> aReference = componentContext.createSelfReference(AComponent.class);
