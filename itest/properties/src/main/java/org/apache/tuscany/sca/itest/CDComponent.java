@@ -28,43 +28,43 @@ import java.util.Collection;
 public interface CDComponent {
 
     /**
-     * This is a method to get a property value from the sca runtime environment. It is implemented in the class
+     * This is a method to get a property value from the SCA runtime environment. It is implemented in the class
      * CDComponentImpl Class
      */
     String getC();
 
     /**
-     * This is a method to get a property value from the sca runtime environment. It is implemented in the class
+     * This is a method to get a property value from the SCA runtime environment. It is implemented in the class
      * CDComponentImpl Class
      */
     String getC2();
 
     /**
-     * This is a method to get a property value from the sca runtime environment. It is implemented in the class
+     * This is a method to get a property value from the SCA runtime environment. It is implemented in the class
      * CDComponentImpl Class
      */
     String getD();
 
     /**
-     * This is a method to get a property value from the sca runtime environment. It is implemented in the class
+     * This is a method to get a property value from the SCA runtime environment. It is implemented in the class
      * CDComponentImpl Class
      */
     String getNoSource();
 
     /**
-     * This is a method to get a property value from the sca runtime environment. It is implemented in the class
+     * This is a method to get a property value from the SCA runtime environment. It is implemented in the class
      * CDComponentImpl Class
      */
     String getFileProperty();
 
     /**
-     * This is a method to get a property value from the sca runtime environment. It is implemented in the class
+     * This is a method to get a property value from the SCA runtime environment. It is implemented in the class
      * CDComponentImpl Class
      */
     Collection<String> getManyValuesFileProperty();
 
     /**
-     * This is a method to get a property value from the sca runtime environment. It is implemented in the class
+     * This is a method to get a property value from the SCA runtime environment. It is implemented in the class
      * CDComponentImpl Class
      */
     int getOverrideValue();

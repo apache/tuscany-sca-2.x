@@ -31,44 +31,44 @@ import org.osoa.sca.annotations.Remotable;
 public interface ABComponent {
 
     /**
-     * This is a method to get a string property value from the sca runtime environment. It is implemented in the class
+     * This is a method to get a string property value from the SCA runtime environment. It is implemented in the class
      * ABComponentImpl
      */
 
     String getA();
 
     /**
-     * This is a method to get a string property value from the sca runtime environment. It is implemented in the class
+     * This is a method to get a string property value from the SCA runtime environment. It is implemented in the class
      * ABComponentImpl
      */
     String getB();
 
     /**
-     * This is a method to get a string property value from the sca runtime environment. It is implemented in the class
+     * This is a method to get a string property value from the SCA runtime environment. It is implemented in the class
      * ABComponentImpl
      */
     String getZ();
 
     /**
-     * This is a method to get an integer property value from the sca runtime environment. It is implemented in the
+     * This is a method to get an integer property value from the SCA runtime environment. It is implemented in the
      * class ABComponentImpl
      */
     int getIntValue();
 
     /**
-     * This is a method to get a string property value from the sca runtime environment. It is implemented in the class
+     * This is a method to get a string property value from the SCA runtime environment. It is implemented in the class
      * ABComponentImpl
      */
     String getF();
 
     /**
-     * This is a method to get collectioon of property values from the sca runtime environment. It is implemented in the
+     * This is a method to get collection of property values from the SCA runtime environment. It is implemented in the
      * class ABComponentImpl
      */
     Collection<String> getManyStringValues();
 
     /**
-     * This is a method to get collection of property value from the sca runtime environment. It is implemented in the
+     * This is a method to get collection of property value from the SCA runtime environment. It is implemented in the
      * class ABComponentImpl
      */
     Collection<Integer> getManyIntegers();
