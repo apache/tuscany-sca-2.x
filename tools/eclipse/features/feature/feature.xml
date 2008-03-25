@@ -22,13 +22,14 @@
       label="Apache Tuscany SCA Tools"
       version="1.2.0"
       provider-name="Apache Software Foundation">
+   <install-handler handler="org.eclipse.update.core.DefaultInstallHandler"/>
 
    <description url="http://incubator.apache.org/tuscany">
       Apache Tuscany SCA Tools.
    </description>
 
    <license url="http://www.apache.org/licenses/LICENSE-2.0">
-Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements.  See the NOTICE file distributed with this work for additional information regarding copyright ownership.  The ASF licenses this file to you under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except in compliance with the License.  You may obtain a copy of the License at
+      Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements.  See the NOTICE file distributed with this work for additional information regarding copyright ownership.  The ASF licenses this file to you under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except in compliance with the License.  You may obtain a copy of the License at
 
 http://www.apache.org/licenses/LICENSE-2.0
     
@@ -36,6 +37,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
    </license>
 
    <requires>
+      <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.jobs"/>
@@ -47,7 +49,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.swt"/>
-      <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.osgi"/>
    </requires>
 
@@ -57,5 +58,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
          install-size="0"
          version="1.2.0"
          unpack="false"/>
+
+   <data
+         id="runtime.jar"
+         download-size="0"
+         install-size="0"/>
+
+   <data
+         id="src/apache-tuscany-sca-1.2-incubating-SNAPSHOT-src.zip"
+         download-size="0"
+         install-size="0"/>
 
 </feature>

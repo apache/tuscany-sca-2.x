@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description url="http://people.apache.org/~jsdelfino/tuscany/tools/updatesite">
+   <description url="http://incubator.apache.org/tuscany">
       Apache Tuscany SCA Tools.
    </description>
-   <feature url="features/org.apache.tuscany.sca.feature_1.2.0.jar" id="org.apache.tuscany.sca.feature" version="1.2.0"/>
+   
+   <feature id="org.apache.tuscany.sca.feature" version="1.2.0"
+      url="features/org.apache.tuscany.sca.feature-2.0-incubating-SNAPSHOT.jar"/>
+   
+   <archive path="plugins/org.apache.tuscany.sca.core_1.2.0.jar"
+      url="plugins/org.apache.tuscany.sca.core-2.0-incubating-SNAPSHOT.jar"/>
+
+   <archive path="features/org.apache.tuscany.sca.feature_1.2.0/runtime.jar"
+      url="../apache-tuscany-sca-1.2-incubating-SNAPSHOT.zip"/>   
+
+   <archive path="features/org.apache.tuscany.sca.feature_1.2.0/src/apache-tuscany-sca-1.2-incubating-SNAPSHOT-src.zip"
+      url="../apache-tuscany-sca-1.2-incubating-SNAPSHOT-src.zip"/>   
 </site>
