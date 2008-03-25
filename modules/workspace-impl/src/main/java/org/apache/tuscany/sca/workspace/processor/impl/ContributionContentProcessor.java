@@ -21,8 +21,10 @@ package org.apache.tuscany.sca.workspace.processor.impl;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -84,6 +86,7 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
         
         // Scan the contribution and list the artifacts contained in it
         List<Artifact> artifacts = contribution.getArtifacts();
+        boolean contributionMetadata = false;
         for (String artifactURI: scanner.getArtifacts(contributionURL)) {
             URL artifactURL = scanner.getArtifactURL(contributionURL, artifactURI);
 
@@ -104,10 +107,21 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
 
                 // Merge contribution metadata into the contribution model
                 if (model instanceof Contribution) {
+                    contributionMetadata = true;
                     Contribution c = (Contribution)model;
                     contribution.getImports().addAll(c.getImports());
                     contribution.getExports().addAll(c.getExports());
                     contribution.getDeployables().addAll(c.getDeployables());
+                }
+            }
+        }
+        
+        // If no sca-contribution.xml file was provided then just consider
+        // all composites in the contribution as deployables
+        if (!contributionMetadata) {
+            for (Artifact artifact: artifacts) {
+                if (artifact.getModel() instanceof Composite) {
+                    contribution.getDeployables().add((Composite)artifact.getModel());
                 }
             }
         }

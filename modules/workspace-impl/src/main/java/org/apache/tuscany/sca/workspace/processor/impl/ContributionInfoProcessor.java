@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -83,6 +85,7 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
         }
         
         // Read generated and user sca-contribution.xml files
+        boolean contributionMetadata = false;
         for (String path: new String[]{
                                        Contribution.SCA_CONTRIBUTION_GENERATED_META,
                                        Contribution.SCA_CONTRIBUTION_META}) {
@@ -94,12 +97,38 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
             } catch (IOException e) {
                 continue;
             }
+            contributionMetadata = true;
             
             // Read the sca-contribution.xml file
             Contribution c = (Contribution)artifactProcessor.read(contributionURL, URI.create(path), url);
             contribution.getImports().addAll(c.getImports());
             contribution.getExports().addAll(c.getExports());
             contribution.getDeployables().addAll(c.getDeployables());
+        }
+        
+        // If no sca-contribution.xml file was provided then just consider
+        // all composites in the contribution as deployables
+        if (!contributionMetadata) {
+            List<String> artifactURIs;
+            try {
+                artifactURIs = scanner.getArtifacts(contributionURL);
+            } catch (ContributionReadException e) {
+                artifactURIs = null;
+            }
+            if (artifactURIs != null) {
+                for (String artifactURI: artifactURIs) {
+                    if (!artifactURI.endsWith(".composite")) {
+                        continue;
+                    }
+                    URL artifactURL = scanner.getArtifactURL(contributionURL, artifactURI);
+    
+                    // Read each artifact
+                    Object model = artifactProcessor.read(contributionURL, URI.create(artifactURI), artifactURL);
+                    if (model instanceof Composite) {
+                        contribution.getDeployables().add((Composite)model);
+                    }
+                }
+            }
         }
         
         return contribution;
