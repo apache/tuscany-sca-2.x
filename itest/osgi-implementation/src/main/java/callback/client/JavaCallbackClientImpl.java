@@ -89,7 +89,7 @@ public class JavaCallbackClientImpl implements CallbackClient, CallbackCallback 
         int count = 0;
 
         // 
-        // If we cant get a response in 30 seconds consider this a failure
+        // If we can't get a response in 30 seconds consider this a failure
         // 
 
         synchronized (monitor) {
