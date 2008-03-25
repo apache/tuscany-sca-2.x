@@ -20,11 +20,14 @@
 package org.apache.tuscany.sca.core.classpath;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
@@ -38,6 +41,9 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
     
     private static final String TUSCANY_HOME = "TUSCANY_HOME";
     private static final String TUSCANY_SRC = "TUSCANY_SRC";
+    private static final String TUSCANY_FEATURE = "features/org.apache.tuscany.sca.feature_1.2.0";
+    private static final String TUSCANY_FEATURE_RUNTIME = TUSCANY_FEATURE + "/runtime/tuscany-sca-1.2-incubating-SNAPSHOT"; 
+    private static final String TUSCANY_FEATURE_SRC = TUSCANY_FEATURE + "/src/apache-tuscany-sca-1.2-incubating-SNAPSHOT-src.zip"; 
 
     public TuscanyClasspathContainer() {
     }
@@ -45,38 +51,58 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
     public IClasspathEntry[] getClasspathEntries() {
         List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
         
-        // Get the runtime plugin location
-//        IPath runtimePath;
-//        try {
-//            URL url = FileLocator.toFileURL(Platform.getBundle("org.apache.tuscany.sca.runtime").getEntry("/"));
-//            runtimePath = new Path(url.getFile());
-//        } catch (IOException e) {
-//            throw new IllegalArgumentException(e);
-//        }
-        
-        // Get the location of the Tuscany binary distribution from
-        // the TUSCANY_SOURCE property or environment variable
-        String home = System.getProperty(TUSCANY_HOME);
-        if (home == null || home.length() == 0) {
-            home = System.getenv(TUSCANY_HOME);
-        }
-        if (home != null && home.length() != 0) {
-            IPath runtimePath = new Path(home);
+        // Get the runtime location from the installed Tuscany feature
+        IPath runtimePath = null;
+        try {
+            //FIXME Need a better way to find the location of the Tuscany feature
+            URL url = FileLocator.toFileURL(Platform.getInstallLocation().getURL());
+            File file = new File(url.toURI());
+            file = new File(file, TUSCANY_FEATURE_RUNTIME);
+            if (file.exists()) {
+                runtimePath = new Path(file.getPath());
+            }
+        } catch (Exception e) {
 
-            // Get the location of the Tuscany source distribution from
-            // the TUSCANY_SOURCE property or environment variable
+            // Try to get the location of the Tuscany binary distribution from
+            // the TUSCANY_HOME property or environment variable
+            String home = System.getProperty(TUSCANY_HOME);
+            if (home == null || home.length() == 0) {
+                home = System.getenv(TUSCANY_HOME);
+            }
+            if (home != null && home.length() != 0) {
+                if (new File(home).exists()) {
+                    runtimePath = new Path(home);
+                }
+            }
+        }
+        
+        // Get the source location from the installed Tuscany feature
+        IPath sourcePath = null;
+        try {
+            //FIXME Need a better way to find the location of the Tuscany feature
+            URL url = FileLocator.toFileURL(Platform.getInstallLocation().getURL());
+            File file = new File(url.toURI());
+            file = new File(file, TUSCANY_FEATURE_SRC);
+            if (file.exists()) {
+                sourcePath = new Path(file.getPath());
+            }
+        } catch (Exception e) {
+
+            // Try to get the location of the Tuscany source distribution from
+            // the TUSCANY_SRC property or environment variable
             String source = System.getProperty(TUSCANY_SRC);
             if (source == null || source.length() == 0) {
                 source = System.getenv(TUSCANY_SRC);
             }
-            IPath sourcePath;
             if (source != null && source.length() != 0) {
-                sourcePath = new Path(source);
-            } else {
-                sourcePath = null;
+                if (new File(source).exists()) {
+                    sourcePath = new Path(source);
+                }
             }
-            
-            // Add JARs from runtime/lib and runtime/modules as classpath entries
+        }
+        
+        // Add the JARs from runtime/lib and runtime/modules as classpath entries
+        if (runtimePath != null) {
             for (String directory: new String[]{"modules", "lib"}) {
                 File parent = runtimePath.append(directory).toFile();
                 if (parent != null && parent.exists()) {
@@ -86,6 +112,24 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
                         if (!"jar".equals(extension)) {
                             continue;
                         }
+
+                        // Exclude tuscany-sca-all and tuscany-sca-manifest as they duplicate
+                        // code in the individual runtime module JARs
+                        String name = path.lastSegment();
+                        if (name.startsWith("tuscany-sca-all")) {
+                            continue;
+                        }
+                        if (name.startsWith("tuscany-sca-manifest")) {
+                            continue;
+                        }
+                        
+                        // Filter out the Jetty and Webapp hosts
+                        if (name.startsWith("tuscany-host-jetty") ||
+                            name.startsWith("tuscany-host-webapp")) {
+                            //FIXME This is temporary
+                            continue;
+                        }
+                        
                         list.add(JavaCore.newLibraryEntry(path, sourcePath, null));
                     }
                 }

@@ -85,8 +85,8 @@ public class NewComponentTypeWizardPage extends WizardNewFileCreationPage {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		PrintWriter printWriter = new PrintWriter(outputStream);
 		printWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		printWriter.println("<componentType	xmlns=\"http://www.osoa.org/xmlns/sca/1.0\"");
-		printWriter.println("				xmlns:t=\"http://tuscany.apache.org/xmlns/sca/1.0\">");	
+		printWriter.println("<componentType xmlns=\"http://www.osoa.org/xmlns/sca/1.0\"");
+		printWriter.println("    xmlns:t=\"http://tuscany.apache.org/xmlns/sca/1.0\">");	
 		printWriter.println();
 		printWriter.println();
 		printWriter.println("</componentType>");

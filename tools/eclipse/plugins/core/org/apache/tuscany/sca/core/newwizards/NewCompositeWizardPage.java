@@ -89,10 +89,11 @@ public class NewCompositeWizardPage extends WizardNewFileCreationPage {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		PrintWriter printWriter = new PrintWriter(outputStream);
 		printWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");		
-		printWriter.println("<composite	xmlns=\"http://www.osoa.org/xmlns/sca/1.0\"");
-		printWriter.println("			xmlns:t=\"http://tuscany.apache.org/xmlns/sca/1.0\"");
-		printWriter.println("			xmlns:c=\"http://" + name + "\"");	
-		printWriter.println("			name=\"" + name + "\">");
+		printWriter.println("<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\"");
+		printWriter.println("    xmlns:t=\"http://tuscany.apache.org/xmlns/sca/1.0\"");
+		printWriter.println("    xmlns:c=\"http://" + name + "\"");	
+                printWriter.println("    targetNamespace=\"http://" + name + "\"");      
+		printWriter.println("    name=\"" + name + "\">");
 		printWriter.println();
                 printWriter.println();
 		printWriter.println("</composite>");

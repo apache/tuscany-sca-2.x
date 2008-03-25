@@ -26,6 +26,7 @@
 
     <fileSets>
         <fileSet>
+             <outputDirectory>tuscany-sca-updatesite-${tuscany.version}</outputDirectory>
             <includes>
                 <include>DISCLAIMER</include>
                 <include>LICENSE</include>
@@ -37,23 +38,21 @@
         
     <dependencySets>
         <dependencySet>
-            <outputDirectory>plugins</outputDirectory>
+             <outputDirectory>tuscany-sca-updatesite-${tuscany.version}/plugins</outputDirectory>
             <unpack>false</unpack>
             <includes>
                 <include>org.apache.tuscany.sca:org.apache.tuscany.sca.core</include>
             </includes>
             <scope>runtime</scope>
-            <outputFileNameMapping>${artifactId}_1.1.0.${extension}</outputFileNameMapping>
         </dependencySet>
 
         <dependencySet>
-            <outputDirectory>features</outputDirectory>
+            <outputDirectory>tuscany-sca-updatesite-${tuscany.version}/features</outputDirectory>
             <unpack>false</unpack>
             <includes>
                 <include>org.apache.tuscany.sca:org.apache.tuscany.sca.feature</include>
             </includes>
             <scope>runtime</scope>
-            <outputFileNameMapping>${artifactId}_1.1.0.${extension}</outputFileNameMapping>
         </dependencySet>
     </dependencySets>
 
