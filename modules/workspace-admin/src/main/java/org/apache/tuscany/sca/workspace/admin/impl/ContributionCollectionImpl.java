@@ -55,6 +55,8 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.Problem;
+import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
+import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
@@ -77,6 +79,7 @@ import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
@@ -134,6 +137,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class);
+        PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
         
         // Create model resolvers
         ModelResolverExtensionPoint modelResolvers = new DefaultModelResolverExtensionPoint();
@@ -144,11 +148,13 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
         staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new WorkspaceProcessor(workspaceFactory, contributionFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, staxProcessor));
 
         URLArtifactProcessorExtensionPoint urlProcessors = new DefaultURLArtifactProcessorExtensionPoint(modelFactories);
         urlProcessor = new ExtensibleURLArtifactProcessor(urlProcessors);
         urlProcessors.addArtifactProcessor(new ContributionMetadataDocumentProcessor(staxProcessor, inputFactory));
         urlProcessors.addArtifactProcessor(new ContributionGeneratedMetadataDocumentProcessor(staxProcessor, inputFactory));
+        urlProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory, null));
         
         // Create contribution info processor
         contributionInfoProcessor = new ContributionInfoProcessor(modelFactories, modelResolvers, urlProcessor);

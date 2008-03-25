@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.workspace.admin.impl;
 
-import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.DEPLOYMENT_CONTRIBUTION_URI;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeAlternateLink;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeKey;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeQName;
@@ -252,6 +251,9 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         QName qname = compositeQName(key);
         for (Composite deployable: contribution.getDeployables()) {
             if (qname.equals(deployable.getName())) {
+                if (deployable.isUnresolved()) {
+                    throw new NotFoundException(key);
+                }
                 
                 // Return an item describing the deployable composite
                 return item(contribution, deployable);
@@ -550,15 +552,6 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
             contributionContentProcessor.resolve(contribution, modelResolver);
             
-            // Special processing for the cloud contribution, mark all its
-            // composites as deployable
-            if (contribution.getURI().equals(DEPLOYMENT_CONTRIBUTION_URI)) {
-                for (Artifact artifact: contribution.getArtifacts()) {
-                    if (artifact.getModel() instanceof Composite) {
-                        contribution.getDeployables().add((Composite)artifact.getModel());
-                    }
-                }
-            }
             return contribution;
 
         } catch (ContributionReadException e) {
