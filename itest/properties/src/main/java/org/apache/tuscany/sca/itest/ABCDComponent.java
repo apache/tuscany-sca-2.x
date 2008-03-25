@@ -25,25 +25,25 @@ package org.apache.tuscany.sca.itest;
 public interface ABCDComponent {
 
     /**
-     * This is a method to get a string property value from the sca runtime environment. It is implemented in the class
+     * This is a method to get a string property value from the SCA runtime environment. It is implemented in the class
      * ABCDComponentImpl
      */
     String getA();
 
     /**
-     * This is a method to get a string property value from the sca runtime environment. It is implemented in the class
+     * This is a method to get a string property value from the SCA runtime environment. It is implemented in the class
      * ABCDComponentImpl
      */
     String getB();
 
     /**
-     * This is a method to get a string property value from the sca runtime environment. It is implemented in the class
+     * This is a method to get a string property value from the SCA runtime environment. It is implemented in the class
      * ABCDComponentImpl
      */
     String getC();
 
     /**
-     * This is a method to get a string property value from the sca runtime environment. It is implemented in the class
+     * This is a method to get a string property value from the SCA runtime environment. It is implemented in the class
      * ABCDComponentImpl
      */
     String getD();

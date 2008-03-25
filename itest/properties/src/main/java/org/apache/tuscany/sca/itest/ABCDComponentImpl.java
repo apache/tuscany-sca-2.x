@@ -26,7 +26,7 @@ import org.osoa.sca.annotations.Scope;
  * This class Implements the interface ABCDComponent and gives implementation for all methods which are declared in that
  * interface. scope is specified as Composite using
  * 
- * @scope annotaiton.
+ * @scope annotation.
  */
 @Scope("COMPOSITE")
 public class ABCDComponentImpl implements ABCDComponent {

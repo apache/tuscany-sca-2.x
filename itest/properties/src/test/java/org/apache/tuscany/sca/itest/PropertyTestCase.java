@@ -35,9 +35,9 @@ import org.junit.Test;
 import commonj.sdo.DataObject;
 
 /**
- * This is a class which makes user of JUnit Framework, all tests are written using junit notation. These tests are used
- * to test different property values returned from the SCA Runtime Environment which is intilized with the composite
- * 'PropertyTest.composite'. It basically tests all types of property values returned from sca runtime environment.
+ * This is a class which makes user of JUnit Framework, all tests are written using JUnit notation. These tests are used
+ * to test different property values returned from the SCA Runtime Environment which is initialized with the composite
+ * 'PropertyTest.composite'. It basically tests all types of property values returned from SCA runtime environment.
  */
 public class PropertyTestCase {
     private static SCADomain domain;
@@ -200,7 +200,7 @@ public class PropertyTestCase {
      * 
      * @Test is a test method where testing logic is written using various assert methods. This test verifies the
      *       property values obtained using a service from the SCA runtime environment with the expected values 'a' ,
-     *       'b', 'c' amd 'd' respectively.
+     *       'b', 'c' and 'd' respectively.
      */
     @Test
     public void testABCD() {
@@ -289,7 +289,7 @@ public class PropertyTestCase {
      * 
      * @Test is a test method where testing logic is written using various assert methods. This test verifies the
      *       property values obtained using a service from the SCA runtime environment with the expected value first
-     *       elelent in the string array and the float number
+     *       element in the string array and the float number
      */
     @Test
     public void testComplexPropertyThree() {
@@ -303,7 +303,7 @@ public class PropertyTestCase {
      * Method annotated with
      * 
      * @Test is a test method where testing logic is written using various assert methods. This test verifies the
-     *       complexy property value obtained using a service from the SCA runtime environment with the expected values
+     *       complex property value obtained using a service from the SCA runtime environment with the expected values
      *       1, 222.222 and 33 respectively.
      */
     @Test

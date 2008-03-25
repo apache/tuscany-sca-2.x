@@ -29,7 +29,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * This is a class which makes user of JUnit Framework, all tests are written using junit notation. These tests are used
+ * This is a class which makes user of JUnit Framework, all tests are written using JUnit notation. These tests are used
  * to test different property values returned from the SCA Runtime Environment which is initialized with the composite
  * 'OuterPropertyTest.composite'. It basically tests the Simple type of property and Complex type of property from the
  * SCA Runtime Environment.
