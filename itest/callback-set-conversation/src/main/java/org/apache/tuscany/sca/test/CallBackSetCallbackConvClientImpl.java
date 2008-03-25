@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.test;
 import junit.framework.Assert;
 
 import org.osoa.sca.ComponentContext;
-import org.osoa.sca.NoRegisteredCallbackException;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Reference;
@@ -61,7 +60,7 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
 
         /*
          * test9 The client calls setCallback() with an object that is not
-         * serializable. Verify an appropriate exception is thrown. This
+         * Serializable. Verify an appropriate exception is thrown. This
          * requires a STATEFUL callback interface. Move from the stateless test
          * case.
          */
@@ -75,7 +74,7 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
         //
         // This test is to specify an Object that is not a service reference
         // that does implement
-        // the callback interface and is Serializeable. Verify successful
+        // the callback interface and is Serializable. Verify successful
         // execution.
         //	
 
@@ -135,7 +134,7 @@ public class CallBackSetCallbackConvClientImpl implements CallBackSetCallbackCon
         //
         // This test is to specify an Object that is not a service reference
         // that does implement
-        // the callback interface but does not implement Serializeable. Verify
+        // the callback interface but does not implement Serializable. Verify
         // an appropriate exception
         // is thrown.
         //
