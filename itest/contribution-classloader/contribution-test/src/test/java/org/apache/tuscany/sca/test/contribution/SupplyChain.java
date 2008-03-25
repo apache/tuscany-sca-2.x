@@ -31,7 +31,7 @@ import org.junit.Assert;
 
 /*
  * 
- * Contribution classloading integration tests
+ * Contribution ClassLoading integration tests
  */
 
 public class SupplyChain {

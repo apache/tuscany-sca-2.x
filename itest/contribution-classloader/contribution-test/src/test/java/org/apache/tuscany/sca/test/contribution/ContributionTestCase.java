@@ -33,7 +33,7 @@ import org.junit.Test;
 
 /*
  * 
- * Contribution classloading integration tests
+ * Contribution ClassLoading integration tests
  */
 
 public class ContributionTestCase {
@@ -56,7 +56,7 @@ public class ContributionTestCase {
 
    
     /**
-     * Test static classloading for classes that are visible from contribution
+     * Test static ClassLoading for classes that are visible from contribution
      * 
      * @throws Exception
      */
@@ -95,7 +95,7 @@ public class ContributionTestCase {
     
 
     /**
-     * Test dynamic classloading for classes that are visible from contribution
+     * Test dynamic ClassLoading for classes that are visible from contribution
      * 
      * @throws Exception
      */
@@ -162,7 +162,7 @@ public class ContributionTestCase {
     }
     
     /**
-     * Test dynamic classloading for classes that are visible from contribution
+     * Test dynamic ClassLoading for classes that are visible from contribution
      * 
      * @throws Exception
      */
@@ -225,7 +225,7 @@ public class ContributionTestCase {
     /**
      * This test ensures that classes from imported packages can be statically loaded 
      * from other contributions even though the classes are not on CLASSPATH or on the 
-     * parent classloader, or the thread context classloader.
+     * parent ClassLoader, or the thread context ClassLoader.
      * 
      * @throws Exception
      */
@@ -240,7 +240,7 @@ public class ContributionTestCase {
     /**
      * This test ensures that all imported classes are loaded from the exporting contributions 
      * rather than the parent classLoader. If any of the interface classes were incorrectly loaded 
-     * through the parent classloader, LinkageError should result.
+     * through the parent ClassLoader, LinkageError should result.
      * 
      * @throws Exception
      */
@@ -261,7 +261,7 @@ public class ContributionTestCase {
     /**
      * This test ensures that classes from imported packages can be dynamically loaded from
      * other contributions even though the classes are not on CLASSPATH or on the 
-     * parent classloader, or the thread context classloader.
+     * parent ClassLoader, or the thread context ClassLoader.
      * 
      * @throws Exception
      */
@@ -332,7 +332,7 @@ public class ContributionTestCase {
     /**
      * This test ensures that classes from imported packages can be dynamically loaded from
      * other contributions even though the classes are not on CLASSPATH or on the 
-     * parent classloader, or the thread context classloader.
+     * parent ClassLoader, or the thread context ClassLoader.
      * 
      * @throws Exception
      */

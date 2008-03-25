@@ -40,7 +40,7 @@ import org.osoa.sca.ServiceReference;
 
 /*
  * 
- * Contribution classloading integration tests
+ * Contribution ClassLoading integration tests
  */
 
 //FIXME This test case needs some serious rework!
@@ -105,9 +105,9 @@ public class TuscanyClassloadingTestCaseFIXME {
     }
 
     /**
-     * Create a classloader hierarchy for Tuscany runtime
+     * Create a ClassLoader hierarchy for Tuscany runtime
      *     Dependencies <- SCA-API <- Core-SPI+ Runtime <- Extensions
-     * Load the embedded SCA domain class using the runtime classloader
+     * Load the embedded SCA domain class using the runtime ClassLoader
      * 
      * @return embedded SCA domain class
      * @throws Exception
@@ -119,9 +119,9 @@ public class TuscanyClassloadingTestCaseFIXME {
         URL[] extensionUrls;
         URL[] dependencyUrls;
 
-        // When the test is run under Eclipse, the classloader for the test is
+        // When the test is run under Eclipse, the ClassLoader for the test is
         // sun.misc.Launcher$AppClassLoader. The first code path is taken.
-        // When the test is run under maven, the classloader for the test is
+        // When the test is run under Maven, the ClassLoader for the test is
         // org.apache.maven.surefire.booter.IsolatedClassLoader, which is a subclass
         // of URLClassLoader. The second code path is taken.
         if (!(this.getClass().getClassLoader() instanceof URLClassLoader)) {
@@ -181,17 +181,17 @@ public class TuscanyClassloadingTestCaseFIXME {
     }
 
     /**
-     * From the list of entries in the test classloader, match
-     * Tuscany jars corresponding to a classloader, and return the list
+     * From the list of entries in the test ClassLoader, match
+     * Tuscany jars corresponding to a ClassLoader, and return the list
      * of matching entries as URLs.
      * This method is used when the test is run under eclipse, using CLASSPATH
-     * based application classloader.
+     * based application ClassLoader.
      * 
      * @param classPathEntries List of entries on CLASSPATH
      * @param dependentJars Complete set of jars, remove jars corresponding to this
-     *                      classloader from the set.
-     * @param jars List of Tuscany jars corresponding to this classloader
-     * @return Matching URLs for the classloader 
+     *                      ClassLoader from the set.
+     * @param jars List of Tuscany jars corresponding to this ClassLoader
+     * @return Matching URLs for the ClassLoader 
      * @throws IOException
      */
     private URL[] getTuscanyClassLoaderURLs(String[] classPathEntries, HashSet<String> dependentJars, String[]... jars)
@@ -241,17 +241,17 @@ public class TuscanyClassloadingTestCaseFIXME {
     }
 
     /**
-     * From the list of URLs of the test classloader, match
-     * Tuscany jars corresponding to a classloader, and return the matching URLs
-     * This method is used when the test is run under maven. The test classloader is
+     * From the list of URLs of the test ClassLoader, match
+     * Tuscany jars corresponding to a ClassLoader, and return the matching URLs
+     * This method is used when the test is run under Maven. The test ClassLoader is
      * org.apache.maven.surefire.booter.IsolatedClassLoader, which is a subclass
      * of URLClassLoader
      * 
-     * @param classPathEntries List of URLs from the test classloader
+     * @param classPathEntries List of URLs from the test ClassLoader
      * @param dependentJars Complete set of jars, remove jars corresponding to this
-     *                      classloader from the set.
-     * @param jars List of Tuscany jars corresponding to this classloader
-     * @return Matching URLs for the classloader 
+     *                      ClassLoader from the set.
+     * @param jars List of Tuscany jars corresponding to this ClassLoader
+     * @return Matching URLs for the ClassLoader 
      * @throws IOException
      */
     private URL[] getTuscanyClassLoaderURLs(URL[] classPathEntries, HashSet<URL> dependentJars, String[]... jars)
@@ -300,7 +300,7 @@ public class TuscanyClassloadingTestCaseFIXME {
 
     /**
      * 
-     * Load Tuscany runtime using multiple classloaders, and run supplychain
+     * Load Tuscany runtime using multiple ClassLoaders, and run supplychain
      * test. 
      * 
      * @throws Exception
