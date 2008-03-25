@@ -18,7 +18,6 @@
  */
 package helloworld;
 
-import org.osoa.sca.annotations.Remotable;
 
 /**
  * This is the business interface of the HelloWorld greetings service.
