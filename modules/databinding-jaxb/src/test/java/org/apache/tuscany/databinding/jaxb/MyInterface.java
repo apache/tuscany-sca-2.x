@@ -23,7 +23,7 @@ package org.apache.tuscany.databinding.jaxb;
  * @version $Rev$ $Date$
  */
 public interface MyInterface {
-    public void setId(String id);
+    void setId(String id);
 
-    public String getId();
+    String getId();
 }
