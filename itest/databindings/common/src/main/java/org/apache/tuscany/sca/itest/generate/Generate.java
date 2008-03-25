@@ -84,7 +84,7 @@ public class Generate {
             // that the velocity templates expand into appropriate methods and method calls           
             List fileList = generateType.getInputFile();
             
-            //Intialise velocity ready to generate the various files
+            //Initialise velocity ready to generate the various files
             Properties p = new Properties();
             p.setProperty("file.resource.loader.path", projectBuildDir + "/classes/generate");            
             Velocity.init(p);
