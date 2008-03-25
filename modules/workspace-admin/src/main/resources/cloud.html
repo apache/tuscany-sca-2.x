@@ -212,14 +212,17 @@
 		}
 	}	
 
-	getComposites();
+	function init() {
+		toolbar();
+		getComposites();
+	}
 
 </script>
 
 <link rel="stylesheet" type="text/css" href="admin.css">
 </head>
 
-<body onload="toolbar()">
+<body onload="init()">
   <div id="toolbar"></div>
 
   <div id="cloudComposite">
