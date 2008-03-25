@@ -29,7 +29,7 @@ import $file.getJavaPackage().$typeInstance.getTypeName();
 import org.osoa.sca.annotations.Remotable;
 
 /**
- * The automcatically generated interface to the service that reflects data objects
+ * The automatically generated interface to the service that reflects data objects
  * that are sent to it
  *
  * @version $Rev: 511417 $ $Date: 2007-02-25 03:06:42 +0000 (Sun, 25 Feb 2007) $
