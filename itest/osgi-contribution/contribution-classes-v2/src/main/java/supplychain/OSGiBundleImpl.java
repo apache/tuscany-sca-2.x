@@ -30,7 +30,7 @@ import org.osgi.framework.ServiceReference;
 
 
 /**
- * Common code for all OSGi bundles which dont use declarative services.
+ * Common code for all OSGi bundles which don't use declarative services.
  * Registers services and sets references.
  */
 public class OSGiBundleImpl implements ServiceListener, BundleActivator {
