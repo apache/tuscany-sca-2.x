@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.itest.oneway;
 
-import javax.xml.namespace.QName;
-
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.domain.SCADomain;
