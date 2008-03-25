@@ -82,10 +82,10 @@ public class NotificationServlet extends HttpServlet {
     }
     
     public interface NotificationServletHandler {
-        public byte[] handle(Map<String, String> headers, byte[] payload);
+        byte[] handle(Map<String, String> headers, byte[] payload);
     }
     
     public interface NotificationServletStreamHandler {
-        public void handle(Map<String, String> headers, ServletInputStream istream, int contentLength, ServletOutputStream ostream);
+        void handle(Map<String, String> headers, ServletInputStream istream, int contentLength, ServletOutputStream ostream);
     }
 }
