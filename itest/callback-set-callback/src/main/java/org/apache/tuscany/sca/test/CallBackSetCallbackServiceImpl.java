@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.test;
 
-import java.io.File;
-
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
