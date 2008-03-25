@@ -31,7 +31,7 @@ import org.apache.tuscany.sca.host.embedded.impl.EmbeddedSCADomain;
 import junit.framework.TestCase;
 
 /**
- * Test multiple contributio scenario
+ * Test multiple contribution scenario
  * Contributed by TUSCANY-1756
  */
 public class ContributionTestCase extends TestCase {
