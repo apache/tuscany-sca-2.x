@@ -23,7 +23,7 @@ import supplychain.OSGiBundleImpl;
 import supplychain.shipper.Shipper;
 
 /**
- * This class implements the Warehouse service componentm (OSGi procedural services implementation).
+ * This class implements the Warehouse service component (OSGi procedural services implementation).
  */
 
 public class OSGiWarehouseImpl extends OSGiBundleImpl implements Warehouse {
