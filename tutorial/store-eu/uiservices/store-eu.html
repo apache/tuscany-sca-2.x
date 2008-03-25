@@ -105,13 +105,16 @@
 		document.getElementById('total').innerHTML = "";	
 	}	
 
-	catalog.get(catalog_getResponse);
-	shoppingCart.get("", shoppingCart_getResponse);
+	function init() {
+		catalog.get(catalog_getResponse);
+		shoppingCart.get("", shoppingCart_getResponse);
+	}
+	
 </script>
 
 </head>
 
-<body>
+<body onload="init()">
 <h1>Store</h1>
   <p>Fruits and Vegetables - Fruits et Legumes - Obst und Gemuese   
   <div id="store">
