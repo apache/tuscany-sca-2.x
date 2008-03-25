@@ -64,7 +64,7 @@ public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
     private final static String XSI_PREFIX = "xsi";
     private final static String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
 
-    private final static XmlNode getXSIType(QName realType) {
+    private static XmlNode getXSIType(QName realType) {
         QName xsiType = new QName(XSI_NS, "type", XSI_PREFIX);
         String prefix = realType.getPrefix();
         String typeName = realType.getLocalPart();
