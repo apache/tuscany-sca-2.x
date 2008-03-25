@@ -20,7 +20,9 @@ package org.apache.tuscany.sca.itest.scopes;
 
 import org.osoa.sca.annotations.Scope;
 
-// Test module scope
+/**
+ * Test Composite scope
+ */
 @Scope("COMPOSITE")
 public class CompositeScopeStateVerifierImpl implements StateVerifier {
 
