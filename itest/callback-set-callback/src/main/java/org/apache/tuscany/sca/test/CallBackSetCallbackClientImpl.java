@@ -43,7 +43,7 @@ public class CallBackSetCallbackClientImpl implements CallBackSetCallbackClient 
         /*
          * test4 Client does not implement the callback interface but calls
          * setCallback with a service reference before invoking the target,
-         * Verify successful executon.
+         * Verify successful execution.
          */
 
         test4();
@@ -69,7 +69,7 @@ public class CallBackSetCallbackClientImpl implements CallBackSetCallbackClient 
         /*
          * test10 The target calls setCallback() on its own service reference,
          * e.g. getRequestContext().getServiceReference().getCallback(). Verify
-         * an appropriate exeception occurs.
+         * an appropriate exception occurs.
          */
 
         test10();
