@@ -25,10 +25,10 @@ public interface ComponentBuilder {
 	
 	ComponentBuilder implementedBy(CompositeBuilder composite);
 	
-	public ComponentBuilder uses(ComponentReferenceBuilder... componentReferences);
+	ComponentBuilder uses(ComponentReferenceBuilder... componentReferences);
 
-	public ComponentBuilder provides(ComponentServiceBuilder... componentServices);
+	ComponentBuilder provides(ComponentServiceBuilder... componentServices);
 	
-	public ComponentBuilder declares(ComponentPropertyBuilder...componentProperties);
+	ComponentBuilder declares(ComponentPropertyBuilder...componentProperties);
 
 }
