@@ -19,7 +19,9 @@
 package org.apache.tuscany.sca.itest.scopes;
 import org.osoa.sca.annotations.Scope;
 
-// Test request scope
+/**
+ * Test request scope
+ */
 @Scope("REQUEST")
 public class RequestScopeStateVerifierImpl implements StateVerifier {
 
