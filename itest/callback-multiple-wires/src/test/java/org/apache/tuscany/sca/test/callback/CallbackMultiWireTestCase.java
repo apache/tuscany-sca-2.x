@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
- * A testcase that demonstrates resolving the client service and initiating the callback sequence
+ * A TestCase that demonstrates resolving the client service and initiating the callback sequence
  */
 public class CallbackMultiWireTestCase extends TestCase {
 
