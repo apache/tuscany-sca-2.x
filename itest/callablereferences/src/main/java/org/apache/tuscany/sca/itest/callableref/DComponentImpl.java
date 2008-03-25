@@ -20,11 +20,9 @@ package org.apache.tuscany.sca.itest.callableref;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.Externalizable;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter.Base64Binary;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.RequestContext;
