@@ -27,15 +27,12 @@ import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatefulImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatefulNonConversationalCallbackImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl;
-import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceRequestImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatefulImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatefulNonConversationalCallbackImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatelessImpl;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

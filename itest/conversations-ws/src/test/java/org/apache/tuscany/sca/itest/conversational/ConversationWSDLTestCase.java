@@ -20,16 +20,11 @@
 package org.apache.tuscany.sca.itest.conversational;
 
 
-import java.net.URL;
-
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
-import org.apache.tuscany.sca.node.impl.SCANodeFactoryImpl;
-import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
