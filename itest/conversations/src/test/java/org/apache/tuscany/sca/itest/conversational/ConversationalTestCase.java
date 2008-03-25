@@ -29,9 +29,7 @@ import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceReq
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatefulImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatefulNonConversationalCallbackImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatelessImpl;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

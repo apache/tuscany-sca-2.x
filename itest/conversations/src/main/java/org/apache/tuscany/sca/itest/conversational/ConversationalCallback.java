@@ -24,7 +24,7 @@ import org.osoa.sca.annotations.Remotable;
 
 
 /**
- * The callback interface used when testing caonversational callbacks
+ * The callback interface used when testing conversational callbacks
  *
  * @version $Rev: 537240 $ $Date: 2007-05-11 18:35:03 +0100 (Fri, 11 May 2007) $
  */

@@ -23,7 +23,6 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ConversationLifetimeTestCase {
@@ -72,7 +71,7 @@ public class ConversationLifetimeTestCase {
 
     /**
      * Verify that ServiceReference.getConversationID() returns any value previous set through the
-     * setConversationID() api.
+     * setConversationID() API.
      */
     @Test
     public void getConversationID2() {
@@ -126,7 +125,7 @@ public class ConversationLifetimeTestCase {
     }
 
     /**
-     * Java Common Annotations and APIs 1.00 Spec line 495-495 Verify: If a
+     * Java Common Annotations and APIs 1.00 Specification line 495-495 Verify: If a
      * method is invoked on a service reference after an "@EndsConversation"
      * method has been called then a new conversation will automatically be
      * started. Note: Uses Conversation.end() rather than "@EndsConversation"
@@ -171,7 +170,7 @@ public class ConversationLifetimeTestCase {
     }
 
     /**
-     * Java Common Annotations and APIs 1.00 Spec line 495-497 Verify: If
+     * Java Common Annotations and APIs 1.00 Specification line 495-497 Verify: If
      * ServiceReference.getConversationID() is called after the
      * "@EndsConversationmethod" is called, but before the next conversation has
      * been started, it will return null. Note: Uses Conversation.end() rather
@@ -186,7 +185,7 @@ public class ConversationLifetimeTestCase {
     }
     
     /**
-     * Java Common Annotations and APIs 1.00 Spec line 495-497 Verify: If
+     * Java Common Annotations and APIs 1.00 Specification line 495-497 Verify: If
      * ServiceReference.getConversationID() is called after the
      * "@EndsConversationmethod" is called, but before the next conversation has
      * been started, it will return null. Note: Uses Conversation.end() rather
