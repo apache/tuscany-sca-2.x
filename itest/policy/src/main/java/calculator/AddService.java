@@ -19,7 +19,6 @@
 package calculator;
 
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Requires;
 import org.osoa.sca.annotations.Service;
 
 /**
