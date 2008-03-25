@@ -24,7 +24,7 @@ package org.apache.tuscany.sca.itest.spring;
  * 1) A composite containing a component with a Spring implementation
  * 2) The composite has a component with a Java POJO implementation which uses the
  * Spring implementation to satisfy a reference
- * 3) The Spring component delgates function to a second spring bean
+ * 3) The Spring component delegates function to a second spring bean
  *
  */
 public class SpringHelloWorldTestCase extends AbstractHelloWorldTestCase {
