@@ -57,7 +57,7 @@ public class CallBackApiServiceImpl implements CallBackApiService {
 
     /**
      * This function calls the callBackMessage function. <br>
-     * The reference to this function is recieved from Call back reference to the class CallBackApiService.
+     * The reference to this function is received from Call back reference to the class CallBackApiService.
      * 
      * @param aString String passed by a function call
      */
