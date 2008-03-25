@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.itest.conversational;
 
-import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Remotable;
 
 /**
