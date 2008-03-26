@@ -75,7 +75,7 @@
                                 <descriptor>src/main/assembly/updatesite.xml</descriptor>
                             </descriptors>
                             <tarLongFileMode>gnu</tarLongFileMode>
-                            <finalName>apache-tuscany-sca-updatesite-${pom.version}</finalName>
+                            <finalName>apache-tuscany-sca-${pom.version}</finalName>
                         </configuration>
                     </execution>
                 </executions>
