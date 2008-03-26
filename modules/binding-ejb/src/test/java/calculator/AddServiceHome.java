@@ -26,6 +26,6 @@ import javax.ejb.EJBHome;
 
 public interface AddServiceHome extends EJBHome {
 
-    public AddService create() throws CreateException, RemoteException;
+    AddService create() throws CreateException, RemoteException;
 
 }
