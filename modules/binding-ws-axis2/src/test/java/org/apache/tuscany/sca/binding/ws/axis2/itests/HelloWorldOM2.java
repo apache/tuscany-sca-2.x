@@ -25,6 +25,6 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 public interface HelloWorldOM2 {
     
-    public OMElement getGreetings2(OMElement parmE);
+    OMElement getGreetings2(OMElement parmE);
 
 }
