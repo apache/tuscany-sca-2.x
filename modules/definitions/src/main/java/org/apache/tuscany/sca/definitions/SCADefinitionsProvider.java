@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.sca.definitions;
 
-import org.apache.tuscany.sca.definitions.SCADefinitions;
-
 /**
  * Models a provider of SCA Definitions.  Typically SCA Definitions providers 
  * may either load a definitions.xml file or create the SCA Definitions model
