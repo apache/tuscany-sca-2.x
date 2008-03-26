@@ -36,31 +36,31 @@ public interface DomainInfo {
      * 
      * @return domain URI
      */
-    public String getDomainURI();
+    String getDomainURI();
     
     /**
      * Set the domain URI
      * 
      * @param domainURI
      */    
-    public void setDomainURI(String domainURI);    
+    void setDomainURI(String domainURI);    
     
     /**
      * Retrieve the domain URL
      * 
      * @return domain URL
      */    
-    public String  getDomainURL();
+    String  getDomainURL();
    
     /**
      * Set the domain URL
      * 
      * @param domainURL
      */    
-    public void setDomainURL(String domainURL);    
+    void setDomainURL(String domainURL);    
     
-    public List<String> getNodes();
-    public List<String> getContributions();
-    public List<QName> getDeployedComposites();
+    List<String> getNodes();
+    List<String> getContributions();
+    List<QName> getDeployedComposites();
  
 }

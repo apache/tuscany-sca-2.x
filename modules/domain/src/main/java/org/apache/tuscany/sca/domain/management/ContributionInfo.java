@@ -38,30 +38,30 @@ public interface ContributionInfo {
      * 
      * @return contribution URI
      */
-    public String getContributionURI();
+    String getContributionURI();
     
     /**
      * Set the contribution URI
      * 
      * @param contributionURI
      */    
-    public void setContributionURI(String contributionURI);    
+    void setContributionURI(String contributionURI);    
     
     /**
      * Retrieve the contribution URL
      * 
      * @return contribution URL
      */    
-    public URL getContributionURL();
+    URL getContributionURL();
    
     /**
      * Set the contribution URL
      * 
      * @param contributionURL
      */    
-    public void setContributionURL(URL contributionURL);
+    void setContributionURL(URL contributionURL);
     
-    public List<QName> getComposites();       
-    public List<QName> getDeployableComposites();
+    List<QName> getComposites();       
+    List<QName> getDeployableComposites();
  
 }

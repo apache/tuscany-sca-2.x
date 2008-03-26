@@ -38,58 +38,58 @@ public interface NodeModel {
      * 
      * @return node URI
      */
-    public String getNodeURI();
+    String getNodeURI();
     
     /**
      * Set the node URI
      * 
      * @param nodeURI
      */    
-    public void setNodeURI(String nodeURI);    
+    void setNodeURI(String nodeURI);    
     
     /**
      * Retrieve the node URL
      *
      * @return node URL
      */    
-    public String getNodeURL();
+    String getNodeURL();
    
     /**
      * Set the node URL
      * 
      * @param nodeURL
      */    
-    public void setNodeURL(String nodeURL);
+    void setNodeURL(String nodeURL);
     
     /**
      * Returns the state of the node
      *
      * @return state
      */    
-    public LifecyleState getLifecycleState();
+    LifecyleState getLifecycleState();
    
     /**
      * Set the state of the node
      * 
      * @param state
      */    
-    public void setLifecycleState(LifecyleState state);    
+    void setLifecycleState(LifecyleState state);    
     
     /**
      * Retrieve the node manager reference
      *
      * @return node manager reference
      */    
-    public Externalizable getNodeManagerReference();
+    Externalizable getNodeManagerReference();
    
     /**
      * Set the node URL
      * 
      * @param nodeURL
      */    
-    public void setNodeManagerReference(Externalizable nodeManagerReference);    
+    void setNodeManagerReference(Externalizable nodeManagerReference);    
    
-    public Map<String, ContributionModel> getContributions();
-    public Map<QName, CompositeModel> getDeployedComposites();
-    public Map<String, ServiceModel> getServices();
+    Map<String, ContributionModel> getContributions();
+    Map<QName, CompositeModel> getDeployedComposites();
+    Map<String, ServiceModel> getServices();
 }

@@ -33,7 +33,7 @@ public interface SCADomainSPI {
      * Returns the model of the domain
      * @return
      */
-    public DomainModel getDomainModel();
+    DomainModel getDomainModel();
     
     /**
      * Registers all of the services in the composite with the domain

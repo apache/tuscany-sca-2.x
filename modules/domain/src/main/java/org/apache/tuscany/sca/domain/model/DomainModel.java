@@ -39,28 +39,28 @@ public interface DomainModel {
      * 
      * @return domain URI
      */
-    public String getDomainURI();
+    String getDomainURI();
     
     /**
      * Set the domain URI
      * 
      * @param domainURI
      */    
-    public void setDomainURI(String domainURI);    
+    void setDomainURI(String domainURI);    
     
     /**
      * Retrieve the domain URL
      * 
      * @return domain URL
      */    
-    public String  getDomainURL();
+    String  getDomainURL();
    
     /**
      * Set the domain URL
      * 
      * @param domainURL
      */    
-    public void setDomainURL(String domainURL);
+    void setDomainURL(String domainURL);
     
     
     /**
@@ -68,16 +68,16 @@ public interface DomainModel {
      * 
      * @param domainLevelComposite
      */    
-    public void setDomainLeveComposite(Composite domainLevelComposite);
+    void setDomainLeveComposite(Composite domainLevelComposite);
     
     /**
      * Retrieve the domain level composite
      * 
      * @return domainLevelComposite 
      */    
-    public Composite getDomainLevelComposite();   
+    Composite getDomainLevelComposite();   
    
-    public Map<String, NodeModel> getNodes();
-    public Map<String, ContributionModel> getContributions();
-    public Map<QName, CompositeModel> getDeployedComposites();
+    Map<String, NodeModel> getNodes();
+    Map<String, ContributionModel> getContributions();
+    Map<QName, CompositeModel> getDeployedComposites();
 }

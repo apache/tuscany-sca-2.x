@@ -37,44 +37,44 @@ public interface ContributionModel {
      * 
      * @return contribution 
      */
-    public Contribution getContribution();
+    Contribution getContribution();
     
     /**
      * Set the contribution object
      * 
      * @param contribution
      */    
-    public void setContribution(Contribution contribution);        
+    void setContribution(Contribution contribution);        
     
     /**
      * Retrieve the contribution URI
      * 
      * @return contribution URI
      */
-    public String getContributionURI();
+    String getContributionURI();
     
     /**
      * Set the contribution URI
      * 
      * @param contributionURI
      */    
-    public void setContributionURI(String contributionURI);    
+    void setContributionURI(String contributionURI);    
     
     /**
      * Retrieve the contribution URL
      * 
      * @return contribution URL
      */    
-    public String getContributionURL();
+    String getContributionURL();
    
     /**
      * Set the contribution URL
      * 
      * @param contributionURL
      */    
-    public void setContributionURL(String contributionURL);
+    void setContributionURL(String contributionURL);
     
-    public Map<QName, CompositeModel> getComposites();       
-    public Map<QName, CompositeModel> getDeployableComposites(); 
-    public Map<QName, CompositeModel> getDeployedComposites(); 
+    Map<QName, CompositeModel> getComposites();       
+    Map<QName, CompositeModel> getDeployableComposites(); 
+    Map<QName, CompositeModel> getDeployedComposites(); 
 }

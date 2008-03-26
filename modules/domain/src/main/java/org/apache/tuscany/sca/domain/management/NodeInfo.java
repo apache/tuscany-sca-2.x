@@ -36,31 +36,31 @@ public interface NodeInfo {
      * 
      * @return node URI
      */
-    public String getNodeURI();
+    String getNodeURI();
     
     /**
      * Set the node URI
      * 
      * @param nodeURI
      */    
-    public void setNodeURI(String nodeURI);    
+    void setNodeURI(String nodeURI);    
     
     /**
      * Retrieve the node URL
      *
      * @return node URL
      */    
-    public String getNodeURL();
+    String getNodeURL();
    
     /**
      * Set the node URL
      * 
      * @param nodeURL
      */    
-    public void setNodeURL(String nodeURL);
+    void setNodeURL(String nodeURL);
    
-    public List<String> getContributions();
-    public List<QName> getDeployedComposites();
-    public List<String> getServices();
+    List<String> getContributions();
+    List<QName> getDeployedComposites();
+    List<String> getServices();
  
 }
