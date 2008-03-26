@@ -22,23 +22,23 @@ package org.apache.tuscany.sca.node;
 
 /**
  * A factory that always returns the same domain object
- * 
+ *
  * @version $Rev: 556897 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
 public interface NodeFactory {
-    
+
     /**
      * Returns the node object
-     * 
-     * @return the node 
+     *
+     * @return the node
      */
-    public SCANode getNode();
-    
+    SCANode getNode();
+
     /**
      * Set the node object
-     * 
-     * @param node the node  
+     *
+     * @param node the node
      */
-    public void setNode(SCANode node);
-    
+    void setNode(SCANode node);
+
 }

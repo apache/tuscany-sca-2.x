@@ -21,37 +21,37 @@ package org.apache.tuscany.sca.node;
 
 /**
  * A collection of information about a component
- * 
+ *
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
 public interface ComponentInfo {
-    
+
     /**
      * Get the component name
-     * 
+     *
      * @return component name
      */
-    public String getName();
-    
+    String getName();
+
     /**
      * Set the component name
-     * 
+     *
      * @param name component name
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      * Set to true if the component has been started
-     * 
+     *
      * @return true if the component is started
      */
-    public boolean isStarted();
-    
-    /** 
+    boolean isStarted();
+
+    /**
      * Set the started status of the component
-     * 
+     *
      * @param started
      */
-    public void setStarted(boolean started);
+    void setStarted(boolean started);
 
 }

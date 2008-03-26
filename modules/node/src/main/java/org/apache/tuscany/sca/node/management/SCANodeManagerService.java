@@ -26,59 +26,59 @@ import org.osoa.sca.annotations.Remotable;
 
 /**
  * The management interface for a node
- * 
+ *
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
 @Remotable
 public interface SCANodeManagerService {
-     
+
     /**
      * Returns the URI of the SCA node. That URI is the endpoint of the
      * SCA node administration service.
-     * 
+     *
      * @return the URI of the SCA node
      */
-    public String getURI();
-    
+    String getURI();
+
     /**
      * Add an SCA contribution into the node.
-     *  
+     *
      * @param uri the URI of the contribution
      * @param url the URL of the contribution
      */
-    public void addContribution(String contributionURI, String contributionURL) throws NodeException;
-    
+    void addContribution(String contributionURI, String contributionURL) throws NodeException;
+
     /**
      * Remove an SCA contribution from the node.
-     *  
+     *
      * @param contributionURI the URI of the contribution
      */
-    public void removeContribution(String contributionURI) throws NodeException;
-   
+    void removeContribution(String contributionURI) throws NodeException;
+
     /**
      * Add the named deployable composite to the domain level composite
-     * 
+     *
      * @param compositeQName the name of the composite
-     */    
-    public void addToDomainLevelComposite(String compositeName) throws NodeException;
-    
+     */
+    void addToDomainLevelComposite(String compositeName) throws NodeException;
+
     /**
      * Start the SCA node service.
      */
-    public void start() throws NodeException;    
-    
+    void start() throws NodeException;    
+
     /**
      * Stop the SCA node service.
      */
-    public void stop() throws NodeException; 
-    
+    void stop() throws NodeException; 
+
     /**
      * Destroy the SCA node service. destroyNode rather than just destroy
      * as the WSDL processing struggles with methods called destroy
      */
     @OneWay
-    public void destroyNode() throws NodeException;     
-    
+    void destroyNode() throws NodeException;     
+
     /**
      * Pass in an updated version of a composite in base64 encoded XML form. The node will compare
      * this against the version of the composite it has and apply and changes found
@@ -86,5 +86,5 @@ public interface SCANodeManagerService {
      * @param compositeXMLBase64
      * @throws NodeException
      */
-    public void updateComposite(String compositeQName, String compositeXMLBase64 ) throws NodeException;
+    void updateComposite(String compositeQName, String compositeXMLBase64 ) throws NodeException;
 }

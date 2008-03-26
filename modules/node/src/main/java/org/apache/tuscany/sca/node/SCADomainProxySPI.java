@@ -23,25 +23,25 @@ import org.apache.tuscany.sca.domain.DomainException;
 
 /**
  * The SPI for a domain proxy
- * 
+ *
  * @version $Rev: 580520 $ $Date: 2007-09-29 00:50:25 +0100 (Sat, 29 Sep 2007) $
  */
 public interface SCADomainProxySPI  {
 
     /**
      * Add a node implementation with the domain proxy
-     * 
+     *
      * @param nodeImpl
      * @throws DomainException
      */
-    public void addNode(SCANode nodeImpl) throws DomainException;
-        
-    /** 
+    void addNode(SCANode nodeImpl) throws DomainException;
+
+    /**
      * Remove a node implementation from the domain proxy
-     * 
+     *
      * @param nodeImpl
      * @throws DomainException
      */
-    public void removeNode(SCANode nodeImpl) throws DomainException;
-    
+    void removeNode(SCANode nodeImpl) throws DomainException;
+
 }
