@@ -24,6 +24,6 @@ import org.apache.tuscany.sca.invocation.Invoker;
 
 public interface InvokerFactory {
 
-    public Invoker createInvoker(Operation operation);
-    
+    Invoker createInvoker(Operation operation);
+
 }

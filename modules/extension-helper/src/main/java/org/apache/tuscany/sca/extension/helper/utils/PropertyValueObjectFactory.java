@@ -24,6 +24,6 @@ import org.apache.tuscany.sca.core.factory.ObjectFactory;
 
 public interface PropertyValueObjectFactory {
 
-    public abstract ObjectFactory createValueFactory(Property property);
+    ObjectFactory createValueFactory(Property property);
 
 }
