@@ -23,8 +23,8 @@ package org.apache.tuscany.sca.node;
 
 /**
  * Represents an SCA processing node.
- * A node is loaded with an SCA composites. It can start and stop that composite. 
- * 
+ * A node is loaded with an SCA composites. It can start and stop that composite.
+ *
  * @version $Rev$ $Date$
  */
 public interface SCANode2 {
@@ -32,11 +32,11 @@ public interface SCANode2 {
     /**
      * Start the composite loaded in the node.
      */
-    public void start() throws Node2Exception;    
-    
+    void start() throws Node2Exception;
+
     /**
      * Stop the composite loaded in the node.
      */
-    public void stop() throws Node2Exception;    
+    void stop() throws Node2Exception;
 
 }
