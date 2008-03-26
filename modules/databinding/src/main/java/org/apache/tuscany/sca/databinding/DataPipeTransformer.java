@@ -24,5 +24,5 @@ package org.apache.tuscany.sca.databinding;
  */
 public interface DataPipeTransformer<S, R> extends Transformer {
 
-    public DataPipe<S, R> newInstance();
+    DataPipe<S, R> newInstance();
 }
