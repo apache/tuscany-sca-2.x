@@ -21,13 +21,12 @@ package account;
 import org.osoa.sca.annotations.Remotable;
 
 /**
- * 
+ *
  * Compatible EJB interface
  *
  */
 @Remotable
-public interface BankManagerFacade   
-{
-    public java.lang.Double getAccountBalance( java.lang.String accountNo );
-    public void changeAccountBalance( java.lang.String accountNo,java.lang.Double balance );
+public interface BankManagerFacade {
+    Double getAccountBalance( String accountNo );
+    void changeAccountBalance( String accountNo, Double balance );
 }
