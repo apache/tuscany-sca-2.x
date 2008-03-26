@@ -29,27 +29,27 @@ import org.apache.tuscany.sca.assembly.Implementation;
 public interface ResourceImplementation extends Implementation {
 
     /**
-     * The URI of the resource inside its contribution. 
+     * The URI of the resource inside its contribution.
      * @return the URI of the resource
      */
-    public String getLocation();
+    String getLocation();
 
     /**
      * Sets the URI of the resource inside its contribution.
      * @param location the URI of the resource
      */
-    public void setLocation(String location);
+    void setLocation(String location);
 
     /**
      * Returns the URL of the resource.
      * @return the URL of the resource
      */
-    public URL getLocationURL();
-    
+    URL getLocationURL();
+
     /**
      * Sets the URL of the resource.
      * @param url the URL of the resource
      */
-    public void setLocationURL(URL url);
-    
+    void setLocationURL(URL url);
+
 }
