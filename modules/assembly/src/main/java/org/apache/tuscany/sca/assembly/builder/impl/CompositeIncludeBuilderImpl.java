@@ -20,7 +20,10 @@
 package org.apache.tuscany.sca.assembly.builder.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
@@ -28,6 +31,8 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 public class CompositeIncludeBuilderImpl {
     
+    public static Logger logger = Logger.getLogger(CompositeIncludeBuilderImpl.class.getName());
+	
     public CompositeIncludeBuilderImpl(CompositeBuilderMonitor monitor) {
     }
 
@@ -37,10 +42,16 @@ public class CompositeIncludeBuilderImpl {
      * @param composite
      * @param includes
      */
-    private void collectIncludes(Composite composite, List<Composite> includes) {
+    private void collectIncludes(Composite composite, List<Composite> includes, Set<Composite> visited) {
         for (Composite include : composite.getIncludes()) {
+            if (visited.contains(include)) {
+                logger.warning("Composite " + include.getName() + " has already been included.");
+                continue;
+            }
+        		
             includes.add(include);
-            collectIncludes(include, includes);
+            visited.add(include);
+            collectIncludes(include, includes, visited);
         }
     }
 
@@ -53,8 +64,9 @@ public class CompositeIncludeBuilderImpl {
     
         // First collect all includes
         List<Composite> includes = new ArrayList<Composite>();
-        collectIncludes(composite, includes);
-    
+        Set<Composite> visited = new HashSet<Composite>();
+        visited.add(composite);
+        collectIncludes(composite, includes, visited);
         // Then clone them
         for (Composite include : includes) {
             Composite clone;
