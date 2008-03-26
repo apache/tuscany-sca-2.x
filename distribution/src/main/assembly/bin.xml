@@ -239,6 +239,14 @@
                 <include>tuscany-sca-manifest.jar</include>
             </includes>
         </fileSet>
+        <!-- Add the node launcher webapp to the modules directory -->
+        <fileSet>
+            <directory>../modules/node2-launcher-webapp/target</directory>
+            <outputDirectory>tuscany-sca-${tuscany.version}/modules</outputDirectory>
+            <includes>
+                <include>*.war</include>
+            </includes>
+        </fileSet>
 
         <!-- temporary fix since maven dependencies of rampart seems to refere to SNAPSHOT versions of the parent pom --> 
         <!--fileSet>
