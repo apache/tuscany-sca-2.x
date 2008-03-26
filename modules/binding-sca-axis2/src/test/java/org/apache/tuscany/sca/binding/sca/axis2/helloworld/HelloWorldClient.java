@@ -22,6 +22,6 @@ package org.apache.tuscany.sca.binding.sca.axis2.helloworld;
 
 public interface HelloWorldClient {
     
-    public String getGreetings(String s);
+    String getGreetings(String s);
 
 }
