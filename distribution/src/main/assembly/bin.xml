@@ -231,6 +231,38 @@
                 <exclude>target/**/*</exclude>
             </excludes>
         </fileSet>
+        <!-- Add all the tutorials to the tutorials directory -->
+        <fileSet>
+            <directory>../tutorial</directory>
+
+            <outputDirectory>tuscany-sca-${tuscany.version}/tutorial</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <excludes>
+                <exclude>*/.classpath</exclude>
+                <exclude>*/.project</exclude>
+                <exclude>*/.settings</exclude>
+                <exclude>*/.settings/**/*</exclude>
+                <exclude>*/work</exclude>
+                <exclude>*/work/**/*</exclude>
+                <exclude>*/target/classes</exclude>
+                <exclude>*/target/classes/**/*</exclude>
+                <exclude>*/target/test-classes</exclude>
+                <exclude>*/target/test-classes/**/*</exclude>
+                <exclude>*/target/surefire-reports</exclude>
+                <exclude>*/target/surefire-reports/**/*</exclude>
+                <exclude>*/**/derby.log</exclude>
+                <exclude>*/**/*.svg</exclude>
+                <exclude>*/**/*.ruleset</exclude>
+                <exclude>target</exclude>
+                <exclude>target/**/*</exclude>
+                <exclude>catalog-webapp/target/war</exclude>
+                <exclude>catalog-webapp/target/war/**/*</exclude>
+                <exclude>catalog-webapp/target/tutorial-catalog-webapp</exclude>
+                <exclude>catalog-webapp/target/tutorial-catalog-webapp/**/*</exclude>
+            </excludes>
+        </fileSet>
         <!-- Add the generated tuscany manifest classpath jar to the lib directory -->
         <fileSet>
             <directory>manifest/target</directory>
