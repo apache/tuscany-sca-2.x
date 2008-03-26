@@ -35,26 +35,26 @@ public interface XQueryImplementation extends Implementation {
      * Location of the XQuery implementation file
      * @return
      */
-    public String getLocation();
+    String getLocation();
 
-    public void setLocation(String location);
-    
-    public String getLocationURL();
+    void setLocation(String location);
 
-    public void setLocationURL(String location);
+    String getLocationURL();
+
+    void setLocationURL(String location);
 
     /**
      * The XQuery expression that is loaded from the XQuery implementation file
      * @return
      */
-    public String getXqExpression();
+    String getXqExpression();
 
-    public void setXqExpression(String expression);
+    void setXqExpression(String expression);
 
     /**
      * The XQuery expression should be extended for with additional
      * script, which provides the external variables needed to invoke
-     * a function. In this way for each function that is defined in the 
+     * a function. In this way for each function that is defined in the
      * original XQuery expression additional expression is defined, which
      * can invoke this function, using external variables as input.
      * These expression extensions are stored in this map. It provides for
@@ -62,7 +62,7 @@ public interface XQueryImplementation extends Implementation {
      * type corresponding expression extension
      * @return
      */
-    public Map<Method, String> getXqExpressionExtensionsMap();
+    Map<Method, String> getXqExpressionExtensionsMap();
 
     /**
      * This map is a kind of cache for function invocations. If a given
@@ -71,5 +71,5 @@ public interface XQueryImplementation extends Implementation {
      * can be increased
      * @return
      */
-    public Map<String, XQueryExpression> getCompiledExpressionsCache();
+    Map<String, XQueryExpression> getCompiledExpressionsCache();
 }

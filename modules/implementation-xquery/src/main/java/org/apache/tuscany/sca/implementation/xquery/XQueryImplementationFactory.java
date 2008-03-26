@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.implementation.xquery.impl.XQueryImplementationFac
  */
 public interface XQueryImplementationFactory {
 
-    public XQueryImplementationFactory INSTANCE = new XQueryImplementationFactoryImpl();
+    XQueryImplementationFactory INSTANCE = new XQueryImplementationFactoryImpl();
 
     XQueryImplementation createXQueryImplementation();
 }
