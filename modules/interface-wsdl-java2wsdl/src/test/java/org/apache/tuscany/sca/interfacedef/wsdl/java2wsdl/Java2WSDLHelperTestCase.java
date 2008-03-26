@@ -70,5 +70,5 @@ public class Java2WSDLHelperTestCase extends TestCase {
 }
 
 interface HelloWorld {
-    public String sayHello(String s);
+    String sayHello(String s);
 }
