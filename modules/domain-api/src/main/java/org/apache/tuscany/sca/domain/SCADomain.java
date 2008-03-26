@@ -37,19 +37,19 @@ public interface SCADomain {
     /**
      * Start all of the services in the domain.
      */
-    public void start()
+    void start()
       throws DomainException;  
 
     /**
      * Stop all of the services in the domain.
      */
-    public void stop()
+    void stop()
       throws DomainException; 
 
     /**
      * Destroy the SCA domain.
      */
-    public void destroy()
+    void destroy()
       throws DomainException;
 
     /**
@@ -58,7 +58,7 @@ public interface SCADomain {
      * 
      * @return the URI of the SCA Domain
      */
-    public String getURI();
+    String getURI();
     
     /**
      * Add an SCA contribution to the domain.
@@ -67,7 +67,7 @@ public interface SCADomain {
      * @param contributionURL the URL of the contribution
      * @throws DomainException
      */  
-    public void addContribution(String contributionURI, URL contributionURL)
+    void addContribution(String contributionURI, URL contributionURL)
       throws DomainException;
     
     /**
@@ -77,7 +77,7 @@ public interface SCADomain {
      * @param contributionURL the URL of the contribution
      * @throws DomainException
      */  
-    public void updateContribution(String contributionURI, URL contributionURL)
+    void updateContribution(String contributionURI, URL contributionURL)
       throws DomainException;    
     
     /**
@@ -86,7 +86,7 @@ public interface SCADomain {
      * @param contributionURI the URI of the contribution
      * @throws DomainException
      */
-    public void removeContribution(String contributionURI)
+    void removeContribution(String contributionURI)
       throws DomainException; 
     
     /**
@@ -96,7 +96,7 @@ public interface SCADomain {
      * @param compositeXML the XML string of the composite 
      * @throws DomainException
      */
-    public void addDeploymentComposite(String contributionURI, String compositeXML)
+    void addDeploymentComposite(String contributionURI, String compositeXML)
       throws DomainException;
     
     /**
@@ -106,7 +106,7 @@ public interface SCADomain {
      * @param compositeXML the XML string of the composite 
      * @throws DomainException
      */
-    public void updateDeploymentComposite(String contributionURI, String compositeXML)
+    void updateDeploymentComposite(String contributionURI, String compositeXML)
       throws DomainException;    
 
     /**
@@ -115,7 +115,7 @@ public interface SCADomain {
      * @param compositeQName the QName of the composite
      * @throws DomainException     
      */
-    public void addToDomainLevelComposite(QName compositeQName)
+    void addToDomainLevelComposite(QName compositeQName)
       throws DomainException;
     
     /**
@@ -124,7 +124,7 @@ public interface SCADomain {
      * @param compositeQName the QName of the composite
      * @throws DomainException     
      */
-    public void removeFromDomainLevelComposite(QName compositeQName)
+    void removeFromDomainLevelComposite(QName compositeQName)
       throws DomainException; 
     
     /**
@@ -132,7 +132,7 @@ public interface SCADomain {
      * 
      * @return XML representing the domain level composite
      */
-    public String getDomainLevelComposite()
+    String getDomainLevelComposite()
       throws DomainException;
     
     /**
@@ -141,7 +141,7 @@ public interface SCADomain {
      * 
      * @return XML representing the specified artifact
      */
-    public String getQNameDefinition(QName artifact)
+    String getQNameDefinition(QName artifact)
       throws DomainException;
     
     /**
@@ -153,7 +153,7 @@ public interface SCADomain {
      * @param compositeQName The QName of the composite
      * @throws DomainException
      */
-    public void startComposite(QName compositeQName)
+    void startComposite(QName compositeQName)
       throws DomainException;
     
     /**
@@ -163,7 +163,7 @@ public interface SCADomain {
      * @param compositeQName The QName of the composite
      * @throws DomainException
      */
-    public void stopComposite(QName compositeQName)
+    void stopComposite(QName compositeQName)
       throws DomainException;
     
     /**
@@ -179,7 +179,7 @@ public interface SCADomain {
      * @throws IllegalArgumentException if the supplied instance is not a
      *             reference supplied by the SCA runtime
      */
-    public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException;
+    <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException;
 
     /**
      * Returns a proxy for a service provided by a component in the SCA domain.
@@ -190,7 +190,7 @@ public interface SCADomain {
      * @param <B> the Java type of the business interface for the service
      * @return an object that implements the business interface
      */
-    public <B> B getService(Class<B> businessInterface, String serviceName);
+    <B> B getService(Class<B> businessInterface, String serviceName);
 
     /**
      * Returns a ServiceReference for a service provided by a component in the
@@ -202,6 +202,6 @@ public interface SCADomain {
      * @param <B> the Java type of the business interface for the service
      * @return a ServiceReference for the designated service
      */
-    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName);
+    <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName);
 
 }
