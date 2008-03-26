@@ -37,20 +37,20 @@ public interface SCADomainManagerInitService {
      * 
      * @param domain
      */
-    public void setDomain(SCADomain domain);
+    void setDomain(SCADomain domain);
      
     /**
      * Set the domain SPI object
      * 
      * @param domain
      */
-    public void setDomainSPI(SCADomainSPI domainSPI);
+    void setDomainSPI(SCADomainSPI domainSPI);
     
     /**
      * Set the domain event object
      * 
      * @param domain
      */
-    public void setDomainEventService(SCADomainEventService domainEventService);    
+    void setDomainEventService(SCADomainEventService domainEventService);    
     
 }

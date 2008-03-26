@@ -32,28 +32,28 @@ public interface ServiceModel {
      * 
      * @return service URI
      */
-    public String getServiceURI();
+    String getServiceURI();
     
     /**
      * Set the service URI
      * 
      * @param serviceURI
      */    
-    public void setServiceURI(String serviceURI);    
+    void setServiceURI(String serviceURI);    
     
     /**
      * Retrieve the service URL
      * 
      * @return service URL
      */    
-    public String getServiceURL();
+    String getServiceURL();
    
     /**
      * Set the service URL
      * 
      * @param serviceURL
      */    
-    public void setServiceURL(String serviceURL);
+    void setServiceURL(String serviceURL);
     
    
     /**
@@ -61,12 +61,12 @@ public interface ServiceModel {
      * 
      * @return service binding
      */    
-    public String getServiceBinding();
+    String getServiceBinding();
    
     /**
      * Set the service binding
      * 
      * @param serviceBinding
      */    
-    public void setServiceBinding(String serviceBinding);    
+    void setServiceBinding(String serviceBinding);    
 }

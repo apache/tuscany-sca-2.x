@@ -31,34 +31,34 @@ public interface DomainModelFactory {
      * 
      * @return new domain model
      */
-    public DomainModel createDomain();
+    DomainModel createDomain();
    
     /**
      * Create a new node model
      * 
      * @return new node model
      */
-    public NodeModel createNode();  
+    NodeModel createNode();  
     
     /**
      * Create a new contribution model
      * 
      * @return new contribution model
      */
-    public ContributionModel createContribution();    
+    ContributionModel createContribution();    
     
     /**
      * Create a new composite model
      * 
      * @return new composite model
      */
-    public CompositeModel createComposite();   
+    CompositeModel createComposite();   
     
     /**
      * Create a new service model
      * 
      * @return new service model
      */
-    public ServiceModel createService();     
+    ServiceModel createService();     
 
 }

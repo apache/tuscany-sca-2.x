@@ -37,27 +37,27 @@ public interface CompositeModel {
      * 
      * @return composite QName
      */
-    public QName getCompositeQName();
+    QName getCompositeQName();
     
     /**
      * Set the composite QName
      * 
      * @param compositeQName
      */    
-    public void setCompositeQName(QName compositeQName);  
+    void setCompositeQName(QName compositeQName);  
     
     /**
      * Retrieve the assembly composite object
      * 
      * @return composite
      */
-    public Composite getComposite();
+    Composite getComposite();
     
     /** 
      * Set the assembly composite object
      * 
      * @param composite
      */
-    public void setComposite(Composite composite);
+    void setComposite(Composite composite);
  
 }
