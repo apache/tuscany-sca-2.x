@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -60,11 +61,13 @@ public class WorkspaceDocumentProcessor implements URLArtifactProcessor<Workspac
         try {
             
             // Create a stream reader
-            urlStream = url.openStream();
+            URLConnection connection = url.openConnection();
+            connection.setUseCaches(false);
+            urlStream = connection.getInputStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
             reader.nextTag();
             
-            // Reader the componentType model 
+            // Read the workspace model 
             Workspace workspace = (Workspace)staxProcessor.read(reader);
             if (workspace != null) {
                 workspace.setURI(uri.toString());

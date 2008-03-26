@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
@@ -133,7 +134,9 @@ public class XMLDocumentHelper {
     }
 
     public static InputSource getInputSource(URL url) throws IOException {
-        InputStream is = url.openStream();
+        URLConnection connection = url.openConnection();
+        connection.setUseCaches(false);
+        InputStream is = connection.getInputStream();
         return getInputSource(url, is);
     }
 
@@ -154,7 +157,9 @@ public class XMLDocumentHelper {
         if (attribute == null) {
             attribute = "targetNamespace";
         }
-        InputStream is = doc.openStream();
+        URLConnection connection = doc.openConnection();
+        connection.setUseCaches(false);
+        InputStream is = connection.getInputStream();
         try {
             XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
             int eventType = reader.getEventType();

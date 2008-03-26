@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.workspace.scanner.impl;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -64,7 +65,9 @@ public class JarContributionScanner implements ContributionScanner {
 
         // Assume the URL references a JAR file
         try {
-            JarInputStream jar = new JarInputStream(contributionURL.openStream());
+            URLConnection connection = contributionURL.openConnection();
+            connection.setUseCaches(false);
+            JarInputStream jar = new JarInputStream(connection.getInputStream());
             try {
                 Set<String> names = new HashSet<String>();
                 while (true) {

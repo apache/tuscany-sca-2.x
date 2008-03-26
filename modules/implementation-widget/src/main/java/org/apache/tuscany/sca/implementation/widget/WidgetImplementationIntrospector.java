@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.implementation.widget;
 
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Scanner;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
@@ -47,7 +48,9 @@ class WidgetImplementationIntrospector {
         URL htmlWidget = widgetImplementation.getLocationURL();
         
         try {
-            Scanner scanner = new Scanner(htmlWidget.openStream());
+            URLConnection connection = htmlWidget.openConnection();
+            connection.setUseCaches(false);
+            Scanner scanner = new Scanner(connection.getInputStream());
             while(scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 if(line.contains(WEB_PROPERTY_ANNOTATION)) {
