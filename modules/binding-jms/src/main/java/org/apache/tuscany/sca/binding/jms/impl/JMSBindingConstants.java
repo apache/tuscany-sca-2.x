@@ -30,31 +30,31 @@ public interface JMSBindingConstants {
 
     // Constants used when describing the JMS binding
     // model and for setting up defaults
-    public final static String BINDING_JMS = "binding.jms";
-    public final static QName BINDING_JMS_QNAME = new QName(Constants.SCA10_NS, BINDING_JMS);
-    public final static String CORRELATE_MSG_ID = "requestmsgidtocorrelid";
-    public final static String CORRELATE_CORRELATION_ID = "requestcorrelidtocorrelid";
-    public final static String CORRELATE_NONE = "none";
-    public final static List<String> VALID_CORRELATION_SCHEMES =
+    String BINDING_JMS = "binding.jms";
+    QName BINDING_JMS_QNAME = new QName(Constants.SCA10_NS, BINDING_JMS);
+    String CORRELATE_MSG_ID = "requestmsgidtocorrelid";
+    String CORRELATE_CORRELATION_ID = "requestcorrelidtocorrelid";
+    String CORRELATE_NONE = "none";
+    List<String> VALID_CORRELATION_SCHEMES =
         Arrays.asList(new String[] {CORRELATE_MSG_ID, CORRELATE_CORRELATION_ID, CORRELATE_NONE});
-    public final static String DESTINATION_TYPE_QUEUE = "queue"; // 0
-    public final static String DESTINATION_TYPE_TOPIC = "topic"; // 1
-    public final static List<String> VALID_DESTINATION_TYPES =
+    String DESTINATION_TYPE_QUEUE = "queue"; // 0
+    String DESTINATION_TYPE_TOPIC = "topic"; // 1
+    List<String> VALID_DESTINATION_TYPES =
         Arrays.asList(new String[] {DESTINATION_TYPE_QUEUE, DESTINATION_TYPE_TOPIC});
-    public final static String CREATE_ALWAYS = "always";
-    public final static String CREATE_NEVER = "never";
-    public final static String CREATE_IF_NOT_EXIST = "ifnotexist";
-    public final static String DEFAULT_DESTINATION_NAME = "NODESTINATION";
-    public final static String DEFAULT_RESPONSE_DESTINATION_NAME = "NORESPONSEDESTINATION";
-    public final static String DEFAULT_CONNECTION_FACTORY_NAME = "ConnectionFactory";
-    public final static String DEFAULT_CONTEXT_FACTORY_NAME = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
-    public final static String DEFAULT_JNDI_URL = "tcp://localhost:61616";
-    public final static int DEFAULT_TIME_TO_LIVE = 20000; // in milliseconds
-    public final static int DEFAULT_PRIORITY = 1;
-    public final static String DEFAULT_RF_CLASSNAME = "org.apache.tuscany.sca.host.jms.activemq.JMSResourceFactoryImpl";
-    public final static String DEFAULT_MP_CLASSNAME = JMSMessageProcessorImpl.class.getName();
-    public final static String DEFAULT_OPERATION_PROP_NAME = "scaOperationName";
+    String CREATE_ALWAYS = "always";
+    String CREATE_NEVER = "never";
+    String CREATE_IF_NOT_EXIST = "ifnotexist";
+    String DEFAULT_DESTINATION_NAME = "NODESTINATION";
+    String DEFAULT_RESPONSE_DESTINATION_NAME = "NORESPONSEDESTINATION";
+    String DEFAULT_CONNECTION_FACTORY_NAME = "ConnectionFactory";
+    String DEFAULT_CONTEXT_FACTORY_NAME = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
+    String DEFAULT_JNDI_URL = "tcp://localhost:61616";
+    int DEFAULT_TIME_TO_LIVE = 20000; // in milliseconds
+    int DEFAULT_PRIORITY = 1;
+    String DEFAULT_RF_CLASSNAME = "org.apache.tuscany.sca.host.jms.activemq.JMSResourceFactoryImpl";
+    String DEFAULT_MP_CLASSNAME = JMSMessageProcessorImpl.class.getName();
+    String DEFAULT_OPERATION_PROP_NAME = "scaOperationName";
 
-    public static final String FAULT_PROPERTY = "org.apache.tuscany.sca.fault";
+    String FAULT_PROPERTY = "org.apache.tuscany.sca.fault";
 
 }

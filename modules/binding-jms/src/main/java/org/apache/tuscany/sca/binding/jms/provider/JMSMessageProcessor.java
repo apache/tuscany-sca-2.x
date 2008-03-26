@@ -29,25 +29,25 @@ public interface JMSMessageProcessor {
     /**
      * Get the operation name from a JMS Message
      */
-    public abstract String getOperationName(Message message);
+    String getOperationName(Message message);
 
     /**
      * Set the operation name on a JMS Message
      */
-    public abstract void setOperationName(String operationName, Message message);
+    void setOperationName(String operationName, Message message);
 
     /**
      * Extracts the payload from a JMS Message
      */
-    public abstract Object extractPayloadFromJMSMessage(Message msg);
+    Object extractPayloadFromJMSMessage(Message msg);
 
     /**
      * Create a JMS Message containing the payload
      */
-    public abstract Message insertPayloadIntoJMSMessage(Session session, Object payload);
+    Message insertPayloadIntoJMSMessage(Session session, Object payload);
 
     /**
      * Create a JMS Message for reporting an exception
      */
-    public abstract Message createFaultMessage(Session session, Throwable responsePayload);
+    Message createFaultMessage(Session session, Throwable responsePayload);
 }
