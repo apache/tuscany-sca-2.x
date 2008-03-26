@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.jar.JarFile;
 
 public class IOHelper {
@@ -124,7 +125,9 @@ public class IOHelper {
                 }
                 jarFile = connection.getJarFile();
             } else {
-                is = url.openStream();
+                URLConnection connection = url.openConnection();
+                connection.setUseCaches(false);
+                is = connection.getInputStream();
             }
         }
 

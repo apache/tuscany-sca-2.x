@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Composite;
@@ -92,7 +93,9 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
             URL url = scanner.getArtifactURL(contributionURL, path);
             try {
                 // Check if the file actually exists before trying to read it
-                InputStream is = url.openStream();
+                URLConnection connection = url.openConnection();
+                connection.setUseCaches(false);
+                InputStream is = connection.getInputStream();
                 is.close();
             } catch (IOException e) {
                 continue;

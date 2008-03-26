@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.contribution.processor;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 
 import javax.xml.XMLConstants;
@@ -82,7 +83,9 @@ public class DefaultValidatingXMLInputFactory extends XMLInputFactory {
             Source[] sources = new Source[n];
             for (int i =0; i < n; i++) {
                 String uri = uris.get(i);
-                sources[i] = new StreamSource(new URL(uri).openStream(), uri);
+                URLConnection connection = new URL(uri).openConnection();
+                connection.setUseCaches(false);
+                sources[i] = new StreamSource(connection.getInputStream(), uri);
             }
             
             // Create an aggregated validation schemas from all the XSDs

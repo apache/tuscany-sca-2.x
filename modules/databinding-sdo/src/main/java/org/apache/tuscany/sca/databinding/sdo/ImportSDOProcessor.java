@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.net.URLConnection;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -132,7 +133,9 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
                 }
 
                 String wsdlURL = artifact.getLocation();
-                InputStream xsdInputStream = new URL(wsdlURL).openStream();
+                URLConnection connection = new URL(wsdlURL).openConnection();
+                connection.setUseCaches(false);
+                InputStream xsdInputStream = connection.getInputStream();
                 try {
                     XSDHelper xsdHelper = importSDO.getHelperContext().getXSDHelper();
                     xsdHelper.define(xsdInputStream, wsdlURL);

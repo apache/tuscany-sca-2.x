@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -45,7 +46,9 @@ class GetResourceInvoker implements Invoker {
             
             // Return an input stream for the resource
             URL url = new URL(locationURL +'/' + id);
-            InputStream is = url.openStream();
+            URLConnection connection = url.openConnection();
+            connection.setUseCaches(false);
+            InputStream is = connection.getInputStream();
             msg.setBody(is);
         } catch (MalformedURLException e) {
 

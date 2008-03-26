@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
@@ -96,7 +97,9 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
     public SCADefinitions read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
         InputStream urlStream = null; 
         try {
-            urlStream = url.openStream();
+            URLConnection connection = url.openConnection();
+            connection.setUseCaches(false);
+            urlStream = connection.getInputStream();
             //urlStream = createInputStream(url);
             XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
             

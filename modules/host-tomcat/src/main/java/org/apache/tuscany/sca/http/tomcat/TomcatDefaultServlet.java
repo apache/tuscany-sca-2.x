@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Hashtable;
 
 import javax.naming.NamingException;
@@ -66,7 +67,9 @@ public class TomcatDefaultServlet extends DefaultServlet {
                         return new Resource() {
                             @Override
                             public InputStream streamContent() throws IOException {
-                                return url.openStream();
+                                URLConnection connection = url.openConnection();
+                                connection.setUseCaches(false);
+                                return connection.getInputStream();
                             }
                         };
                     } catch (MalformedURLException e) {
