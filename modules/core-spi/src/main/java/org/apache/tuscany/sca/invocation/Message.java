@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.runtime.EndpointReference;
  * @version $Rev $Date
  */
 public interface Message {
-    public static final String QOS_CTX_SECURITY_PRINCIPAL = "PRINCIPAL";
+    String QOS_CTX_SECURITY_PRINCIPAL = "PRINCIPAL";
 
     /**
      * Returns the body of the message, which will be the payload or parameters associated with the wire
