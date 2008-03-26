@@ -24,14 +24,14 @@ package org.apache.tuscany.sca.databinding.xstream;
  * @version $Rev$ $Date$
  */
 public interface MetaObject {
-    public void setName(String name);
+    void setName(String name);
 
-    public String getName();
+    String getName();
 
-    public Class<?> getType();
+    Class<?> getType();
 
-    public String getID();
+    String getID();
 
-    public XObject getInstance();
-    //public byte[] getByteCode();
+    XObject getInstance();
+    //byte[] getByteCode();
 }
