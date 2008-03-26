@@ -67,6 +67,7 @@
                 <module>tools</module>
                 <module>samples</module>
                 <module>itest</module>
+                <module>vtest</module>
             </modules>
         </profile>
 
@@ -77,6 +78,7 @@
                 <module>tools</module>
                 <module>samples</module>
                 <module>itest</module>
+                <module>vtest</module>
                 <module>distribution</module>
             </modules>
         </profile>
@@ -88,6 +90,7 @@
                 <module>tools</module>
                 <module>samples</module>
                 <module>itest</module>
+                <module>vtest</module>
                 <module>demos</module>
                 <module>tutorial</module>
                 <module>distribution</module>
