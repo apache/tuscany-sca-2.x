@@ -28,8 +28,8 @@ import org.osoa.sca.annotations.Remotable;
 
 /**
  * Represents an SCA processing node. An SCA node belongs to an SCA domain.
- * A node is loaded with one or mode SCA composites. It can start and stop that composite. 
- * 
+ * A node is loaded with one or mode SCA composites. It can start and stop that composite.
+ *
  * @version $Rev: 580520 $ $Date: 2007-09-29 00:50:25 +0100 (Sat, 29 Sep 2007) $
  */
 @Remotable
@@ -38,61 +38,60 @@ public interface SCANode {
     /**
      * Returns the URI of the SCA node. That URI is the endpoint of the
      * SCA node administration service.
-     * 
+     *
      * @return the URI of the SCA node
      */
-    public String getURI();
-    
+    String getURI();
+
     /**
      * Returns the SCA domain that the node belongs to.
-     * 
-     * @return the SCA domain that the node belongs to 
+     *
+     * @return the SCA domain that the node belongs to
      */
-    public SCADomain getDomain(); 
-    
+    SCADomain getDomain();
+
     /**
      * Add an SCA contribution into the node.
-     *  
+     *
      * @param contributionURI the URI of the contribution
      * @param contributionURL the URL of the contribution
      */
-    public void addContribution(String contributionURI, URL contributionURL) throws NodeException;
-   
+    void addContribution(String contributionURI, URL contributionURL) throws NodeException;
+
     /**
      * Remove an SCA contribution from the node.
-     *  
+     *
      * @param contributionURI the URI of the contribution
      */
-    public void removeContribution(String contributionURI) throws NodeException;
+    void removeContribution(String contributionURI) throws NodeException;
 
     /**
      * Add the named deployable composite to the domain level composite
-     * 
+     *
      * @param compositeQName the name of the composite
      */
-    public void addToDomainLevelComposite(QName compositeQName) throws NodeException;
-    
+    void addToDomainLevelComposite(QName compositeQName) throws NodeException;
+
     /**
      * Add the specified deployable composite to the domain level composite
-     * 
+     *
      * @param compositePath the path of the composite file
      */
-    public void addToDomainLevelComposite(String compositePath) throws NodeException;
-    
+    void addToDomainLevelComposite(String compositePath) throws NodeException;
+
     /**
      * Start all the deployed composites
      */
-    public void start() throws NodeException;    
-    
+    void start() throws NodeException;
+
     /**
      * Stop all of the deployed composites
      */
-    public void stop() throws NodeException;    
+    void stop() throws NodeException;
 
     /**
      * Destroy the node.
      */
-    public void destroy() throws NodeException;    
-    
-        
+    void destroy() throws NodeException;
+
 }
