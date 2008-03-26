@@ -26,7 +26,7 @@ public @interface Command {
      * Defines an Ad hoc command query
      * @return
      */
-    public String query() default ""; 
+    String query() default ""; 
     
-    public TYPE type() default TYPE.SELECT;
+    TYPE type() default TYPE.SELECT;
 }
