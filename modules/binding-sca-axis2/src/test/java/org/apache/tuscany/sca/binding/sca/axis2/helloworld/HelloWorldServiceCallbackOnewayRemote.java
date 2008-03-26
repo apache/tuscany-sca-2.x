@@ -28,6 +28,6 @@ import org.osoa.sca.annotations.Remotable;
 public interface HelloWorldServiceCallbackOnewayRemote {
     
     @OneWay
-    public void getGreetingsRemote(String s);
+    void getGreetingsRemote(String s);
 
 }
