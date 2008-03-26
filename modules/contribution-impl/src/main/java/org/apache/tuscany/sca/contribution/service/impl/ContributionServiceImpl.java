@@ -25,6 +25,10 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -231,9 +235,13 @@ public class ContributionServiceImpl implements ContributionService {
         ContributionMetadataDocumentProcessor metadataDocumentProcessor =
             new ContributionMetadataDocumentProcessor(staxProcessor, xmlFactory);
         
-        URL[] urls = {sourceURL};
-        URLClassLoader cl = new URLClassLoader(urls, null);
-        
+        final URL[] urls = {sourceURL};
+        // Allow access to create classloader. Requires RuntimePermission in security policy.
+        URLClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
+            public URLClassLoader run() {
+                return new URLClassLoader(urls, null);
+            }
+        });           
         for (String path: new String[]{
                                        Contribution.SCA_CONTRIBUTION_GENERATED_META,
                                        Contribution.SCA_CONTRIBUTION_META}) {
@@ -321,7 +329,18 @@ public class ContributionServiceImpl implements ContributionService {
         if (storeInRepository || contributionStream == null) {
             URLConnection connection = sourceURL.openConnection();
             connection.setUseCaches(false);
-            contributionStream = connection.getInputStream();
+            // Allow access to open URL stream. Add FilePermission to added to security policy file.
+            final URLConnection finalConnection = connection;
+            try {
+                contributionStream = AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
+                    public InputStream run() throws IOException {
+                        return finalConnection.getInputStream();
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                throw (IOException)e.getException();
+            }
+            
             try {
                 // process the contribution
                 contributionArtifacts = this.packageProcessor.getArtifacts(locationURL, contributionStream);
@@ -336,6 +355,8 @@ public class ContributionServiceImpl implements ContributionService {
         
         // Read all artifacts in the contribution
         try {
+        	// Allow access to read system properties. Requires PropertyPermission in security policy.
+        	// Any security exceptions are caught and wrapped as ContributionException.
             processReadPhase(contribution, contributionArtifacts);
         } catch ( Exception e ) {
             throw new ContributionException(e);

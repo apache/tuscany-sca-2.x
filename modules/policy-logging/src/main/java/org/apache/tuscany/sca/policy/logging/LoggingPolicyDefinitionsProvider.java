@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.policy.logging;
 
 import java.net.URI;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
@@ -42,13 +44,19 @@ public class LoggingPolicyDefinitionsProvider implements SCADefinitionsProvider 
     }
 
     public SCADefinitions getSCADefinition() throws SCADefinitionsProviderException {
-        URL defintionsFileUrl = getClass().getClassLoader().getResource(definitionsFile);
+        // Allow privileged access to load resource. Requires RuntimePermssion in security policy.
+        URL definitionsFileUrl = AccessController.doPrivileged(new PrivilegedAction<URL>() {
+            public URL run() {
+                return getClass().getClassLoader().getResource(definitionsFile);
+            }
+        });           
+
         Object scaDefn = null;
         try {
             URI uri = new URI(definitionsFile);
             return (SCADefinitions)urlArtifactProcessor.read(null, 
                                                              uri, 
-                                                             defintionsFileUrl);
+                                                             definitionsFileUrl);
         } catch ( Exception e ) {
             throw new SCADefinitionsProviderException(e);
         }

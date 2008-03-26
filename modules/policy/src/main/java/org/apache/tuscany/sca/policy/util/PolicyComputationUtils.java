@@ -23,6 +23,10 @@ import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 
 import java.io.StringWriter;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -111,11 +115,23 @@ public class PolicyComputationUtils {
         }
 
         StringWriter sw = new StringWriter();
-        Source domSource = new DOMSource(doc);
-        Result finalResult = new StreamResult(sw);
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        final Source domSource = new DOMSource(doc);
+        final Result finalResult = new StreamResult(sw);
+        final Transformer transformer = TransformerFactory.newInstance().newTransformer();
         // transformer.setOutputProperty("omit-xml-declaration", "yes");
-        transformer.transform(domSource, finalResult);
+        // Allow priviledged access to let transformers read property files. Requires
+        // PropertyPermission in security policy.
+        try {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                public Object run() throws TransformerException {
+                    transformer.transform(domSource, finalResult);
+                    return null;
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (TransformerException)e.getException();
+        }
+        
         return sw.toString().getBytes();
     }
 

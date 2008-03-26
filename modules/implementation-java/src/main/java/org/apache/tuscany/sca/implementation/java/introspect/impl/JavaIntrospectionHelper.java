@@ -30,6 +30,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -117,7 +119,7 @@ public final class JavaIntrospectionHelper {
         }
         // we first evaluate methods of the subclass and then move to the parent
         Method[] declaredMethods = pClass.getDeclaredMethods();
-        for (Method declaredMethod : declaredMethods) {
+        for (final Method declaredMethod : declaredMethods) {
             int modifiers = declaredMethod.getModifiers();
             if ((!Modifier.isPublic(modifiers) && !Modifier.isProtected(modifiers)) || Modifier.isStatic(modifiers)) {
                 if (validating) {
@@ -139,8 +141,14 @@ public final class JavaIntrospectionHelper {
                     }
                 }
                 if (!matched) {
-                    // TODO ignore Java accessibility
-                    declaredMethod.setAccessible(true);
+                    // Allow privileged access to set accessibility. Requires ReflectPermission
+                    // in security policy.
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        public Object run() {
+                            declaredMethod.setAccessible(true);
+                            return null;
+                        }
+                    });
                     temp.add(declaredMethod);
                 }
                 methods.addAll(temp);

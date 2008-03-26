@@ -36,6 +36,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -86,10 +88,41 @@ public class ContributionRepositoryImpl implements ContributionRepository {
                 }
             });
         }
-        this.rootFile = new File(root);
-        this.domain = rootFile.toURI();
-        FileHelper.forceMkdir(rootFile);
-        if (!rootFile.exists() || !rootFile.isDirectory() || !rootFile.canRead()) {
+
+        // Allow privileged access to File. Requires FilePermission in security policy file.
+        final String finalRoot = root;
+        this.rootFile = AccessController.doPrivileged(new PrivilegedAction<File>() {
+            public File run() {
+                return new File(finalRoot);
+            }
+        });           
+
+        // Allow privileged access to File. Requires FilePermission in security policy file.
+        this.domain = AccessController.doPrivileged(new PrivilegedAction<URI>() {
+            public URI run() {
+                return rootFile.toURI();
+            }
+        });           
+
+        // Allow privileged access to mkdir. Requires FilePermission in security policy file.
+        try {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                public Object run() throws IOException {
+                    FileHelper.forceMkdir(rootFile);
+                    return null;
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (IOException)e.getException();
+        }
+            
+        // Allow privileged access to test file. Requires FilePermissions in security policy file.
+        Boolean notDirectory = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            public Boolean run() {
+                return (!rootFile.exists() || !rootFile.isDirectory() || !rootFile.canRead());
+            }
+        });           
+        if (notDirectory) {
             throw new IOException("The root is not a directory: " + repository);
         }
         this.factory = factory;

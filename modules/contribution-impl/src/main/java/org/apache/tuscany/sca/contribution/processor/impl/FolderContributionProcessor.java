@@ -26,6 +26,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,20 +58,50 @@ public class FolderContributionProcessor implements PackageProcessor {
      * @param root
      * @throws IOException
      */
-    private static void traverse(List<URI> fileList, File file, File root) throws IOException {
-        if (file.isFile()) {
-            fileList.add(root.toURI().relativize(file.toURI()));
-        } else if (file.isDirectory()) {
-            String uri = root.toURI().relativize(file.toURI()).toString();
-            if (uri.endsWith("/")) {
-                uri = uri.substring(0, uri.length() - 1);
+    private static void traverse(List<URI> fileList, final File file, final File root) throws IOException {
+        // Allow privileged access to test file. Requires FilePermissions in security policy file.
+        Boolean isFile = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            public Boolean run() {
+                return file.isFile();
             }
-            fileList.add(URI.create(uri));
-            
-            File[] files = file.listFiles();
-            for (File f: files) {
-                if (!f.getName().startsWith(".")) {
-                    traverse(fileList, f, root);
+        });
+        if (isFile) {
+            fileList.add(AccessController.doPrivileged(new PrivilegedAction<URI>() {
+                public URI run() {
+                    return root.toURI().relativize(file.toURI());
+                }
+            }));
+        } else {
+            // Allow privileged access to test file. Requires FilePermissions in security policy
+            // file.
+            Boolean isDirectory = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                public Boolean run() {
+                    return file.isDirectory();
+                }
+            });
+            if (isDirectory) {
+                String uri = AccessController.doPrivileged(new PrivilegedAction<URI>() {
+                    public URI run() {
+                        return root.toURI().relativize(file.toURI());
+                    }
+                }).toString();
+
+                if (uri.endsWith("/")) {
+                    uri = uri.substring(0, uri.length() - 1);
+                }
+                fileList.add(URI.create(uri));
+
+                // Allow privileged access to list files. Requires FilePermission in security
+                // policy.
+                File[] files = AccessController.doPrivileged(new PrivilegedAction<File[]>() {
+                    public File[] run() {
+                        return file.listFiles();
+                    }
+                });
+                for (File f : files) {
+                    if (!f.getName().startsWith(".")) {
+                        traverse(fileList, f, root);
+                    }
                 }
             }
         }
@@ -87,16 +119,31 @@ public class FolderContributionProcessor implements PackageProcessor {
 
         List<URI> artifacts = new ArrayList<URI>();
 
-        // Assume the root is a jar file
-        File rootFolder;
-
         try {
-            rootFolder = new File(packageSourceURL.toURI());
-            if (rootFolder.isDirectory()) {
-                if (!rootFolder.exists()) {
+            // Assume the root is a jar file
+            final File rootFolder = new File(packageSourceURL.toURI());
+            // Allow privileged access to test file. Requires FilePermissions in security policy
+            // file.
+            Boolean isDirectory = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                public Boolean run() {
+                    return rootFolder.isDirectory();
+                }
+            });
+            if (isDirectory) {
+                // Allow privileged access to test file. Requires FilePermissions in security policy
+                // file.
+                Boolean folderExists = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                    public Boolean run() {
+                        return rootFolder.exists();
+                    }
+                });
+                if (!folderExists) {
                     throw new ContributionReadException(rootFolder.getAbsolutePath());
                 }
 
+                // Security consideration. This method gathers URIs of enclosed
+                // artifacts. The URIs are protected by the policy when a user
+                // yries to open those URLs.
                 traverse(artifacts, rootFolder, rootFolder);
             }
 

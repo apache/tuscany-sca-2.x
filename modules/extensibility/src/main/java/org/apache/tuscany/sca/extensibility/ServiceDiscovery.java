@@ -24,6 +24,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -136,19 +140,32 @@ public class ServiceDiscovery {
      * @return Table of URLs with associated ClassLoaders
      * @throws IOException
      */
-    public Hashtable<ClassLoader, Set<URL>> getServiceResources(String name) throws IOException {
+    public Hashtable<ClassLoader, Set<URL>> getServiceResources(final String name) throws IOException {
 
         Hashtable<ClassLoader, Set<URL>> resourceTable = new Hashtable<ClassLoader, Set<URL>>();
 
         HashSet<URL> allURLs = new HashSet<URL>();
-        for (ClassLoader classLoader : registeredClassLoaders) {
+        for (final ClassLoader classLoader : registeredClassLoaders) {
             HashSet<URL> urls = new HashSet<URL>();
             resourceTable.put(classLoader, urls);
             boolean debug = logger.isLoggable(Level.FINE);
             if (debug) {
                 logger.fine("Discovering service resources using class loader " + classLoader);
             }
-            for (URL url : Collections.list(classLoader.getResources("META-INF/services/" + name))) {
+            // Allow privileged access to read META-INF/services/*. Add FilePermission to added to security policy file.
+            ArrayList<URL> urlList;
+            try {
+                // FIXME J2 Security - promote this to callers of this method
+                urlList = AccessController.doPrivileged(new PrivilegedExceptionAction<ArrayList<URL>>() {
+                    public ArrayList<URL> run() throws IOException {
+                        return Collections.list(classLoader.getResources("META-INF/services/" + name));
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                throw (IOException)e.getException();
+            }
+            
+            for (URL url : urlList) {
                 if (allURLs.contains(url))
                     continue;
                 urls.add(url);
@@ -202,8 +219,8 @@ public class ServiceDiscovery {
      *                service class
      * @throws IOException
      */
-    private void getServiceClasses(ClassLoader classLoader,
-                                   String name,
+    private void getServiceClasses(final ClassLoader classLoader,
+                                   final String name,
                                    Set<ServiceDeclaration> classSet,
                                    boolean findAllClasses) throws IOException {
 
@@ -211,11 +228,36 @@ public class ServiceDiscovery {
         if (debug) {
             logger.fine("Discovering service providers using class loader " + classLoader);
         }
-        for (URL url : Collections.list(classLoader.getResources("META-INF/services/" + name))) {
+        // Allow privileged access to read META-INF/services/*. Add FilePermission to added to
+        // security policy file.
+        ArrayList<URL> urlList;
+        try {
+            urlList = AccessController.doPrivileged(new PrivilegedExceptionAction<ArrayList<URL>>() {
+                public ArrayList<URL> run() throws IOException {
+                    return Collections.list(classLoader.getResources("META-INF/services/" + name));
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (IOException)e.getException();
+        }
+        
+        for (final URL url : urlList) {
             if (debug) {
                 logger.fine("Reading service provider file: " + url.toExternalForm());
             }
-            InputStream is = url.openStream();
+
+            // Allow privileged access to open URL stream. Add FilePermission to added to security
+            // policy file.
+            InputStream is;
+            try {
+                is = AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
+                    public InputStream run() throws IOException {
+                        return url.openStream();
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                throw (IOException)e.getException();
+            }
             BufferedReader reader = null;
             try {
                 reader = new BufferedReader(new InputStreamReader(is));
