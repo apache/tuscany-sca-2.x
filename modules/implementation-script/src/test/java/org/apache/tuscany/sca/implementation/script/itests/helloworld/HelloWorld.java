@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.implementation.script.itests.helloworld;
 
 public interface HelloWorld {
-    
-    public String sayHello(String s);
+
+    String sayHello(String s);
 
 }
