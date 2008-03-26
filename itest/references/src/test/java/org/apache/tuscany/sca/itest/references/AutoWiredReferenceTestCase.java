@@ -25,7 +25,6 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.osoa.sca.ServiceUnavailableException;
 
 public class AutoWiredReferenceTestCase {
     private static SCADomain domain;
@@ -57,7 +56,7 @@ public class AutoWiredReferenceTestCase {
         assertEquals("BCComponent", acomponent.fooBC());
     }
 
-    @Test(expected = ServiceUnavailableException.class)
+    @Test(expected = NullPointerException.class)
     public void testD1Reference() {
         acomponent.fooD1();
     }
