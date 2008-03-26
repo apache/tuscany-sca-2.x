@@ -18,7 +18,7 @@
  */
 package node;
 
-import org.apache.tuscany.sca.node.launcher.DomainNodeLauncher;
+import org.apache.tuscany.sca.node.launcher.DomainManagerLauncher;
 
 /**
  * This server program that loads a composite to provide simple registry function.
@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.node.launcher.DomainNodeLauncher;
  */
 public class LaunchDomain {
     public static void main(String[] args) throws Exception {
-        DomainNodeLauncher.main(args);
+        DomainManagerLauncher.main(args);
     }
 
 }

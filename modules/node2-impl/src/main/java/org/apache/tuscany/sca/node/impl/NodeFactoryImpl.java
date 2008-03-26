@@ -33,7 +33,13 @@ public class NodeFactoryImpl extends SCANode2Factory {
     public NodeFactoryImpl() {
     }
 
+    @Override
     public SCANode2 createSCANode(String configurationURI) throws Node2Exception {
         return new NodeImpl(configurationURI);
+    }
+    
+    @Override
+    public SCANode2 createSCANode(String compositeURI, SCAContribution... contributions) throws Node2Exception {
+        return new NodeImpl(compositeURI, contributions);
     }
 }

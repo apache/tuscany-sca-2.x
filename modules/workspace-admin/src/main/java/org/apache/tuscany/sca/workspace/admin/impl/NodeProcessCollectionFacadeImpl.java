@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.workspace.admin.impl;
 
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeQName;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.dynamicReference;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.newRuntime;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.nodeURI;
 
 import java.net.URI;
@@ -29,11 +31,19 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.binding.atom.AtomBinding;
+import org.apache.tuscany.sca.binding.atom.AtomBindingFactory;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.assembly.CompositeActivator;
+import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
@@ -54,14 +64,27 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
     @Reference
     public LocalItemCollection cloudCollection;
     
-    @Reference
-    public ItemCollection processCollection;
+    private AssemblyFactory assemblyFactory;
+    private AtomBindingFactory atomBindingFactory;
+    private CompositeActivator compositeActivator;
 
     /**
      * Initialize the component.
      */
     @Init
     public void initialize() {
+
+        // Get a runtime
+        ReallySmallRuntime runtime = newRuntime();
+        
+        // Get its composite activator
+        compositeActivator = runtime.getCompositeActivator();
+
+        // Get the model factories
+        ExtensionPointRegistry registry = runtime.getExtensionPointRegistry();
+        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        atomBindingFactory = modelFactories.getFactory(AtomBindingFactory.class);
     }
     
     public Entry<String, Item>[] getAll() {
@@ -73,6 +96,7 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
         // Dispatch to the hosts hosting these nodes
         List<Entry<String, Item>> entries = new ArrayList<Entry<String,Item>>();
         for (String host: hosts(nodeEntries)) {
+            ItemCollection processCollection = processCollection(host);
             for (Entry<String, Item> remoteEntry: processCollection.getAll()) {
                 entries.add(remoteEntry);
             }
@@ -89,7 +113,7 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
         String host = host(key);
         
         // Dispatch the request to that host
-        String uri = "http://" + host + ":9990/node/processes/" + key;
+        ItemCollection processCollection = processCollection(host);
         return processCollection.get(key);
     }
 
@@ -105,7 +129,7 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
         }
         
         // Dispatch the request to that host
-        String uri = "http://" + host + ":9990/node/processes/" + key;
+        ItemCollection processCollection = processCollection(host);
         return processCollection.post(key, item);
     }
 
@@ -120,7 +144,7 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
         String host = host(key);
         
         // Dispatch the request to that host
-        String uri = "http://" + host + ":9990/node/processes/" + key;
+        ItemCollection processCollection = processCollection(host);
         processCollection.delete(key);
     }
     
@@ -139,7 +163,7 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
             }
             
             // Dispatch the request to that host
-            String uri = "http://" + host + ":9990/node/processes/" + key;
+            ItemCollection processCollection = processCollection(host);
             return processCollection.query(queryString);
             
         } else {
@@ -208,4 +232,18 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
         }
     }
 
+    /**
+     * Returns a proxy to the process collection service on the specified
+     * host.
+     * 
+     * @param host
+     * @return
+     */
+    private ItemCollection processCollection(String host) {
+        AtomBinding binding = atomBindingFactory.createAtomBinding();
+        binding.setURI("http://" + host + ":9990/node/processes");
+        ServiceReference<ItemCollection> reference = dynamicReference(ItemCollection.class, binding, assemblyFactory, compositeActivator);
+        return reference.getService();
+    }
+        
 }

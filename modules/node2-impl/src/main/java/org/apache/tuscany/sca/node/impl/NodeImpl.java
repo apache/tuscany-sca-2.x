@@ -38,9 +38,8 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.SCABinding;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -48,17 +47,15 @@ import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
-import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
 import org.apache.tuscany.sca.node.Node2Exception;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
@@ -72,12 +69,15 @@ public class NodeImpl implements SCANode2, SCAClient {
 	
     private final static Logger logger = Logger.getLogger(NodeImpl.class.getName());
 	     
-    // The node configuration URI
-    private String configurationURI;
-
+    // The node configuration name, used for logging
+    private String configurationName;
+    
     // The Tuscany runtime that does the hard work
     private ReallySmallRuntime runtime;
-    private CompositeActivator activator;
+    private CompositeActivator compositeActivator;
+    private XMLInputFactory inputFactory;
+    private ModelFactoryExtensionPoint modelFactories;
+    private StAXArtifactProcessorExtensionPoint artifactProcessors;
 
     // The composite loaded into this node
     private Composite composite; 
@@ -88,55 +88,117 @@ public class NodeImpl implements SCANode2, SCAClient {
      * @param configurationURI the URI of the node configuration information.
      * @throws Node2Exception
      */
-    public NodeImpl(String configurationURI) throws Node2Exception {
+    NodeImpl(String configurationURI) throws Node2Exception {
+        configurationName = configurationURI;
+        logger.log(Level.INFO, "Creating node: " + configurationName);               
+
         try {
-            init(configurationURI);
+            // Initialize the runtime
+            initRuntime();
+            
+            // Read the node configuration feed
+            StAXArtifactProcessor<ConfiguredNodeImplementation> configurationProcessor = artifactProcessors.getProcessor(ConfiguredNodeImplementation.class);
+            URL configurationURL = new URL(configurationURI);
+            InputStream is = configurationURL.openStream();
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+            reader.nextTag();
+            ConfiguredNodeImplementation configuration = configurationProcessor.read(reader);
+            is.close();
+            
+            // Resolve contribution URLs
+            for (Contribution contribution: configuration.getContributions()) {
+                URL contributionURL = new URL(configurationURL, contribution.getLocation());
+                contribution.setLocation(contributionURL.toString());
+            }
+            
+            // Resolve composite URL
+            URL compositeURL = new URL(configurationURL, configuration.getComposite().getURI());
+            configuration.getComposite().setURI(compositeURL.toString());
+
+            // Configure the node
+            configureNode(configuration);
 
         } catch (Exception e) {
             throw new Node2Exception(e);
         }        
     }
     
-    private void init(String configurationURI) throws Exception {
-        logger.log(Level.INFO, "Creating node: " + configurationURI);               
+    /** 
+     * Constructs a new SCA node.
+     *  
+     * @param compositeURI
+     * @param contributions
+     * @throws Node2Exception
+     */
+    NodeImpl(String compositeURI, SCAContribution[] contributions) throws Node2Exception {
+        configurationName = compositeURI;
+        logger.log(Level.INFO, "Creating node: " + configurationName);               
 
-        this.configurationURI = configurationURI;
+        try {
+            // Initialize the runtime
+            initRuntime();
+            
+            // Create a node configuration
+            NodeImplementationFactory nodeImplementationFactory = modelFactories.getFactory(NodeImplementationFactory.class);
+            ConfiguredNodeImplementation configuration = nodeImplementationFactory.createConfiguredNodeImplementation();
+            
+            // Create composite model
+            AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+            Composite composite = assemblyFactory.createComposite();
+            composite.setURI(compositeURI);
+            composite.setUnresolved(true);
+            
+            // Create contribution models
+            ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+            for (SCAContribution c: contributions) {
+                Contribution contribution = contributionFactory.createContribution();
+                contribution.setURI(c.getURI());
+                contribution.setLocation(c.getLocation());
+                contribution.setUnresolved(true);
+                configuration.getContributions().add(contribution);
+            }
 
-        // Create a node runtime for the domain contributions to run on
-        ClassLoader contextClassLoader =  Thread.currentThread().getContextClassLoader();
-        runtime = new ReallySmallRuntime(contextClassLoader);
+            // Configure the node
+            configureNode(configuration);
+
+        } catch (Exception e) {
+            throw new Node2Exception(e);
+        }        
+    }
+    
+    /**
+     * Initialize the Tuscany runtime.
+     * 
+     * @throws Exception
+     */
+    private void initRuntime() throws Exception {
+
+        // Create a node runtime
+        runtime = new ReallySmallRuntime(Thread.currentThread().getContextClassLoader());
         runtime.start();
-        activator = runtime.getCompositeActivator();
         
         // Get the various factories we need
         ExtensionPointRegistry registry = runtime.getExtensionPointRegistry();
-        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
-        XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
+        modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        inputFactory = modelFactories.getFactory(XMLInputFactory.class);
 
         // Create the required artifact processors
-        StAXArtifactProcessorExtensionPoint artifactProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        StAXArtifactProcessor<ConfiguredNodeImplementation> configurationProcessor = artifactProcessors.getProcessor(ConfiguredNodeImplementation.class);
-        StAXArtifactProcessor<Composite> compositeProcessor = artifactProcessors.getProcessor(Composite.class);
+        artifactProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         
-        // Read the node configuration feed
-        URL configurationURL = new URL(configurationURI);
-        InputStream is = configurationURL.openStream();
-        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        reader.nextTag();
-        ConfiguredNodeImplementation configuration = configurationProcessor.read(reader);
-        is.close();
-        
+        // Save the composite activator
+        compositeActivator = runtime.getCompositeActivator();
+    }
+    
+    private void configureNode(ConfiguredNodeImplementation configuration) throws Exception {
+
         // Find if any contribution JARs already available locally on the classpath
-        Map<String, URL> localContributions = new HashMap<String, URL>();
-        collectJARs(localContributions, contextClassLoader);
+        Map<String, URL> localContributions = localContributions();
 
         // Load the specified contributions
         ContributionService contributionService = runtime.getContributionService();
         List<Contribution> contributions = new ArrayList<Contribution>();
         for (Contribution contribution: configuration.getContributions()) {
-            
-            // Build contribution URL
-            URL contributionURL = new URL(configurationURL, contribution.getLocation());
+            URL contributionURL = new URL(contribution.getLocation());
 
             // Extract contribution file name
             String file =contributionURL.getPath();
@@ -158,10 +220,11 @@ public class NodeImpl implements SCANode2, SCAClient {
         }
         
         // Load the specified composite
-        URL compositeURL = new URL(configurationURL, configuration.getComposite().getURI());
+        StAXArtifactProcessor<Composite> compositeProcessor = artifactProcessors.getProcessor(Composite.class);
+        URL compositeURL = new URL(configuration.getComposite().getURI());
         logger.log(Level.INFO, "Loading composite: " + compositeURL);
-        is = compositeURL.openStream();
-        reader = inputFactory.createXMLStreamReader(is);
+        InputStream is = compositeURL.openStream();
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         composite = compositeProcessor.read(reader);
         
         // Resolve it within the context of the first contribution
@@ -172,8 +235,8 @@ public class NodeImpl implements SCANode2, SCAClient {
         // This is temporary to make the activator happy
         AssemblyFactory assemblyFactory = runtime.getAssemblyFactory();
         Composite tempComposite = assemblyFactory.createComposite();
-        tempComposite.setName(new QName(configurationURI, "temp"));
-        tempComposite.setURI(configurationURI);
+        tempComposite.setName(new QName("http://tempuri.org", "temp"));
+        tempComposite.setURI("http://tempuri.org");
         
         // Include the node composite in the top-level composite 
         tempComposite.getIncludes().add(composite);
@@ -183,15 +246,15 @@ public class NodeImpl implements SCANode2, SCAClient {
     }
     
     public void start() throws Node2Exception {
-        logger.log(Level.INFO, "Starting node: " + configurationURI);               
+        logger.log(Level.INFO, "Starting node: " + configurationName);               
         
         try {
             
             // Activate the composite
-            activator.activate(composite);
+            compositeActivator.activate(composite);
             
             // Start the composite
-            activator.start(composite);
+            compositeActivator.start(composite);
             
         } catch (ActivationException e) {
             throw new Node2Exception(e);
@@ -199,28 +262,19 @@ public class NodeImpl implements SCANode2, SCAClient {
     }
     
     public void stop() throws Node2Exception {
-        logger.log(Level.INFO, "Stopping node: " + configurationURI);               
+        logger.log(Level.INFO, "Stopping node: " + configurationName);               
         
         try {
             
             // Stop the composite
-            activator.stop(composite);
+            compositeActivator.stop(composite);
             
             // Deactivate the composite
-            activator.deactivate(composite);
+            compositeActivator.deactivate(composite);
             
         } catch (ActivationException e) {
             throw new Node2Exception(e);
         }
-    }
-    
-    /**
-     * Returns the extension point registry used by this node.
-     * 
-     * @return
-     */
-    public ExtensionPointRegistry getExtensionPointRegistry() {
-        return runtime.getExtensionPointRegistry();
     }
     
     public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException {
@@ -236,39 +290,6 @@ public class NodeImpl implements SCANode2, SCAClient {
         return serviceReference.getService();
     }
 
-    public <B> ServiceReference<B> createServiceReference(Class<B> businessInterface, String targetURI) {
-        try {
-          
-            AssemblyFactory assemblyFactory = runtime.getAssemblyFactory();
-            Composite composite = assemblyFactory.createComposite();
-            composite.setName(new QName(configurationURI, "default"));
-            RuntimeComponent component = (RuntimeComponent)assemblyFactory.createComponent();
-            component.setName("default");
-            component.setURI("default");
-            runtime.getCompositeActivator().configureComponentContext(component);
-            composite.getComponents().add(component);
-            RuntimeComponentReference reference = (RuntimeComponentReference)assemblyFactory.createComponentReference();
-            reference.setName("default");
-            ModelFactoryExtensionPoint factories =
-                runtime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
-            JavaInterfaceFactory javaInterfaceFactory = factories.getFactory(JavaInterfaceFactory.class);
-            InterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
-            interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(businessInterface));
-            reference.setInterfaceContract(interfaceContract);
-            component.getReferences().add(reference);
-            reference.setComponent(component);
-            SCABindingFactory scaBindingFactory = factories.getFactory(SCABindingFactory.class);
-            SCABinding binding = scaBindingFactory.createSCABinding();
-            
-            binding.setURI(targetURI);
-            reference.getBindings().add(binding);       
-            return new ServiceReferenceImpl<B>(businessInterface, component, reference, binding, runtime
-                .getProxyFactory(), runtime.getCompositeActivator());
-        } catch (Exception e) {
-            throw new ServiceRuntimeException(e);
-        }
-    }
-        
     public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String name) {
         
         // Extract the component name
@@ -310,13 +331,12 @@ public class NodeImpl implements SCANode2, SCAClient {
                         }
                         componentContext =
                             ((RuntimeComponent)compositeService.getPromotedComponent()).getComponentContext();
-                        return componentContext.createSelfReference(businessInterface, compositeService
-                            .getPromotedService());
+                        return componentContext.createSelfReference(businessInterface, compositeService.getPromotedService());
                     }
                     break;
                 }
             }
-            // No matching service is found
+            // No matching service found
             throw new ServiceRuntimeException("Composite service not found: " + name);
         } else {
             componentContext = ((RuntimeComponent)component).getComponentContext();
@@ -328,6 +348,26 @@ public class NodeImpl implements SCANode2, SCAClient {
         }
     }    
 
+    /**
+     * Returns the extension point registry used by this node.
+     * 
+     * @return
+     */
+    public ExtensionPointRegistry getExtensionPointRegistry() {
+        return runtime.getExtensionPointRegistry();
+    }
+
+    /**
+     * Returns contribution JARs available on the classpath.
+     * 
+     * @return
+     */
+    private static Map<String, URL> localContributions () {
+        Map<String, URL> localContributions = new HashMap<String, URL>();
+        collectJARs(localContributions, Thread.currentThread().getContextClassLoader());
+        return localContributions;
+    }
+    
     /**
      * Collect JARs on the classpath of a URLClassLoader
      * @param urls

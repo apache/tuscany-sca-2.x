@@ -73,4 +73,40 @@ public abstract class SCANode2Factory {
      */
     public abstract SCANode2 createSCANode(String configurationURI) throws Node2Exception;
 
+    /**
+     * Creates a new SCA node.
+     * 
+     * @param compositeURI the URI of the composite to use 
+     * @param contributions the URI of the composite to use 
+     * @return a new SCA node.
+     */
+    public abstract SCANode2 createSCANode(String compositeURI, SCAContribution... contributions) throws Node2Exception;
+
+    /**
+     * Represents an SCA contribution uri + location.
+     */
+    public final class SCAContribution {
+        private String uri;
+        private String location;
+        
+        /**
+         * Constructs a new SCA contribution.
+         * 
+         * @param uri
+         * @param location
+         */
+        public SCAContribution(String uri, String location) {
+            this.uri = uri;
+            this.location = location;
+        }
+        
+        public String getURI() {
+            return uri;
+        }
+        
+        public String getLocation() {
+            return location;
+        }
+    }
+    
 }

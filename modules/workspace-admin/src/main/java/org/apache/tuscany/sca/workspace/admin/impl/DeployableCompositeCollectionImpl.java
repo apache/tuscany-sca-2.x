@@ -26,6 +26,7 @@ import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compos
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.compositeTitle;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.contributionURI;
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.locationURL;
+import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.newRuntime;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -143,9 +144,10 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     @Init
     public void initialize() throws ParserConfigurationException {
         
+        // Bootstrap a runtime to get a populated registry
         // FIXME Remove this later
-        // Bootstrap a registry
-        ExtensionPointRegistry registry = registry();
+        ReallySmallRuntime runtime = newRuntime();
+        ExtensionPointRegistry registry = runtime.getExtensionPointRegistry();
         
         // Get model factories
         modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
@@ -668,22 +670,6 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         item.setAlternate(compositeAlternateLink(contributionLocation, deployableURI));
         item.setRelated(relatedLink(deployable));
         return item;
-    }
-
-    /**
-     * Temporary instantiation of a dummy runtime to get a registry populated
-     * with all the right things.
-     * 
-     * @return the registry
-     */
-    private static ExtensionPointRegistry registry() {
-        try {
-            ReallySmallRuntime runtime = new ReallySmallRuntime(Thread.currentThread().getContextClassLoader());
-            runtime.start();
-            return runtime.getExtensionPointRegistry();
-        } catch (ActivationException e) {
-            throw new ServiceRuntimeException(e);
-        }
     }
 
     /**

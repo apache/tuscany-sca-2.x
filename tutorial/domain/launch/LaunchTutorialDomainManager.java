@@ -27,7 +27,7 @@ package launch;
 public class LaunchTutorialDomainManager {
     
     public static void main(String[] args) throws Exception {
-        org.apache.tuscany.sca.node.launcher.DomainNodeLauncher.main(args);
+        org.apache.tuscany.sca.node.launcher.DomainManagerLauncher.main(args);
     }
 
 }
