@@ -27,41 +27,41 @@ import org.apache.tuscany.sca.interfacedef.Interface;
 
 /**
  * Represents a WSDL interface.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public interface WSDLInterface extends Interface, Base {
 
     /**
      * Returns the name of the WSDL interface.
-     * 
+     *
      * @return the name of the WSDL interface
      */
     QName getName();
 
     /**
      * Sets the name of the WSDL interface.
-     * 
+     *
      * @param className the name of the WSDL interface
      */
     void setName(QName interfaceName);
-    
+
     /**
      * Returns the WSDL interface portType.
-     * 
+     *
      * @return the WSDL interface portType
      */
     PortType getPortType();
 
     /**
      * Sets the WSDL interface portType
-     * 
+     *
      * @param portType the WSDL interface portType
      */
     void setPortType(PortType portType);
 
-    public WSDLDefinition getWsdlDefinition();
+    WSDLDefinition getWsdlDefinition();
 
-    public void setWsdlDefinition(WSDLDefinition wsdlDefinition);
+    void setWsdlDefinition(WSDLDefinition wsdlDefinition);
 
 }
