@@ -39,13 +39,13 @@ public @interface Reference {
      *
      * @return the name of the reference
      */
-    public String name() default "";
+    String name() default "";
 
     /**
      * Indicates if a reference must be specified.
      *
      * @return true if a reference must be specified
      */
-    public boolean required() default true;
+    boolean required() default true;
 }
 

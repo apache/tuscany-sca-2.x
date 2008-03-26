@@ -38,7 +38,7 @@ public @interface ConversationAttributes {
      *
      * @return the maximum time that can pass between operations in a single conversation
      */
-    public String maxIdleTime() default "";
+    String maxIdleTime() default "";
 
     /**
      * The maximum time that a conversation may remain active. If this time is exceeded the container may end the
@@ -46,12 +46,12 @@ public @interface ConversationAttributes {
      *
      * @return the maximum time that a conversation may remain active
      */
-    public String maxAge() default "";
+    String maxAge() default "";
 
     /**
      * If true, indicates that only the user that initiated the conversation has the authority to continue it.
      *
      * @return true if only the user that initiated the conversation has the authority to continue it
      */
-    public boolean singlePrincipal() default false;
+    boolean singlePrincipal() default false;
 }
