@@ -295,6 +295,10 @@ public class CompositeActivatorImpl implements CompositeActivator {
             targetComponent = endpoint.getTargetComponent();
             targetComponentService = endpoint.getTargetComponentService();
             targetBinding = endpoint.getTargetBinding();
+            // FIXME: TUSCANY-2136, For unresolved binding, don't add wire. Is it the right solution?
+            if (!reference.isCallback() && binding.getURI() == null && targetComponentService == null) {
+                return;
+            }
         }
 
         // create a forward wire, either static or dynamic
