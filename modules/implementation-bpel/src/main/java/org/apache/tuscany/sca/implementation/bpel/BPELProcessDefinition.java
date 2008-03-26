@@ -29,40 +29,40 @@ import org.apache.tuscany.sca.assembly.Base;
 
 /**
  * The BPEL process definition.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public interface BPELProcessDefinition extends Base {
-    
+
     /**
      * Get the BPEL process Name
      */
-    public QName getName();
-    
+    QName getName();
+
     /**
      * Set the BPEL process Name
      * @param processName process QName
      */
-    public void setName(QName name);
-    
+    void setName(QName name);
+
     /**
      * Get BPEL process URI
      * @return URI for the process
      */
-    public URI getURI();
-    
+    URI getURI();
+
     /**
      * Set the BPEL process URI
      * @param uri for the process
      */
-    public void setURI(URI uri);
-    
+    void setURI(URI uri);
+
     /**
      * Get the URL for the process location
      * @return
      */
     URL getLocation();
-    
+
     /**
      * Set the URL for the process location
      * @param url
