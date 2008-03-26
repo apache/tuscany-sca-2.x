@@ -30,13 +30,13 @@ import org.apache.tuscany.sca.workspace.Workspace;
  * @version $Rev$ $Date$
  */
 public interface ContributionDependencyBuilder {
-    
+
     /**
      * Build the set of contributions that a contribution depends on.
      * @param workspace
      * @param contribution
      * @return
      */
-    public List<Contribution> buildContributionDependencies(Workspace workspace, Contribution contribution);
+    List<Contribution> buildContributionDependencies(Workspace workspace, Contribution contribution);
 
 }
