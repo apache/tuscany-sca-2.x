@@ -25,20 +25,20 @@ import javax.xml.namespace.QName;
 
 /**
  * The SPI for a node
- * 
+ *
  * @version $Rev: 580520 $ $Date: 2007-09-29 00:50:25 +0100 (Sat, 29 Sep 2007) $
  */
 public interface SCANodeSPI {
 
-    public Object getNodeRuntime();
-    
-    public void startFromDomain() throws NodeException;
-    
-    public void stopFromDomain() throws NodeException;
-    
-    public void addContributionFromDomain(String contributionURI, URL contributionURL, ClassLoader contributionClassLoader ) throws NodeException;   
-    
-    public void removeContributionFromDomain(String contributionURI) throws NodeException;  
-    
-    public void addToDomainLevelCompositeFromDomain(QName compositeQName) throws NodeException;     
+    Object getNodeRuntime();
+
+    void startFromDomain() throws NodeException;
+
+    void stopFromDomain() throws NodeException;
+
+    void addContributionFromDomain(String contributionURI, URL contributionURL, ClassLoader contributionClassLoader ) throws NodeException;   
+
+    void removeContributionFromDomain(String contributionURI) throws NodeException;
+
+    void addToDomainLevelCompositeFromDomain(QName compositeQName) throws NodeException;
 }

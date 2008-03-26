@@ -25,16 +25,16 @@ import org.apache.tuscany.sca.node.SCANode;
 
 /**
  * Initializes the Node Management component
- * 
+ *
  * @version $Rev: 552343 $ $Date: 2007-09-11 18:45:36 +0100 (Tue, 11 Sep 2007) $
  */
 public interface SCANodeManagerInitService {
-     
+
     /**
      * Set the node object into the NodeManagement component so that is can manage it
-     * 
+     *
      * @param node
      */
-    public void setNode(SCANode node);
-    
+    void setNode(SCANode node);
+
 }
