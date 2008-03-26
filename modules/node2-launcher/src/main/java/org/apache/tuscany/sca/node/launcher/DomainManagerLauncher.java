@@ -28,9 +28,9 @@ import java.util.logging.Logger;
  *
  * @version $Rev$ $Date$
  */
-public class DomainNodeLauncher {
+public class DomainManagerLauncher {
     
-    private final static Logger logger = Logger.getLogger(DomainNodeLauncher.class.getName());    
+    private final static Logger logger = Logger.getLogger(DomainManagerLauncher.class.getName());    
 
     public static void main(String[] args) throws Exception {
         logger.info("Apache Tuscany SCA Domain Manager starting...");
@@ -39,7 +39,7 @@ public class DomainNodeLauncher {
         Object admin;
         try {
             // Set up runtime ClassLoader
-            ClassLoader runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader(DomainNodeLauncher.class.getClassLoader());
+            ClassLoader runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader(Thread.currentThread().getContextClassLoader());
             if (runtimeClassLoader != null) {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
             }
@@ -47,8 +47,8 @@ public class DomainNodeLauncher {
             // Create the daemon
             
             // We use Java reflection here as only the runtime class
-            // loader knows the runtime classes required by the daemon
-            String className = "org.apache.tuscany.sca.workspace.admin.launcher.DomainAdminLauncherBootstrap";
+            // loader knows the runtime classes required by the manager
+            String className = "org.apache.tuscany.sca.workspace.admin.launcher.DomainManagerLauncherBootstrap";
             if (runtimeClassLoader != null) {
                 adminClass = Class.forName(className, true, runtimeClassLoader);
             } else {

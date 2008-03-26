@@ -26,6 +26,24 @@ import java.net.URL;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.assembly.ActivationException;
+import org.apache.tuscany.sca.core.assembly.CompositeActivator;
+import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
+import org.apache.tuscany.sca.core.invocation.ProxyFactoryExtensionPoint;
+import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.osoa.sca.ServiceReference;
+import org.osoa.sca.ServiceRuntimeException;
+
 /**
  * Common functions and constants used by the admin components.
  *
@@ -172,5 +190,60 @@ public final class DomainAdminUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * Create a new service reference dynamically.
+     * 
+     * @param <B>
+     * @param businessInterface
+     * @param binding
+     * @param assemblyFactory
+     * @param compositeActivator
+     * @return
+     */
+    static <B> ServiceReference<B> dynamicReference(Class<B> businessInterface, Binding binding, AssemblyFactory assemblyFactory, CompositeActivator compositeActivator) {
+        try {
+    
+            Composite composite = assemblyFactory.createComposite();
+            composite.setName(new QName("http://tempuri.org", "default"));
+            RuntimeComponent component = (RuntimeComponent)assemblyFactory.createComponent();
+            component.setName("default");
+            component.setURI("default");
+            compositeActivator.configureComponentContext(component);
+            composite.getComponents().add(component);
+            RuntimeComponentReference reference = (RuntimeComponentReference)assemblyFactory.createComponentReference();
+            reference.setName("default");
+            JavaInterfaceFactory javaInterfaceFactory = compositeActivator.getJavaInterfaceFactory();
+            InterfaceContract interfaceContract = javaInterfaceFactory.createJavaInterfaceContract();
+            interfaceContract.setInterface(javaInterfaceFactory.createJavaInterface(businessInterface));
+            reference.setInterfaceContract(interfaceContract);
+            component.getReferences().add(reference);
+            reference.setComponent(component);
+            reference.getBindings().add(binding);
+    
+            ProxyFactory proxyFactory = compositeActivator.getProxyFactory();
+            return new ServiceReferenceImpl<B>(businessInterface, component, reference, binding, proxyFactory, compositeActivator);
+            
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
+        }
+    }
+
+    /**
+     * Temporary instantiation of a dummy Tuscany runtime.
+     * FIXME We need a better way to bootstrap without having to create
+     * a runtime instance at all.
+     * 
+     * @return
+     */
+    static ReallySmallRuntime newRuntime() {
+        try {
+            ReallySmallRuntime runtime = new ReallySmallRuntime(Thread.currentThread().getContextClassLoader());
+            runtime.start();
+            return runtime;
+        } catch (ActivationException e) {
+            throw new ServiceRuntimeException(e);
+        }
     }
 }

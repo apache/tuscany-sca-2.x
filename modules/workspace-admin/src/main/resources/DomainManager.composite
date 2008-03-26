@@ -20,7 +20,7 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
 	xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
 	targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
-    name="DomainAdmin">
+    name="DomainManager">
 
     <component name="AdminUI">
         <t:implementation.widget location="home.html"/>
@@ -168,9 +168,6 @@
    	 		<t:binding.atom uri="http://localhost:9990/processes" title="Log"/>
    		</service>
    		<reference name="cloudCollection" target="CloudCollectionComponent/LocalItemCollection"/>
-   		<reference name="processCollection" target="NodeProcessCollectionComponent/ItemCollection">
-   	 		<t:binding.atom/>
-   		</reference>
     </component>
 
     <component name="NodeProcessCollectionComponent">

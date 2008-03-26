@@ -33,7 +33,7 @@ public class NodeMain {
     public static void main(String[] args) throws Exception {
         if (args.length != 0) {
             if (args[0].equals("domain")) {
-                DomainNodeLauncher.main(args);
+                DomainManagerLauncher.main(args);
             } else {
                 NodeLauncher.main(args);
             }

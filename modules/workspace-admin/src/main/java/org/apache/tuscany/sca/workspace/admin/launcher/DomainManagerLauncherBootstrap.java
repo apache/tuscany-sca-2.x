@@ -26,18 +26,18 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  *  
  * @version $Rev$ $Date$
  */
-public class DomainAdminLauncherBootstrap {
+public class DomainManagerLauncherBootstrap {
 
     private SCADomain admin;
     
     /**
      * Constructs a new admin bootstrap.
      */
-    public DomainAdminLauncherBootstrap() throws Exception {
+    public DomainManagerLauncherBootstrap() throws Exception {
     }
 
     public void start() throws Exception {
-        admin = SCADomain.newInstance("DomainAdmin.composite");
+        admin = SCADomain.newInstance("DomainManager.composite");
     }
     
     public void stop() throws Exception {

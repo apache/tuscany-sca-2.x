@@ -49,7 +49,7 @@ public class CalculatorDistributedTestCase {
         try {
             System.out.println("Setting up domain");
             
-            SCADomain.newInstance("DomainAdmin.composite");
+            SCADomain.newInstance("DomainManager.composite");
             
             SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
             nodeC  = nodeFactory.createSCANode("http://localhost:9990/node-image/NodeC");
