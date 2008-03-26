@@ -29,5 +29,5 @@ import commonj.sdo.DataObject;
  */
 public interface CompanyService {
     @Command(query="select * from COMPANY")
-    public DataObject getCompanies();
+    DataObject getCompanies();
 }
