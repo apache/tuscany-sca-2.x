@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.contribution.java.impl;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -57,11 +59,15 @@ public class ContributionClassLoaderTestCase  {
     }
     
     private Contribution createContribution(String fileName) throws MalformedURLException {
-
         Contribution contrib = contributionFactory.createContribution();
         File contribDir = new File(fileName);        
         contrib.setLocation(contribDir.toURI().toURL().toString());
-        contrib.setClassLoader(new ContributionClassLoader(contrib, null));
+        ClassLoader contextClassLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run() {
+                return Thread.currentThread().getContextClassLoader();
+            }
+        });           
+        contrib.setClassLoader(new ContributionClassLoader(contrib, contextClassLoader));
         return contrib;
     }
     

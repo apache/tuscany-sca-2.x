@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.implementation.java.injection;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.apache.tuscany.sca.core.factory.ObjectCreationException;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
@@ -33,11 +35,18 @@ public class MethodInjector<T> implements Injector<T> {
     private final Method method;
     private final ObjectFactory<?> objectFactory;
 
-    public MethodInjector(Method method, ObjectFactory<?> objectFactory) {
-        assert method != null;
+    public MethodInjector(Method aMethod, ObjectFactory<?> objectFactory) {
+        assert aMethod != null;
         assert objectFactory != null;
-        this.method = method;
-        this.method.setAccessible(true);
+        this.method = aMethod;
+        // Allow privileged access to set accessibility. Requires ReflectPermission in security
+        // policy.
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            public Object run() {
+                method.setAccessible(true);
+                return null;
+            }
+        });           
         this.objectFactory = objectFactory;
     }
 

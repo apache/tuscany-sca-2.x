@@ -19,9 +19,14 @@
 
 package org.apache.tuscany.sca.contribution.processor;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.net.URLConnection;
 import java.util.List;
 
@@ -40,6 +45,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -80,20 +86,42 @@ public class DefaultValidatingXMLInputFactory extends XMLInputFactory {
         try {
             List<String> uris = schemas.getSchemas();
             int n = uris.size();
-            Source[] sources = new Source[n];
+            final Source[] sources = new Source[n];
             for (int i =0; i < n; i++) {
-                String uri = uris.get(i);
-                URLConnection connection = new URL(uri).openConnection();
-                connection.setUseCaches(false);
-                sources[i] = new StreamSource(connection.getInputStream(), uri);
+                final String uri = uris.get(i);
+                // Allow privileged access to open URL stream. Requires FilePermission in security policy.
+                final URL url = new URL( uri );
+                InputStream urlStream;
+                try {
+                    urlStream = AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
+                        public InputStream run() throws IOException {
+                            URLConnection connection = url.openConnection();
+                            connection.setUseCaches(false);
+                            return connection.getInputStream();
+                        }
+                    });
+                } catch (PrivilegedActionException e) {
+                    throw (IOException)e.getException();
+                }
+                sources[i] = new StreamSource(urlStream, uri);
             }
             
             // Create an aggregated validation schemas from all the XSDs
-            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            aggregatedSchema= schemaFactory.newSchema(sources);
-            
+            final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            // Allow privileged access to check files. Requires FilePermission
+            // in security policy.
+            try {
+                aggregatedSchema = AccessController.doPrivileged(new PrivilegedExceptionAction<Schema>() {
+                    public Schema run() throws SAXException {
+                        return schemaFactory.newSchema(sources);
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                throw (SAXException)e.getException();
+            }
+
         } catch (Error e) {
-            //FIXME Log this, some old JDKs don't support XMLSchema validation
+            // FIXME Log this, some old JDKs don't support XMLSchema validation
             //e.printStackTrace();
         } catch (SAXParseException e) {
             throw new IllegalStateException(e);

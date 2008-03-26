@@ -60,6 +60,7 @@ public final class JavaReflectionAdapter {
      */
     private JavaReflectionAdapter(final Class clazz) {
         // Index the methods on the implementation class
+        // FIXME J2 Security - promote this to callers of this method
         Method[] methods = AccessController.doPrivileged(new PrivilegedAction<Method[]>() {
             public Method[] run() {
                 return clazz.getMethods();

@@ -20,6 +20,9 @@
 package org.apache.tuscany.sca.host.embedded.impl;
 
 import java.io.IOException;
+import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
@@ -171,11 +174,23 @@ public class ReallySmallRuntimeBuilder {
         throws ActivationException {
 
         // Create a new XML input factory
-        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-
+        // Allow privileged access to factory. Requires RuntimePermission in security policy file.
+        XMLInputFactory inputFactory = AccessController.doPrivileged(new PrivilegedAction<XMLInputFactory>() {
+            public XMLInputFactory run() {
+                return XMLInputFactory.newInstance();
+            }
+        });           
+        
         // Create a validation XML schema extension point
         ValidationSchemaExtensionPoint schemas = registry.getExtensionPoint(ValidationSchemaExtensionPoint.class);
-        schemas.addSchema(ReallySmallRuntimeBuilder.class.getClassLoader().getResource("tuscany-sca.xsd").toString());
+        
+        // Allow privileged access to load resource. Requires RuntimePermssion in security policy.
+        URL schemaURL = AccessController.doPrivileged(new PrivilegedAction<URL>() {
+            public URL run() {
+                return ReallySmallRuntimeBuilder.class.getClassLoader().getResource("tuscany-sca.xsd");
+            }
+        });           
+        schemas.addSchema(schemaURL.toString());
         
         // Create a validating XML input factory
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas);
@@ -185,8 +200,14 @@ public class ReallySmallRuntimeBuilder {
             registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
 
         // Create and register StAX processors for SCA assembly XML
+        // Allow privileged access to factory. Requires RuntimePermission in security policy file.
+        XMLOutputFactory outputFactory = AccessController.doPrivileged(new PrivilegedAction<XMLOutputFactory>() {
+            public XMLOutputFactory run() {
+                return XMLOutputFactory.newInstance();
+            }
+        });           
         ExtensibleStAXArtifactProcessor staxProcessor =
-            new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, XMLOutputFactory.newInstance());
+            new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
         staxProcessors.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
         staxProcessors

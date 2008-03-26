@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.net.URLConnection;
 
 import javax.xml.namespace.QName;
@@ -94,12 +97,23 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
     }
     
 
-    public SCADefinitions read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
+    public SCADefinitions read(URL contributionURL, final URI uri, final URL url) throws ContributionReadException {
         InputStream urlStream = null; 
-        try {
-            URLConnection connection = url.openConnection();
-            connection.setUseCaches(false);
-            urlStream = connection.getInputStream();
+        try {        	
+            // Allow privileged access to open URL stream. Add FilePermission to added to security
+            // policy file.
+            try {
+                urlStream = AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
+                    public InputStream run() throws IOException {
+                        URLConnection connection = url.openConnection();
+                        connection.setUseCaches(false);
+                        return connection.getInputStream();
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                throw (IOException)e.getException();
+            }
+            
             //urlStream = createInputStream(url);
             XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
             

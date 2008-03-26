@@ -19,9 +19,12 @@
 
 package org.apache.tuscany.sca.contribution.service.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +34,7 @@ import org.apache.tuscany.sca.contribution.service.util.FileHelper;
 
 /**
  * Implementation of the content describer for contribution packages
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class PackageTypeDescriberImpl implements TypeDescriber {
@@ -59,10 +62,9 @@ public class PackageTypeDescriberImpl implements TypeDescriber {
     }
 
     /**
-     * Build contentType for a specific resource. We first check if the file is
-     * a supported one (looking into our registry based on resource extension)
-     * If not found, we try to check file contentType Or we return
-     * defaultContentType provided
+     * Build contentType for a specific resource. We first check if the file is a supported one
+     * (looking into our registry based on resource extension) If not found, we try to check file
+     * contentType Or we return defaultContentType provided
      * 
      * @param resourceURL The artifact URL
      * @param defaultContentType The default content type if we can't find the correct one
@@ -71,11 +73,25 @@ public class PackageTypeDescriberImpl implements TypeDescriber {
     public String getType(URL resourceURL, String defaultContentType) {
         URLConnection connection = null;
         String contentType = defaultContentType;
+        final String urlProtocol = resourceURL.getProtocol();
 
-        if (resourceURL.getProtocol().equals("file") && FileHelper.toFile(resourceURL).isDirectory()) {
-            // Special case : contribution is a folder
-            contentType = PackageType.FOLDER;
-        } else if (resourceURL.getProtocol().equals("bundle")||resourceURL.getProtocol().equals("bundleresource")) {
+        if (urlProtocol.equals("file")) {
+            final File fileOrDir = FileHelper.toFile(resourceURL);
+            // Allow privileged access to test file. Requires FilePermissions in security policy.
+            Boolean isDirectory = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                public Boolean run() {
+                    return fileOrDir.isDirectory();
+                }
+            });
+            if (isDirectory) {
+                // Special case : contribution is a folder
+                contentType = PackageType.FOLDER;
+            }
+            String fileName = resourceURL.toString();
+            String fileExt = fileName.substring(fileName.lastIndexOf('.')+1, fileName.length());
+            if ( fileExt.equalsIgnoreCase( "JAR" ) )
+                return PackageType.JAR;
+        } else if (urlProtocol.equals("bundle") || urlProtocol.equals("bundleresource")) {
             contentType = PackageType.BUNDLE;
         } else {
             contentType = resolveContentyTypeByExtension(resourceURL);
@@ -84,9 +100,10 @@ public class PackageTypeDescriberImpl implements TypeDescriber {
                     connection = resourceURL.openConnection();
                     connection.setUseCaches(false);
                     contentType = connection.getContentType();
-    
+
                     if (contentType == null || contentType.equals("content/unknown")) {
-                        // here we couldn't figure out from our registry or from URL and it's not a special file
+                        // here we couldn't figure out from our registry or from URL and it's not a
+                        // special file
                         // return defaultContentType if provided
                         contentType = defaultContentType;
                     }

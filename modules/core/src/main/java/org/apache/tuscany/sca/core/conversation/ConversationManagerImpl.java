@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.core.conversation;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -70,8 +72,13 @@ public class ConversationManagerImpl implements ConversationManager {
     	long mit = DEFAULT_MAX_IDLE_TIME;
     	long ma = DEFAULT_MAX_AGE;
     	
-    	String aProperty;
-    	aProperty = System.getProperty("org.apache.tuscany.sca.core.scope.ConversationalScopeContainer.MaxIdleTime");
+    	// Allow privileged access to read system property. Requires PropertyPermission in security
+        // policy.
+        String aProperty = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
+                return System.getProperty("org.apache.tuscany.sca.core.scope.ConversationalScopeContainer.MaxIdleTime");
+            }
+        });
     	if (aProperty != null) {
     		try {
     			mit = (new Long(aProperty) * 1000);
@@ -80,7 +87,13 @@ public class ConversationManagerImpl implements ConversationManager {
     		}
     	}
 
-        aProperty = System.getProperty("org.apache.tuscany.sca.core.scope.ConversationalScopeContainer.MaxAge");
+    	// Allow privileged access to read system property. Requires PropertyPermission in security
+        // policy.
+        aProperty = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
+                return System.getProperty("org.apache.tuscany.sca.core.scope.ConversationalScopeContainer.MaxAge");
+            }
+        });
         if (aProperty != null) {
             try {
                 ma = (new Long(aProperty) * 1000);

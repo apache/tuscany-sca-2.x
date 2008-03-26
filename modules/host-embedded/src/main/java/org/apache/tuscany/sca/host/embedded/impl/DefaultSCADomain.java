@@ -26,6 +26,10 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -137,13 +141,26 @@ public class DefaultSCADomain extends SCADomain {
         try {
             String scheme = contributionURL.toURI().getScheme();
             if (scheme == null || scheme.equalsIgnoreCase("file")) {
-                File contributionFile = new File(contributionURL.toURI());
-                if (contributionFile.isDirectory()) {
-                    String[] contributions = contributionFile.list(new FilenameFilter() {
-                        public boolean accept(File dir, String name) {
-                            return name.endsWith(".jar");
+                final File contributionFile = new File(contributionURL.toURI());
+                // Allow privileged access to test file. Requires FilePermission in security policy.
+                Boolean isDirectory = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                    public Boolean run() {
+                        return contributionFile.isDirectory();
+                    }
+                });           
+                if (isDirectory) {
+                    // Allow privileged access to create file list. Requires FilePermission in
+                    // security policy.
+                    String[] contributions = AccessController.doPrivileged(new PrivilegedAction<String[]>() {
+                        public String[] run() {
+                            return contributionFile.list(new FilenameFilter() {
+                                public boolean accept(File dir, String name) {
+                                    return name.endsWith(".jar");
+                                }
+                            });
                         }
-                    });
+                    });           
+                    	
                     if (contributions != null && contributions.length > 0 && contributions.length == contributionFile.list().length) {
                         for (String contribution : contributions) {
                             addContribution(contributionService, new File(contributionFile, contribution).toURI().toURL());
@@ -383,9 +400,20 @@ public class DefaultSCADomain extends SCADomain {
             if ("file".equals(protocol)) {
                 // directory contribution
                 if (url.endsWith(contributionArtifactPath)) {
-                    String location = url.substring(0, url.lastIndexOf(contributionArtifactPath));
+                    final String location = url.substring(0, url.lastIndexOf(contributionArtifactPath));
                     // workaround from evil URL/URI form Maven
-                    contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
+                    // contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
+                    // Allow privileged access to open URL stream. Add FilePermission to added to
+                    // security policy file.
+                    try {
+                        contributionURL = AccessController.doPrivileged(new PrivilegedExceptionAction<URL>() {
+                            public URL run() throws IOException {
+                                return FileHelper.toFile(new URL(location)).toURI().toURL();
+                            }
+                        });
+                    } catch (PrivilegedActionException e) {
+                        throw (MalformedURLException)e.getException();
+                    }
                 }
 
             } else if ("jar".equals(protocol)) {

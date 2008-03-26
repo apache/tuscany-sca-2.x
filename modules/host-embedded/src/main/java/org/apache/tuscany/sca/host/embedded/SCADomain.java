@@ -1,5 +1,4 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -24,8 +23,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
+import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import org.apache.tuscany.sca.host.embedded.impl.DefaultSCADomain;
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
@@ -164,8 +168,19 @@ public abstract class SCADomain {
      * @return A class name which extends/implements the service class
      * @throws IOException
      */
-    private static String getServiceName(ClassLoader classLoader, String name) throws IOException {
-        InputStream is = classLoader.getResourceAsStream("META-INF/services/" + name);
+    private static String getServiceName(final ClassLoader classLoader, final String name) throws IOException {
+        InputStream is;
+        // Allow privileged access to open stream. Requires FilePermission in security policy.
+        try {
+            is = AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
+                public InputStream run() throws IOException {
+                    return classLoader.getResourceAsStream("META-INF/services/" + name);
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (IOException)e.getException();
+        }
+                
         if (is == null) {
             return null;
         }

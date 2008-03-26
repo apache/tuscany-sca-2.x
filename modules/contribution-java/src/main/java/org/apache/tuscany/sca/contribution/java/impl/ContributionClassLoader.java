@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -47,12 +49,9 @@ public class ContributionClassLoader extends URLClassLoader {
      * @throws MalformedURLException
      */
     public ContributionClassLoader(Contribution contribution, ClassLoader parent) {
-        
-        // To enable contributions to access code outside of SCA contributions
-        // (typically by providing them on CLASSPATH), use the thread context
-        // ClassLoader as the parent of all contribution ClassLoaders.
-        
-        super(new URL[0], parent == null?Thread.currentThread().getContextClassLoader(): null);
+        super(new URL[0], parent);
+        // Note that privileged use of getContextClassLoader have been promoted to callers.
+        // super(new URL[0], parent == null?Thread.currentThread().getContextClassLoader(): null);
         this.contribution = contribution;
         if (contribution.getLocation() != null) {
             try {
@@ -64,14 +63,29 @@ public class ContributionClassLoader extends URLClassLoader {
     }
 
     /*
+     * @return the context ClassLoader of the current thread.
+     */
+    protected static ClassLoader getContextClassLoader() {
+       ClassLoader contextClassLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run() {
+                return Thread.currentThread().getContextClassLoader();
+            }
+        });           
+       return contextClassLoader;
+    }
+    
+    /*
      * Return the ClassLoader corresponding to a contribution providing an export
      * Create a new ClassLoader for the contribution if one does not exist
      */
     private ClassLoader getExportClassLoader(Contribution exportingContribution) {
     	ClassLoader cl = exportingContribution.getClassLoader();
         if (!(cl instanceof ContributionClassLoader)) {
-        	
-        	cl = new ContributionClassLoader(exportingContribution, cl);
+            if (cl == null) {
+                cl = getContextClassLoader();
+            }
+
+            cl = new ContributionClassLoader(exportingContribution, cl);
             exportingContribution.setClassLoader(cl);
         }
         return cl;

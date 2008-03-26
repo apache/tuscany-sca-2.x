@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.contribution.java.impl;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,11 +46,16 @@ public class ClassReferenceModelResolver implements ModelResolver {
     public ClassReferenceModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
         if (this.contribution != null) {
-        	ClassLoader cl = contribution.getClassLoader();
-        	if (contribution.getClassLoader() == null) {
-                cl = new ContributionClassLoader(contribution, null);
+            ClassLoader cl = contribution.getClassLoader();
+            if (contribution.getClassLoader() == null) {
+                ClassLoader contextClassLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                    public ClassLoader run() {
+                        return Thread.currentThread().getContextClassLoader();
+                    }
+                });           
+                cl = new ContributionClassLoader(contribution, contextClassLoader);
                 contribution.setClassLoader(cl);
-        	}
+            }
             this.classLoader = new WeakReference<ClassLoader>(cl);
         } else {
             // This path should be used only for unit testing.
