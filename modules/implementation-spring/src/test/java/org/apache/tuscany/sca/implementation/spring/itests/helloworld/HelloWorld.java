@@ -29,6 +29,6 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 public interface HelloWorld {
 
-    public String sayHello(String s);
+    String sayHello(String s);
 
 }
