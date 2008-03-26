@@ -18,7 +18,7 @@
     * under the License.
 -->
 <assembly>
-    <id></id>
+    <id>updatesite</id>
     <includeBaseDirectory>false</includeBaseDirectory>
     <formats>
         <format>zip</format>
@@ -26,7 +26,7 @@
 
     <fileSets>
         <fileSet>
-             <outputDirectory>tuscany-sca-updatesite-${tuscany.version}</outputDirectory>
+             <outputDirectory>tuscany-sca-${tuscany.version}-updatesite</outputDirectory>
             <includes>
                 <include>DISCLAIMER</include>
                 <include>LICENSE</include>
@@ -38,7 +38,7 @@
         
     <dependencySets>
         <dependencySet>
-             <outputDirectory>tuscany-sca-updatesite-${tuscany.version}/plugins</outputDirectory>
+             <outputDirectory>tuscany-sca-${tuscany.version}-updatesite/plugins</outputDirectory>
             <unpack>false</unpack>
             <includes>
                 <include>org.apache.tuscany.sca:org.apache.tuscany.sca.core</include>
@@ -47,7 +47,7 @@
         </dependencySet>
 
         <dependencySet>
-            <outputDirectory>tuscany-sca-updatesite-${tuscany.version}/features</outputDirectory>
+            <outputDirectory>tuscany-sca-${tuscany.version}-updatesite/features</outputDirectory>
             <unpack>false</unpack>
             <includes>
                 <include>org.apache.tuscany.sca:org.apache.tuscany.sca.feature</include>
