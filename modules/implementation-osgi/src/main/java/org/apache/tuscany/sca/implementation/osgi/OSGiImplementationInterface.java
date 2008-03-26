@@ -25,20 +25,20 @@ import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Implementation;
 
 /**
- * 
+ *
  * The model representing an OSGi implementation in an SCA assembly model.
  *
  */
 public interface OSGiImplementationInterface extends Implementation, Extensible {
-    
-    public String getBundleSymbolicName();
-    
-    public String getBundleVersion();
-    
-    public String[] getImports();
-    
-    public List<ComponentProperty> getReferenceProperties(String referenceName);
-    
-    public List<ComponentProperty> getServiceProperties(String serviceName);
+
+    String getBundleSymbolicName();
+
+    String getBundleVersion();
+
+    String[] getImports();
+
+    List<ComponentProperty> getReferenceProperties(String referenceName);
+
+    List<ComponentProperty> getServiceProperties(String serviceName);
 
 }
