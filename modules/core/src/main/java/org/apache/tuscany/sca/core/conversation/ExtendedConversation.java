@@ -56,11 +56,11 @@ public interface ExtendedConversation extends Conversation {
      */
     void updateLastReferencedTime();
     
-    public void initializeConversationAttributes(RuntimeComponent targetComponent);
+    void initializeConversationAttributes(RuntimeComponent targetComponent);
 
     
     /**
      * @return true if the conversational attributes have been initialized
      */
-    public boolean conversationalAttributesInitialized();
+    boolean conversationalAttributesInitialized();
 }
