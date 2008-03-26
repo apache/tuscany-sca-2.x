@@ -25,17 +25,17 @@ import org.osoa.sca.ServiceReference;
 
 /**
  * Provides client access to the services in a domain.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public interface SCAClient {
-        
+
     /**
      * Cast a type-safe reference to a CallahbleReference. Converts a type-safe
      * reference to an equivalent CallableReference; if the target refers to a
      * service then a ServiceReference will be returned, if the target refers to
      * a callback then a CallableReference will be returned.
-     * 
+     *
      * @param target a reference proxy provided by the SCA runtime
      * @param <B> the Java type of the business interface for the reference
      * @param <R> the type of reference to be returned
@@ -43,29 +43,29 @@ public interface SCAClient {
      * @throws IllegalArgumentException if the supplied instance is not a
      *             reference supplied by the SCA runtime
      */
-    public <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException;
+    <B, R extends CallableReference<B>> R cast(B target) throws IllegalArgumentException;
 
     /**
      * Returns a proxy for a service provided by a component in the SCA domain.
-     * 
+     *
      * @param businessInterface the interface that will be used to invoke the
      *            service
      * @param serviceName the name of the service
      * @param <B> the Java type of the business interface for the service
      * @return an object that implements the business interface
      */
-    public <B> B getService(Class<B> businessInterface, String serviceName);
+    <B> B getService(Class<B> businessInterface, String serviceName);
 
     /**
      * Returns a ServiceReference for a service provided by a component in the
      * SCA domain.
-     * 
+     *
      * @param businessInterface the interface that will be used to invoke the
      *            service
      * @param serviceName the name of the service
      * @param <B> the Java type of the business interface for the service
      * @return a ServiceReference for the designated service
      */
-    public <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName);
+    <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName);
 
 }
