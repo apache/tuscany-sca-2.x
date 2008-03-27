@@ -19,16 +19,20 @@
 
 package services.ejb;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.Stateless;
+import javax.ejb.EJBException;
+import javax.ejb.SessionBean;
+import javax.ejb.SessionContext;
 
-@Stateless(name="VegetablesCatalogEJB")
-public class VegetablesCatalogEJBImpl implements CatalogEJB {
+public class VegetablesCatalogEJBSessionBean implements SessionBean {
+    private static final long serialVersionUID = -7421020241291271838L;
+    
     private List<Vegetable> catalog = new ArrayList<Vegetable>();
  
-    public VegetablesCatalogEJBImpl() {
+    public VegetablesCatalogEJBSessionBean() {
         catalog.add(new Vegetable("Broccoli", "$2.99"));
         catalog.add(new Vegetable("Asparagus", "$3.55"));
         catalog.add(new Vegetable("Cauliflower", "$1.55"));
@@ -38,5 +42,17 @@ public class VegetablesCatalogEJBImpl implements CatalogEJB {
         Vegetable[] catalogArray = new Vegetable[catalog.size()];
         catalog.toArray(catalogArray);
         return catalogArray;
+    }
+    
+    public void ejbActivate() throws EJBException, RemoteException {
+    }
+    
+    public void ejbPassivate() throws EJBException, RemoteException {
+    }
+    
+    public void ejbRemove() throws EJBException, RemoteException {
+    }
+    
+    public void setSessionContext(SessionContext arg0) throws EJBException, RemoteException {
     }
 }

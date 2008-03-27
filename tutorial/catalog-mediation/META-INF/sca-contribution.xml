@@ -20,5 +20,6 @@
 <contribution xmlns="http://www.osoa.org/xmlns/sca/1.0"
    xmlns:c="http://catalog">
    <import.java package="services"/>
+   <import.java package="services.ejb"/>
    <deployable composite="c:catalog-mediation"/>
 </contribution>

@@ -20,7 +20,7 @@
 <componentType xmlns="http://www.osoa.org/xmlns/sca/1.0">
 
     <service name="CatalogEJB">
-        <interface.java interface="services.ejb.CatalogEJB"/>
+        <interface.java interface="services.ejb.CatalogEJBRemote"/>
     </service> 
 
 </componentType>
