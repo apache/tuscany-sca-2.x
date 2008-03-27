@@ -19,20 +19,28 @@
 
 package services.mediation;
 
+import java.rmi.RemoteException;
+
+import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Reference;
 
 import services.Catalog;
 import services.Item;
-import services.ejb.CatalogEJB;
+import services.ejb.CatalogEJBRemote;
 import services.ejb.Vegetable;
 
 public class VegetablesCatalogMediationImpl implements Catalog {
 
     @Reference
-    public CatalogEJB catalog;
+    public CatalogEJBRemote catalog;
     
     public Item[] get() {
-        Vegetable[] vegetables = catalog.get();
+        Vegetable[] vegetables;
+        try {
+            vegetables = catalog.get();
+        } catch (RemoteException e) {
+            throw new ServiceRuntimeException(e);
+        }
         Item[] items = new Item[vegetables.length];
         for (int i = 0; i < vegetables.length; i++) {
             items[i] = new Item(vegetables[i].getName(), vegetables[i].getPrice());

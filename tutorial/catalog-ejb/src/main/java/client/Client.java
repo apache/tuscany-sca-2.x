@@ -1,11 +1,10 @@
 package client;
 
-import java.util.Properties;
-
-import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.rmi.PortableRemoteObject;
 
-import services.ejb.CatalogEJB;
+import services.ejb.CatalogEJBHome;
+import services.ejb.CatalogEJBRemote;
 import services.ejb.Vegetable;
 
 /**
@@ -16,13 +15,11 @@ import services.ejb.Vegetable;
 public class Client {
 
     public static void main(String[] args) throws Exception {
-        Properties properties = new Properties();
-        properties.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.RemoteInitialContextFactory");
-        properties.setProperty(Context.PROVIDER_URL, "ejbd://localhost:4201");
-        InitialContext context = new InitialContext(/*properties*/);
+        InitialContext context = new InitialContext();
         
-        CatalogEJB catalog = (CatalogEJB)context.lookup("corbaname:iiop:1.2@localhost:1050#VegetablesCatalogEJBRemote");
-        //CatalogEJB catalog = (CatalogEJB)context.lookup("java:VegetablesCatalogEJBRemote");
+        Object o = context.lookup("corbaname:iiop:1.2@localhost:1050#VegetablesCatalogEJB");
+        CatalogEJBHome home = (CatalogEJBHome) PortableRemoteObject.narrow(o, CatalogEJBHome.class);
+        CatalogEJBRemote catalog = home.create();
     
         Vegetable items[] = catalog.get();
         for (Vegetable item: items) {

@@ -19,9 +19,10 @@
 
 package services.ejb;
 
-import javax.ejb.Remote;
+import java.rmi.RemoteException;
 
-@Remote
-public interface CatalogEJB {
-    Vegetable[] get();
+import javax.ejb.EJBObject;
+
+public interface CatalogEJBRemote extends EJBObject {
+    Vegetable[] get() throws RemoteException;
 }
