@@ -18,10 +18,12 @@
  */
 package org.apache.tuscany.sca.interfacedef.java.impl;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,6 +72,26 @@ public class JavaInterfaceIntrospectorImpl {
         javaInterface.setJavaClass(clazz);
 
         boolean remotable = clazz.isAnnotationPresent(Remotable.class);
+        
+        // Consider @javax.ejb.Remote, java.rmi.Remote and javax.ejb.EJBObject
+        // equivalent to @Remotable
+        if (!remotable) {
+            for (Annotation annotation: clazz.getAnnotations()) {
+                if ("javax.ejb.Remote".equals(annotation.annotationType().getName())) {
+                    remotable = true;
+                    break;
+                }
+            }
+        }
+        if (!remotable) {
+            for (Class<?> superInterface: clazz.getInterfaces()) {
+                if (Remote.class == superInterface || "javax.ejb.EJBObject".equals(superInterface.getName())) {
+                    remotable = true;
+                    break;
+                }
+            }
+        }
+        
         javaInterface.setRemotable(remotable);
 
         boolean conversational = clazz.isAnnotationPresent(Conversational.class);
