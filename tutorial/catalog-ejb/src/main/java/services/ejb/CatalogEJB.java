@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,16 +15,13 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-   targetNamespace="http://store"
-   name="catalog-jee">
+ */
 
-    <component name="JEEVegetablesCatalog">
-        <implementation.ejb ejb-link="tutorial-catalog-ejb.jar#VegetablesCatalogEJB"/>
-        <service name="CatalogEJB">
-            <binding.ejb uri="java:VegetablesCatalogEJB"/>
-        </service>
-    </component>
+package services.ejb;
 
-</composite>
+import javax.ejb.Remote;
+
+@Remote
+public interface CatalogEJB {
+    Vegetable[] get();
+}

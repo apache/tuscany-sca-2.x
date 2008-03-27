@@ -44,11 +44,12 @@
 		<service name="Catalog">
 			<t:binding.jsonrpc/>
    		</service>
-		<reference name="fruitsCatalog" target="StoreMergerFruitsCatalog"/>	
+		<reference name="currencyConverter" target="StoreMergerCurrencyConverter"/>	
+		<reference name="fruitsCatalog" target="StoreMergerFruitsCatalog"/>
+		<!-- <reference name="vegetablesCatalog" target="MediatedVegetablesCatalog"> -->
 		<reference name="vegetablesCatalog" target="VegetablesCatalogWebService">
 			<binding.ws/>
-		</reference>	
-		<reference name="currencyConverter" target="StoreMergerCurrencyConverter"/>	
+		</reference>
 	</component>
  	
 	<component name="StoreMergerFruitsCatalog">

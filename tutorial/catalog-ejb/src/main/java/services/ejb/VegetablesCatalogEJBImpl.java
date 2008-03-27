@@ -22,22 +22,19 @@ package services.ejb;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.Init;
 import javax.ejb.Stateless;
 
 @Stateless(name="VegetablesCatalogEJB")
 public class VegetablesCatalogEJBImpl implements CatalogEJB {
     private List<Vegetable> catalog = new ArrayList<Vegetable>();
  
-    @Init
-    public void init() {
+    public VegetablesCatalogEJBImpl() {
         catalog.add(new Vegetable("Broccoli", "$2.99"));
         catalog.add(new Vegetable("Asparagus", "$3.55"));
         catalog.add(new Vegetable("Cauliflower", "$1.55"));
     }
 
     public Vegetable[] get() {   
-        init();
         Vegetable[] catalogArray = new Vegetable[catalog.size()];
         catalog.toArray(catalogArray);
         return catalogArray;
