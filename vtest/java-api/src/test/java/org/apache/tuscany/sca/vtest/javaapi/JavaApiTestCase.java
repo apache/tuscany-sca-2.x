@@ -19,41 +19,74 @@
 
 package org.apache.tuscany.sca.vtest.javaapi;
 
+import static org.junit.Assert.fail;
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * 
  */
 public class JavaApiTestCase {
-    
+
+    protected static SCADomain domain;
+    protected static AService a;
+    protected static String compositeName = "ab.composite";
+
     @BeforeClass
     public static void init() throws Exception {
-             
         try {
             System.out.println("Setting up");
-                        
-        } catch(Exception ex){
+            domain = SCADomain.newInstance(compositeName);
+            a = domain.getService(AService.class, "AComponent");
+        } catch (Exception ex) {
             ex.printStackTrace();
-        }  
-        
-   }
+        }
+    }
 
     @AfterClass
     public static void destroy() throws Exception {
 
-        System.out.println("Clean up");
+        System.out.println("Cleaning up");
+        if (domain != null)
+            domain.close();
 
     }
-    
+
     @Test
-    public void testStartWithNoNodeContributions() throws Exception { 
-
-                  Assert.assertTrue(true);
+    public void firstTest() throws Exception {
+        Assert.assertTrue(true);
     }
-    
-    
+
+    @Test
+    @Ignore
+    public void bogusComponentName() throws Exception {
+        SCADomain tempDomain = SCADomain.newInstance(compositeName);
+        try {
+            AService a = tempDomain.getService(AService.class, "AReallyBogusComponentName");
+            if (a == null)
+                fail("Should have thrown an exception rather than return null");
+            else
+                fail("Should have thrown an exception rather than return a proxy");
+        } finally {
+            if (tempDomain != null)
+                tempDomain.close();
+        }
+
+    }
+
+    @Test
+    public void accessAService() throws Exception {
+        Assert.assertEquals("AService", a.getName());
+    }
+
+    @Test
+    public void atReference() throws Exception {
+        Assert.assertEquals("BService", a.getDelegateName());
+    }
+
 }
