@@ -31,7 +31,7 @@ import org.junit.Test;
 /**
  * 
  */
-public class JavaApiTestCase {
+public class ReferenceAnnotationTestCase {
 
     protected static SCADomain domain;
     protected static AService a;
