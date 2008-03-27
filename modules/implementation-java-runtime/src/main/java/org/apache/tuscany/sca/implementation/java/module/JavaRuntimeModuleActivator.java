@@ -132,7 +132,7 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
         if (wireProcessorExtensionPoint != null) {
             wireProcessorExtensionPoint.addWireProcessor(new JavaCallbackRuntimeWireProcessor(interfaceContractMapper,
                                                                                               javaFactory));
-            wireProcessorExtensionPoint.addWireProcessor(new JavaPolicyHandlingRuntimeWireProcessor());
+            //wireProcessorExtensionPoint.addWireProcessor(new JavaPolicyHandlingRuntimeWireProcessor());
         }
     }
 

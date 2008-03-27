@@ -19,9 +19,28 @@
 
 package bigbank.account.security;
 
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.policy.Policy;
+
 /**
  * @version $Rev$ $Date$
  */
-public class CheckingsDeptAuthPolicy {
+public class CheckingsDeptAuthPolicy implements Policy {
+
+    public QName getSchemaName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public boolean isUnresolved() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

@@ -1,3 +1,18 @@
+package org.apache.tuscany.sca.policy.security.jaas;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.tuscany.sca.assembly.ConfiguredOperation;
+import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.OperationsConfigurator;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.Phase;
+import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.provider.PolicyProvider;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,21 +31,6 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
-package org.apache.tuscany.sca.policy.security.jaas;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
-import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.OperationsConfigurator;
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
-import org.apache.tuscany.sca.invocation.Phase;
-import org.apache.tuscany.sca.policy.PolicySet;
-import org.apache.tuscany.sca.provider.PolicyProvider;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * Policy handler to handle PolicySet containing JaasAuthenticationPolicy instances
@@ -52,11 +52,18 @@ public class JaasAuthenticationImplementationPolicyProvider implements PolicyPro
             OperationsConfigurator operationsConfigurator = (OperationsConfigurator)implementation;
             for (ConfiguredOperation cop : operationsConfigurator.getConfiguredOperations()) {
                 if (cop.getName().equals(op.getName())) {
-                    cop.getApplicablePolicySets();
+                    for (PolicySet ps : cop.getPolicySets()) {
+                        for (Object p : ps.getPolicies()) {
+                            if (JaasAuthenticationPolicy.class.isInstance(p)) {
+                                polices.add((JaasAuthenticationPolicy)p);
+                            }
+                        }
+                    }
                 }
             }
         }
-        List<PolicySet> policySets = component.getApplicablePolicySets();
+        
+        List<PolicySet> policySets = component.getPolicySets();
         for (PolicySet ps : policySets) {
             for (Object p : ps.getPolicies()) {
                 if (JaasAuthenticationPolicy.class.isInstance(p)) {
@@ -77,6 +84,6 @@ public class JaasAuthenticationImplementationPolicyProvider implements PolicyPro
     }
 
     public String getPhase() {
-        return Phase.SERVICE_POLICY;
+        return Phase.IMPLEMENTATION_POLICY;
     }
 }
