@@ -921,14 +921,6 @@ public class CompositeWireBuilderImpl {
                      componentService.getConfiguredOperations().addAll(opsFromComponentType);
                 }
                 
-                if ( componentService.getCallback() != null ) {
-                    PolicyComputationUtils.addInheritedIntents(componentService.getRequiredIntents(), 
-                                        componentService.getCallback().getRequiredIntents());
-                    PolicyComputationUtils.addInheritedPolicySets(componentService.getPolicySets(), 
-                                           componentService.getCallback().getPolicySets(), 
-                                           false);
-                }
-                
                 try {
                     //compute the intents for operations under service element
                     bindingPolicyComputer.computeIntentsForOperations(componentService);
@@ -937,13 +929,6 @@ public class CompositeWireBuilderImpl {
                     bindingPolicyComputer.computeBindingIntentsAndPolicySets(componentService);
                     bindingPolicyComputer.determineApplicableBindingPolicySets(componentService, null);
     
-                    if ( componentService.getCallback() != null ) {
-                        PolicyComputationUtils.addInheritedIntents(componentService.getRequiredIntents(), 
-                                        componentService.getCallback().getRequiredIntents());
-                        PolicyComputationUtils.addInheritedPolicySets(componentService.getPolicySets(), 
-                                           componentService.getCallback().getPolicySets(), 
-                                           false);
-                    }
                 } catch ( Exception e ) {
                     warning("Policy related exception: " + e, e);
                     //throw new RuntimeException(e);
@@ -958,14 +943,7 @@ public class CompositeWireBuilderImpl {
                     PolicyComputationUtils.addInheritedPolicySets(reference.getPolicySets(), componentReference.getPolicySets(), true);
                 }
                 
-                if ( componentReference.getCallback() != null ) {
-                    PolicyComputationUtils.addInheritedIntents(componentReference.getRequiredIntents(), 
-                                        componentReference.getCallback().getRequiredIntents());
-                    PolicyComputationUtils.addInheritedPolicySets(componentReference.getPolicySets(), 
-                                           componentReference.getCallback().getPolicySets(), 
-                                           false);
-                }
-                
+               
                 try {
                     //compute the intents for operations under reference element
                     bindingPolicyComputer.computeIntentsForOperations(componentReference);

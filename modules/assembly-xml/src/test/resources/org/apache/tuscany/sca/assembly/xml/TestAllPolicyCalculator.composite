@@ -52,6 +52,8 @@
             <operation name="add" requires="cns:tuscanyIntent_6 cns:tuscanyIntent_7"/>
             <binding.ws name="CalculatorCallbackWS" policySets="" port="" requires="cns:tuscanyIntent_4" uri="http://calc/callback/ws">
             </binding.ws>
+            <callback>
+           	</callback>
         </service>
 
         <reference name="addService" target="AddServiceComponent/AddService" autowire="false" multiplicity="1..1"
