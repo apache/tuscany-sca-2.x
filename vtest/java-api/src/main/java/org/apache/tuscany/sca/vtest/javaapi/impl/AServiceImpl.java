@@ -26,16 +26,38 @@ import org.osoa.sca.annotations.Service;
 
 @Service(AService.class)
 public class AServiceImpl implements AService {
+
+    @Reference
+    protected BService b1; // field injection
+    
+    protected BService b2; // injected via constructor parameter
+   
+    protected BService b3; // injected via setter
+
+    public AServiceImpl(@Reference(name = "b2") BService b2) {
+        super();
+        this.b2 = b2;
+    }
     
     @Reference
-    protected BService delegate;
+    public void setB3(BService b3) {
+            this.b3 = b3;
+    }
 
     public String getName() {
         return "AService";
     }
 
-    public String getDelegateName() {
-        return delegate.getName();
+    public String getB1Name() {
+        return b1.getName();
+    }
+    
+    public String getB2Name() {
+        return b2.getName();
+    }
+    
+    public String getB3Name() {
+        return b3.getName();
     }
 
 }

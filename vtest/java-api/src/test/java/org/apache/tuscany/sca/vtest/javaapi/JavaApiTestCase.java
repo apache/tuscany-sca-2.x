@@ -57,13 +57,11 @@ public class JavaApiTestCase {
 
     }
 
-    @Test
-    public void firstTest() throws Exception {
-        Assert.assertTrue(true);
-    }
 
     @Test
     @Ignore
+    //Temporary test unrelated to spec test effort.  Remove after resolution of 
+    //JIRA T-2145
     public void bogusComponentName() throws Exception {
         SCADomain tempDomain = SCADomain.newInstance(compositeName);
         try {
@@ -79,14 +77,20 @@ public class JavaApiTestCase {
 
     }
 
-    @Test
-    public void accessAService() throws Exception {
-        Assert.assertEquals("AService", a.getName());
-    }
 
+    /**
+     * This tests the use of the three usages of the @Reference annotation
+     * B1 is injected via field injection
+     * B2 is injected via constructor parameter
+     * B3 is injected via setter method
+     */
     @Test
     public void atReference() throws Exception {
-        Assert.assertEquals("BService", a.getDelegateName());
+        
+        Assert.assertEquals("BService", a.getB1Name());
+        Assert.assertEquals("BService", a.getB2Name());
+        Assert.assertEquals("BService", a.getB3Name());
+
     }
 
 }
