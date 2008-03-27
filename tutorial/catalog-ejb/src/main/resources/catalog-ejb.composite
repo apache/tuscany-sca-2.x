@@ -17,11 +17,15 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<componentType xmlns="http://www.osoa.org/xmlns/sca/1.0"
-   targetNamespace="http://store">
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+   targetNamespace="http://catalog"
+   name="catalog-ejb">
 
-    <service name="CatalogEJB">
-        <interface.java interface="services.ejb.CatalogEJB"/>
-    </service> 
+    <component name="VegetablesCatalogEJB">
+        <implementation.ejb ejb-link="tutorial-catalog-ejb.jar#VegetablesCatalogEJB"/>
+        <service name="CatalogEJB">
+            <binding.ejb uri="java:VegetablesCatalogEJBRemote"/>
+        </service>
+    </component>
 
-</componentType>
+</composite>

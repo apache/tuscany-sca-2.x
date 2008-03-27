@@ -26,5 +26,7 @@
   <contribution location="file:../store-eu/target/tutorial-store-eu.jar" uri="store-eu"/>
   <contribution location="file:../web-services/target/tutorial-web-services.jar" uri="web-services"/>
   <contribution location="file:../catalog-webapp/target/tutorial-catalog-webapp.war" uri="catalog-webapp"/>
+  <contribution location="file:../catalog-mediation/target/tutorial-catalog-mediation.jar" uri="catalog-mediation"/>
+  <contribution location="file:../catalog-ejb/target/tutorial-catalog-ejb.jar" uri="catalog-ejb"/>
   <contribution location="file:../domain/cloud" uri="http://tuscany.apache.org/cloud"/>
 </workspace>

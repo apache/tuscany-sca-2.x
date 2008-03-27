@@ -45,9 +45,8 @@
                 <module>store-eu</module>
                 <module>web-services</module>
                 <module>catalog-webapp</module>
-                <!--
-                <module>jee-services</module>
-                -->
+                <module>catalog-ejb</module>
+                <module>catalog-mediation</module>
             </modules>
         </profile>
 
