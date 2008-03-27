@@ -158,6 +158,7 @@ public class BuildPolicyTestCase extends TestCase {
         assertEquals(composite.getComponents().get(0).getRequiredIntents().size(), 3);
         assertEquals(composite.getComponents().get(0).getRequiredIntents().get(2).getName(), new QName(namespaceUri, "tuscanyIntent_1"));
         assertEquals(composite.getComponents().get(0).getServices().get(0).getRequiredIntents().size(), 4);
+        assertEquals(composite.getComponents().get(0).getServices().get(0).getCallback().getRequiredIntents().size(), 4);
         assertEquals(composite.getComponents().get(0).getServices().get(0).getConfiguredOperations().get(0).getRequiredIntents().size(), 5);
         assertEquals(composite.getComponents().get(0).getReferences().get(0).getRequiredIntents().size(), 5);
         assertEquals(composite.getComponents().get(0).getReferences().get(0).getConfiguredOperations().get(0).getRequiredIntents().size(), 5);
