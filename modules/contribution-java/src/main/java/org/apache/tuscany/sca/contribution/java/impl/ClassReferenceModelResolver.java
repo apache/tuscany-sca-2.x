@@ -110,6 +110,7 @@ public class ClassReferenceModelResolver implements ModelResolver {
             	// as well as explicitly imported packages from other contributions)
                 clazz = Class.forName(((ClassReference)unresolved).getClassName(), true, classLoader.get());
             } catch (ClassNotFoundException e) {
+            } catch (NoClassDefFoundError e) {
             }
         }
 
