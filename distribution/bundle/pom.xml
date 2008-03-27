@@ -642,6 +642,9 @@
                                     <resource>META-INF/services/org.apache.tuscany.sca.policy.util.PolicyHandler</resource>
                                 </transformer>
                                 <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/org.apache.tuscany.sca.provider.PolicyProviderFactory</resource>
+                                </transformer>
+                                <transformer implementation="org.codehaus.mojo.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/org.apache.tuscany.sca.definitions.SCADefinitionsProvider</resource> 
                                 </transformer> 
                             </transformers>

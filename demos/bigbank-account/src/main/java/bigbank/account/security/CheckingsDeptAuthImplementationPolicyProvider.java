@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.policy.logging.jdk;
+package bigbank.account.security;
 
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.Implementation;
@@ -32,11 +32,11 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 /**
  * @version $Rev$ $Date$
  */
-public class JDKLoggingImplementationPolicyProvider implements PolicyProvider {
+public class CheckingsDeptAuthImplementationPolicyProvider implements PolicyProvider {
     private RuntimeComponent component;
     private Implementation implementation;
 
-    public JDKLoggingImplementationPolicyProvider(RuntimeComponent component, Implementation implementation) {
+    public CheckingsDeptAuthImplementationPolicyProvider(RuntimeComponent component, Implementation implementation) {
         super();
         this.component = component;
         this.implementation = implementation;
@@ -47,26 +47,26 @@ public class JDKLoggingImplementationPolicyProvider implements PolicyProvider {
     }
 
     private PolicySet findPolicySet(Operation operation) {
-        for (PolicySet ps : component.getPolicySets()) {
+    	for (PolicySet ps : component.getPolicySets()) {
             for (Object p : ps.getPolicies()) {
-                if (JDKLoggingPolicy.class.isInstance(p)) {
+                if (CheckingsDeptAuthPolicy.class.isInstance(p)) {
                     return ps;
                 }
             }
         }
         
         if ( component instanceof OperationsConfigurator ) {
-            for ( ConfiguredOperation confOp : ((OperationsConfigurator)component).getConfiguredOperations() ) {
-                if ( confOp.getName().equals(operation.getName())) {
-                    for (PolicySet ps : confOp.getPolicySets()) {
-                        for (Object p : ps.getPolicies()) {
-                            if (JDKLoggingPolicy.class.isInstance(p)) {
-                                return ps;
-                            }
-                        }
-                    }
-                }
-            }
+        	for ( ConfiguredOperation confOp : ((OperationsConfigurator)component).getConfiguredOperations() ) {
+        		if ( confOp.getName().equals(operation.getName())) {
+        			for (PolicySet ps : confOp.getPolicySets()) {
+        	            for (Object p : ps.getPolicies()) {
+        	                if (CheckingsDeptAuthPolicy.class.isInstance(p)) {
+        	                    return ps;
+        	                }
+        	            }
+        	        }
+        		}
+        	}
         }
         
         return null;
@@ -77,7 +77,7 @@ public class JDKLoggingImplementationPolicyProvider implements PolicyProvider {
      */
     public Interceptor createInterceptor(Operation operation) {
         PolicySet ps = findPolicySet(operation);
-        return ps == null ? null : new JDKLoggingPolicyInterceptor(getContext(), operation, ps);
+        return ps == null ? null : new CheckingsDeptAuthPolicyInterceptor(getContext(), operation, ps);
     }
 
     /**
