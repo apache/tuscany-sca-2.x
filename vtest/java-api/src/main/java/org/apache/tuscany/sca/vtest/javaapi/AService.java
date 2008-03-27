@@ -25,7 +25,8 @@ package org.apache.tuscany.sca.vtest.javaapi;
 public interface AService {
 
     public String getName();
-
-    public String getDelegateName();
+    public String getB1Name();
+    public String getB2Name();
+    public String getB3Name();
 
 }
