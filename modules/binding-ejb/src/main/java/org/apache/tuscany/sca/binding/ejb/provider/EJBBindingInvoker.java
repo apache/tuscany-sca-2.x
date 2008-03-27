@@ -42,12 +42,16 @@ public class EJBBindingInvoker implements Invoker, DataExchangeSemantics {
     }
 
     public Message invoke(Message msg) {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         try {
+            Thread.currentThread().setContextClassLoader(serviceInterface.getClassLoader());
             Object resp = doInvoke(msg.getBody());
             msg.setBody(resp);
         } catch (Throwable e) {
             e.printStackTrace();
             msg.setFaultBody(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(tccl);
         }
         return msg;
     }
