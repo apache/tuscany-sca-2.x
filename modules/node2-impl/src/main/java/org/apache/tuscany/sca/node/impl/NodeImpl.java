@@ -147,6 +147,7 @@ public class NodeImpl implements SCANode2, SCAClient {
             Composite composite = assemblyFactory.createComposite();
             composite.setURI(compositeURI);
             composite.setUnresolved(true);
+            configuration.setComposite(composite);
             
             // Create contribution models
             ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
