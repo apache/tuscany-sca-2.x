@@ -28,5 +28,11 @@ public interface AService {
     public String getB1Name();
     public String getB2Name();
     public String getB3Name();
+    public String getB4Name();
+    public String getB5Name();
+    public String getB6Name();
+    public String getB7Name();
 
+    public boolean isB7SetterCalled();
+    
 }
