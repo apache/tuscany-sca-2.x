@@ -29,19 +29,42 @@ public class AServiceImpl implements AService {
 
     @Reference
     protected BService b1; // field injection
-    
-    protected BService b2; // injected via constructor parameter
-   
-    protected BService b3; // injected via setter
 
-    public AServiceImpl(@Reference(name = "b2") BService b2) {
+    protected BService b2; // injected via constructor parameter
+
+    protected BService b3; // setter injection
+
+    public BService b4; // field injection (public, un-annotated)
+
+    protected BService b5; // field injection (non-public, un-annotated)
+
+    public BService b6; // setter injection (public, un-annotated)
+
+    @Reference
+    protected BService b7; // setter injection (field and setter annotated)
+
+    protected boolean b7SetterCalled;
+
+    public AServiceImpl(@Reference(name = "b2")
+    BService b2) {
         super();
         this.b2 = b2;
+        b7SetterCalled = false;
     }
-    
+
     @Reference
     public void setB3(BService b3) {
-            this.b3 = b3;
+        this.b3 = b3;
+    }
+
+    public void setB6(BService b6) {
+        this.b6 = b6;
+    }
+
+    @Reference
+    public void setB7(BService b7) {
+        b7SetterCalled = true;
+        this.b7 = b7;
     }
 
     public String getName() {
@@ -51,13 +74,32 @@ public class AServiceImpl implements AService {
     public String getB1Name() {
         return b1.getName();
     }
-    
+
     public String getB2Name() {
         return b2.getName();
     }
-    
+
     public String getB3Name() {
         return b3.getName();
     }
 
+    public String getB4Name() {
+        return b4.getName();
+    }
+
+    public String getB5Name() {
+        return b5.getName();
+    }
+
+    public String getB6Name() {
+        return b6.getName();
+    }
+
+    public String getB7Name() {
+        return b7.getName();
+    }
+
+    public boolean isB7SetterCalled() {
+        return b7SetterCalled;
+    }
 }

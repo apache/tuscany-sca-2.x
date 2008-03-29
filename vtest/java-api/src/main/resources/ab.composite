@@ -26,7 +26,11 @@
         <reference name="b1" target="BComponent"/>		
         <reference name="b2" target="BComponent"/>		
         <reference name="b3" target="BComponent"/>
-    </component>   
+        <reference name="b4" target="BComponent"/>
+        <reference name="b5" target="BComponent"/>
+        <reference name="b6" target="BComponent"/>
+        <reference name="b7" target="BComponent"/>
+     </component>   
     
     <component name="BComponent">
         <implementation.java class="org.apache.tuscany.sca.vtest.javaapi.impl.BServiceImpl"/>

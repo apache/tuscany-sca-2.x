@@ -29,13 +29,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * 
+ * This test class tests the "@Reference" annotation described in section
+ * 1.8.1.4
  */
 public class ReferenceAnnotationTestCase {
 
     protected static SCADomain domain;
-    protected static AService a;
     protected static String compositeName = "ab.composite";
+    protected static AService a;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -43,6 +44,7 @@ public class ReferenceAnnotationTestCase {
             System.out.println("Setting up");
             domain = SCADomain.newInstance(compositeName);
             a = domain.getService(AService.class, "AComponent");
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -57,11 +59,12 @@ public class ReferenceAnnotationTestCase {
 
     }
 
-
+    /**
+     * Temporary test unrelated to spec test effort. Remove after resolution of
+     */
     @Test
     @Ignore
-    //Temporary test unrelated to spec test effort.  Remove after resolution of 
-    //JIRA T-2145
+    // JIRA T-2145
     public void bogusComponentName() throws Exception {
         SCADomain tempDomain = SCADomain.newInstance(compositeName);
         try {
@@ -77,20 +80,65 @@ public class ReferenceAnnotationTestCase {
 
     }
 
-
     /**
-     * This tests the use of the three usages of the @Reference annotation
-     * B1 is injected via field injection
-     * B2 is injected via constructor parameter
+     * Lines 1404, 1405, 1406 <br>
+     * The "@Reference" annotation type is used to annotate a Java class field
+     * or a setter method that is used to inject a service that resolves the
+     * reference. The interface of the service injected is defined by the type
+     * of the Java class field or the type of the setter method input argument.
+     * <p>
+     * This tests the use of the three usages of the "@Reference" annotation
+     * <br>
+     * B1 is injected via field injection <br>
+     * B2 is injected via constructor parameter <br>
      * B3 is injected via setter method
      */
     @Test
-    public void atReference() throws Exception {
-        
+    public void atReference1() throws Exception {
+
         Assert.assertEquals("BService", a.getB1Name());
         Assert.assertEquals("BService", a.getB2Name());
         Assert.assertEquals("BService", a.getB3Name());
 
     }
 
+    /**
+     * Lines 1407, 1408, 1409, 1410 <br>
+     * References may also be injected via public setter methods even when the
+     * "@Reference" annotation is not present. However, the "@Reference"
+     * annotation must be used in order to inject a reference onto a non public
+     * field. In the case where there is no "@Reference" annotation, the name of
+     * the reference is the same as the name of the field or setter.
+     * <p>
+     * B4 is injected via field injection. Public, Non-annotated <br>
+     * B5 is expected to fail field injection. Non-Public, Non-Annotated <br>
+     * B6 is injected via setter injection. Public, Non-Annotated
+     */
+    @Test
+    @Ignore
+    // (Jira Tuscany-2165)
+    public void atReference2() throws Exception {
+
+        Assert.assertEquals("BService", a.getB4Name());
+        try {
+            a.getB5Name();
+            fail("getB5Name expected to fail with NPE");
+        } catch (NullPointerException e) {
+        }
+        Assert.assertEquals("BService", a.getB6Name());
+
+    }
+
+    /**
+     * Lines 1411 <br>
+     * Where there is both a setter method and a field for a reference, the
+     * setter method is used.
+     * <p>
+     * B7 has both field and setter annotated. The setter must be called
+     */
+    @Test
+    public void atReference3() throws Exception {
+
+        Assert.assertTrue(a.isB7SetterCalled());
+    }
 }
