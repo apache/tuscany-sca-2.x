@@ -43,6 +43,11 @@ public class AServiceImpl implements AService {
     @Reference
     protected BService b7; // setter injection (field and setter annotated)
 
+    @Reference(name="b8", required=false)
+    protected BService bEight; // field injection (different reference and field name)
+
+    protected BService bNine; // setter injection (different reference and field name)
+
     protected boolean b7SetterCalled;
 
     public AServiceImpl(@Reference(name = "b2")
@@ -67,6 +72,11 @@ public class AServiceImpl implements AService {
         this.b7 = b7;
     }
 
+    @Reference(name="b9", required=false)
+    public void setB9(BService bNine) {
+        this.bNine = bNine;
+    }
+    
     public String getName() {
         return "AService";
     }
@@ -99,6 +109,14 @@ public class AServiceImpl implements AService {
         return b7.getName();
     }
 
+    public String getB8Name() {
+        return bEight.getName();
+    }
+    
+    public String getB9Name() {
+        return bNine.getName();
+    }
+    
     public boolean isB7SetterCalled() {
         return b7SetterCalled;
     }
