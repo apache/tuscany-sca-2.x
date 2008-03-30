@@ -87,8 +87,7 @@ public class ReferenceAnnotationTestCase {
      * reference. The interface of the service injected is defined by the type
      * of the Java class field or the type of the setter method input argument.
      * <p>
-     * This tests the use of the three usages of the "@Reference" annotation
-     * <br>
+     * This tests the use of the three usages of the "@Reference" annotation<br>
      * B1 is injected via field injection <br>
      * B2 is injected via constructor parameter <br>
      * B3 is injected via setter method
@@ -138,7 +137,26 @@ public class ReferenceAnnotationTestCase {
      */
     @Test
     public void atReference3() throws Exception {
-
         Assert.assertTrue(a.isB7SetterCalled());
+    }
+
+    /**
+     * Lines 1413, 1414, 1415 <br>
+     * The "@Reference" annotation has the following attributes: <br> • name
+     * (optional) – the name of the reference, defaults to the name of the field
+     * of the Java class <br>
+     * required (optional) – whether injection of service or services is
+     * required. Defaults to true.
+     * <p>
+     * Reference and field have different names<br>
+     * B8 is field injected<br>
+     * B9 is setter injected
+     * 
+     * @TODO - Would be best to explicitly test "required" attribute
+     */
+    @Test
+    public void atReference4() throws Exception {
+        Assert.assertEquals("BService", a.getB8Name());
+        Assert.assertEquals("BService", a.getB9Name());
     }
 }

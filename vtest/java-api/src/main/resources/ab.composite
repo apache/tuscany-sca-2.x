@@ -30,6 +30,8 @@
         <reference name="b5" target="BComponent"/>
         <reference name="b6" target="BComponent"/>
         <reference name="b7" target="BComponent"/>
+        <reference name="b8" target="BComponent"/>
+        <reference name="b9" target="BComponent"/>
      </component>   
     
     <component name="BComponent">
