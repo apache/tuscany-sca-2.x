@@ -31,10 +31,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
-/**
- * @author administrator
- *
- */
 public class CheckingsDeptAuthorizationPolicyProcessor implements StAXArtifactProcessor<CheckingsDeptAuthPolicy> {
     private static final QName CHECKINGS_DEPT_AUTHORIZATION_POLICY_QNAME = new QName("http://bigbank/checkings", "AuthPolicy");
     private static final String callbackHandler = "callbackHandler";
