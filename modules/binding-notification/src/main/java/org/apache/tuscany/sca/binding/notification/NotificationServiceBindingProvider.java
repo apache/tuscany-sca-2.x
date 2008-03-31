@@ -150,6 +150,10 @@ public class NotificationServiceBindingProvider
         RuntimeComponentService componentService = (RuntimeComponentService) service;
         wire = componentService.getRuntimeWire(notificationBinding);
         
+        for (InvocationChain ch : wire.getInvocationChains()) {
+            ch.setAllowsPassByReference(true);
+        }
+        
         brokerManager.serviceProviderStarted(notificationType, this, remoteNtmUrl);
         started = true;
     }
@@ -250,7 +254,7 @@ public class NotificationServiceBindingProvider
         try {
             StAXOMBuilder builder = new StAXOMBuilder(new ByteArrayInputStream(payload));
             OMElement element = builder.getDocumentElement();
-            return new Object[] { element, payload, incomingBrokerID };
+            return new Object[] { element };
         }
         catch(Exception e) {
             throw new RuntimeException(e);
