@@ -1,0 +1,29 @@
+Store Tutorial
+======================================
+
+This is a tutorial that shows how to use SCA and Tuscany to build multiple
+variations of an online Store application.
+
+For an overview of the scenarios covered here, please refer to Tutorial.pdf.
+
+For more detailed information, please see:
+
+http://incubator.apache.org/tuscany/sca-java-tutorial.html
+
+
+Running The Tutorial Application
+--------------------------------
+
+Start the SCA Domain Manager:
+   cd domain
+   java -jar ../../modules/tuscany-node2-launcher-1.2-incubating.jar domain
+
+To access the SCA Manager application, point your Web browser to:
+   http://localhost:9990/ui/cloud/
+
+Select the node you want to start (e.g StoreNode), then click the Start button.
+
+You should now be able to access the online Store application. Point your Web
+browser to:
+   http://localhost:8100/ui/
+
