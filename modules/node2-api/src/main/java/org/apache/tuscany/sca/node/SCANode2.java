@@ -32,11 +32,11 @@ public interface SCANode2 {
     /**
      * Start the composite loaded in the node.
      */
-    void start() throws Node2Exception;
+    void start();
 
     /**
      * Stop the composite loaded in the node.
      */
-    void stop() throws Node2Exception;
+    void stop();
 
 }

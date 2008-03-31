@@ -104,19 +104,6 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
         // Add the JARs from runtime/lib and runtime/modules as classpath entries
         if (runtimePath != null) {
             
-            // Add the JARs from runtime/lib
-            File libDirectory = runtimePath.append("lib").toFile();
-            if (libDirectory != null && libDirectory.exists()) {
-                for (File file : libDirectory.listFiles()) {
-                    IPath path = new Path(file.getPath());
-                    String extension = path.getFileExtension();
-                    if (!"jar".equals(extension)) {
-                        continue;
-                    }
-                    list.add(JavaCore.newLibraryEntry(path, sourcePath, null));
-                }
-            }
-
             // Add the jars from runtime/modules
             File modulesDirectory = runtimePath.append("modules").toFile();
             if (modulesDirectory != null && modulesDirectory.exists()) {
@@ -132,7 +119,7 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
                     if (name.indexOf("-api-") == -1 && name.indexOf("-launcher-") == -1) {
                         continue;
                     }
-                    if (name.startsWith("tuscany-node-api-")) {
+                    if (name.startsWith("tuscany-node-api-") || name.startsWith("tuscany-domain-api-")) {
                         continue;
                     }
 

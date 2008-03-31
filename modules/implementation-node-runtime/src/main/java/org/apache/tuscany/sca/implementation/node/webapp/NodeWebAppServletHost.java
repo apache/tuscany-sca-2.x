@@ -47,7 +47,6 @@ import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletMappingException;
 import org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncherUtil;
-import org.apache.tuscany.sca.node.Node2Exception;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
@@ -114,11 +113,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
         
         // Create the SCA node
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-        try {
-            node = nodeFactory.createSCANode(nodeImage);
-        } catch (Node2Exception e) {
-            throw new ServletException(e);
-        }
+        node = nodeFactory.createSCANode(nodeImage);
         
         // Register the Servlet host
         ServletHostExtensionPoint servletHosts = servletHosts(node);
@@ -129,11 +124,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
         servletContext.setAttribute(SCAClient.class.getName(), node);
         
         // Start the node
-        try {
-            node.start();
-        } catch (Node2Exception e) {
-            throw new ServletException(e);
-        }
+        node.start();
 
         // Initialize the registered Servlets
         for (Servlet servlet : servlets.values()) {
@@ -278,13 +269,9 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
             servlet.destroy();
         }
 
-        // Close the SCA domain
+        // Stop the node
         if (node != null) {
-            try {
-                node.stop();
-            } catch (Node2Exception e) {
-                throw new RuntimeException(e);
-            }
+            node.stop();
         }
     }
 
