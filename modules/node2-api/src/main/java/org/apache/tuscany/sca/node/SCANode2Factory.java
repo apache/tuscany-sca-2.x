@@ -85,7 +85,7 @@ public abstract class SCANode2Factory {
     /**
      * Represents an SCA contribution uri + location.
      */
-    public final class SCAContribution {
+    public final static class SCAContribution {
         private String uri;
         private String location;
         

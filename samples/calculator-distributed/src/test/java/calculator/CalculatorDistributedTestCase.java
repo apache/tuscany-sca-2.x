@@ -21,11 +21,10 @@ package calculator;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.implementation.node.launcher.NodeProcessCollectionImpl;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.launcher.DomainManagerLauncher;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,10 +34,11 @@ import org.junit.Test;
  * implementation of the distributed domain
  */
 public class CalculatorDistributedTestCase {
-  
-    private static SCANode2   nodeA;
-    private static SCANode2   nodeB;
-    private static SCANode2   nodeC;
+
+    private static SCANode2 manager;
+    private static SCANode2 nodeA;
+    private static SCANode2 nodeB;
+    private static SCANode2 nodeC;
 
     private static CalculatorService calculatorService;
     
@@ -48,8 +48,10 @@ public class CalculatorDistributedTestCase {
              
         try {
             System.out.println("Setting up domain");
-            
-            SCADomain.newInstance("DomainManager.composite");
+
+            DomainManagerLauncher managerLauncher = DomainManagerLauncher.newInstance();
+            manager = managerLauncher.createDomainManager();
+            manager.start();
             
             SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
             nodeC  = nodeFactory.createSCANode("http://localhost:9990/node-image/NodeC");
@@ -64,7 +66,6 @@ public class CalculatorDistributedTestCase {
             calculatorService = 
                 client.getService(CalculatorService.class, "CalculatorServiceComponentA");
 
-        
         } catch(Exception ex){
             System.err.println(ex.toString());
         }  
@@ -76,6 +77,7 @@ public class CalculatorDistributedTestCase {
         nodeC.stop();
         nodeB.stop();
         nodeA.stop();
+        manager.stop();
     }    
 
     @Test

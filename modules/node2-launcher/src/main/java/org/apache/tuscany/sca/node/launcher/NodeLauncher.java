@@ -19,55 +19,104 @@
 
 package org.apache.tuscany.sca.node.launcher;
 
+import static org.apache.tuscany.sca.node.launcher.NodeLauncherUtil.node;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A launcher for standalone SCA nodes.
+ * A launcher for SCA nodes.
  *  
  * @version $Rev$ $Date$
  */
 public class NodeLauncher {
 
-    private final static Logger logger = Logger.getLogger(NodeLauncher.class.getName());
+    final static Logger logger = Logger.getLogger(NodeLauncher.class.getName());
 
+    /**
+     * Constructs a new node launcher.
+     */
+    private NodeLauncher() {
+    }
+    
+    /**
+     * Returns a new launcher instance.
+     *  
+     * @return a new launcher instance
+     */
+    public static NodeLauncher newInstance() {
+        return new NodeLauncher();
+    }
+
+    /**
+     * Creates a new node.
+     * 
+     * @param configurationURI
+     * @return a new node
+     * @throws LauncherException
+     */
+    public <T> T createNode(String configurationURI) throws LauncherException {
+        return (T)node(configurationURI, null, null);
+    }
+    
+    /**
+     * Represents an SCA contribution uri + location.
+     */
+    public final static class Contribution {
+        private String uri;
+        private String location;
+        
+        /**
+         * Constructs a new SCA contribution.
+         * 
+         * @param uri
+         * @param location
+         */
+        public Contribution(String uri, String location) {
+            this.uri = uri;
+            this.location = location;
+        }
+        
+        public String getURI() {
+            return uri;
+        }
+        
+        public String getLocation() {
+            return location;
+        }
+    }
+    
+    /**
+     * Creates a new Node.
+     * 
+     * @param compositeURI
+     * @param contributions
+     * @return a new node
+     * @throws LauncherException
+     */
+    public <T> T createNode(String compositeURI, Contribution...contributions) throws LauncherException {
+        return (T)node(null, compositeURI, contributions);
+    }
+    
     public static void main(String[] args) throws Exception {
         logger.info("Apache Tuscany SCA Node starting...");
 
-        Class<?> nodeClass;
-        Object node;
+        // Create a node
+        NodeLauncher launcher = newInstance();
+        String configurationURI = args[0];
+        logger.info("SCA Node configuration: " + configurationURI);
+        Object node = launcher.createNode(configurationURI);
+        
+        // Start the node
         try {
-            String configurationURI = args[0];
-            logger.info("SCA Node configuration: " + configurationURI);
-
-            // Set up runtime ClassLoader
-            ClassLoader runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader(Thread.currentThread().getContextClassLoader());
-            if (runtimeClassLoader != null) {
-                Thread.currentThread().setContextClassLoader(runtimeClassLoader);
-            }
-            
-            // Create the node
-            
-            // We use Java reflection here as only the runtime class
-            // loader knows the runtime classes required by the node
-            String className = "org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncherBootstrap";
-            if (runtimeClassLoader != null) {
-                nodeClass = Class.forName(className, true, runtimeClassLoader);
-            } else {
-                nodeClass = Class.forName(className);
-            }
-            node = nodeClass.getConstructor(String.class).newInstance(configurationURI);
-            
-            // Start the node
-            nodeClass.getMethod("start").invoke(node);
-            
+            node.getClass().getMethod("start").invoke(node);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "SCA Node could not be started", e);
             throw e;
         }
-        
         logger.info("SCA Node started.");
+        
         logger.info("Press enter to shutdown.");
         try {
             System.in.read();
@@ -75,7 +124,7 @@ public class NodeLauncher {
 
         // Stop the node
         try {
-            nodeClass.getMethod("stop").invoke(node);
+            node.getClass().getMethod("stop").invoke(node);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "SCA Node could not be stopped", e);
             throw e;

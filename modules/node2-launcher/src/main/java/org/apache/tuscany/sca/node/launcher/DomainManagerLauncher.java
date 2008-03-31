@@ -19,12 +19,14 @@
 
 package org.apache.tuscany.sca.node.launcher;
 
+import static org.apache.tuscany.sca.node.launcher.NodeLauncherUtil.domainManager;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Simple launcher for the SCA domain administration application. 
+ * Simple launcher for the SCA domain manager. 
  *
  * @version $Rev$ $Date$
  */
@@ -32,51 +34,58 @@ public class DomainManagerLauncher {
     
     private final static Logger logger = Logger.getLogger(DomainManagerLauncher.class.getName());    
 
+    /**
+     * Constructs a new DomainManagerLauncher.
+     */
+    private DomainManagerLauncher() {
+    }
+    
+    /**
+     * Returns a new launcher instance.
+     *  
+     * @return a new launcher instance
+     */
+    public static DomainManagerLauncher newInstance() {
+        return new DomainManagerLauncher();
+    }
+
+    /**
+     * Creates a new DomainManager.
+     * 
+     * @return a new DomainManager
+     * @throws LauncherException
+     */
+    public <T> T createDomainManager() throws LauncherException {
+        return (T)domainManager();
+    }
+    
     public static void main(String[] args) throws Exception {
         logger.info("Apache Tuscany SCA Domain Manager starting...");
 
-        Class<?> adminClass;
-        Object admin;
+        // Create a domain manager
+        DomainManagerLauncher launcher = newInstance();
+        Object domainManager = launcher.createDomainManager();
+        
+        // Start the domain manager
         try {
-            // Set up runtime ClassLoader
-            ClassLoader runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader(Thread.currentThread().getContextClassLoader());
-            if (runtimeClassLoader != null) {
-                Thread.currentThread().setContextClassLoader(runtimeClassLoader);
-            }
-
-            // Create the daemon
-            
-            // We use Java reflection here as only the runtime class
-            // loader knows the runtime classes required by the manager
-            String className = "org.apache.tuscany.sca.workspace.admin.launcher.DomainManagerLauncherBootstrap";
-            if (runtimeClassLoader != null) {
-                adminClass = Class.forName(className, true, runtimeClassLoader);
-            } else {
-                adminClass = Class.forName(className);
-            }
-            admin = adminClass.getConstructor().newInstance();
-            
-            // Start the daemon
-            adminClass.getMethod("start").invoke(admin);
-            
+            domainManager.getClass().getMethod("start").invoke(domainManager);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "SCA Domain Manager could not be started", e);
             throw e;
         }
-        
         logger.info("SCA Domain Manager started.");
+        
         logger.info("Press enter to shutdown.");
         try {
             System.in.read();
         } catch (IOException e) {}
 
-        // Stop the daemon
+        // Stop the domain manager
         try {
-            adminClass.getMethod("stop").invoke(admin);
+            domainManager.getClass().getMethod("stop").invoke(domainManager);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "SCA Domain Manager could not be stopped", e);
             throw e;
         }
     }
-
 }
