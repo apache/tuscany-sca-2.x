@@ -35,8 +35,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfigurationType;
@@ -84,18 +87,18 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().run(true, true, new IRunnableWithProgress() {
 
                 public void run(IProgressMonitor progressMonitor) throws InvocationTargetException, InterruptedException {
-                    progressMonitor.beginTask("Starting SCA Composite", 100);
-                    
-                    // Get our launch configuration type
-                    ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
-                    ILaunchConfigurationType launchConfigurationType =launchManager.getLaunchConfigurationType(
-                                                                                                   "org.apache.tuscany.sca.core.launch.configurationtype");
-                    progressMonitor.worked(10);
-                    if (progressMonitor.isCanceled()) {
-                        return;
-                    }
-
                     try {
+                        progressMonitor.beginTask("Starting SCA Composite", 100);
+                        
+                        // Get our launch configuration type
+                        ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
+                        ILaunchConfigurationType launchConfigurationType =launchManager.getLaunchConfigurationType(
+                                                                                                       "org.apache.tuscany.sca.core.launch.configurationtype");
+                        progressMonitor.worked(10);
+                        if (progressMonitor.isCanceled()) {
+                            return;
+                        }
+    
                         // If the SCA domain controller is not running yet, launch it
                         if (!isDomainManagerRunning()) {
                             launchDomainManager(mode, file, launchManager, launchConfigurationType, progressMonitor);
@@ -115,15 +118,19 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
                         launchNode(mode, file, launchManager, launchConfigurationType, progressMonitor);
                         
                         progressMonitor.done();
-                        
+                            
                     } catch (Exception e) {
                         throw new InvocationTargetException(e);
+                    } finally {
+                        progressMonitor.done();
                     }
                 }
             });
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Platform.getLog(
+                Platform.getBundle("org.apache.tuscany.sca.core")).log(
+                new Status(IStatus.ERROR, "org.apache.tuscany.sca.core", "Could not launch SCA composite", e));
         }
     }
 
