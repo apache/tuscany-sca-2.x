@@ -205,20 +205,23 @@ public class WebAppServletHost implements ServletHost {
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
 
-        initContextPath(servletContext);
+        init(servletContext);
 
+        // Initialize the registered Servlets
+        for (Servlet servlet : servlets.values()) {
+            servlet.init(config);
+        }
+    }
+
+    public void init(ServletContext servletContext) throws ServletException {
         if (servletContext.getAttribute(SCA_DOMAIN_ATTRIBUTE) == null) {
+            initContextPath(servletContext);
             String domainURI = "http://localhost/" + contextPath;
             contributionRoot = getContributionRoot(servletContext);
             // logger.info("Contribution: " + contributionRoot);
             System.setProperty(SCADomain.class.getName(), WebSCADomain.class.getName());
             this.scaDomain = SCADomain.newInstance(domainURI, contributionRoot);
             servletContext.setAttribute(SCA_DOMAIN_ATTRIBUTE, scaDomain);
-        }
-
-        // Initialize the registered Servlets
-        for (Servlet servlet : servlets.values()) {
-            servlet.init(config);
         }
     }
 
