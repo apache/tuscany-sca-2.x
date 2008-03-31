@@ -28,13 +28,19 @@
     <artifactId>tuscany-databinding-saxon</artifactId>
     <name>Apache Tuscany SCA Data Binding for Saxon</name>
 
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>rfeng</id>
+            <name>Tuscany Maven 2.0 Repository</name>
+            <url>http://svn.apache.org/repos/asf/incubator/tuscany/maven</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+
     <dependencies>
-            <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-saxon</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
-        </dependency>
-        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-core-spi</artifactId>
@@ -85,44 +91,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.1</version>
-
-                <executions>
-                    <execution>
-                        <id>install-saxon</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <ant antfile="./build-saxon.xml" target="install-saxon">
-                                    <property name="localRepository" value="${settings.localRepository}" />
-                                </ant>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>clean-saxon-files</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <ant antfile="./build-saxon.xml" target="clean-saxon-files">
-                                    <property name="localRepository" value="${settings.localRepository}" />
-                                </ant>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>
