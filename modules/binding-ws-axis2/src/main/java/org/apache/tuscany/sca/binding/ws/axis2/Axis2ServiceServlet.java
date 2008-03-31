@@ -284,9 +284,7 @@ public class Axis2ServiceServlet extends AxisServlet {
             }
         }
 
-        String contextPath = configContext.getServiceContextPath();
-
-        URI epURI = URI.create("http://" + ip + ":" + port + "/" + contextPath + "/" + serviceName).normalize();
+        URI epURI = URI.create("http://" + ip + ":" + port + "/" + serviceName).normalize();
 
         return new EndpointReference[]{new EndpointReference(epURI.toString())};
     }
