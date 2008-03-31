@@ -17,14 +17,11 @@
  * under the License.
 --%>
 
-<%@ page import="org.apache.tuscany.sca.host.embedded.SCADomain"%>
-<%@ page import="calculator.CalculatorService" %>
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%
-   SCADomain scaDomain = (SCADomain) application.getAttribute("org.apache.tuscany.sca.SCADomain");
-   CalculatorService calculatorService = (CalculatorService)scaDomain.getService(CalculatorService.class, "CalculatorServiceComponent");
-%>
+<%@ taglib uri="http://www.osog.org/sca/sca.tld" prefix="sca" %>
+
+<sca:reference name="CalculatorServiceComponent" type="calculator.CalculatorService" />
+
 <html>
 <head><title>Calculator sample</title></head>
 
@@ -34,16 +31,16 @@
         <th>Expression</th><th>Result</th>
     </tr>
     <tr>
-        <td>2 + 3</td><td><%= calculatorService.add(2, 3) %></td>
+        <td>2 + 3</td><td><%= CalculatorServiceComponent.add(2, 3) %></td>
     </tr>
     <tr>
-        <td>3 - 2</td><td><%= calculatorService.subtract(3, 2) %></td>
+        <td>3 - 2</td><td><%= CalculatorServiceComponent.subtract(3, 2) %></td>
     </tr>
     <tr>
-        <td>3 * 2</td><td><%= calculatorService.multiply(3, 2) %></td>
+        <td>3 * 2</td><td><%= CalculatorServiceComponent.multiply(3, 2) %></td>
     </tr>
     <tr>
-        <td>3 / 2</td><td><%= calculatorService.divide(3, 2) %></td>
+        <td>3 / 2</td><td><%= CalculatorServiceComponent.divide(3, 2) %></td>
     </tr>    
 </table>
 </body>
