@@ -20,6 +20,7 @@ package helloworld;
 
 import java.io.IOException;
 
+import org.apache.activemq.broker.BrokerService;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
@@ -28,8 +29,18 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public class HelloWorldServer {
 
-    public static void main(String[] args) {
+    protected static BrokerService startBroker() throws Exception {
+        BrokerService jmsBroker = new BrokerService();
+        jmsBroker.setPersistent(false);
+        jmsBroker.setUseJmx(false);
+        jmsBroker.addConnector("tcp://localhost:61619");
+        jmsBroker.start();
+        return jmsBroker;
+    }
 
+    public static void main(String[] args) throws Exception {
+
+        BrokerService broker = startBroker();
         SCADomain scaDomain = SCADomain.newInstance("helloworldwsjms.composite");
 
         try {
@@ -40,7 +51,10 @@ public class HelloWorldServer {
         }
 
         scaDomain.close();
+        broker.stop();
         System.out.println("HelloWorld server stopped");
+        // FIXME: Workaround for http://issues.apache.org/jira/browse/AXIS2-3685
+        System.exit(0);
     }
 
 }
