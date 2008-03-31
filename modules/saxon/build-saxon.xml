@@ -19,12 +19,36 @@
 -->
 <project name="SaxonZipInstaller" default="install-saxon-nomaven">
 
-    <property name="saxon.version" value="9.0.0.2" />
-    <property name="saxon.dir" value="${basedir}/target/saxon-download" />
-    <property name="saxon.url" value="http://prdownloads.sourceforge.net/saxon/saxonb9-0-0-2j.zip" />
-    <property name="localRepository" value="${user.home}/.m2/repository"/>
+	<!-- This target will set the standard properties and ensure that the localRepository property is set if it is not already -->
+	<target name="init" depends="is.localRepository.set.if,is.localRepository.set.else">
+		<property name="saxon.version" value="9.0.0.2" />
+		<property name="saxon.dir" value="${basedir}/target/saxon-download" />
+		<property name="saxon.url" value="http://prdownloads.sourceforge.net/saxon/saxonb9-0-0-2j.zip" />
+		<echo>Maven Local Repository: ${localRepository}</echo>
+	</target>
 
-	<target name="check-saxon-installed">
+	<!-- Tests whether localRepository is set. If it is then it will run the is.localRepository.set.if target else it -->
+	<!-- will run the is.localRepository.set.else target -->
+	<target name="is.localRepository.set">
+		<condition property="is.localRepository.set.is-true">
+			<not>
+				<isset property="localRepository"/>
+			</not>
+		</condition>
+	</target>
+
+	<!-- localRepository already set so use it -->
+	<target name="is.localRepository.set.if" depends="is.localRepository.set" if="is.localRepository.set.is-true">
+		<property name="localRepository" value="${user.home}/.m2/repository"/>
+		<echo message="Maven Local Repository: using default of ${localRepository}"/>
+	</target>
+
+	<!-- localRepository not set so use the default value -->
+	<target name="is.localRepository.set.else" depends="is.localRepository.set" unless="is.localRepository.set.is-true">
+		<echo message="Maven Local Repository: already set ${localRepository}"/>
+	</target>
+
+	<target name="check-saxon-installed" depends="init">
 		<condition property="already.installed">
 			<and>
 				<available file="${localRepository}/net/sf/saxon/saxon/${saxon.version}/saxon-${saxon.version}.jar" />
@@ -42,7 +66,7 @@
 	</target>
 
 
-	<target name="check-saxon-unpacked">
+	<target name="check-saxon-unpacked" depends="init">
 		<condition property="already.unpacked">
 			<available file="${saxon.dir}" />
 		</condition>
@@ -54,16 +78,16 @@
 		<unzip src="${saxon.dir}/saxon-${saxon.version}.zip" dest="${saxon.dir}" overwrite="false">
 		</unzip>
 		<exec executable="mvn${maven.suffix}" dir="${basedir}" failonerror="false">
-			<arg line="install:install-file -DgroupId=net.sf.saxon  -DartifactId=saxon -Dversion=${saxon.version} -Dpackaging=jar -DgeneratePom=true -Dfile=${saxon.dir}/saxon9.jar" />
+			<arg line="install:install-file -Dmaven.repo.local=${localRepository} -DgroupId=net.sf.saxon  -DartifactId=saxon -Dversion=${saxon.version} -Dpackaging=jar -DgeneratePom=true -Dfile=${saxon.dir}/saxon9.jar" />
 		</exec>
 		<exec executable="mvn${maven.suffix}" dir="${basedir}" failonerror="false">
-			<arg line="install:install-file -DgroupId=net.sf.saxon  -DartifactId=saxon-dom -Dversion=${saxon.version} -Dpackaging=jar -DgeneratePom=true -Dfile=${saxon.dir}/saxon9-dom.jar" />
+			<arg line="install:install-file -Dmaven.repo.local=${localRepository} -DgroupId=net.sf.saxon  -DartifactId=saxon-dom -Dversion=${saxon.version} -Dpackaging=jar -DgeneratePom=true -Dfile=${saxon.dir}/saxon9-dom.jar" />
 		</exec>
 		<exec executable="mvn${maven.suffix}" dir="${basedir}" failonerror="false">
-			<arg line="install:install-file -DgroupId=net.sf.saxon  -DartifactId=saxon-api -Dversion=${saxon.version} -Dpackaging=jar -DgeneratePom=true -Dfile=${saxon.dir}/saxon9-s9api.jar" />
+			<arg line="install:install-file -Dmaven.repo.local=${localRepository} -DgroupId=net.sf.saxon  -DartifactId=saxon-api -Dversion=${saxon.version} -Dpackaging=jar -DgeneratePom=true -Dfile=${saxon.dir}/saxon9-s9api.jar" />
 		</exec>
 	    <exec executable="mvn${maven.suffix}" dir="${basedir}" failonerror="false">
-	        <arg line="install:install-file -DgroupId=net.sf.saxon  -DartifactId=saxon-xpath -Dversion=${saxon.version} -Dpackaging=jar -DgeneratePom=true -Dfile=${saxon.dir}/saxon9-xpath.jar" />
+	        <arg line="install:install-file -Dmaven.repo.local=${localRepository} -DgroupId=net.sf.saxon  -DartifactId=saxon-xpath -Dversion=${saxon.version} -Dpackaging=jar -DgeneratePom=true -Dfile=${saxon.dir}/saxon9-xpath.jar" />
 	    </exec>
 	</target>
 
@@ -78,7 +102,7 @@
 		<copy file="${saxon.dir}/saxon9-xpath.jar" tofile="${localRepository}/net/sf/saxon/saxon-xpath/${saxon.version}/saxon-xpath-${saxon.version}.jar" />
 	</target>
 
-	<target name="clean-saxon-files">
+	<target name="clean-saxon-files" depends="init">
 		<delete dir="${saxon.dir}" />
 	</target>
 </project>
