@@ -22,6 +22,4 @@
    <export.java package="services.merger"/>
    <export.java package="services.db"/>
    <export.resource uri="uiservices/store.html"/>
-   <import.java package="org.apache.tuscany.sca.implementation.data.collection"/>
-   <import.java package="org.apache.derby.*"/>
 </contribution>
