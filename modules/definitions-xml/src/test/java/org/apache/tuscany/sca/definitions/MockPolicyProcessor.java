@@ -30,10 +30,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.policy.Policy;
 
-/**
- * @author administrator
- *
- */
 public class MockPolicyProcessor implements StAXArtifactProcessor<Policy> {
 
     public QName getArtifactType() {
