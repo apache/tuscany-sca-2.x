@@ -2,7 +2,7 @@ Store Sample
 ======================================
 
 This is a sample store scenario that is used as a getting started guide
-for Tuscany SCA. For detailed information, please see :
+for Tuscany SCA. For detailed information, please see:
 
 http://incubator.apache.org/tuscany/getting-started-with-tuscany.html
 
@@ -13,16 +13,16 @@ http://incubator.apache.org/tuscany/getting-started-with-tuscany-using-tuscany-e
 
 Building And Running The Sample Using Ant
 -----------------------------------------
-With the binary distribution the sample can be built using Ant as 
-follows
+With the binary distribution the sample can be built using Ant as follows:
 
 cd store
 ant compile
 
-and then, to run 
+and then, to run:
 
 ant run
 
-Once the web app is deployed use your browser to visit the following URL;
+Once the store application is running use your browser to visit the following
+URL:
 
 http://localhost:8080/store/
