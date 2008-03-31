@@ -86,7 +86,6 @@
                 <module>databinding-xmlbeans</module>
                 <module>databinding-fastinfoset</module>
                 <module>databinding-xstream</module>
-                <module>saxon</module>
                 <module>data-engine-helper</module>
                 <module>domain</module>
                 <module>domain-api</module>
