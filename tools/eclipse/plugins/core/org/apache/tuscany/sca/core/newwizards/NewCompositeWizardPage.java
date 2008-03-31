@@ -27,8 +27,10 @@ import java.io.PrintWriter;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.graphics.ImageLoader;
@@ -59,7 +61,9 @@ public class NewCompositeWizardPage extends WizardNewFileCreationPage {
 			String location = FileLocator.toFileURL(Platform.getBundle("org.apache.tuscany.sca.core").getEntry("/")).getFile().toString();
 			setImageDescriptor(ImageDescriptor.createFromImageData((new ImageLoader()).load(location + "/icons/tuscany.gif")[0]));
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+	            Platform.getLog(
+	                            Platform.getBundle("org.apache.tuscany.sca.core")).log(
+	                            new Status(IStatus.ERROR, "org.apache.tuscany.sca.core", "Could not create wizard", e));
 		}
 		
 		setFileExtension("composite");
@@ -75,7 +79,9 @@ public class NewCompositeWizardPage extends WizardNewFileCreationPage {
 	        IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
 	        IDE.openEditor(workbenchPage, file, true);
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+                    Platform.getLog(
+                                    Platform.getBundle("org.apache.tuscany.sca.core")).log(
+                                    new Status(IStatus.ERROR, "org.apache.tuscany.sca.core", "Could not open editor", e));
 			return false;
 		}
 		return true;
