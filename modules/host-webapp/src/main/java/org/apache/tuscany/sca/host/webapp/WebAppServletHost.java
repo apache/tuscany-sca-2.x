@@ -185,10 +185,11 @@ public class WebAppServletHost implements ServletHost {
             if (servletPath.endsWith("*")) {
                 servletPath = servletPath.substring(0, servletPath.length() - 1);
                 if (suri.startsWith(servletPath)) {
-                    return new WebAppRequestDispatcher(entry.getKey(), entry.getValue());
+                    // entry key is contextPath/servletPath, WebAppRequestDispatcher only wants servletPath
+                    return new WebAppRequestDispatcher(entry.getKey().substring(contextPath.length()), entry.getValue());
                 } else {
                     if ((suri + "/").startsWith(servletPath)) {
-                        return new WebAppRequestDispatcher(entry.getKey(), entry.getValue());
+                        return new WebAppRequestDispatcher(entry.getKey().substring(contextPath.length()), entry.getValue());
                     }
                 }
             }
