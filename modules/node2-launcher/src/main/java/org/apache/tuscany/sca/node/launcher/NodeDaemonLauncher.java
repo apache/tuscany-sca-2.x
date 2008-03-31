@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.node.launcher;
 
+import static org.apache.tuscany.sca.node.launcher.NodeLauncherUtil.nodeDaemon;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,55 +30,64 @@ import java.util.logging.Logger;
  *  
  * @version $Rev$ $Date$
  */
-public class NodeDaemon {
+public class NodeDaemonLauncher {
 
-    private final static Logger logger = Logger.getLogger(NodeDaemon.class.getName());
+    private final static Logger logger = Logger.getLogger(NodeDaemonLauncher.class.getName());
+    
+    /**
+     * Constructs a new node daemon launcher.
+     */
+    private NodeDaemonLauncher() {
+    }
+    
+    /**
+     * Returns a new launcher instance.
+     *  
+     * @return a new launcher instance
+     */
+    public static NodeDaemonLauncher newInstance() {
+        return new NodeDaemonLauncher();
+    }
+
+    /**
+     * Creates a new node daemon.
+     * 
+     * @param
+     * @return a new node daemon
+     * @throws LauncherException
+     */
+    public <T> T createNodeDaemon() throws LauncherException {
+        return (T)nodeDaemon();
+    }
     
     public static void main(String[] args) throws Exception {
         logger.info("Apache Tuscany SCA Node Daemon starting...");
 
-        Class<?> daemonClass;
-        Object daemon;
+        // Create a node daemon
+        NodeDaemonLauncher launcher = newInstance();
+        Object daemon = launcher.createNodeDaemon();
+        
+        // Start the node daemon
         try {
-            // Set up runtime ClassLoader
-            ClassLoader runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader(Thread.currentThread().getContextClassLoader());
-            if (runtimeClassLoader != null) {
-                Thread.currentThread().setContextClassLoader(runtimeClassLoader);
-            }
-
-            // Create the daemon
-            
-            // We use Java reflection here as only the runtime class
-            // loader knows the runtime classes required by the daemon
-            String className = "org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationDaemonBootstrap";
-            if (runtimeClassLoader != null) {
-                daemonClass = Class.forName(className, true, runtimeClassLoader);
-            } else {
-                daemonClass = Class.forName(className);
-            }
-            daemon = daemonClass.getConstructor().newInstance();
-            
-            // Start the daemon
-            daemonClass.getMethod("start").invoke(daemon);
-            
+            daemon.getClass().getMethod("start").invoke(daemon);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "SCA Node Daemon could not be started", e);
             throw e;
         }
-        
         logger.info("SCA Node Daemon started.");
+        
         logger.info("Press enter to shutdown.");
         try {
             System.in.read();
         } catch (IOException e) {}
 
-        // Stop the daemon
+        // Stop the node daemon
         try {
-            daemonClass.getMethod("stop").invoke(daemon);
+            daemon.getClass().getMethod("stop").invoke(daemon);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "SCA Node Daemon could not be stopped", e);
             throw e;
         }
     }
-
+    
 }

@@ -20,28 +20,62 @@
 package org.apache.tuscany.sca.implementation.node.launcher;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Node2Exception;
+import org.apache.tuscany.sca.node.SCANode2;
 
 /**
- * Bootstrap class for standalone SCA nodes, used by NodeImplementationLauncher
- * to launch SCA nodes.
+ * Bootstrap class for the SCA node daemon.
  *  
  * @version $Rev$ $Date$
  */
 public class NodeImplementationDaemonBootstrap {
+    private SCANode2 node;
 
-    private SCADomain daemon;
+    /**
+     * A node wrappering an instance of a node daemon.
+     */
+    public static class NodeFacade implements SCANode2 {
+        private ClassLoader runtimeClassLoader;
+        private SCADomain daemon;
+        
+        private NodeFacade() {
+            runtimeClassLoader = Thread.currentThread().getContextClassLoader();
+        }
+        
+        public void start() throws Node2Exception {
+            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(runtimeClassLoader);
+                daemon = SCADomain.newInstance("NodeDaemon.composite");
+            } finally {
+                Thread.currentThread().setContextClassLoader(tccl);
+            }
+        }
+        
+        public void stop() throws Node2Exception {
+            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(runtimeClassLoader);
+                daemon.close();
+            } finally {
+                Thread.currentThread().setContextClassLoader(tccl);
+            }
+        }
+    }
     
     /**
-     * Constructs a new node bootstrap.
+     * Constructs a new daemon bootstrap.
      */
     public NodeImplementationDaemonBootstrap() throws Exception {
-    }
-
-    public void start() throws Exception {
-        daemon = SCADomain.newInstance("NodeDaemon.composite");
+        node = new NodeFacade();
     }
     
-    public void stop() throws Exception {
-        daemon.close();
+    /**
+     * Returns the node representing the daemon.
+     * @return
+     */
+    public SCANode2 getNode() {
+        return node;
     }
+
 }

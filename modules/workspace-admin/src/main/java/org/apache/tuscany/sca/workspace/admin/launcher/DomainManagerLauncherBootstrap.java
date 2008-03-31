@@ -20,27 +20,62 @@
 package org.apache.tuscany.sca.workspace.admin.launcher;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.node.Node2Exception;
+import org.apache.tuscany.sca.node.SCANode2;
 
 /**
- * Bootstrap class for the SCA domain admin app, used by DomainAdminLauncher.
+ * Bootstrap class for the SCA domain manager.
  *  
  * @version $Rev$ $Date$
  */
 public class DomainManagerLauncherBootstrap {
+    private SCANode2 node;
 
-    private SCADomain admin;
+    /**
+     * A node wrappering an instance of a domain manager.
+     */
+    public static class NodeFacade implements SCANode2 {
+        private ClassLoader runtimeClassLoader;
+        private SCADomain domainManager;
+        
+        private NodeFacade() {
+            runtimeClassLoader = Thread.currentThread().getContextClassLoader();
+        }
+        
+        public void start() throws Node2Exception {
+            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(runtimeClassLoader);
+                domainManager = SCADomain.newInstance("DomainManager.composite");
+            } finally {
+                Thread.currentThread().setContextClassLoader(tccl);
+            }
+        }
+        
+        public void stop() throws Node2Exception {
+            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(runtimeClassLoader);
+                domainManager.close();
+            } finally {
+                Thread.currentThread().setContextClassLoader(tccl);
+            }
+        }
+    }
     
     /**
-     * Constructs a new admin bootstrap.
+     * Constructs a new domain manager bootstrap.
      */
     public DomainManagerLauncherBootstrap() throws Exception {
+        node = new NodeFacade();
     }
 
-    public void start() throws Exception {
-        admin = SCADomain.newInstance("DomainManager.composite");
+    /**
+     * Returns the node representing the domain manager.
+     * @return
+     */
+    public SCANode2 getNode() {
+        return node;
     }
-    
-    public void stop() throws Exception {
-        admin.close();
-    }
+
 }

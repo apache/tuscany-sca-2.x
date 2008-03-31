@@ -103,35 +103,40 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
         
         // Add the JARs from runtime/lib and runtime/modules as classpath entries
         if (runtimePath != null) {
-            for (String directory: new String[]{"modules", "lib"}) {
-                File parent = runtimePath.append(directory).toFile();
-                if (parent != null && parent.exists()) {
-                    for (File file : parent.listFiles()) {
-                        IPath path = new Path(file.getPath());
-                        String extension = path.getFileExtension();
-                        if (!"jar".equals(extension)) {
-                            continue;
-                        }
-
-                        // Exclude tuscany-sca-all and tuscany-sca-manifest as they duplicate
-                        // code in the individual runtime module JARs
-                        String name = path.lastSegment();
-                        if (name.startsWith("tuscany-sca-all")) {
-                            continue;
-                        }
-                        if (name.startsWith("tuscany-sca-manifest")) {
-                            continue;
-                        }
-                        
-                        // Filter out the Jetty and Webapp hosts
-                        if (name.startsWith("tuscany-host-jetty") ||
-                            name.startsWith("tuscany-host-webapp")) {
-                            //FIXME This is temporary
-                            continue;
-                        }
-                        
-                        list.add(JavaCore.newLibraryEntry(path, sourcePath, null));
+            
+            // Add the JARs from runtime/lib
+            File libDirectory = runtimePath.append("lib").toFile();
+            if (libDirectory != null && libDirectory.exists()) {
+                for (File file : libDirectory.listFiles()) {
+                    IPath path = new Path(file.getPath());
+                    String extension = path.getFileExtension();
+                    if (!"jar".equals(extension)) {
+                        continue;
                     }
+                    list.add(JavaCore.newLibraryEntry(path, sourcePath, null));
+                }
+            }
+
+            // Add the jars from runtime/modules
+            File modulesDirectory = runtimePath.append("modules").toFile();
+            if (modulesDirectory != null && modulesDirectory.exists()) {
+                for (File file : modulesDirectory.listFiles()) {
+                    IPath path = new Path(file.getPath());
+                    String name = path.lastSegment();
+                    String extension = path.getFileExtension();
+                    
+                    // Only include API and launcher JARs
+                    if (!"jar".equals(extension)) {
+                        continue;
+                    }
+                    if (name.indexOf("-api-") == -1 && name.indexOf("-launcher-") == -1) {
+                        continue;
+                    }
+                    if (name.startsWith("tuscany-node-api-")) {
+                        continue;
+                    }
+
+                    list.add(JavaCore.newLibraryEntry(path, sourcePath, null));
                 }
             }
         }

@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.node.launcher;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,6 +30,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -36,7 +38,7 @@ import java.util.logging.Logger;
  *
  * @version $Rev$ $Date$
  */
-public final class NodeLauncherUtil {
+final class NodeLauncherUtil {
 
     private final static Logger logger = Logger.getLogger(NodeLauncherUtil.class.getName());
     
@@ -199,6 +201,134 @@ public final class NodeLauncherUtil {
             if (count != 0) {
                 logger.info("Runtime classpath: "+ count + " JAR" + (count > 1? "s":"")+ " from " + directory.toString());
             }
+        }
+    }
+
+    /**
+     * Creates a new node.
+     * 
+     * @param compositeURI
+     * @param contributions
+     * @throws LauncherException
+     */
+    static Object node(String configurationURI, String compositeURI, NodeLauncher.Contribution[] contributions) throws LauncherException {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            // Set up runtime ClassLoader
+            ClassLoader runtimeClassLoader = runtimeClassLoader(Thread.currentThread().getContextClassLoader());
+            if (runtimeClassLoader != null) {
+                Thread.currentThread().setContextClassLoader(runtimeClassLoader);
+            }
+    
+            // Use Java reflection to create the node as only the runtime class
+            // loader knows the runtime classes required by the node
+            String className = "org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationLauncherBootstrap";
+            Class<?> bootstrapClass;
+            if (runtimeClassLoader != null) {
+                bootstrapClass = Class.forName(className, true, runtimeClassLoader);
+            } else {
+                bootstrapClass = Class.forName(className);
+            }
+            Object bootstrap;
+            if (configurationURI != null) {
+                
+                // Construct the node with a configuration URI
+                bootstrap = bootstrapClass.getConstructor(String.class).newInstance(configurationURI);
+                
+            } else {
+                
+                // Construct the node with a composite URI and the URIs and
+                // locations of a list of contributions
+                Constructor<?> constructor = bootstrapClass.getConstructor(String.class, String[].class, String[].class);
+                String[] uris = new String[contributions.length];
+                String[] locations = new String[contributions.length];
+                for (int i = 0; i < contributions.length; i++) {
+                    uris[i] = contributions[i].getURI();
+                    locations[i] = contributions[i].getLocation();
+                }
+                bootstrap = constructor.newInstance(compositeURI, uris, locations);
+            }
+            
+            Object node = bootstrapClass.getMethod("getNode").invoke(bootstrap);
+            return node;
+            
+        } catch (Exception e) {
+            NodeLauncher.logger.log(Level.SEVERE, "SCA Node could not be created", e);
+            throw new LauncherException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(tccl);
+        }
+    }
+
+    /**
+     * Creates a new node daemon.
+     * 
+     * @throws LauncherException
+     */
+    static Object nodeDaemon() throws LauncherException {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            // Set up runtime ClassLoader
+            ClassLoader runtimeClassLoader = runtimeClassLoader(Thread.currentThread().getContextClassLoader());
+            if (runtimeClassLoader != null) {
+                Thread.currentThread().setContextClassLoader(runtimeClassLoader);
+            }
+    
+            // Use Java reflection to create the node daemon as only the runtime class
+            // loader knows the runtime classes required by the node
+            String className = "org.apache.tuscany.sca.implementation.node.launcher.NodeImplementationDaemonBootstrap";
+            Class<?> bootstrapClass;
+            if (runtimeClassLoader != null) {
+                bootstrapClass = Class.forName(className, true, runtimeClassLoader);
+            } else {
+                bootstrapClass = Class.forName(className);
+            }
+            Object bootstrap = bootstrapClass.getConstructor().newInstance();
+            
+            Object nodeDaemon = bootstrapClass.getMethod("getNode").invoke(bootstrap);
+            return nodeDaemon;
+            
+        } catch (Exception e) {
+            NodeLauncher.logger.log(Level.SEVERE, "SCA Node Daemon could not be created", e);
+            throw new LauncherException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(tccl);
+        }
+    }
+
+    /**
+     * Creates a new domain manager.
+     * 
+     * @throws LauncherException
+     */
+    static Object domainManager() throws LauncherException {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            // Set up runtime ClassLoader
+            ClassLoader runtimeClassLoader = runtimeClassLoader(Thread.currentThread().getContextClassLoader());
+            if (runtimeClassLoader != null) {
+                Thread.currentThread().setContextClassLoader(runtimeClassLoader);
+            }
+    
+            // Use Java reflection to create the node daemon as only the runtime class
+            // loader knows the runtime classes required by the node
+            String className = "org.apache.tuscany.sca.workspace.admin.launcher.DomainManagerLauncherBootstrap";
+            Class<?> bootstrapClass;
+            if (runtimeClassLoader != null) {
+                bootstrapClass = Class.forName(className, true, runtimeClassLoader);
+            } else {
+                bootstrapClass = Class.forName(className);
+            }
+            Object bootstrap = bootstrapClass.getConstructor().newInstance();
+            
+            Object domainManager = bootstrapClass.getMethod("getNode").invoke(bootstrap);
+            return domainManager;
+            
+        } catch (Exception e) {
+            NodeLauncher.logger.log(Level.SEVERE, "SCA Domain Manager could not be created", e);
+            throw new LauncherException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(tccl);
         }
     }
 
