@@ -50,7 +50,6 @@ import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
-import org.apache.tuscany.sca.node.Node2Exception;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
@@ -86,9 +85,8 @@ public class NodeImpl implements SCANode2, SCAClient {
      * Constructs a new SCA node.
      *  
      * @param configurationURI the URI of the node configuration information.
-     * @throws Node2Exception
      */
-    NodeImpl(String configurationURI) throws Node2Exception {
+    NodeImpl(String configurationURI) {
         configurationName = configurationURI;
         logger.log(Level.INFO, "Creating node: " + configurationName);               
 
@@ -119,7 +117,7 @@ public class NodeImpl implements SCANode2, SCAClient {
             configureNode(configuration);
 
         } catch (Exception e) {
-            throw new Node2Exception(e);
+            throw new ServiceRuntimeException(e);
         }        
     }
     
@@ -128,9 +126,8 @@ public class NodeImpl implements SCANode2, SCAClient {
      *  
      * @param compositeURI
      * @param contributions
-     * @throws Node2Exception
      */
-    NodeImpl(String compositeURI, SCAContribution[] contributions) throws Node2Exception {
+    NodeImpl(String compositeURI, SCAContribution[] contributions) {
         configurationName = compositeURI;
         logger.log(Level.INFO, "Creating node: " + configurationName);               
 
@@ -163,7 +160,7 @@ public class NodeImpl implements SCANode2, SCAClient {
             configureNode(configuration);
 
         } catch (Exception e) {
-            throw new Node2Exception(e);
+            throw new ServiceRuntimeException(e);
         }        
     }
     
@@ -246,7 +243,7 @@ public class NodeImpl implements SCANode2, SCAClient {
         runtime.buildComposite(composite);
     }
     
-    public void start() throws Node2Exception {
+    public void start() {
         logger.log(Level.INFO, "Starting node: " + configurationName);               
         
         try {
@@ -258,11 +255,11 @@ public class NodeImpl implements SCANode2, SCAClient {
             compositeActivator.start(composite);
             
         } catch (ActivationException e) {
-            throw new Node2Exception(e);
+            throw new ServiceRuntimeException(e);
         }
     }
     
-    public void stop() throws Node2Exception {
+    public void stop() {
         logger.log(Level.INFO, "Stopping node: " + configurationName);               
         
         try {
@@ -274,7 +271,7 @@ public class NodeImpl implements SCANode2, SCAClient {
             compositeActivator.deactivate(composite);
             
         } catch (ActivationException e) {
-            throw new Node2Exception(e);
+            throw new ServiceRuntimeException(e);
         }
     }
     

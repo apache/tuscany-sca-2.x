@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.workspace.admin.launcher;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.node.Node2Exception;
 import org.apache.tuscany.sca.node.SCANode2;
 
 /**
@@ -42,7 +41,7 @@ public class DomainManagerLauncherBootstrap {
             runtimeClassLoader = Thread.currentThread().getContextClassLoader();
         }
         
-        public void start() throws Node2Exception {
+        public void start() {
             ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
@@ -52,7 +51,7 @@ public class DomainManagerLauncherBootstrap {
             }
         }
         
-        public void stop() throws Node2Exception {
+        public void stop() {
             ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);

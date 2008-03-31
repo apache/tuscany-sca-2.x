@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.implementation.node.launcher;
 
-import org.apache.tuscany.sca.node.Node2Exception;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
@@ -48,7 +47,7 @@ public class NodeImplementationLauncherBootstrap {
             this.delegate = delegate;
         }
         
-        public void start() throws Node2Exception {
+        public void start() {
             ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
@@ -58,7 +57,7 @@ public class NodeImplementationLauncherBootstrap {
             }
         }
         
-        public void stop() throws Node2Exception {
+        public void stop() {
             ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);

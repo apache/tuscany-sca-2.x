@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.Socket;
 
@@ -33,8 +34,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -45,9 +48,11 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * A launch shortcut for SCA .composite files.
@@ -58,7 +63,7 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
     
     private final static String TUSCANY_SCA_DOMAIN_PROJECT = "tuscany-sca-domain"; 
 
-    public void launch(ISelection selection, String mode) {
+    public void launch(final ISelection selection, final String mode) {
 
         try {
             
@@ -70,27 +75,53 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
             if (selections.length == 0) {
                 return;
             }
-            IFile file = (IFile)selections[0];
+            final IFile file = (IFile)selections[0];
             if (!file.getFileExtension().equals("composite")) {
                 return;
             }
-
-            // Get our launch configuration type
-            ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
-            ILaunchConfigurationType launchConfigurationType =launchManager.getLaunchConfigurationType(
-                                                                                           "org.apache.tuscany.sca.core.launch.configurationtype");
-
-            // If the SCA domain controller is not running yet, launch it
-            if (!isDomainManagerRunning()) {
-                launchDomainManager(mode, file, launchManager, launchConfigurationType);
-                if (!waitForDomainManager()) {
-                    throw new RuntimeException("SCA Domain Manager could not be started.");
-                }
-            }
-
-            // Launch an SCA node 
-            launchNode(mode, file, launchManager, launchConfigurationType);
             
+            // Run with a progress monitor
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().run(true, true, new IRunnableWithProgress() {
+
+                public void run(IProgressMonitor progressMonitor) throws InvocationTargetException, InterruptedException {
+                    progressMonitor.beginTask("Starting SCA Composite", 100);
+                    
+                    // Get our launch configuration type
+                    ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
+                    ILaunchConfigurationType launchConfigurationType =launchManager.getLaunchConfigurationType(
+                                                                                                   "org.apache.tuscany.sca.core.launch.configurationtype");
+                    progressMonitor.worked(10);
+                    if (progressMonitor.isCanceled()) {
+                        return;
+                    }
+
+                    try {
+                        // If the SCA domain controller is not running yet, launch it
+                        if (!isDomainManagerRunning()) {
+                            launchDomainManager(mode, file, launchManager, launchConfigurationType, progressMonitor);
+                            if (progressMonitor.isCanceled()) {
+                                return;
+                            }
+                            if (!waitForDomainManager(progressMonitor)) {
+                                throw new RuntimeException("SCA Domain Manager could not be started.");
+                            }
+                        }
+                        if (progressMonitor.isCanceled()) {
+                            return;
+                        }
+                        progressMonitor.worked(50);
+
+                        // Launch an SCA node 
+                        launchNode(mode, file, launchManager, launchConfigurationType, progressMonitor);
+                        
+                        progressMonitor.done();
+                        
+                    } catch (Exception e) {
+                        throw new InvocationTargetException(e);
+                    }
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -113,7 +144,12 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
     private void launchNode(String mode,
                             IFile file,
                             ILaunchManager launchManager,
-                            ILaunchConfigurationType launchConfigurationType) throws CoreException, JavaModelException, IOException {
+                            ILaunchConfigurationType launchConfigurationType,
+                            IProgressMonitor progressMonitor) throws CoreException, JavaModelException, IOException {
+        progressMonitor.subTask("- starting SCA node");
+        if (progressMonitor.isCanceled()) {
+            return;
+        }
         
         // Get the Java project
         IJavaProject javaProject = JavaCore.create(file.getProject());
@@ -126,7 +162,7 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
         String compositeURI = compositeURI(javaProject, file);
         
         // Configure the node
-        String nodeName = configureNode(contributionURI, contributionLocation, compositeURI);
+        String nodeName = configureNode(contributionURI, contributionLocation, compositeURI, progressMonitor);
 
         // Create a launch configuration
         ILaunchConfigurationWorkingCopy configuration = launchConfigurationType.newInstance(null,
@@ -159,10 +195,15 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
     private void launchDomainManager(String mode,
                             IFile file,
                             ILaunchManager launchManager,
-                            ILaunchConfigurationType launchConfigurationType) throws CoreException, JavaModelException {
+                            ILaunchConfigurationType launchConfigurationType,
+                            IProgressMonitor progressMonitor) throws CoreException, JavaModelException {
+        progressMonitor.subTask("- starting SCA domain manager");
+        if (progressMonitor.isCanceled()) {
+            return;
+        }
         
         // Get the SCA domain project
-        IProject domainProject = domainProject();
+        IProject domainProject = domainProject(progressMonitor);
 
         // Create a launch configuration
         ILaunchConfigurationWorkingCopy configuration = launchConfigurationType.newInstance(null,
@@ -216,8 +257,12 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
      * 
      * @return
      */
-    private static boolean waitForDomainManager() throws InterruptedException {
-        for (int i = 0; i < 30; i++) {
+    private static boolean waitForDomainManager(IProgressMonitor progressMonitor) throws InterruptedException {
+        progressMonitor.subTask("- waiting for SCA domain manager");
+        for (int i = 0; i < 40; i++) {
+            if (progressMonitor.isCanceled()) {
+                return false;
+            }
             if (isDomainManagerRunning()) {
                 return true;
             }
@@ -327,7 +372,9 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
      * @return
      * @throws IOException
      */
-    private static String configureNode(String contributionURI, String contributionLocation, String compositeURI) throws IOException, CoreException {
+    private static String configureNode(String contributionURI, String contributionLocation, String compositeURI,
+                                        IProgressMonitor progressMonitor) throws IOException, CoreException {
+        progressMonitor.subTask("- configuring node");
         
         // Send the request to configure the node
         Socket client = new Socket("localhost", 9990);
@@ -340,7 +387,7 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
         String response = read(client);
         
         // Refresh the domain project
-        domainProject().refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+        domainProject(progressMonitor).refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
         
         int i = response.indexOf("<span id=\"node\">");
         if (i != -1) {
@@ -362,11 +409,17 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
      * @return
      * @throws CoreException
      */
-    private static IProject domainProject() throws CoreException {
+    private static IProject domainProject(IProgressMonitor progressMonitor) throws CoreException {
+        
         IProject domainProject = ResourcesPlugin.getWorkspace().getRoot().getProject(TUSCANY_SCA_DOMAIN_PROJECT);
+        if (progressMonitor.isCanceled()) {
+            return domainProject;
+        }
         if (!domainProject.exists()) {
-            domainProject.create(new NullProgressMonitor());
-            domainProject.open(new NullProgressMonitor());
+            progressMonitor.subTask("- creating SCA domain resources");
+            
+            domainProject.create(new SubProgressMonitor(progressMonitor, 5));
+            domainProject.open(new SubProgressMonitor(progressMonitor, 5));
             
             String html = "<html>\n" +
                 "<head>\n" +
@@ -378,7 +431,7 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
                 "</html>"; 
             
             IFile file = domainProject.getFile(new Path("domain.html"));
-            file.create(new ByteArrayInputStream(html.getBytes()), true, new NullProgressMonitor());
+            file.create(new ByteArrayInputStream(html.getBytes()), true, new SubProgressMonitor(progressMonitor, 5));
         }
         return domainProject;
     }

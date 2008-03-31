@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.node.impl;
 
-import org.apache.tuscany.sca.node.Node2Exception;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
 
@@ -34,12 +33,12 @@ public class NodeFactoryImpl extends SCANode2Factory {
     }
 
     @Override
-    public SCANode2 createSCANode(String configurationURI) throws Node2Exception {
+    public SCANode2 createSCANode(String configurationURI) {
         return new NodeImpl(configurationURI);
     }
     
     @Override
-    public SCANode2 createSCANode(String compositeURI, SCAContribution... contributions) throws Node2Exception {
+    public SCANode2 createSCANode(String compositeURI, SCAContribution... contributions) {
         return new NodeImpl(compositeURI, contributions);
     }
 }
