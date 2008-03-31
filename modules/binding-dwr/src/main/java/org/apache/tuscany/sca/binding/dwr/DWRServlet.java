@@ -146,7 +146,7 @@ public class DWRServlet extends DwrServlet {
         // Use the DWR remoter to generate the JavaScipt function for each SCA service        
         Remoter remoter = (Remoter)getContainer().getBean(Remoter.class.getName());
 
-        String path = request.getServletPath();
+        String path = request.getContextPath() + request.getServletPath();
 
         for (String serviceName : services.keySet()) {
             String serviceScript = remoter.generateInterfaceScript(serviceName, path);
