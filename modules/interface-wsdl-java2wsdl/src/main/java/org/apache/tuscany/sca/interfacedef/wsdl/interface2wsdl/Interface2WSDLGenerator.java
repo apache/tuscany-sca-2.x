@@ -28,15 +28,19 @@ import javax.wsdl.OperationType;
 import javax.wsdl.Output;
 import javax.wsdl.Part;
 import javax.wsdl.PortType;
+import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
 import javax.wsdl.factory.WSDLFactory;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.databinding.DataBinding;
+import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
+import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.ws.commons.schema.XmlSchema;
@@ -53,6 +57,7 @@ import org.w3c.dom.Element;
  */
 public class Interface2WSDLGenerator {
     private WSDLFactory factory;
+    private DataBindingExtensionPoint dataBindingExtensionPoint;
     private WSDLDefinitionGenerator definitionGenerator = new WSDLDefinitionGenerator();
 
     public Interface2WSDLGenerator() throws WSDLException {
@@ -60,9 +65,10 @@ public class Interface2WSDLGenerator {
         this.factory = WSDLFactory.newInstance();
     }
 
-    public Interface2WSDLGenerator(WSDLFactory factory) {
+    public Interface2WSDLGenerator(WSDLFactory factory, DataBindingExtensionPoint dataBindingExtensionPoint) {
         super();
         this.factory = factory;
+        this.dataBindingExtensionPoint = dataBindingExtensionPoint;
     }
 
     public Definition generate(Interface interfaze) throws WSDLException {
@@ -87,31 +93,49 @@ public class Interface2WSDLGenerator {
         PortType portType = definition.createPortType();
         portType.setQName(name);
         for (Operation op : interfaze.getOperations()) {
-            javax.wsdl.Operation operation = generate(definition, op);
+            javax.wsdl.Operation operation = generateOperation(definition, op);
             portType.addOperation(operation);
         }
         portType.setUndefined(false);
         definition.addPortType(portType);
         definitionGenerator.createBinding(definition, portType);
+
+        Types types = definitionGenerator.createTypes(definition);
+
         return definition;
     }
 
     protected QName getQName(Interface i) {
         // FIXME: We need to add the name information into the Interface model 
         Class<?> javaClass = ((JavaInterface)i).getJavaClass();
-        return new QName(JavaInterfaceUtil.getNamespace(javaClass), javaClass.getSimpleName());
+        return new QName(JavaInterfaceUtil.getNamespace(javaClass), javaClass.getSimpleName(), "tns");
     }
 
-    public javax.wsdl.Operation generate(Definition definition, Operation op) {
+    public javax.wsdl.Operation generateOperation(Definition definition, Operation op) {
         javax.wsdl.Operation operation = definition.createOperation();
         operation.setName(op.getName());
+        operation.setUndefined(false);
+
         Input input = definition.createInput();
         input.setName("input");
         Message inputMsg = definition.createMessage();
-        QName inputMsgName = new QName(definition.getQName().getNamespaceURI(), "inputMessage");
+        QName inputMsgName = new QName(definition.getQName().getNamespaceURI(), op.getName() + "_InputMessage");
         inputMsg.setQName(inputMsgName);
+        inputMsg.setUndefined(false);
+        definition.addMessage(inputMsg);
 
-        inputMsg.addPart(generate(definition, op.getInputType(), "parameters"));
+        // FIXME: By default, java interface is mapped to doc-lit-wrapper style WSDL
+        if (!op.isWrapperStyle()) {
+            // Generate doc-lit-wrapper style
+            inputMsg.addPart(generateWrapperPart(definition, op, true));
+        } else {
+            // Bare style
+            int i = 0;
+            for (DataType d : op.getInputType().getLogical()) {
+                inputMsg.addPart(generatePart(definition, d, "arg" + i));
+                i++;
+            }
+        }
         input.setMessage(inputMsg);
         operation.setInput(input);
 
@@ -119,10 +143,16 @@ public class Interface2WSDLGenerator {
             Output output = definition.createOutput();
             output.setName("output");
             Message outputMsg = definition.createMessage();
-            QName outputMsgName = new QName(definition.getQName().getNamespaceURI(), "outputMessage");
+            QName outputMsgName = new QName(definition.getQName().getNamespaceURI(), op.getName() + "_OutputMessage");
             outputMsg.setQName(outputMsgName);
+            outputMsg.setUndefined(false);
+            definition.addMessage(outputMsg);
 
-            outputMsg.addPart(generate(definition, op.getOutputType(), "return"));
+            if (!op.isWrapperStyle()) {
+                inputMsg.addPart(generateWrapperPart(definition, op, false));
+            } else {
+                inputMsg.addPart(generatePart(definition, op.getOutputType(), "return"));
+            }
             output.setMessage(outputMsg);
 
             operation.setOutput(output);
@@ -135,7 +165,7 @@ public class Interface2WSDLGenerator {
         return operation;
     }
 
-    public Part generate(Definition definition, DataType arg, String partName) {
+    public Part generatePart(Definition definition, DataType arg, String partName) {
         Part part = definition.createPart();
         part.setName(partName);
         if (arg != null && arg.getLogical() instanceof XMLType) {
@@ -148,12 +178,29 @@ public class Interface2WSDLGenerator {
         return part;
     }
 
+    public Part generateWrapperPart(Definition definition, Operation operation, boolean input) {
+        Part part = definition.createPart();
+        String partName = input ? operation.getName() : (operation.getName() + "Response");
+        part.setName(partName);
+        if (operation.getWrapper() != null) {
+            ElementInfo elementInfo =
+                input ? operation.getWrapper().getInputWrapperElement() : operation.getWrapper()
+                    .getOutputWrapperElement();
+            part.setElementName(elementInfo.getQName());
+        }
+        return part;
+    }
+
     public XmlSchemaType getXmlSchemaType(DataType type) {
         return null;
     }
 
     // FIXME: WE need to add databinding-specific Java2XSD generation
-    public Element generateXSD() {
+    public Element generateXSD(DataType dataType) {
+        DataBinding dataBinding = dataBindingExtensionPoint.getDataBinding(dataType.getDataBinding());
+        if (dataBinding != null) {
+            // return dataBinding.generateSchema(dataType);
+        }
         return null;
     }
 
