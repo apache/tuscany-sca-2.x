@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.definitions.impl;
+package org.apache.tuscany.sca.provider;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.definitions.SCADefinitionsProvider;
-import org.apache.tuscany.sca.definitions.SCADefinitionsProviderExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 

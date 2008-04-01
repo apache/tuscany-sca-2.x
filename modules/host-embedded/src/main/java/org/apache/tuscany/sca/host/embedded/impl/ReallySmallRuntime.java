@@ -49,8 +49,6 @@ import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
-import org.apache.tuscany.sca.definitions.SCADefinitionsProvider;
-import org.apache.tuscany.sca.definitions.SCADefinitionsProviderExtensionPoint;
 import org.apache.tuscany.sca.definitions.impl.SCADefinitionsImpl;
 import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
 import org.apache.tuscany.sca.definitions.xml.SCADefinitionsDocumentProcessor;
@@ -66,6 +64,8 @@ import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.provider.SCADefinitionsProvider;
+import org.apache.tuscany.sca.provider.SCADefinitionsProviderExtensionPoint;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 public class ReallySmallRuntime {
@@ -194,10 +194,15 @@ public class ReallySmallRuntime {
         InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
         
         //Create a composite builder
+        SCADefinitions scaDefns = new SCADefinitionsImpl();
+        for ( SCADefinitions aDef : ((List<SCADefinitions>)scaDefnsSink) ) {
+            SCADefinitionsUtil.aggregateSCADefinitions(aDef, scaDefns);
+        }
         compositeBuilder = ReallySmallRuntimeBuilder.createCompositeBuilder(assemblyFactory,
                                                                             scaBindingFactory,
                                                                             intentAttachPointTypeFactory,
-                                                                            mapper);
+                                                                            mapper, 
+                                                                            scaDefns);
         compositeBuilder.build(composite);
         
     }
@@ -247,6 +252,7 @@ public class ReallySmallRuntime {
                SCADefinitionsUtil.aggregateSCADefinitions(aSCADefn, systemSCADefinitions);
             }
             
+            scaDefnsSink.add(systemSCADefinitions);
             //we cannot expect that providers will add the intents and policysets into the resolver
             //so we do this here explicitly
             for ( Intent intent : systemSCADefinitions.getPolicyIntents() ) {
@@ -271,31 +277,6 @@ public class ReallySmallRuntime {
         } catch ( Exception e ) {
             throw new ActivationException(e);
         }
-        
-        /*URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        SCADefinitionsDocumentProcessor definitionsProcessor = (SCADefinitionsDocumentProcessor)documentProcessors.getProcessor(SCADefinitions.class);
-        
-        try {
-            Map<ClassLoader, Set<URL>> scaDefinitionFiles = 
-            ServiceDiscovery.getInstance().getServiceResources("definitions.xml");
-            
-            SCADefinitions systemSCADefinitions = new SCADefinitionsImpl();
-            for ( ClassLoader cl : scaDefinitionFiles.keySet() ) {
-                for ( URL scaDefnUrl : scaDefinitionFiles.get(cl) ) {
-                    SCADefinitions defnSubset = definitionsProcessor.read(null, null, scaDefnUrl);
-                    SCADefinitionsUtil.aggregateSCADefinitions(defnSubset, systemSCADefinitions);
-                }
-            }
-            
-            definitionsProcessor.resolve(systemSCADefinitions, definitionsProcessor.getSCADefinitionsResolver());
-            scaDefnsSink.add(systemSCADefinitions);
-        } catch ( ContributionReadException e ) {
-            throw new ActivationException(e);
-        } catch ( ContributionResolveException e ) {
-            throw new ActivationException(e);
-        } catch ( IOException e ) {
-            throw new ActivationException(e);
-        }*/
     }
     
     @SuppressWarnings("unchecked")

@@ -363,6 +363,14 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                     
                     if (binding instanceof IntentAttachPoint) {
                         IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
+                        
+                        if ( policiedBinding.getType().isUnresolved() ) {
+                            IntentAttachPointType resolved = 
+                                resolver.resolveModel(IntentAttachPointType.class, 
+                                                      policiedBinding.getType());
+                            policiedBinding.setType(resolved);
+                        }
+                        
                         resolveIntents(policiedBinding.getRequiredIntents(), resolver);
                         PolicyValidationUtils.validateIntents(policiedBinding, policiedBinding.getType());
                     }
@@ -416,6 +424,14 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
     
                         if (binding instanceof IntentAttachPoint) {
                             IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
+                            
+                            if ( policiedBinding.getType().isUnresolved() ) {
+                                IntentAttachPointType resolved = 
+                                    resolver.resolveModel(IntentAttachPointType.class, 
+                                                          policiedBinding.getType());
+                                policiedBinding.setType(resolved);
+                            }
+                            
                             resolveIntents(policiedBinding.getRequiredIntents(), resolver);
                             PolicyValidationUtils.validateIntents(policiedBinding, policiedBinding.getType());
                         }

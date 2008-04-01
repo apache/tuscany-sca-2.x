@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.definitions;
+package org.apache.tuscany.sca.provider;
 
 import java.util.List;
 

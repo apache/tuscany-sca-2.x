@@ -41,12 +41,6 @@
             <version>2.0-incubating-SNAPSHOT</version>
         </dependency>
 
-	<dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-core-spi</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
-        </dependency>
-        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly-xsd</artifactId>

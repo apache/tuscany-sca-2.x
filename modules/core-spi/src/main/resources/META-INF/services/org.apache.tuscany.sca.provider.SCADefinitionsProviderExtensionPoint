@@ -15,5 +15,5 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-org.apache.tuscany.sca.definitions.impl.DefaultSCADefinitionsProviderExtensionPoint
+org.apache.tuscany.sca.provider.DefaultSCADefinitionsProviderExtensionPoint
 										
