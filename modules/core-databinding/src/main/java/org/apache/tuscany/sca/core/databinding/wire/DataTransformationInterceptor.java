@@ -33,10 +33,10 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Interceptor;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.ServiceRuntimeException;
 
@@ -131,9 +131,9 @@ public class DataTransformationInterceptor implements Interceptor, DataExchangeS
 
                 DataType targetFaultType = getFaultType(targetDataType);
                 if (targetFaultType == null) {
-                    throw new ServiceRuntimeException("Target fault type cannot be resolved: " + targetDataType,
-                                                      (Throwable)result);
-                    // throw new TransformationException("Target fault type cannot be resolved: " + targetDataType);
+                    // No matching fault type, it's a system exception
+                    Throwable cause = (Throwable) result;
+                    throw new ServiceRuntimeException(cause);
                 }
 
                 // FIXME: How to match a source fault type to a target fault
@@ -151,9 +151,9 @@ public class DataTransformationInterceptor implements Interceptor, DataExchangeS
                 }
 
                 if (sourceFaultType == null) {
-                    throw new ServiceRuntimeException("No matching source fault type is found: " + targetFaultType,
-                                                      (Throwable)result);
-                    // throw new TransformationException("No matching source fault type is found: " + targetFaultType);
+                    // No matching fault type, it's a system exception
+                    Throwable cause = (Throwable) result;
+                    throw new ServiceRuntimeException(cause);
                 }
 
                 Object newResult =
