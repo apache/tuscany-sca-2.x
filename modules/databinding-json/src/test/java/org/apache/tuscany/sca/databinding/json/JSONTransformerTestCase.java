@@ -79,7 +79,7 @@ public class JSONTransformerTestCase extends TestCase {
         JSONObject json = (JSONObject) t1.transform(reader, null);
         Assert.assertNotNull(json);
 
-        // Cannot round-trip as we hit a bug in Jettison
+        // Cannot round-trip as we hit a bug in Jettison: http://jira.codehaus.org/browse/JETTISON-37
         /*
          JSON2XMLStreamReader t2 = new JSON2XMLStreamReader();
          XMLStreamReader reader2 = t2.transform(json, null);
