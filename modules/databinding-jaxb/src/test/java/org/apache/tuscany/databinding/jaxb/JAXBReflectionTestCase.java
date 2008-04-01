@@ -19,19 +19,16 @@
 
 package org.apache.tuscany.databinding.jaxb;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Collections;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.namespace.QName;
-import javax.xml.transform.Result;
-import javax.xml.transform.dom.DOMResult;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper;
 import org.apache.tuscany.sca.databinding.xml.Node2String;
 import org.jvnet.jaxb.reflection.model.annotation.RuntimeInlineAnnotationReader;
 import org.jvnet.jaxb.reflection.model.core.Ref;
@@ -53,28 +50,10 @@ public class JAXBReflectionTestCase extends TestCase {
 
     public void testGenerateSchema() throws Exception {
         JAXBContext context = JAXBContext.newInstance("com.example.ipo.jaxb");
-        SchemaOutputResolverImpl resolver = new SchemaOutputResolverImpl();
-        context.generateSchema(resolver);
-        System.out.println(new Node2String().transform(resolver.getSchema(), null));
+        Node schema = JAXBContextHelper.generateSchema(context);
+        System.out.println(new Node2String().transform(schema, null));
     }
-
-    public static class SchemaOutputResolverImpl extends SchemaOutputResolver {
-        private DOMResult result = new DOMResult();
-
-        @Override
-        public Result createOutput(String ns, String file) throws IOException {
-            System.out.println(ns);
-            System.out.println(file);
-            result.setSystemId("sca:dom");
-            return result;
-        }
-
-        public Node getSchema() {
-            return result != null ? result.getNode() : null;
-        }
-
-    }
-    
+  
     /**
      * This is a workaround for the NPE bug in jaxb-reflection
      * @param classes

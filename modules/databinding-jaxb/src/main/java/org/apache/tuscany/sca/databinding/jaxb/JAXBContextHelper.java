@@ -19,21 +19,26 @@
 package org.apache.tuscany.sca.databinding.jaxb;
 
 import java.beans.Introspector;
+import java.io.IOException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
+import javax.xml.transform.Result;
+import javax.xml.transform.dom.DOMResult;
 
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.SimpleTypeMapperImpl;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.w3c.dom.Node;
 
 public class JAXBContextHelper {
     // TODO: Do we need to set them for source and target?
@@ -178,5 +183,27 @@ public class JAXBContextHelper {
         }
         return new XMLType(elementQName, typeQName);
     }
+    
+    public static Node generateSchema(JAXBContext context) throws Exception {
+        SchemaOutputResolverImpl resolver = new SchemaOutputResolverImpl();
+        context.generateSchema(resolver);
+        return resolver.getSchema();
+    }
+
+    public static class SchemaOutputResolverImpl extends SchemaOutputResolver {
+        private DOMResult result = new DOMResult();
+
+        @Override
+        public Result createOutput(String ns, String file) throws IOException {
+            result.setSystemId("sca:dom");
+            return result;
+        }
+
+        public Node getSchema() {
+            return result != null ? result.getNode() : null;
+        }
+
+    }
+    
 
 }
