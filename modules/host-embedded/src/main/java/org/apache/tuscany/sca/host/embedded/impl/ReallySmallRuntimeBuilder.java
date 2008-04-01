@@ -80,6 +80,7 @@ import org.apache.tuscany.sca.core.scope.ScopeContainerFactory;
 import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
 import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.definitions.xml.SCADefinitionsDocumentProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
@@ -148,8 +149,14 @@ public class ReallySmallRuntimeBuilder {
     public static CompositeBuilder createCompositeBuilder(AssemblyFactory assemblyFactory,
                                                           SCABindingFactory scaBindingFactory,
                                                           IntentAttachPointTypeFactory intentAttachPointTypeFactory,
-                                                          InterfaceContractMapper interfaceContractMapper) {
-        return new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, interfaceContractMapper, null);
+                                                          InterfaceContractMapper interfaceContractMapper,
+                                                          SCADefinitions scaDefns) {
+        return new CompositeBuilderImpl(assemblyFactory, 
+                                        scaBindingFactory, 
+                                        intentAttachPointTypeFactory, 
+                                        interfaceContractMapper, 
+                                        null,
+                                        scaDefns);
     }
     
     public static DomainBuilder createDomainBuilder(AssemblyFactory assemblyFactory,

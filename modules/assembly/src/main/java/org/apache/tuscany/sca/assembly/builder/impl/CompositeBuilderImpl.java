@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 
@@ -80,6 +81,17 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         wireBuilder = new CompositeWireBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
         cloneBuilder = new CompositeCloneBuilderImpl(monitor);
         configurationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, interfaceContractMapper, monitor);
+        
+    }
+    
+    public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
+                                SCABindingFactory scaBindingFactory,
+                                IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
+                                InterfaceContractMapper interfaceContractMapper,
+                                CompositeBuilderMonitor monitor, 
+                                SCADefinitions scaDefns) {
+        this(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, interfaceContractMapper, monitor);
+        configurationBuilder.setScaDefinitions(scaDefns);
     }
 
     public void build(Composite composite) throws CompositeBuilderException {

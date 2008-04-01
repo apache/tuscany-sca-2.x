@@ -239,14 +239,6 @@ public class PolicyAttachPointProcessor extends BaseStAXArtifactProcessor implem
             List<Intent> requiredIntents = new ArrayList<Intent>();
             Intent resolvedIntent = null;
             
-            if ( policySetAttachPoint instanceof Binding ) {
-                if ( policySetAttachPoint.getType().isUnresolved() ) {
-                    IntentAttachPointType resolved = 
-                        resolver.resolveModel(IntentAttachPointType.class, policySetAttachPoint.getType());
-                    policySetAttachPoint.setType(resolved);
-                }
-            }
-            
             if ( policySetAttachPoint.getRequiredIntents() != null && policySetAttachPoint.getRequiredIntents().size() > 0 ) {
                 for ( Intent intent : policySetAttachPoint.getRequiredIntents() ) {
                     resolvedIntent = resolver.resolveModel(Intent.class, intent);

@@ -54,6 +54,7 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
     private XMLInputFactory inputFactory;
     private List scaDefnSink;
     private Collection<PolicySet> domainPolicySets = null;
+    private int scaDefnsCount = 0;
 
     /**
      * Construct a new composite processor
@@ -148,7 +149,8 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
     
     private void fillDomainPolicySets(List scaDefnsSink) {
         Map<QName, PolicySet> domainPolicySetMap = null;
-        if ( !scaDefnsSink.isEmpty() ) {
+        if ( scaDefnsSink.size() > scaDefnsCount ) {
+        //if ( !scaDefnsSink.isEmpty() ) {
             domainPolicySetMap = new Hashtable<QName, PolicySet>();
             
             if ( domainPolicySets != null ) {
@@ -165,7 +167,8 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
                 }
             }
             domainPolicySets =  domainPolicySetMap.values();
-            scaDefnsSink.clear();
+            //scaDefnsSink.clear();
+            scaDefnsCount = scaDefnsSink.size();
         }
     }
 }

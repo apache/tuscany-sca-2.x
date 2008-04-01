@@ -26,9 +26,9 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
-import org.apache.tuscany.sca.definitions.SCADefinitionsProvider;
-import org.apache.tuscany.sca.definitions.SCADefinitionsProviderException;
 import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
+import org.apache.tuscany.sca.provider.SCADefinitionsProvider;
+import org.apache.tuscany.sca.provider.SCADefinitionsProviderException;
 
 /**
  * Provider for Policy Intents and PolicySet definitions related to transaction

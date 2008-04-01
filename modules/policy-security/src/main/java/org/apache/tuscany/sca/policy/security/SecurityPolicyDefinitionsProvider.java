@@ -28,13 +28,15 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
-import org.apache.tuscany.sca.definitions.SCADefinitionsProvider;
-import org.apache.tuscany.sca.definitions.SCADefinitionsProviderException;
+import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
+import org.apache.tuscany.sca.provider.SCADefinitionsProvider;
+import org.apache.tuscany.sca.provider.SCADefinitionsProviderException;
 
 /**
  * Provider for Policy Intents and PolicySet definitions related to security
  */
 public class SecurityPolicyDefinitionsProvider implements SCADefinitionsProvider {
+    private final static String tuscanyDefinitionsFile = "org/apache/tuscany/sca/policy/security/tuscany_definitions.xml";
     private String definitionsFile = "org/apache/tuscany/sca/policy/security/definitions.xml";
     URLArtifactProcessor urlArtifactProcessor = null;
     
@@ -44,19 +46,35 @@ public class SecurityPolicyDefinitionsProvider implements SCADefinitionsProvider
     }
 
     public SCADefinitions getSCADefinition() throws SCADefinitionsProviderException {
-        // Allow privileged access to load resource. Requires RuntimePermssion in security policy.
-        URL definitionsFileUrl = AccessController.doPrivileged(new PrivilegedAction<URL>() {
-            public URL run() {
-                return getClass().getClassLoader().getResource(definitionsFile);
-            }
-        });           
-        
-        Object scaDefn = null;
+        SCADefinitions scaDefns = null;
+        SCADefinitions tuscanyDefns = null;
         try {
+            // Allow privileged access to load resource. Requires RuntimePermssion in security policy.
+            URL definitionsFileUrl = AccessController.doPrivileged(new PrivilegedAction<URL>() {
+                public URL run() {
+                    return getClass().getClassLoader().getResource(definitionsFile);
+                }
+            });           
+        
             URI uri = new URI(definitionsFile);
-            return (SCADefinitions)urlArtifactProcessor.read(null, 
+            scaDefns = (SCADefinitions)urlArtifactProcessor.read(null, 
                                                              uri, 
                                                              definitionsFileUrl);
+            
+            definitionsFileUrl = AccessController.doPrivileged(new PrivilegedAction<URL>() {
+                public URL run() {
+                    return getClass().getClassLoader().getResource(tuscanyDefinitionsFile);
+                }
+            }); 
+            
+            uri = new URI(definitionsFile);
+            tuscanyDefns = (SCADefinitions)urlArtifactProcessor.read(null, 
+                                                             uri, 
+                                                             definitionsFileUrl);
+            
+            SCADefinitionsUtil.aggregateSCADefinitions(tuscanyDefns, scaDefns);
+            return scaDefns;
+            
         } catch ( Exception e ) {
             throw new SCADefinitionsProviderException(e);
         }

@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.definitions;
+package org.apache.tuscany.sca.provider;
 
 /**
  * @version $Rev$ $Date$

@@ -17,7 +17,9 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.definitions;
+package org.apache.tuscany.sca.provider;
+
+import org.apache.tuscany.sca.definitions.SCADefinitions;
 
 /**
  * Models a provider of SCA Definitions.  Typically SCA Definitions providers 

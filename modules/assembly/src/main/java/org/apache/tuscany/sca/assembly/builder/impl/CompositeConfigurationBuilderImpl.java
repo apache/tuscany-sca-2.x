@@ -45,8 +45,10 @@ import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
@@ -61,7 +63,7 @@ public class CompositeConfigurationBuilderImpl {
     private CompositeBuilderMonitor monitor;
     private InterfaceContractMapper interfaceContractMapper;
     private IntentAttachPointTypeFactory  intentAttachPointTypeFactory;
-    
+    private SCADefinitions scaDefinitions = null;
 
     public CompositeConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
                                              SCABindingFactory scaBindingFactory,
@@ -1038,10 +1040,14 @@ public class CompositeConfigurationBuilderImpl {
     
     private SCABinding createSCABinding() {
         SCABinding scaBinding = scaBindingFactory.createSCABinding();
-        IntentAttachPointType bindingType = intentAttachPointTypeFactory.createBindingType();
-        bindingType.setName(BINDING_SCA_QNAME);
-        bindingType.setUnresolved(true);
-        ((PolicySetAttachPoint)scaBinding).setType(bindingType);
+        
+        if ( scaDefinitions != null ) {
+            for ( IntentAttachPointType attachPointType : scaDefinitions.getBindingTypes() ) {
+                if ( attachPointType.getName().equals(BINDING_SCA_QNAME)) {
+                    ((IntentAttachPoint)scaBinding).setType(attachPointType);
+                }
+            }
+        }
         
         return scaBinding;
     }
@@ -1399,5 +1405,13 @@ public class CompositeConfigurationBuilderImpl {
             uri = URI.create("/").resolve(uri);
         }
         return uri.toString();
+    }
+
+    public SCADefinitions getScaDefinitions() {
+        return scaDefinitions;
+    }
+
+    public void setScaDefinitions(SCADefinitions scaDefinitions) {
+        this.scaDefinitions = scaDefinitions;
     }    
 }
