@@ -136,6 +136,7 @@
    	 		<t:binding.http uri="http://localhost:9990/cloud-source"/>
    		</service>
         <reference name="deployableCollection" target="DeployableCompositeCollectionComponent/LocalItemCollection"/>
+        <reference name="processCollection" target="NodeProcessCollectionFacadeComponent/LocalItemCollection"/>
     </component>
 
     <component name="CompositeImageCollectionComponent">

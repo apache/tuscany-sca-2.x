@@ -116,8 +116,6 @@
 		var composites  = array(document.cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
-			    var id = nodeNames[i];
-				processCollection.del(id, stopCompositeResponse);
 			    var id = composites[i].value;
 				cloudComposite.del(id, deleteCompositeResponse);
 			}

@@ -100,6 +100,9 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
     
     @Reference
     public LocalItemCollection deployableCollection;
+    
+    @Reference(required=false)
+    public LocalItemCollection processCollection;
 
     private ModelFactoryExtensionPoint modelFactories;
     private AssemblyFactory assemblyFactory;
@@ -295,6 +298,11 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
         
         String contributionURI = contributionURI(key);
         QName qname = compositeQName(key);
+        
+        // Delete/stop the corresponding process, if any
+        try {
+            processCollection.delete(qname.getLocalPart());
+        } catch (Exception e) {}
         
         // Delete a composite from the composite collection
         Composite compositeCollection = readCompositeCollection();
