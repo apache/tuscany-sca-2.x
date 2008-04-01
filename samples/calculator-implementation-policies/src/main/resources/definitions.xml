@@ -21,15 +21,6 @@
     xmlns:sca="http://www.osoa.org/xmlns/sca/1.0" xmlns:tuscany="http://tuscany.apache.org/xmlns/sca/1.0"
     xmlns:calc="http://calculator">
 
-    <!-- Policy Intents -->
-    <intent name="logging" constrains="sca:implementation.java">
-        <description>All messages to and from this implementation must be logged</description>
-    </intent>
-
-    <intent name="jaasAuthentication" constrains="sca:implementation.java">
-        <description>All invocations to be authenticated</description>
-    </intent>
-
     <!-- PolicySets -->
     <policySet name="JaasPolicy" provides="tuscany:jaasAuthentication" appliesTo="sca:implementation.java"
         xmlns="http://www.osoa.org/xmlns/sca/1.0">
