@@ -330,8 +330,8 @@ public class ContributionSPIsTestCase {
             // run the chosen composite   
             
             SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-            SCAContribution contribution0 = nodeFactory.new SCAContribution(contributionsToDeploy.get(0).getURI(), contributionsToDeploy.get(0).getLocation());
-            SCAContribution contribution1 = nodeFactory.new SCAContribution(contributionsToDeploy.get(1).getURI(), contributionsToDeploy.get(1).getLocation());
+            SCAContribution contribution0 = new SCAContribution(contributionsToDeploy.get(0).getURI(), contributionsToDeploy.get(0).getLocation());
+            SCAContribution contribution1 = new SCAContribution(contributionsToDeploy.get(1).getURI(), contributionsToDeploy.get(1).getLocation());
             
             // FIXME - need a more flexible constructor on the node so we can pass in a 
             //         dynamic list of contributions
