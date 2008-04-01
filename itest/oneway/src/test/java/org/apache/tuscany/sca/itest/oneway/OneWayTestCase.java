@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.itest.oneway;
 
+import javax.xml.namespace.QName;
+
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.domain.SCADomain;
@@ -30,7 +32,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class OneWayTestCaseFIXME {
+public class OneWayTestCase {
 
     private SCADomain domain;
 
@@ -38,7 +40,8 @@ public class OneWayTestCaseFIXME {
     public void setUp() throws Exception {
         SCANode node = SCANodeFactory.newInstance().createSCANode(null, null);
         node.addContribution("mycontribution",
-                             OneWayTestCaseFIXME.class.getResource("/OneWayContribution/."));
+                             OneWayTestCase.class.getClassLoader().getResource("OneWayContribution/"));
+        node.addToDomainLevelComposite(new QName("http://oneway", "OneWayITest"));
         node.start();
         domain = node.getDomain();
     }
