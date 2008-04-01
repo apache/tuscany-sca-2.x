@@ -247,7 +247,7 @@
                         <configuration>
                             <primaryArtifact>false</primaryArtifact>
                             <!-- Exclude a few jars to avoid conflicts -->
-                            <warSourceExcludes>WEB-INF/lib/tuscany-host-tomcat-*.jar,WEB-INF/lib/tuscany-host-jetty-*.jar,servlet-api-*.jar, WEB-INF/classes/META-INF/sca-contribution*.xml</warSourceExcludes>
+                            <warSourceExcludes>WEB-INF/lib/tuscany-host-tomcat-*.jar,WEB-INF/lib/tuscany-host-jetty-*.jar,servlet-api-*.jar, WEB-INF/lib/catalina*.jar,WEB-INF/classes/META-INF/sca-contribution*.xml</warSourceExcludes>
                             <webResources>
                                 <!-- Add the tests jar into the WAR -->
                                 <!--
