@@ -84,7 +84,8 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
             }
             
             // Run with a progress monitor
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().run(true, true, new IRunnableWithProgress() {
+            //PlatformUI.getWorkbench().getActiveWorkbenchWindow().run(true, true, new IRunnableWithProgress() {
+            PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
 
                 public void run(IProgressMonitor progressMonitor) throws InvocationTargetException, InterruptedException {
                     try {
@@ -153,7 +154,7 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
                             ILaunchManager launchManager,
                             ILaunchConfigurationType launchConfigurationType,
                             IProgressMonitor progressMonitor) throws CoreException, JavaModelException, IOException {
-        progressMonitor.subTask("- starting SCA node");
+        progressMonitor.subTask("Starting SCA node");
         if (progressMonitor.isCanceled()) {
             return;
         }
@@ -204,7 +205,7 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
                             ILaunchManager launchManager,
                             ILaunchConfigurationType launchConfigurationType,
                             IProgressMonitor progressMonitor) throws CoreException, JavaModelException {
-        progressMonitor.subTask("- starting SCA domain manager");
+        progressMonitor.subTask("Starting SCA domain manager");
         if (progressMonitor.isCanceled()) {
             return;
         }
@@ -265,7 +266,7 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
      * @return
      */
     private static boolean waitForDomainManager(IProgressMonitor progressMonitor) throws InterruptedException {
-        progressMonitor.subTask("- waiting for SCA domain manager");
+        progressMonitor.subTask("Contacting SCA domain manager");
         for (int i = 0; i < 40; i++) {
             if (progressMonitor.isCanceled()) {
                 return false;
@@ -381,7 +382,7 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
      */
     private static String configureNode(String contributionURI, String contributionLocation, String compositeURI,
                                         IProgressMonitor progressMonitor) throws IOException, CoreException {
-        progressMonitor.subTask("- configuring node");
+        progressMonitor.subTask("Configuring node");
         
         // Send the request to configure the node
         Socket client = new Socket("localhost", 9990);
@@ -423,7 +424,7 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
             return domainProject;
         }
         if (!domainProject.exists()) {
-            progressMonitor.subTask("- creating SCA domain resources");
+            progressMonitor.subTask("Creating SCA domain resources");
             
             domainProject.create(new SubProgressMonitor(progressMonitor, 5));
             domainProject.open(new SubProgressMonitor(progressMonitor, 5));
