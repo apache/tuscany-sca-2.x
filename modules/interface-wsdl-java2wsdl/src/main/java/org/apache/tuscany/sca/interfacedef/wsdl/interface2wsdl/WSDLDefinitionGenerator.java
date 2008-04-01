@@ -34,6 +34,7 @@ import javax.wsdl.Output;
 import javax.wsdl.Port;
 import javax.wsdl.PortType;
 import javax.wsdl.Service;
+import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.wsdl.extensions.soap.SOAPBody;
@@ -64,6 +65,12 @@ public class WSDLDefinitionGenerator {
         root = (Element)root.cloneNode(true);
         WSDLReader reader = factory.newWSDLReader();
         return reader.readWSDL(definition.getDocumentBaseURI(), root);
+    }
+    
+    public Types createTypes(Definition definition) {
+        Types types = definition.createTypes();
+        definition.setTypes(types);
+        return types;
     }
 
     public Binding createBinding(Definition definition, PortType portType) throws WSDLException {
