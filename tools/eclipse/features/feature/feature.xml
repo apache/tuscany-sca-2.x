@@ -60,7 +60,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
          unpack="false"/>
 
    <data
-         id="runtime.jar"
+         id="runtime/apache-tuscany-sca-1.2-incubating-SNAPSHOT.jar"
          download-size="0"
          install-size="0"/>
 
