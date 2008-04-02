@@ -40,9 +40,9 @@
 
 <table border="0">
 
-<% for (Item item: items) { %>
+<% for (int i = 0, n = items.length; i < n; i++) { %>
 
-    <tr><td><%=item.getName() %></td><td><%=item.getPrice() %></td></tr>
+    <tr><td><%=items[i].getName() %></td><td><%=items[i].getPrice() %></td></tr>
 
 <% } %>
 
