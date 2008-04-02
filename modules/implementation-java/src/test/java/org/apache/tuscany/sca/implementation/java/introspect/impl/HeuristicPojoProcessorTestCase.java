@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
+import org.osoa.sca.annotations.Service;
 
 /**
  * Verifies component type information is properly introspected from an unadorned
@@ -218,6 +219,133 @@ public class HeuristicPojoProcessorTestCase extends AbstractProcessorTest {
         org.apache.tuscany.sca.assembly.Property foo = ModelHelper.getProperty(type, "foo");
         assertEquals(int.class, type.getPropertyMembers().get("foo").getType());
         assertEquals(new QName(JavaXMLMapper.URI_2001_SCHEMA_XSD, "int"), foo.getXSDType());
+    }
+
+    /**
+     * Errata for Java Component Implementation Specification v1.0 corrects the algorithm for determining
+     * references of an unannotated POJO (section 1.2.7).  This test makes sure that the earlier implementation
+     * is corrected as per the errata.  A notable difference is that the interfaces annotated with @Service
+     * no longer result in references.
+     */
+    public void testUpdatedRule() throws Exception {
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        visitEnd(SomeServiceImpl.class, type);
+        assertEquals(12, type.getReferenceMembers().size());
+        assertTrue(type.getReferenceMembers().containsKey("rri1"));
+        assertTrue(type.getReferenceMembers().containsKey("rri2"));
+        assertTrue(type.getReferenceMembers().containsKey("rri3"));
+        assertTrue(type.getReferenceMembers().containsKey("rri4"));
+
+        assertTrue(type.getReferenceMembers().containsKey("rria1"));
+        assertTrue(type.getReferenceMembers().containsKey("rria2"));
+        assertTrue(type.getReferenceMembers().containsKey("rria3"));
+        assertTrue(type.getReferenceMembers().containsKey("rria4"));
+
+        assertTrue(type.getReferenceMembers().containsKey("rric1"));
+        assertTrue(type.getReferenceMembers().containsKey("rric2"));
+        assertTrue(type.getReferenceMembers().containsKey("rric3"));
+        assertTrue(type.getReferenceMembers().containsKey("rric4"));
+        
+        assertEquals(16, type.getPropertyMembers().size());
+        assertTrue(type.getPropertyMembers().containsKey("pnri1"));
+        assertTrue(type.getPropertyMembers().containsKey("pnri2"));
+        assertTrue(type.getPropertyMembers().containsKey("pnri3"));
+        assertTrue(type.getPropertyMembers().containsKey("pnri4"));
+
+        assertTrue(type.getPropertyMembers().containsKey("pnria1"));
+        assertTrue(type.getPropertyMembers().containsKey("pnria2"));
+        assertTrue(type.getPropertyMembers().containsKey("pnria3"));
+        assertTrue(type.getPropertyMembers().containsKey("pnria4"));
+
+        assertTrue(type.getPropertyMembers().containsKey("pnric1"));
+        assertTrue(type.getPropertyMembers().containsKey("pnric2"));
+        assertTrue(type.getPropertyMembers().containsKey("pnric3"));
+        assertTrue(type.getPropertyMembers().containsKey("pnric4"));
+        
+        assertTrue(type.getPropertyMembers().containsKey("gen1"));
+        assertTrue(type.getPropertyMembers().containsKey("gen2"));
+        assertTrue(type.getPropertyMembers().containsKey("gen3"));
+        assertTrue(type.getPropertyMembers().containsKey("gen4"));
+    }
+
+    @Remotable
+    private interface ReferenceRemotableInterface {
+        void operation1(String param1);
+    }
+
+    @Service
+    private interface PropertyNonRemotableInterface {
+        void operation1(String param1);
+    }
+    
+    @Remotable
+    private interface SomeService {
+        void serviceOperation1();
+    }
+
+    private static class SomeServiceImpl implements SomeService {
+        
+        public SomeServiceImpl() {
+        }
+        
+        // References - interface with @Remotable
+        public void setRri1(ReferenceRemotableInterface rri) {
+        }
+        protected void setRri2(ReferenceRemotableInterface rri) {
+        }
+        public ReferenceRemotableInterface rri3;
+        protected ReferenceRemotableInterface rri4;
+        
+        // References - array of interface with @Remotable
+        public void setRria1(ReferenceRemotableInterface[] rri) {
+        }
+        protected void setRria2(ReferenceRemotableInterface[] rri) {
+        }
+        public ReferenceRemotableInterface[] rria3;
+        protected ReferenceRemotableInterface[] rria4;
+
+        // References - parametrized Collection of interface with @Remotable
+        public void setRric1(Collection<ReferenceRemotableInterface> rri) {
+        }
+        protected void setRric2(Collection<ReferenceRemotableInterface> rri) {
+        }
+        public Collection<ReferenceRemotableInterface> rric3;
+        protected Collection<ReferenceRemotableInterface> rric4;
+
+        // Properties - interface with @Service and without @Remotable
+        public void setPnri1(PropertyNonRemotableInterface arg) {
+        }
+        protected void setPnri2(PropertyNonRemotableInterface arg) {
+        }
+        public PropertyNonRemotableInterface pnri3;
+        protected PropertyNonRemotableInterface pnri4;
+
+        // Properties - array of interface with @Service and without @Remotable
+        public void setPnria1(PropertyNonRemotableInterface[] arg) {
+        }
+        protected void setPnria2(PropertyNonRemotableInterface[] arg) {
+        }
+        public PropertyNonRemotableInterface[] pnria3;
+        protected PropertyNonRemotableInterface[] pnria4;
+
+        // Properties - parametrized Collection of interface with @Service and without @Remotable
+        public void setPnric1(Collection<PropertyNonRemotableInterface> arg) {
+        }
+        protected void setPnric2(Collection<PropertyNonRemotableInterface> arg) {
+        }
+        public Collection<PropertyNonRemotableInterface> pnric3;
+        protected Collection<PropertyNonRemotableInterface> pnric4;
+        
+        // Properties - Non-parametrized Collection
+        public void setGen1(Collection arg) {
+        }
+        protected void setGen2(Collection arg) {
+        }
+        public Collection gen3;
+        protected Collection gen4;
+        
+        public void serviceOperation1() {
+        }
     }
 
     private static class PropertyIntTypeOnConstructor {
