@@ -56,7 +56,6 @@ import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
 
 /**
  * Heuristically evaluates an un-annotated Java implementation type to determine
@@ -456,8 +455,7 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
      */
     private boolean isReferenceType(Class<?> cls, Type genericType) {
         Class<?> baseType = JavaIntrospectionHelper.getBaseType(cls, genericType);
-        return baseType.isInterface() && (baseType.isAnnotationPresent(Remotable.class) || baseType
-            .isAnnotationPresent(Service.class));
+        return baseType.isInterface() && baseType.isAnnotationPresent(Remotable.class);
     }
 
     /**
