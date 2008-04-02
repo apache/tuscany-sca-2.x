@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.interfacedef.java.impl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -55,12 +56,27 @@ public final class JavaInterfaceUtil {
             name = ((JavaOperation)operation).getJavaMethod().getName();
         }
         Interface interface1 = operation.getInterface();
+        int numParams = operation.getInputType().getLogical().size();
         if (interface1 != null && interface1.isRemotable()) {
+            List<Method> matchingMethods = new ArrayList<Method>();
             for (Method m : implClass.getMethods()) {
-                if (m.getName().equals(name)) {
-                    return m;
+                if (m.getName().equals(name) && m.getParameterTypes().length == numParams) {
+                    matchingMethods.add(m);
                 }
             }
+            
+            // TUSCANY-2180 If there is only one method then we just match on the name 
+            // (this is the same as the existing behaviour)
+            if (matchingMethods.size() == 1) {
+                return matchingMethods.get(0);
+            }
+            if (matchingMethods.size() > 1) {
+                // TUSCANY-2180 We need to check the parameter types too
+                Class<?>[] paramTypes = getPhysicalTypes(operation);
+                return implClass.getMethod(name, paramTypes);
+            }
+            
+            // No matching method found
             throw new NoSuchMethodException("No matching method for operation " + operation.getName()
                 + " is found on "
                 + implClass);
