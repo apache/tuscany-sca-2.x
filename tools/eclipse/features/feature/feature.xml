@@ -60,12 +60,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
          unpack="false"/>
 
    <data
-         id="runtime/apache-tuscany-sca-1.2-incubating-SNAPSHOT.jar"
+         id="runtime/apache-tuscany-sca-2.0-incubating-SNAPSHOT.jar"
          download-size="0"
          install-size="0"/>
 
    <data
-         id="src/apache-tuscany-sca-1.2-incubating-SNAPSHOT-src.zip"
+         id="src/apache-tuscany-sca-2.0-incubating-SNAPSHOT-src.zip"
          download-size="0"
          install-size="0"/>
 

@@ -10,9 +10,9 @@
    <archive path="plugins/org.apache.tuscany.sca.core_1.2.0.jar"
       url="plugins/org.apache.tuscany.sca.core-2.0-incubating-SNAPSHOT.jar"/>
 
-   <archive path="features/org.apache.tuscany.sca.feature_1.2.0/runtime/apache-tuscany-sca-1.2-incubating-SNAPSHOT.jar"
-      url="../apache-tuscany-sca-1.2-incubating-SNAPSHOT.zip"/>
+   <archive path="features/org.apache.tuscany.sca.feature_1.2.0/runtime/apache-tuscany-sca-2.0-incubating-SNAPSHOT.jar"
+      url="../apache-tuscany-sca-2.0-incubating-SNAPSHOT.zip"/>
 
-   <archive path="features/org.apache.tuscany.sca.feature_1.2.0/src/apache-tuscany-sca-1.2-incubating-SNAPSHOT-src.zip"
-      url="../apache-tuscany-sca-1.2-incubating-SNAPSHOT-src.zip"/>   
+   <archive path="features/org.apache.tuscany.sca.feature_1.2.0/src/apache-tuscany-sca-2.0-incubating-SNAPSHOT-src.zip"
+      url="../apache-tuscany-sca-2.0-incubating-SNAPSHOT-src.zip"/>   
 </site>
