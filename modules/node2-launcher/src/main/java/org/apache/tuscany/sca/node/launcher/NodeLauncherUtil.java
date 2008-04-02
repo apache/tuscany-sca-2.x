@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.node.launcher;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -29,6 +30,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -139,7 +142,7 @@ final class NodeLauncherUtil {
         if (!jarURLs.isEmpty()) {
             
             // Return a ClassLoader configured with the runtime JARs
-            ClassLoader classLoader = new URLClassLoader(jarURLs.toArray(new URL[0]), parentClassLoader);
+            ClassLoader classLoader = new RuntimeClassLoader(jarURLs.toArray(new URL[0]), parentClassLoader);
             return classLoader;
             
         } else {
@@ -154,38 +157,7 @@ final class NodeLauncherUtil {
      * @throws MalformedURLException
      */
     private static void collectJARFiles(File directory, List<URL> urls) throws MalformedURLException {
-        File[] files = directory.listFiles(new FilenameFilter() {
-    
-            public boolean accept(File dir, String name) {
-                name = name.toLowerCase(); 
-                
-                // Exclude tuscany-sca-all and tuscany-sca-manifest as they duplicate
-                // code in the individual runtime module JARs
-                if (name.startsWith("tuscany-sca-all")) {
-                    return false;
-                }
-                if (name.startsWith("tuscany-sca-manifest")) {
-                    return false;
-                }
-                
-                // Filter out the Jetty and Webapp hosts
-                if (name.startsWith("tuscany-host-jetty") ||
-                    name.startsWith("tuscany-host-webapp")) {
-                    //FIXME This is temporary
-                    return false;
-                }
-                
-                // Include JAR and MAR files
-                if (name.endsWith(".jar")) {
-                    return true;
-                }
-                if (name.endsWith(".mar")) {
-                    return true;
-                }
-                return false;
-            }
-        });
-    
+        File[] files = directory.listFiles(new JARFileNameFilter());
         if (files != null) {
             int count = 0;
             for (File file: files) {
@@ -204,6 +176,42 @@ final class NodeLauncherUtil {
         }
     }
 
+    /**
+     * A file name filter used to filter JAR files.
+     */
+    private static class JARFileNameFilter implements FilenameFilter {
+        
+        public boolean accept(File dir, String name) {
+            name = name.toLowerCase(); 
+            
+            // Exclude tuscany-sca-all and tuscany-sca-manifest as they duplicate
+            // code in the individual runtime module JARs
+            if (name.startsWith("tuscany-sca-all")) {
+                return false;
+            }
+            if (name.startsWith("tuscany-sca-manifest")) {
+                return false;
+            }
+            
+            // Filter out the Jetty and Webapp hosts
+            if (name.startsWith("tuscany-host-jetty") ||
+                name.startsWith("tuscany-host-webapp")) {
+                //FIXME This is temporary
+                return false;
+            }
+            
+            // Include JAR and MAR files
+            if (name.endsWith(".jar")) {
+                return true;
+            }
+            if (name.endsWith(".mar")) {
+                return true;
+            }
+            return false;
+        }
+    }
+    
+    
     /**
      * Creates a new node.
      * 
@@ -332,4 +340,73 @@ final class NodeLauncherUtil {
         }
     }
 
+    /**
+     * Simple URL class loader that hides the parent class loader and implements a
+     * parent-last loading scheme.
+     */
+    private static class RuntimeClassLoader extends URLClassLoader {
+        private ClassLoader parent;
+
+        /**
+         * Constructs a new class loader.
+         * @param urls
+         * @param parent
+         */
+        private RuntimeClassLoader(URL[] urls, ClassLoader parent) {
+            super(urls);
+            this.parent = parent;
+        }
+
+        @Override
+        public URL findResource(String name) {
+            URL url = super.findResource(name);
+            if (url == null) {
+                url = parent.getResource(name);
+            }
+            return url;
+        }
+
+        @Override
+        public Enumeration<URL> findResources(String name) throws IOException {
+            Enumeration<URL> resources = super.findResources(name);
+            Enumeration<URL> parentResources = parent.getResources(name);
+            List<URL> allResources = new ArrayList<URL>(); 
+            for (; resources.hasMoreElements(); ) {
+                allResources.add(resources.nextElement());
+            }
+            for (; parentResources.hasMoreElements(); ) {
+                allResources.add(parentResources.nextElement());
+            }
+            return Collections.enumeration(allResources);
+        }
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            Class<?> cl;
+
+            // First try to load the class using the parent classloader
+            try {
+                cl = parent.loadClass(name);
+                if (cl.getClassLoader() != parent) {
+
+                    // If the class was not loaded directly by the parent classloader
+                    // try to load it using our URL classloader instead
+                    try {
+                        cl = super.findClass(name);
+                    } catch (ClassNotFoundException e) {
+                        // No class alternative was found in our URL classloader,
+                        // use the class found in the parent classloader hierarchy
+                    }
+                }
+            } catch (ClassNotFoundException e) {
+                
+                // The class was not found by the parent class loader, try
+                // to load it using our URL classloader
+                cl = super.findClass(name);
+            }
+
+            return cl;
+        }
+    }
+    
 }

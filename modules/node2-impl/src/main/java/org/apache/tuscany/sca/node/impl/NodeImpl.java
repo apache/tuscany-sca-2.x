@@ -378,12 +378,15 @@ public class NodeImpl implements SCANode2, SCAClient {
         
         // Collect JARs from the URLClassLoader's classpath
         if (cl instanceof URLClassLoader) {
-            for (URL jarURL: ((URLClassLoader)cl).getURLs()) {
-                String file =jarURL.getPath();
-                int i = file.lastIndexOf('/');
-                if (i != -1 && i < file.length() -1 ) {
-                    file = file.substring(i +1);
-                    urls.put(file, jarURL);
+            URL[] jarURLs = ((URLClassLoader)cl).getURLs();
+            if (jarURLs != null) {
+                for (URL jarURL: jarURLs) {
+                    String file =jarURL.getPath();
+                    int i = file.lastIndexOf('/');
+                    if (i != -1 && i < file.length() -1 ) {
+                        file = file.substring(i +1);
+                        urls.put(file, jarURL);
+                    }
                 }
             }
         }
