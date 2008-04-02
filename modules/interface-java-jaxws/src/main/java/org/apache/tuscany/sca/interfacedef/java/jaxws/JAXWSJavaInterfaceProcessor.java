@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.interfacedef.java.jaxws;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.jws.Oneway;
@@ -41,6 +42,7 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
+import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
@@ -68,9 +70,9 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
 
         Class<?> clazz = contract.getJavaClass();
         WebService webService = clazz.getAnnotation(WebService.class);
-        String tns = "";
+        String tns = JavaInterfaceUtil.getNamespace(clazz);
         if (webService != null) {
-            tns = webService.targetNamespace();
+            tns = getValue(webService.targetNamespace(), tns);
             // Mark SEI as Remotable
             contract.setRemotable(true);
         }
@@ -81,8 +83,8 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
         // SOAP binding (doc/lit/wrapped|bare or rpc/lit)
         SOAPBinding soapBinding = clazz.getAnnotation(SOAPBinding.class);
 
-        for (Operation op : contract.getOperations()) {
-            JavaOperation operation = (JavaOperation)op;
+        for (Iterator<Operation> it = contract.getOperations().iterator(); it.hasNext();) {
+            JavaOperation operation = (JavaOperation)it.next();
             Method method = operation.getJavaMethod();
             introspectFaultTypes(operation);
 
@@ -93,18 +95,26 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
             }
 
             boolean documentStyle = true;
+            boolean bare = false;
             if (methodSOAPBinding != null) {
-                operation.setWrapperStyle(methodSOAPBinding.parameterStyle() == SOAPBinding.ParameterStyle.WRAPPED);
+                bare = methodSOAPBinding.parameterStyle() == SOAPBinding.ParameterStyle.BARE;
+                // For BARE parameter style, the data is in the wrapped format already
+                operation.setWrapperStyle(bare);
                 documentStyle = methodSOAPBinding.style() == Style.DOCUMENT;
             }
 
+            String operationName = operation.getName();
             // WebMethod
             WebMethod webMethod = method.getAnnotation(WebMethod.class);
-            if (webMethod == null) {
-                continue;
+            if (webMethod != null) {
+                if (webMethod.exclude()) {
+                    // Exclude the method
+                    it.remove();
+                    continue;
+                }
+                operationName = getValue(webMethod.operationName(), operationName);
+                operation.setName(operationName);
             }
-            String operationName = getValue(webMethod.operationName(), operation.getName());
-            operation.setName(operationName);
 
             // Is one way?
             Oneway oneway = method.getAnnotation(Oneway.class);
@@ -115,7 +125,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
             }
 
             // Handle BARE mapping
-            if (!operation.isWrapperStyle()) {
+            if (bare) {
                 for (int i = 0; i < method.getParameterTypes().length; i++) {
                     WebParam param = getAnnotation(method, i, WebParam.class);
                     if (param != null) {
@@ -140,49 +150,61 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                         ((XMLType)logical).setElementName(element);
                     }
                 }
-            }
+                // FIXME: [rfeng] For the BARE mapping, do we need to create a Wrapper?
+                // it's null at this point
+            } else {
 
-            RequestWrapper requestWrapper = method.getAnnotation(RequestWrapper.class);
-            ResponseWrapper responseWrapper = method.getAnnotation(ResponseWrapper.class);
-            if (requestWrapper == null) {
-                continue;
-            }
+                RequestWrapper requestWrapper = method.getAnnotation(RequestWrapper.class);
+                String ns = requestWrapper == null ? tns : getValue(requestWrapper.targetNamespace(), tns);
+                String name =
+                    requestWrapper == null ? operationName : getValue(requestWrapper.localName(), operationName);
+                QName inputWrapper = new QName(ns, name);
 
-            String ns = getValue(requestWrapper.targetNamespace(), tns);
-            String name = getValue(requestWrapper.localName(), operationName);
-            QName inputWrapper = new QName(ns, name);
+                ResponseWrapper responseWrapper = method.getAnnotation(ResponseWrapper.class);
+                ns = responseWrapper == null ? tns : getValue(responseWrapper.targetNamespace(), tns);
+                name =
+                    responseWrapper == null ? operationName + "Response" : getValue(responseWrapper.localName(),
+                                                                                    operationName + "Response");
+                QName outputWrapper = new QName(ns, name);
 
-            ns = getValue(responseWrapper.targetNamespace(), tns);
-            name = getValue(responseWrapper.localName(), operationName + "Response");
+                List<ElementInfo> inputElements = new ArrayList<ElementInfo>();
+                for (int i = 0; i < method.getParameterTypes().length; i++) {
+                    WebParam param = getAnnotation(method, i, WebParam.class);
+                    ns = param != null ? param.targetNamespace() : "";
+                    // Default to "" for doc-lit-wrapped && non-header
+                    ns = getValue(ns, documentStyle && (param == null || !param.header()) ? "" : tns);
+                    name = param != null ? param.name() : "";
+                    name = getValue(name, "arg" + i);
+                    QName element = new QName(ns, name);
+                    Object logical = operation.getInputType().getLogical().get(i).getLogical();
+                    if (logical instanceof XMLType) {
+                        ((XMLType)logical).setElementName(element);
+                    }
+                    inputElements.add(new ElementInfo(element, null));
+                }
 
-            QName outputWrapper = new QName(ns, name);
-
-            List<ElementInfo> inputElements = new ArrayList<ElementInfo>();
-            for (int i = 0; i < method.getParameterTypes().length; i++) {
-                WebParam param = getAnnotation(method, i, WebParam.class);
-                assert param != null;
+                List<ElementInfo> outputElements = new ArrayList<ElementInfo>();
+                WebResult result = method.getAnnotation(WebResult.class);
                 // Default to "" for doc-lit-wrapped && non-header
-                ns = getValue(param.targetNamespace(), documentStyle && !param.header() ? "" : tns);
-                name = getValue(param.name(), "arg" + i);
+                ns = result != null ? result.targetNamespace() : "";
+                ns = getValue(ns, documentStyle && (result == null || !result.header()) ? "" : tns);
+                name = result != null ? result.name() : "";
+                name = getValue(name, "return");
                 QName element = new QName(ns, name);
-                inputElements.add(new ElementInfo(element, null));
+
+                if (operation.getOutputType() != null) {
+                    Object logical = operation.getOutputType().getLogical();
+                    if (logical instanceof XMLType) {
+                        ((XMLType)logical).setElementName(element);
+                    }
+                }
+                outputElements.add(new ElementInfo(element, null));
+
+                WrapperInfo wrapperInfo =
+                    new WrapperInfo(JAXB_DATABINDING, new ElementInfo(inputWrapper, null),
+                                    new ElementInfo(outputWrapper, null), inputElements, outputElements);
+                operation.setWrapper(wrapperInfo);
             }
-
-            List<ElementInfo> outputElements = new ArrayList<ElementInfo>();
-            WebResult result = method.getAnnotation(WebResult.class);
-            // Default to "" for doc-lit-wrapped && non-header
-            ns = getValue(result.targetNamespace(), documentStyle && !result.header() ? "" : tns);
-            name = getValue(result.name(), "return");
-            QName element = new QName(ns, name);
-            outputElements.add(new ElementInfo(element, null));
-
-            WrapperInfo wrapperInfo =
-                new WrapperInfo(JAXB_DATABINDING, new ElementInfo(inputWrapper, null), new ElementInfo(outputWrapper,
-                                                                                                       null),
-                                inputElements, outputElements);
-            operation.setWrapper(wrapperInfo);
-            // operation.setDataBinding(JAXB_DATABINDING); // could be JAXB or SDO
-
         }
     }
 

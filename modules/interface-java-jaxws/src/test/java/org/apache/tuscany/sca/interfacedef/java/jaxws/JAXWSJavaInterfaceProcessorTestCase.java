@@ -19,13 +19,15 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
+import javax.jws.WebMethod;
 import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.interfacedef.impl.InterfaceImpl;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
-import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;
 
 /**
  * 
@@ -47,56 +49,50 @@ public class JAXWSJavaInterfaceProcessorTestCase extends TestCase {
      * {@link org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor#visitInterface(JavaInterface)}.
      */
     public final void testProcessor() throws Exception {
-        JavaInterface contract = new MockJavaInterfaceImpl();
-        contract.setJavaClass(WebServiceInterfaceWithoutAnnotation.class);
-        
+        DefaultJavaInterfaceFactory iFactory = new DefaultJavaInterfaceFactory();
+        JavaInterface contract = iFactory.createJavaInterface(WebServiceInterfaceWithoutAnnotation.class);
+
         interfaceProcessor.visitInterface(contract);
         assertFalse(contract.isRemotable());
-        
-        contract.setJavaClass(WebServiceInterfaceWithAnnotation.class);
+
+        contract = iFactory.createJavaInterface(WebServiceInterfaceWithAnnotation.class);
         interfaceProcessor.visitInterface(contract);
         assertTrue(contract.isRemotable());
+
+        Operation op1 = contract.getOperations().get(0);
+        Operation op2 = contract.getOperations().get(1);
+
+        Operation op = null;
+        if ("m1".equals(op1.getName())) {
+            op = op1;
+        } else {
+            op = op2;
+        }
+
+        assertTrue(op.isWrapperStyle());
+
+        if ("M2".equals(op2.getName())) {
+            op = op2;
+        } else {
+            op = op1;
+        }
+        assertTrue(!op2.isWrapperStyle() && op2.getWrapper() != null);
+
     }
 
     @WebService
-    private static interface WebServiceInterfaceWithAnnotation  {
-        
+    private static interface WebServiceInterfaceWithAnnotation {
+
+        @SOAPBinding(parameterStyle = SOAPBinding.ParameterStyle.BARE)
+        @WebMethod(operationName = "m1")
+        String m1(String str);
+
+        @SOAPBinding(parameterStyle = SOAPBinding.ParameterStyle.WRAPPED)
+        @WebMethod(operationName = "M2")
+        String m2(String str, int i);
     }
-    
+
     private static interface WebServiceInterfaceWithoutAnnotation {
-        
-    }
-    
-    private class MockJavaInterfaceImpl extends InterfaceImpl implements JavaInterface {
-        private Class<?> javaClass;
-        
-        public Class<?> getCallbackClass() {
-            // TODO Auto-generated method stub
-            return null;
-        }
 
-        public Class<?> getJavaClass() {
-            // TODO Auto-generated method stub
-            return javaClass;
-        }
-
-        public String getName() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public void setCallbackClass(Class<?> callbackClass) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        public void setJavaClass(Class<?> javaClass) {
-            this.javaClass = javaClass;
-        }
-
-        public void setName(String className) {
-            // TODO Auto-generated method stub
-            
-        }
     }
 }
