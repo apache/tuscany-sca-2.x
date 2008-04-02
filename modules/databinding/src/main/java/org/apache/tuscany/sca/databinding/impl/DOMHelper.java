@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.sca.databinding.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,7 +31,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * Helper for DOM
@@ -132,32 +128,30 @@ public final class DOMHelper {
             QName name = new QName(element.getNamespaceURI(), element.getLocalName());
             if (xmlType.isElement() && !xmlType.getElementName().equals(name)) {
                 QName newName = xmlType.getElementName();
-                String prefix = element.getPrefix();
+                String prefix = newName.getPrefix();
                 String qname = newName.getLocalPart();
                 if (prefix != null && !prefix.equals("")) {
                     qname = prefix + ":" + qname;
                 }
-                Element newElement = element.getOwnerDocument().createElementNS(newName.getNamespaceURI(), qname);
-                // newElement.setPrefix(prefix);
-                NodeList nodeList = element.getChildNodes();
-                // Need to copy the nodes from the list first as the appendChild() will change the list
-                int length = nodeList.getLength();
-                List<Node> nodes = new ArrayList<Node>();
-                for (int i = 0; i < length; i++) {
-                    nodes.add(nodeList.item(i));
-                }
+                Document doc = element.getOwnerDocument();
+                Element newElement = doc.createElementNS(newName.getNamespaceURI(), qname);
+                // Copy the attributes to the new element
                 NamedNodeMap attrs = element.getAttributes();
                 for (int i = 0; i < attrs.getLength(); i++) {
-                    nodes.add(attrs.item(i));
+                    Attr attr = (Attr)doc.importNode(attrs.item(i), true);
+                    newElement.getAttributes().setNamedItem(attr);
                 }
-                for (int i = 0; i < nodes.size(); i++) {
-                    Node node = nodes.get(i);
-                    if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
-                        newElement.setAttributeNodeNS((Attr)node.cloneNode(true));
-                    } else {
-                        newElement.appendChild(nodes.get(i));
-                    }
+
+                // Move all the children
+                while (element.hasChildNodes()) {
+                    newElement.appendChild(element.getFirstChild());
                 }
+
+                // Replace the old node with the new node
+                if (element.getParentNode() != null) {
+                    element.getParentNode().replaceChild(newElement, element);
+                }
+
                 return newElement;
             }
         }

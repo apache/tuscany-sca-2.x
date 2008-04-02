@@ -25,6 +25,7 @@ import javax.wsdl.Definition;
 import javax.wsdl.xml.WSDLWriter;
 
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;
 import org.junit.Test;
 
@@ -36,8 +37,8 @@ public class Java2WSDLGeneratorTestCase {
     @Test
     public void testGenerate() throws Exception {
         DefaultJavaInterfaceFactory iFactory = new DefaultJavaInterfaceFactory();
-        iFactory.addInterfaceVisitor(new JAXWSJavaInterfaceProcessor());
-        org.apache.tuscany.sca.interfacedef.Interface iface = iFactory.createJavaInterface(TestJavaInterface.class);
+        JavaInterface iface = iFactory.createJavaInterface(TestJavaInterface.class);
+        new JAXWSJavaInterfaceProcessor().visitInterface(iface);
         Interface2WSDLGenerator generator = new Interface2WSDLGenerator();
         Definition definition = generator.generate(iface);
         // System.out.println(definition);

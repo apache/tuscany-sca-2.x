@@ -125,7 +125,7 @@ public class Interface2WSDLGenerator {
         definition.addMessage(inputMsg);
 
         // FIXME: By default, java interface is mapped to doc-lit-wrapper style WSDL
-        if (!op.isWrapperStyle()) {
+        if (op.getWrapper() != null) {
             // Generate doc-lit-wrapper style
             inputMsg.addPart(generateWrapperPart(definition, op, true));
         } else {
@@ -148,7 +148,7 @@ public class Interface2WSDLGenerator {
             outputMsg.setUndefined(false);
             definition.addMessage(outputMsg);
 
-            if (!op.isWrapperStyle()) {
+            if (op.getWrapper() != null) {
                 inputMsg.addPart(generateWrapperPart(definition, op, false));
             } else {
                 inputMsg.addPart(generatePart(definition, op.getOutputType(), "return"));
