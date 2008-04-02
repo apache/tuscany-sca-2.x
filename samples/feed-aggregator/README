@@ -30,8 +30,6 @@ run:
     [java] http://localhost:8083/atomAggregator
     [java] http://localhost:8083/atomAggregator/atomsvc (for the Atom service document)
     [java] http://localhost:8083/rssAggregator
-    [java] http://localhost:8083/atomAggregator?feedType=rss_2.0
-    [java] http://localhost:8083/rssAggregator?feedType=atom_1.0
      
 As this point the aggregated Feeds are exposed by a web server started
 automatically by the SCA runtime. You can later stop the server by pressing enter.
@@ -42,10 +40,10 @@ aggregated feeds to see the information in your broswer. These URLs are:
 http://localhost:8083/atomAggregator
 http://localhost:8083/atomAggregator/atomsvc 
 http://localhost:8083/rssAggregator
-http://localhost:8083/atomAggregator?feedType=rss_2.0
-http://localhost:8083/rssAggregator?feedType=atom_1.0
 
-** Please note that if your browser is not configured correctly to receive feed information, you will be prompted to open each file that contains the feed information in xml.
+** Please note that if your browser is not configured correctly to receive
+feed information, you will be prompted to open each file that contains the feed
+information in xml.
 
 Sample Overview
 ---------------
@@ -87,8 +85,6 @@ run:
     [java] http://localhost:8083/atomAggregator
     [java] http://localhost:8083/atomAggregator/atomsvc (for the Atom service document)
     [java] http://localhost:8083/rssAggregator
-    [java] http://localhost:8083/atomAggregator?feedType=rss_2.0
-    [java] http://localhost:8083/rssAggregator?feedType=atom_1.0
      
  
 Building The Sample Using Maven 
