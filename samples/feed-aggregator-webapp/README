@@ -9,7 +9,8 @@ first.
 
 As this sample provides a web app there is a manual step where the WAR file
 that contains the sample is copied to your web app container. If you just want 
-to give this sample a go deploy the WAR file (target/sample-feed-aggregator-webapp.war) to your web application server. 
+to give this sample a go deploy the WAR file
+(target/sample-feed-aggregator-webapp.war) to your web application server. 
 
 Once the web app is deployed use your browser to visit the following URL:
 
@@ -20,10 +21,10 @@ You will then see the following displayed in your Web browser.
 http://localhost:8083/atomAggregator
 http://localhost:8083/atomAggregator/atomsvc 
 http://localhost:8083/rssAggregator
-http://localhost:8083/atomAggregator?feedType=rss_2.0
-http://localhost:8083/rssAggregator?feedType=atom_1.0
 
-** Please note that if your browser is not configured correctly to receive feed information, you can open each file that contains the feed information.
+** Please note that if your browser is not configured correctly to receive
+feed information, you will be prompted to open each file that contains the feed
+information in xml.
 
 
 Building And Running The Sample Using Ant 
@@ -34,7 +35,9 @@ follows
 cd feed-aggregator-webapp
 ant package
 
-This should result in a war file (sample-feed-aggregator-webapp.war) in the target directory. Copy this war file to your web app deployment directory and follow instructions at the begining of this README.
+This should result in a war file (sample-feed-aggregator-webapp.war) in the
+target directory. Copy this war file to your web app deployment directory and
+follow instructions at the begining of this README.
 
 
 Building And Running The Sample Using Maven 
@@ -45,6 +48,8 @@ using Maven as follows.
 cd feed-aggregator-webapp 
 mvn
 
-This should result in a war file (sample-feed-aggregator-webapp.war) in the target directory. Follow the steps described in the previous section for running the web app and for the expected results.
+This should result in a war file (sample-feed-aggregator-webapp.war) in the
+target directory. Follow the steps described in the previous section for
+running the web app and for the expected results.
 
 

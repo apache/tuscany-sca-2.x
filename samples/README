@@ -31,10 +31,10 @@ calculator-distributed             - A calculator built using SCA nodes running
                                      on multiple JVMs
 calculator-implementation-policies - Shows logging policites associated with 
                                      SCA implementations
-calculator-rmi-reference           - The calculator configured to talk RMI to the 
-                                     calculator-rmi-service sample
-calculator-rmi-service             - The calculator configured to accept RMI requests 
-                                     from calculator-rmi-reference
+calculator-rmi-reference           - The calculator configured to talk RMI to
+                                     the calculator-rmi-service sample
+calculator-rmi-service             - The calculator configured to accept RMI
+                                     requests from calculator-rmi-reference
 calculator-script                  - Calculator built using various script languages
 calculator-webapp                  - Calculator running inside a web app
 calculator-ws-webapp               - Calculator running inside a web app also 
@@ -43,8 +43,8 @@ calculator-ws-webapp               - Calculator running inside a web app also
 callbck-ws-client                  - The client for showing callbacks across web services
 callback-ws-service                - The server for showing callbacks across web serviced
 
-   
-chat-webapp                        - A simple chat style web app demonsrating use of AJAX binding
+chat-webapp                        - A simple chat style web app demonstrating
+                                     use of AJAX binding
 
 databinding-echo                   - An SCA application that shows how databindings 
                                      transform data
