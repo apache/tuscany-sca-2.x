@@ -30,9 +30,9 @@
                source="1.5"
                target="1.5">
             <classpath>
-            	<pathelement location="../../modules/tuscany-sca-api-1.2-incubating-SNAPSHOT.jar"/>
-            	<pathelement location="../../modules/tuscany-node2-api-1.2-incubating-SNAPSHOT.jar"/>
-            	<pathelement location="../../modules/tuscany-node2-launcher-1.2-incubating-SNAPSHOT.jar"/>
+            	<pathelement location="../../modules/tuscany-sca-api-2.0-incubating-SNAPSHOT.jar"/>
+            	<pathelement location="../../modules/tuscany-node2-api-2.0-incubating-SNAPSHOT.jar"/>
+            	<pathelement location="../../modules/tuscany-node2-launcher-2.0-incubating-SNAPSHOT.jar"/>
             </classpath>
         </javac> 
         <copy todir="target/classes">
@@ -52,9 +52,9 @@
             	<pathelement path="src/main/resources"/>
                 <pathelement path="target/classes"/>
             	<pathelement path="target/${test.jar}"/>
-            	<pathelement location="../../modules/tuscany-sca-api-1.2-incubating-SNAPSHOT.jar"/>
-            	<pathelement location="../../modules/tuscany-node2-api-1.2-incubating-SNAPSHOT.jar"/>
-            	<pathelement location="../../modules/tuscany-node2-launcher-1.2-incubating-SNAPSHOT.jar"/>
+            	<pathelement location="../../modules/tuscany-sca-api-2.0-incubating-SNAPSHOT.jar"/>
+            	<pathelement location="../../modules/tuscany-node2-api-2.0-incubating-SNAPSHOT.jar"/>
+            	<pathelement location="../../modules/tuscany-node2-launcher-2.0-incubating-SNAPSHOT.jar"/>
             </classpath>    	        	
         </java>
     </target>
@@ -66,9 +66,9 @@
             	<pathelement path="src/main/resources"/>
                 <pathelement path="target/classes"/>
             	<pathelement path="target/${test.jar}"/>
-            	<pathelement location="../../modules/tuscany-sca-api-1.2-incubating-SNAPSHOT.jar"/>
-            	<pathelement location="../../modules/tuscany-node2-api-1.2-incubating-SNAPSHOT.jar"/>
-            	<pathelement location="../../modules/tuscany-node2-launcher-1.2-incubating-SNAPSHOT.jar"/>
+            	<pathelement location="../../modules/tuscany-sca-api-2.0-incubating-SNAPSHOT.jar"/>
+            	<pathelement location="../../modules/tuscany-node2-api-2.0-incubating-SNAPSHOT.jar"/>
+            	<pathelement location="../../modules/tuscany-node2-launcher-2.0-incubating-SNAPSHOT.jar"/>
             </classpath>     	        	
         </java>
     </target>
@@ -80,9 +80,9 @@
             	<pathelement path="src/main/resources"/>
                 <pathelement path="target/classes"/>
             	<pathelement path="target/${test.jar}"/>
-            	<pathelement location="../../modules/tuscany-sca-api-1.2-incubating-SNAPSHOT.jar"/>
-            	<pathelement location="../../modules/tuscany-node2-api-1.2-incubating-SNAPSHOT.jar"/>
-            	<pathelement location="../../modules/tuscany-node2-launcher-1.2-incubating-SNAPSHOT.jar"/>
+            	<pathelement location="../../modules/tuscany-sca-api-2.0-incubating-SNAPSHOT.jar"/>
+            	<pathelement location="../../modules/tuscany-node2-api-2.0-incubating-SNAPSHOT.jar"/>
+            	<pathelement location="../../modules/tuscany-node2-launcher-2.0-incubating-SNAPSHOT.jar"/>
             </classpath>      	
         </java>
     </target>	
@@ -94,9 +94,9 @@
             	<pathelement path="src/main/resources"/>
                 <pathelement path="target/classes"/>
             	<pathelement path="target/${test.jar}"/>
-            	<pathelement location="../../modules/tuscany-sca-api-1.2-incubating-SNAPSHOT.jar"/>
-            	<pathelement location="../../modules/tuscany-node2-api-1.2-incubating-SNAPSHOT.jar"/>
-            	<pathelement location="../../modules/tuscany-node2-launcher-1.2-incubating-SNAPSHOT.jar"/>
+            	<pathelement location="../../modules/tuscany-sca-api-2.0-incubating-SNAPSHOT.jar"/>
+            	<pathelement location="../../modules/tuscany-node2-api-2.0-incubating-SNAPSHOT.jar"/>
+            	<pathelement location="../../modules/tuscany-node2-launcher-2.0-incubating-SNAPSHOT.jar"/>
             </classpath>      	
         </java>
     </target>	
