@@ -35,10 +35,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
-/**
- * @author administrator
- *
- */
 public class JaasAuthenticationPolicyProcessor implements StAXArtifactProcessor<JaasAuthenticationPolicy> {
     private static final QName JAAS_AUTHENTICATION_POLICY_QNAME = JaasAuthenticationPolicy.NAME;
     private static final String callbackHandler = "callbackHandler";

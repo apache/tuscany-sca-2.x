@@ -38,10 +38,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
-/**
- * @author administrator
- *
- */
 public class Axis2ConfigParamPolicyProcessor implements StAXArtifactProcessor<Axis2ConfigParamPolicy> {
     public static final QName AXIS2_CONFIG_PARAM_POLICY_QNAME = Axis2ConfigParamPolicy.NAME;
     public static final String PARAMETER = "parameter";
