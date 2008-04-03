@@ -21,7 +21,7 @@ package node;
 
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
-import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.launcher.NodeLauncher;
 import org.osoa.sca.ServiceRuntimeException;
 
 import calculator.CalculatorService;
@@ -32,8 +32,8 @@ public class LaunchCalculatorNodeA {
         SCANode2 node = null;
         try {
             
-            SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-            node = nodeFactory.createSCANode("http://localhost:9990/node-image/NodeA");
+            NodeLauncher nodeLauncher = NodeLauncher.newInstance();
+            node = nodeLauncher.createNode("http://localhost:9990/node-image/NodeA");
 
             node.start();
             

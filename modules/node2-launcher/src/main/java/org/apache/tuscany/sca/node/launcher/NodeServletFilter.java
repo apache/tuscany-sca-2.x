@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.node.launcher;
 
+import static org.apache.tuscany.sca.node.launcher.NodeLauncherUtil.webAppRuntimeClassLoader;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,7 +53,7 @@ public class NodeServletFilter implements Filter {
         try {
             // Get the Tuscany runtime ClassLoader
             ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-            runtimeClassLoader = NodeLauncherUtil.runtimeClassLoader(getClass().getClassLoader());
+            runtimeClassLoader = webAppRuntimeClassLoader(getClass().getClassLoader());
             
             try {
                 if (runtimeClassLoader != null) {

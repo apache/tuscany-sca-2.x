@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.node.SCANode2Factory;
 import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Bootstrap class for standalone SCA nodes.
@@ -39,6 +40,7 @@ public class NodeImplementationLauncherBootstrap {
      * A node facade.
      */
     public static class NodeFacade implements SCANode2, SCAClient {
+        private ClassLoader threadContextClassLoader;
         private ClassLoader runtimeClassLoader;
         private SCANode2 delegate;
         
@@ -48,22 +50,25 @@ public class NodeImplementationLauncherBootstrap {
         }
         
         public void start() {
-            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+            threadContextClassLoader = Thread.currentThread().getContextClassLoader();
+            boolean started = false;
             try {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
                 delegate.start();
+                started = true;
             } finally {
-                Thread.currentThread().setContextClassLoader(tccl);
+                if (!started) {
+                    Thread.currentThread().setContextClassLoader(threadContextClassLoader);
+                }
             }
         }
         
         public void stop() {
-            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
                 delegate.stop();
             } finally {
-                Thread.currentThread().setContextClassLoader(tccl);
+                Thread.currentThread().setContextClassLoader(threadContextClassLoader);
             }
         }
 
