@@ -54,6 +54,7 @@
             </activation>
             <modules>
                 <module>annotations</module>
+                <module>apis</module>
            </modules>
         </profile>
     </profiles>
