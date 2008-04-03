@@ -34,6 +34,7 @@ public class NodeImplementationDaemonBootstrap {
      * A node wrappering an instance of a node daemon.
      */
     public static class NodeFacade implements SCANode2 {
+        private ClassLoader threadContextClassLoader;
         private ClassLoader runtimeClassLoader;
         private SCADomain daemon;
         
@@ -42,22 +43,25 @@ public class NodeImplementationDaemonBootstrap {
         }
         
         public void start() {
-            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+            threadContextClassLoader = Thread.currentThread().getContextClassLoader();
+            boolean started = false;
             try {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
                 daemon = SCADomain.newInstance("NodeDaemon.composite");
+                started = true;
             } finally {
-                Thread.currentThread().setContextClassLoader(tccl);
+                if (!started) {
+                    Thread.currentThread().setContextClassLoader(threadContextClassLoader);
+                }
             }
         }
         
         public void stop() {
-            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
                 daemon.close();
             } finally {
-                Thread.currentThread().setContextClassLoader(tccl);
+                Thread.currentThread().setContextClassLoader(threadContextClassLoader);
             }
         }
     }

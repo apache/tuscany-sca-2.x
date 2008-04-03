@@ -49,13 +49,38 @@ final class NodeLauncherUtil {
 
 
     /**
-     * Returns a ClassLoader for the Tuscany runtime JARs.
+     * Returns a ClassLoader for the Tuscany runtime JARs for use in a standalone
+     * J2SE environment.
      * 
      * @param parentClassLoader
      * 
      * @return
      */
-    static ClassLoader runtimeClassLoader(ClassLoader parentClassLoader) throws FileNotFoundException, URISyntaxException, MalformedURLException {
+    static ClassLoader standAloneRuntimeClassLoader(ClassLoader parentClassLoader) throws FileNotFoundException, URISyntaxException, MalformedURLException {
+        return runtimeClassLoader(parentClassLoader, new StandAloneJARFileNameFilter());
+    }
+    
+    /**
+     * Returns a ClassLoader for the Tuscany runtime JARs for use in a Webapp
+     * environment.
+     * 
+     * @param parentClassLoader
+     * 
+     * @return
+     */
+    static ClassLoader webAppRuntimeClassLoader(ClassLoader parentClassLoader) throws FileNotFoundException, URISyntaxException, MalformedURLException {
+        return runtimeClassLoader(parentClassLoader, new WebAppJARFileNameFilter());
+    }
+    
+    /**
+     * Returns a ClassLoader for the Tuscany runtime JARs.
+     * 
+     * @param parentClassLoader
+     * @param filter
+     * 
+     * @return
+     */
+    static private ClassLoader runtimeClassLoader(ClassLoader parentClassLoader, FilenameFilter filter) throws FileNotFoundException, URISyntaxException, MalformedURLException {
         
         // Build list of runtime JARs
         List<URL> jarURLs = new ArrayList<URL>();
@@ -87,7 +112,7 @@ final class NodeLauncherUtil {
 
                     // Collect JAR files from the directory containing the input JAR
                     // (e.g. the Tuscany modules directory)
-                    collectJARFiles(jarDirectory, jarURLs);
+                    collectJARFiles(jarDirectory, jarURLs, filter);
                     
                     File homeDirectory = jarDirectory.getParentFile();
                     if (homeDirectory != null && homeDirectory.exists()) {
@@ -95,13 +120,13 @@ final class NodeLauncherUtil {
                         // Collect JARs from the ../modules directory
                         File modulesDirectory = new File(homeDirectory, "modules");
                         if (modulesDirectory.exists() && !modulesDirectory.getAbsolutePath().equals(jarDirectory.getAbsolutePath())) {
-                            collectJARFiles(modulesDirectory, jarURLs);
+                            collectJARFiles(modulesDirectory, jarURLs, filter);
                         }
 
                         // Collect JARs from the ../lib directory
                         File libDirectory = new File(homeDirectory, "lib");
                         if (libDirectory.exists() && !libDirectory.getAbsolutePath().equals(jarDirectory.getAbsolutePath())) {
-                            collectJARFiles(libDirectory, jarURLs);
+                            collectJARFiles(libDirectory, jarURLs, filter);
                         }
 
                     }
@@ -122,18 +147,18 @@ final class NodeLauncherUtil {
             if (homeDirectory.exists()) {
                 
                 // Collect files under $TUSCANY_HOME
-                collectJARFiles(homeDirectory, jarURLs);
+                collectJARFiles(homeDirectory, jarURLs, filter);
                 
                 // Collect files under $TUSCANY_HOME/modules
                 File modulesDirectory = new File(homeDirectory, "modules");
                 if (modulesDirectory.exists()) {
-                    collectJARFiles(modulesDirectory, jarURLs);
+                    collectJARFiles(modulesDirectory, jarURLs, filter);
                 }
     
                 // Collect files under $TUSCANY_HOME/lib
                 File libDirectory = new File(homeDirectory, "lib");
                 if (libDirectory.exists()) {
-                    collectJARFiles(libDirectory, jarURLs);
+                    collectJARFiles(libDirectory, jarURLs, filter);
                 }
             }
         }
@@ -154,10 +179,11 @@ final class NodeLauncherUtil {
      * Collect JAR files in the given directory
      * @param directory
      * @param urls
+     * @param filter
      * @throws MalformedURLException
      */
-    private static void collectJARFiles(File directory, List<URL> urls) throws MalformedURLException {
-        File[] files = directory.listFiles(new JARFileNameFilter());
+    private static void collectJARFiles(File directory, List<URL> urls, FilenameFilter filter) throws MalformedURLException {
+        File[] files = directory.listFiles(filter);
         if (files != null) {
             int count = 0;
             for (File file: files) {
@@ -179,7 +205,7 @@ final class NodeLauncherUtil {
     /**
      * A file name filter used to filter JAR files.
      */
-    private static class JARFileNameFilter implements FilenameFilter {
+    private static class StandAloneJARFileNameFilter implements FilenameFilter {
         
         public boolean accept(File dir, String name) {
             name = name.toLowerCase(); 
@@ -211,6 +237,32 @@ final class NodeLauncherUtil {
         }
     }
     
+    /**
+     * A file name filter used to filter JAR files.
+     */
+    private static class WebAppJARFileNameFilter extends StandAloneJARFileNameFilter {
+        
+        public boolean accept(File dir, String name) {
+            if (!super.accept(dir, name)) {
+                return false;
+            }
+            name = name.toLowerCase(); 
+            
+            // Exclude servlet-api JARs
+            if (name.startsWith("servlet-api")) {
+                return false;
+            }
+            
+            // Filter out the Tomcat host
+            if (name.startsWith("tuscany-host-tomcat")) {
+                //FIXME This is temporary
+                return false;
+            }
+            
+            return true;
+        }
+    }
+    
     
     /**
      * Creates a new node.
@@ -223,7 +275,8 @@ final class NodeLauncherUtil {
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         try {
             // Set up runtime ClassLoader
-            ClassLoader runtimeClassLoader = runtimeClassLoader(Thread.currentThread().getContextClassLoader());
+            ClassLoader runtimeClassLoader = runtimeClassLoader(Thread.currentThread().getContextClassLoader(),
+                                                                new StandAloneJARFileNameFilter());
             if (runtimeClassLoader != null) {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
             }
@@ -277,7 +330,8 @@ final class NodeLauncherUtil {
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         try {
             // Set up runtime ClassLoader
-            ClassLoader runtimeClassLoader = runtimeClassLoader(Thread.currentThread().getContextClassLoader());
+            ClassLoader runtimeClassLoader = runtimeClassLoader(Thread.currentThread().getContextClassLoader(),
+                                                                new StandAloneJARFileNameFilter());
             if (runtimeClassLoader != null) {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
             }
@@ -313,7 +367,8 @@ final class NodeLauncherUtil {
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         try {
             // Set up runtime ClassLoader
-            ClassLoader runtimeClassLoader = runtimeClassLoader(Thread.currentThread().getContextClassLoader());
+            ClassLoader runtimeClassLoader = runtimeClassLoader(Thread.currentThread().getContextClassLoader(),
+                                                                new StandAloneJARFileNameFilter());
             if (runtimeClassLoader != null) {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
             }
@@ -344,6 +399,8 @@ final class NodeLauncherUtil {
      * Simple URL class loader for the runtime JARs
      */
     private static class RuntimeClassLoader extends URLClassLoader {
+        private final static ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+        private ClassLoader parent;
         
         /**
          * Constructs a new class loader.
@@ -351,12 +408,65 @@ final class NodeLauncherUtil {
          * @param parent
          */
         private RuntimeClassLoader(URL[] urls, ClassLoader parent) {
-            super(urls, parent);
+            super(urls);
+            this.parent = parent;
         }
-        
+
         @Override
-        public Class<?> loadClass(String name) throws ClassNotFoundException {
-            return super.loadClass(name);
+        public URL findResource(String name) {
+            URL url = super.findResource(name);
+            if (url == null) {
+                url = parent.getResource(name);
+            }
+            return url;
+        }
+
+        @Override
+        public Enumeration<URL> findResources(String name) throws IOException {
+            Enumeration<URL> resources = super.findResources(name);
+            Enumeration<URL> parentResources = parent.getResources(name);
+            List<URL> allResources = new ArrayList<URL>(); 
+            for (; resources.hasMoreElements(); ) {
+                allResources.add(resources.nextElement());
+            }
+            for (; parentResources.hasMoreElements(); ) {
+                allResources.add(parentResources.nextElement());
+            }
+            return Collections.enumeration(allResources);
+        }
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            Class<?> cl;
+
+            // First try to load the class using the parent classloader
+            try {
+                cl = parent.loadClass(name);
+                ClassLoader loadedBy = cl.getClassLoader();
+
+                // If the class was not loaded directly by the parent classloader
+                // or the system classloader try to load a local version of the class
+                // using our RuntimeClassloader instead
+                if (loadedBy != parent &&
+                    loadedBy != systemClassLoader &&
+                    loadedBy != null) {
+
+                    try {
+                        cl = super.findClass(name);
+                    } catch (ClassNotFoundException e) {
+                        // No class alternative was found in our RuntimeClassloader,
+                        // use the class found in the parent classloader hierarchy
+                    }
+                }
+            } catch (ClassNotFoundException e) {
+                
+                // The class was not found by the parent class loader, try
+                // to load it using our RuntimeClassloader
+                cl = super.findClass(name);
+            }
+
+            return cl;
         }
     }
+    
 }
