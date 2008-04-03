@@ -50,6 +50,11 @@
 			class="org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.FServiceImpl" />
 	</component>
 
+	<component name="FComponent2">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.FServiceImpl2" />
+	</component>
+
 	<component name="GComponent">
 		<implementation.java
 			class="org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.GServiceImpl" />

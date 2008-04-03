@@ -19,19 +19,8 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl;
 
-import org.apache.tuscany.sca.vtest.javaapi.annotations.service.FService;
-import org.osoa.sca.RequestContext;
-import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Service;
 
-@Service(org.apache.tuscany.sca.vtest.javaapi.annotations.service.FService.class)
-public class FServiceImpl implements FService {
-
-    @Context
-    public RequestContext requestContext;
-    
-    public String getName() {
-        return requestContext.getServiceName();
-    }
-
+@Service(FServiceImpl2.class)
+public class FServiceImpl2 extends FServiceImpl  {
 }

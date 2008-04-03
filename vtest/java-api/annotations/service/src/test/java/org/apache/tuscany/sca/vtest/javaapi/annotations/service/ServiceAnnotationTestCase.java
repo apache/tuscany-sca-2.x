@@ -32,6 +32,8 @@ import org.apache.tuscany.sca.vtest.javaapi.annotations.service.DService3;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.EService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.FService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.AObject;
+import org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.FServiceImpl;
+import org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.FServiceImpl2;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -99,19 +101,16 @@ public class ServiceAnnotationTestCase {
 
     /**
      * Lines 222 to 224:<br>
-     * A remotable service is defined using the
-     * 
-     * @Remotable annotation on the Java interface that defines the service.
-     *            Remotable services are intended to be used for coarse grained
-     *            services, and the parameters are passed by-value.<br>
-     *            <p>
-     *            Lines 321 to 323:<br>
-     *            The
-     * @Remotable annotation on a Java interface indicates that the interface is
-     *            designed to be used for remote communication. Remotable
-     *            interfaces are intended to be used for coarse grained
-     *            services. Operations parameters and return values are passed
-     *            by-value.<br>
+     * A remotable service is defined using the "@Remotable" annotation on the
+     * Java interface that defines the service. Remotable services are intended
+     * to be used for coarse grained services, and the parameters are passed
+     * by-value.<br>
+     * <p>
+     * Lines 321 to 323:<br>
+     * The "@Remotable" annotation on a Java interface indicates that the
+     * interface is designed to be used for remote communication. Remotable
+     * interfaces are intended to be used for coarse grained services.
+     * Operations parameters and return values are passed by-value.<br>
      */
     @Test
     public void atService3() throws Exception {
@@ -138,12 +137,10 @@ public class ServiceAnnotationTestCase {
     /**
      * Line 1624 to 1627:<br>
      * A class used as the implementation of a service is not required to have
-     * an
-     * 
-     * @Service annotation. If a class has no
-     * @Service annotation, then the rules determining which services are
-     *          offered and what interfaces those services have are determined
-     *          by the specific implementation type.<br>
+     * an "@Service" annotation. If a class has no "@Service" annotation, then
+     * the rules determining which services are offered and what interfaces
+     * those services have are determined by the specific implementation type.
+     * <br>
      */
     @Test
     public void atService5() throws Exception {
@@ -177,10 +174,8 @@ public class ServiceAnnotationTestCase {
 
     /**
      * Line 1635 to 1636:<br>
-     * A
-     * 
-     * @Service annotation with no attributes is meaningless, it is the same as
-     *          not having the annotation there at all.<br>
+     * A "@Service" annotation with no attributes is meaningless, it is the
+     * same as not having the annotation there at all.<br>
      */
     @Test
     @Ignore
@@ -195,15 +190,15 @@ public class ServiceAnnotationTestCase {
      * Line 1637 to 1638:<br>
      * The service names of the defined services default to the names of the
      * interfaces or class, without the package name.<br>
-     * <p>
-     * This test tests
-     * 
-     * @Service with the full package name.
      */
     @Test
     public void atService8() throws Exception {
         FService fService = domain.getService(FService.class, "FComponent");
         Assert.assertEquals("FService", fService.getName());
+        FServiceImpl2 fServiceImpl2 = domain.getService(FServiceImpl2.class, "FComponent2");
+        Assert.assertEquals("FServiceImpl2", fServiceImpl2.getName());
+        fService = domain.getService(FService.class, "FComponent2");
+        Assert.assertEquals("FServiceImpl2", fService.getName());
     }
 
     /**
@@ -211,9 +206,7 @@ public class ServiceAnnotationTestCase {
      * If a Java implementation needs to realize two services with the same
      * interface, then this is achieved through subclassing of the interface.
      * The subinterface must not add any methods. Both interfaces are listed in
-     * the
-     * 
-     * @Service annotation of the Java implementation class. <br>
+     * the "@Service" annotation of the Java implementation class. <br>
      */
     @Test
     public void atService9() throws Exception {
