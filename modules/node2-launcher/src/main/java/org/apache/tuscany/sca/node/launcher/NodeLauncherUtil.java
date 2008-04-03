@@ -341,72 +341,22 @@ final class NodeLauncherUtil {
     }
 
     /**
-     * Simple URL class loader that hides the parent class loader and implements a
-     * parent-last loading scheme.
+     * Simple URL class loader for the runtime JARs
      */
     private static class RuntimeClassLoader extends URLClassLoader {
-        private ClassLoader parent;
-
+        
         /**
          * Constructs a new class loader.
          * @param urls
          * @param parent
          */
         private RuntimeClassLoader(URL[] urls, ClassLoader parent) {
-            super(urls);
-            this.parent = parent;
+            super(urls, parent);
         }
-
+        
         @Override
-        public URL findResource(String name) {
-            URL url = super.findResource(name);
-            if (url == null) {
-                url = parent.getResource(name);
-            }
-            return url;
-        }
-
-        @Override
-        public Enumeration<URL> findResources(String name) throws IOException {
-            Enumeration<URL> resources = super.findResources(name);
-            Enumeration<URL> parentResources = parent.getResources(name);
-            List<URL> allResources = new ArrayList<URL>(); 
-            for (; resources.hasMoreElements(); ) {
-                allResources.add(resources.nextElement());
-            }
-            for (; parentResources.hasMoreElements(); ) {
-                allResources.add(parentResources.nextElement());
-            }
-            return Collections.enumeration(allResources);
-        }
-
-        @Override
-        protected Class<?> findClass(String name) throws ClassNotFoundException {
-            Class<?> cl;
-
-            // First try to load the class using the parent classloader
-            try {
-                cl = parent.loadClass(name);
-                if (cl.getClassLoader() != parent) {
-
-                    // If the class was not loaded directly by the parent classloader
-                    // try to load it using our URL classloader instead
-                    try {
-                        cl = super.findClass(name);
-                    } catch (ClassNotFoundException e) {
-                        // No class alternative was found in our URL classloader,
-                        // use the class found in the parent classloader hierarchy
-                    }
-                }
-            } catch (ClassNotFoundException e) {
-                
-                // The class was not found by the parent class loader, try
-                // to load it using our URL classloader
-                cl = super.findClass(name);
-            }
-
-            return cl;
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            return super.loadClass(name);
         }
     }
-    
 }
