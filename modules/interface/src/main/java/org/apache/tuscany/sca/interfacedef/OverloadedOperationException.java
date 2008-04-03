@@ -31,7 +31,9 @@ public class OverloadedOperationException extends InvalidInterfaceException {
     private final Method operation;
 
     public OverloadedOperationException(Method operation) {
-        super();
+        super(operation == null ? 
+                null : "Cannot overload operation " + operation.getName() 
+                         + " on " + operation.getDeclaringClass().getName());
         this.operation = operation;
     }
 
