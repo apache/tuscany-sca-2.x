@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.databinding.sdo;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -34,6 +35,7 @@ import org.apache.tuscany.sdo.api.SDOUtil;
 
 import commonj.sdo.Type;
 import commonj.sdo.helper.HelperContext;
+import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.impl.HelperProvider;
 
 /**
@@ -170,5 +172,22 @@ public final class SDOContextHelper {
         } else {
             return SDODataBinding.ROOT_ELEMENT;
         }
+    }
+
+    public static String generateSchema(HelperContext context, Class<?>[] classes) {
+        TypeHelper typeHelper = context.getTypeHelper();
+        List<Type> types = new ArrayList<Type>();
+        for (Class<?> cls : classes) {
+            Type type = typeHelper.getType(cls);
+            if (type != null) {
+                types.add(type);
+            }
+        }
+        return generateSchema(context, types);
+    }
+
+    public static String generateSchema(HelperContext context, List<Type> types) {
+        // FIXME: SDO throws IllegalArgumentException for types generated from existing XSDs
+        return context.getXSDHelper().generate(types);
     }
 }
