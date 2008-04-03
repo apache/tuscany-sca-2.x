@@ -33,6 +33,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class OneWayTestCase {
+    /**
+     * Maximum period of time that we are prepared to wait for all the @OneWay
+     * method calls to complete in milliseconds.
+     */
+    private static final int MAX_SLEEP_TIME = 10000;
 
     private SCADomain domain;
 
@@ -66,7 +71,17 @@ public class OneWayTestCase {
                // System.out.flush();
                 client.doSomething(count);
 
-                Thread.sleep(2000);
+                // TUSCANY-2192 - We need to sleep to allow the @OneWay method calls to complete.
+                // Note: This can take different periods depending on the speed and load
+                // on the computer where the test is being run.
+                // This loop will wait for the required number of @OneWay method calls to
+                // have taken place or MAX_SLEEP_TIME to have passed.
+                long startSleep = System.currentTimeMillis();
+                while (OneWayClientImpl.callCount != OneWayServiceImpl.callCount 
+                        && System.currentTimeMillis() - startSleep < MAX_SLEEP_TIME) {
+                    Thread.sleep(100);
+                    // System.out.println("" + OneWayClientImpl.callCount + "," + OneWayServiceImpl.callCount);
+                }
 
                 System.out.println("Finished callCount = " + OneWayServiceImpl.callCount);
 
