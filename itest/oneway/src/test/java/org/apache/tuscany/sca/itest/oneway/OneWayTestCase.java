@@ -59,7 +59,7 @@ public class OneWayTestCase {
     }
 
     @Test
-    public void testOneWay() {
+    public void testOneWay() throws Exception {
         OneWayClient client =
             domain.getService(OneWayClient.class, "OneWayClientComponent");
         try {
@@ -89,10 +89,9 @@ public class OneWayTestCase {
             }
         } catch (Exception ex) {
             System.err.println("Exception: " + ex.toString());
+            ex.printStackTrace();
+            throw ex;
         }
-
-
-
     }
 
 }
