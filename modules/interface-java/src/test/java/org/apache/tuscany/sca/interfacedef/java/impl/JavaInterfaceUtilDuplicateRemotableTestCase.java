@@ -22,14 +22,19 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.OverloadedOperationException;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceImpl;
 import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
+import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.osoa.sca.annotations.Remotable;
 
 /**
@@ -177,6 +182,47 @@ public class JavaInterfaceUtilDuplicateRemotableTestCase extends TestCase {
         // Return the created operation
         return operation;
     }
+
+    /**
+     * Test case that validates that a @Remotable interface with Overloaded operations
+     * is detected.
+     * 
+     * This test case is for TUSCANY-2194
+     */
+    public void testDuplicateOpeartionOnRemotableInterface()
+    {
+        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
+        JavaInterfaceIntrospectorImpl introspector = new JavaInterfaceIntrospectorImpl(javaFactory);
+        JavaInterfaceImpl javaInterface = new JavaInterfaceImpl();
+
+        try {
+            introspector.introspectInterface(javaInterface, DuplicateMethodOnRemotableInterface.class);
+            Assert.fail("Should have thrown an exception as @Remotable interface has overloaded methods");
+        } catch (OverloadedOperationException ex) {
+            // As expected
+            // Make sure that the class and method names are in the exception
+            String exMsg = ex.toString();
+            Assert.assertTrue("Method name missing from exception", exMsg.indexOf("aDuplicateMethod") != -1);
+            Assert.assertTrue("Class name missing from exception", 
+                exMsg.indexOf(DuplicateMethodOnRemotableInterface.class.getName()) != -1);
+        } catch (InvalidInterfaceException ex) {
+            // Should have thrown OverloadedOperationException
+            Assert.fail("Should have thrown an OverloadedOperationException but threw " + ex);
+        }
+    }
+
+
+    /**
+     * Sample @Remotable interface that has an overloaded operation which is not 
+     * allowed according to the SCA Assembly Specification.
+     */
+    @Remotable
+    private interface DuplicateMethodOnRemotableInterface {
+        void aNonDuplicateMethod();
+        void aDuplicateMethod();
+        void aDuplicateMethod(String aParam);
+    }
+
 
     /**
      * Sample interface needed for the unit tests
