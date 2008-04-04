@@ -24,6 +24,7 @@ package org.apache.tuscany.sca.interfacedef;
 public abstract class InvalidInterfaceException extends Exception {
 
     public InvalidInterfaceException() {
+        super();
     }
 
     public InvalidInterfaceException(String message) {
