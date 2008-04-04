@@ -66,7 +66,7 @@ public class TuscanyWSDLTypesGenerator implements TuscanyJava2WSDLConstants {
 
     protected Map schemaLocationMap = null;
 
-    // to keep loadded method using JAM
+    // to keep loaded method using JAM
     private JMethod methods[];
 
     // to store byte code method using Axis 1.x codes
@@ -114,7 +114,7 @@ public class TuscanyWSDLTypesGenerator implements TuscanyJava2WSDLConstants {
         JamServiceParams jam_service_parms = factory.createServiceParams();
         // setting the classLoder
         // jam_service_parms.setParentClassLoader(factory.createJamClassLoader(classLoader));
-        // it can posible to add the classLoader as well
+        // it can possible to add the classLoader as well
         jam_service_parms.addClassLoader(generationParams.getClassLoader());
         jam_service_parms.includeClass(generationParams.getSourceClassName());
 
@@ -134,12 +134,12 @@ public class TuscanyWSDLTypesGenerator implements TuscanyJava2WSDLConstants {
 
             if (jclass.getQualifiedName().equals(generationParams.getSourceClassName())) {
                 /**
-                 * Schema genertaion done in two stage 1. Load all the methods
+                 * Schema generation done in two stage 1. Load all the methods
                  * and create type for methods parameters (if the parameters are
                  * Bean then it will create Complex types for those , and if the
-                 * parameters are simple type which decribe in SimpleTypeTable
+                 * parameters are simple type which describe in SimpleTypeTable
                  * nothing will happen) 2. In the next stage for all the methods
-                 * messages and port types will be creteated
+                 * messages and port types will be created
                  */
                 methods = jclass.getDeclaredMethods();
                 // short the elements in the array
@@ -154,7 +154,7 @@ public class TuscanyWSDLTypesGenerator implements TuscanyJava2WSDLConstants {
                     JMethod jMethod = methods[i];
 
                     String methodName = methods[i].getSimpleName();
-                    // no need to think abt this method , since that is system
+                    // no need to think about this method , since that is system
                     // config method
                     if (excludeMethods.contains(jMethod.getSimpleName())) {
                         continue;
