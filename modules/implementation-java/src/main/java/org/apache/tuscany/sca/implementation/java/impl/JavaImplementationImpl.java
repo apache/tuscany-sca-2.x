@@ -32,7 +32,7 @@ import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 /**
  * A component type specialization for POJO implementations
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
 public class JavaImplementationImpl extends BaseJavaImplementationImpl implements JavaImplementation {
     private JavaConstructorImpl<?> constructorDefinition;
