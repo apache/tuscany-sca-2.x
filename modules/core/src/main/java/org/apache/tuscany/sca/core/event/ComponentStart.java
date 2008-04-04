@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.event.Event;
 /**
  * Propagated when a component starts
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
 public class ComponentStart implements Event {
 

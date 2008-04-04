@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 /**
  * Manages {@link ScopeContainer}s in the runtime
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
 public interface ScopeRegistry {
 

@@ -33,7 +33,7 @@ import org.osoa.sca.ServiceRuntimeException;
 /**
  * Adds non-blocking behavior to an invocation chain
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
 public class NonBlockingInterceptor implements Interceptor {
 

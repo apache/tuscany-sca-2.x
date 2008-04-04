@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.event.Event;
 /**
  * Propagated when an HTTP-based session has started
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
 public class HttpSessionStart implements Event {
     

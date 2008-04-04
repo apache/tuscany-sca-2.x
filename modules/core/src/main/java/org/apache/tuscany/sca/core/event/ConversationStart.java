@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.event.Event;
 /**
  * Propagated when a conversation has started
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
 public class ConversationStart implements Event {
     

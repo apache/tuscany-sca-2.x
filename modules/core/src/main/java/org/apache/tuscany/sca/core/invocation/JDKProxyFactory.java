@@ -34,8 +34,7 @@ import org.osoa.sca.ServiceReference;
 /**
  * the default implementation of a wire service that uses JDK dynamic proxies
  * 
- * @version $$Rev$$ $$Date: 2007-04-11 18:59:43 -0700 (Wed, 11 Apr
- *          2007) $$
+ * @version $Rev$ $Date$
  */
 public class JDKProxyFactory implements ProxyFactory {
     protected InterfaceContractMapper contractMapper;

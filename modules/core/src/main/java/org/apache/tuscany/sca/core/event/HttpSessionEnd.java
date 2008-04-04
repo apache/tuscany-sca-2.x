@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.event.Event;
 /**
  * Propagated when an HTTP-based session is expired
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
 public class HttpSessionEnd implements Event {
     

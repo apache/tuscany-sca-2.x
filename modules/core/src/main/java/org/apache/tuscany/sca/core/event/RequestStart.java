@@ -23,7 +23,7 @@ import org.apache.tuscany.sca.event.Event;
 /**
  * Propagated when a request is started in the runtime
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
 public class RequestStart implements Event {
     
