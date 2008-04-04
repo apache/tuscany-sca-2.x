@@ -74,7 +74,7 @@ public class WSDL2JavaGenerator {
      * <wsdl-file> For example: generate somedir/somefile.wsdl Basic options:
      * -targetDirectory Generates the Java source code in the specified
      * directory. By default, the code is generated in the same directory as the
-     * input wsdl file. -javaPackage Overrides the Java package for the
+     * input WSDL file. -javaPackage Overrides the Java package for the
      * generated classes. By default the package name is derived from the
      * targetNamespace of the WSDL definition being generated. For example, if
      * the targetNamespace is "http://www.example.com/simple", the default
@@ -323,7 +323,7 @@ public class WSDL2JavaGenerator {
                 }
 
                 // Process all the SDO packages
-                // Populate the qname -> interfaceName typeMapping table
+                // Populate the QName -> interfaceName typeMapping table
                 for (GenPackage currentGenPackage : genPackages) {
                     EPackage currentEPackage = currentGenPackage.getEcorePackage();
                     

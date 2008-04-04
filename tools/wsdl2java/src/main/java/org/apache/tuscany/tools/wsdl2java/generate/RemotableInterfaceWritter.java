@@ -42,11 +42,11 @@ public class RemotableInterfaceWritter extends InterfaceWriter {
      */
     @Override
     public void loadTemplate() throws CodeGenerationException {
-        // the default behavior for the class writers is to use the property map from the languge specific types
+        // the default behavior for the class writers is to use the property map from the language specific types
         // The properties are arranged in the following order
         // <lang-name>.* .template=<write-class>,<template-name>
 
-        //overrida original behaviour to always load the template we specified
+        //override original behaviour to always load the template we specified
         this.xsltStream = this.getClass().getResourceAsStream(REMOTABLE_INTERFACE_TEMPLATE);
 
     }
