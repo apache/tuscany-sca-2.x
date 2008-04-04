@@ -44,13 +44,13 @@ public class Java2WSDLGeneratorMojo extends AbstractMojo
     private String sourceClassName;
 
     /**
-     * The location where the wsdls should be generated into
+     * The location where the WSDLs should be generated into
      * @parameter expression="${project.build.directory}\\java2wsdl-wsdl"
     */
     private String targetLocation;
     
     /**
-     * The name of the wsdl file 
+     * The name of the WSDL file 
      * @parameter
     */
     private String wsdlFilename;
