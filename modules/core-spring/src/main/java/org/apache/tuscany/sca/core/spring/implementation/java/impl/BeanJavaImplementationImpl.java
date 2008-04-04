@@ -38,7 +38,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
  * An implementation of the SCA assembly JavaImplementation interface backed by a Spring
  * Bean definition.
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
 public class BeanJavaImplementationImpl extends BeanBaseJavaImplementationImpl implements JavaImplementation {
     private static final long serialVersionUID = 6792198458193774178L;
