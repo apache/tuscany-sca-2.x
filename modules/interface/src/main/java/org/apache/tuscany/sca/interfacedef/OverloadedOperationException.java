@@ -33,7 +33,8 @@ public class OverloadedOperationException extends InvalidInterfaceException {
     public OverloadedOperationException(Method operation) {
         super(operation == null ? 
                 null : "Cannot overload operation " + operation.getName() 
-                         + " on " + operation.getDeclaringClass().getName());
+                         + " on " + operation.getDeclaringClass().getName()
+                         + " as it is a @Remotable interface");
         this.operation = operation;
     }
 
