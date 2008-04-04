@@ -35,13 +35,13 @@ import org.apache.tuscany.tools.wsdl2java.generate.WSDL2JavaGenerator;
  */
 public class WSDL2JavaGeneratorMojo extends AbstractMojo {
     /**
-     * The directory containing wsdl files; defaults to ${basedir}/src/main/wsdl
+     * The directory containing WSDL files; defaults to ${basedir}/src/main/wsdl
      * @parameter expression="${basedir}/src/main/wsdl"
      */
     private String wsdlDir;
 
     /**
-     * Name of the wsdl file; if omitted all files in the directory are processed
+     * Name of the WSDL file; if omitted all files in the directory are processed
      * @parameter
      */
     private File wsdlFile;
