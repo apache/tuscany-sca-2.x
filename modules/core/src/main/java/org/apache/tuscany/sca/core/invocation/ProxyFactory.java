@@ -26,7 +26,7 @@ import org.osoa.sca.CallableReference;
 /**
  * Creates proxies that implement Java interfaces and invocation handlers for fronting wires
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
 
 public interface ProxyFactory {

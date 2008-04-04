@@ -23,7 +23,7 @@ import org.apache.tuscany.sca.event.Event;
 /**
  * Propagated when a request completes or is ended
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
 public class RequestEnd implements Event {
 
