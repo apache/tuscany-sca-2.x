@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.annotations.reference.impl;
 
+import java.util.List;
+
 import org.apache.tuscany.sca.vtest.javaapi.annotations.reference.AService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.reference.BService;
 import org.osoa.sca.annotations.Reference;
@@ -48,6 +50,22 @@ public class AServiceImpl implements AService {
 
     protected BService bNine; // setter injection (different reference and field name)
 
+    @Reference(required=false)
+    protected BService b10; // multiplicity="0..1" and required=false
+
+    @Reference(required=false)
+    protected BService b11; // multiplicity="1..1" and required=false
+
+    protected BService b12; // multiplicity="1..1" and required=true at setter
+
+    @Reference(required=false)
+    protected List<BService> b13; // multiplicity="0..n" and required=false
+
+    protected List<BService> b14; // multiplicity="1..n" and required=false at setter
+
+    @Reference(name="b15", required=true)
+    protected BService[] b15s; // multiplicity="1..n" and required=true
+
     protected boolean b7SetterCalled;
 
     public AServiceImpl(@Reference(name = "b2")
@@ -75,6 +93,16 @@ public class AServiceImpl implements AService {
     @Reference(name="b9", required=false)
     public void setB9(BService bNine) {
         this.bNine = bNine;
+    }
+    
+    @Reference(required=true)
+    public void setB12(BService b12) {
+        this.b12 = b12;
+    }
+    
+    @Reference(required=true)
+    public void setB14(List<BService> b14) {
+        this.b14 = b14;
     }
     
     public String getName() {
@@ -117,7 +145,46 @@ public class AServiceImpl implements AService {
         return bNine.getName();
     }
     
+    public String getB10Name() {
+        return b10.getName();
+    }
+
+    public String getB11Name() {
+        return b11.getName();
+    }
+    
+    public String getB12Name() {
+        return b12.getName();
+    }
+    
+    public String getB13Name(int i) {
+    	BService b = (BService) b13.get(i);
+        return b.getName();
+    }
+    
+    public String getB14Name(int i) {
+    	BService b = (BService) b14.get(i);
+        return b.getName();
+    }
+    
+    public String getB15Name(int i) {
+        return b15s[i].getName();
+    }
+    
+    public int getB13Size() {
+    	return b13.size();
+    }
+    
+    public int getB14Size() {
+    	return b14.size();
+    }
+    
+    public int getB15Size() {
+    	return b15s.length;
+    }
+    
     public boolean isB7SetterCalled() {
         return b7SetterCalled;
     }
+
 }

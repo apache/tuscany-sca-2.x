@@ -34,7 +34,17 @@ public interface AService {
     public String getB7Name();
     public String getB8Name();
     public String getB9Name();
-
+    public String getB10Name();
+    public String getB11Name();
+    public String getB12Name();
+    public String getB13Name(int i);
+    public String getB14Name(int i);
+    public String getB15Name(int i);
+    
+    public int getB13Size();
+    public int getB14Size();
+    public int getB15Size();
+    
     public boolean isB7SetterCalled();
     
 }
