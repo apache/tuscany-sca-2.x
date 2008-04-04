@@ -66,7 +66,6 @@ public class FactoryTestCase extends SupplyChainTestCase {
         long startTime = System.currentTimeMillis();
         while (customer.hasOutstandingOrders()
                 && System.currentTimeMillis() - startTime < MAX_WAIT_TIME_FOR_CALLBACK) {
-            System.out.println(".");
             Thread.sleep(100);
         }
     }
