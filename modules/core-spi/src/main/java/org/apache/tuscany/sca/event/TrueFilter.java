@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.event;
 /**
  * An event filter that always returns a true condition
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
 public class TrueFilter implements EventFilter {
 
