@@ -292,7 +292,7 @@ public class RuntimeWireImpl implements RuntimeWire {
         ServiceBindingProvider provider = ((RuntimeComponentService)service).getBindingProvider(binding);
         if (provider != null) {
             if (!provider.supportsOneWayInvocation()) {
-                chain.addInterceptor(Phase.SERVICE_BINDING, new NonBlockingInterceptor(workScheduler));
+                chain.addInterceptor(Phase.SERVICE, new NonBlockingInterceptor(workScheduler));
             }
         }
     }
