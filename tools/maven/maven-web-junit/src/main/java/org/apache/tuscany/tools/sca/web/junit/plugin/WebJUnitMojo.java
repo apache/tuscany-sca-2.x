@@ -65,7 +65,7 @@ public class WebJUnitMojo extends AbstractMojo {
     private String url;
 
     /**
-     * Timeout for the http connection
+     * Timeout for the HTTP connection
      * @parameter
      */
     private int timeout = 300000; // 5 minutes
@@ -187,7 +187,7 @@ public class WebJUnitMojo extends AbstractMojo {
     }
 
     /**
-     * A workaround to avoid logging conflict with geronimo
+     * A workaround to avoid logging conflict with Geronimo
      */
     private static void reset() {
         LogFactory.releaseAll();
@@ -198,7 +198,7 @@ public class WebJUnitMojo extends AbstractMojo {
         // Make SimpleLog look more like Maven logs
         System.setProperty("org.apache.commons.logging.simplelog.showShortLogname", "false");
 
-        // Restore default Geornimo bootstrap behavior
+        // Restore default Geronimo bootstrap behavior
         System.getProperties().remove("geronimo.bootstrap.logging.enabled");
     }
 
