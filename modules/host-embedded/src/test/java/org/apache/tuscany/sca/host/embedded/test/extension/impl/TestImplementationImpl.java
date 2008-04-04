@@ -37,8 +37,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 /**
  * The model representing a test implementation in an SCA assembly model.
  * 
- * @version $$Rev$$ $$Date: 2007-04-23 19:18:54 -0700 (Mon, 23 Apr
- *          2007) $$
+ * @version $Rev$ $Date$
  */
 public class TestImplementationImpl implements TestImplementation {
 

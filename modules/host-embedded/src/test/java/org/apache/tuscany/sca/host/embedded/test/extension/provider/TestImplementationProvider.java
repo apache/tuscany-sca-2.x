@@ -29,8 +29,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 /**
  * Implementation provider for test implementations.
  * 
- * @version $$Rev$$ $$Date: 2007-04-23 19:18:54 -0700 (Mon, 23 Apr
- *          2007) $$
+ * @version $Rev$ $Date$
  */
 public class TestImplementationProvider implements ImplementationProvider {
     
