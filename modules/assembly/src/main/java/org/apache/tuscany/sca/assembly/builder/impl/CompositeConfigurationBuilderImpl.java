@@ -51,7 +51,6 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 public class CompositeConfigurationBuilderImpl {
     private final static String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
@@ -471,21 +470,20 @@ public class CompositeConfigurationBuilderImpl {
                 }
 
                 // Reconcile interface
+                InterfaceContract interfaceContract = reference.getInterfaceContract();
                 if (componentReference.getInterfaceContract() != null) {
-                    if (!componentReference.getInterfaceContract().equals(reference
+                    if (interfaceContract != null && !componentReference.getInterfaceContract().equals(reference
                         .getInterfaceContract())) {
-                        if (!interfaceContractMapper.isCompatible(reference.getInterfaceContract(),
-                                                                  componentReference
-                                                                      .getInterfaceContract())) {
+                        if (!interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(),
+                                                                  interfaceContract)) {
                             warning("Component reference interface incompatible with reference interface: " + component
-                                        .getName()
-                                        + "/"
-                                        + componentReference.getName(),
-                                    component);
+                                .getName()
+                                + "/"
+                                + componentReference.getName(), component);
                         }
                     }
                 } else {
-                    componentReference.setInterfaceContract(reference.getInterfaceContract());
+                    componentReference.setInterfaceContract(interfaceContract);
                 }
 
                 // Reconcile bindings 
@@ -567,20 +565,19 @@ public class CompositeConfigurationBuilderImpl {
             Service service = componentService.getService();
             if (service != null) {
                 // Reconcile interface
+                InterfaceContract interfaceContract = service.getInterfaceContract();
                 if (componentService.getInterfaceContract() != null) {
-                    if (!componentService.getInterfaceContract().equals(service
-                        .getInterfaceContract())) {
-                        if (!interfaceContractMapper.isCompatible(componentService
-                            .getInterfaceContract(), service.getInterfaceContract())) {
+                    if (interfaceContract != null && !componentService.getInterfaceContract().equals(interfaceContract)) {
+                        if (!interfaceContractMapper.isCompatible(componentService.getInterfaceContract(),
+                                                                  interfaceContract)) {
                             warning("Component service interface incompatible with service interface: " + component
-                                        .getName()
-                                        + "/"
-                                        + componentService.getName(),
-                                    component);
+                                .getName()
+                                + "/"
+                                + componentService.getName(), component);
                         }
                     }
                 } else {
-                    componentService.setInterfaceContract(service.getInterfaceContract());
+                    componentService.setInterfaceContract(interfaceContract);
                 }
 
                 // Reconcile bindings
