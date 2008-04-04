@@ -22,7 +22,7 @@ import java.io.File;
 
 public class WSDLFileOption {
     /**
-     * Name of the wsdl file; if omitted all files in the directory are processed
+     * Name of the WSDL file; if omitted all files in the directory are processed
      * 
      */
     private File fileName;
