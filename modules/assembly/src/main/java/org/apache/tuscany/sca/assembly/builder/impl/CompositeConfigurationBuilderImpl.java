@@ -911,19 +911,19 @@ public class CompositeConfigurationBuilderImpl {
                             // composite service on the promoted component
                             ComponentService newComponentService =
                                 assemblyFactory.createComponentService();
-                            newComponentService.setName("$promoted$." + compositeService.getName());
+                            newComponentService.setName("$promoted$." + componentService.getName());
                             promotedComponent.getServices().add(newComponentService);
                             newComponentService.setService(promotedService.getService());
                             newComponentService.getBindings()
-                                .addAll(compositeService.getBindings());
-                            newComponentService.setInterfaceContract(compositeService
+                                .addAll(componentService.getBindings());
+                            newComponentService.setInterfaceContract(componentService
                                 .getInterfaceContract());
-                            if (compositeService.getInterfaceContract() != null && compositeService
+                            if (componentService.getInterfaceContract() != null && componentService
                                 .getInterfaceContract().getCallbackInterface() != null) {
                                 newComponentService.setCallback(assemblyFactory.createCallback());
-                                if (compositeService.getCallback() != null) {
+                                if (componentService.getCallback() != null) {
                                     newComponentService.getCallback().getBindings()
-                                        .addAll(compositeService.getCallback().getBindings());
+                                        .addAll(componentService.getCallback().getBindings());
                                 }
                             }
 

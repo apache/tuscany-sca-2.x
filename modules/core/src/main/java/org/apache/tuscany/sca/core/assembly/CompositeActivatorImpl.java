@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -734,6 +735,9 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     + "#"
                     + service.getName());
             }
+            return;
+        }
+        if (service.getService() instanceof CompositeService) {
             return;
         }
         if (logger.isLoggable(Level.FINE)) {
