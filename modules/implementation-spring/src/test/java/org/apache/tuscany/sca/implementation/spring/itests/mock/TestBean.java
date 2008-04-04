@@ -19,7 +19,7 @@
 package org.apache.tuscany.sca.implementation.spring.itests.mock;
 
 /**
- * @version $$Rev: 430937 $$ $$Date: 2006-08-12 02:17:56 +0100 (Sat, 12 Aug 2006) $$
+ * @version $Rev: 430937 $ $Date: 2006-08-12 02:17:56 +0100 (Sat, 12 Aug 2006) $
  */
 public interface TestBean {
     String echo(String msg);
