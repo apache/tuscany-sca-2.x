@@ -56,8 +56,7 @@ import org.mortbay.thread.ThreadPool;
 /**
  * Implements an HTTP transport service using Jetty.
  *
- * @version $$Rev$$ $$Date: 2007-02-21 13:28:30 +0000 (Wed, 21 Feb
- *          2007) $$
+ * @version $Rev$ $Date$
  */
 public class JettyServer implements ServletHost {
     private final static Logger logger = Logger.getLogger(JettyServer.class.getName());
