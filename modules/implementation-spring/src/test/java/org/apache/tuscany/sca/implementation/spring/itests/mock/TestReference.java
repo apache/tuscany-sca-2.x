@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.implementation.spring.itests.mock;
 
 /**
- * @version $$Rev: 536115 $$ $$Date: 2007-05-08 09:04:20 +0100 (Tue, 08 May 2007) $$
+ * @version $Rev: 536115 $ $Date: 2007-05-08 09:04:20 +0100 (Tue, 08 May 2007) $
  */
 public interface TestReference {
     String echo(String msg);
