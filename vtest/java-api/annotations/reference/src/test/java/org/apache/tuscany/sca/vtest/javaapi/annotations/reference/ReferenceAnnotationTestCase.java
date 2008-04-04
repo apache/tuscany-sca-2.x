@@ -30,7 +30,7 @@ import org.junit.Test;
 
 /**
  * This test class tests the "@Reference" annotation described in section
- * 1.8.1.4
+ * 1.8.14
  */
 public class ReferenceAnnotationTestCase {
 
@@ -44,7 +44,7 @@ public class ReferenceAnnotationTestCase {
             System.out.println("Setting up");
             domain = SCADomain.newInstance(compositeName);
             a = domain.getService(AService.class, "AComponent");
-
+            
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -151,12 +151,51 @@ public class ReferenceAnnotationTestCase {
      * Reference and field have different names<br>
      * B8 is field injected<br>
      * B9 is setter injected
-     * 
-     * @TODO - Would be best to explicitly test "required" attribute
      */
     @Test
     public void atReference4() throws Exception {
         Assert.assertEquals("BService", a.getB8Name());
         Assert.assertEquals("BService", a.getB9Name());
+    }
+
+    /**
+     * Lines 1457 to 1459<br>
+     * If the reference is not an array or collection, then the implied
+     * component type has a reference with a multiplicity of either 0..1 or
+     * 1..1 depending on the value of the @Reference required attribute –
+     * 1..1 applies if required=true.<br>
+     * <p>
+     * B10 is field injected, required=false, and multiplicity="0..1"<br>
+     * B11 is field injected, required=false, and multiplicity="1..1"<br>
+     * B12 is setter injected, required=true, and multiplicity="1..1"
+
+     */
+    @Test
+    public void atReference5() throws Exception {
+        Assert.assertEquals("BService", a.getB10Name());
+        Assert.assertEquals("BService", a.getB11Name());
+        Assert.assertEquals("BService", a.getB12Name());
+    }
+
+    /**
+     * Lines 1461 to 1463<br>
+     * If the reference is defined as an array or as a java.util.Collection,
+     * then the implied component type has a reference with a multiplicity of
+     * either 1..n or 0..n, depending on whether the required attribute of the
+     * "@Reference" annotation is set to true or false – 1..n applies if
+     * required=true.<br>
+     * <p>
+     * B13 is a java.util.List, field injected, required=false, multiplicity="0..n", and no target<br>
+     * B14 is a java.util.List, setter injected, required=true, multiplicity="1..n", and one target<br>
+     * B15 is an array, field injected, required=true, multiplicity="1..n", and two targets
+     */
+    @Test
+    public void atReference6() throws Exception {
+        Assert.assertEquals(0, a.getB13Size());
+        Assert.assertEquals("BService", a.getB14Name(0));
+        Assert.assertEquals(1, a.getB14Size());
+        Assert.assertEquals("BService", a.getB15Name(0));
+        Assert.assertEquals("BService", a.getB15Name(1));
+        Assert.assertEquals(2, a.getB15Size());
     }
 }

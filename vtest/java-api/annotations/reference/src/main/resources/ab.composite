@@ -32,7 +32,13 @@
         <reference name="b7" target="BComponent"/>
         <reference name="b8" target="BComponent"/>
         <reference name="b9" target="BComponent"/>
-     </component>   
+        <reference name="b10" multiplicity="0..1" target="BComponent"/>
+        <reference name="b11" multiplicity="1..1" target="BComponent"/>
+        <reference name="b12" multiplicity="1..1" target="BComponent"/>
+        <reference name="b13" multiplicity="0..n" target=""/>
+        <reference name="b14" multiplicity="1..n" target="BComponent"/>
+        <reference name="b15" multiplicity="1..n" target="BComponent BComponent"/>
+    </component>   
     
     <component name="BComponent">
         <implementation.java class="org.apache.tuscany.sca.vtest.javaapi.annotations.reference.impl.BServiceImpl"/>
