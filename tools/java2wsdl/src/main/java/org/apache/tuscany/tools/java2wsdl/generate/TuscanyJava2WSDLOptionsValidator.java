@@ -25,7 +25,7 @@ import org.apache.ws.java2wsdl.utils.Java2WSDLOptionsValidator;
 
 /**
  * This class is an extension from the Axis2 implementation in order to handle
- * additional optoins specific to Tuscany. This class can be done away with once
+ * additional options specific to Tuscany. This class can be done away with once
  * Axis2 is also enhanced to support these additional options.
  */
 public class TuscanyJava2WSDLOptionsValidator extends Java2WSDLOptionsValidator implements TuscanyJava2WSDLConstants {

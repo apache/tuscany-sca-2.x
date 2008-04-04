@@ -234,7 +234,7 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
             boolean inXSDForm = schemaLocationMap.get(dataType.getURI()) != null;
 
             if (inXSDForm) {
-                // if schemalocations for xsd has been specified, include them
+                // if schemalocations for XSD has been specified, include them
 
                 // External XSDs will be handled in processing the schema TNS of the wrapper elements.
                 // This is partly because SDO codegen needs some modification in this area 
@@ -264,7 +264,7 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
     /**
      * Identify the java type (pojo versus sdo) and build the schema accordingly
      * 
-     * @param javaType reference to the classs
+     * @param javaType reference to the class
      * @return
      * @throws Exception
      */
@@ -303,7 +303,7 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
      * as Foo so this method is to correct that error
      * 
      * @param wrongName
-     * @return the right name, using english as the locale for case conversion
+     * @return the right name, using English as the locale for case conversion
      */
     public static String getCorrectName(String wrongName) {
         if (wrongName.length() > 1) {
@@ -368,12 +368,12 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
     }
 
     private void includeExtXSD(Type dataType) {
-        // now we know there is a type for which the xsd must come from outside
+        // now we know there is a type for which the XSD must come from outside
         // create a schema for the namespace of this type and add an include in it for
         // the xsd that is defined externally
         XmlSchema xmlSchema = getXmlSchema(dataType.getURI());
 
-        // ideally there could be more than one external schema defintions for a namespace
+        // ideally there could be more than one external schema definitions for a namespace
         // and hence schemalocations will be a list of locations
         // List schemaLocations = (List)schemaLocationMap.get(dataType.getURI());
 
@@ -529,7 +529,7 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
     }
 
     private String getToken(String s) {
-        // get the schema element name eg. <xs:schema or <xsd:schema. We only know that 'schema' will be used
+        // get the schema element name e.g. <xs:schema or <xsd:schema. We only know that 'schema' will be used
         // but not sure what suffix is used. Hence this method to get the actual element name used
         int i = s.indexOf(SCHEMA_ELEMENT_NAME);
         int j = s.substring(0,

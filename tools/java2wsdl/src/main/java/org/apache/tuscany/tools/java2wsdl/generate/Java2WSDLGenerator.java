@@ -23,7 +23,7 @@ import java.util.Map;
 
 /**
  * This is the Java2WSDL Generator facade that will be used by Tuscany
- * components for java to wsdl conversion.
+ * components for Java to WSDL conversion.
  * 
  */
 public interface Java2WSDLGenerator {

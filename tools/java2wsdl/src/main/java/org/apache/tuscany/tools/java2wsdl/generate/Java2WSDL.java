@@ -22,7 +22,7 @@ import org.apache.ws.java2wsdl.utils.Java2WSDLCommandLineOptionParser;
 
 /**
  * This class provides the tooling abstraction to Tuscany Java2WSDL and can be
- * invoked from command line with the follwing options as with Axis2 Java2WSDL
+ * invoked from command line with the following options as with Axis2 Java2WSDL
  */
 public class Java2WSDL {
     /**

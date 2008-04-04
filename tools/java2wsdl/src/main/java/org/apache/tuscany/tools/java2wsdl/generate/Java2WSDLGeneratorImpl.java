@@ -42,8 +42,8 @@ import org.w3c.dom.NodeList;
  * stringed up as a template method. The phases are - User Input Validation -
  * WSDL Java Model Generation - Serialization of WSDL Java Model The function of
  * each phase is accomplished by delegation to the appropriate classes in Axis2.
- * At the start and end of each phase an event is published to subcribers
- * denoting the start and end of the phase. Such a spliting up of the Java2WSDL
+ * At the start and end of each phase an event is published to subscribers
+ * denoting the start and end of the phase. Such a splitting up of the Java2WSDL
  * conversion into phases has been designed to enable interceptors to modify the
  * model or apply transformations to the output. Typically the interceptors can
  * subscribe to the start and end events of these phases and hence be able to
@@ -126,7 +126,7 @@ public class Java2WSDLGeneratorImpl implements Java2WSDLGenerator, TuscanyJava2W
             throw new IllegalArgumentException("Didn't get back a Document DOM object");
         }
 
-        // pretty-print wsdl document
+        // pretty-print WSDL document
         OutputFormat format = new OutputFormat(doc);
         format.setLineWidth(65);
         format.setIndenting(true);
@@ -149,11 +149,11 @@ public class Java2WSDLGeneratorImpl implements Java2WSDLGenerator, TuscanyJava2W
             // load the user options into an easy to access abstraction
             genParams = new GenerationParameters(commandLineOptions);
 
-            // if the WSDL Model generation was successul
+            // if the WSDL Model generation was successful
             if (buildWSDLDocument()) {
-                // multicast event for generation of wsdl model
+                // multicast event for generation of WSDL model
                 multicastGenPhaseCompletionEvent(WSDLGenListener.WSDL_MODEL_CREATION);
-                // if the serialization of the generated (and fixed) model
+                // if the Serialization of the generated (and fixed) model
                 // is successful
                 if (serializeWSDLDocument()) {
                     // multicast event for writing of the WSDL Model to
