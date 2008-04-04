@@ -94,6 +94,7 @@
                 <module>osgi-contribution</module>
                 <module>properties</module>
                 <module>recursive</module>
+                <module>recursive-ws</module>
                 <module>references</module>
                 <module>services</module>
                 <module>component-type</module>
