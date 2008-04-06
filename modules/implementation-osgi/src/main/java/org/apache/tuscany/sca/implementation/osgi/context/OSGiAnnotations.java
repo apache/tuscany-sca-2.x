@@ -92,8 +92,8 @@ public class OSGiAnnotations  {
     private Hashtable<JavaImplementation, OSGiPropertyInjector> propertyInjectors = 
         new Hashtable<JavaImplementation, OSGiPropertyInjector>();
     
-    private long maxAge = Long.MAX_VALUE;
-    private long maxIdleTime = Long.MAX_VALUE;
+    private long maxAge = -1;
+    private long maxIdleTime = -1;
     
     private boolean annotationsProcessed;
     
@@ -239,9 +239,9 @@ public class OSGiAnnotations  {
 
         if (javaImpl.isEagerInit())
             isEagerInit = true;
-        if (javaImpl.getMaxAge() != Long.MAX_VALUE)
+        if (javaImpl.getMaxAge() != -1)
             maxAge = javaImpl.getMaxAge();
-        if (javaImpl.getMaxIdleTime() != Long.MAX_VALUE)
+        if (javaImpl.getMaxIdleTime() != -1)
             maxIdleTime = javaImpl.getMaxIdleTime();
         if (javaImpl.getJavaScope() != JavaScopeImpl.COMPOSITE)
             scope = new Scope(javaImpl.getJavaScope().getScope());
