@@ -33,9 +33,10 @@ import java.util.Map;
  */
 public class IOUtils {
 
-    public static final String  Notification_Source    = "Notification-Source";
-    public static final String  Notification_Target    = "Notification-Target";
-    public static final String  Notification_Operation = "Notification-Operation";
+    // FIXME: For some reason, tomcat converts the header names to be lower case, see TUSCANY-1791
+    public static final String  Notification_Source    = "notification-source";
+    public static final String  Notification_Target    = "notification-target";
+    public static final String  Notification_Operation = "notification-operation";
 
     public static final int DEF_BLOCK_SIZE = 512;
 
