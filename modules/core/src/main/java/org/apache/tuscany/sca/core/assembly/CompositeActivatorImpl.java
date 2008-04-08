@@ -393,6 +393,12 @@ public class CompositeActivatorImpl implements CompositeActivator {
 
         EndpointReference wireTarget =
             new EndpointReferenceImpl((RuntimeComponent)serviceComponent, service, serviceBinding, bindingContract);
+        
+        // TUSCANY-2029 - We should use the URI of the serviceBinding because the target may be a Component in a
+        // nested composite.
+        if (serviceBinding != null) {
+            wireTarget.setURI(serviceBinding.getURI());
+        }
 
         RuntimeWire wire =
             new RuntimeWireImpl(wireSource, wireTarget, interfaceContractMapper, workScheduler, wireProcessor,
