@@ -87,6 +87,7 @@ public class Axis2ServiceClient {
     private ServiceClient serviceClient;
     Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames = null;
     private static final QName SOAP12_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0", "soap12");
+    private static final QName MTOM_INTENT =  new QName("http://www.osoa.org/xmlns/sca/1.0", "MTOM");
     private List<PolicyHandler> policyHandlerList = new ArrayList<PolicyHandler>();
 
     public Axis2ServiceClient(RuntimeComponent component,
@@ -346,13 +347,17 @@ public class Axis2ServiceClient {
         SOAPFactory soapFactory =
             requiresSOAP12() ? OMAbstractFactory.getSOAP12Factory() : OMAbstractFactory.getSOAP11Factory();
         QName wsdlOperationQName = new QName(operationName);
-
+        if (requiresMTOM())
+        {
+        	options.setProperty(org.apache.axis2.Constants.Configuration.ENABLE_MTOM, org.apache.axis2.Constants.VALUE_TRUE);
+        }
         Axis2BindingInvoker invoker;
         if (operation.isNonBlocking()) {
             invoker = new Axis2OneWayBindingInvoker(this, wsdlOperationQName, options, soapFactory, policyHandlerList);
         } else {
             invoker = new Axis2BindingInvoker(this, wsdlOperationQName, options, soapFactory, policyHandlerList);
         }
+        
         return invoker;
     }
 
@@ -361,6 +366,17 @@ public class Axis2ServiceClient {
             List<Intent> intents = ((IntentAttachPoint)wsBinding).getRequiredIntents();
             for (Intent intent : intents) {
                 if (SOAP12_INTENT.equals(intent.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    private boolean requiresMTOM() {
+        if (wsBinding instanceof IntentAttachPoint) {
+            List<Intent> intents = ((IntentAttachPoint)wsBinding).getRequiredIntents();
+            for (Intent intent : intents) {
+                if (MTOM_INTENT.equals(intent.getName())) {
                     return true;
                 }
             }

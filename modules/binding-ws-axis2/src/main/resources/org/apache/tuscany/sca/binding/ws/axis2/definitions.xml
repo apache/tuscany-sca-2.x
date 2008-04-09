@@ -46,4 +46,10 @@
 	 			 Communitcation thro this binding requires SOAP 1.2
 	 			 </sca:description>
 	 </sca:intent>
+	 <sca:intent name="MTOM"  
+	 			 constrains="sca:binding.ws">
+	 			 <sca:description>
+	 			 Communitcation thro this binding requires MTOM support
+	 			 </sca:description>
+	 </sca:intent>
  </sca:definitions>
