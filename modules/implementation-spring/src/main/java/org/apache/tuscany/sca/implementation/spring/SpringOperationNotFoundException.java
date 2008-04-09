@@ -28,5 +28,13 @@ public class SpringOperationNotFoundException extends Exception {
     public SpringOperationNotFoundException(String msg) {
         super(msg);
     }
+    
+    public SpringOperationNotFoundException(Throwable e) {
+        super(e);
+    }
+    
+    public SpringOperationNotFoundException(String msg,Throwable e) {
+        super(msg,e);
+    }
 
 }

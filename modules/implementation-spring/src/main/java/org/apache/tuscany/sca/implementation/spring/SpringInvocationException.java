@@ -28,5 +28,13 @@ public class SpringInvocationException extends Exception {
     public SpringInvocationException(String msg) {
         super(msg);
     }
+    
+    public SpringInvocationException(Throwable e) {
+        super(e);
+    }
+    
+    public SpringInvocationException(String msg,Throwable e) {
+        super(msg,e);
+    }
 
 }
