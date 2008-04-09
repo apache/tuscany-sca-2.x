@@ -22,9 +22,9 @@ package org.apache.tuscany.sca.contribution.service;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
@@ -37,7 +37,7 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
  */
 public class DefaultContributionListenerExtensionPoint implements ContributionListenerExtensionPoint {
     
-    private List<ContributionListener> listeners = new ArrayList<ContributionListener>();
+    private List<ContributionListener> listeners = new CopyOnWriteArrayList<ContributionListener>();
     private boolean loadedListeners;
     private ModelFactoryExtensionPoint modelFactories;
     
