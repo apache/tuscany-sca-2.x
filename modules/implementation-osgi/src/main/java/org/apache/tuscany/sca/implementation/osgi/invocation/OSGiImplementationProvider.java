@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -90,6 +91,11 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                                                     BundleListener {
     
     private static final String COMPONENT_SERVICE_NAME = "component.service.name";
+    
+    // Maximum milliseconds to wait for a method to complete
+    private static final long METHOD_TIMEOUT_MILLIS = 60000; 
+    // Maximum milliseconds to wait for services to be registered into OSGi service registry
+    private static final long SERVICE_TIMEOUT_MILLIS = 300000; 
   
     private OSGiImplementation implementation;
     private OSGiAnnotations osgiAnnotations;
@@ -100,10 +106,9 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                        = new Hashtable<RuntimeWire,ComponentReference>();
     private HashSet<RuntimeWire> resolvedWires = new HashSet<RuntimeWire>();   
     private boolean wiresResolved;
-    
-    private boolean bundleStarted;
-    
-    private boolean processedResolvedBundle, processingResolvedBundle;
+        
+    private AtomicInteger startBundleEntryCount = new AtomicInteger();     
+    private AtomicInteger processAnnotationsEntryCount = new AtomicInteger();
     
     private JavaPropertyValueObjectFactory propertyValueFactory;
     
@@ -322,13 +327,62 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         return reference;
     }
     
-    protected Bundle startBundle() throws ObjectCreationException {
+    /**
+     * This method is used to avoid full synchronization of methods which should
+     * be executed only once. 
+     * 
+     * entryCount=0: The count is incremented, and this thread executes the method. Returns true.
+     * 
+     * entryCount=1: Another thread is already executing this method. 
+     *               Wait for the thread to complete if doWait is true. Returns false. 
+     * 
+     * entryCount=2: The method has already been executed. Returns false.
+     * 
+     * @param doWait     If true, and another method is executing this method
+     *                   wait for method execution to complete
+     * @param entryCount Atomic integer used to ensure that the method is
+     *                   executed only once
+     * @return true if this thread has exclusive access to execute this method
+     */
+    private boolean enterMethod(boolean doWait, AtomicInteger entryCount) {
+        
+        if (entryCount.compareAndSet(0, 1)) {
+            return true;
+        }
+        else {
+            if (doWait) {
+                synchronized (entryCount) {
+                    if (entryCount.get() != 2) {
+                        try {
+                            entryCount.wait(METHOD_TIMEOUT_MILLIS);
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+    }
+    
+    /**
+     * Called on method exit of methods which were entered after 
+     * enterMethod returned true. Increments entryCount, and wakes
+     * up threads waiting for the method to complete.
+     * 
+     * @param entryCount Atomic integer used for synchronization
+     */
+    private void exitMethod(AtomicInteger entryCount) {
+        entryCount.compareAndSet(1, 2);
+        synchronized (entryCount) {
+          entryCount.notifyAll();
+        }
+    }
+    
+    protected Bundle startBundle(boolean doWait) throws ObjectCreationException {
 
         try {
             
-            if (!bundleStarted) {
-                
-                bundleStarted = true;
+            if (enterMethod(doWait, startBundleEntryCount)) {               
                 
                 configurePropertiesUsingConfigAdmin();
                 
@@ -372,6 +426,8 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
    
         } catch (Exception e) {
             throw new ObjectCreationException(e);
+        } finally {
+            exitMethod(startBundleEntryCount);
         }
         return osgiBundle;
     }
@@ -444,12 +500,15 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                         // activate method
                         // For regular bundle activators, bundle.start activates the bundle synchronously
                         // and hence the service would probably have been started by the bundle activator
+                        long startTime = System.currentTimeMillis();
                         while ((osgiServiceReference = getOSGiServiceReference( 
                                 scaServiceName,
                                 serviceInterfaceName, filter)) == null) {
                                             
                             // Wait for the bundle to register the service
                             implementation.wait(100);
+                            if (System.currentTimeMillis() - startTime > SERVICE_TIMEOUT_MILLIS)
+                                break;
                         }
                     }   
                     
@@ -751,7 +810,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                 // to be resolved so that the interface is visible to the source. In this case the bundle
                 // will be started when an instance is needed.                    
                 if (!createProxy) {    
-                    implProvider.startBundle();
+                    implProvider.startBundle(false);
                 }
                 else {
                     implProvider.resolveBundle();
@@ -793,26 +852,6 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         
     }
     
-    private void registerCallbackProxyService(Bundle bundle, Class interfaceClass,
-            RuntimeComponentService service) throws Exception {
-        
-        List<RuntimeWire> wires = service.getCallbackWires();
-        Hashtable<String, Object> targetProperties = new Hashtable<String, Object>();
-        processProperties(implementation.getServiceCallbackProperties(service.getName()), targetProperties);
-        targetProperties.put(Constants.SERVICE_RANKING, Integer.MAX_VALUE);
-          
-        JDKProxyFactory proxyService = new JDKProxyFactory();
-              
-        Class<?> proxyInterface = bundle.loadClass(interfaceClass.getName());
-                
-
-        Object proxy = proxyService.createCallbackProxy(proxyInterface, wires);
-       
-            
-        bundleContext.registerService(proxyInterface.getName(), proxy, targetProperties);
-            
-        
-    }
     
     private void refreshPackages() {
     
@@ -911,13 +950,6 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                         resolveWireRegisterProxyService(osgiBundle, interfaceClasses[index], wire);
                     index++;
                 }
-/*                for (ComponentService service : runtimeComponent.getServices()) {
-                    if (interfaceClasses[index] != null) {
-                        registerCallbackProxyService(osgiBundle, interfaceClasses[index],
-                                ((RuntimeComponentService)service));
-                    }
-                    index++;
-                } */
             }
             else if (osgiBundle.getState() == Bundle.INSTALLED && packageAdmin != null) {
                 packageAdmin.resolveBundles(new Bundle[] {osgiBundle});
@@ -1020,7 +1052,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     }
     
     protected ScopeContainer<?> getScopeContainer() {
-        startBundle();
+        startBundle(true);
         return ((ScopedRuntimeComponent)runtimeComponent).getScopeContainer();
     }
     
@@ -1096,22 +1128,8 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         
     public void processAnnotations(boolean doWait) throws IntrospectionException {
         
-        synchronized (this) {   
-            if (processedResolvedBundle)
-                return;
-            else if (processingResolvedBundle) {            	
-                if (doWait) {
-                    while (processingResolvedBundle) {
-                        try {
-                            wait(5000);
-                        } catch (InterruptedException e) {
-                        }
-                    }
-                }
-                return;
-            }
-            processingResolvedBundle = true;
-        }
+        if (!enterMethod(doWait, processAnnotationsEntryCount))
+            return;
         
         try {
             osgiAnnotations.processAnnotations();
@@ -1138,11 +1156,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
 
             }
         } finally {
-            synchronized (this) {                
-                processingResolvedBundle = false;
-                processedResolvedBundle = true;
-                this.notifyAll();
-            }
+            exitMethod(processAnnotationsEntryCount);
         }  
     }
     
