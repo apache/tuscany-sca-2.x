@@ -110,7 +110,7 @@ public class OSGiInstanceWrapper<T> implements InstanceWrapper<T> {
         	}
         }
 
-        Bundle refBundle = provider.startBundle();
+        Bundle refBundle = provider.startBundle(true);
         
         // For scopes other than composite, the service object is obtained using a dummy reference
         // bundle to guarantee that a new instance is created each time. This combined with the Tuscany
