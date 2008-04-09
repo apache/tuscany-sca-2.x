@@ -28,5 +28,12 @@ public class SpringBeanNotFoundException extends Exception {
     public SpringBeanNotFoundException(String msg) {
         super(msg);
     }
-
+    
+    public SpringBeanNotFoundException(Throwable e) {
+        super(e);
+    }
+    
+    public SpringBeanNotFoundException(String msg, Throwable e) {
+        super(msg,e);
+    }
 }
