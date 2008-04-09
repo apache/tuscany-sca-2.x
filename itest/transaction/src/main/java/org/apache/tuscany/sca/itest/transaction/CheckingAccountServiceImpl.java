@@ -55,7 +55,7 @@ public class CheckingAccountServiceImpl extends AccountServiceImpl {
     public void init() throws Exception {
         broker = new BrokerService();
         broker.setBrokerName("localhost");
-        broker.setDataDirectory(new File("target/activemq-data/localhost"));
+        broker.setPersistent(false);
         broker.addConnector(url);
         broker.start();
 
