@@ -27,20 +27,31 @@ package org.apache.tuscany.sca.store;
 public class StoreException extends Exception {
     private static final long serialVersionUID = -319152147419962709L;
 
+    /**
+     * {@inheritDoc}
+     */
     public StoreException() {
         super();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public StoreException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public StoreException(String message) {
         super(message);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public StoreException(Throwable cause) {
         super(cause);
     }
-    
 }
