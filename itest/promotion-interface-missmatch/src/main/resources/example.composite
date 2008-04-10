@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" 
+           targetNamespace="/model/common/"
+           xmlns:hw="/model/common/"
+           name="example">
+
+    <component name="ExampleClientComponent">
+        <implementation.java class="com.example.ExampleClientImpl" />
+        <reference name="myService" />
+    </component>
+    
+    <reference name="myService"
+         promote="ExampleClientComponent/myService">
+        <!--
+         The following interface definition violates the SCA specification because it
+         uses has a different namespace ("/model/common/") than the namespace of the
+         implicit interface.java on the promoted coponent service ("http://example.com").
+         The runtime should report an error for this mismatch.
+        -->
+        <interface.wsdl interface="/model/common/#wsdl.interface(ExampleServicePortType)" />
+        <binding.ws uri="http://localhost:8085/axis2/services/ExampleService" />
+    </reference>
+
+    <component name="ExampleComponent">
+        <implementation.java class="com.example.ExampleServiceImpl"/>
+        <service name="ExampleService">
+            <interface.wsdl interface="/model/common/#wsdl.interface(ExampleServicePortType)" />
+            <binding.ws wsdlElement="/model/common/#wsdl.binding(ExampleServiceSOAP11Binding)"
+			            uri="http://localhost:8085/axis2/services/ExampleService" />
+        </service>  
+    </component>
+</composite>
