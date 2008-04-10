@@ -27,16 +27,24 @@ import java.util.HashMap;
  * @version $Rev$ $Date$
  */
 public class DefaultContextFactoryExtensionPoint implements ContextFactoryExtensionPoint {
-    
+
+    /**
+     * The Map of Factories that have been registered.
+     */
     private HashMap<Class<?>, Object> factories = new HashMap<Class<?>, Object>();
 
     /**
      * Add a model factory extension.
-     * 
-     * @param factory The factory to add
+     *
+     * @param factory The factory to add.
+     * @throws IllegalArgumentException if factory is null
      */
-    public void addFactory(Object factory) {
-        Class[] interfaces = factory.getClass().getInterfaces();
+    public void addFactory(Object factory) throws IllegalArgumentException {
+        if (factory == null) {
+            throw new IllegalArgumentException("Cannot add null as a factory");
+        }
+
+        Class<?>[] interfaces = factory.getClass().getInterfaces();
         for (int i = 0; i<interfaces.length; i++) {
             factories.put(interfaces[i], factory);
         }
@@ -44,24 +52,33 @@ public class DefaultContextFactoryExtensionPoint implements ContextFactoryExtens
 
     /**
      * Remove a model factory extension.
-     *  
+     *
      * @param factory The factory to remove
+     * @throws IllegalArgumentException if factory is null
      */
-    public void removeFactory(Object factory) {
-        Class[] interfaces = factory.getClass().getInterfaces();
+    public void removeFactory(Object factory) throws IllegalArgumentException {
+        if (factory == null) {
+            throw new IllegalArgumentException("Cannot remove null as a factory");
+        }
+
+        Class<?>[] interfaces = factory.getClass().getInterfaces();
         for (int i = 0; i<interfaces.length; i++) {
             factories.remove(interfaces[i]);
         }
     }
-    
+
     /**
      * Get a factory implementing the given interface.
+     *
      * @param factoryInterface The lookup key (factory interface)
      * @return The factory
-     */    
-    public <T> T getFactory(Class<T> factoryInterface) {
+     */
+    public <T> T getFactory(Class<T> factoryInterface) throws IllegalArgumentException {
+        if (factoryInterface == null) {
+            throw new IllegalArgumentException("Cannot get null as a factory");
+        }
+
         Object factory = factories.get(factoryInterface);
         return factoryInterface.cast(factory);
     }
-
 }
