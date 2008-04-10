@@ -119,8 +119,11 @@ public class FelixRuntime extends OSGiRuntime implements BundleActivator {
                 "sun.misc";
         
         
-        if (!tuscanyRunningInOSGiContainer)
+        if (!tuscanyRunningInOSGiContainer) {
             systemPackages = systemPackages + ", org.osoa.sca.annotations, org.osoa.sca";
+            systemPackages = systemPackages + ", commonj.sdo, commonj.sdo.helper, org.apache.tuscany.sdo.helper, org.apache.tuscany.sdo.impl, org.apache.tuscany.sdo.model, org.apache.tuscany.sdo.model.impl";
+            systemPackages = systemPackages + ", org.eclipse.emf.ecore.util, org.eclipse.emf.ecore.impl";
+        }
         props.put("org.osgi.framework.system.packages", systemPackages);
         
         try {
