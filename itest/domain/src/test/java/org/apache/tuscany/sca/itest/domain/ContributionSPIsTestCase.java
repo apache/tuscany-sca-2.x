@@ -250,16 +250,7 @@ public class ContributionSPIsTestCase {
             contribution = (Contribution)contributionInfoProcessor.read(null,uri, url);        
             workspace.getContributions().add(contribution);
             System.out.println("Added contributionDependent");
-           
-            // List contribution dependencies for the first contribution 
-            // first contribution chosen to represent the user selecting a composite
-            /*
-            List<Contribution> dependencies = analyzer.buildContributionDependencies(workspace, workspace.getContributions().get(0));
-            for (Contribution dependency : dependencies){
-                System.out.println("contributionPrimary dependency chain = " + dependency.getURI());
-            }
-            */
-    
+              
             // Choose a deployables as though a user had chosen it
             List<Composite> deployables = workspace.getContributions().get(0).getDeployables();
             QName chosenDeployableName = deployables.get(0).getName();
@@ -328,14 +319,14 @@ public class ContributionSPIsTestCase {
             
             // ====================================================================
             // run the chosen composite   
-            
+            SCAContribution [] contributions = new SCAContribution[contributionsToDeploy.size()];
+            for (int i = 0; i < contributionsToDeploy.size(); i++) {
+                contributions[i] = new SCAContribution(contributionsToDeploy.get(i).getURI(), contributionsToDeploy.get(i).getLocation()); 
+            }
+                   
             SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-            SCAContribution contribution0 = new SCAContribution(contributionsToDeploy.get(0).getURI(), contributionsToDeploy.get(0).getLocation());
-            SCAContribution contribution1 = new SCAContribution(contributionsToDeploy.get(1).getURI(), contributionsToDeploy.get(1).getLocation());
             
-            // FIXME - need a more flexible constructor on the node so we can pass in a 
-            //         dynamic list of contributions
-            SCANode2 node = nodeFactory.createSCANode(chosenDeployableLocation, contribution0, contribution1);
+            SCANode2 node = nodeFactory.createSCANode(chosenDeployableLocation, contributions);
             
             node.start();
             SCAClient client = (SCAClient)node;
