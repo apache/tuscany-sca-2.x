@@ -21,27 +21,38 @@ package org.apache.tuscany.sca.work;
 
 /**
  * Exception thrown by the work scheduler in case of unexpected exceptions.
- * 
+ *
  * @version $Rev$ $Date$
  *
  */
 public class WorkSchedulerException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * {@inheritDoc}
+     */
     public WorkSchedulerException() {
         super();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public WorkSchedulerException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public WorkSchedulerException(String message) {
         super(message);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public WorkSchedulerException(Throwable cause) {
         super(cause);
     }
-
 }

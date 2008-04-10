@@ -26,20 +26,31 @@ package org.apache.tuscany.sca.store;
 public class DuplicateRecordException extends StoreWriteException {
     private static final long serialVersionUID = 3116253222569378447L;
 
+    /**
+     * {@inheritDoc}
+     */
     public DuplicateRecordException() {
         super();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public DuplicateRecordException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public DuplicateRecordException(String message) {
         super(message);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public DuplicateRecordException(Throwable cause) {
         super(cause);
     }
-
 }
