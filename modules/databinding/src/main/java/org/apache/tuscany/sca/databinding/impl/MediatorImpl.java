@@ -50,9 +50,11 @@ public class MediatorImpl implements Mediator {
     @SuppressWarnings("unchecked")
     public Object mediate(Object source, DataType sourceDataType, DataType targetDataType, Map<String, Object> metadata) {
         if (sourceDataType == null || sourceDataType.getDataBinding() == null) {
-            sourceDataType = dataBindings.introspectType(source);
+            if (source != null) {
+                sourceDataType = dataBindings.introspectType(source);
+            }
         }
-        if (sourceDataType == null) {
+        if (sourceDataType == null || targetDataType == null) {
             return source;
         } else if (sourceDataType.equals(targetDataType)) {
             return source;
