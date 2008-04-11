@@ -33,7 +33,7 @@ public class ThreadPoolWorkManagerTestCase {
     /**
      * Wait up to 20 seconds for the Work units to complete
      */
-    private static final long WAIT_TIMEOUT = 20000 + 100000000;
+    private static final long WAIT_TIMEOUT = 20000;
 
     /**
      * This is the shared instance of the ThreadPoolWorkManager used by the tests
@@ -210,6 +210,7 @@ public class ThreadPoolWorkManagerTestCase {
         // Make sure we have got one completed run
         Assert.assertEquals(1, fast.getRunCompletedCount());
     }
+
     /**
      * Waits for the specified number of jobs to complete or the timeout to fire.
      * 
