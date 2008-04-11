@@ -56,9 +56,14 @@ public class ThreadPoolWorkManager implements WorkManager {
      * Initializes the thread-pool.
      *
      * @param threadPoolSize Thread-pool size.
+     * @throws IllegalArgumentException if threadPoolSize < 1
      */
     public ThreadPoolWorkManager(int threadPoolSize) {
-        
+        if (threadPoolSize < 1) {
+            throw new IllegalArgumentException("Invalid threadPoolSize of " 
+                    + threadPoolSize + ". It must be >= 1");
+        }
+
         // Creates a new Executor, use a custom ThreadFactory that
         // creates daemon threads.
         executor = Executors.newFixedThreadPool(threadPoolSize, new ThreadFactory() {
