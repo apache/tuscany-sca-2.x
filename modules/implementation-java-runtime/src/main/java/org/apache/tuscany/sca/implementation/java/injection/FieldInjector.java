@@ -51,7 +51,7 @@ public class FieldInjector<T> implements Injector<T> {
         try {
             field.set(instance, objectFactory.getInstance());
         } catch (IllegalAccessException e) {
-            throw new AssertionError("Field is not accessible [" + field + "]");
+            throw new ObjectCreationException("Field is not accessible [" + field + "]", e);
         }
     }
 }
