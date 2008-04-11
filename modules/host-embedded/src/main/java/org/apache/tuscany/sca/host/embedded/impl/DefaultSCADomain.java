@@ -111,7 +111,7 @@ public class DefaultSCADomain extends SCADomain {
         this.composites = composites;
 
         init();
-    
+
     }
 
     public void init() {
@@ -124,7 +124,7 @@ public class DefaultSCADomain extends SCADomain {
         } catch (ActivationException e) {
             throw new ServiceRuntimeException(e);
         }
-        
+
         // Contribute the given contribution to an in-memory repository
         ContributionService contributionService = runtime.getContributionService();
         URL contributionURL;
@@ -147,7 +147,7 @@ public class DefaultSCADomain extends SCADomain {
                     public Boolean run() {
                         return contributionFile.isDirectory();
                     }
-                });           
+                });
                 if (isDirectory) {
                     // Allow privileged access to create file list. Requires FilePermission in
                     // security policy.
@@ -159,11 +159,13 @@ public class DefaultSCADomain extends SCADomain {
                                 }
                             });
                         }
-                    });           
-                    	
-                    if (contributions != null && contributions.length > 0 && contributions.length == contributionFile.list().length) {
+                    });
+
+                    if (contributions != null && contributions.length > 0
+                        && contributions.length == contributionFile.list().length) {
                         for (String contribution : contributions) {
-                            addContribution(contributionService, new File(contributionFile, contribution).toURI().toURL());
+                            addContribution(contributionService, new File(contributionFile, contribution).toURI()
+                                .toURL());
                         }
                     } else {
                         addContribution(contributionService, contributionURL);
@@ -212,7 +214,7 @@ public class DefaultSCADomain extends SCADomain {
                 }
             }
         }
-        
+
         //update the runtime for all SCA Definitions processed from the contribution..
         //so that the policyset determination done during 'build' has the all the defined
         //intents and policysets
@@ -257,27 +259,27 @@ public class DefaultSCADomain extends SCADomain {
         this.componentManager = new DefaultSCADomainComponentManager(this);
 
         // For debugging purposes, print the composites
-//        ExtensionPointRegistry extensionPoints = runtime.getExtensionPointRegistry();
-//        StAXArtifactProcessorExtensionPoint artifactProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-//        StAXArtifactProcessor processor = artifactProcessors.getProcessor(Composite.class);
-//        for (Composite composite : domainComposite.getIncludes()) {
-//            try {
-//                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//                XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
-//                outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
-//                processor.write(composite, outputFactory.createXMLStreamWriter(bos));
-//                Document document =
-//                    DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(bos
-//                        .toByteArray()));
-//                OutputFormat format = new OutputFormat();
-//                format.setIndenting(true);
-//                format.setIndent(2);
-//                XMLSerializer serializer = new XMLSerializer(System.out, format);
-//                serializer.serialize(document);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
+        //        ExtensionPointRegistry extensionPoints = runtime.getExtensionPointRegistry();
+        //        StAXArtifactProcessorExtensionPoint artifactProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        //        StAXArtifactProcessor processor = artifactProcessors.getProcessor(Composite.class);
+        //        for (Composite composite : domainComposite.getIncludes()) {
+        //            try {
+        //                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        //                XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+        //                outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+        //                processor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        //                Document document =
+        //                    DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(bos
+        //                        .toByteArray()));
+        //                OutputFormat format = new OutputFormat();
+        //                format.setIndenting(true);
+        //                format.setIndent(2);
+        //                XMLSerializer serializer = new XMLSerializer(System.out, format);
+        //                serializer.serialize(document);
+        //            } catch (Exception e) {
+        //                e.printStackTrace();
+        //            }
+        //        }
     }
 
     protected void addContribution(ContributionService contributionService, URL contributionURL) throws IOException {
@@ -421,13 +423,19 @@ public class DefaultSCADomain extends SCADomain {
                 String location = url.substring(4, url.lastIndexOf("!/"));
                 // workaround for evil URL/URI from Maven
                 contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
-                
-            } else if (protocol != null && (protocol.equals("bundle")||protocol.equals("bundleresource"))){
-                contributionURL = new URL(contributionArtifactURL.getProtocol(), 
-                                          contributionArtifactURL.getHost(), 
-                                          contributionArtifactURL.getPort(), 
-                                          "/");
-            }          
+
+            } else if ("wsjar".equals(protocol)) {
+                // See https://issues.apache.org/jira/browse/TUSCANY-2219
+                // wsjar contribution 
+                String location = url.substring(6, url.lastIndexOf("!/"));
+                // workaround for evil url/uri from maven 
+                contributionURL = FileHelper.toFile(new URL(location)).toURI().toURL();
+
+            } else if (protocol != null && (protocol.equals("bundle") || protocol.equals("bundleresource"))) {
+                contributionURL =
+                    new URL(contributionArtifactURL.getProtocol(), contributionArtifactURL.getHost(),
+                            contributionArtifactURL.getPort(), "/");
+            }
         } catch (MalformedURLException mfe) {
             throw new IllegalArgumentException(mfe);
         }
