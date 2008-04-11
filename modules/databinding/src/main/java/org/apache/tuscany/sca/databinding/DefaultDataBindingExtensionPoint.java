@@ -103,7 +103,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
     /**
      * Dynamically load data bindings declared under META-INF/services
      */
-    private void loadDataBindings() {
+    private synchronized void loadDataBindings() {
         if (loadedDataBindings)
             return;
 
