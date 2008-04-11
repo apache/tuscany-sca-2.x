@@ -31,7 +31,7 @@ import commonj.work.Work;
 public class TimeDelayWork implements Work {
 
     /**
-     * Count of workAccepted() method calls
+     * Count of completed run() method calls
      */
     private AtomicInteger runCompletedCount = new AtomicInteger();
 
