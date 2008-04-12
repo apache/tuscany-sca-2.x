@@ -130,12 +130,10 @@ public class ExtendedConversationImpl implements ExtendedConversation, Runnable 
     /**
      * schedule next expiry time
      */
-    public void scheduleNextExpiryTime(long currentTime)
-    {
+    public void scheduleNextExpiryTime(long currentTime) {
     	if ((lastReferencedTime + maxIdleTime) < expirationTime){ 
     		manager.scheduleConversation(this, (lastReferencedTime + maxIdleTime) - currentTime);
-    	}
-    	else{
+        } else {
     		manager.scheduleConversation(this, expirationTime - currentTime);
     	}
     }
@@ -207,8 +205,7 @@ public class ExtendedConversationImpl implements ExtendedConversation, Runnable 
      * return the max idle time
      * @param impProvider the implementation Provider to extract any ConversationAttribute details
      */
-    private long getMaxIdleTime(ImplementationProvider impProvider)
-    {
+    private long getMaxIdleTime(ImplementationProvider impProvider) {
         // Check to see if the maxIdleTime has been specified using @ConversationAttributes.  
         // Implementation annotated attributes are honoured first.
         if ((impProvider != null) &&
@@ -248,8 +245,7 @@ public class ExtendedConversationImpl implements ExtendedConversation, Runnable 
     /**
      * called when expiring
      */
-    public void run() 
-    {
+    public void run() {
         synchronized (stateSync){
         	if (!expired){
         		if (isExpired()) {

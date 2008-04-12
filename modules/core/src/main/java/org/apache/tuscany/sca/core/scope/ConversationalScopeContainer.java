@@ -235,8 +235,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
     	
     	Object conversationId = conversation.getConversationID();
     	InstanceLifeCycleWrapper ilcw = instanceLifecycleCollection.get(conversationId);
-    	if (ilcw != null)
-    	{
+    	if (ilcw != null) {
     		// cycle through all the references to this instance and
     		// remove them from the underlying wrappers collection and
     		// from the lifecycle wrappers collection
@@ -245,8 +244,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
     			try{
         			ilcw.removeInstanceWrapper(conversationID);
     				remove(conversationID);
-    			}
-    			catch(TargetDestructionException tde){
+                } catch(TargetDestructionException tde) {
     				System.out.println("Could not remove conversation id " + conversationID);
     			}
     		}
@@ -256,8 +254,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer<Object>
     			try{
         			ilcw.removeInstanceWrapper(ilcw.clientConversationId);
     				remove(ilcw.clientConversationId);
-    			}
-    			catch(TargetDestructionException tde){
+                } catch(TargetDestructionException tde) {
     				System.out.println("Could not remove conversation id " + ilcw.clientConversationId);
     			}
     		}

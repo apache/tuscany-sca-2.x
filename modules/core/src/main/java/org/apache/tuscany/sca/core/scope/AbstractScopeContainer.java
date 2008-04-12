@@ -80,8 +80,7 @@ public abstract class AbstractScopeContainer<KEY> implements ScopeContainer<KEY>
     }
     
     public void addWrapperReference(KEY existingContextId, KEY newContextId) 
-      throws TargetResolutionException 
-    {
+      throws TargetResolutionException {
         // do nothing here. the conversational scope container implements this
     }
 
