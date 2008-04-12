@@ -127,11 +127,10 @@ public class ComponentContextImpl implements RuntimeComponentContext {
      * 
      * @see #getProperty(Class, String)
      */
-    public void setPropertyValueFactory(PropertyValueFactory factory)
-    {
+    public void setPropertyValueFactory(PropertyValueFactory factory) {
         propertyFactory = factory;
     }
-    
+
     /**
      * Gets the value for the specified property with the specified type.
      * 

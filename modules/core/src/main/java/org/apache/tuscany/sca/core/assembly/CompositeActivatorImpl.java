@@ -153,9 +153,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
         }
     }
-    
-    public void stop(Component component, ComponentReference reference)
-    {
+
+    public void stop(Component component, ComponentReference reference) {
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("Starting component reference: " + component.getURI() + "#" + reference.getName());
         }
@@ -166,7 +165,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 bindingProvider.stop();
             }
         }
-    }    
+    }
 
     public void deactivate(RuntimeComponent component, RuntimeComponentReference ref) {
         if (logger.isLoggable(Level.FINE)) {

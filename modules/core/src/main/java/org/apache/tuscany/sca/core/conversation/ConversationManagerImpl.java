@@ -67,8 +67,7 @@ public class ConversationManagerImpl implements ConversationManager {
     /**
      * constructor
      */
-    public ConversationManagerImpl()
-    {
+    public ConversationManagerImpl() {
     	long mit = DEFAULT_MAX_IDLE_TIME;
     	long ma = DEFAULT_MAX_AGE;
     	
@@ -202,16 +201,15 @@ public class ConversationManagerImpl implements ConversationManager {
      * return the default max idle time
      * @param impProvider the implementation Provider to extract any ConversationAttribute details
      */
-    public long getMaxIdleTime()
-    {
+    public long getMaxIdleTime() {
         return maxIdleTime;
     }
-    
+
     /**
      * returns the default max age
      * @param impProvider the implementation Provider to extract any ConversationAttribute details
      */
     public long getMaxAge(){
         return maxAge;
-    } 
+    }
 }
