@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
  * points. As the point of contact for all extension artifacts this registry
  * allows loaded extensions to find all other parts of the system and register
  * themselves appropriately.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
@@ -45,10 +45,16 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
     /**
      * Add an extension point to the registry. This default implementation
      * stores extensions against the interfaces that they implement.
-     * 
+     *
      * @param extensionPoint The instance of the extension point
+     *
+     * @throws IllegalArgumentException if extensionPoint is null
      */
     public void addExtensionPoint(Object extensionPoint) {
+        if (extensionPoint == null) {
+            throw new IllegalArgumentException("Cannot register null as an ExtensionPoint");
+        }
+
         Set<Class> interfaces = getAllInterfaces(extensionPoint.getClass());
         for (Class i : interfaces) {
             extensionPoints.put(i, extensionPoint);
@@ -73,14 +79,20 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
         }
         return null;
     }
-    
+
     /**
      * Get the extension point by the interface that it implements
-     * 
+     *
      * @param extensionPointType The lookup key (extension point interface)
      * @return The instance of the extension point
+     *
+     * @throws IllegalArgumentException if extensionPointType is null
      */
     public <T> T getExtensionPoint(Class<T> extensionPointType) {
+        if (extensionPointType == null) {
+            throw new IllegalArgumentException("Cannot lookup ExtensionPoint of type null");
+        }
+
         Object extensionPoint = extensionPoints.get(extensionPointType);
         if (extensionPoint == null) {
             
@@ -130,10 +142,16 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
 
     /**
      * Remove an extension point based on the interface that it implements
-     * 
+     *
      * @param extensionPoint The extension point to remove
+     *
+     * @throws IllegalArgumentException if extensionPoint is null
      */
     public void removeExtensionPoint(Object extensionPoint) {
+        if (extensionPoint == null) {
+            throw new IllegalArgumentException("Cannot remove null as an ExtensionPoint");
+        }
+
         Set<Class> interfaces = getAllInterfaces(extensionPoint.getClass());
         for (Class i : interfaces) {
             extensionPoints.remove(i);
