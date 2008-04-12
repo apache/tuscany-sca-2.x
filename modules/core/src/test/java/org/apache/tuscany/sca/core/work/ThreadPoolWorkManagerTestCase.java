@@ -179,7 +179,9 @@ public class ThreadPoolWorkManagerTestCase {
         }
     }
 
-    
+    /**
+     * Tests running a single job that has no listener
+     */
     @Test
     public void testSingleFastJobWithNoListener() {
         // Create the work and register it
