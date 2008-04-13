@@ -35,6 +35,8 @@ import javax.wsdl.Port;
 import javax.wsdl.PortType;
 import javax.wsdl.Service;
 import javax.wsdl.WSDLException;
+import javax.wsdl.extensions.ExtensibilityElement;
+import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.wsdl.extensions.soap.SOAPBody;
 import javax.wsdl.extensions.soap.SOAPOperation;
@@ -66,20 +68,24 @@ public class WSDLDefinitionHelper {
         return reader.readWSDL(definition.getDocumentBaseURI(), root);
     }
 
-    public Binding createBinding(Definition definition, PortType portType) throws WSDLException {
-        Binding binding = definition.createBinding();
-        binding.setPortType(portType);
-        configureBinding(binding, portType);
-        SOAPBinding soapBinding =
-            (SOAPBinding)definition.getExtensionRegistry().createExtension(Binding.class, SOAP_BINDING);
-        soapBinding.setStyle("document");
-        soapBinding.setTransportURI("http://schemas.xmlsoap.org/soap/http");
-        binding.addExtensibilityElement(soapBinding);
+    public Binding createBinding(Definition definition, PortType portType) {
+        try {
+            Binding binding = definition.createBinding();
+            binding.setPortType(portType);
+            configureBinding(binding, portType);
+            SOAPBinding soapBinding =
+                (SOAPBinding)definition.getExtensionRegistry().createExtension(Binding.class, SOAP_BINDING);
+            soapBinding.setStyle("document");
+            soapBinding.setTransportURI("http://schemas.xmlsoap.org/soap/http");
+            binding.addExtensibilityElement(soapBinding);
 
-        createBindingOperations(definition, binding, portType);
-        binding.setUndefined(false);
-        definition.addBinding(binding);
-        return binding;
+            createBindingOperations(definition, binding, portType);
+            binding.setUndefined(false);
+            definition.addBinding(binding);
+            return binding;
+        } catch (WSDLException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     protected void configureBinding(Binding binding, PortType portType) throws WSDLException {
@@ -98,7 +104,8 @@ public class WSDLDefinitionHelper {
             bindingOperation.setOperation(operation);
             configureBindingOperation(bindingOperation, operation);
             SOAPOperation soapOperation =
-                (SOAPOperation)definition.getExtensionRegistry().createExtension(BindingOperation.class, SOAP_OPERATION);
+                (SOAPOperation)definition.getExtensionRegistry()
+                    .createExtension(BindingOperation.class, SOAP_OPERATION);
             soapOperation.setSoapActionURI("");
             bindingOperation.addExtensibilityElement(soapOperation);
             if (operation.getInput() != null) {
@@ -150,8 +157,7 @@ public class WSDLDefinitionHelper {
         try {
             Service service = definition.createService();
             configureService(service, portType);
-            Binding binding = createBinding(definition, portType);
-            createPort(definition, binding, service);
+            // createPort(definition, binding, service);
             definition.addService(service);
             return service;
         } catch (WSDLException e) {
@@ -163,7 +169,7 @@ public class WSDLDefinitionHelper {
         try {
             Service service = definition.createService();
             configureService(service, binding.getPortType());
-            createPort(definition, binding, service);
+            // createPort(definition, binding, service);
             definition.addService(service);
             return service;
         } catch (WSDLException e) {
@@ -178,18 +184,22 @@ public class WSDLDefinitionHelper {
         }
     }
 
-    protected Port createPort(Definition definition, Binding binding, Service service) throws WSDLException {
-        Port port = definition.createPort();
-        port.setBinding(binding);
-        configurePort(definition, port, binding);
-        /*
-        ExtensibilityElement soapAddress =
-            definition.getExtensionRegistry().createExtension(Port.class, SOAP_ADDRESS);
-        ((SOAPAddress)soapAddress).setLocationURI("");
-        port.addExtensibilityElement(soapAddress);
-        */
-        service.addPort(port);
-        return port;
+    public Port createPort(Definition definition, Binding binding, Service service, String uri) {
+        try {
+            Port port = definition.createPort();
+            port.setBinding(binding);
+            configurePort(definition, port, binding);
+            if (uri != null) {
+                ExtensibilityElement soapAddress =
+                    definition.getExtensionRegistry().createExtension(Port.class, SOAP_ADDRESS);
+                ((SOAPAddress)soapAddress).setLocationURI(uri);
+                port.addExtensibilityElement(soapAddress);
+            }
+            service.addPort(port);
+            return port;
+        } catch (WSDLException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     protected void configurePort(Definition definition, Port port, Binding binding) throws WSDLException {
