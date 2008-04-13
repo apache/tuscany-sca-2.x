@@ -297,13 +297,15 @@ public class Axis2ServiceClient {
             InterfaceContract ic = wsBinding.getBindingInterfaceContract();
             WSDLInterface wi = (WSDLInterface)ic.getInterface();
             Service service = helper.createService(wsdlDefinition, wi.getPortType());
-            Port port = (Port)service.getPorts().values().iterator().next();
+            Binding binding = helper.createBinding(wsdlDefinition, wi.getPortType());
+            
+            Port port = helper.createPort(wsdlDefinition, binding, service, wsBinding.getURI());
             wsBinding.setService(service);
             wsBinding.setPort(port);
             wsBinding.setBinding(port.getBinding());
         } else {
             Service service = helper.createService(wsdlDefinition, wsBinding.getBinding());
-            Port port = (Port)service.getPorts().values().iterator().next();
+            Port port = helper.createPort(wsdlDefinition, wsBinding.getBinding(), service, wsBinding.getURI());
             wsBinding.setService(service);
             wsBinding.setPort(port);
         }
