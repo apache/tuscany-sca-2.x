@@ -30,5 +30,19 @@
         </jar>
     </target>
 
+    <!-- Add a file to a jar file, into a different path in the jar file -->
+    <target name="update-bundle">
+
+        <copy overwrite="true" todir="${files.dir}/${target.dir}" >
+            <fileset dir="${files.dir}/${source.dir}" includes="${files.list}" />
+        </copy>
+        <jar update="true" jarfile="${jar.dir}/${jar.file.name}" >
+            <fileset dir="${files.dir}" includes="${files.list}" />
+        </jar>
+        <delete>
+            <fileset dir="${files.dir}/${target.dir}" includes="${files.list}" />
+        </delete>
+    </target>
+
 
 </project>

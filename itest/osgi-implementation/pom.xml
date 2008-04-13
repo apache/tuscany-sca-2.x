@@ -116,6 +116,25 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.tuscany.sdo</groupId>
+            <artifactId>tuscany-sdo-lib</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sdo</groupId>
+            <artifactId>tuscany-sdo-impl</artifactId>
+            <version>1.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-databinding-sdo</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.2</version>
@@ -126,17 +145,59 @@
             <finalName>itest-osgi-implementation</finalName>
             <plugins>
                 <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>1.0</version>
+                    <executions>
+                        <execution>
+                            <id>add-source</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>add-test-source</goal>
+                            </goals>
+                            <configuration>
+                                <sources>
+                                    <source>target/sdo-source</source>
+                                </sources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.tuscany.sdo</groupId>
+                    <artifactId>tuscany-sdo-plugin</artifactId>
+                    <version>1.0-incubating-SNAPSHOT</version>
+                    <executions>
+                        <execution>
+                            <id>generate-helloworld-sdo</id>
+                            <phase>generate-sources</phase>
+                            <configuration>
+                                <schemaFile>${basedir}/src/main/resources/sdo/ds/helloworld.wsdl</schemaFile>
+                                <javaPackage>helloworld.sdo</javaPackage>
+                                <prefix>Helloworld</prefix>
+                                <noNotification>true</noNotification>
+                                <noContainer>true</noContainer>
+                                <noUnsettable>true</noUnsettable>
+                            </configuration>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>1.1</version>
 
-            <dependencies>
-            <dependency>
-                <groupId>ant</groupId>
-                <artifactId>ant-trax</artifactId>
-                <version>1.6.5</version>
-            </dependency>
-            </dependencies>                    
+                    <dependencies>
+                        <dependency>
+                            <groupId>ant</groupId>
+                            <artifactId>ant-trax</artifactId>
+                            <version>1.6.5</version>
+                        </dependency>
+                    </dependencies>                    
             
                     <executions>
                         <execution>
@@ -1098,7 +1159,63 @@
                                                     osgi/properties/ds/StockQuoteFactory.xml \
                                                     stockquote/OSGiStockQuoteComponentImpl.class" />
               
-                                    </ant>
+                                </ant>
+                                <ant antfile="./build-bundles.xml"
+                                    target="create-bundles">
+                                    <property name="jar.dir"
+                                        value="target/classes/sdo/ds" />
+                                    <property name="files.dir"
+                                        value="target/classes" />
+                                    <property name="jar.file.name"
+                                        value="HelloWorldService.jar" />
+                                    <property name="manifest.file.name"
+                                        value="osgi/sdo/ds/HelloWorldService.mf" />
+                                    <property name="files.list"
+                                        value="helloworld/sdo/HelloWorldService.class \
+                                               osgi/sdo/ds/HelloWorldService.xml \
+                                               helloworld/sdo/impl/* \
+                                               helloworld/sdo/Name.class \
+                                               helloworld/sdo/getGreetings* \
+                                               helloworld/sdo/HelloworldFactory.class \
+                                               helloworld/sdo/HelloWorldServiceComponent.class" />
+              
+                                </ant>
+                                <ant antfile="./build-bundles.xml"
+                                    target="create-bundles">
+                                    <property name="jar.dir"
+                                        value="target/classes/sdo/ds" />
+                                    <property name="files.dir"
+                                        value="target/classes" />
+                                    <property name="jar.file.name"
+                                        value="HelloWorldClient.jar" />
+                                    <property name="manifest.file.name"
+                                        value="osgi/sdo/ds/HelloWorldClient.mf" />
+                                    <property name="files.list"
+                                        value="helloworld/sdo/client/HelloWorldClient.class \
+                                               osgi/sdo/ds/HelloWorldClient.xml \
+                                               sdo/ds/helloworldsdo.composite \
+                                               helloworld/sdo/client/HelloWorldClientComponent.class" />
+              
+                                </ant>
+                                <ant antfile="./build-bundles.xml"
+                                    target="update-bundle">
+                                    <property name="jar.dir"
+                                        value="target/classes/sdo/ds" />
+                                    <property name="files.dir"
+                                        value="target/classes" />
+                                    <property name="jar.file.name"
+                                        value="HelloWorldClient.jar" />
+                                    <property name="source.dir"
+                                        value="sdo/ds" />
+                                    <property name="target.dir"
+                                        value="." />
+                                    <property name="files.list"
+                                        value="HelloWorldClient.componentType \
+                                               HelloWorldService.componentType \
+                                               META-INF/sca-contribution.xml" />
+              
+                                </ant>
+
                                 </tasks>
                             </configuration>
                         </execution>
