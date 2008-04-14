@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.itest.oneway.impl;
 
 import org.apache.tuscany.sca.itest.oneway.OneWayService;
 
+import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * The service for the oneway itest
  *
@@ -28,15 +30,14 @@ import org.apache.tuscany.sca.itest.oneway.OneWayService;
 
 
 public class OneWayServiceImpl implements OneWayService {
-    
-    public static int callCount = 0;
-    
+    /**
+     * Counts the number of invocations to doSomething()
+     */
+    public static final AtomicInteger callCount = new AtomicInteger();
+
     public void doSomething(int count){
-        
-        synchronized(this){
-            callCount++;
-        }            
-        
+        callCount.incrementAndGet();
+
        // System.out.println("Service: doSomething " + count + " callCount = " + callCount);
        // System.out.flush();
         
