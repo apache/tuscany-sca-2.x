@@ -45,7 +45,7 @@
     </component>
 
     <reference name="StockQuoteReference" promote="AccountService/stockQuote">
-        <binding.ws wsdlElement="http://swanandmokashi.com#wsdl.port(StockQuotes/StockQuotesSoap)" />
+        <binding.ws wsdlElement="http://www.webserviceX.NET/#wsdl.port(StockQuote/StockQuoteSoap)" />
     </reference>
 
 </composite>

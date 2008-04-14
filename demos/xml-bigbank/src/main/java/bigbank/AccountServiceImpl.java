@@ -24,6 +24,7 @@ import java.io.StringReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.axiom.om.OMElement;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
@@ -35,7 +36,7 @@ import org.osoa.sca.annotations.Service;
 @Service(AccountService.class)
 public class AccountServiceImpl implements AccountService {
     private static final String STOCK_QUOTE_REQUEST =
-        "<q:GetQuotes xmlns:q=\"http://swanandmokashi.com\"><q:QuoteTicker>IBM,GOOG,MSFT</q:QuoteTicker></q:GetQuotes>";
+        "<q:GetQuote xmlns:q=\"http://www.webserviceX.NET/\"><q:symbol>IBM GOOG MSFT</q:symbol></q:GetQuote>";
 
     private XMLInputFactory factory = XMLInputFactory.newInstance();
 
@@ -64,10 +65,13 @@ public class AccountServiceImpl implements AccountService {
             System.out.println("Getting stock quote...");
             XMLStreamReader request = factory.createXMLStreamReader(new StringReader(STOCK_QUOTE_REQUEST));
 
-            XMLStreamReader quotes = stockQuote.GetStockQuotes(request);
+            OMElement quotes = stockQuote.GetQuote(request);
 
+            String xml = quotes.getText();
+            System.out.println(xml);
+            XMLStreamReader qts = factory.createXMLStreamReader(new StringReader(xml));
             System.out.println("Calculating total value...");
-            double value = stockValue.calculate(quotes, accounts);
+            double value = stockValue.calculate(qts, accounts);
 
             System.out.println("Total Value=USD " + value);
 

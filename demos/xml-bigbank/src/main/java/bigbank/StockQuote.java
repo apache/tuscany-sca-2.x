@@ -21,6 +21,7 @@ package bigbank;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.axiom.om.OMElement;
 import org.osoa.sca.annotations.Remotable;
 
 /**
@@ -33,5 +34,5 @@ public interface StockQuote {
      * @param input The StAX stream of the request
      * @return The StAX stream of the response
      */
-    public XMLStreamReader GetStockQuotes(XMLStreamReader input);
+    public OMElement GetQuote(XMLStreamReader input);
 }

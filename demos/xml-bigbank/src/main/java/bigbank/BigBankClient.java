@@ -21,7 +21,7 @@ package bigbank;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
- * This client program to invoke the Mortgage LoanApproval service
+ * This client program to invoke the Account service
  */
 public class BigBankClient {
 
