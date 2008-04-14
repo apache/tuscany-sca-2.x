@@ -24,6 +24,7 @@
   <include name="ns2:store-merger" uri="store-merger" xmlns:ns2="http://store"/>
   <include name="ns2:store-db" uri="store-db" xmlns:ns2="http://store"/>
   <include name="ns2:store-supplier" uri="store-supplier" xmlns:ns2="http://store"/>
+  <include name="ns2:store-market" uri="store-market" xmlns:ns2="http://store"/> 
   <include name="ns2:store-eu" uri="store-eu" xmlns:ns2="http://store"/>
   <include name="ns2:catalogs" uri="web-services" xmlns:ns2="http://services"/>
   <include name="ns2:currency" uri="web-services" xmlns:ns2="http://services"/>
