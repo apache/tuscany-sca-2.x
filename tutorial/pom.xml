@@ -42,6 +42,7 @@
                 <module>store-merger</module>
                 <module>store-db</module>
                 <module>store-supplier</module>
+                <module>store-market</module>
                 <module>store-eu</module>
                 <module>web-services</module>
                 <module>catalog-webapp</module>

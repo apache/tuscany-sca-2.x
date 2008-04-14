@@ -23,6 +23,7 @@
   <contribution location="file:../store-merger/target/tutorial-store-merger.jar" uri="store-merger"/>
   <contribution location="file:../store-db/target/tutorial-store-db.jar" uri="store-db"/>
   <contribution location="file:../store-supplier/target/tutorial-store-supplier.jar" uri="store-supplier"/>
+  <contribution location="file:../store-market/target/tutorial-store-market.jar" uri="store-market"/> 
   <contribution location="file:../store-eu/target/tutorial-store-eu.jar" uri="store-eu"/>
   <contribution location="file:../web-services/target/tutorial-web-services.jar" uri="web-services"/>
   <contribution location="file:../catalog-webapp/target/tutorial-catalog-webapp.war" uri="catalog-webapp"/>
