@@ -77,7 +77,7 @@ public class OneWayTestCase {
                 // This loop will wait for the required number of @OneWay method calls to
                 // have taken place or MAX_SLEEP_TIME to have passed.
                 long startSleep = System.currentTimeMillis();
-                while (OneWayClientImpl.callCount != OneWayServiceImpl.callCount 
+                while (OneWayClientImpl.callCount != OneWayServiceImpl.callCount.get() 
                         && System.currentTimeMillis() - startSleep < MAX_SLEEP_TIME) {
                     Thread.sleep(100);
                     // System.out.println("" + OneWayClientImpl.callCount + "," + OneWayServiceImpl.callCount);
@@ -85,7 +85,7 @@ public class OneWayTestCase {
 
                 System.out.println("Finished callCount = " + OneWayServiceImpl.callCount);
 
-                Assert.assertEquals(OneWayClientImpl.callCount, OneWayServiceImpl.callCount);
+                Assert.assertEquals(OneWayClientImpl.callCount, OneWayServiceImpl.callCount.get());
             }
         } catch (Exception ex) {
             System.err.println("Exception: " + ex.toString());
