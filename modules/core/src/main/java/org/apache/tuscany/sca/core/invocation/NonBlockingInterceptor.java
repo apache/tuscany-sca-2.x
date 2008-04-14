@@ -68,7 +68,15 @@ public class NonBlockingInterceptor implements Interceptor {
                 public void run() {
                     Message context = ThreadMessageContext.setMessageContext(msg);
                     try {
-                        next.invoke(msg);
+                        Message response = next.invoke(msg);
+
+                        // Tuscany-2225 - Did the @OneWay method complete successfully?
+                        // (i.e. no exceptions)
+                        if (response != null && response.isFault()) {
+                            // The @OneWay method threw an Exception.
+                            Throwable t = (Throwable) response.getBody();
+                            throw new ServiceRuntimeException("Exception from @OneWay invocation", t);
+                        }
                     } finally {
                         ThreadMessageContext.setMessageContext(context);
                     }

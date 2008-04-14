@@ -61,6 +61,7 @@ public class NonBlockingInterceptorTestCase extends TestCase {
         //msg.setConversationID(convID);
         Interceptor next = EasyMock.createMock(Interceptor.class);
         EasyMock.expect(next.invoke(EasyMock.eq(msg))).andReturn(msg);
+        EasyMock.expect(msg.isFault()).andReturn(false);
         EasyMock.replay(next);
         EasyMock.replay(msg);
         Interceptor interceptor = new NonBlockingInterceptor(scheduler, next);
