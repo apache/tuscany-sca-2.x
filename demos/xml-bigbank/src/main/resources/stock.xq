@@ -16,7 +16,7 @@
     * specific language governing permissions and limitations
     * under the License.    
 :)
-declare namespace q="http://swanandmokashi.com";
+declare namespace q="http://www.webserviceX.NET/";
 declare namespace c="http://example.com/customer";
 declare namespace stock="scaservice:java/bigbank.StockValue";
 (: declare namespace currency="scaproperty:java/java.lang.String"; :)
@@ -39,11 +39,11 @@ declare function stock:calculate($quoteDoc, $accountDoc) as xs:double {
     let $value :=
     trace( 
     sum( 
-        for $quote in $quoteDoc/q:GetQuotesResponse/q:GetQuotesResult/q:Quote,
+        for $quote in $quoteDoc/StockQuotes/Stock,
             $account in $accountDoc/c:customer/c:accounts/c:stock
-        where string($quote/q:StockTicker) = string($account/@symbol)
+        where string($quote/Symbol) = string($account/@symbol)
         return 
-            trace(number($quote/q:StockQuote),"Stock Price") * trace(number($account/@quantity), "Quantity")
+            trace(number($quote/Last),"Stock Price") * trace(number($account/@quantity), "Quantity")
     ), "Stock Value")
     return trace($checking + $saving + $value, "Total Value")
 };

@@ -35,8 +35,8 @@ import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
+import com.sun.syndication.feed.synd.SyndEntry;
+import com.sun.syndication.feed.synd.SyndFeed;
 
 /**
  * @version $Rev$ $Date$
@@ -65,9 +65,9 @@ public class ExchangeRateImpl {
     public double getExchangeRate(String currency) {
         try {
             System.out.println("Retrieving exchange rate...");
-            Feed feed = exchangeRate.getRates();
-            Entry entry = (Entry)feed.getEntries().get(0);
-            String rateTable = entry.getSummary().getValue();
+            SyndFeed feed = exchangeRate.getRates();
+            SyndEntry entry = (SyndEntry)feed.getEntries().get(0);
+            String rateTable = entry.getDescription().getValue();
 
             Document doc = builder.parse(new ByteArrayInputStream(rateTable.getBytes()));
             Node node = doc.getDocumentElement();

@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<wsdl:definitions targetNamespace="http://swanandmokashi.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
-    <wsdl:import namespace="http://swanandmokashi.com"
-        location="http://www.swanandmokashi.com/HomePage/WebServices/StockQuotes.asmx?WSDL" />
+<wsdl:definitions targetNamespace="http://www.webserviceX.NET/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:import namespace="http://www.webserviceX.NET/"
+        location="http://www.webservicex.com/stockquote.asmx?WSDL" />
 </wsdl:definitions>

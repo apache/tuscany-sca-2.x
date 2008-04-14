@@ -21,7 +21,7 @@ package bigbank;
 
 import org.osoa.sca.annotations.Remotable;
 
-import com.sun.syndication.feed.atom.Feed;
+import com.sun.syndication.feed.synd.SyndFeed;
 
 /**
  * @version $Rev$ $Date$
@@ -32,5 +32,5 @@ public interface CurrencyExchange {
      * Get the currency exchange rates as a RSS feed
      * @return
      */
-    Feed getRates();
+    SyndFeed getRates();
 }
