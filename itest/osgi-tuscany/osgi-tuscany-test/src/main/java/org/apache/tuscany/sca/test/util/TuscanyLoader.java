@@ -87,7 +87,7 @@ public class TuscanyLoader {
             tuscanyRuntimeBundle.start();
             
             // Tuscany runtime is started on a different thread when previously cached bundle is used.
-            // Set this thread's TCCL to the on used by the runtime.
+            // Set this thread's TCCL to the one used by the runtime.
             try {
                 Class<?> runtimeClass = tuscanyRuntimeBundle.loadClass("org.apache.tuscany.sca.osgi.runtime.OSGiRuntime");
                 Method getRuntimeMethod = runtimeClass.getMethod("findRuntime");
