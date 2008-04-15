@@ -24,7 +24,6 @@ import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 import java.io.StringWriter;
 import java.net.URL;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
