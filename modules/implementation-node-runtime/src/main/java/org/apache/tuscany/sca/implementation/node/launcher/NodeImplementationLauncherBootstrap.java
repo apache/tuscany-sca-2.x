@@ -25,7 +25,6 @@ import org.apache.tuscany.sca.node.SCANode2Factory;
 import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ServiceReference;
-import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Bootstrap class for standalone SCA nodes.
