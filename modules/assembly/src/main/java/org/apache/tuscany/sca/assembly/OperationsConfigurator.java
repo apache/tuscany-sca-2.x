@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.assembly;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.assembly.ConfiguredOperation;
-
 /**
  * Interface to be implemented by SCA artifacts that support configuration of 'operation' child
  * elements for policies etc. 
