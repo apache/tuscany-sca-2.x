@@ -20,10 +20,12 @@
 package org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.AComponent;
-import org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.BComponent;
+import org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.BService;
+import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Context;
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
@@ -33,7 +35,10 @@ public class AComponentImpl implements AComponent {
     protected ComponentContext componentContext;
     
     @Reference
-    protected BComponent bReference;
+    protected BService bReference;
+
+    @Property(name="aProperty", required=true)
+    protected String aProperty;
 
     public String getName() {
         return "ComponentA";
@@ -49,12 +54,41 @@ public class AComponentImpl implements AComponent {
     }
 
     public String getServiceBName() {
-        return componentContext.getService(BComponent.class, "bReference").getName();        
+        return componentContext.getService(BService.class, "bReference").getBName();        
     }
 
     public String getServiceReferenceBName() {
-        ServiceReference<BComponent> bSR = componentContext.getServiceReference(BComponent.class, "bReference");
-        return bSR.getService().getName();
+        ServiceReference<BService> bSR = componentContext.getServiceReference(BService.class, "bReference");
+        return bSR.getService().getBName();
+    }
+
+    public String getSelfReferenceName() {
+        ServiceReference<AComponent> aSR = componentContext.createSelfReference(AComponent.class);
+        return aSR.getService().getName();
+    }
+
+    public String getProperty() {
+        return componentContext.getProperty(String.class, "aProperty");
+    }
+
+    public String getRequestContextServiceName() {
+        return componentContext.getRequestContext().getServiceName();
+    }
+
+    public String getCastCallableReferenceServiceName() {
+        BService b = componentContext.getService(BService.class, "bReference");
+        CallableReference<BService> bCR = componentContext.cast(b);
+        return bCR.getService().getBName();
+    }
+
+    public String getCastServiceReferenceServiceName() {
+        BService b = componentContext.getService(BService.class, "bReference");
+        ServiceReference<BService> bSR = componentContext.cast(b);
+        return bSR.getService().getBName();
+    }
+
+    public void illegalCast() {
+        componentContext.cast("");
     }
 
 }

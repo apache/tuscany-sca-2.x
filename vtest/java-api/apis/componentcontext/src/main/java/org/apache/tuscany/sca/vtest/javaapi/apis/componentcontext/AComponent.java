@@ -27,8 +27,13 @@ public interface AComponent {
     public String getName();
 
     public String getContextURI();
-
     public String getServiceBName();
     public String getServiceReferenceBName();
+    public String getSelfReferenceName();
+    public String getProperty();
+    public String getRequestContextServiceName();
+    public String getCastCallableReferenceServiceName();
+    public String getCastServiceReferenceServiceName();
+    public void illegalCast();
 
 }
