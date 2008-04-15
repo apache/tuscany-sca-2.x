@@ -57,10 +57,10 @@ import org.directwebremoting.servlet.UrlProcessor;
 public class DWRServlet extends DwrServlet {
     private static final long serialVersionUID = 1L;
 
-    transient private Map<String, ServiceHolder> services;
-    transient private List<String> referenceNames;
-    transient private boolean initialized;
-    transient private Map<String, String> initParams;
+    private transient Map<String, ServiceHolder> services;
+    private transient List<String> referenceNames;
+    private transient boolean initialized;
+    private transient Map<String, String> initParams;
 
     private static final String SCADOMAIN_SCRIPT_PATH = "/scaDomain.js";
 
