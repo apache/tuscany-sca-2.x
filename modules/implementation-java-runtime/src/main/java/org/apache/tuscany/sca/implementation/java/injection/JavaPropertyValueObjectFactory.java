@@ -220,7 +220,15 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
         @SuppressWarnings("unchecked")
         public Object getInstance() throws ObjectCreationException {
             if (isSimpleType) {
-                return simpleTypeMapper.toJavaObject(property.getXSDType(), (String)propertyValue, null);
+                try {
+                    return simpleTypeMapper.toJavaObject(property.getXSDType(), (String)propertyValue, null);
+                } catch (NumberFormatException ex) {
+                    throw new ObjectCreationException("Failed to create instance for property " 
+                            + property.getName() + " with value " + propertyValue, ex);
+                } catch (IllegalArgumentException ex) {
+                    throw new ObjectCreationException("Failed to create instance for property " 
+                            + property.getName() + " with value " + propertyValue, ex);
+                }
             } else {
                 return mediator.mediate(propertyValue, sourceDataType, targetDataType, null);
                 // return null;
@@ -238,7 +246,17 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
             if (isSimpleType) {
                 List<Object> values = new ArrayList<Object>();
                 for (String aValue : (List<String>)propertyValue) {
-                    values.add(simpleTypeMapper.toJavaObject(property.getXSDType(), aValue, null));
+                    try {
+                        values.add(simpleTypeMapper.toJavaObject(property.getXSDType(), aValue, null));
+                    } catch (NumberFormatException ex) {
+                        throw new ObjectCreationException("Failed to create instance for property " 
+                                + property.getName() + " with value " + aValue 
+                                + " from value list of " + propertyValue, ex);
+                    } catch (IllegalArgumentException ex) {
+                        throw new ObjectCreationException("Failed to create instance for property " 
+                                + property.getName() + " with value " + aValue 
+                                + " from value list of " + propertyValue, ex);
+                    }
                 }
                 return values;
             } else {
@@ -262,7 +280,17 @@ public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
                 int count = 0;
                 Object values = Array.newInstance(javaType, ((List<Object>)propertyValue).size());
                 for (String aValue : (List<String>)propertyValue) {
-                    Array.set(values, count++, simpleTypeMapper.toJavaObject(property.getXSDType(), aValue, null));
+                    try {
+                        Array.set(values, count++, simpleTypeMapper.toJavaObject(property.getXSDType(), aValue, null));
+                    } catch (NumberFormatException ex) {
+                        throw new ObjectCreationException("Failed to create instance for property " 
+                                + property.getName() + " with value " + aValue
+                                + " from value list of " + propertyValue, ex);
+                    } catch (IllegalArgumentException ex) {
+                        throw new ObjectCreationException("Failed to create instance for property " 
+                                + property.getName() + " with value " + aValue
+                                + " from value list of " + propertyValue, ex);
+                    }
                 }
                 return values;
             } else {
