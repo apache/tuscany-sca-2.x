@@ -112,11 +112,16 @@
 		document.newContributionForm.contributionID.value = "";
 		document.newContributionForm.contributionLocation.value = "";
 	    getContributions();
-	}	
+	}
+	
+	//function suggestContributionIDs() {
+	//	return new Array('abc', 'def', 'ghi');
+	//}
 
 	function init() {
 		toolbar();
 		getContributions();
+		//suggest(document.newContributionForm.contributionID, suggestContributionIDs);
 	}
 	
 </script>

@@ -71,3 +71,29 @@ a:visited {
 	text-align: right
 }
 
+.suggest {
+	background-color: #e5ecf9; color: #598edd;
+	border-top: 1px; border-bottom: 1px; border-left: 1px; border-right: 1px;
+	border-style: solid; border-top-color: #a2bae7; border-bottom-color: #d1d3d4;
+	border-left-color: #d1d3d4; border-right-color: #d1d3d4;
+    position: absolute;
+    overflow: auto; overflow-x: hidden;
+    cursor: default;
+    padding: 0px; margin: 0px;
+}
+
+suggestTable {
+	border: 0px; border-collapse: separate;
+    padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px; 
+	margin: 0px;
+}
+
+.suggestItem {
+	padding-left: 2px; padding-top: 0px; padding-bottom: 0px; padding-right: 2px; white-space: nowrap; vertical-align: text-top;
+	background-color: #e5ecf9; color: #598edd;
+}
+
+.suggestHilighted {
+	padding-left: 2px; padding-top: 0px; padding-bottom: 0px; padding-right: 2px; white-space: nowrap; vertical-align: text-top;
+	background-color: #598edd; color: #e5ecf9;
+}
