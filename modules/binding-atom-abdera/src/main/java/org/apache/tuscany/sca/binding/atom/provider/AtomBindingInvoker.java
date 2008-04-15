@@ -51,8 +51,8 @@ import org.osoa.sca.ServiceRuntimeException;
  */
 class AtomBindingInvoker implements Invoker {
     
-    private final static Factory abderaFactory = Abdera.getNewFactory();
-    private final static Parser abderaParser = Abdera.getNewParser();
+    private static final Factory abderaFactory = Abdera.getNewFactory();
+    private static final Parser abderaParser = Abdera.getNewParser();
 
     Operation operation;
     String uri;

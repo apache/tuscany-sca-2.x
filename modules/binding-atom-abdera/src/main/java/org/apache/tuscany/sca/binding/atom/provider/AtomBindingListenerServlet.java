@@ -67,8 +67,8 @@ class AtomBindingListenerServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(AtomBindingListenerServlet.class.getName());
     private static final long serialVersionUID = 1L;
 
-    private final static Factory abderaFactory = Abdera.getNewFactory();
-    private final static Parser abderaParser = Abdera.getNewParser();
+    private static final Factory abderaFactory = Abdera.getNewFactory();
+    private static final Parser abderaParser = Abdera.getNewParser();
     
     private RuntimeWire wire;
     private Invoker getFeedInvoker;
