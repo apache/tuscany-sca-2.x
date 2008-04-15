@@ -212,8 +212,7 @@ public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements 
                         implementation.setConstrainingType(componentType.getConstrainingType());
                         
                         if (implementation instanceof PolicySetAttachPoint &&
-                            componentType instanceof PolicySetAttachPoint )
-                        {
+                                componentType instanceof PolicySetAttachPoint ) {
                             PolicySetAttachPoint policiedImpl = (PolicySetAttachPoint)implementation;
                             PolicySetAttachPoint policiedCompType = (PolicySetAttachPoint)componentType;
                             
