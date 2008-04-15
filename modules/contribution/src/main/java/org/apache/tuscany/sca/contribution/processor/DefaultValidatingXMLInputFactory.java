@@ -23,11 +23,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.net.URLConnection;
 import java.util.List;
 
 import javax.xml.XMLConstants;
