@@ -103,7 +103,7 @@ public class DATAImplementationProcessor implements StAXArtifactProcessor<DATAIm
                 if (ConnectionInfoArtifactProcessor.CONNECTION_INFO.equals(reader.getName())) {
                     
                     // Read connection info
-                    ConnectionInfo connectionInfo = (ConnectionInfo) connectionInfoProcessor.read(reader);;
+                    ConnectionInfo connectionInfo = (ConnectionInfo) connectionInfoProcessor.read(reader);
                     implementation.setConnectionInfo(connectionInfo);
                 }
                 break;

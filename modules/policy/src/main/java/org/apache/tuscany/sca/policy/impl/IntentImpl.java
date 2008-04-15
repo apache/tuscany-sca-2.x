@@ -38,8 +38,8 @@ public class IntentImpl implements Intent {
     //private List<Operation> operations = new ArrayList<Operation>();
     private List<QName> constrains = new ArrayList<QName>();
     private String description;
-    private List<Intent> qualifiedIntents = new ArrayList<Intent>();;
-    // private List<Intent> requiredIntents = new ArrayList<Intent>();;
+    private List<Intent> qualifiedIntents = new ArrayList<Intent>();
+    // private List<Intent> requiredIntents = new ArrayList<Intent>();
     private boolean unresolved = true;
     private String domain;
     private String[] qualifiedNames;
