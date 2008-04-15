@@ -60,7 +60,7 @@ public class ResolvePolicyTestCase extends TestCase {
 
     private ExtensibleURLArtifactProcessor documentProcessor;
     private TestModelResolver resolver;  
-    SCADefinitionsDocumentProcessor scaDefnDocProcessor;
+    private SCADefinitionsDocumentProcessor scaDefnDocProcessor;
 
     @Override
     public void setUp() throws Exception {

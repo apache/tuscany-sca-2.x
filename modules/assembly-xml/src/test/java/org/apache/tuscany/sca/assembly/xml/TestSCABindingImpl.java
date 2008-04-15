@@ -49,10 +49,10 @@ public class TestSCABindingImpl implements SCABinding, OptimizableBinding, Polic
     private ComponentService targetComponentService;
     private Binding targetBinding;
     
-    List<Intent> requiredIntents = new ArrayList<Intent>();
-    List<PolicySet> policySets = new ArrayList<PolicySet>();
-    IntentAttachPointType bindingType = new TestSCABindingType();
-    List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
+    private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<PolicySet> policySets = new ArrayList<PolicySet>();
+    private IntentAttachPointType bindingType = new TestSCABindingType();
+    private List<ConfiguredOperation>  configuredOperations = new ArrayList<ConfiguredOperation>();
     private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
 
     /**
