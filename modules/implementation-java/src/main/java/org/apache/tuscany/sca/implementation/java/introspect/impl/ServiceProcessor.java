@@ -24,6 +24,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Service;
@@ -46,6 +47,7 @@ import org.osoa.sca.annotations.Remotable;
  * @version $Rev$ $Date$
  */
 public class ServiceProcessor extends BaseJavaClassVisitor {
+    private static final Logger logger = Logger.getLogger(ServiceProcessor.class.getName());
     private JavaInterfaceFactory javaFactory;
     
     public ServiceProcessor(AssemblyFactory assemblyFactory, JavaInterfaceFactory javaFactory) {
@@ -76,7 +78,8 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         if (interfaces.length == 0) {
             Class<?> interfaze = annotation.value();
             if (Void.class.equals(interfaze)) {
-                throw new IllegalServiceDefinitionException("No interfaces specified");
+                //throw new IllegalServiceDefinitionException("No interfaces specified");
+                logger.warning("Ignoring @Service annotation.  No interfaces specified. class = "+clazz.getName());
             } else {
                 interfaces = new Class<?>[1];
                 interfaces[0] = interfaze;

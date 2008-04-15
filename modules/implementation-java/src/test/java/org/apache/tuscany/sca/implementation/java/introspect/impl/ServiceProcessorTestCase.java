@@ -79,9 +79,9 @@ public class ServiceProcessorTestCase extends TestCase {
     public void testNoInterfaces() throws Exception {
         try {
             processor.visitClass(BadDefinition.class, type);
-            fail();
         } catch (IllegalServiceDefinitionException e) {
-            //expected
+            //not expected
+            fail();
         }
     }
 
