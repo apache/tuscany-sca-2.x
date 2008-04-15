@@ -23,13 +23,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
-import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Collections;
 
 import org.apache.tuscany.sca.host.embedded.impl.DefaultSCADomain;
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
