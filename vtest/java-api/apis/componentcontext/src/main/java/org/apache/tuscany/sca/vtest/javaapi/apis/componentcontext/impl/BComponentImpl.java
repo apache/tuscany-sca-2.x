@@ -19,14 +19,34 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.impl;
 
-import org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.BComponent;
+import org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.BService;
+import org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.CService;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.ServiceReference;
+import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Service;
 
-@Service(BComponent.class)
-public class BComponentImpl implements BComponent {
+@Service(interfaces={BService.class, CService.class})
+public class BComponentImpl implements BService, CService {
 
-    public String getName() {
-        return "ComponentB";
+    protected ComponentContext componentContext;
+
+    @Context
+    public void setComponentContext(ComponentContext context) {
+        this.componentContext = context;
+    }
+
+    public String getBName() {
+        return "ServiceB";
+    }
+
+    public String getCName() {
+        return "ServiceC";
+    }
+
+    public String getSelfReferenceWithServiceName() {
+        ServiceReference<CService> cSR = componentContext.createSelfReference(CService.class, "CService");
+        return cSR.getService().getCName();
     }
 
 }

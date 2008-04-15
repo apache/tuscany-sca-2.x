@@ -33,6 +33,7 @@ public class ComponentContextTestCase {
     protected static SCADomain domain;
     protected static String compositeName = "ab.composite";
     protected static AComponent a;
+    protected static BService b;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -40,6 +41,7 @@ public class ComponentContextTestCase {
             System.out.println("Setting up");
             domain = SCADomain.newInstance(compositeName);
             a = domain.getService(AComponent.class, "AComponent");
+            b = domain.getService(BService.class, "BComponent/BService");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,30 +56,104 @@ public class ComponentContextTestCase {
     }
 
     /**
-     * L776: Tests getURI() of the ComponentContext interface.
+     * L776 <br>
+     * getURI() - Returns the absolute URI of the component within the SCA domain.
+     * 
      * @throws Exception
      */
     @Test
     public void testGetURI() throws Exception {
-        Assert.assertEquals(a.getContextURI(), "AComponent");
+        Assert.assertEquals("AComponent", a.getContextURI());
     }
 
     /**
-     * L778: Tests getService() of the ComponentContext interface.
+     * L778 <br>
+     * getService(Class&lt;B&gt; businessInterface, String referenceName) ? Returns a proxy for the reference defined by the current component.
+     * 
      * @throws Exception
      */
     @Test
     public void testGetService() throws Exception {
-        Assert.assertEquals(a.getServiceBName(), "ComponentB");
+        Assert.assertEquals(a.getServiceBName(), "ServiceB");
     }
 
     /**
-     * L780: Tests getServiceReference() of the ComponentContext interface.
+     * L780 <br>
+     * getServiceReference(Class&lt;B&gt; businessInterface, String referenceName) ? Returns a ServiceReference defined by the current component.
+     * 
      * @throws Exception
      */
     @Test
     public void testGetServiceReference() throws Exception {
-        Assert.assertEquals(a.getServiceReferenceBName(), "ComponentB");
+        Assert.assertEquals(a.getServiceReferenceBName(), "ServiceB");
+    }
+
+    /**
+     * L783 <br>
+     * createSelfReference(Class&lt;B&gt; businessInterface) ?
+     * Returns a ServiceReference that can be used to invoke this component over the designated service.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testCreateSelfReference() throws Exception {
+        Assert.assertEquals(a.getSelfReferenceName(), "ComponentA");
+    }
+
+    /**
+     * L785 <br>
+     * getSelfReference(Class&lt;B&gt; businessInterface, String serviceName) -
+     * Returns a ServiceReference that can be used to invoke this component over the designated service.
+     * Service name explicitly declares the service name to invoke.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testCreateSelfReferenceWithServiceName() throws Exception {
+        Assert.assertEquals("ServiceC", b.getSelfReferenceWithServiceName());
+    }
+
+    /**
+     * L788 <br>
+     * getProperty (Class&lt;B&gt; type, String propertyName) - Returns the value of an SCA property defined by this component.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testGetProperty() throws Exception {
+        Assert.assertEquals("PropertyA", a.getProperty());
+    }
+
+    /**
+     * L793 <br>
+     * getRequestContext() -
+     * Returns the context for the current SCA service request, or null if there is no current request or if the context is unavailable.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testGetRequestContext() throws Exception {
+        Assert.assertEquals("AComponent", a.getRequestContextServiceName());
+    }
+
+    /**
+     * L790, L794 <br>
+     * cast(B target) - Casts a type-safe reference to a CallableReference.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testCast() throws Exception {
+        Assert.assertEquals("ServiceB", a.getCastCallableReferenceServiceName());
+        Assert.assertEquals("ServiceB", a.getCastServiceReferenceServiceName());
+
+        String check = "";
+        try {
+            a.illegalCast();
+        } catch (IllegalArgumentException iae) {
+            check = "IllegalCast";
+        }
+        Assert.assertEquals("IllegalCast", check);
     }
 
 }
