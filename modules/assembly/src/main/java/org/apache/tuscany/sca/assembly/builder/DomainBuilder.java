@@ -40,7 +40,7 @@ public interface DomainBuilder {
      * @return a list of change composites
      * @throws CompositeBuilderException
      */
-    public List<Composite> wireDomain(Composite domainLevelComposite);
+    List<Composite> wireDomain(Composite domainLevelComposite);
     
     /**
      * Locates the referenced service and updates the URI on the identified binding
@@ -50,7 +50,7 @@ public interface DomainBuilder {
      * @param bindingClassName
      * @param URI
      */
-    public void updateDomainLevelServiceURI(Composite domainLevelComposite, String referenceName, String bindingClassName, String URI);
+    void updateDomainLevelServiceURI(Composite domainLevelComposite, String referenceName, String bindingClassName, String URI);
     
     /**
      * Get the component name out of the reference name that might look like Component/Service
@@ -58,7 +58,7 @@ public interface DomainBuilder {
      * @param referenceName
      * @return
      */
-    public String getComponentNameFromReference(String referenceName);
+    String getComponentNameFromReference(String referenceName);
     
     /**
      * Get the service name out of the reference name that might look like Component/Service
@@ -66,7 +66,7 @@ public interface DomainBuilder {
      * @param referenceName
      * @return
      */
-    public String getServiceNameFromReference(String referenceName);
+    String getServiceNameFromReference(String referenceName);
     
     /**
      * Find the service object given a reference name
@@ -75,6 +75,6 @@ public interface DomainBuilder {
      * @param referenceName
      * @return
      */
-    public Service findServiceForReference(Composite composite, String referenceName);
+    Service findServiceForReference(Composite composite, String referenceName);
     
 }
