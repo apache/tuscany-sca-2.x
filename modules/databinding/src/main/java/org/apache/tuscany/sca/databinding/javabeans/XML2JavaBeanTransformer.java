@@ -80,7 +80,7 @@ public abstract class XML2JavaBeanTransformer<T> extends BaseTransformer<T, Obje
     private <L> L createJavaObject(T element, Class<L> javaType, TransformationContext context) 
         throws XML2JavaMapperException {
         if (isTextOnly(element)) {
-            return (L) mapper.toJavaObject(mapper.getXMLType(javaType).getQName(),
+            return (L) mapper.toJavaObject(SimpleTypeMapperImpl.getXMLType(javaType).getQName(),
                                                  getText(element),
                                                  context);
         } else {
