@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.workspace.processor.impl;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Composite;
