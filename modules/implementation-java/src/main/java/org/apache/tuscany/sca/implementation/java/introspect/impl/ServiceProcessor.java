@@ -143,7 +143,7 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
             }
         }
         if (callbackService == null) {
-            throw new IllegalCallbackReferenceException("Callback type does not match a service callback interface");
+            throw new IllegalCallbackReferenceException("Callback type does not match a service callback interface: " + type.getName() );
         }
         type.getCallbackMembers().put(baseType.getName(), element);
     }
