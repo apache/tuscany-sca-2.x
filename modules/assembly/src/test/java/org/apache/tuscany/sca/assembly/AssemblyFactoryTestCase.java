@@ -30,7 +30,7 @@ import junit.framework.TestCase;
  */
 public class AssemblyFactoryTestCase extends TestCase {
 
-    AssemblyFactory factory;
+    private AssemblyFactory factory;
 
     @Override
     public void setUp() throws Exception {
