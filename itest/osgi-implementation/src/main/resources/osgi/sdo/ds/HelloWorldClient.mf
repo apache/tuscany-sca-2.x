@@ -8,7 +8,7 @@ Import-Package: org.osgi.framework, org.osgi.service.component,
  org.osoa.sca, org.osoa.sca.annotations,
  commonj.sdo, commonj.sdo.helper, 
  org.apache.tuscany.sdo.helper, org.apache.tuscany.sdo.impl, org.apache.tuscany.sdo.model, org.apache.tuscany.sdo.model.impl,
- org.eclipse.emf.ecore.util, org.eclipse.emf.ecore.impl,
+ org.eclipse.emf.ecore, org.eclipse.emf.ecore.util, org.eclipse.emf.ecore.impl,
  helloworld.sdo
 Export-Package: helloworld.sdo.client
 Service-Component: osgi/sdo/ds/HelloWorldClient.xml
