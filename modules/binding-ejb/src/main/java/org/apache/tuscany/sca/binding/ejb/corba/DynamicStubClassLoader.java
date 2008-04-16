@@ -36,7 +36,7 @@ import net.sf.cglib.proxy.NoOp;
  * @version $Revision$ $Date$
  */
 public class DynamicStubClassLoader extends ClassLoader {
-    private final static String PACKAGE_PREFIX = "org.omg.stub.";
+    private static final String PACKAGE_PREFIX = "org.omg.stub.";
 
     @Override
     public synchronized Class loadClass(final String name) throws ClassNotFoundException {
