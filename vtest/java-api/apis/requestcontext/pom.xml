@@ -21,14 +21,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>vtest-java-api</artifactId>
+        <artifactId>java-api-apis</artifactId>
         <version>2.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>java-api-apis</artifactId>
-    <packaging>pom</packaging>
-
-    <name>Apache Tuscany SCA Java APIs and Annotations Verification Tests - APIs</name>
+    <artifactId>vtest-java-api-apis-requestcontext</artifactId>
+    <name>Apache Tuscany SCA Java APIs and Annotations Verification Tests - APIs - RequestContext</name>
 
     <dependencies>
         <dependency>
@@ -44,17 +42,4 @@
             <scope>runtime</scope>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>componentcontext</module>
-                <module>requestcontext</module>
-          </modules>
-        </profile>
-    </profiles>
 </project>
