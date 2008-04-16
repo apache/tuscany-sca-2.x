@@ -26,6 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Directed, weighted graph
@@ -72,7 +73,8 @@ public class DirectedGraph<V, E> implements Cloneable {
 
     }
 
-    private final Map<VertexPair, Path> paths = new HashMap<VertexPair, Path>();
+    // Fix for TUSCANY-2069, making the map concurrent
+    private final Map<VertexPair, Path> paths = new ConcurrentHashMap<VertexPair, Path>();
 
     /**
      * Vertex of a graph
