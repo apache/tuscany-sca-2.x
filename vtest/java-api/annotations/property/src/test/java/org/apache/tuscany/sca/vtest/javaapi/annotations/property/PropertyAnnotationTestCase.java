@@ -19,24 +19,32 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.annotations.property;
 
+import static org.junit.Assert.fail;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.property.AService;
+import org.apache.tuscany.sca.vtest.javaapi.annotations.property.CService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Ignore;
 
 /**
- * This test class tests the Property annotation described in section 1.2.3 and
- * 1.8.13
+ * This test class tests the Property annotation described in section 1.2.3
+ * including 1.8.5 and 1.8.13
  */
 public class PropertyAnnotationTestCase {
 
     protected static SCADomain domain;
     protected static String compositeName = "property.composite";
     protected static AService aService = null;
+    protected static CService cService1 = null;
+    protected static CService cService2 = null;
+    protected static CService cService3 = null;
+    protected static CService cService4 = null;
+    protected static CService cService5 = null;
+    protected static CService cService6 = null;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -44,6 +52,12 @@ public class PropertyAnnotationTestCase {
             System.out.println("Setting up");
             domain = SCADomain.newInstance(compositeName);
             aService = domain.getService(AService.class, "AComponent");
+            cService1 = domain.getService(CService.class, "CComponent1");
+            cService2 = domain.getService(CService.class, "CComponent2");
+            cService3 = domain.getService(CService.class, "CComponent3");
+            cService4 = domain.getService(CService.class, "CComponent4");
+            cService5 = domain.getService(CService.class, "CComponent5");
+            cService6 = domain.getService(CService.class, "CComponent6");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -181,4 +195,65 @@ public class PropertyAnnotationTestCase {
     	Assert.assertEquals(1, aService.getP21(1));
     	Assert.assertEquals(21, aService.getP21(2));
     }
+    
+    /**
+     * Lines 1141 to 1162:<br>
+     * 1.8.5. "@Constructor"<br>
+     * ...<br>
+     * The "@Constructor" annotation is used to mark a particular constructor
+     * to use when instantiating a Java component implementation.<br>
+     * The "@Constructor" annotation has the following attribute:<br>
+     * <li>value (optional) – identifies the property/reference names that 
+     * correspond to each of the constructor arguments. The position in the
+     * array determines which of the arguments are being named.</li>
+     * <p>
+     * cService1 - "@Constructor" without value and constructor arguments<br>
+     * cService2 - "@Constructor" without value but with constructor
+     *             arguments<br>
+     * cService3 - "@Constructor" with values and constructor arguments<br>
+     * cService4 - "@Constructor" with values and constructor arguments 
+     *             where value, property and parameter names are same<br>
+     * cService5 - "@Constructor" with switched values and constructor
+     *             arguments<br>
+     * cService6 - "@Constructor" with wrong values<br>
+     */
+    @Test
+    public void atProperty6() throws Exception {
+    	Assert.assertNull(cService1.getB1Name());
+    	Assert.assertNull(cService1.getP2());
+    	Assert.assertEquals(0, cService1.getP3());
+    	Assert.assertNull(cService1.getP4());
+    	Assert.assertEquals("NoArgument", cService1.getConstructor());
+
+    	Assert.assertEquals("BService", cService2.getB1Name());
+    	Assert.assertEquals("p2", cService2.getP2());
+    	Assert.assertEquals(3, cService2.getP3());
+    	Assert.assertEquals("p4", cService2.getP4());
+    	Assert.assertEquals("AllArguments", cService2.getConstructor());
+
+    	Assert.assertEquals("BService", cService3.getB1Name());
+    	Assert.assertEquals("p2", cService3.getP2());
+    	Assert.assertEquals(3, cService3.getP3());
+    	Assert.assertEquals("p4", cService3.getP4());
+    	Assert.assertEquals("AllArguments", cService3.getConstructor());
+
+    	Assert.assertEquals("BService", cService4.getB1Name());
+    	Assert.assertEquals("p2", cService4.getP2());
+    	Assert.assertEquals(3, cService4.getP3());
+    	Assert.assertEquals("p4", cService4.getP4());
+    	Assert.assertEquals("AllArguments", cService4.getConstructor());
+
+    	Assert.assertEquals("BService", cService5.getB1Name());
+    	Assert.assertEquals("p4", cService5.getP2());
+    	Assert.assertEquals(3, cService5.getP3());
+    	Assert.assertEquals("p2", cService5.getP4());
+    	Assert.assertEquals("SwitchedValues", cService5.getConstructor());
+    	
+    	try {
+    		System.out.println(cService6.getB1Name());
+    		fail("Should have failed to call this service");
+    	} catch (Throwable t) {}
+
+    }
+
 }

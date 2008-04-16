@@ -19,15 +19,32 @@
 package org.apache.tuscany.sca.vtest.javaapi.annotations.service;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.AObject;
+import org.osoa.sca.annotations.Remotable;
 
 /**
- * Simple Local Service
+ * Simple Remotable Service
  */
-public interface BService {
+@Remotable
+public interface HService {
 
     public String getName();
 
-    public String setAObject(AObject a);
+    public String setAObject1(AObject a);
 
-    public String testServices();
+    public String setAObject2(AObject a);
+
+    public String getComponentName();
+    
+    public String getAObject1String();
+
+    public String getAObject2String();
+
+    public String getAObject3String();
+
+    public AObject getAObject3();
+    
+    public String getServiceName1();
+    
+    public String getServiceName2();
+    
 }

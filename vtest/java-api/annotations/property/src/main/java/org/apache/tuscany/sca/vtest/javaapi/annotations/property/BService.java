@@ -16,18 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.vtest.javaapi.annotations.service;
+package org.apache.tuscany.sca.vtest.javaapi.annotations.property;
 
-import org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.AObject;
+import org.osoa.sca.annotations.Remotable;
+
 
 /**
- * Simple Local Service
+ * Simple Service used by another service
  */
+@Remotable
 public interface BService {
 
-    public String getName();
+    String getName();
 
-    public String setAObject(AObject a);
-
-    public String testServices();
 }

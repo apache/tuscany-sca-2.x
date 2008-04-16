@@ -18,13 +18,14 @@
  */
 package org.apache.tuscany.sca.vtest.javaapi.annotations.service;
 
+import org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.AObject;
+
 /**
- * Simple Local Service without defining
- * 
- * @Service at the implementation class
+ * Simple Local Service without defining "@Service" at the implementation class
  */
 public interface CService {
 
     public String getName();
 
+    public String setAObject(AObject a);
 }
