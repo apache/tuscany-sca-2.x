@@ -142,7 +142,12 @@ public class OSGiImportExportListener implements ContributionListener {
         String EOL = System.getProperty("line.separator");
 
         String bundleName = contribution.getURI();
-        String uri = contribution.getURI();
+        URL contribURL = new URL(contribution.getLocation());
+        String contribName = contribURL.getPath();
+        if (contribName.endsWith("/")) 
+            contribName = contribName.substring(0, contribName.length()-1);
+        if (contribName.lastIndexOf("/") >= 0)
+            contribName = contribName.substring(contribName.lastIndexOf("/")+1);            
 
         StringBuffer exportPackageNames = new StringBuffer();
         for (Export export : contribution.getExports()) {
@@ -181,7 +186,7 @@ public class OSGiImportExportListener implements ContributionListener {
         manifestBuf.append(manifestStr);
         manifestBuf.append("Export-Package: " + exportPackageNames + EOL);
         manifestBuf.append("Import-Package: " + importPackageNames + EOL);
-        manifestBuf.append("Bundle-ClassPath: .," + uri + EOL);
+        manifestBuf.append("Bundle-ClassPath: .," + contribName + EOL);
 
         ByteArrayInputStream manifestStream = new ByteArrayInputStream(manifestBuf.toString().getBytes());
         Manifest manifest = new Manifest();
@@ -189,10 +194,9 @@ public class OSGiImportExportListener implements ContributionListener {
 
         JarOutputStream jarOut = new JarOutputStream(out, manifest);
 
-        ZipEntry ze = new ZipEntry(uri);
+        ZipEntry ze = new ZipEntry(contribName);
         jarOut.putNextEntry(ze);
-        URL url = new URL(contribution.getLocation());
-        InputStream stream = url.openStream();
+        InputStream stream = contribURL.openStream();
 
         byte[] bytes = new byte[stream.available()];
         stream.read(bytes);
