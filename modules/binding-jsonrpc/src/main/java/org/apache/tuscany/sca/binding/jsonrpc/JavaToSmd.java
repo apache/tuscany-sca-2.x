@@ -32,13 +32,13 @@ public class JavaToSmd {
     
     public static String interfaceToSmd(Class klazz, String serviceUrl) {
         String name = klazz.getSimpleName();
-        Method methods[] = klazz.getMethods();
+        Method[] methods = klazz.getMethods();
         
         StringBuffer smdSb = new StringBuffer();
         smdSb.append("{\"SMDVersion\":\".1\",\"objectName\":\"" + name + "\",\"serviceType\":\"JSON-RPC\",\"serviceURL\":\""+ serviceUrl + "\",\"methods\":[");
         for (int i = 0; i < methods.length; i++) {
             if (i != 0) smdSb.append(",");
-            Class<?> params[] = methods[i].getParameterTypes();            
+            Class<?>[] params = methods[i].getParameterTypes();            
             smdSb.append("{\"name\":\""+methods[i].getName() + "\",\"parameters\":[");
             for (int j = 0; j < params.length; j++) {
                 if (j != 0) smdSb.append(",");
