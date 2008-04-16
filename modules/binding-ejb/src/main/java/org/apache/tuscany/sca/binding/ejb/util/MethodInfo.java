@@ -44,7 +44,7 @@ public class MethodInfo implements Serializable {
      * S short I int J long F float D double L fully-qualified-class ;
      * fully-qualified-class [ type type[] ( arg-types ) ret-type method type
      */
-    private final static Map signatures = new HashMap();
+    private static final Map signatures = new HashMap();
     static {
         signatures.put("Z", boolean.class);
         signatures.put("B", byte.class);
