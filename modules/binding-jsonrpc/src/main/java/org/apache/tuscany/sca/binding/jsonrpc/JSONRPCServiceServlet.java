@@ -119,7 +119,7 @@ public class JSONRPCServiceServlet extends JSONRPCServlet {
 
         // Read the request
         CharArrayWriter data = new CharArrayWriter();
-        char buf[] = new char[4096];
+        char[] buf = new char[4096];
         int ret;
         while ((ret = in.read(buf, 0, 4096)) != -1) {
             data.write(buf, 0, ret);
