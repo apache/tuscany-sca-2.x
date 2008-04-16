@@ -62,15 +62,12 @@ public class NotificationReferenceBindingInvoker implements Invoker {
             if (bodyArray.length == 3) {
                 writeable = getWriteableFromByteArray((byte[])bodyArray[1]);
                 incomingBrokerID = (String)bodyArray[2];
-            }
-            else if (bodyArray.length == 1) {
+            } else if (bodyArray.length == 1) {
                 writeable = getWriteableFromPayload(bodyArray[0]);
-            }
-            else {
+            } else {
                 throw new RuntimeException("Invalid body array size");
             }
-        }
-        else {
+        } else {
             writeable = getWriteableFromPayload(payload);
         }
 
@@ -105,8 +102,7 @@ public class NotificationReferenceBindingInvoker implements Invoker {
                 try {
                     element.serialize(os);
                     os.flush();
-                }
-                catch(Exception e) {
+                } catch(Exception e) {
                     throw new IOUtilsException(e);
                 }
             }
@@ -120,8 +116,7 @@ public class NotificationReferenceBindingInvoker implements Invoker {
                 try {
                     os.write(payload);
                     os.flush();
-                }
-                catch(Exception e) {
+                } catch(Exception e) {
                     throw new IOUtilsException(e);
                 }
             }

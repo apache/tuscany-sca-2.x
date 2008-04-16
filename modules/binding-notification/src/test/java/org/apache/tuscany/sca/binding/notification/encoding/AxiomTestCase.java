@@ -49,8 +49,7 @@ public class AxiomTestCase extends TestCase {
             element.serialize(sw);
             sw.flush();
             Assert.assertEquals(sw.toString(),testNewProducerResponse);
-        }
-        catch(Throwable e) {
+        } catch(Throwable e) {
             e.printStackTrace();
         }
     }

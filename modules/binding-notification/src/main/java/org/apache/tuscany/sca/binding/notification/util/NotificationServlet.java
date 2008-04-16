@@ -70,12 +70,10 @@ public class NotificationServlet extends HttpServlet {
                 response.getOutputStream().write(handlersResponse);
                 response.getOutputStream().flush();
             }
-        }
-        else {
+        } else {
             try {
                 servletStreamHandler.handle(headers, request.getInputStream(), request.getContentLength(), response.getOutputStream());
-            }
-            catch(RuntimeException e) {
+            } catch(RuntimeException e) {
                 e.printStackTrace();
             }
         }

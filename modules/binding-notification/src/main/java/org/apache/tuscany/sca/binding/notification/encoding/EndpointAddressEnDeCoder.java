@@ -63,8 +63,7 @@ public class EndpointAddressEnDeCoder extends AbstractEnDeCoder<EndpointAddress>
                         if (reader.hasText()) {
                             String address = reader.getText();
                             endpointAddressElement.setAddress(address);
-                        }
-                        else {
+                        } else {
                             throw new EncodingException("Endpoint address is missing address");
                         }
                         break;

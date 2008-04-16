@@ -48,8 +48,7 @@ public class NewBrokerResponseEnDeCoder extends AbstractEnDeCoder<NewBrokerRespo
             if (encodingObject.isFirstBroker()) {
                 registry.encode(encodingObject.getEndConsumers(), writer);
                 registry.encode(encodingObject.getEndProducers(), writer);
-            }
-            else {
+            } else {
                 registry.encode(encodingObject.getBrokers(), writer);
             }
             writer.writeEndElement();
@@ -74,16 +73,13 @@ public class NewBrokerResponseEnDeCoder extends AbstractEnDeCoder<NewBrokerRespo
                         if (encodingObject instanceof EndProducers && !haveEP && firstBroker) {
                             newBrokerResponseElement.setEndProducers((EndProducers)encodingObject);
                             haveEP = true;
-                        }
-                        else if(encodingObject instanceof EndConsumers && !haveEC && firstBroker) {
+                        } else if(encodingObject instanceof EndConsumers && !haveEC && firstBroker) {
                             newBrokerResponseElement.setEndConsumers((EndConsumers)encodingObject);
                             haveEC = true;
-                        }
-                        else if(encodingObject instanceof Brokers && !haveB && !firstBroker) {
+                        } else if(encodingObject instanceof Brokers && !haveB && !firstBroker) {
                             newBrokerResponseElement.setBrokers((Brokers)encodingObject);
                             haveB = true;
-                        }
-                        else {
+                        } else {
                             throw new EncodingException("Invalid encoding object");
                         }
                         break;

@@ -66,12 +66,10 @@ public class ReplaceBrokerConnectionEnDeCoder extends AbstractEnDeCoder<ReplaceB
                         if (encodingObject instanceof RemovedBroker && !haveRB) {
                             replaceBrokerConnectionElement.setRemovedBroker((RemovedBroker)encodingObject);
                             haveRB = true;
-                        }
-                        else if(encodingObject instanceof Neighbors && !haveN) {
+                        } else if(encodingObject instanceof Neighbors && !haveN) {
                             replaceBrokerConnectionElement.setNeighbors((Neighbors)encodingObject);
                             haveN = true;
-                        }
-                        else {
+                        } else {
                             throw new EncodingException("Invalid encoding object");
                         }
                         break;

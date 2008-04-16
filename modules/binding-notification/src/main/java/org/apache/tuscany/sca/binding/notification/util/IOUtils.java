@@ -84,8 +84,7 @@ public class IOUtils {
             if (wbody != null) {
                 OutputStream ost = con.getOutputStream();
                 wbody.write(ost);
-            }
-            else {
+            } else {
                 throw new IOUtilsException("Missing writeable body");
             }
             final int rc = con.getResponseCode();
@@ -101,9 +100,7 @@ public class IOUtils {
                 default:
                     throw new RuntimeException("Unexpected response code: " + rc);
             }
-        }
-        finally
-        {
+        } finally {
             con.disconnect();
         }
         return response;
@@ -164,8 +161,7 @@ public class IOUtils {
                 final int cbRead = ist.read(block, 0, cbToRead);
                 if (cbRead == -1) {
                     done = true;
-                }
-                else {
+                } else {
                     ost.write(block, 0, cbRead);
                     cbCopied += cbRead;
                     done = cbCopied == length;

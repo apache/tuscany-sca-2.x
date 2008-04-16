@@ -62,12 +62,10 @@ public abstract class AbstractBrokerEnDeCoder<B extends AbstractBroker> extends 
                         if (encodingObject instanceof BrokerConsumerReference && !haveBCR) {
                             brokerElement.setBrokerConsumerReference((BrokerConsumerReference)encodingObject);
                             haveBCR = true;
-                        }
-                        else if(encodingObject instanceof BrokerProducerReference && !haveBPR) {
+                        } else if(encodingObject instanceof BrokerProducerReference && !haveBPR) {
                             brokerElement.setBrokerProducerReference((BrokerProducerReference)encodingObject);
                             haveBPR = true;
-                        }
-                        else {
+                        } else {
                             throw new EncodingException("Invalid encoding object");
                         }
                         break;

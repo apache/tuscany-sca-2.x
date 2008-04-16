@@ -46,8 +46,7 @@ public class EncodingUtils {
             encodingRegistry.encode(eo, writer);
             writer.flush();
             writer.close();
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             throw new IOUtilsException(e);
         }
     }
@@ -60,8 +59,7 @@ public class EncodingUtils {
             reader.next();
             eo = encodingRegistry.decode(reader);
             reader.close();
-        }
-        catch(XMLStreamException e) {
+        } catch(XMLStreamException e) {
             throw new EncodingException(e);
         }
         

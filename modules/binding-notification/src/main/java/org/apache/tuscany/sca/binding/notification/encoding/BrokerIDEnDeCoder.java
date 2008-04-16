@@ -63,8 +63,7 @@ public class BrokerIDEnDeCoder extends AbstractEnDeCoder<BrokerID> {
                         if (reader.hasText()) {
                             String id = reader.getText();
                             brokerIDElement.setID(id);
-                        }
-                        else {
+                        } else {
                             throw new EncodingException("Broker ID missing value");
                         }
                         break;
