@@ -72,8 +72,8 @@ class FeedBindingListenerServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(FeedBindingListenerServlet.class.getName());
     private static final long serialVersionUID = 1L;
 
-    private final static Namespace APP_NS = Namespace.getNamespace("app", "http://purl.org/atom/app#");
-    private final static Namespace ATOM_NS = Namespace.getNamespace("atom", "http://www.w3.org/2005/Atom");
+    private static final Namespace APP_NS = Namespace.getNamespace("app", "http://purl.org/atom/app#");
+    private static final Namespace ATOM_NS = Namespace.getNamespace("atom", "http://www.w3.org/2005/Atom");
 
     private RuntimeWire wire;
     private Invoker getFeedInvoker;
