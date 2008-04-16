@@ -66,12 +66,10 @@ public class RemoveBrokerEnDeCoder extends AbstractEnDeCoder<RemoveBroker> {
                         if (encodingObject instanceof BrokerConsumerReference && !haveBCR) {
                             removeBrokerElement.setBrokerConsumerReference((BrokerConsumerReference)encodingObject);
                             haveBCR = true;
-                        }
-                        else if(encodingObject instanceof NeighborBrokerConsumers && !haveNBC) {
+                        } else if(encodingObject instanceof NeighborBrokerConsumers && !haveNBC) {
                             removeBrokerElement.setNeighborBrokerConsumers((NeighborBrokerConsumers)encodingObject);
                             haveNBC = true;
-                        }
-                        else {
+                        } else {
                             throw new EncodingException("Invalid encoding object");
                         }
                         break;

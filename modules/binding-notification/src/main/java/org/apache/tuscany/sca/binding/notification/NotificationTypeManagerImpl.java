@@ -122,8 +122,7 @@ public class NotificationTypeManagerImpl implements NotificationTypeManager {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
-        }
-        else {
+        } else {
             NotificationTypeManagerHandler ntmHandler = ntmHandlers.get(notificationType);
             if (ntmHandler != null) {
                 throw new RuntimeException("Trying to deploy local consumer with existing local producer, consumer or broker");
@@ -160,8 +159,7 @@ public class NotificationTypeManagerImpl implements NotificationTypeManager {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
-        }
-        else {
+        } else {
             NotificationTypeManagerHandler ntmHandler = ntmHandlers.get(notificationType);
             if (ntmHandler != null) {
                 throw new RuntimeException("Trying to deploy local producer with existing local producer, consumer or broker");
@@ -201,8 +199,7 @@ public class NotificationTypeManagerImpl implements NotificationTypeManager {
                             producerListResult.add(epr);
                         }
                     }
-                }
-                else {
+                } else {
                     for (Broker broker : nbr.getBrokers().getBrokerSequence()) {
                         consumerListResult.add(broker.getBrokerConsumerReference().getReference());
                         producerListResult.add(broker.getBrokerProducerReference().getReference());
@@ -213,8 +210,7 @@ public class NotificationTypeManagerImpl implements NotificationTypeManager {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
-        }
-        else {
+        } else {
             NotificationTypeManagerHandler ntmHandler = ntmHandlers.get(notificationType);
             if (ntmHandler != null) {
                 throw new RuntimeException("Trying to deploy local broker with existing local producer, consumer or broker");
@@ -280,11 +276,9 @@ public class NotificationTypeManagerImpl implements NotificationTypeManager {
             this(notificationType);
             if (consumerUrl != null) {
                 addConsumer(consumerUrl);
-            }
-            else if (producerUrl != null) {
+            } else if (producerUrl != null) {
                 addProducer(producerUrl);
-            }
-            else if (broker != null) {
+            } else if (broker != null) {
                 addBroker(broker);
             }
         }
@@ -315,24 +309,19 @@ public class NotificationTypeManagerImpl implements NotificationTypeManager {
             EncodingObject eo = null;
             try {
                 eo = EncodingUtils.decodeFromStream(encodingRegistry, istream);
-            }
-            catch(EncodingException e) {
+            } catch(EncodingException e) {
                 throw new RuntimeException(e);
             }
             
             if (Constants.NEW_CONSUMER_OP.equals(opHeader)) {
                 handleNewConsumer((NewConsumer)eo, ostream);
-            }
-            else if(Constants.NEW_PRODUCER_OP.equals(opHeader)) {
+            } else if(Constants.NEW_PRODUCER_OP.equals(opHeader)) {
                 handleNewProducer((NewProducer)eo, ostream);
-            }
-            else if(Constants.NEW_BROKER_OP.equals(opHeader)) {
+            } else if(Constants.NEW_BROKER_OP.equals(opHeader)) {
                 handleNewBroker((NewBroker)eo, ostream);
-            }
-            else if (Constants.NEW_BROKER_ACK_OP.equals(opHeader)) {
+            } else if (Constants.NEW_BROKER_ACK_OP.equals(opHeader)) {
                 handleNewBrokerAck();
-            }
-            else if (Constants.REMOVE_BROKER_OP.equals(opHeader)) {
+            } else if (Constants.REMOVE_BROKER_OP.equals(opHeader)) {
                 handleRemoveBroker((RemoveBroker)eo);
             }
         }
@@ -353,20 +342,17 @@ public class NotificationTypeManagerImpl implements NotificationTypeManager {
                     for (URL producerUrl : producerList) {
                         ncr.addReferenceToSequence(EncodingUtils.createEndpointReference(producerUrl, null));
                     }
-                }
-                else if(brokerList != null) {
+                } else if(brokerList != null) {
                     ncr.setSequenceType(Constants.BrokerProducers);
                     for (BrokerStruct broker : brokerList) {
                         ncr.addReferenceToSequence(EncodingUtils.createEndpointReference(broker.producerUrl, null));
                     }
-                }
-                else {
+                } else {
                     ncr.setSequenceType(Constants.NoProducers);
                 }
                 try {
                     EncodingUtils.encodeToStream(encodingRegistry, ncr, ostream);
-                }
-                catch(IOUtilsException e) {
+                } catch(IOUtilsException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -388,20 +374,17 @@ public class NotificationTypeManagerImpl implements NotificationTypeManager {
                     for (URL consumerUrl : consumerList) {
                         npr.addReferenceToSequence(EncodingUtils.createEndpointReference(consumerUrl, null));
                     }
-                }
-                else if(brokerList != null) {
+                } else if(brokerList != null) {
                     npr.setSequenceType(Constants.BrokerConsumers);
                     for (BrokerStruct broker : brokerList) {
                         npr.addReferenceToSequence(EncodingUtils.createEndpointReference(broker.consumerUrl, null));
                     }
-                }
-                else {
+                } else {
                     npr.setSequenceType(Constants.NoConsumers);
                 }
                 try {
                     EncodingUtils.encodeToStream(encodingRegistry, npr, ostream);
-                }
-                catch(IOUtilsException e) {
+                } catch(IOUtilsException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -421,8 +404,7 @@ public class NotificationTypeManagerImpl implements NotificationTypeManager {
                         for (URL consumerUrl : consumerList) {
                             endConsumers.addReferenceToSequence(EncodingUtils.createEndpointReference(consumerUrl, null));
                         }
-                    }
-                    else {
+                    } else {
                         endConsumers.setSequenceType(Constants.NoConsumers);
                     }
                     nbr.setEndConsumers(endConsumers);
@@ -432,13 +414,11 @@ public class NotificationTypeManagerImpl implements NotificationTypeManager {
                         for (URL producerUrl : producerList) {
                             endProducers.addReferenceToSequence(EncodingUtils.createEndpointReference(producerUrl, null));
                         }
-                    }
-                    else {
+                    } else {
                         endProducers.setSequenceType(Constants.NoProducers);
                     }
                     nbr.setEndProducers(endProducers);
-                }
-                else {
+                } else {
                     nbr.setFirstBroker(false);
                     Brokers brokers = new Brokers();
                     for (BrokerStruct brokerStruct : brokerList) {
@@ -471,15 +451,13 @@ public class NotificationTypeManagerImpl implements NotificationTypeManager {
                 BrokerStruct broker = new BrokerStruct(consumerUrl, producerUrl, consumerBrokerID.getID());
                 if (consumerList == null && producerList == null) {
                     addBroker(broker);
-                }
-                else {
+                } else {
                     pendingBroker = broker;
                     notificationTypeLock.isLocked = true;
                 }
                 try {
                     EncodingUtils.encodeToStream(encodingRegistry, nbr, ostream);
-                }
-                catch(IOUtilsException e) {
+                } catch(IOUtilsException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -605,8 +583,7 @@ public class NotificationTypeManagerImpl implements NotificationTypeManager {
         public Object read(InputStream istream) throws IOUtilsException {
             try {
                 return EncodingUtils.decodeFromStream(encodingRegistry, istream);
-            }
-            catch(EncodingException e) {
+            } catch(EncodingException e) {
                 throw new IOUtilsException(e);
             }
         }

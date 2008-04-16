@@ -105,8 +105,7 @@ public class NotificationServiceBindingProvider
             if (ntmAddress != null && notificationType != null) {
                 remoteNtmUrl = new URL(ntmAddress + notificationTypePath);
             }
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             throw new RuntimeException(e);
         }
         this.started = false;
@@ -169,8 +168,7 @@ public class NotificationServiceBindingProvider
             for (URL producerUrl : producerList) {
                 subscribeWithProducer(producerUrl, null, ws);
             }
-        }
-        else if (Constants.BrokerProducers.equals(sequenceType)) {
+        } else if (Constants.BrokerProducers.equals(sequenceType)) {
             // Pick a broker producer, for now the first one
             URL producerUrl = producerList.get(0);
             subscribeWithProducer(producerUrl, null, ws);
@@ -239,8 +237,7 @@ public class NotificationServiceBindingProvider
         byte[] payload = null;
         try {
             payload = IOUtils.readFully(istream, contentLength);
-        }
-        catch(IOException e) {
+        } catch(IOException e) {
             throw new RuntimeException(e);
         }
         Object[] args = getArgsFromByteArray(payload, incomingBrokerID);
@@ -255,8 +252,7 @@ public class NotificationServiceBindingProvider
             StAXOMBuilder builder = new StAXOMBuilder(new ByteArrayInputStream(payload));
             OMElement element = builder.getDocumentElement();
             return new Object[] { element };
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             throw new RuntimeException(e);
         }
     }

@@ -97,8 +97,7 @@ public class NotificationReferenceBindingProvider
             if (ntmAddress != null && notificationType != null) {
                 remoteNtmUrl = new URL(ntmAddress + notificationTypePath);
             }
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             throw new RuntimeException(e);
         }
         this.started = false;
@@ -175,8 +174,7 @@ public class NotificationReferenceBindingProvider
             for (URL consumerUrl : consumerList) {
                 addSubscriberUrl(consumerUrl);
             }
-        }
-        else if (Constants.BrokerConsumers.equals(sequenceType)) {
+        } else if (Constants.BrokerConsumers.equals(sequenceType)) {
             // Pick a broker consumer, for now the first one
             URL consumerUrl = consumerList.get(0);
             addSubscriberUrl(consumerUrl);
@@ -211,12 +209,10 @@ public class NotificationReferenceBindingProvider
             if (eo instanceof Subscribe) {
                 Subscribe sub = (Subscribe)eo;
                 addSubscriber(sub.getConsumerReference().getReference());
-            }
-            else if (eo instanceof ConnectionOverride) {
+            } else if (eo instanceof ConnectionOverride) {
                 ConnectionOverride co = (ConnectionOverride)eo;
                 replaceSubscribers(co.getBrokerConsumerReference().getReference());
-            }
-            else if (eo instanceof ReplaceBrokerConnection) {
+            } else if (eo instanceof ReplaceBrokerConnection) {
                 ReplaceBrokerConnection rbc = (ReplaceBrokerConnection)eo;
                 URL removedBrokerConsumerEpr = rbc.getRemovedBroker().getReference().getEndpointAddress().getAddress();
                 if (rbc.getNeighbors() != null) {
@@ -226,12 +222,10 @@ public class NotificationReferenceBindingProvider
                                                     chosenBroker.getBrokerConsumerReference().getReference());
                     brokerManager.replaceConsumersBrokerConnection(notificationType,
                                                                    chosenBroker.getBrokerProducerReference().getReference());
-                }
-                else {
+                } else {
                     replaceBrokerSubscriber(removedBrokerConsumerEpr, null);
                 }
-            }
-            else {
+            } else {
                 throw new RuntimeException("Unknown encoding object");
             }
         } catch(Throwable e) {

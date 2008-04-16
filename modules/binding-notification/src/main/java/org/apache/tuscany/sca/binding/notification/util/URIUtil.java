@@ -30,8 +30,7 @@ public class URIUtil {
         
         if (uri.isOpaque()) {
             path = "/" + uri.getSchemeSpecificPart();
-        }
-        else if (uri.isAbsolute()) {
+        } else if (uri.isAbsolute()) {
             path = uri.getPath();
         } else {
             path = "/" + uri.getPath();
