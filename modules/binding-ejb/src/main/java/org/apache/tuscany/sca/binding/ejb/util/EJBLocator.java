@@ -336,7 +336,7 @@ public class EJBLocator {
             char c = encoded.charAt(i);
             if (RFC2396.indexOf(c) == -1) {
                 encoded.setCharAt(i, '%');
-                char ac[] = Integer.toHexString(c).toCharArray();
+                char[] ac = Integer.toHexString(c).toCharArray();
                 if (ac.length == 2) {
                     encoded.insert(i + 1, ac);
                 } else if (ac.length == 1) {
