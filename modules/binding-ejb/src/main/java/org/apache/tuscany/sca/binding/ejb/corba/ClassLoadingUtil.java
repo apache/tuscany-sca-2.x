@@ -260,7 +260,7 @@ public class ClassLoadingUtil {
         // Array.newInstance() requires an array of the requested number of dimensions
         // that gives the size for each dimension.  We just request 0 in each of the
         // dimensions, which is not unlike a black hole singularity.
-        int dimensions[] = new int[dimension];
+        int[] dimensions = new int[dimension];
         // create an instance and return the associated class object.
         return Array.newInstance(type, dimensions).getClass();
     }

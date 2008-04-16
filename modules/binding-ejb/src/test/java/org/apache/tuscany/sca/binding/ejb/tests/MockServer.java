@@ -28,7 +28,7 @@ import java.net.Socket;
 public class MockServer implements Runnable {
 
     private int listen;
-    byte seq[][] =
+    byte[][] seq =
         {
          {79, 69, 74, 80, 47, 51, 46, 48, 1, -84, -19, 0, 5, 119, 58, 1, 27, 0, 54, 47, 104, 101, 108, 108, 111, 45,
           97, 100, 100, 115, 101, 114, 118, 105, 99, 101, 47, 65, 100, 100, 83, 101, 114, 118, 105, 99, 101, 66, 101,
