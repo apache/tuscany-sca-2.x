@@ -31,8 +31,11 @@ import org.apache.tuscany.sca.vtest.javaapi.annotations.service.DService2;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.DService3;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.EService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.FService;
+import org.apache.tuscany.sca.vtest.javaapi.annotations.service.GService1;
+import org.apache.tuscany.sca.vtest.javaapi.annotations.service.GService2;
+import org.apache.tuscany.sca.vtest.javaapi.annotations.service.HService;
+import org.apache.tuscany.sca.vtest.javaapi.annotations.service.IService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.AObject;
-import org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.FServiceImpl;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.FServiceImpl2;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -40,8 +43,10 @@ import org.junit.Test;
 import org.junit.Ignore;
 
 /**
- * This test class tests the Service annotation described in section 1.2.1 and
- * 1.8.17
+ * This test class tests the Service annotation described in section 1.2.1
+ * including 1.3.1, 1.8.1, 1.8.3, 1.8.6, 1.8.15 and 1.8.17<br>
+ * but not..<br>
+ * <li>Lines 1531 to 1534</li>
  */
 public class ServiceAnnotationTestCase {
 
@@ -49,6 +54,9 @@ public class ServiceAnnotationTestCase {
     protected static String compositeName = "service.composite";
     protected static AService aService = null;
     protected static BService bService = null;
+    protected static BService bService1 = null;
+    protected static HService hService = null;
+    protected static IService iService = null;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -57,6 +65,9 @@ public class ServiceAnnotationTestCase {
             domain = SCADomain.newInstance(compositeName);
             aService = domain.getService(AService.class, "AComponent");
             bService = domain.getService(BService.class, "BComponent");
+            bService1 = domain.getService(BService.class, "BComponent1");
+            hService = domain.getService(HService.class, "HComponent");
+            iService = domain.getService(IService.class, "IComponent");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -126,12 +137,63 @@ public class ServiceAnnotationTestCase {
      * ...<br>
      * The data exchange semantic for calls to local services is by-reference.<br>
      * ...<br>
+     * Lines 996 to 1028:<br>
+     * 1.8.1 "@AllowsPassByReference"<br>
+     * ...<br>
+     * Lines 1535 to 1540:<br>
+     * Independent of whether the remotable service is called from outside of
+     * the composite that contains it or from another component in the same
+     * composite, the data exchange semantics are by-value.<br>
+     * Implementations of remotable services may modify input data during or
+     * after an invocation and may modify return data after the invocation. If
+     * a remotable service is called locally or remotely, the SCA container is
+     * responsible for making sure that no modification of input data or
+     * post-invocation modifications to return data are seen by the caller.<br>
+     * <p>
+     * Test under Non-SCA <-> SCA
+     * <li>BService is local service to test by reference</li>
+     * <li>HService is remotable service to test "@AllowsPassByReference" at
+     * method level</li>
+     * <li>IService is remotable service to test "@AllowsPassByReference" at
+     * class level</li>
      */
     @Test
     public void atService4() throws Exception {
-        AObject o = new AObject();
-        Assert.assertEquals("BService", bService.setAObject(o));
-        Assert.assertEquals("BService", o.aString);
+        AObject b = new AObject();
+        Assert.assertEquals("BService", bService.setAObject(b));
+        Assert.assertEquals("BService", b.aString);
+        
+        AObject h1 = new AObject();
+        Assert.assertEquals("HService", hService.setAObject1(h1));
+        Assert.assertEquals("HService", h1.aString);
+        h1.aString = "atService4";
+        Assert.assertEquals("atService4", hService.getAObject1String());
+        
+        AObject h2 = new AObject();
+        Assert.assertEquals("HService", hService.setAObject2(h2));
+        Assert.assertNull(h2.aString);
+        h2.aString = "atService4";
+        Assert.assertEquals("HService", hService.getAObject2String());
+        
+        AObject h3 = hService.getAObject3();
+        h3.aString = "atService4";
+        Assert.assertEquals("HService", hService.getAObject3String());
+        
+        AObject i1 = new AObject();
+        Assert.assertEquals("IService", iService.setAObject1(i1));
+        Assert.assertEquals("IService", i1.aString);
+        i1.aString = "atService4";
+        Assert.assertEquals("atService4", iService.getAObject1String());
+        
+        AObject i2 = new AObject();
+        Assert.assertEquals("IService", iService.setAObject2(i2));
+        Assert.assertEquals("IService", i2.aString);
+        i2.aString = "atService4";
+        Assert.assertEquals("atService4", iService.getAObject2String());
+        
+        AObject i3 = iService.getAObject3();
+        i3.aString = "atService4";
+        Assert.assertEquals("atService4", iService.getAObject3String());
     }
 
     /**
@@ -216,5 +278,74 @@ public class ServiceAnnotationTestCase {
         Assert.assertEquals("GService1", gService1.getServiceName());
         Assert.assertEquals("GService", gService2.getName());
         Assert.assertEquals("GService2", gService2.getServiceName());
+    }
+    
+    /**
+     * Lines 227 to 242:<br>
+     * A local service can only be called by clients that are deployed within
+     * the same address space as the component implementing the local service.<br>
+     * ...<br>
+     * The data exchange semantic for calls to local services is by-reference.<br>
+     * ...<br>
+     * Lines 996 to 1028:<br>
+     * 1.8.1 "@AllowsPassByReference"<br>
+     * ...<br>
+     * Lines 1535 to 1540:<br>
+     * Independent of whether the remotable service is called from outside of
+     * the composite that contains it or from another component in the same
+     * composite, the data exchange semantics are by-value.<br>
+     * Implementations of remotable services may modify input data during or
+     * after an invocation and may modify return data after the invocation. If
+     * a remotable service is called locally or remotely, the SCA container is
+     * responsible for making sure that no modification of input data or
+     * post-invocation modifications to return data are seen by the caller.<br>
+     * <p>
+     * Test under SCA <-> SCA<br>
+     * <li>AService is remotable service to test by value</li>
+     * <li>CService is local service to test by-reference</li>
+     * <li>HService is remotable service to test "@AllowsPassByReference" at method level</li>
+     * <li>IService is remotable service to test "@AllowsPassByReference" at class level</li>
+     */
+    @Test
+    public void atService10() throws Exception {
+        Assert.assertEquals("None", bService1.testServices());
+    }
+    
+    /**
+     * Lines 1095 to 1124:<br>
+     * 1.8.3. "@ComponentName"<br>
+     * ...<br>
+     * The "@ComponentName" annotation type is used to annotate a Java class
+     * field or setter method that is used to inject the component name.<br>
+     * ...<br>
+     */
+    @Test
+    public void atService11() throws Exception {
+    	Assert.assertEquals("HComponent", hService.getComponentName());
+    	Assert.assertNull(iService.getComponentName1());
+    	Assert.assertEquals("IComponent", iService.getComponentName2());
+    }
+    
+    /**
+     * Lines 1164 to 1187:<br>
+     * 1.8.6. "@Context"<br>
+     * ...<br>
+     * The "@Context" annotation type is used to annotate a Java class field
+     * or a setter method that is used to inject a composite context for the
+     * component. The type of context to be injected is defined by the type of
+     * the Java class field or type of the setter method input argument, the
+     * type is either ComponentContext or RequestContext.<br>
+     * ...<br>
+     * <p>
+     * HService - "@Context" is used to annotate setter methods<br>
+     * IService - "@Context" is used to annotate class fields<br>
+     * <br>
+     */
+    @Test
+    public void atService12() throws Exception {
+    	Assert.assertEquals("HService", hService.getServiceName1());
+    	Assert.assertEquals("HService", hService.getServiceName2());
+    	Assert.assertEquals("IService", iService.getServiceName1());
+    	Assert.assertEquals("IService", iService.getServiceName2());
     }
 }

@@ -30,6 +30,15 @@
 			class="org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.BServiceImpl" />
 	</component>
 
+	<component name="BComponent1">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.BServiceImpl" />
+		<reference name="aService" target="AComponent"/>	
+		<reference name="cService" target="CComponent"/>	
+		<reference name="hService" target="HComponent"/>	
+		<reference name="iService" target="IComponent"/>	
+	</component>
+
 	<component name="CComponent">
 		<implementation.java
 			class="org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.CServiceImpl" />
@@ -59,5 +68,15 @@
 		<implementation.java
 			class="org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.GServiceImpl" />
 	</component>
-
+	
+	<component name="HComponent">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.HServiceImpl" />
+	</component>
+	
+	<component name="IComponent">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.IServiceImpl" />
+	</component>
+	
 </composite>

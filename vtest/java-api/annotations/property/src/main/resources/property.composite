@@ -73,5 +73,63 @@
 			<property name="p20" many="true">"p20"</property>
 			<property name="p21" many="true">2 1 21</property>
 	</component>
+
+	<component name="CComponent1">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.property.impl.CServiceImpl1" />
+			<reference name="bOne" target="BComponent"/>
+			<property name="pTwo">p2</property>
+			<property name="pThree">3</property>
+			<property name="pFour">p4</property>
+	</component>
+
+	<component name="CComponent2">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.property.impl.CServiceImpl2" />
+			<reference name="bOne" target="BComponent"/>
+			<property name="pTwo">p2</property>
+			<property name="pThree">3</property>
+			<property name="pFour">p4</property>
+	</component>
+
+	<component name="CComponent3">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.property.impl.CServiceImpl3" />
+			<reference name="bOne" target="BComponent"/>
+			<property name="pTwo">p2</property>
+			<property name="pThree">3</property>
+			<property name="pFour">p4</property>
+	</component>
+
+	<component name="CComponent4">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.property.impl.CServiceImpl4" />
+			<reference name="bOne" target="BComponent"/>
+			<property name="pTwo">p2</property>
+			<property name="pThree">3</property>
+			<property name="pFour">p4</property>
+	</component>
+
+	<component name="CComponent5">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.property.impl.CServiceImpl5" />
+			<reference name="bOne" target="BComponent"/>
+			<property name="pTwo">p2</property>
+			<property name="pThree">3</property>
+			<property name="pFour">p4</property>
+	</component>
 	
+	<component name="CComponent6">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.property.impl.CServiceImpl6" />
+			<reference name="bOne" target="BComponent"/>
+			<property name="pTwo">p2</property>
+			<property name="pThree">3</property>
+			<property name="pFour">p4</property>
+	</component>
+	
+    <component name="BComponent">
+        <implementation.java class="org.apache.tuscany.sca.vtest.javaapi.annotations.property.impl.BServiceImpl"/>
+    </component>    
+    
 </composite>

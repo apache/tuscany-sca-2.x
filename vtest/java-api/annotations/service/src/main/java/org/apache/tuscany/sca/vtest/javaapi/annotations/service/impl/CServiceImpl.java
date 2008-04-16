@@ -27,4 +27,8 @@ public class CServiceImpl implements CService {
         return "CService";
     }
 
+    public String setAObject(AObject a) {
+        a.aString = "CService";
+        return "CService";
+    }
 }
