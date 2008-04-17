@@ -45,7 +45,9 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
+import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
 
 public class CompositeWireBuilderImpl {
@@ -90,8 +92,9 @@ public class CompositeWireBuilderImpl {
      * services/references to component services/references inside a composite.
      * 
      * @param composite
+     * @throws IncompatibleInterfaceContractException 
      */
-    public void wireComposite(Composite composite) {
+    public void wireComposite(Composite composite) throws IncompatibleInterfaceContractException {
 
         // Wire nested composites recursively
         for (Component component : composite.getComponents()) {
@@ -211,10 +214,11 @@ public class CompositeWireBuilderImpl {
      * @param composite
      * @param componentServices
      * @param problems
+     * @throws IncompatibleInterfaceContractException 
      */
     private void connectCompositeServices(Composite composite,
                                           Map<String, Component> components,
-                                          Map<String, ComponentService> componentServices) {
+                                          Map<String, ComponentService> componentServices) throws IncompatibleInterfaceContractException {
     
         // Propagate interfaces from inner composite components' services to
         // their component services
@@ -257,8 +261,16 @@ public class CompositeWireBuilderImpl {
     
                     // Use the interface contract from the component service if
                     // none is specified on the composite service
-                    if (compositeService.getInterfaceContract() == null) {
-                        compositeService.setInterfaceContract(promotedService.getInterfaceContract());
+                    InterfaceContract compositeServiceInterfaceContract = compositeService.getInterfaceContract();
+                    InterfaceContract promotedServiceInterfaceContract = promotedService.getInterfaceContract();
+                    if (compositeServiceInterfaceContract == null) {
+                        compositeService.setInterfaceContract(promotedServiceInterfaceContract);
+                    } else if (promotedServiceInterfaceContract != null) {
+                    	// Check the compositeServiceInterfaceContract and promotedServiceInterfaceContract
+                    	boolean isCompatible = interfaceContractMapper.isCompatible(compositeServiceInterfaceContract,promotedServiceInterfaceContract);
+                    	if(!isCompatible){
+                    		throw new IncompatibleInterfaceContractException("Interface of composite service "+promotedServiceName +" must be subset of the interface declared by promoted component service.", compositeServiceInterfaceContract, promotedServiceInterfaceContract);
+                    	}
                     }
     
                 } else {
@@ -275,8 +287,9 @@ public class CompositeWireBuilderImpl {
      * @param composite
      * @param componentReferences
      * @param problems
+     * @throws IncompatibleInterfaceContractException 
      */
-    private void connectCompositeReferences(Composite composite, Map<String, ComponentReference> componentReferences) {
+    private void connectCompositeReferences(Composite composite, Map<String, ComponentReference> componentReferences) throws IncompatibleInterfaceContractException {
     
         // Propagate interfaces from inner composite components' references to
         // their component references
@@ -311,10 +324,18 @@ public class CompositeWireBuilderImpl {
                         // Use the interface contract from the component
                         // reference if none
                         // is specified on the composite reference
-                        if (compositeReference.getInterfaceContract() == null) {
-                            compositeReference.setInterfaceContract(componentReference.getInterfaceContract());
+                        
+                        InterfaceContract compositeReferenceInterfaceContract = compositeReference.getInterfaceContract();
+                        InterfaceContract componentReferenceInterfaceContract = componentReference.getInterfaceContract();
+                        if (compositeReferenceInterfaceContract == null) {
+                            compositeReference.setInterfaceContract(componentReferenceInterfaceContract);
+                        } else if (componentReferenceInterfaceContract != null) {
+                        	// Check the compositeInterfaceContract and componentInterfaceContract
+                        	boolean isCompatible = interfaceContractMapper.isCompatible(componentReferenceInterfaceContract,compositeReferenceInterfaceContract);
+                        	if(!isCompatible){
+                        		throw new IncompatibleInterfaceContractException("Interface of composite reference "+componentReferenceName +" must be superset of the interface declared by promoted component reference.", componentReferenceInterfaceContract, compositeReferenceInterfaceContract);
+                        	}
                         }
-    
                     } else {
                         warning("Promoted component reference not found: " + componentReferenceName, composite);
                     }

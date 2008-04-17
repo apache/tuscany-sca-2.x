@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.Problem;
 import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 
@@ -106,7 +107,11 @@ public class CompositeBuilderImpl implements CompositeBuilder {
         configurationBuilder.configureComponents(composite);
 
         // Wire the composite
-        wireBuilder.wireComposite(composite);
+        try {
+			wireBuilder.wireComposite(composite);
+		} catch (IncompatibleInterfaceContractException e) {
+			throw new CompositeBuilderException(e);
+		}
 
         // Activate composite services
         configurationBuilder.activateCompositeServices(composite);
