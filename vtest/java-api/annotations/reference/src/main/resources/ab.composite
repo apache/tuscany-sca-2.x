@@ -40,6 +40,13 @@
         <reference name="b15" multiplicity="1..n" target="BComponent BComponent"/>
     </component>   
     
+    <component name="AnotherAComponent">
+        <implementation.java class="org.apache.tuscany.sca.vtest.javaapi.annotations.reference.impl.AnotherAServiceImpl"/>
+        <reference name="b4" target="BComponent"/>
+        <reference name="b5" target="BComponent"/>
+        <reference name="b6" target="BComponent"/>
+     </component>   
+
     <component name="BComponent">
         <implementation.java class="org.apache.tuscany.sca.vtest.javaapi.annotations.reference.impl.BServiceImpl"/>
     </component>     
