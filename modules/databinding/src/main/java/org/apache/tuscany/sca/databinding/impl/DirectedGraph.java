@@ -316,7 +316,9 @@ public class DirectedGraph<V, E> implements Cloneable {
             nextNode = extractMin(otherNodes);
             if (nextNode.vertex == target) {
                 path = getPath(nextNode);
-                paths.put(pair, path); // Cache it
+                if (path != null) {
+                    paths.put(pair, path); // Cache it
+                }
                 return path;
             }
             nodesOnPath.add(nextNode);
