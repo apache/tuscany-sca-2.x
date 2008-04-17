@@ -173,9 +173,6 @@ public class JMSBinding implements Binding {
     // interface it's stored here
     private String operationSelectorName = null;
 
-    // Set true if messages are sent/received in XML format
-    private boolean xmlFormat = true;
-
     // TODO .....
     private String replyTo;
 
@@ -452,14 +449,6 @@ public class JMSBinding implements Binding {
 
     public void setOperationSelectorName(String operationSelectorName) {
         this.operationSelectorName = operationSelectorName;
-    }
-
-    public boolean getXMLFormat() {
-        return xmlFormat;
-    }
-
-    public void setXMLFormat(boolean b) {
-        this.xmlFormat = b;
     }
 
     /**

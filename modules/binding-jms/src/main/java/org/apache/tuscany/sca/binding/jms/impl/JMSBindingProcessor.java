@@ -31,6 +31,9 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
+import org.apache.tuscany.sca.binding.jms.provider.ObjectMessageProcessor;
+import org.apache.tuscany.sca.binding.jms.provider.TextMessageProcessor;
+import org.apache.tuscany.sca.binding.jms.provider.XMLTextMessageProcessor;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -162,8 +165,16 @@ public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
         // Read message processor class name
         String messageProcessorName = reader.getAttributeValue(null, "messageProcessor");
         if (messageProcessorName != null && messageProcessorName.length() > 0) {
+            if ("XMLTextMessage".equalsIgnoreCase(messageProcessorName)) {
+                messageProcessorName = XMLTextMessageProcessor.class.getName();
+            } else if ("TextMessage".equalsIgnoreCase(messageProcessorName)) {
+                messageProcessorName = TextMessageProcessor.class.getName();
+            } else if ("ObjectMessage".equalsIgnoreCase(messageProcessorName)) {
+                messageProcessorName = ObjectMessageProcessor.class.getName();
+            }
             jmsBinding.setRequestMessageProcessorName(messageProcessorName);
             jmsBinding.setResponseMessageProcessorName(messageProcessorName);
+
         }
 
         // Read requestConnection

@@ -6,19 +6,18 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.binding.jms.provider;
 
-import java.io.Serializable;
 import java.io.StringReader;
 
 import javax.jms.JMSException;
@@ -37,19 +36,18 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.osoa.sca.ServiceRuntimeException;
 
-public class JMSMessageProcessorImpl implements JMSMessageProcessor {
+public abstract class AbstractMessageProcessor implements JMSMessageProcessor {
 
     protected String operationPropertyName;
-    protected boolean xmlFormat;
+    protected boolean xmlFormat = true;
 
-    public JMSMessageProcessorImpl(JMSBinding jmsBinding) {
+    public AbstractMessageProcessor(JMSBinding jmsBinding) {
         this.operationPropertyName = jmsBinding.getOperationSelectorPropertyName();
-        this.xmlFormat = jmsBinding.getXMLFormat();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.tuscany.binding.jms.OperationAndDataBinding#getOperationName(javax.jms.Message)
      */
     public String getOperationName(Message message) {
@@ -64,7 +62,7 @@ public class JMSMessageProcessorImpl implements JMSMessageProcessor {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.tuscany.binding.jms.OperationAndDataBinding#setOperationName(javax.jms.Message, java.lang.String)
      */
     public void setOperationName(String operationName, Message message) {
@@ -79,106 +77,33 @@ public class JMSMessageProcessorImpl implements JMSMessageProcessor {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.tuscany.binding.jms.OperationAndDataBinding#extractPayload(javax.jms.Session, java.lang.Object)
      */
     public Message insertPayloadIntoJMSMessage(Session session, Object o) {
-        if (xmlFormat) {
-            return createXMLJMSMessage(session, o);
-        } else {
-            return createObjectJMSMessage(session, o);
-        }
+        return createJMSMessage(session, o);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.tuscany.binding.jms.OperationAndDataBinding#extractPayload(javax.jms.Message)
      */
     public Object extractPayloadFromJMSMessage(Message msg) {
         try {
             if (msg.getBooleanProperty(JMSBindingConstants.FAULT_PROPERTY)) {
-                throw new ServiceRuntimeException("remote service exception, see nested exception",(Throwable)((ObjectMessage)msg).getObject()); 
+                throw new ServiceRuntimeException("remote service exception, see nested exception",(Throwable)((ObjectMessage)msg).getObject());
             }
         } catch (JMSException e) {
             throw new JMSBindingException(e);
         }
-        if (xmlFormat) {
-            return extractXMLPayload(msg);
-        } else {
-            return extractObjectPayload(msg);
-        }
-    }
-
-    protected Object extractXMLPayload(Message msg) {
-        try {
-
-            String xml = ((TextMessage)msg).getText();
-            Object o = null;
-            if (xml != null) {
-                XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(xml));
-                StAXOMBuilder builder = new StAXOMBuilder(reader);
-                o = new Object[] { builder.getDocumentElement() };
-            } else {
-                o = new Object[]{};
-            }
-            return o;
-
-        } catch (XMLStreamException e) {
-            throw new JMSBindingException(e);
-        } catch (JMSException e) {
-            throw new JMSBindingException(e);
-        }
-    }
-
-    protected Object extractObjectPayload(Message msg) {
-        try {
-
-            return ((ObjectMessage)msg).getObject();
-
-        } catch (JMSException e) {
-            throw new JMSBindingException(e);
-        }
-    }
-
-    protected Message createXMLJMSMessage(Session session, Object o) {
-        try {
-
-            TextMessage message = session.createTextMessage();
-
-            if (o instanceof OMElement) {
-                message.setText(o.toString());
-            } else {
-                if (o instanceof Object[]) {
-                    message.setText(((Object[])o)[0].toString());
-                } else if (o != null) {
-                    message.setText(String.valueOf(o));
-                }
-            }
-
-            return message;
-
-        } catch (JMSException e) {
-            throw new JMSBindingException(e);
-        }
-    }
-
-    protected Message createObjectJMSMessage(Session session, Object o) {
-        try {
-
-            ObjectMessage message = session.createObjectMessage(); // default
-            message.setObject((Serializable)o);
-            return message;
-
-        } catch (JMSException e) {
-            throw new JMSBindingException(e);
-        }
+        return extractPayload(msg);
     }
 
     public Message createFaultMessage(Session session, Throwable o) {
         try {
 
-            ObjectMessage message = session.createObjectMessage(); 
+            ObjectMessage message = session.createObjectMessage();
             message.setObject(o);
             message.setBooleanProperty(JMSBindingConstants.FAULT_PROPERTY, true);
             return message;
@@ -187,4 +112,9 @@ public class JMSMessageProcessorImpl implements JMSMessageProcessor {
             throw new JMSBindingException(e);
         }
     }
+
+    protected abstract Object[] extractPayload(Message msg);
+
+    protected abstract Message createJMSMessage(Session session, Object o);
+
 }

@@ -54,7 +54,7 @@ public class JMSBindingReferenceBindingProvider implements ReferenceBindingProvi
         this.jmsBinding = binding;
         jmsResourceFactory = new JMSResourceFactory(binding.getConnectionFactoryName(), binding.getInitialContextFactoryName(), binding.getJndiURL());
 
-        if (jmsBinding.getXMLFormat()) {
+        if (XMLTextMessageProcessor.class.isAssignableFrom(jmsBinding.getRequestMessageProcessor().getClass())) {
             setXMLDataBinding(reference);
         }
 
