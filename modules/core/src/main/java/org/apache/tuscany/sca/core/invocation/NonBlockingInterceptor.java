@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Interceptor;
@@ -38,6 +40,11 @@ import org.osoa.sca.ServiceRuntimeException;
 public class NonBlockingInterceptor implements Interceptor {
 
     private static final Message RESPONSE = new ImmutableMessage();
+
+    /**
+     * The JDK logger that will be used to log messages.
+     */
+    private final static Logger LOGGER = Logger.getLogger(NonBlockingInterceptor.class.getName());
 
     private WorkScheduler workScheduler;
     private Invoker next;
@@ -73,8 +80,11 @@ public class NonBlockingInterceptor implements Interceptor {
                         // Tuscany-2225 - Did the @OneWay method complete successfully?
                         // (i.e. no exceptions)
                         if (response != null && response.isFault()) {
-                            // The @OneWay method threw an Exception.
+                            // The @OneWay method threw an Exception. Lets log it and
+                            // then pass it on to the WorkScheduler so it can notify any
+                            // listeners
                             Throwable t = (Throwable) response.getBody();
+                            LOGGER.log(Level.SEVERE, "Exception from @OneWay invocation", t);
                             throw new ServiceRuntimeException("Exception from @OneWay invocation", t);
                         }
                     } finally {
