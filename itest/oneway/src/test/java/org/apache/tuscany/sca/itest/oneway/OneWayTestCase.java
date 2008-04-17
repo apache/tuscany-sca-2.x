@@ -19,10 +19,17 @@
 
 package org.apache.tuscany.sca.itest.oneway;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+
 import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.itest.oneway.impl.OneWayClientImpl;
 import org.apache.tuscany.sca.itest.oneway.impl.OneWayServiceImpl;
@@ -94,4 +101,123 @@ public class OneWayTestCase {
         }
     }
 
+    /**
+     * This method will invoke a @OneWay method that throws an exception
+     * when invoked over a SCA Binding which uses the NonBlockingInterceptor and
+     * ensure that the Exception is logged.
+     * See TUSCANY-2225
+     */
+    @Test
+    public void testOneWayUsingNonBlockingInterceptorThrowsAnException() {
+        OneWayClient client =
+            domain.getService(OneWayClient.class, "OneWayClientComponentSCABinding");
+
+        // We need to modify the JDK Logger for the NonBlockingInterceptor so we
+        // can check that it logs a message for the @OneWay invocation that throws
+        // an Exception
+        Logger nbiLogger = Logger.getLogger(NonBlockingInterceptor.class.getName());
+        DummyJDKHandler handler = new DummyJDKHandler();
+        nbiLogger.addHandler(handler);
+
+        // Add a message on the console to explain the stack dump that is going to be
+        // displayed and state that this is not a problem but expected behaviour
+        System.out.println();
+        System.out.println("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+        System.out.println("IMPORTANT: The error message that appears on the console");
+        System.out.println("below is an expected error if it is a NullPointerException");
+        System.out.println(" with the message of:");
+        System.out.println("  \"" + OneWayServiceImpl.EXCEPTION_MESSAGE + "\"");
+        System.out.println("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+        System.out.println();
+        System.out.flush();
+
+        // Invoke the @OneWay method that throws an exception
+        client.doSomethingWhichThrowsException();
+
+        // The logging is done asynchronously so we will need to wait a bit before
+        // the log message appears.
+        long start = System.currentTimeMillis();
+        boolean logged = false;
+        while (System.currentTimeMillis() - start < MAX_SLEEP_TIME && !logged) {
+            // Has the log message been logged?
+            if (handler.exceptionLogged.get()) {
+                logged = true;
+            } else {
+                try {
+                    Thread.sleep(25);
+                } catch (InterruptedException ex) {
+                    Assert.fail("Unexpected exception " + ex);
+                }
+            }
+        }
+
+        // Add a message explaining that errors beyond this point should be reported 
+        System.out.println();
+        System.out.println("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+        System.out.println("End of expected exceptions. Any errors beyond this point are errors!");
+        System.out.println("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+        System.out.println();
+        System.out.flush();
+
+        // Remove the handler
+        nbiLogger.removeHandler(handler);
+
+        // Make sure that the exception was logged
+        Assert.assertTrue(handler.exceptionLogged.get());
+    }
+
+    /**
+     * A handler that is added to the JDK Logging system to examine the log messages
+     * generated to ensure that a @OneWay method that throws an Exception will 
+     * generate a log message.
+     */
+    private class DummyJDKHandler extends Handler {
+
+        /**
+         * Used to track whether the exception has been logged.
+         */
+        private AtomicBoolean exceptionLogged = new AtomicBoolean(false);
+
+        /**
+         * Constructor.
+         */
+        private DummyJDKHandler() {
+            super.setLevel(Level.ALL);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void close() throws SecurityException {
+            // Nothing to do
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void flush() {
+            // Nothing to do
+        }
+
+        /**
+         * Examines the LogRecord and checks whether it matches the one we are looking for.
+         * If it matches, it will set exceptionLogged to True.
+         * 
+         * @param record The Log Record that is being published
+         */
+        @Override
+        public void publish(LogRecord record) {
+            // The log message we are looking for is Severe
+            if (record.getLevel() == Level.SEVERE) {
+                if (record.getThrown() != null
+                        && record.getThrown().toString().indexOf(
+                                OneWayServiceImpl.EXCEPTION_MESSAGE) != -1) {
+                    // We have found our Exception.
+                    exceptionLogged.set(true);
+                }
+            }
+        }
+    }
 }

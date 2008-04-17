@@ -34,4 +34,9 @@ public interface OneWayService {
     @OneWay
     public void doSomething(int count);
 
+    /**
+     * This one way method will throw a NullPointerException.
+     */
+    @OneWay
+    void doSomethingWhichThrowsException();
 }
