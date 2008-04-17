@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.itest.oneway.impl;
 
 import org.apache.tuscany.sca.itest.oneway.OneWayClient;
 import org.apache.tuscany.sca.itest.oneway.OneWayService;
+import org.junit.Assert;
 import org.osoa.sca.annotations.Reference;
 
 
@@ -50,4 +51,12 @@ public class OneWayClientImpl implements OneWayClient {
         
         return count;
     }	
+
+    /**
+     * {@inheritDoc}
+     */
+    public void doSomethingWhichThrowsException() {
+        Assert.assertNotNull(oneWayService);
+        oneWayService.doSomethingWhichThrowsException();
+    }
 }

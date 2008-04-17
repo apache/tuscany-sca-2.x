@@ -36,5 +36,23 @@
             <binding.ws/>
         </service>
     </component> 	        
-     
+
+
+    <!-- OneWay Client and Server Components that use the standard SCA Binding so we can validate -->
+    <!-- that the NonBlockingInterceptor logs an message when an Exception is thrown by the code -->
+    <!-- that is called. See TUSCANY-2225 --> 
+    <component name="OneWayClientComponentSCABinding">
+        <implementation.java class="org.apache.tuscany.sca.itest.oneway.impl.OneWayClientImpl"/>
+        <reference name="oneWayService" target="OneWayServiceComponentSCABinding">
+            <interface.java interface="org.apache.tuscany.sca.itest.oneway.OneWayService" />
+        </reference>
+    </component> 
+
+    <component name="OneWayServiceComponentSCABinding">
+        <implementation.java class="org.apache.tuscany.sca.itest.oneway.impl.OneWayServiceImpl"/>
+        <service name="OneWayService">
+            <interface.java interface="org.apache.tuscany.sca.itest.oneway.OneWayService" /> 
+        </service>
+    </component>
+
 </composite>

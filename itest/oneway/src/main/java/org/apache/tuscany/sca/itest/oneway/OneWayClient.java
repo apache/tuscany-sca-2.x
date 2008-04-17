@@ -29,4 +29,9 @@ package org.apache.tuscany.sca.itest.oneway;
 public interface OneWayClient { 
 	
 	public int doSomething(int count);	
+
+    /**
+     * This method will invoke a @OneWay method that throws an exception.
+     */
+    void doSomethingWhichThrowsException();
 }

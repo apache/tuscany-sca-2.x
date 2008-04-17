@@ -30,10 +30,22 @@ import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
 
 
 public class OneWayServiceImpl implements OneWayService {
+
     /**
-     * Counts the number of invocations to doSomething()
+     * This is the error message that will be in the Exception thrown by
+     * the doSomethingWhichThrowsException() method.
+     */
+    public static final String EXCEPTION_MESSAGE = "Sample RuntimeException from a @OneWay method";
+
+    /**
+     * Counts the number of invocations to doSomething().
      */
     public static final AtomicInteger callCount = new AtomicInteger();
+
+    /**
+     * Counts the number of invocations of the doSomethingWhichThrowsException() method.
+     */
+    public static final AtomicInteger CALL_COUNT_FOR_THROWS_EXCEPTION_METHOD = new AtomicInteger();
 
     public void doSomething(int count){
         callCount.incrementAndGet();
@@ -43,4 +55,13 @@ public class OneWayServiceImpl implements OneWayService {
         
         
     }	
+
+    /**
+     * {@inheritDoc}
+     */
+    public void doSomethingWhichThrowsException() {
+        System.out.println("OneWay invoked. About to throw an Exception");
+        CALL_COUNT_FOR_THROWS_EXCEPTION_METHOD.incrementAndGet();
+        throw new NullPointerException(EXCEPTION_MESSAGE);
+    }
 }
