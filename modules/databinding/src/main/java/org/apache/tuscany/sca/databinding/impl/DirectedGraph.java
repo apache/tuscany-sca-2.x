@@ -75,6 +75,7 @@ public class DirectedGraph<V, E> implements Cloneable {
 
     // Fix for TUSCANY-2069, making the map concurrent
     private final Map<VertexPair, Path> paths = new ConcurrentHashMap<VertexPair, Path>();
+    private final Path NULL_PATH = new Path();
 
     /**
      * Vertex of a graph
@@ -287,13 +288,15 @@ public class DirectedGraph<V, E> implements Cloneable {
         }
 
         VertexPair pair = new VertexPair(source, target);
+        Path path = null;
         if (paths.containsKey(pair)) {
-            return paths.get(pair);
+            path = paths.get(pair);
+            return path == NULL_PATH? null: path;
         }
 
         // Check if there is a direct link, if yes, use it instead
         Edge direct = getEdge(source, target);
-        Path path = new Path();
+        path = new Path();
         if (direct != null) {
             path.addEdge(direct);
             paths.put(pair, path);
@@ -316,10 +319,8 @@ public class DirectedGraph<V, E> implements Cloneable {
             nextNode = extractMin(otherNodes);
             if (nextNode.vertex == target) {
                 path = getPath(nextNode);
-                if (path != null) {
-                    paths.put(pair, path); // Cache it
-                }
-                return path;
+                paths.put(pair, path); // Cache it
+                return path == NULL_PATH? null: path;
             }
             nodesOnPath.add(nextNode);
             for (Edge edge : nextNode.vertex.outEdges.values()) {
@@ -333,7 +334,7 @@ public class DirectedGraph<V, E> implements Cloneable {
                 }
             }
         }
-        paths.put(pair, null); // Cache it
+        paths.put(pair, NULL_PATH); // Cache it
         return null;
     }
 
@@ -379,7 +380,7 @@ public class DirectedGraph<V, E> implements Cloneable {
 
     private Path getPath(Node t) {
         if (t.distance == Integer.MAX_VALUE) {
-            return null;
+            return NULL_PATH;
         }
         Path path = new Path();
         Node u = t;
