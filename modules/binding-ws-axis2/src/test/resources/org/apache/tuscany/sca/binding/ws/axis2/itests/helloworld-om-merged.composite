@@ -36,8 +36,7 @@
  
     <reference name="mergedHelloWorldWS" promote="HelloWorldWSDLMergedComponent/helloWorldWS">
         <interface.wsdl interface="http://helloworld-om-merged#wsdl.interface(HelloWorld)" />
-        <binding.ws wsdlElement="http://helloworld-om-merged#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
-                    uri="http://localhost:8085/HelloWorldService/helloWorld" />
+        <binding.ws uri="http://localhost:8085/HelloWorldService/helloWorld" />
     </reference>
 
 </composite>
