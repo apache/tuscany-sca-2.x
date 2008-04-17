@@ -23,6 +23,8 @@ import java.net.URL;
 
 import javax.transaction.TransactionManager;
 
+import org.apache.tuscany.sca.assembly.ComponentReference;
+import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.implementation.bpel.ode.ODEDeployment;
@@ -75,7 +77,7 @@ public class BPELImplementationProvider implements ImplementationProvider {
 
     public void start() {
         System.out.println("Starting " + component.getName());
-
+        
         try {
             if (!odeServer.isInitialized()) {
                 // start ode server
@@ -91,6 +93,7 @@ public class BPELImplementationProvider implements ImplementationProvider {
             if (odeServer.isInitialized()) {
                 try {
                     txMgr.begin();
+                    odeServer.setTuscanyRuntimeComponent(component.getName(), component);
                     odeServer.deploy(new ODEDeployment(deploymentDir));
                     txMgr.commit();
                 } catch (Exception e) {

@@ -10,6 +10,7 @@ import org.apache.ode.bpel.iapi.Endpoint;
 import org.apache.ode.bpel.iapi.EndpointReference;
 import org.apache.ode.bpel.iapi.PartnerRoleChannel;
 import org.apache.ode.utils.DOMUtils;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -78,19 +79,25 @@ public class ODEBindingContext implements BindingContext {
 
     private class TuscanyPRC implements PartnerRoleChannel {
         private TuscanyEPR tuscanyEPR;
+        private RuntimeComponent tuscanyRuntimeComponent;
         
         public TuscanyPRC() {
             this.tuscanyEPR = null;
         }
         
-        public TuscanyPRC(TuscanyEPR tuscanyEPR){
+        public TuscanyPRC(TuscanyEPR tuscanyEPR, RuntimeComponent tuscanyRuntimeComponent){
             this.tuscanyEPR = tuscanyEPR;
+            this.tuscanyRuntimeComponent = tuscanyRuntimeComponent;
         }
 
         public void close() {
 
         }
 
+        public RuntimeComponent getTuscanyRuntimeComponent(){
+            return this.tuscanyRuntimeComponent;
+        }
+        
         public EndpointReference getInitialEndpointReference() {
             final Document doc = DOMUtils.newDocument();
             Element serviceref = doc.createElementNS(EndpointReference.SERVICE_REF_QNAME.getNamespaceURI(),

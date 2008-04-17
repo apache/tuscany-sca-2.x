@@ -21,11 +21,13 @@ package org.apache.tuscany.sca.implementation.bpel.ode;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Collection;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.transaction.TransactionManager;
-import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,6 +46,7 @@ import org.apache.ode.scheduler.simple.JdbcDelegate;
 import org.apache.ode.scheduler.simple.SimpleScheduler;
 import org.apache.ode.store.ProcessStoreImpl;
 import org.apache.ode.utils.GUID;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * Embedded ODE process server
@@ -70,7 +73,10 @@ public class EmbeddedODEServer {
     protected ProcessStore store;
 
     private Scheduler _scheduler;
+    
+    protected ExecutorService _executorService;
 
+    private Map<String, RuntimeComponent> tuscanyRuntimeComponents = new ConcurrentHashMap<String, RuntimeComponent>();
     
     public EmbeddedODEServer(TransactionManager txMgr) {
         _txMgr = txMgr;
@@ -136,6 +142,9 @@ public class EmbeddedODEServer {
             __log.debug("ODE initializing");
         }
         
+        //FIXME: externalize the configuration for ThreadPoolMaxSize
+        _executorService = Executors.newCachedThreadPool();
+       
         _bpelServer = new BpelServerImpl();
         _scheduler = createScheduler();
         _scheduler.setJobProcessor(_bpelServer);
@@ -247,12 +256,16 @@ public class EmbeddedODEServer {
     public Scheduler getScheduler() {
         return _scheduler;
     }
+    
+    public ExecutorService getExecutor() {
+    	return _executorService;
+    }
 
     public void deploy(ODEDeployment d) {
-        Collection<QName> procs;
+        /*Collection<QName> procs;*/
 
         try {
-            procs = store.deploy(d.deployDir);
+            /*procs =*/ store.deploy(d.deployDir);
 
             // _deployed.add(d);
         } catch (Exception ex) {
@@ -260,25 +273,17 @@ public class EmbeddedODEServer {
             __log.debug(errMsg, ex);
             throw new ODEDeploymentException(errMsg,ex);
         }
-        
-
-        /* We are already registering the process on the "register" event
-        try {
-            for (QName procName : procs) {
-                ProcessConf conf = (ProcessConf) store.getProcessConfiguration(procName);
-                // Test processes always run with in-mem DAOs
-                //conf.setTransient(true); //FIXME: what should we use for ProcessConfImpl
-                _bpelServer.register(conf);
-            }
-        } catch (Exception ex) {
-            String errMsg =">>>REGISTER: Unexpected exception: " + ex.getMessage();
-            __log.debug(errMsg , ex);
-            throw new ODEDeploymentException(errMsg, ex);
-        }
-        */
     }
-    
+
     public void undeploy(ODEDeployment d) {
         //TODO
+    }
+    
+    public void setTuscanyRuntimeComponent(String componentName, RuntimeComponent componentContext) {
+        tuscanyRuntimeComponents.put(componentName, componentContext);
+    }
+    
+    public RuntimeComponent getTuscanyRuntimeComponent(String componentName) {
+        return tuscanyRuntimeComponents.get(componentName);
     }
 }
