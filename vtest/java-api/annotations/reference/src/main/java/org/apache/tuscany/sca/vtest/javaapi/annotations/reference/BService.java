@@ -18,10 +18,12 @@
  */
 package org.apache.tuscany.sca.vtest.javaapi.annotations.reference;
 
+import org.osoa.sca.annotations.Remotable;
 
 /**
  * Simple Service used by another service
  */
+@Remotable
 public interface BService {
 
     String getName();

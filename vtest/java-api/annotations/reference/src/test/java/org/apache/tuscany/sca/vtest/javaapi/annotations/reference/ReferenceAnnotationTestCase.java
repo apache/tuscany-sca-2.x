@@ -114,17 +114,15 @@ public class ReferenceAnnotationTestCase {
      * B6 is injected via setter injection. Public, Non-Annotated
      */
     @Test
-    @Ignore
-    // (Jira Tuscany-2165)
     public void atReference2() throws Exception {
-
-        Assert.assertEquals("BService", a.getB4Name());
+        AService anotherA = domain.getService(AService.class, "AnotherAComponent");
+        Assert.assertEquals("BService", anotherA.getB4Name());
         try {
-            a.getB5Name();
+            anotherA.getB5Name();
             fail("getB5Name expected to fail with NPE");
         } catch (NullPointerException e) {
         }
-        Assert.assertEquals("BService", a.getB6Name());
+        Assert.assertEquals("BService", anotherA.getB6Name());
 
     }
 
