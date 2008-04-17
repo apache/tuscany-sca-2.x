@@ -19,18 +19,6 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:foo="http://foo" targetNamespace="http://foo"
     name="ServiceReferenceSerializationTest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <service name="StatelessService" promote="StatelessComponent">
-        <interface.java interface="org.apache.tuscany.sca.itest.servicereference.StatelessService" />
-    </service>
-
-    <service name="ConversationalService" promote="ConversationalComponent">
-        <interface.java interface="org.apache.tuscany.sca.itest.servicereference.ConversationalService" />
-    </service>
-
-    <service name="SCAManagedClient" promote="SCAManagedClientComponent">
-        <interface.java interface="org.apache.tuscany.sca.itest.servicereference.SCAManagedClient" />
-    </service>
-
     <component name="StatelessComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.servicereference.StatelessServiceImpl" />
     </component>
