@@ -17,27 +17,31 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
+
+<!-- $Rev$ $Date$ -->
+
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-			xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
-           name="HelloWorldOM">
+            xmlns:sca="http://www.osoa.org/xmlns/sca/1.0"
+           name="HelloWorldPrec">
 
     <service name="helloWorld" promote="HelloWorldService">
-        <interface.wsdl interface="http://helloworld-om#wsdl.interface(HelloWorld)" />
+        <interface.wsdl interface="http://helloworld-prec#wsdl.interface(HelloWorld)" />
         <binding.ws uri="http://localhost:8085/HelloWorldService/helloWorld"/>
     </service>
     
     <component name="HelloWorldService">
-		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldOMService"/>
+        <implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldOMService"/>
     </component>
     
     <component name="HelloWorldComponent">
-		<implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldOMComponent"/>
+        <implementation.java class="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorldOMComponent"/>
         <reference name="helloWorldWS" />
     </component>
     
     <reference name="helloWorldWS" promote="HelloWorldComponent/helloWorldWS">
-        <interface.wsdl interface="http://helloworld-om#wsdl.interface(HelloWorld)" />
-        <binding.ws uri="http://localhost:8085/HelloWorldService/helloWorld" />
+        <interface.wsdl interface="http://helloworld-prec#wsdl.interface(HelloWorld)" />
+        <binding.ws wsdlElement="http://helloworld-prec#wsdl.port(HelloWorldService/HelloWorldSoapPort)"
+                    uri="http://INVALID.END.POINT" />
     </reference>
 
 </composite>
