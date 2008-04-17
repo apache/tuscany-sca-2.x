@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.binding.jms.provider;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -42,6 +45,7 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  * @version $Rev$ $Date$
  */
 public class JMSBindingServiceBindingProvider implements ServiceBindingProvider {
+    private final static Logger logger = Logger.getLogger(JMSBindingServiceBindingProvider.class.getName());
 
     private RuntimeComponentService service;
     private JMSBinding jmsBinding;
@@ -65,7 +69,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
             jmsBinding.setDestinationName(service.getName());
         }
 
-        if (jmsBinding.getXMLFormat()) {
+        if (XMLTextMessageProcessor.class.isAssignableFrom(jmsBinding.getRequestMessageProcessor().getClass())) {
             setXMLDataBinding(service);
         }
 
@@ -152,6 +156,7 @@ public class JMSBindingServiceBindingProvider implements ServiceBindingProvider 
                     }
                 }});
         }
+        logger.log(Level.INFO, "JMS service '" + service.getName() + "' listening on destination " + jmsBinding.getDestinationName());
     }
 
     /**

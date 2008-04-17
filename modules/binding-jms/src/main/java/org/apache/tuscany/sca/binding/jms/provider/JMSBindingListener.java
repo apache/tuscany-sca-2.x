@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.binding.jms.provider;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -36,6 +38,8 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 public class JMSBindingListener implements MessageListener {
+
+    private final static Logger logger = Logger.getLogger(JMSBindingListener.class.getName());
 
     private static final String ON_MESSAGE_METHOD_NAME = "onMessage";
     private JMSBinding jmsBinding;
@@ -57,10 +61,12 @@ public class JMSBindingListener implements MessageListener {
     }
 
     public void onMessage(Message requestJMSMsg) {
+        logger.log(Level.FINE, "JMS service '" + service.getName() + "' received message " + requestJMSMsg);
         try {
             Object responsePayload = invokeService(requestJMSMsg);
             sendReply(requestJMSMsg, responsePayload, false);
         } catch (Throwable e) {
+            logger.log(Level.SEVERE, "Exception invoking service '" + service.getName(), e);
             sendReply(requestJMSMsg, e, true);
         }
     }
@@ -117,6 +123,9 @@ public class JMSBindingListener implements MessageListener {
 
             if (requestJMSMsg.getJMSReplyTo() == null) {
                 // assume no reply is expected
+                if (responsePayload != null) {
+                    logger.log(Level.FINE, "JMS service '" + service.getName() + "' dropped response as request has no replyTo");
+                }
                 return;
             }
 
