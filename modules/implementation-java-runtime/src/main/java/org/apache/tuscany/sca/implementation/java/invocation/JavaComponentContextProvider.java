@@ -18,10 +18,12 @@
  */
 package org.apache.tuscany.sca.implementation.java.invocation;
 
+import java.lang.annotation.ElementType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -172,7 +174,16 @@ public class JavaComponentContextProvider {
                 instanceFactoryProvider.getImplementation().getReferenceMembers().get(ref.getName());
             if (element != null) {
                 if (!(element.getAnchor() instanceof Constructor)) {
-                    instanceFactoryProvider.getInjectionSites().add(element);
+                    if(element.getElementType() == ElementType.FIELD) {
+                        Field field = (Field)element.getAnchor();
+                        if(Modifier.isPublic(field.getModifiers())) {
+                            instanceFactoryProvider.getInjectionSites().add(element);
+                        } else if(field.getAnnotation(org.osoa.sca.annotations.Reference.class) != null) {
+                            instanceFactoryProvider.getInjectionSites().add(element);
+                        }
+                    } else {
+                        instanceFactoryProvider.getInjectionSites().add(element);
+                    }
                 }
                 ComponentReference componentReference = null;
                 List<RuntimeWire> wireList = null;
