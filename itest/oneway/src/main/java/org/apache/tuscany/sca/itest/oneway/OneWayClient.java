@@ -18,17 +18,20 @@
  */
 package org.apache.tuscany.sca.itest.oneway;
 
-
 /**
- * The client for the oneway itest
+ * The client for the oneway itest.
  *
  * @version $Rev: 537240 $ $Date: 2007-05-11 18:35:03 +0100 (Fri, 11 May 2007) $
  */
-
-
 public interface OneWayClient { 
-	
-	public int doSomething(int count);	
+
+    /**
+     * This method will invoke the doSomething() @OneWay method on the OneWayService
+     * the specified number of times.
+     * 
+     * @param count The number of times to invoke doSomething() on the OneWayService
+     */
+    void doSomething(int count);
 
     /**
      * This method will invoke a @OneWay method that throws an exception.

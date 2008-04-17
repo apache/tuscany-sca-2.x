@@ -24,15 +24,20 @@ import org.osoa.sca.annotations.Remotable;
 
 
 /**
- * The service interface used when testing oneway interactions
+ * The service interface used when testing @OneWay interactions.
  *
  * @version $Rev: 537240 $ $Date: 2007-05-11 18:35:03 +0100 (Fri, 11 May 2007) $
  */
 @Remotable
 public interface OneWayService {
-	
+
+    /**
+     * This OneWay method will increment the callCount by 1.
+     * 
+     * @param count Not used
+     */
     @OneWay
-    public void doSomething(int count);
+    void doSomething(int count);
 
     /**
      * This one way method will throw a NullPointerException.
