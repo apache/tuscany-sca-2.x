@@ -167,7 +167,7 @@ function toolbar() {
 }
 
 /**
- * Utility function returning an array from an array or an object. 
+ * Utility function returning an non-sparse array from an array or an object. 
  */ 
 function array(obj) {
     if (obj.length == undefined) {
@@ -176,7 +176,12 @@ function array(obj) {
   		return a;
   	}
   	else {
-  		return obj;
+  		var a = new Array();
+  		var n = 0;
+  		for (var i in obj) {
+  			a[n++] = obj[i];
+  		}
+  		return a;
   	}
 }
 

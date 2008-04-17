@@ -28,6 +28,9 @@
 	//@Reference
 	var domainComposite = new Reference("domainComposite");
 	
+	//@Reference
+	var workspace = new Reference("workspace");
+	
 	function getComposites() {
 		domainComposite.get("", getCompositesResponse);
 	}
@@ -120,11 +123,93 @@
 		document.newCompositeForm.compositeName.value = "";
 		document.newCompositeForm.contributionURI.value = "";
 	    getComposites();
+	}
+	
+	var contributedComposites = new Array();
+	
+	function getContributions() {
+		workspace.get("", getContributionsResponse);
+	}
+	
+	function getContributionsResponse(feed) {
+		if (feed != null) {
+			contributedComposites = new Array();
+			var entries = feed.getElementsByTagName("entry");              
+			for (var i=0; i<entries.length; i++) {
+				if (entries[i].getElementsByTagName("content")[0].firstChild != null) {
+					var content = entries[i].getElementsByTagName("content")[0].firstChild.nodeValue;
+					var bs = content.indexOf('<span id="deployables">');
+					if (bs != -1) {
+						var es = content.indexOf('</span>', bs); 
+						content = content.substring(bs, es + 7);
+						for (;;) {
+							var bc = content.indexOf('composite:');
+							if (bc == -1) {
+								break;
+							}
+							var ec = content.indexOf('">', bc);
+							if (ec == -1) {
+								break;
+							}
+							var uri = content.substring(bc, ec);
+							contributedComposites[uri] = uri;
+							content = content.substring(ec +1);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	function suggestCompositeNamespaces() {
+		var namespaces = new Array();
+		for (var uri in contributedComposites) {
+			var qname = compositeName(uri);
+			var ns = qname.substring(0, qname.indexOf(';'));
+			namespaces[ns] = ns;
+		}
+		return array(namespaces);
 	}	
+
+	function suggestCompositeNames() {
+		var inputns = document.newCompositeForm.compositeNamespace.value;
+		var names = new Array();
+		for (var uri in contributedComposites) {
+			var qname = compositeName(uri);
+			var sc = qname.indexOf(';');
+			var ns = qname.substring(0, sc);
+			var name = qname.substring(sc + 1);
+			if (ns == inputns || inputns == "") {
+				names[name] = name;
+			}
+		}
+		return array(names);
+	}	
+
+	function suggestContributionURIs() {
+		var inputns = document.newCompositeForm.compositeNamespace.value;
+		var inputname = document.newCompositeForm.compositeName.value;
+		var uris = new Array();
+		for (var uri in contributedComposites) {
+			var qname = compositeName(uri);
+			var sc = qname.indexOf(';');
+			var ns = qname.substring(0, sc);
+			var name = qname.substring(sc + 1);
+			if ((ns == inputns || inputns == "") && (name == inputname || inputname == "")) {
+				var curi = contributionURI(uri);
+				uris[curi] = curi;
+			}
+		}
+		return array(uris);
+	}
 
 	function init() {
 		toolbar();
 		getComposites();
+		getContributions();
+		suggest(document.newCompositeForm.compositeNamespace, suggestCompositeNamespaces);
+		suggest(document.newCompositeForm.compositeName, suggestCompositeNames);
+		suggest(document.newCompositeForm.contributionURI, suggestContributionURIs);
 	}
 		
 </script>
@@ -160,9 +245,9 @@
     </table>
     <br>
 	<table>    
-    <tr><td>Composite namespace:</td><td><input type="text" name="compositeNamespace" size="50"/></td><td>e.g. http://my/namespace</td></tr> 
-    <tr><td>Composite name:</td><td><input type="text" name="compositeName" size="50"/></td><td>e.g. mycomposite</td></tr>
-    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td><td>e.g. mycontrib, http://mycontrib</td></tr>
+    <tr><td>Composite namespace:</td><td><input type="text" name="compositeNamespace" size="50"/></td><td>e.g. http://your/namespace</td></tr> 
+    <tr><td>Composite name:</td><td><input type="text" name="compositeName" size="50"/></td><td>e.g. yourcomposite</td></tr>
+    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td><td>e.g. yourcontrib, http://yourcontrib</td></tr>
     </table>
     <input type="button" onClick="addComposite()" value="Add" />
   </form>

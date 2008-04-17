@@ -29,10 +29,13 @@
 	var cloudComposite = new Reference("cloudComposite");
 	
 	//@Reference
+	var domainComposite = new Reference("domainComposite");
+	
+	//@Reference
 	var processCollection = new Reference("processCollection");
 	
-	function getComposites() {
-		cloudComposite.get("", getCompositesResponse);
+	function getNodes() {
+		cloudComposite.get("", getNodesResponse);
 	}
 	
 	function contributionURI(id) {
@@ -53,7 +56,7 @@
 	
 	var nodeNames;
 	
-	function getCompositesResponse(feed) {
+	function getNodesResponse(feed) {
 		nodeNames = new Array();      
 		if (feed != null) {
 			var entries = feed.getElementsByTagName("entry");
@@ -112,26 +115,26 @@
 		}
 	}
 
-	function deleteComposite() {
+	function deleteNode() {
 		var composites  = array(document.cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			    var id = composites[i].value;
-				cloudComposite.del(id, deleteCompositeResponse);
+				cloudComposite.del(id, deleteNodeResponse);
 			}
 		}
 	}
 
-	function deleteCompositeResponse() {
-	    getComposites();
+	function deleteNodeResponse() {
+	    getNodes();
 	}	
 
-	function addComposite() {
-		var nodeName = document.newCompositeForm.nodeName.value;
-		var nodeURI = document.newCompositeForm.nodeURI.value;			
-		var compositeNamespace = document.newCompositeForm.compositeNamespace.value;
-		var compositeName = document.newCompositeForm.compositeName.value;
-		var contributionURI = document.newCompositeForm.contributionURI.value;
+	function addNode() {
+		var nodeName = document.newNodeForm.nodeName.value;
+		var nodeURI = document.newNodeForm.nodeURI.value;			
+		var compositeNamespace = document.newNodeForm.compositeNamespace.value;
+		var compositeName = document.newNodeForm.compositeName.value;
+		var contributionURI = document.newNodeForm.contributionURI.value;
 		var id  = 'composite:' +
 			'http://tuscany.apache.org/cloud' + ';' +
 			'http://tuscany.apache.org/cloud' + ';' +
@@ -158,19 +161,19 @@
 				'</composite>' +
               	'</content>' +
                	'</entry>';
-		cloudComposite.post(entry, addCompositeResponse);
+		cloudComposite.post(entry, addNodeResponse);
 	}
 
-	function addCompositeResponse() {
-		document.newCompositeForm.nodeName.value = "";
-		document.newCompositeForm.nodeURI.value = "";
-		document.newCompositeForm.compositeNamespace.value = "";
-		document.newCompositeForm.compositeName.value = "";
-		document.newCompositeForm.contributionURI.value = "";
-	    getComposites();
+	function addNodeResponse() {
+		document.newNodeForm.nodeName.value = "";
+		document.newNodeForm.nodeURI.value = "";
+		document.newNodeForm.compositeNamespace.value = "";
+		document.newNodeForm.compositeName.value = "";
+		document.newNodeForm.contributionURI.value = "";
+	    getNodes();
 	}	
 
-	function startComposite() {
+	function startNode() {
 		var composites  = array(document.cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
@@ -179,12 +182,12 @@
 				var entry = '<entry xmlns="http://www.w3.org/2005/Atom">' +
               	'<id>' + id + '</id>' +
                	'</entry>';
-				processCollection.post(entry, startCompositeResponse);
+				processCollection.post(entry, startNodeResponse);
 			}
 		}
 	}
 
-	function startCompositeResponse() {
+	function startNodeResponse() {
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			  composites[i].checked = false;
@@ -192,17 +195,17 @@
 		}
 	}	
 
-	function stopComposite() {
+	function stopNode() {
 		var composites  = array(document.cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			    var id = nodeNames[i];
-				processCollection.del(id, stopCompositeResponse);
+				processCollection.del(id, stopNodeResponse);
 			}
 		}
 	}
 
-	function stopCompositeResponse() {
+	function stopNodeResponse() {
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			  composites[i].checked = false;
@@ -210,9 +213,71 @@
 		}
 	}	
 
+	var deployedComposites = new Array();
+	
+	function getComposites() {
+		domainComposite.get("", getCompositesResponse);
+	}
+	
+	function getCompositesResponse(feed) {
+		if (feed != null) {
+			var entries = feed.getElementsByTagName("entry");              
+			for (var i=0; i<entries.length; i++) {
+				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
+				deployedComposites[id] = id;
+			}
+		}
+	}
+
+	function suggestCompositeNamespaces() {
+		var namespaces = new Array();
+		for (var uri in deployedComposites) {
+			var qname = compositeName(uri);
+			var ns = qname.substring(0, qname.indexOf(';'));
+			namespaces[ns] = ns;
+		}
+		return array(namespaces);
+	}	
+
+	function suggestCompositeNames() {
+		var inputns = document.newNodeForm.compositeNamespace.value;
+		var names = new Array();
+		for (var uri in deployedComposites) {
+			var qname = compositeName(uri);
+			var sc = qname.indexOf(';');
+			var ns = qname.substring(0, sc);
+			var name = qname.substring(sc + 1);
+			if (ns == inputns || inputns == "") {
+				names[name] = name;
+			}
+		}
+		return array(names);
+	}	
+
+	function suggestContributionURIs() {
+		var inputns = document.newNodeForm.compositeNamespace.value;
+		var inputname = document.newNodeForm.compositeName.value;
+		var uris = new Array();
+		for (var uri in deployedComposites) {
+			var qname = compositeName(uri);
+			var sc = qname.indexOf(';');
+			var ns = qname.substring(0, sc);
+			var name = qname.substring(sc + 1);
+			if ((ns == inputns || inputns == "") && (name == inputname || inputname == "")) {
+				var curi = contributionURI(uri);
+				uris[curi] = curi;
+			}
+		}
+		return array(uris);
+	}
+
 	function init() {
 		toolbar();
+		getNodes();
 		getComposites();
+		suggest(document.newNodeForm.compositeNamespace, suggestCompositeNamespaces);
+		suggest(document.newNodeForm.compositeName, suggestCompositeNames);
+		suggest(document.newNodeForm.contributionURI, suggestContributionURIs);
 	}
 
 </script>
@@ -236,28 +301,28 @@
   <form name="cloudCompositeForm">
     <div id="composites" ></div>
     <br>
-    <input type="button" onClick="startComposite()"  value="Start" />
-    <input type="button" onClick="stopComposite()"  value="Stop" />
+    <input type="button" onClick="startNode()"  value="Start" />
+    <input type="button" onClick="stopNode()"  value="Stop" />
     &nbsp;&nbsp;
-    <input type="button" onClick="deleteComposite()"  value="Delete" />
+    <input type="button" onClick="deleteNode()"  value="Delete" />
   </form>
 
   <br><br>
   
-  <form name="newCompositeForm">
+  <form name="newNodeForm">
     <table width="100%">
     <tr><th>Add a Node</th></tr>
     <tr><td>Add a node to the cloud. The node will run the SCA components declared in the specified composite.</td></tr>
     </table>
     <br>
     <table>
-    <tr><td>Node name:</td><td><input type="text" name="nodeName" size="50"/></td><td>e.g. MyNode</td></tr>
-    <tr><td>Node URI:</td><td><input type="text" name="nodeURI" size="50"/></td></td><td>e.g. http://host:8080</td></tr>
-    <tr><td>Composite namespace:</td><td><input type="text" name="compositeNamespace" size="50"/></td></td><td>e.g. http://my/namespace</td></tr>
-    <tr><td>Composite name:</td><td><input type="text" name="compositeName" size="50"/></td></td><td>e.g. mycomposite</td></tr>
-    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td></td><td>e.g. mycontrib, http://mycontrib</td></tr>
+    <tr><td>Node name:</td><td><input type="text" name="nodeName" size="50"/></td><td>e.g. YourNode</td></tr>
+    <tr><td>Node URI:</td><td><input type="text" name="nodeURI" size="50"/></td></td><td>e.g. http://yourhost:8080</td></tr>
+    <tr><td>Composite namespace:</td><td><input type="text" name="compositeNamespace" size="50"/></td></td><td>e.g. http://your/namespace</td></tr>
+    <tr><td>Composite name:</td><td><input type="text" name="compositeName" size="50"/></td></td><td>e.g. yourcomposite</td></tr>
+    <tr><td>Contribution URI:</td><td><input type="text" name="contributionURI" size="50"/></td></td><td>e.g. yourcontrib, http://yourcontrib</td></tr>
     </table>
-    <input type="button" onClick="addComposite()" value="Add" />
+    <input type="button" onClick="addNode()" value="Add" />
   </form>
   
   </div>
