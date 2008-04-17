@@ -23,7 +23,7 @@ import org.apache.tuscany.sca.itest.oneway.OneWayService;
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * The service for the oneway itest
+ * The service for the oneway itest.
  *
  * @version $Rev: 537240 $ $Date: 2007-05-11 18:35:03 +0100 (Fri, 11 May 2007) $
  */
@@ -40,21 +40,22 @@ public class OneWayServiceImpl implements OneWayService {
     /**
      * Counts the number of invocations to doSomething().
      */
-    public static final AtomicInteger callCount = new AtomicInteger();
+    public static final AtomicInteger CALL_COUNT = new AtomicInteger();
 
     /**
      * Counts the number of invocations of the doSomethingWhichThrowsException() method.
      */
     public static final AtomicInteger CALL_COUNT_FOR_THROWS_EXCEPTION_METHOD = new AtomicInteger();
 
-    public void doSomething(int count){
-        callCount.incrementAndGet();
+    /**
+     * {@inheritDoc}
+     */
+    public void doSomething(int count) {
+        CALL_COUNT.incrementAndGet();
 
        // System.out.println("Service: doSomething " + count + " callCount = " + callCount);
        // System.out.flush();
-        
-        
-    }	
+    }
 
     /**
      * {@inheritDoc}

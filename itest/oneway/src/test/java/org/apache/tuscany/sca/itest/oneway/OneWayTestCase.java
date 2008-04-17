@@ -39,6 +39,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * This test case will test invoking @OneWay operations.
+ *
+ * @version $Date$ $Revision$
+ */
 public class OneWayTestCase {
     /**
      * Maximum period of time that we are prepared to wait for all the @OneWay
@@ -46,8 +51,16 @@ public class OneWayTestCase {
      */
     private static final int MAX_SLEEP_TIME = 10000;
 
+    /**
+     * The SCADomain that we are using for testing.
+     */
     private SCADomain domain;
 
+    /**
+     * Initialise the SCADomain.
+     *
+     * @throws Exception Failed to initialise the SCADomain
+     */
     @Before
     public void setUp() throws Exception {
         SCANode node = SCANodeFactory.newInstance().createSCANode(null, null);
@@ -58,6 +71,11 @@ public class OneWayTestCase {
         domain = node.getDomain();
     }
 
+    /**
+     * This method will ensure that the SCADomain is shutdown.
+     *
+     * @throws Exception Failed to shutdown the SCADomain
+     */
     @After
     public void tearDown() throws Exception {
         if (domain != null) {
@@ -65,39 +83,39 @@ public class OneWayTestCase {
         }
     }
 
+    /**
+     * This test will test repeatedly calling a @OneWay operation and ensure that the correct
+     * number of @OneWay operations  are run.
+     * 
+     * @throws Exception Test failed
+     */
     @Test
     public void testOneWay() throws Exception {
         OneWayClient client =
             domain.getService(OneWayClient.class, "OneWayClientComponent");
-        try {
 
-            int count = 100;
+        int count = 100;
 
-            for (int i = 0; i < 10; i++){
-               // System.out.println("Test: doSomething " + count);
-               // System.out.flush();
-                client.doSomething(count);
+        for (int i = 0; i < 10; i++) {
+           // System.out.println("Test: doSomething " + count);
+           // System.out.flush();
+            client.doSomething(count);
 
-                // TUSCANY-2192 - We need to sleep to allow the @OneWay method calls to complete.
-                // Note: This can take different periods depending on the speed and load
-                // on the computer where the test is being run.
-                // This loop will wait for the required number of @OneWay method calls to
-                // have taken place or MAX_SLEEP_TIME to have passed.
-                long startSleep = System.currentTimeMillis();
-                while (OneWayClientImpl.callCount != OneWayServiceImpl.callCount.get() 
-                        && System.currentTimeMillis() - startSleep < MAX_SLEEP_TIME) {
-                    Thread.sleep(100);
-                    // System.out.println("" + OneWayClientImpl.callCount + "," + OneWayServiceImpl.callCount);
-                }
-
-                System.out.println("Finished callCount = " + OneWayServiceImpl.callCount);
-
-                Assert.assertEquals(OneWayClientImpl.callCount, OneWayServiceImpl.callCount.get());
+            // TUSCANY-2192 - We need to sleep to allow the @OneWay method calls to complete.
+            // Note: This can take different periods depending on the speed and load
+            // on the computer where the test is being run.
+            // This loop will wait for the required number of @OneWay method calls to
+            // have taken place or MAX_SLEEP_TIME to have passed.
+            long startSleep = System.currentTimeMillis();
+            while (OneWayClientImpl.callCount != OneWayServiceImpl.CALL_COUNT.get() 
+                    && System.currentTimeMillis() - startSleep < MAX_SLEEP_TIME) {
+                Thread.sleep(100);
+                // System.out.println("" + OneWayClientImpl.callCount + "," + OneWayServiceImpl.callCount);
             }
-        } catch (Exception ex) {
-            System.err.println("Exception: " + ex.toString());
-            ex.printStackTrace();
-            throw ex;
+
+            System.out.println("Finished callCount = " + OneWayServiceImpl.CALL_COUNT);
+
+            Assert.assertEquals(OneWayClientImpl.callCount, OneWayServiceImpl.CALL_COUNT.get());
         }
     }
 

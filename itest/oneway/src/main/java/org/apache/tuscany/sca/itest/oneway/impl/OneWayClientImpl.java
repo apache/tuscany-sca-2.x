@@ -25,32 +25,34 @@ import org.osoa.sca.annotations.Reference;
 
 
 /**
- * The client for the oneway itest 
+ * The client for the oneway itest.
  *
  * @version $Rev: 537240 $ $Date: 2007-05-11 18:35:03 +0100 (Fri, 11 May 2007) $
  */
-
-
 public class OneWayClientImpl implements OneWayClient {
-    
+    /**
+     * Injected reference to the OneWayService.
+     */
     @Reference 
     protected OneWayService oneWayService;
-    
+
+    /**
+     * Tracks the number of calls of the doSomething() method on the OneWayService.
+     */
     public static int callCount = 0;
 
-
-    public int doSomething(int count){
-                   
+    /**
+     * {@inheritDoc}
+     */
+    public void doSomething(int count) {
         callCount = callCount + count;
-        
-        for (int loopCount = 0; loopCount < count; loopCount++){
+
+        for (int loopCount = 0; loopCount < count; loopCount++) {
             //System.out.println("Client: doSomething " + loopCount);
             //System.out.flush();
             oneWayService.doSomething(loopCount);
         }
-        
-        return count;
-    }	
+    }
 
     /**
      * {@inheritDoc}
