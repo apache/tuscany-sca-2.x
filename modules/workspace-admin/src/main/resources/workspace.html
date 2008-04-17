@@ -114,14 +114,9 @@
 	    getContributions();
 	}
 	
-	//function suggestContributionIDs() {
-	//	return new Array('abc', 'def', 'ghi');
-	//}
-
 	function init() {
 		toolbar();
 		getContributions();
-		//suggest(document.newContributionForm.contributionID, suggestContributionIDs);
 	}
 	
 </script>
@@ -156,8 +151,8 @@
     </table>
     <br>
     <table>
-    <tr><td>Contribution URI:</td><td><input type="text" name="contributionID" size="50"/></td></td><td>e.g. mycontrib, http://mycontrib</td></tr> 
-    <tr><td>Location:</td><td><input type="text" name="contributionLocation" size="50"/></td></td><td>e.g. http://host/myjar.jar, file:/mydir, file:/myjar.jar</td></tr>
+    <tr><td>Contribution URI:</td><td><input type="text" name="contributionID" size="50"/></td></td><td>e.g. yourcontrib, http://yourcontrib</td></tr> 
+    <tr><td>Location:</td><td><input type="text" name="contributionLocation" size="50"/></td></td><td>e.g. http://host/yourjar.jar, file:/yourdir, file:/yourjar.jar</td></tr>
     </table>
     <input type="button" onClick="addContribution()" value="Add" />
   </form>

@@ -57,6 +57,9 @@
 		 <reference name="domainComposite" target="DomainCompositeCollectionComponent/ItemCollection">
 		 	<t:binding.atom/>
 		 </reference>
+		 <reference name="workspace" target="ContributionCollectionComponent/ItemCollection">
+		 	<t:binding.atom/>
+		 </reference>
     </component>
 
     <component name="CloudUI">
@@ -65,6 +68,9 @@
         	<t:binding.http uri="http://localhost:9990/ui/cloud"/>
         </service>
 		 <reference name="cloudComposite" target="CloudCollectionComponent/ItemCollection">
+		 	<t:binding.atom/>
+		 </reference>
+		 <reference name="domainComposite" target="DomainCompositeCollectionComponent/ItemCollection">
 		 	<t:binding.atom/>
 		 </reference>
 		 <reference name="processCollection" target="NodeProcessCollectionFacadeComponent/ItemCollection">
