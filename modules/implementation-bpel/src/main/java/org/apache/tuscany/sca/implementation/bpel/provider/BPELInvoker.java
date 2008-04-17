@@ -32,7 +32,6 @@ import org.apache.ode.bpel.iapi.MyRoleMessageExchange;
 import org.apache.ode.bpel.iapi.MessageExchange.Status;
 import org.apache.ode.utils.DOMUtils;
 import org.apache.ode.utils.GUID;
-import org.apache.tuscany.sca.implementation.bpel.impl.ThreadRuntimeComponentContext;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -109,10 +108,6 @@ public class BPELInvoker implements Invoker {
             throw new InvocationTargetException(null,"Unsupported service contract");
         }
         
-        System.out.println(">>> Set ThreadLocal with runtime component !");
-
-        ThreadRuntimeComponentContext.setRuntimeComponent(component);
-        
         org.apache.ode.bpel.iapi.MyRoleMessageExchange mex = null;
         Future onhold = null;
         
@@ -167,8 +162,7 @@ public class BPELInvoker implements Invoker {
             } catch (SystemException se) {
 
             }
-            throw new InvocationTargetException(e, "Error retrieving BPEL process invocation status : " + e
-                .getMessage());
+            throw new InvocationTargetException(e, "Error retrieving BPEL process invocation status : " + e.getMessage());
         }
     
     

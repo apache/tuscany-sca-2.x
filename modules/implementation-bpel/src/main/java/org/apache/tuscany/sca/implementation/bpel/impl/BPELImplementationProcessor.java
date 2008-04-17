@@ -149,6 +149,8 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
                 refMap.put(ref.getName(), ref);
             }
             for (Reference reference : componentType.getReferences()) {
+            	//set default dataBinding to DOM to help on reference invocation
+            	reference.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
                 refMap.put(reference.getName(), reference);
             }
             impl.getReferences().clear();
@@ -193,13 +195,13 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     private QName getAttributeValueNS(XMLStreamReader reader, String attribute) {
         String fullValue = reader.getAttributeValue(null, "process");
         if (fullValue.indexOf(":") < 0)
-            throw new ODEProcessException("Attribute " + attribute + " with value " + fullValue +
+            throw new BPELProcessException("Attribute " + attribute + " with value " + fullValue +
                     " in your composite should be prefixed (process=\"prefix:name\").");
         String prefix = fullValue.substring(0, fullValue.indexOf(":"));
         String name = fullValue.substring(fullValue.indexOf(":") + 1);
         String nsUri = reader.getNamespaceContext().getNamespaceURI(prefix);
         if (nsUri == null)
-            throw new ODEProcessException("Attribute " + attribute + " with value " + fullValue +
+            throw new BPELProcessException("Attribute " + attribute + " with value " + fullValue +
                     " in your composite has un unrecognized namespace prefix.");
         return new QName(nsUri, name, prefix);
     }

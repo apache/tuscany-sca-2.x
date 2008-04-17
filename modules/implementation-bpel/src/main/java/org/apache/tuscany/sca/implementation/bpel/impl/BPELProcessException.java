@@ -25,18 +25,18 @@ package org.apache.tuscany.sca.implementation.bpel.impl;
  * 
  * @version $Rev$ $Date$ 
  */
-public class ODEProcessException extends RuntimeException {
+public class BPELProcessException extends RuntimeException {
     private static final long serialVersionUID = 1047893235216756186L;
 
-    public ODEProcessException(String message) {
+    public BPELProcessException(String message) {
         super(message);
     }
 
-    public ODEProcessException(String message, Throwable cause) {
+    public BPELProcessException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ODEProcessException(Throwable cause) {
+    public BPELProcessException(Throwable cause) {
         super(cause);
     }
 }
