@@ -36,6 +36,6 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 public class MonitorFactoryImpl implements MonitorFactory {
 
     public Monitor createMonitor() {
-        return new MonitorImpl();
+        return new DefaultLoggingMonitorImpl();
     }
 }

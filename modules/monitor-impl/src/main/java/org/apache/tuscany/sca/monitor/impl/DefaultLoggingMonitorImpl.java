@@ -32,8 +32,8 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  *
  * @version $Rev$ $Date$
  */
-public class MonitorImpl implements Monitor {
-    private final static Logger logger = Logger.getLogger(MonitorImpl.class.getName());
+public class DefaultLoggingMonitorImpl implements Monitor {
+    private final static Logger logger = Logger.getLogger(DefaultLoggingMonitorImpl.class.getName());
 
 
     /**
