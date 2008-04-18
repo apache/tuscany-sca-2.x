@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.implementation.bpel.ode;
 
 import java.util.concurrent.Callable;
 
+import javax.wsdl.Part;
+import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
@@ -29,7 +31,9 @@ import org.apache.ode.bpel.iapi.MessageExchange;
 import org.apache.ode.bpel.iapi.PartnerRoleMessageExchange;
 import org.apache.ode.bpel.iapi.Scheduler;
 import org.apache.ode.utils.DOMUtils;
+import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
@@ -86,22 +90,26 @@ public class ODEExternalService {
                                 Operation operation =
                                     findOperation(partnerRoleMessageExchange.getOperation().getName(), runtimeComponentReference);
 
+
                                 /*
-                                 * This is how a request looks like (payload is
-                                 * wrapped with extra info) <?xml version="1.0"
-                                 * encoding="UTF-8"?> <message> <parameters>
-                                 * <getGreetings xmlns="http://greetings">
-                                 * <message xmlns="http://helloworld">Luciano</message>
-                                 * </getGreetings> </parameters> </message>
+                                 This is how a request looks like (payload is wrapped with extra info) 
+                                   <?xml version="1.0" encoding="UTF-8"?>
+                                   <message>
+                                     <parameters>
+                                       <getGreetings xmlns="http://greetings">
+                                         <message xmlns="http://helloworld">Luciano</message>
+                                       </getGreetings>
+                                     </parameters>
+                                   </message>
                                  */
                                 Element msg = partnerRoleMessageExchange.getRequest().getMessage();
                                 if (msg != null) {
                                     String xml = DOMUtils.domToString(msg);
-                                    System.out.println(">>> " + xml);
+                                    System.out.println(">>> Original message: " + xml);
 
                                     String payload =
                                         DOMUtils.domToString(getPayload(partnerRoleMessageExchange.getRequest()));
-                                    System.out.println(">>> " + payload);
+                                    System.out.println(">>> Payload: " + payload);
 
                                     Object[] args = new Object[] {getPayload(partnerRoleMessageExchange.getRequest())};
 
@@ -118,6 +126,7 @@ public class ODEExternalService {
                                     }
 
                                     // partnerRoleMessageExchange.getResponse().setMessage(null);
+                                    
                                     System.out.println(">>> Result : " + DOMUtils.domToString((Element)result));
 
                                     if (!success) {
@@ -132,7 +141,8 @@ public class ODEExternalService {
                                     // createResponseMessage(partnerRoleMessageExchange,
                                     // (Element) result);
                                     // partnerRoleMessageExchange.reply(response);
-                                    replyTwoWayInvocation(partnerRoleMessageExchange.getMessageExchangeId(),
+                                    replyTwoWayInvocation(partnerRoleMessageExchange.getMessageExchangeId(), 
+                                                          operation, 
                                                           (Element)result);
                                 }
 
@@ -193,51 +203,58 @@ public class ODEExternalService {
      * @return
      */
     private Element getPayload(Message odeMessage) {
-    	Element payload = null;
-    	Element parameters = odeMessage.getPart("parameters");
-    	
-    	if( parameters != null && parameters.hasChildNodes()) {
-    		payload = (Element) parameters.getFirstChild().getFirstChild();
-    	}
-    	
-    	return payload;
+        Element payload = null;
+        Element parameters = odeMessage.getPart("parameters");
+
+        if (parameters != null && parameters.hasChildNodes()) {
+            // payload = (Element) parameters.getFirstChild().getFirstChild();
+            payload = (Element)parameters.getFirstChild();
+        }
+
+        return payload;
     }
     
 
-    private void replyTwoWayInvocation(final String odeMexId, final Element result) {
-    	try {
-    		_server.getScheduler().execIsolatedTransaction( new Callable<Void>() {
-    			public Void call() throws Exception {
-    				PartnerRoleMessageExchange odeMex = null;
-    				try {
-    					odeMex = (PartnerRoleMessageExchange)  _server.getBpelServer().getEngine().getMessageExchange(odeMexId);
-    					if (odeMex != null) {
-    						Message response = createResponseMessage(odeMex, (Element) result);
-    						odeMex.reply(response);
-    					}
-    				} catch (Exception ex) {
-    					String errmsg = "Unable to process response: " + ex.getMessage();
-    					if (odeMex != null) {
-    						odeMex.replyWithFailure(MessageExchange.FailureType.OTHER, errmsg, null);
-    					}
-    				}
-    				
-    				return null;
-    			}
-    		});    		
-    	} catch(Exception ex) {
-    		ex.printStackTrace();
-    	}
+    private void replyTwoWayInvocation(final String odeMexId, final Operation operation, final Element result) {
+        // ODE MEX needs to be invoked in a TX.
+        try {
+            _server.getScheduler().execIsolatedTransaction(new Callable<Void>() {
+                public Void call() throws Exception {
+                    PartnerRoleMessageExchange odeMex = null;
+                    try {
+                        odeMex = (PartnerRoleMessageExchange)_server.getBpelServer().getEngine().getMessageExchange(odeMexId);
+                        if (odeMex != null) {
+                            Message response = createResponseMessage(odeMex, operation, (Element)result);
+                            odeMex.reply(response);
+                        }
+                    } catch (Exception ex) {
+                        String errmsg = "Unable to process response: " + ex.getMessage();
+                        if (odeMex != null) {
+                            odeMex.replyWithFailure(MessageExchange.FailureType.OTHER, errmsg, null);
+                        }
+                    }
+
+                    return null;
+                }
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     	
     }
 
-    private Message createResponseMessage(PartnerRoleMessageExchange partnerRoleMessageExchange, Element invocationResult) {
+    private Message createResponseMessage(PartnerRoleMessageExchange partnerRoleMessageExchange, Operation operation, Element invocationResult) {
     	Document dom = DOMUtils.newDocument();
-        
+            	
+    	String operationName = operation.getName();
+    	Part bpelOperationOutputPart =  (Part) ((WSDLInterface)operation.getInterface()).getPortType().getOperation(operationName,null,null).getOutput().getMessage().getParts().values().iterator().next();
+    	
         Element contentMessage = dom.createElement("message");
-        Element contentPart = dom.createElement(partnerRoleMessageExchange.getOperation().getOutput().getName());
+        Element contentPart = dom.createElement(bpelOperationOutputPart.getName());
+        //Element contentPart2 = dom.createElement(partnerRoleMessageExchange.getOperation().getOutput().getName());
         
         contentPart.appendChild(dom.importNode(invocationResult, true));
+        //contentPart.appendChild(dom.importNode(contentPart2, true));
         contentMessage.appendChild(contentPart);
         dom.appendChild(contentMessage);
         
