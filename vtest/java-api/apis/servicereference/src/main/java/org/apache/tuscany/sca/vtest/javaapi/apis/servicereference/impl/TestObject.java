@@ -19,20 +19,19 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.apis.servicereference.impl;
 
-import org.apache.tuscany.sca.vtest.javaapi.apis.servicereference.CComponent;
-import org.junit.Assert;
-import org.osoa.sca.RequestContext;
-import org.osoa.sca.annotations.Context;
-import org.osoa.sca.annotations.Service;
+public class TestObject {
 
-@Service(CComponent.class)
-public class CComponentImpl implements CComponent {
+    public static int count = 0;
 
-    @Context
-    protected RequestContext requestContext;
+    private int id;
 
-    public void processResults(String result) {
-        Assert.assertEquals("RedirectedCallBackFromB", result);
+    public TestObject() {
+        count++;
+        id = count;
+    }
+
+    public int getId() {
+        return id;
     }
 
 }

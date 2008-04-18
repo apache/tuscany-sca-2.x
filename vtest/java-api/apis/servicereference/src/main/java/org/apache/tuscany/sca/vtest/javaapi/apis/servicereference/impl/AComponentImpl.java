@@ -93,11 +93,27 @@ public class AComponentImpl implements AComponent, BCallback {
         returnMessage = result;
     }
 
-    public void redirectCallBack() {
+    public void redirectCallback() {
         ServiceReference<BComponent> bSR = componentContext.getServiceReference(BComponent.class, "bReference");
         bSR.setCallbackID("RedirectedCallBack");
         bSR.setCallback(cReference);
         bSR.getService().testRedirectedCallback();
+    }
+
+    public void testGetCallback() {
+        ServiceReference<BComponent> bSR = componentContext.getServiceReference(BComponent.class, "bReference");
+        bSR.setCallback(cReference);
+        Assert.assertEquals(cReference, bSR.getCallback());
+
+        TestObject aCallback = new TestObject();
+        bSR.setCallback(aCallback);
+        Assert.assertEquals(aCallback, bSR.getCallback());
+        Assert.assertEquals(1, ((TestObject) bSR.getCallback()).getId());
+
+        TestObject bCallback = new TestObject();
+        bSR.setCallback(bCallback);
+        Assert.assertEquals(bCallback, bSR.getCallback());
+        Assert.assertEquals(2, ((TestObject) bSR.getCallback()).getId());
     }
 
 }

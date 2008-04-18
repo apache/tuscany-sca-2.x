@@ -31,6 +31,7 @@ public interface AComponent {
 
     public void testConversationID();
     public String getCallbackResult();
-    public void redirectCallBack();
+    public void redirectCallback();
+    public void testGetCallback();
 
 }
