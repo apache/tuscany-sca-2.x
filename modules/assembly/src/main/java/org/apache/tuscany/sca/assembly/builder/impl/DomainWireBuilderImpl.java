@@ -31,9 +31,9 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
 import org.apache.tuscany.sca.assembly.builder.DomainBuilder;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 
 public class DomainWireBuilderImpl implements DomainBuilder {
@@ -44,7 +44,7 @@ public class DomainWireBuilderImpl implements DomainBuilder {
             SCABindingFactory scaBindingFactory,
             IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
             InterfaceContractMapper interfaceContractMapper,
-            CompositeBuilderMonitor monitor) {
+            Monitor monitor) {
         wireBuilder = new CompositeWireBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
     }
     

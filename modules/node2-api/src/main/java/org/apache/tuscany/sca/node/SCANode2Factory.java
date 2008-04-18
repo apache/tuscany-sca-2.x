@@ -77,7 +77,7 @@ public abstract class SCANode2Factory {
      * Creates a new SCA node.
      * 
      * @param compositeURI the URI of the composite to use 
-     * @param contributions the URI of the composite to use 
+     * @param contributions the URI of the contributions that provides the composites and related artifacts 
      * @return a new SCA node.
      */
     public abstract SCANode2 createSCANode(String compositeURI, SCAContribution... contributions);

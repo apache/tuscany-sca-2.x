@@ -41,9 +41,6 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
-import org.apache.tuscany.sca.assembly.builder.Problem;
-import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeConfigurationBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
@@ -73,6 +70,9 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
@@ -81,7 +81,6 @@ import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
-import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilderMonitor;
 import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor;
@@ -120,7 +119,7 @@ public class ContributionSPIsTestCase {
     static Workspace workspace;
     
     static List<String> problems = new ArrayList<String>();
-    static ContributionDependencyBuilderMonitor dependencyBuilderMonitor;
+    static Monitor dependencyBuilderMonitor;
     static ContributionDependencyBuilderImpl analyzer;
     static List<ContributionListener> contributionListeners;
     
@@ -173,35 +172,21 @@ public class ContributionSPIsTestCase {
             workspace = workspaceFactory.createWorkspace();
             
             // create a dependency builder 
-            dependencyBuilderMonitor = new ContributionDependencyBuilderMonitor() {
+            dependencyBuilderMonitor = new Monitor() {
                     public void problem(Problem problem) {
-                        problems.add(problem.getMessage() + " " + problem.getModel());
+                        problems.add(problem.getMessageId() + " " + problem.getProblemObject().toString());
                     }
                 };
                 
-            analyzer = new ContributionDependencyBuilderImpl(dependencyBuilderMonitor);  
+            MonitorFactory monitorFactory = registry.getExtensionPoint(MonitorFactory.class);
+            Monitor monitor = monitorFactory.createMonitor();
+            analyzer = new ContributionDependencyBuilderImpl(monitor);  
             
             // Create composite builder
             SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
             IntentAttachPointTypeFactory intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
             InterfaceContractMapper contractMapper = new InterfaceContractMapperImpl();
-            
-            CompositeBuilderMonitor monitor = new CompositeBuilderMonitor() {
-                public void problem(Problem problem) {
-                    if (problem.getSeverity() == Severity.INFO) {
-                        logger.info(problem.toString());
-                    } else if (problem.getSeverity() == Severity.WARNING) {
-                        logger.warning(problem.toString());
-                    } else if (problem.getSeverity() == Severity.ERROR) {
-                        if (problem.getCause() != null) {
-                            logger.log(Level.SEVERE, problem.toString(), problem.getCause());
-                        } else {
-                            logger.severe(problem.toString());
-                        }
-                    }
-                }
-            };
-            
+                       
             compositeBuilder = new CompositeBuilderImpl(assemblyFactory, 
                                                         scaBindingFactory, 
                                                         intentAttachPointTypeFactory,

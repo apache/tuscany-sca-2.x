@@ -29,6 +29,7 @@
     <name>Apache Tuscany SCA Domain Integration Tests</name>
 
     <dependencies>
+            
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node2-api</artifactId>
@@ -74,6 +75,13 @@
             <version>3.2.1</version>
             <scope>runtime</scope>
         </dependency> 
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-monitor-logging</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>            
+        </dependency>        
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>

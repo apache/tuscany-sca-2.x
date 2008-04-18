@@ -26,14 +26,14 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 public class CompositeIncludeBuilderImpl {
     
     public static Logger logger = Logger.getLogger(CompositeIncludeBuilderImpl.class.getName());
 	
-    public CompositeIncludeBuilderImpl(CompositeBuilderMonitor monitor) {
+    public CompositeIncludeBuilderImpl(Monitor monitor) {
     }
 
     /**

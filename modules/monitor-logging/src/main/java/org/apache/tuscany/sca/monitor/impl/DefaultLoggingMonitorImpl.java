@@ -35,6 +35,8 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 public class DefaultLoggingMonitorImpl implements Monitor {
     private final static Logger logger = Logger.getLogger(DefaultLoggingMonitorImpl.class.getName());
 
+    // remembers the last logged problem for testing purposes
+    private Problem lastProblem = null;
 
     /**
      * Reports a build problem.
@@ -42,6 +44,8 @@ public class DefaultLoggingMonitorImpl implements Monitor {
      * @param problem
      */
     public void problem(Problem problem) {
+        
+        lastProblem = problem;
         
         Logger problemLogger = Logger.getLogger(problem.getSourceClassName(), problem.getBundleName());
         
@@ -60,5 +64,9 @@ public class DefaultLoggingMonitorImpl implements Monitor {
                 problemLogger.log(Level.SEVERE, problem.getMessageId(), problem.getMessageParams());
             }
         }
+    }
+    
+    public Problem getLastLoggedProblem(){
+        return lastProblem;
     }
 }

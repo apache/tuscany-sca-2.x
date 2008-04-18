@@ -57,6 +57,8 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.Intent;
@@ -193,12 +195,23 @@ public class ReallySmallRuntime {
         IntentAttachPointTypeFactory intentAttachPointTypeFactory = factories.getFactory(IntentAttachPointTypeFactory.class);
         InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
         
+        // create a monitor to catch validation errors
+        MonitorFactory monitorFactory = registry.getExtensionPoint(MonitorFactory.class);
+        Monitor monitor = null;
+        
+        if (monitorFactory != null){
+            monitor = monitorFactory.createMonitor();
+        } else {
+            logger.warning("Can't find monitor extension on the classpath");
+        }
+        
         //Create a composite builder
         SCADefinitions scaDefns = new SCADefinitionsImpl();
         for ( SCADefinitions aDef : ((List<SCADefinitions>)scaDefnsSink) ) {
             SCADefinitionsUtil.aggregateSCADefinitions(aDef, scaDefns);
         }
-        compositeBuilder = ReallySmallRuntimeBuilder.createCompositeBuilder(assemblyFactory,
+        compositeBuilder = ReallySmallRuntimeBuilder.createCompositeBuilder(monitor,
+                                                                            assemblyFactory,
                                                                             scaBindingFactory,
                                                                             intentAttachPointTypeFactory,
                                                                             mapper, 

@@ -85,6 +85,7 @@ import org.apache.tuscany.sca.definitions.xml.SCADefinitionsDocumentProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
@@ -146,16 +147,19 @@ public class ReallySmallRuntimeBuilder {
         return compositeActivator;
     }
 
-    public static CompositeBuilder createCompositeBuilder(AssemblyFactory assemblyFactory,
+    public static CompositeBuilder createCompositeBuilder(Monitor monitor,
+                                                          AssemblyFactory assemblyFactory,
                                                           SCABindingFactory scaBindingFactory,
                                                           IntentAttachPointTypeFactory intentAttachPointTypeFactory,
                                                           InterfaceContractMapper interfaceContractMapper,
                                                           SCADefinitions scaDefns) {
+      
+        
         return new CompositeBuilderImpl(assemblyFactory, 
                                         scaBindingFactory, 
                                         intentAttachPointTypeFactory, 
                                         interfaceContractMapper, 
-                                        null,
+                                        monitor,
                                         scaDefns);
     }
     

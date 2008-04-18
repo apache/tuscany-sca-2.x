@@ -125,6 +125,8 @@
                 <module>implementation-spring</module>
                 <module>implementation-widget</module>
                 <module>implementation-xquery</module>
+                <module>monitor</module>
+                <module>monitor-logging</module>
                 <module>node</module>
                 <module>node-api</module>
                 <module>node2-api</module>
