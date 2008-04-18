@@ -26,12 +26,12 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
-import org.apache.tuscany.sca.assembly.builder.Problem;
-import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 
 /**
@@ -57,28 +57,34 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                                 SCABindingFactory scaBindingFactory,
                                 IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
                                 InterfaceContractMapper interfaceContractMapper,
-                                CompositeBuilderMonitor monitor) {
+                                Monitor monitor) {
         
-        if (monitor == null) {
-            // Create a default monitor that logs using the JDK logger.
-            monitor = new CompositeBuilderMonitor() {
+        if (monitor == null){
+            monitor = new Monitor () {
                 public void problem(Problem problem) {
+                    
+                    Logger problemLogger = Logger.getLogger(problem.getSourceClassName(), problem.getBundleName());
+                    
+                    if (problemLogger == null){
+                        logger.severe("Can't get logger " + problem.getSourceClassName()+ " with bundle " + problem.getBundleName());
+                    }
+                    
                     if (problem.getSeverity() == Severity.INFO) {
-                        logger.info(problem.toString());
+                        problemLogger.log(Level.INFO, problem.getMessageId(), problem.getMessageParams());
                     } else if (problem.getSeverity() == Severity.WARNING) {
-                        logger.warning(problem.toString());
+                        problemLogger.log(Level.WARNING, problem.getMessageId(), problem.getMessageParams());
                     } else if (problem.getSeverity() == Severity.ERROR) {
                         if (problem.getCause() != null) {
-                            logger.log(Level.SEVERE, problem.toString(), problem.getCause());
+                            problemLogger.log(Level.SEVERE, problem.getMessageId(), problem.getCause());
                         } else {
-                            logger.severe(problem.toString());
+                            problemLogger.log(Level.SEVERE, problem.getMessageId(), problem.getMessageParams());
                         }
                     }
-                }
+                }                
             };
         }
-
-        includeBuilder = new CompositeIncludeBuilderImpl(monitor);
+        
+        includeBuilder = new CompositeIncludeBuilderImpl(monitor); 
         wireBuilder = new CompositeWireBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
         cloneBuilder = new CompositeCloneBuilderImpl(monitor);
         configurationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, interfaceContractMapper, monitor);
@@ -89,7 +95,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                                 SCABindingFactory scaBindingFactory,
                                 IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
                                 InterfaceContractMapper interfaceContractMapper,
-                                CompositeBuilderMonitor monitor, 
+                                Monitor monitor, 
                                 SCADefinitions scaDefns) {
         this(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, interfaceContractMapper, monitor);
         configurationBuilder.setScaDefinitions(scaDefns);

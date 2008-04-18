@@ -26,11 +26,11 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 public class CompositeCloneBuilderImpl {
     
-    public CompositeCloneBuilderImpl(CompositeBuilderMonitor monitor) {
+    public CompositeCloneBuilderImpl(Monitor monitor) {
     }
 
     /**

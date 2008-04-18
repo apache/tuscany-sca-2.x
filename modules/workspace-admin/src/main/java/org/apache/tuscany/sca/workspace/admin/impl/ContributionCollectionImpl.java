@@ -54,7 +54,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.builder.Problem;
 import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -74,16 +73,20 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
-import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilderMonitor;
 import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor;
 import org.apache.tuscany.sca.workspace.xml.WorkspaceProcessor;
@@ -114,6 +117,8 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     @Property
     public String deploymentContributionDirectory;
     
+    private ExtensionPointRegistry registry;
+    private Monitor monitor;
     private ContributionFactory contributionFactory;
     private AssemblyFactory assemblyFactory;
     private WorkspaceFactory workspaceFactory;
@@ -129,6 +134,13 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
      */
     @Init
     public void initialize() throws ParserConfigurationException {
+        
+        registry = new DefaultExtensionPointRegistry();
+        
+        // create a validation monitor
+        MonitorFactory monitorFactory = registry.getExtensionPoint(MonitorFactory.class);
+        monitor = monitorFactory.createMonitor();
+        
         
         // Create model factories
         ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
@@ -294,10 +306,10 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
             
             // Look for the specified contribution
             for (Contribution contribution: workspace.getContributions()) {
-                if (key.equals(contribution.getURI())) {
+                if (key.equals(contribution.getURI())) {                
 
                     // Compute the contribution dependencies
-                    ContributionDependencyBuilder analyzer = new ContributionDependencyBuilderImpl(null);
+                    ContributionDependencyBuilder analyzer = new ContributionDependencyBuilderImpl(monitor);
                     List<Contribution> dependencies = analyzer.buildContributionDependencies(workspace, contribution);
                     
                     // Returns entries for the dependencies
@@ -348,9 +360,9 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         
         // List the contribution dependencies in the item contents
         final List<String> problems = new ArrayList<String>();
-        ContributionDependencyBuilderMonitor monitor = new ContributionDependencyBuilderMonitor() {
+        Monitor monitor = new Monitor() {
             public void problem(Problem problem) {
-                problems.add(problem.getMessage() + " " + problem.getModel());
+                problems.add(problem.getMessageId() + " " + problem.getProblemObject().toString());
             }
         };
         

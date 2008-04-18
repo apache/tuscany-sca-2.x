@@ -27,15 +27,15 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.tuscany.sca.assembly.builder.Problem;
-import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
-import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilderMonitor;
 
 /**
  * A contribution dependency builder.
@@ -45,32 +45,13 @@ import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilderMon
 public class ContributionDependencyBuilderImpl implements ContributionDependencyBuilder {
     private final static Logger logger = Logger.getLogger(ContributionDependencyBuilderImpl.class.getName());
     
-    private ContributionDependencyBuilderMonitor monitor;
+    private Monitor monitor;
     
     /**
      * Constructs a new ContributionDependencyBuilder.
      */
-    public ContributionDependencyBuilderImpl(ContributionDependencyBuilderMonitor monitor) {
-        
-        if (monitor == null) {
-            // Create a default monitor that logs using the JDK logger.
-            monitor = new ContributionDependencyBuilderMonitor() {
-                public void problem(Problem problem) {
-                    if (problem.getSeverity() == Severity.INFO) {
-                        logger.info(problem.toString());
-                    } else if (problem.getSeverity() == Severity.WARNING) {
-                        logger.warning(problem.toString());
-                    } else if (problem.getSeverity() == Severity.ERROR) {
-                        if (problem.getCause() != null) {
-                            logger.log(Level.SEVERE, problem.toString(), problem.getCause());
-                        } else {
-                            logger.severe(problem.toString());
-                        }
-                    }
-                }
-            };
-        }
-        
+    public ContributionDependencyBuilderImpl(Monitor monitor) {
+               
         this.monitor = monitor;
     }
     
@@ -127,7 +108,8 @@ public class ContributionDependencyBuilderImpl implements ContributionDependency
             
             if (!resolved) {
                 // Record import resolution issue
-                monitor.problem(new ProblemImpl(Severity.WARNING, "Unresolved import", import_));
+                Problem problem = new ProblemImpl(this.getClass().getName(), "workspace-validation-messages", Severity.WARNING, import_, "Unresolved import");
+                monitor.problem(problem);
             }
         }
     }

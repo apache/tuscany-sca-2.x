@@ -27,8 +27,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>tuscany-monitor-impl</artifactId>
-    <name>Apache Tuscany Monitor Default Implementation</name>
+    <artifactId>tuscany-monitor-Logging</artifactId>
+    <name>Apache Tuscany SCA Monitor Default Logging Implementation</name>
 
     <dependencies>   
         
@@ -37,6 +37,12 @@
             <artifactId>tuscany-monitor</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
         </dependency> 
+        
+         <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-assembly</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+        </dependency>         
  
     </dependencies>
 

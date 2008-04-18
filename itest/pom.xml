@@ -110,6 +110,7 @@
                 <module>wsdl-multiple</module>
                 <module>ws-void-args-return</module>
                 <module>transaction</module>
+                <module>validation</module>
                 <module>bpel</module>
                 <module>spring</module>
 		<module>policy</module>

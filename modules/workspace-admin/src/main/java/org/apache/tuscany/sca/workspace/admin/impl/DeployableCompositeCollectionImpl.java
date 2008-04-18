@@ -60,9 +60,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
-import org.apache.tuscany.sca.assembly.builder.Problem;
-import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeConfigurationBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
@@ -97,6 +94,8 @@ import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.apache.tuscany.sca.implementation.node.NodeImplementation;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
@@ -177,22 +176,10 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         IntentAttachPointTypeFactory intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
         InterfaceContractMapper contractMapper = new InterfaceContractMapperImpl();
         
-        // TODO need to get these messages back to the browser
-        CompositeBuilderMonitor monitor = new CompositeBuilderMonitor() {
-            public void problem(Problem problem) {
-                if (problem.getSeverity() == Severity.INFO) {
-                    logger.info(problem.toString());
-                } else if (problem.getSeverity() == Severity.WARNING) {
-                    logger.warning(problem.toString());
-                } else if (problem.getSeverity() == Severity.ERROR) {
-                    if (problem.getCause() != null) {
-                        logger.log(Level.SEVERE, problem.toString(), problem.getCause());
-                    } else {
-                        logger.severe(problem.toString());
-                    }
-                }
-            }
-        };
+        // TODO need to get these messages back to the browser - So need
+        //      a monitor that caches all the problems for a set of processing
+        MonitorFactory monitorFactory = registry.getExtensionPoint(MonitorFactory.class);
+        Monitor monitor = monitorFactory.createMonitor();
         
         compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory,
                                                     contractMapper, monitor);

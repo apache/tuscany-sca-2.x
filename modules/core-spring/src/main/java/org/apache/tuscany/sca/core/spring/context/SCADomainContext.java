@@ -30,8 +30,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
-import org.apache.tuscany.sca.assembly.builder.Problem;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
@@ -68,6 +66,8 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.xml.JavaInterfaceProcessor;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -168,14 +168,10 @@ public class SCADomainContext {
     private void buildComposite(Composite composite, AssemblyFactory assemblyFactory,
                                 SCABindingFactory scaBindingFactory, InterfaceContractMapper interfaceContractMapper) throws CompositeBuilderException {
 
-        CompositeBuilderMonitor monitor = new CompositeBuilderMonitor() {
+        Monitor monitor = new Monitor() {
 
             public void problem(Problem problem) {
-                // Uncommenting the following two lines can be useful to detect
-                // and troubleshoot SCA assembly XML composite configuration
-                // problems.
-
-                System.out.println("Composite assembly problem: " + problem);
+                System.out.println("Composite assembly problem: " + problem.toString());
             }
         };
 

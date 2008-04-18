@@ -43,11 +43,12 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
-import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
@@ -59,7 +60,7 @@ public class CompositeConfigurationBuilderImpl {
 
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;
-    private CompositeBuilderMonitor monitor;
+    private Monitor monitor;
     private InterfaceContractMapper interfaceContractMapper;
     private IntentAttachPointTypeFactory  intentAttachPointTypeFactory;
     private SCADefinitions scaDefinitions = null;
@@ -68,7 +69,7 @@ public class CompositeConfigurationBuilderImpl {
                                              SCABindingFactory scaBindingFactory,
                                              IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
                                              InterfaceContractMapper interfaceContractMapper,
-                                             CompositeBuilderMonitor monitor) {
+                                             Monitor monitor) {
         this.assemblyFactory = assemblyFactory;
         this.scaBindingFactory = scaBindingFactory;
         this.intentAttachPointTypeFactory = intentAttachPointTypeFactory;
@@ -177,9 +178,12 @@ public class CompositeConfigurationBuilderImpl {
 
             // Index all components and check for duplicates
             if (components.containsKey(component.getName())) {
+                /*                
                 warning("Duplicate component name: " + composite.getName()
-                    + " : "
-                    + component.getName(), composite);
+                        + " : "
+                        + component.getName(), composite);
+                */
+                warning("DuplicateComponentName", component, composite.getName().toString(), component.getName());
             } else {
                 components.put(component.getName(), component);
             }
@@ -295,8 +299,9 @@ public class CompositeConfigurationBuilderImpl {
      * @param message
      * @param model
      */
-    private void warning(String message, Object model) {
-        monitor.problem(new ProblemImpl(Severity.WARNING, message, model));
+    private void warning(String message, Object model, String... messageParameters) {
+        Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+        monitor.problem(problem);
     }
 
     /**

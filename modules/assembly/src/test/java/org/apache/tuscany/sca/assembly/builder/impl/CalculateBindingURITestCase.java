@@ -37,15 +37,15 @@ import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
-import org.apache.tuscany.sca.assembly.builder.Problem;
-import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 public class CalculateBindingURITestCase extends TestCase {
     private final static Logger logger = Logger.getLogger(CalculateBindingURITestCase.class.getName());
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory = null;
-    private CompositeBuilderMonitor monitor = null;
+    private Monitor monitor = null;
     private CompositeConfigurationBuilderImpl configurationBuilder = null;
     private List<Binding> defaultBindings = new ArrayList<Binding>();
     
@@ -53,7 +53,7 @@ public class CalculateBindingURITestCase extends TestCase {
     protected void setUp() throws Exception {
         assemblyFactory = new DefaultAssemblyFactory();
         scaBindingFactory = new TestBindingFactory();
-        monitor = new CompositeBuilderMonitor() {
+        monitor = new Monitor() {
             public void problem(Problem problem) {
                 if (problem.getSeverity() == Severity.INFO) {
                     logger.info(problem.toString());

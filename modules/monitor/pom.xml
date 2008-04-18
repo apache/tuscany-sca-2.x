@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>tuscany-monitor</artifactId>
-    <name>Apache Tuscany Monitor</name>
+    <name>Apache Tuscany SCA Monitor</name>
 
     <dependencies>   
 

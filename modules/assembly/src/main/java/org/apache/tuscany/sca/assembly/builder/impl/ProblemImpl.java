@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
-import org.apache.tuscany.sca.assembly.builder.Problem;
+import org.apache.tuscany.sca.monitor.Problem;
 
 /**
  * Reports a composite assembly problem. 
@@ -28,85 +28,87 @@ import org.apache.tuscany.sca.assembly.builder.Problem;
  */
 public class ProblemImpl implements Problem {
 
-    private String message;
+    private String sourceClassName;
+    private String bundleName;
     private Severity severity;
-    private Object model;
-    private Object resource;
+    private Object problemObject;
+    private String messageId;
+    private Object[] messageParams;
     private Exception cause;
 
     /**
-     * Constructs a new problem.
+     * Construct a new problem
      * 
-     * @param severity
-     * @param message
-     * @param model
+     * @param sourceClassName   the class name reporting the problem
+     * @param bundleName        the name of the message bundle to use
+     * @param severity          the severity of the problem
+     * @param problemObject     the model object for which the problem is being reported
+     * @param messageId         the id of the problem message
+     * @param messageParams     the parameters of the problem message
      */
-    public ProblemImpl(Severity severity, String message, Object model) {
+    public ProblemImpl(String sourceClassName, String bundleName, Severity severity, Object problemObject, String messageId, Object... messageParams ) {
+        this.sourceClassName = sourceClassName;
+        this.bundleName = bundleName;
         this.severity = severity;
-        this.message = message;
-        this.model = model;
+        this.problemObject = problemObject;
+        this.messageId = messageId;
+        this.messageParams = messageParams;
     }
-
+    
     /**
-     * Constructs a new problem.
+     * Construct a new problem
      * 
-     * @param severity
-     * @param message
-     * @param model
-     * @param resource
+     * @param sourceClassName   the class name reporting the problem
+     * @param bundleName        the name of the message bundle to use
+     * @param severity          the severity of the problem
+     * @param problemObject     the model object for which the problem is being reported
+     * @param messageId         the id of the problem message
+     * @param cause             the exception which caused the problem
      */
-    public ProblemImpl(Severity severity, String message, Object model, Object resource) {
-        this.severity = severity;
-        this.message = message;
-        this.model = model;
-        this.resource = resource;
-    }
-
-    /**
-     * Constructs a new problem.
-     * 
-     * @param severity
-     * @param message
-     * @param cause
-     */
-    public ProblemImpl(Severity severity, String message, Exception cause) {
-        this.severity = severity;
-        this.message = message;
+    public ProblemImpl(String sourceClassName, String bundleName, Severity severity, Object problemObject, String messageId, Exception cause) {
+        this.sourceClassName = sourceClassName;
+        this.bundleName = bundleName;   
+        this.severity = severity;        
+        this.problemObject = problemObject;
+        this.messageId = messageId;
         this.cause = cause;
-    }
+    }    
 
+    public String getSourceClassName() {
+        return sourceClassName;
+    }
+    
+    public String getBundleName() {
+        return bundleName;
+    }
+    
     public Severity getSeverity() {
         return severity;
     }
-
-    public String getMessage() {
-        return message;
+    
+    public Object getProblemObject() {
+        return problemObject;
+    }
+    
+    public String getMessageId() {
+        return messageId;
     }
 
-    public Object getModel() {
-        return model;
+    public Object[] getMessageParams() {
+        return messageParams;
     }
-
-    public Object getResource() {
-        return resource;
-    }
-
+    
     public Exception getCause() {
         return cause;
-    }
+    }    
 
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        if (message !=  null) {
-            sb.append(message);
+        if (messageId !=  null) {
+            sb.append(messageId);
         }
-        if (resource != null) {
-            if (sb.length() != 0) {
-                sb.append(" - ");
-            }
-            sb.append(resource.toString());
-        }
+        
         return sb.toString();
     }
 }

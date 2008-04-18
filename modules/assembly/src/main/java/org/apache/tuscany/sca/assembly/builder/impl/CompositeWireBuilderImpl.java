@@ -43,16 +43,17 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilderMonitor;
-import org.apache.tuscany.sca.assembly.builder.Problem.Severity;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
 
 public class CompositeWireBuilderImpl {
 
-    private CompositeBuilderMonitor monitor;
+    private Monitor monitor;
     private AssemblyFactory assemblyFactory;
     private InterfaceContractMapper interfaceContractMapper;
     
@@ -78,7 +79,7 @@ public class CompositeWireBuilderImpl {
         }
     };
     
-    public CompositeWireBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper, CompositeBuilderMonitor monitor) {
+    public CompositeWireBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper, Monitor monitor) {
         this.assemblyFactory = assemblyFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.monitor = monitor;
@@ -205,7 +206,8 @@ public class CompositeWireBuilderImpl {
      * @param model
      */
     private void warning(String message, Object model) {
-        monitor.problem(new ProblemImpl(Severity.WARNING, message, model));
+        Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message);
+        monitor.problem(problem);
     }
 
     /**
