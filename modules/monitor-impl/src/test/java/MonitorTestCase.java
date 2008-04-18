@@ -24,12 +24,12 @@ import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.monitor.impl.MonitorFactoryImpl;
-import org.apache.tuscany.sca.monitor.impl.ProblemImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
