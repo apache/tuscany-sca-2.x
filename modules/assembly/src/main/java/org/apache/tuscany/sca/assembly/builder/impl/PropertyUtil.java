@@ -57,7 +57,6 @@ import org.xml.sax.InputSource;
  * composite's properties or an external file.
  */
 public class PropertyUtil {
-    private static final XPathFactory XPATH_FACTORY = XPathFactory.newInstance();
     private static final DocumentBuilderFactory DOC_BUILDER_FACTORY = DocumentBuilderFactory.newInstance();
     private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
     
