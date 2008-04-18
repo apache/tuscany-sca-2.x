@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.monitor;
 
 
 /**
- * Reports an assembly validation problem. 
+ * Records an validation problem. 
  *
  * @version $Rev$ $Date$
  */
@@ -37,10 +37,10 @@ public interface Problem {
     
     String getBundleName();
     
-    Object getModelObject();
+    Severity getSeverity();    
     
-    Severity getSeverity();
-
+    Object getProblemObject();
+    
     String getMessageId();
     
     Exception getCause();
