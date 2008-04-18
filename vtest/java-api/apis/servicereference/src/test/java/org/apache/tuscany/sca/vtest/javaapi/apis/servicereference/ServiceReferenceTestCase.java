@@ -92,7 +92,7 @@ public class ServiceReferenceTestCase {
      */
     @Test
     public void testGetCallback() throws Exception {
-        
+        a.testGetCallback();
     }
 
     /**
@@ -103,7 +103,7 @@ public class ServiceReferenceTestCase {
      */
     @Test
     public void testSetCallback() throws Exception {
-        a.redirectCallBack();
+        a.redirectCallback();
     }
 
 }
