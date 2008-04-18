@@ -34,7 +34,7 @@
     <component name="GreetingsServiceComponent">
         <implementation.java class="greetings.GreetingsServiceImpl" />
 	    <service name="GreetingsService">
-	    	<interface.java interface="greetings.GreetingsService" />
+	    	<interface.wsdl interface="http://greetings#wsdl.interface(Greetings)" />
 	    </service>
     </component>
         
