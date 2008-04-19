@@ -44,6 +44,7 @@
                 <module>store-supplier</module>
                 <module>store-market</module>
                 <module>store-eu</module>
+                <module>store-mashup</module>
                 <module>web-services</module>
                 <module>catalog-webapp</module>
                 <module>catalog-ejb</module>

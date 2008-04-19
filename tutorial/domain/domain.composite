@@ -26,6 +26,7 @@
   <include name="ns2:store-supplier" uri="store-supplier" xmlns:ns2="http://store"/>
   <include name="ns2:store-market" uri="store-market" xmlns:ns2="http://store"/> 
   <include name="ns2:store-eu" uri="store-eu" xmlns:ns2="http://store"/>
+  <include name="ns2:store-mashup" uri="store-mashup" xmlns:ns2="http://store"/>
   <include name="ns2:catalogs" uri="web-services" xmlns:ns2="http://services"/>
   <include name="ns2:currency" uri="web-services" xmlns:ns2="http://services"/>
   <include name="ns2:catalog-web" uri="catalog-webapp" xmlns:ns2="http://catalog"/>

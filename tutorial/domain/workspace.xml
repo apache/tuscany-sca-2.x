@@ -25,6 +25,7 @@
   <contribution location="file:../store-supplier/target/tutorial-store-supplier.jar" uri="store-supplier"/>
   <contribution location="file:../store-market/target/tutorial-store-market.jar" uri="store-market"/> 
   <contribution location="file:../store-eu/target/tutorial-store-eu.jar" uri="store-eu"/>
+  <contribution location="file:../store-mashup" uri="store-mashup"/>
   <contribution location="file:../web-services/target/tutorial-web-services.jar" uri="web-services"/>
   <contribution location="file:../catalog-webapp/target/tutorial-catalog-webapp.war" uri="catalog-webapp"/>
   <contribution location="file:../catalog-mediation/target/tutorial-catalog-mediation.jar" uri="catalog-mediation"/>
