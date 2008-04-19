@@ -27,7 +27,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>tuscany-monitor-Logging</artifactId>
+    <artifactId>tuscany-monitor-logging</artifactId>
     <name>Apache Tuscany SCA Monitor Default Logging Implementation</name>
 
     <dependencies>   
