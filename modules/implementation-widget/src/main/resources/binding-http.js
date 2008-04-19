@@ -17,7 +17,7 @@
  * under the License.    
  */
 	
-function AtomClient(uri) {
+function HTTPClient(uri) {
 
 	this.msxmlNames = [ "MSXML2.XMLHTTP.5.0",
                         "MSXML2.XMLHTTP.4.0",
@@ -33,11 +33,7 @@ function AtomClient(uri) {
 			if (xhr.readyState == 4) {
 				if (xhr.status == 200) {
 				    var strDocument = xhr.responseText;
-				    var xmlDocument = xhr.responseXML;
-				    if(!xmlDocument || xmlDocument.childNodes.length==0){ 
-                        xmlDocument = (new DOMParser()).parseFromString(strDocument, "text/xml");
-                    } 
-                    if (responseFunction != null) responseFunction(xmlDocument);
+                    if (responseFunction != null) responseFunction(strDocument);
 				} else {
                     alert("get - Error getting data from the server");
 				}
@@ -53,18 +49,14 @@ function AtomClient(uri) {
 			if (xhr.readyState == 4) {
 				if (xhr.status == 201) {
 				    var strDocument = xhr.responseText;
-				    var xmlDocument = xhr.responseXML;
-				    if(!xmlDocument || xmlDocument.childNodes.length==0){ 
-                        xmlDocument = (new DOMParser()).parseFromString(strDocument, "text/xml");
-                    } 
-					if (responseFunction != null) responseFunction(xmlDocument);
+					if (responseFunction != null) responseFunction(strDocument);
 				} else {
 					alert("post - Error getting data from the server");
 				}
 			}
 		}
 		xhr.open("POST", uri, true);
-		xhr.setRequestHeader("Content-Type", "application/atom+xml");
+		xhr.setRequestHeader("Content-Type", "text/xml");
 		xhr.send(entry);
 	}	
 
@@ -74,18 +66,14 @@ function AtomClient(uri) {
 			if (xhr.readyState == 4) {
 				if (xhr.status == 200) {
 				    var strDocument = xhr.responseText;
-				    var xmlDocument = xhr.responseXML;
-				    if(!xmlDocument || xmlDocument.childNodes.length==0){ 
-                        xmlDocument = (new DOMParser()).parseFromString(strDocument, "text/xml");
-                    } 
-					if (responseFunction != null) responseFunction(xmlDocument);
+					if (responseFunction != null) responseFunction(strDocument);
 				} else {
 					alert("put - Error getting data from the server");
 				}
 			}
 		}
 		xhr.open("PUT", uri + '/' + id, true);
-		xhr.setRequestHeader("Content-Type", "application/atom+xml");
+		xhr.setRequestHeader("Content-Type", "text/xml");
 		xhr.send(entry);
 	}	
 
@@ -114,24 +102,4 @@ function AtomClient(uri) {
         alert("XML http request not supported");
         return null;
 	}
-	if (typeof DOMParser == "undefined") {
-	   DOMParser = function () {}
-	
-	   DOMParser.prototype.parseFromString = function (str, contentType) {
-	      if (typeof ActiveXObject != "undefined") {
-	         var d = new ActiveXObject("MSXML.DomDocument");
-	         d.loadXML(str);
-	         return d;
-	      } else if (typeof XMLHttpRequest != "undefined") {
-	         var req = new XMLHttpRequest;
-	         req.open("GET", "data:" + (contentType || "application/xml") +
-	                         ";charset=utf-8," + encodeURIComponent(str), false);
-	         if (req.overrideMimeType) {
-	            req.overrideMimeType(contentType);
-	         }
-	         req.send(null);
-	         return req.responseXML;
-	      }
-      }
-   }
 }

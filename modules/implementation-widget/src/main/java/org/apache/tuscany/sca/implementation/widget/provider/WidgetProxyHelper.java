@@ -32,6 +32,9 @@ class WidgetProxyHelper {
         
         proxyFileRegistry.put("org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding", "binding-jsonrpc.js");
         proxyClient.put("org.apache.tuscany.sca.binding.jsonrpc.JSONRPCBinding", "JSONRpcClient");
+
+        proxyFileRegistry.put("org.apache.tuscany.sca.binding.http.impl.HTTPBindingImpl", "binding-http.js");
+        proxyClient.put("org.apache.tuscany.sca.binding.http.impl.HTTPBindingImpl", "HTTPClient");
     }
     
     static String getJavaScriptProxyFile(String bindingClass) {
