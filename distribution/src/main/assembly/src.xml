@@ -80,26 +80,36 @@
     		<exclude>**/var/journal</exclude>
     		<exclude>**/build.out*</exclude>
     		<exclude>velocity.log</exclude>
-                <exclude>*/work</exclude>
-                <exclude>*/work/**/*</exclude>
     		<exclude>distribution/target-last-successful</exclude>
     		<exclude>distribution/target-last-successful/**/*</exclude>
     		<exclude>itest/velocity.log</exclude>
-    		<exclude>itest/databindings/jaxbgen/velocity.log</exclude>
-                <exclude>itest/old</exclude>
-                <exclude>itest/old/**/*</exclude>
-                <exclude>itest/exceptions-simple-ws/work</exclude>
-                <exclude>itest/exceptions-simple-ws/work/**/*</exclude>
                 <exclude>itest/callablereferences/work</exclude>
                 <exclude>itest/callablereferences/work/**/*</exclude>
-                <exclude>itest/large-sdo-ws/work</exclude>
-                <exclude>itest/large-sdo-ws/work/**/*</exclude>
-                <exclude>itest/ws-void-args-return/work</exclude>
-                <exclude>itest/ws-void-args-return/work/**/*</exclude>
-                <exclude>itest/contribution-import-export/import-wsdl/work</exclude>
-                <exclude>itest/contribution-import-export/import-wsdl/work/**/*</exclude>
+                <exclude>itest/callablereferences-ws/work</exclude>
+                <exclude>itest/callablereferences-ws/work/**/*</exclude>
                 <exclude>itest/contribution-import-export/import-composite/work</exclude>
                 <exclude>itest/contribution-import-export/import-composite/work/**/*</exclude>
+                <exclude>itest/contribution-import-export/import-resource/work</exclude>
+                <exclude>itest/contribution-import-export/import-resource/work/**/*</exclude>
+                <exclude>itest/contribution-import-export/import-wsdl/work</exclude>
+                <exclude>itest/contribution-import-export/import-wsdl/work/**/*</exclude>
+                <exclude>itest/conversations-ws/work</exclude>
+                <exclude>itest/conversations-ws/work/**/*</exclude>
+    		<exclude>itest/databindings/jaxbgen/velocity.log</exclude>
+                <exclude>itest/domain/work</exclude>
+                <exclude>itest/domain/work/**/*</exclude>
+                <exclude>itest/exceptions-simple-ws/work</exclude>
+                <exclude>itest/exceptions-simple-ws/work/**/*</exclude>
+                <exclude>itest/large-sdo-ws/</exclude>
+                <exclude>itest/large-sdo-ws/**/*</exclude>
+                <exclude>itest/policy/work</exclude>
+                <exclude>itest/policy/work/**/*</exclude>
+                <exclude>itest/transaction/derbydb</exclude>
+                <exclude>itest/transaction/derbydb/**/*</exclude>
+                <exclude>itest/ws-void-args-return/work</exclude>
+                <exclude>itest/ws-void-args-return/work/**/*</exclude>
+                <exclude>modules/domain-impl/work</exclude>
+                <exclude>modules/domain-impl/work/**/*</exclude>
                 <exclude>modules/host-tomcat/work</exclude>
                 <exclude>modules/host-tomcat/work/**/*</exclude>
                 <exclude>modules/node-impl/work</exclude>
@@ -109,12 +119,10 @@
                 <exclude>modules/implementation-das/**/*</exclude>
                 <exclude>modules/implementation-data</exclude>
                 <exclude>modules/implementation-data/**/*</exclude>
-                <exclude>modules/implementation-ejb</exclude>
-                <exclude>modules/implementation-ejb/**/*</exclude>
-                <exclude>modules/implementation-ejb-xml</exclude>
-                <exclude>modules/implementation-ejb-xml/**/*</exclude>
                 <exclude>modules/implementation-osgi/.felix</exclude>
                 <exclude>modules/implementation-osgi/.felix/**/*</exclude>
+                <exclude>modules/osgi-runtime/.felix</exclude>
+                <exclude>modules/osgi-runtime/.felix/**/*</exclude>
                 <exclude>samples/old</exclude>
                 <exclude>samples/old/**/*</exclude>
                 <exclude>samples/calculator-distributed/work</exclude>
@@ -123,14 +131,6 @@
                 <exclude>samples/callback-ws-client/work/**/*</exclude>
                 <exclude>samples/callback-ws-service/work</exclude>
                 <exclude>samples/callback-ws-service/work/**/*</exclude>
-                <exclude>samples/company-das</exclude>
-                <exclude>samples/company-das/**/*</exclude>
-                <exclude>samples/company-das-webapp</exclude>
-                <exclude>samples/company-das-webapp/**/*</exclude>
-                <exclude>samples/das-service</exclude>
-                <exclude>samples/das-service/**/*</exclude>
-                <exclude>samples/das-service-web</exclude>
-                <exclude>samples/das-service-web/**/*</exclude>
                 <exclude>samples/domain-webapp</exclude>
                 <exclude>samples/domain-webapp/**/*</exclude>
                 <exclude>samples/helloworld-jsonrpc-webapp/src/main/webapp/dojo</exclude>
@@ -163,12 +163,17 @@
                 <exclude>samples/spi-implementation-pojo/**/*</exclude>
                 <exclude>samples/simple-callback-ws/work</exclude>
                 <exclude>samples/simple-callback-ws/work/**/*</exclude>
+                <exclude>demos/alert-aggregator-webapp/bin</exclude>
+                <exclude>demos/alert-aggregator-webapp/bin/**/*</exclude>
                 <exclude>demos/alert-aggregator-webapp/src/main/webapp/dojo</exclude>
                 <exclude>demos/alert-aggregator-webapp/src/main/webapp/dojo/**/*</exclude>
+                <exclude>demos/bigbank/src/main/resources/web/dojo</exclude> 
+                <exclude>demos/bigbank/src/main/resources/web/dojo/**/*</exclude> 
                 <exclude>demos/bigbank-account/src/main/resources/web/dojo</exclude> 
                 <exclude>demos/bigbank-account/src/main/resources/web/dojo/**/*</exclude> 
                 <exclude>demos/secure-bigbank/secure-bigbank-account/src/main/resources/web/dojo</exclude> 
                 <exclude>demos/secure-bigbank/secure-bigbank-account/src/main/resources/web/dojo/**/*</exclude> 
+                <exclude>*/**/derby.log</exclude>
                 <exclude>*/**/*.svg</exclude>
                 <exclude>*/**/*.ruleset</exclude>
                 <exclude>*/**/*.pmd</exclude>

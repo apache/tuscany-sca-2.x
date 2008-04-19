@@ -1,3 +1,105 @@
+Changes With Apache Tuscany SCA 1.2 (incubating) April 2008 
+===========================================================
+
+- Fix the following JIRA issues (http://issues.apache.org/jira/browse/TUSCANY):
+  * TUSCANY-2027
+  * TUSCANY-1999
+  * TUSCANY-2037
+  * TUSCANY-2034
+  * TUSCANY-2038
+  * TUSCANY-2043
+  * TUSCANY-2046
+  * TUSCANY-2047
+  * TUSCANY-2028
+  * TUSCANY-1873
+  * TUSCANY-2049
+  * TUSCANY-2035
+  * TUSCANY-1206
+  * TUSCANY-2036 
+  * TUSCANY-1771
+  * TUSCANY-2013
+  * TUSCANY-1926
+  * TUSCANY-1917
+  * TUSCANY-1949
+  * TUSCANY-1941
+  * TUSCANY-2045
+  * TUSCANY-2057
+  * TUSCANY-2055
+  * TUSCANY-2056
+  * TUSCANY-2072
+  * TUSCANY-2047
+  * TUSCANY-2073
+  * TUSCANY-1977 
+  * TUSCANY-2075
+  * TUSCANY-1894
+  * TUSCANY-2079
+  * TUSCANY-2078
+  * TUSCANY-2080
+  * TUSCANY-2068
+  * TUSCANY-1950
+  * TUSCANY-2077
+  * TUSCANY-2056
+  * TUSCANY-2088
+  * TUSCANY-2086
+  * TUSCANY-2094
+  * TUSCANY-2106 
+
+  Features and/or Enhancements
+
+  * Core
+    - Interceptor Enhancements
+      - Phase-based interceptor ordering to allow contribution of new interceptors and also define the order in witch they should be invoked
+      - Pass-by-reference SPI to allow interceptors to indicate if they support pass-by-reference
+      - PolicyProvider SPIs to allow extensions to plugin policy interceptors
+    - Support for JAXWS annotations and mapping of faults to Java exceptions according to JAXWS specification
+    - Improvement of contribution service to allow it to be used outside of the runtime environment 
+    - Support for Contribution Import/Export resource
+    - Enhanced Distributed Domain story using Workspace
+      - Implementation of a SCA domain allowing a system administrator to manage contributions, composites and sca nodes that run these composites
+        - Set of core services providing management capabilities
+        - Administration web interface
+        - This is a work in progress and you can see it in action in samples/calculator-distributed. Other samples that use distributed operation are yet to move over to the workspace.
+    - Enhanced support for SCA Policy spec
+      - Ability to apply external policy definitions to a SCA composition
+      - Ability to spread policy definitions to multiple definitions.xml files available across the sca domain
+      - Bug fixes
+    - Improvements of http binding to support servlet components
+    - Enable Tuscany to run inside an OSGi runtime
+
+  * Web 2.0 Extensions
+    - Enhancements to implementation.widget (support for properties)
+    - New atom binding based on Apache Abdera
+    - Refactoring of rss-rome binding
+  * Other Extensions
+    - Binding JMS
+      - greatly simplified the use of the JMS binding, support locating JMS resources from JNDI, and better compliance with the SCA JMS binding spec
+      - see the doc page for more details: http://incubator.apache.org/tuscany/sca-java-bindingjms.html
+    - Enhancements to Binding RMI
+      - Support shared RMI registry and use 999x as the ports in test case to avoid 1099 conflict
+    - Enhancements to Groovy extension
+      - Support for 'native' groovy classes
+    - Enhancements to OSGi bundle contributions
+      - Support Bundle URLs to be added as contributions
+
+  * Tools
+    - Eclipse plugin providing a Tuscany runtime Library and Tuscany launcher in Eclipse environment
+       - An updatesite is also available to facilitate the plugin installation using the Eclipse update manager
+
+  * Samples/Tutorial/Demos
+    - calculator-distributed migrated to use new Tuscany Distributed Workspace
+    - sample-calculator-ws-secure-webapp
+    - sample-helloworld-jms-webapp
+    - new jms samples
+    - improve bigbank demo to include support for policies 
+    - tutorial store changes
+      - use of import/export
+      - development of contribution without requiring dependencies on the Tuscany runtime
+      - usage of new sca domain infrastructure
+
+  * Testing
+    - Web Container Testing Framework integrated with (Tomcat, Jetty, Geronimo and Websphere)
+
+
 Changes With Apache Tuscany SCA 1.1 (incubating) January 2008 
 ===============================================================
 

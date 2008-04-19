@@ -1,19 +1,26 @@
-Building the Apache Tuscany SCA 1.1 (incubating) January 2008 Release source distribution
-=========================================================================================
+Building the Apache Tuscany SCA 1.2 (incubating) April 2008 Release source distribution
+=======================================================================================
 
 Initial Setup
 -------------
 
 1) Install J2SE 5.0 SDK, which can be downloaded from 
-   http://java.sun.com/j2se/1.5.0/download.jsp. Use version of 1.5.0_06 JDK.
+   http://java.sun.com/j2se/1.5.0/download.jsp. Use version of 1.5.0_06 JDK or higher.
 
 2) Make sure that your JAVA_HOME environment variable is set to the newly installed 
    JDK location, and that your PATH includes %JAVA_HOME%\bin (windows) or 
    $JAVA_HOME$/bin (unix).
 
-3) Install Maven 2.0.5, which can be downloaded from 
+3) Install Maven 2.0.7 or higher, which can be downloaded from 
    http://maven.apache.org/download.html. Make sure that your PATH includes 
    the MVN_HOME/bin directory. 
+
+4) Make sure that your MAVEN_OPTS environment variable has -Xmx128M (or more),
+   you can manually do this by executing the following in your prompt :
+   Windows users:
+      set MAVEN_OPTS=-Xmx128M
+   Unix users:
+      export MAVEN_OPTS=-Xmx128M
 
 
 Building
@@ -38,7 +45,7 @@ Building
 Building the distributions
 --------------------------
 
-1) Change to the distributions folder
+1) Change to the distribution folder
 2) Run
 
 	$> mvn

@@ -217,33 +217,46 @@ conditions of the following licenses.
 The module itest/databindings/common includes the test schema; datagraph.xsd, sdoJava.xsd, and sdoModel.xsd
 under the following license:
 
-License for the Service Data Objects JavaDoc and Interface Definition files. (sdo-api-r2.0.1-1.0-incubator-M2.jar)
+License for the Service Data Objects JavaDoc, Interface Definition files
+and XSD files.
 
-Permission to copy, make derivative works of, and distribute the Service Data Objects 
-JavaDoc and Interface Definition Files files in any medium without fee or royalty as part 
-of a compliant implementation of the Service Data Objects Specification is hereby granted.  
-The Service Data Objects Specification may be found at any of the following locations:
+The Service Data Objects JavaDoc, Interface Definition files and XSD files 
+are being provided by the copyright holders under the following license. 
+By using and/or copying this work, you agree that you have read, 
+understood and will comply with the following terms and conditions:
 
-http://dev2dev.bea.com/technologies/commonj/index.jsp
-http://www.ibm.com/developerworks/library/specification/ws-sdo/
-http://oracle.com/technology/webservices/sca
-https://www.sdn.sap.com/
-http://www.xcalia/xdn/specs/sdo
+Permission to copy, display, make derivative works of and distribute 
+the Service Data Objects JavaDoc, Interface Definition files and XSD files
+(the "Artifacts") in any medium without fee or royalty is hereby granted, 
+provided that you include the following on ALL copies of the Artifacts, 
+or portions thereof, that you make:
 
-THE SERVICE DATA OBJECTS SPECIFICATION AND THE JAVADOC AND INTERFACE DEFINITION FILES 
-ARE PROVIDED "AS IS," AND THE AUTHORS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, REGARDING THIS 
-SPECIFICATION OR THE JAVADOC AND INTERFACE DEFINITION FILES AND THE IMPLEMENTATION OF THEIR CONTENTS, 
-INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
-NON-INFRINGEMENT OR TITLE.  THE AUTHORS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL, 
-INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF OR RELATING TO ANY USE OR DISTRIBUTION OF THE 
-SERVICE DATA OBJECTS SPECIFICATION OR THE JAVADOC OR INTERFACE DEFINTION FILES.
+1.	A link or URL to the Artifacts at this location:
+http://www.osoa.org/display/Main/Service+Data+Objects+Specifications
 
-The name and trademarks of the Authors may NOT be used in any manner, including advertising or 
-publicity pertaining to the Service Component Architecture Specification or its contents without specific, 
-written prior permission. Title to copyright in the Service Data Objects Specification and the 
-JavaDoc and Interface Definition Files will at all times remain with the Authors.
+2.	The full text of this copyright notice as shown in the Artifacts.
+
+
+
+THE ARTIFACTS ARE PROVIDED "AS IS" AND THE AUTHORS MAKE NO 
+REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, REGARDING THE 
+ARTIFACTS AND THE IMPLEMENTATION OF THEIR CONTENTS, 
+INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS 
+FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT OR TITLE. 
+
+THE AUTHORS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL, 
+INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF OR RELATING TO ANY 
+USE OR DISTRIBUTION OF THE ARTIFACTS.
+
+The name and trademarks of the Authors may NOT be used in any manner, 
+including advertising or publicity pertaining to the Service Data 
+Objects Specification or its contents without specific, written prior 
+permission. Title to copyright in the Service Data Objects 
+Specification will at all times remain with the Authors.
 
 No other rights are granted by implication, estoppel or otherwise.
+
+Revision level 1.11, last updated on 2007/12/21
 
 =================================================================================================================
 
@@ -328,3 +341,57 @@ No other rights are granted by implication, estoppel or otherwise.
 Revision level 1.1, last updated on 2007/11/19
 
 =================================================================================================================
+The modules 
+
+binding-ws-xml
+databinding
+databinding-axiom
+databinding-jaxb
+databinding-json
+databinding-sdo
+databinding-sdo-axiom
+databinding-xmlbeans
+interface-wsdl-xml
+
+Include the ipo.xsd and address.xsd information from the XML Schema Primer 
+(http://www.w3.org/TR/2004/PER-xmlschema-0-20040318/) combined into the 
+file ipo.xsd and extended with UK postcode structures.
+
+The ipo.xsd file is include under the following license:
+
+W3C(c) SOFTWARE NOTICE AND LICENSE
+http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
+
+This work (and included software, documentation such as READMEs, or other 
+related items) is being provided by the copyright holders under the following 
+license. By obtaining, using and/or copying this work, you (the licensee) agree 
+that you have read, understood, and will comply with the following terms and conditions.
+
+Permission to copy, modify, and distribute this software and its documentation, 
+with or without modification, for any purpose and without fee or royalty is 
+hereby granted, provided that you include the following on ALL copies of the 
+software and documentation or portions thereof, including modifications:
+
+   1. The full text of this NOTICE in a location viewable to users of the 
+      redistributed or derivative work.
+   2. Any pre-existing intellectual property disclaimers, notices, or terms 
+      and conditions. If none exist, the W3C Software Short Notice should be 
+      included (hypertext is preferred, text is permitted) within the body of 
+      any redistributed or derivative code.
+   3. Notice of any changes or modifications to the files, including the date 
+      changes were made. (We recommend you provide URIs to the location from which 
+      the code is derived.)
+
+THIS SOFTWARE AND DOCUMENTATION IS PROVIDED "AS IS," AND COPYRIGHT HOLDERS MAKE 
+NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, 
+WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE 
+USE OF THE SOFTWARE OR DOCUMENTATION WILL NOT INFRINGE ANY THIRD PARTY PATENTS, 
+COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
+
+COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR 
+CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE SOFTWARE OR DOCUMENTATION.
+
+The name and trademarks of copyright holders may NOT be used in advertising or 
+publicity pertaining to the software without specific, written prior permission. 
+Title to copyright in this software and any associated documentation will at all 
+times remain with copyright holders.

@@ -215,30 +215,31 @@ conditions of the following licenses.
 
 The following components come under Apache Software License 1.1
 
- commons-cli-1.0.jar
  commons-discovery-0.2.jar
  commons-primitives-1.0.jar
 
 The following components come under Apache Software License 2.0
 
+ abdera-core-0.3.0-incubating.jar
+ abdera-i18n-0.3.0-incubating.jar
+ abdera-parser-0.3.0-incubating.jar
  activeio-2.0-r118.jar
  activeio-core-3.0.0-incubator.jar
- activemq-core-4.1.1.jar
+ apache-activemq-4.1.1.jar
  addressing-1.3.mar
  annogen-0.1.0.jar
- annotations-api-6.0.10.jar
+ annotations-api-6.0.14.jar
  aopalliance-1.0.jar
  axiom-api-1.2.5.jar
  axiom-dom-1.2.5.jar
  axiom-impl-1.2.5.jar
  axis2-adb-1.3.jar
- axis2-adb-codegen-1.3.jar
  axis2-codegen-1.3.jar
  axis2-java2wsdl-1.3.jar
  axis2-kernel-1.3.jar
  axis2-mtompolicy-1.3.jar
  bsf-all-3.0-beta2.jar
- catalina-6.0.10.jar
+ catalina-6.0.14.jar
  cglib-nodep-2.1_3.jar
  commons-collections-3.1.jar
  commons-codec-1.3.jar
@@ -248,7 +249,7 @@ The following components come under Apache Software License 2.0
  commons-jexl-1.1.jar
  commons-lang-2.1.jar
  commons-logging-1.1.jar
- coyote-6.0.10.jar
+ coyote-6.0.14.jar
  derby-10.1.3.1.jar
  geronimo-activation_1.1_spec-1.0-M1.jar
  geronimo-common-1.2-beta.jar
@@ -258,12 +259,12 @@ The following components come under Apache Software License 2.0
  geronimo-deployment-1.2-beta.jar
  geronimo-ejb_3.0_spec-1.0.jar
  geronimo-interceptor-1.2-beta.jar
- geronimo-jms_1.1_spec-1.1.jar
  geronimo-j2ee-1.2-beta.jar
  geronimo-j2ee-connector_1.5_spec-1.1.jar
  geronimo-j2ee-jacc_1.0_spec-1.1.jar
  geronimo-j2ee-management_1.0_spec-1.1.jar
  geronimo-javamail_1.4_spec-1.0-M1.jar
+ geronimo-jms_1.1_spec-1.1.jar
  geronimo-jpa_3.0_spec-1.0.jar
  geronimo-jta_1.0.1B_spec-1.0.jar
  geronimo-kernel-1.2-beta.jar
@@ -279,20 +280,12 @@ The following components come under Apache Software License 2.0
  httpcore-nio-4.0-alpha5.jar
  httpcore-niossl-4.0-alpha5.jar
  jettison-1.0-RC2.jar
- jetty-6.1.3.jar
- jetty-util-6.1.3.jar
+ jetty-6.1.7.jar
+ jetty-util-6.1.7.jar
  json-rpc-1.0.jar
- juli-6.0.10.jar
+ juli-6.0.14.jar
  log4j-1.2.12.jar
  logkit-1.0.1.jar
- maven-artifact-2.0.2.jar
- maven-artifact-manager-2.0.2.jar
- maven-error-diagnostics-2.0.2.jar
- maven-model-2.0.2.jar
- maven-profile-2.0.2.jar
- maven-project-2.0.2.jar
- maven-repository-metadata-2.0.2.jar
- maven-settings-2.0.2.jar
  neethi-2.0.2.jar
  ode-bpel-api-1.1.jar
  ode-bpel-compiler-1.1.jar
@@ -310,15 +303,11 @@ The following components come under Apache Software License 2.0
  ode-utils-1.1.jar
  openjpa-all-0.9.7-incubating.jar
  openjpa-persistence-0.9.7-incubating.jar
- opensaml-1.1.jar
- org.apache.felix.bundlerepository-1.0.0.jar
- org.apache.felix.framework-1.0.1.jar
- org.apache.felix.main-1.0.1.jar
+ org.apache.felix.bundlerepository-1.0.2.jar
+ org.apache.felix.framework-1.0.3.jar
+ org.apache.felix.main-1.0.3.jar
  org.apache.felix.shell-1.0.0.jar
  org.apache.felix.shell.tui-1.0.0.jar
- plexus-container-default-1.0-alpha-9.jar
- plexus-utils-1.1.jar
- rampart-1.3.mar
  rampart-core-1.3.jar
  rampart-policy-1.3.jar
  rampart-trust-1.3.jar
@@ -331,54 +320,117 @@ The following components come under Apache Software License 2.0
  tuscany-sdo-impl-1.0-incubating.jar
  tuscany-sdo-lib-1.0-incubating.jar
  tuscany-sdo-tools-1.0-incubating.jar
- wagon-file-1.0-alpha-7.jar
- wagon-http-lightweight-1.0-alpha-6.jar
- wagon-provider-api-1.0-alpha-6.jar
  woden-1.0-incubating-M7b.jar
  wss4j-1.5.3.jar
  wstx-asl-3.2.1.jar
  xalan-2.7.0.jar
- xbean-2.1.0.jar
- xmlbeans-2.3.0.jar
  xbean-naming-2.7.jar
  xercesImpl-2.8.1.jar
  xml-apis-1.3.03.jar
+ xmlbeans-2.3.0.jar
  xml-resolver-1.1.jar
  xmlsec-1.4.0.jar
  XmlSchema-1.3.2.jar
- 
+
 ===============================================================================
+axion-1.0-M3-dev.jar 
 
-jaxen-1.1-beta-9.jar:
-
- Copyright 2003-2006 The Werken Company. All Rights Reserved.
+Copyright (c) 2002-2003 Axion Development Team. All rights reserved.
  
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions are
- met:
+Redistribution and use in source and binary forms, with or without 
+modification, are permitted provided that the following conditions 
+are met:
 
-  * Redistributions of source code must retain the above copyright
-    notice, this list of conditions and the following disclaimer.
+1. Redistributions of source code must retain the above 
+   copyright notice, this list of conditions and the following 
+   disclaimer. 
+ 
+2. Redistributions in binary form must reproduce the above copyright 
+   notice, this list of conditions and the following disclaimer in 
+   the documentation and/or other materials provided with the 
+   distribution. 
 
-  * Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
+3. The names "Tigris", "Axion", nor the names of its contributors may 
+   not be used to endorse or promote products derived from this 
+   software without specific prior written permission. 
+ 
+4. Products derived from this software may not be called "Axion", nor 
+   may "Tigris" or "Axion" appear in their names without specific prior
+   written permission.
+ 
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT 
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT 
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY 
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+The "Axion Development Team" is defined to be:
 
-  * Neither the name of the Jaxen Project nor the names of its
-    contributors may be used to endorse or promote products derived 
-    from this software without specific prior written permission.
+ * Chuck Burdick
+ * James Burke
+ * Morgan Delagrange
+ * Geir Magnusson Jr.
+ * Martin Poeschl
+ * Steve Polyak
+ * Daniel Rall
+ * Ahimanikya Satapathy
+ * Doug Sale
+ * James Strachan
+ * Rodney Waldhoff
+ * Jason van Zyl
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
-IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
-OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+License changes are to be determined by a simple majority vote of the 
+Axion Development Team.
+
+===============================================================================
+dom4j-1.6.1.jar
+
+Copyright 2001-2005 (C) MetaStuff, Ltd. All Rights Reserved.
+
+Redistribution and use of this software and associated documentation
+("Software"), with or without modification, are permitted provided
+that the following conditions are met:
+
+1. Redistributions of source code must retain copyright
+   statements and notices.  Redistributions must also contain a
+   copy of this document.
+ 
+2. Redistributions in binary form must reproduce the
+   above copyright notice, this list of conditions and the
+   following disclaimer in the documentation and/or other
+   materials provided with the distribution.
+ 
+3. The name "DOM4J" must not be used to endorse or promote
+   products derived from this Software without prior written
+   permission of MetaStuff, Ltd.  For written permission,
+   please contact dom4j-info@metastuff.com.
+ 
+4. Products derived from this Software may not be called "DOM4J"
+   nor may "DOM4J" appear in their names without prior written
+   permission of MetaStuff, Ltd. DOM4J is a registered
+   trademark of MetaStuff, Ltd.
+ 
+5. Due credit should be given to the DOM4J Project - 
+   http://www.dom4j.org
+ 
+THIS SOFTWARE IS PROVIDED BY METASTUFF, LTD. AND CONTRIBUTORS
+``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT
+NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL
+METASTUFF, LTD. OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ===============================================================================
 
@@ -1233,7 +1285,7 @@ EXHIBIT A -Mozilla Public License.
 
 
 ===============================================================================
-Groovy:
+Groovy (groovy-all-minimal-1.5.4.jar):
 
 /*
  $Id: LICENSE.txt 156 2003-09-26 17:36:37Z jstrachan $
@@ -1283,7 +1335,7 @@ Groovy:
 
 ===============================================================================
 
-Jython:
+Jython (jython-2.2.jar):
 
 A. HISTORY OF THE SOFTWARE
 =======================
@@ -1430,8 +1482,19 @@ JPython version 1.1.x
 
 ===============================================================================
 
-The jars; activation, jaxb-api, jaxb-impl, jaxb-xjc, jaxb2-reflection, jsr181-api,
-jsr250-api, jaxws-api, mail, saaj-api, servlet-api-2.5.jar, stax-api-1.0.2.jar:
+The jars; 
+activation-1.1.jar, 
+jaxb-api-2.1.jar, 
+jaxb-impl-2.1.6.jar, 
+jaxb-xjc-2.1.4.jar, 
+jaxb2-reflection-2.1.4.jar,
+jsr181-api-1.0-MR1.jar, 
+jsr250-api-1.0.jar, 
+jaxws-api-2.1-1.jar, 
+mail-1.4.jar, 
+saaj-api-1.3.jar, 
+servlet-api-2.5.jar, 
+stax-api-1.0-commons-cli-1.0.jar2.jar
 
 COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
 
@@ -1820,7 +1883,7 @@ COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
 
 ===============================================================================
 
-JRuby, wsdl4j:
+JRuby (jruby-complete-1.0.jar), wsdl4j (wsdl4j-1.6.2.jar):
 
 Common Public License - v 1.0
 
@@ -1911,7 +1974,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
 ===============================================================================
 
-backport-util-concurrent:
+backport-util-concurrent-2.2.jar:
 
 The software comprising backport-util-concurrent is based in large
 part on the code from JSR166, and the package dl.util.concurrent.
@@ -2054,7 +2117,7 @@ dwr-2.0.1.jar :
 
 ==========================================================================
 
-dojotoolkit :
+dojotoolkit V1.0.0:
 
 The "New" BSD License:
 **********************
@@ -2127,7 +2190,7 @@ BSD license:
 
 ================================================================================
 
-The serp jar is distributed under the BSD license with the following copyright:
+The serp-1.12.0.jar is distributed under the BSD license with the following copyright:
 
  Copyright (c) 2002, A. Abram White
  All rights reserved.
@@ -2165,7 +2228,7 @@ BSD license:
  DAMAGE. 
 
 ================================================================================
-The axion, javacc, and howl are distributed under the BSD license:
+The javacc-3.2.jar, and howl-1.0.1-1.jar are distributed under the BSD license:
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
