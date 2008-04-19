@@ -31,5 +31,6 @@
 
     <modules>
        <module>helloworld</module>
+       <module>helloworld-reference</module>
     </modules>
 </project>
