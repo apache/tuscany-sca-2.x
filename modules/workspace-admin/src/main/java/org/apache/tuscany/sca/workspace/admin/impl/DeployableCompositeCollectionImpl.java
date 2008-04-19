@@ -62,6 +62,7 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeConfigurationBuilderImpl;
+import org.apache.tuscany.sca.assembly.builder.impl.CompositeIncludeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
@@ -132,6 +133,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     private StAXArtifactProcessor<Composite> compositeProcessor;
     private XMLOutputFactory outputFactory;
     private CompositeBuilder compositeBuilder;
+    private CompositeIncludeBuilderImpl compositeIncludeBuilder;
     private CompositeConfigurationBuilderImpl compositeConfigurationBuilder;
     private List<ContributionListener> contributionListeners;
     
@@ -183,6 +185,8 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         
         compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory,
                                                     contractMapper, monitor);
+        
+        compositeIncludeBuilder = new CompositeIncludeBuilderImpl(monitor);
         
         compositeConfigurationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, 
                                                                              scaBindingFactory, 
@@ -376,6 +380,9 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             
             // add the deployable composite to the domain composite
             domainComposite.getIncludes().add(deployable);
+
+            // Fuse includes into the deployable composite
+            compositeIncludeBuilder.fuseIncludes(deployable);
             
             // store away the composite we are generating the deployable XML for. 
             if (qname.equals(deployable.getName())){
@@ -429,7 +436,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             }
         }
         
-        // build the domain composite
+        // Build the domain composite
         try {
             compositeBuilder.build(domainComposite);
         } catch (CompositeBuilderException e) {
@@ -437,13 +444,12 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             return;
         }        
         
-        // rebuild the requested composite from the domain composite
-        // we have to reverse the flatterning that went on when the domain
+        // Rebuild the requested composite from the domain composite
+        // we have to reverse the flattening that went on when the domain
         // composite was built
         List<Component> tempComponentList = new ArrayList<Component>();
         tempComponentList.addAll(compositeImage.getComponents());
         compositeImage.getComponents().clear();
-        
         for (Component inputComponent : tempComponentList){
             for (Component deployComponent : domainComposite.getComponents()){
                 if (deployComponent.getName().equals(inputComponent.getName())){
