@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.implementation.bpel.ode;
 import java.util.concurrent.Callable;
 
 import javax.wsdl.Part;
-import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
@@ -31,7 +30,6 @@ import org.apache.ode.bpel.iapi.MessageExchange;
 import org.apache.ode.bpel.iapi.PartnerRoleMessageExchange;
 import org.apache.ode.bpel.iapi.Scheduler;
 import org.apache.ode.utils.DOMUtils;
-import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -207,7 +205,6 @@ public class ODEExternalService {
         Element parameters = odeMessage.getPart("parameters");
 
         if (parameters != null && parameters.hasChildNodes()) {
-            // payload = (Element) parameters.getFirstChild().getFirstChild();
             payload = (Element)parameters.getFirstChild();
         }
 
@@ -243,27 +240,29 @@ public class ODEExternalService {
     	
     }
 
-    private Message createResponseMessage(PartnerRoleMessageExchange partnerRoleMessageExchange, Operation operation, Element invocationResult) {
-    	Document dom = DOMUtils.newDocument();
-            	
-    	String operationName = operation.getName();
-    	Part bpelOperationOutputPart =  (Part) ((WSDLInterface)operation.getInterface()).getPortType().getOperation(operationName,null,null).getOutput().getMessage().getParts().values().iterator().next();
-    	
+    private Message createResponseMessage(PartnerRoleMessageExchange partnerRoleMessageExchange,
+                                          Operation operation,
+                                          Element invocationResult) {
+        Document dom = DOMUtils.newDocument();
+
+        String operationName = operation.getName();
+        Part bpelOperationOutputPart =
+            (Part)((WSDLInterface)operation.getInterface()).getPortType().getOperation(operationName, null, null)
+                .getOutput().getMessage().getParts().values().iterator().next();
+
         Element contentMessage = dom.createElement("message");
         Element contentPart = dom.createElement(bpelOperationOutputPart.getName());
-        //Element contentPart2 = dom.createElement(partnerRoleMessageExchange.getOperation().getOutput().getName());
-        
+
         contentPart.appendChild(dom.importNode(invocationResult, true));
-        //contentPart.appendChild(dom.importNode(contentPart2, true));
         contentMessage.appendChild(contentPart);
         dom.appendChild(contentMessage);
-        
+
         System.out.println("::result message:: " + DOMUtils.domToString(dom.getDocumentElement()));
 
-		QName id = partnerRoleMessageExchange.getOperation().getOutput().getMessage().getQName();
-		Message response = partnerRoleMessageExchange.createMessage(id);
-		response.setMessage(dom.getDocumentElement());
-                
+        QName id = partnerRoleMessageExchange.getOperation().getOutput().getMessage().getQName();
+        Message response = partnerRoleMessageExchange.createMessage(id);
+        response.setMessage(dom.getDocumentElement());
+
         return response;
     }
 
