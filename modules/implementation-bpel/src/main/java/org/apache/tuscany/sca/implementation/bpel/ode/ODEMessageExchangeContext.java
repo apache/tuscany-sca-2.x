@@ -119,20 +119,21 @@ public class ODEMessageExchangeContext implements MessageExchangeContext {
     
     /**
      * Find the SCA Reference operation
+     * 
      * @param operationName
      * @param runtimeComponentReference
      * @return
      */
     private Operation findOperation(String operationName, RuntimeComponentReference runtimeComponentReference) {
-    	Operation reseultOperation = null;
-    	
-    	for(Operation operation : runtimeComponentReference.getInterfaceContract().getInterface().getOperations()) {
-    		if (operationName.equalsIgnoreCase(operation.getName())) {
-    			reseultOperation = operation;
-    			break;
-    		}
-    	}
-    	return reseultOperation;
+        Operation reseultOperation = null;
+        
+        for(Operation operation : runtimeComponentReference.getInterfaceContract().getInterface().getOperations()) {
+                if (operationName.equalsIgnoreCase(operation.getName())) {
+                        reseultOperation = operation;
+                        break;
+                }
+        }
+        return reseultOperation;
     }
     
     /**
@@ -141,14 +142,14 @@ public class ODEMessageExchangeContext implements MessageExchangeContext {
      * @return
      */
     private Element getPayload(Message odeMessage) {
-    	Element payload = null;
-    	Element parameters = odeMessage.getPart("parameters");
-    	
-    	if( parameters != null && parameters.hasChildNodes()) {
-    		payload = (Element) parameters.getFirstChild().getFirstChild();
-    	}
-    	
-    	return payload;
+        Element payload = null;
+        Element parameters = odeMessage.getPart("parameters");
+
+        if (parameters != null && parameters.hasChildNodes()) {
+            payload = (Element)parameters.getFirstChild();
+        }
+
+        return payload;
     }
     
 
