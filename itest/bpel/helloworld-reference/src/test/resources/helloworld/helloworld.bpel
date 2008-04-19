@@ -70,7 +70,7 @@
 
        <assign name="assignToHelloResponse">
           <copy>
-              <from>$greetingsResponse.parameters</from>
+              <from>$greetingsResponse.parameters/greetings:getGreetingsReturn</from>
               <to>$helloResponse.TestPart</to>
           </copy>
        </assign>
