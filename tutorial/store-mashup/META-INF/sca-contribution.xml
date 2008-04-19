@@ -17,11 +17,9 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<contribution xmlns="http://www.osoa.org/xmlns/sca/1.0">
-   <export.java package="services"/>
-   <export.java package="services.market"/>
-   <export.java package="services.merger"/>
-   <export.java package="services.db"/>
-   <export.java package="services.map"/>
-   <export.resource uri="uiservices/store.html"/>
+<contribution xmlns="http://www.osoa.org/xmlns/sca/1.0"
+   xmlns:s="http://store">
+   <import.java package="services"/>
+   <import.java package="services.map"/>
+   <deployable composite="s:store-mashup"/>
 </contribution>

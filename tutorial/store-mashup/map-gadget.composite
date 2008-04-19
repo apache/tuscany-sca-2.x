@@ -19,17 +19,14 @@
 -->
 <composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
 		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
-		targetNamespace="http://tuscany.apache.org/cloud"
-		xmlns:s="http://store"
-		name="StoreMarketNode">
-
-	<component name="StoreMarketNode">
-		<t:implementation.node uri="store-market" composite="s:store-market"/>
-		<service name="Node">
-			<t:binding.http uri="http://localhost:8107"/>
-			<t:binding.jsonrpc uri="http://localhost:8107"/>
-			<t:binding.atom uri="http://localhost:8107"/>
-		</service>
-	</component> 
-
+		targetNamespace="http://store"
+		name="map-gadget">
+		
+    <component name="MapGadget">
+        <t:implementation.widget location="gadget/map-gadget.html"/>
+        <service name="Widget">
+        	<t:binding.http uri="/gadget/map"/>
+        </service>
+    </component>
+    
 </composite>

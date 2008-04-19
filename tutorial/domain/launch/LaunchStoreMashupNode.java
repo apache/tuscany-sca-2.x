@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,20 +15,14 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
-		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
-		targetNamespace="http://tuscany.apache.org/cloud"
-		xmlns:s="http://store"
-		name="StoreMarketNode">
+ */
 
-	<component name="StoreMarketNode">
-		<t:implementation.node uri="store-market" composite="s:store-market"/>
-		<service name="Node">
-			<t:binding.http uri="http://localhost:8107"/>
-			<t:binding.jsonrpc uri="http://localhost:8107"/>
-			<t:binding.atom uri="http://localhost:8107"/>
-		</service>
-	</component> 
+package launch;
 
-</composite>
+import org.apache.tuscany.sca.node.launcher.NodeLauncher;
+
+public class LaunchStoreMashupNode {
+    public static void main(String[] args) throws Exception {
+        NodeLauncher.main(new String[] {"http://localhost:9990/node-image/StoreMashupNode"});
+    }
+}

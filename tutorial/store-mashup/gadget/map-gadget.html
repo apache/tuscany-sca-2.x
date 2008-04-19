@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
     * Licensed to the Apache Software Foundation (ASF) under one
     * or more contributor license agreements.  See the NOTICE file
@@ -17,11 +16,32 @@
     * specific language governing permissions and limitations
     * under the License.    
 -->
-<contribution xmlns="http://www.osoa.org/xmlns/sca/1.0">
-   <export.java package="services"/>
-   <export.java package="services.market"/>
-   <export.java package="services.merger"/>
-   <export.java package="services.db"/>
-   <export.java package="services.map"/>
-   <export.resource uri="uiservices/store.html"/>
-</contribution>
+<html>
+<head>
+<title>Map</title>
+
+<script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAzr2EBOXUKnm_jVnk0OJI7xSosDVG8KKPE1-m51RBrvYughuyMxQ-i1QfUnH94QxWIa6N4U6MouMmBA"></script>
+
+<script language="JavaScript">
+	var map;
+
+	function coordsChanged(coords) {
+		var latlng = coords.split(',');
+		map.setCenter(new GLatLng(latlng[0], latlng[1]));
+	}
+       
+	function init() {
+    	if (GBrowserIsCompatible()) {
+			map = new GMap2(document.getElementById("map_canvas"));
+			map.setCenter(new GLatLng(37.4419, -122.1419), 13);
+
+			window.top.geoSpatialCoords = coordsChanged;
+		}
+	}
+</script>
+</head>
+
+<body onload="init()">
+	<div id="map_canvas" style="width: 100%; height: 100%"></div>
+</body>
+</html>

@@ -19,17 +19,24 @@
 -->
 <composite	xmlns="http://www.osoa.org/xmlns/sca/1.0"
 		xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
-		targetNamespace="http://tuscany.apache.org/cloud"
+		targetNamespace="http://store"
 		xmlns:s="http://store"
-		name="StoreMarketNode">
+		name="store-mashup">
 
-	<component name="StoreMarketNode">
-		<t:implementation.node uri="store-market" composite="s:store-market"/>
-		<service name="Node">
-			<t:binding.http uri="http://localhost:8107"/>
-			<t:binding.jsonrpc uri="http://localhost:8107"/>
-			<t:binding.atom uri="http://localhost:8107"/>
-		</service>
-	</component> 
-
+	<include name="s:store-gadget"/>
+	<include name="s:map-gadget"/>
+		
+    <component name="StoreMashup">
+        <t:implementation.widget location="mashup/store-mash.html"/>
+        <service name="Widget">
+        	<t:binding.http uri="/mashup"/>
+        </service>
+		<reference name="storeGadget" target="StoreGadget">
+		 	<t:binding.http/>
+		 </reference>
+		<reference name="mapGadget" target="MapGadget">
+		 	<t:binding.http/>
+		 </reference>
+    </component>
+    
 </composite>

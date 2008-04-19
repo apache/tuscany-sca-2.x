@@ -23,8 +23,15 @@ package services;
 public class Item {
     private String name;
     private String price;
+    private String origin;
     
     public Item() {
+    }
+    
+    public Item(String name, String price, String origin) {
+        this.name = name;
+        this.price = price;
+        this.origin = origin;
     }
     
     public Item(String name, String price) {
@@ -46,6 +53,14 @@ public class Item {
     
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
 
 }
