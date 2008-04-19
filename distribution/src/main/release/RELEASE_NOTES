@@ -1,5 +1,5 @@
-Apache Tuscany SCA 1.1 (incubating) January 2008 Release Notes
-==============================================================
+Apache Tuscany SCA 1.2 (incubating) April 2008 Release Notes
+============================================================
 
 Apache Tuscany provides a runtime based on the Service Component
 Architecture. SCA is a set of specifications aimed at simplifying SOA
@@ -9,7 +9,7 @@ of Open Composite Services Architecture (Open CSA) - http://www.oasis-opencsa.or
 Overview
 --------
 
-     The Apache Tuscany SCA 1.1 release includes implementations of the
+     The Apache Tuscany SCA 1.2 release includes implementations of the
      main SCA specifications including:
 
         SCA Assembly Model V1.0

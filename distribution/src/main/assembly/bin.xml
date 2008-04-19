@@ -73,6 +73,8 @@
                 <exclude>*/.externalToolBuilders/**/*</exclude>
                 <exclude>*/work</exclude>
                 <exclude>*/work/**/*</exclude>
+                <exclude>**/derby.log</exclude>
+                <exclude>**/target/war/**</exclude>
                 <exclude>*/target/mvn-eclipse-cache.properties</exclude>
                 <exclude>*/target/classes</exclude>
                 <exclude>*/target/classes/**/*</exclude>
@@ -109,10 +111,14 @@
                 <exclude>domain-webapp/**/*</exclude>
                 <exclude>feed-aggregator-webapp/target/sample-feed-aggregator-webapp</exclude>
                 <exclude>feed-aggregator-webapp/target/sample-feed-aggregator-webapp/**/*</exclude>
+                <exclude>feed-aggregator-webapp/target/war</exclude>
+                <exclude>helloworld-bpel/target</exclude>
+                <exclude>helloworld-bpel/target/**/*</exclude>
                 <exclude>helloworld-dojo-webapp/src/main/webapp/dojo</exclude>
                 <exclude>helloworld-dojo-webapp/src/main/webapp/dojo/**/*</exclude>
                 <exclude>helloworld-dojo-webapp/target/sample-helloworld-dojo-webapp</exclude>
                 <exclude>helloworld-dojo-webapp/target/sample-helloworld-dojo-webapp/**/*</exclude>
+                <exclude>helloworld-dojo-webapp/target/war</exclude>
                 <exclude>helloworld-jms-webapp</exclude>
                 <exclude>helloworld-jms-webapp/**/*</exclude>
                 <exclude>helloworld-jms-webapp/work</exclude>
@@ -144,12 +150,12 @@
                 <exclude>helloworld-ws-sdo/work/**/*</exclude>
                 <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-ws-sdo-webapp</exclude>
                 <exclude>helloworld-ws-sdo-webapp/target/sample-helloworld-ws-sdo-webapp/**/*</exclude>
+                <exclude>loanapplication</exclude>
+                <exclude>loanapplication/**/*</exclude>
                 <exclude>osgi-supplychain/.felix</exclude>
                 <exclude>osgi-supplychain/.felix/**/*</exclude>
                 <exclude>osgi-supplychain/target/sample-osgi-supplychain</exclude>
                 <exclude>osgi-supplychain/target/sample-osgi-supplychain/**/*</exclude>
-                <exclude>loanapplication</exclude>
-                <exclude>loanapplication/**/*</exclude>
                 <exclude>simple-callback-ws/work</exclude>
                 <exclude>simple-callback-ws/work/**/*</exclude>
                 <exclude>spi-implementation-pojo</exclude>
@@ -177,22 +183,6 @@
                 <include>**/*</include>
             </includes>
             <excludes>
-                <exclude>alert-aggregator-webapp/src/main/webapp/dojo</exclude>
-                <exclude>alert-aggregator-webapp/src/main/webapp/dojo/**/*</exclude>
-                <exclude>alert-aggregator-webapp/target/demo-alert-aggregator</exclude>
-                <exclude>alert-aggregator-webapp/target/demo-alert-aggregator/**/*</exclude>
-                <exclude>alert-aggregator-webapp/target/sdo-source</exclude>
-                <exclude>alert-aggregator-webapp/target/sdo-source/**/*</exclude>
-                <exclude>helloworld-ws-sdo/work</exclude>
-                <exclude>helloworld-ws-sdo/work/**/*</exclude>
-                <exclude>bigbank/target</exclude>
-                <exclude>bigbank/target/**/*</exclude>
-                <exclude>bigbank-account/src/main/resources/web/dojo</exclude> 
-                <exclude>bigbank-account/src/main/resources/web/dojo/**/*</exclude>
-                <exclude>secure-bigbank/secure-bigbank-account/src/main/resources/web/dojo</exclude> 
-                <exclude>secure-bigbank/secure-bigbank-account/src/main/resources/web/dojo/**/*</exclude> 
-                <exclude>mortgage-creditcheck/target/demo-mortgage-creditcheck</exclude>
-                <exclude>mortgage-creditcheck/target/demo-mortgage-creditcheck/**/*</exclude>
                 <exclude>*/.classpath</exclude>
                 <exclude>*/.project</exclude>
                 <exclude>*/.settings</exclude>
@@ -205,20 +195,42 @@
                 <exclude>*/target/test-classes/**/*</exclude>
                 <exclude>*/target/surefire-reports</exclude>
                 <exclude>*/target/surefire-reports/**/*</exclude>
+                <exclude>**/derby.log</exclude>
+                <exclude>*/**/derby.log</exclude>
                 <exclude>*/**/*.svg</exclude>
                 <exclude>*/**/*.ruleset</exclude>
+                <exclude>alert-aggregator-webapp/bin</exclude>
+                <exclude>alert-aggregator-webapp/bin/**/*</exclude>
+                <exclude>alert-aggregator-webapp/src/main/webapp/dojo</exclude>
+                <exclude>alert-aggregator-webapp/src/main/webapp/dojo/**/*</exclude>
+                <exclude>alert-aggregator-webapp/target/demo-alert-aggregator</exclude>
+                <exclude>alert-aggregator-webapp/target/demo-alert-aggregator/**/*</exclude>
+                <exclude>alert-aggregator-webapp/target/sdo-source</exclude>
+                <exclude>alert-aggregator-webapp/target/sdo-source/**/*</exclude>
                 <exclude>alert-aggregator-webapp/target</exclude>
                 <exclude>alert-aggregator-webapp/target/**/*</exclude>
+                <exclude>bigbank/src/main/resources/web/dojo</exclude>
+                <exclude>bigbank/src/main/resources/web/dojo/**/*</exclude>
+                <exclude>bigbank/target</exclude>
+                <exclude>bigbank/target/**/*</exclude>
+                <exclude>bigbank-account/src/main/resources/web/dojo</exclude> 
+                <exclude>bigbank-account/src/main/resources/web/dojo/**/*</exclude>
                 <exclude>bigbank-account/target</exclude>
                 <exclude>bigbank-account/target/**/*</exclude>
                 <exclude>bigbank-calculator/target</exclude>
                 <exclude>bigbank-calculator/target/**/*</exclude>
                 <exclude>bigbank-stockquote/target</exclude>
                 <exclude>bigbank-stockquote/target/**/*</exclude>
+                <exclude>helloworld-ws-sdo/work</exclude>
+                <exclude>helloworld-ws-sdo/work/**/*</exclude>
+                <exclude>mortgage-creditcheck/target/demo-mortgage-creditcheck</exclude>
+                <exclude>mortgage-creditcheck/target/demo-mortgage-creditcheck/**/*</exclude>
                 <exclude>mortgage-creditcheck/target</exclude>
                 <exclude>mortgage-creditcheck/target/**/*</exclude>
                 <exclude>mortgage-loanapproval/target</exclude>
                 <exclude>mortgage-loanapproval/target/**/*</exclude>
+                <exclude>secure-bigbank/secure-bigbank-account/src/main/resources/web/dojo</exclude> 
+                <exclude>secure-bigbank/secure-bigbank-account/src/main/resources/web/dojo/**/*</exclude> 
                 <exclude>secure-bigbank/secure-bigbank-account/target</exclude>
                 <exclude>secure-bigbank/secure-bigbank-account/target/**/*</exclude>
                 <exclude>secure-bigbank/secure-bigbank-calculator/target</exclude>
@@ -252,6 +264,9 @@
                 <exclude>*/target/test-classes/**/*</exclude>
                 <exclude>*/target/surefire-reports</exclude>
                 <exclude>*/target/surefire-reports/**/*</exclude>
+                <exclude>*/target/war</exclude>
+                <exclude>*/target/war/**/*</exclude>
+                <exclude>**/derby.log</exclude>
                 <exclude>*/**/derby.log</exclude>
                 <exclude>*/**/*.svg</exclude>
                 <exclude>*/**/*.ruleset</exclude>
@@ -261,6 +276,12 @@
                 <exclude>catalog-webapp/target/war/**/*</exclude>
                 <exclude>catalog-webapp/target/tutorial-catalog-webapp</exclude>
                 <exclude>catalog-webapp/target/tutorial-catalog-webapp/**/*</exclude>
+                <exclude>store-db/target/cart-db/</exclude>
+                <exclude>store-db/target/cart-db/**/*</exclude>
+                <exclude>store-eu/target/cart-eu-db/</exclude>
+                <exclude>store-eu/target/cart-eu-db/**/*</exclude>
+                <exclude>store-supplier/target/cart-db/</exclude>
+                <exclude>store-supplier/target/cart-db/**/*</exclude>
             </excludes>
         </fileSet>
         <!-- Add the generated tuscany manifest classpath jar to the lib directory -->
