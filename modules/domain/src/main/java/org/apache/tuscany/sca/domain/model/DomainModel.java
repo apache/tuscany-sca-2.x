@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.assembly.Composite;
  */
 public interface DomainModel {
 
-    
     /**
      * Retrieve the domain URI
      * 
@@ -68,7 +67,7 @@ public interface DomainModel {
      * 
      * @param domainLevelComposite
      */    
-    void setDomainLeveComposite(Composite domainLevelComposite);
+    void setDomainLevelComposite(Composite domainLevelComposite);
     
     /**
      * Retrieve the domain level composite

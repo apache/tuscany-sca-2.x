@@ -180,7 +180,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
             domainComposite.setName(new QName(Constants.SCA10_NS, "domain"));
             domainComposite.setURI(domainModel.getDomainURI() + "/domain");  
             
-            domainModel.setDomainLeveComposite(domainComposite);
+            domainModel.setDomainLevelComposite(domainComposite);
             
             // Set up the domain so that local CallableReferences can find 
             // service out there in the domain

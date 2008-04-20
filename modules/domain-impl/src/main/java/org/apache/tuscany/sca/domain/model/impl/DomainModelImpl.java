@@ -79,7 +79,7 @@ public class DomainModelImpl implements DomainModel {
      * 
      * @param domainLevelComposite
      */    
-    public void setDomainLeveComposite(Composite domainLevelComposite){
+    public void setDomainLevelComposite(Composite domainLevelComposite){
         this.domainLevelComposite = domainLevelComposite;
     }
     
