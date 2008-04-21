@@ -64,8 +64,12 @@ public class RegistryInspectorTestCase extends TestCase {
     }
 
     public void testCalculator() throws Exception {
-        RegistryInspector inspector = new RegistryInspector();
+        RegistryInspector registryInspector = new RegistryInspector();
         
-        System.out.println(inspector.registryAsString(node)); 
+        System.out.println(registryInspector.registryAsString(node)); 
+        
+        AssemblyInspector assemblyInspector = new AssemblyInspector();
+        
+        System.out.println(assemblyInspector.assemblyAsString(node)); 
     }
 }
