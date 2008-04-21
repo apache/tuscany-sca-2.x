@@ -332,10 +332,8 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                 resolvePolicySets(contract.getPolicySets(), resolver);
                 resolvePolicySets(contract.getApplicablePolicySets(), resolver);
                 
-                //inherit the composite / component level policy intents and policysets
+                // Inherit the composite / component level applicable policy sets.
                 if ( parent != null && parent instanceof PolicySetAttachPoint )  {
-                    addInheritedIntents(((PolicySetAttachPoint)parent).getRequiredIntents(), contract.getRequiredIntents());
-                    addInheritedPolicySets(((PolicySetAttachPoint)parent).getPolicySets(), contract.getPolicySets());
                     addInheritedPolicySets(((PolicySetAttachPoint)parent).getApplicablePolicySets(), contract.getApplicablePolicySets());
                 }
                 
@@ -344,9 +342,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                     resolvePolicySets(confOp.getPolicySets(), resolver);
                     resolvePolicySets(confOp.getApplicablePolicySets(), resolver);
                     
-                    //inherit intents and policysets from parent contract
-                    addInheritedIntents(contract.getRequiredIntents(), confOp.getRequiredIntents());
-                    addInheritedPolicySets(contract.getPolicySets(), confOp.getPolicySets());
+                    //inherit applicable policy sets from parent contract
                     addInheritedPolicySets(contract.getApplicablePolicySets(), confOp.getApplicablePolicySets());
                 }
                                 
@@ -399,11 +395,6 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                             addInheritedPolicySets(((PolicySetAttachPoint)binding).getApplicablePolicySets(), 
                                                    confOp.getApplicablePolicySets());
                             PolicyValidationUtils.validatePolicySets(confOp, ((PolicySetAttachPoint)binding).getType());
-                            
-                            addInheritedIntents(((PolicySetAttachPoint)binding).getRequiredIntents(), 
-                                                confOp.getRequiredIntents());
-                            addInheritedPolicySets(((PolicySetAttachPoint)binding).getPolicySets(), 
-                                                confOp.getPolicySets());
                         }
                     }
                 }
@@ -414,8 +405,6 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                     resolvePolicySets(contract.getCallback().getPolicySets(), resolver);
                     resolvePolicySets(contract.getCallback().getApplicablePolicySets(), resolver);
                     //inherit the contract's policy intents and policysets
-                    addInheritedIntents(contract.getRequiredIntents(), contract.getCallback().getRequiredIntents());
-                    addInheritedPolicySets(contract.getPolicySets(), contract.getCallback().getPolicySets());
                     addInheritedPolicySets(contract.getApplicablePolicySets(), contract.getCallback().getApplicablePolicySets());
                     
                     for (int i = 0, n = contract.getCallback().getBindings().size(); i < n; i++) {
