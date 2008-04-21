@@ -40,6 +40,7 @@ public class IntentImpl implements Intent {
     private String description;
     private List<Intent> qualifiedIntents = new ArrayList<Intent>();
     // private List<Intent> requiredIntents = new ArrayList<Intent>();
+    private List<Intent> excludedIntents = new ArrayList<Intent>();
     private boolean unresolved = true;
     private String domain;
     private String[] qualifiedNames;
@@ -92,6 +93,10 @@ public class IntentImpl implements Intent {
 
     public List<Intent> getQualifiedIntents() {
         return qualifiedIntents;
+    }
+
+    public List<Intent> getExcludedIntents() {
+        return excludedIntents;
     }
 
     public boolean isUnresolved() {

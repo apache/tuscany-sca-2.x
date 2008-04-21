@@ -70,6 +70,13 @@ public interface Intent {
     List<QName> getConstrains();
 
     /**
+     * Returns the list of intents which are mutually exclusive with this intent.
+     * 
+     * @return the list of mutually exclusive intents.
+     */
+    List<Intent> getExcludedIntents();
+
+    /**
      * Returns the list of children qualified intents.
      * 
      * @return the list of children qualified intents.

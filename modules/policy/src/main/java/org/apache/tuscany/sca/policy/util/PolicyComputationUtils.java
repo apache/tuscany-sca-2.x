@@ -28,8 +28,10 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
@@ -47,7 +49,10 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.policy.ProfileIntent;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -63,7 +68,15 @@ public class PolicyComputationUtils {
     private static String POLICY_SETS_ATTR = "policySets"; 
     private static String APPLICABLE_POLICYSET_ATTR_PREFIX = "tuscany";
     private static String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
-    
+
+    /**
+     * This method unconditionally adds intents from the source list to the target list.
+     * It is used for intermediate intent inheritance between promotion levels
+     * (e.g. between a composite service and a component service).  It does not check
+     * whether there are conflicting (mutually exclusive) intents.  This is because
+     * promotion cannot override intents.  If the resulting target list has conflicting
+     * intents, this will be detected later during policy computation.  
+     */
     public static void addInheritedIntents(List<Intent> sourceList, List<Intent> targetList) {
         if (sourceList != null) {
             targetList.addAll(sourceList);
@@ -96,6 +109,122 @@ public class PolicyComputationUtils {
         } else {
             targetList.addAll(sourceList);
         }
+    }
+
+    /**
+     * This method is used to inherit intents and policy sets between hierarchical levels
+     * within the same composite (e.g. between a component and its services and references).
+     * In this case the source intents and policy sets provide defaults which are inherited
+     * into the target lists only when there is no conflict.  For example consider a component
+     * with 3 references.  The component level requires intent 'propagatesTransaction'.
+     * Reference 1 and 2 do not specify an intent, but reference 3 requires 'suspendsTransaction'.
+     * In this case the 'propagatesTransaction' intent is inherited by reference 1 and 2
+     * but not by reference 3.
+     */
+    public static void addDefaultPolicies(List<Intent> sourceIntents,
+                                          List<PolicySet> sourcePolicySets,
+                                          List<Intent> targetIntents,
+                                          List<PolicySet> targetPolicySets)
+    {
+        // form a list of all intents required by the target
+        List<Intent> combinedTargetIntents = new ArrayList<Intent>();
+        combinedTargetIntents.addAll(findAndExpandProfileIntents(targetIntents));
+        for (PolicySet targetPolicySet : targetPolicySets) {
+            combinedTargetIntents.addAll(findAndExpandProfileIntents(targetPolicySet.getProvidedIntents()));
+        }
+
+        // inherit intents in the source list that do not conflict with intents already in the target list
+        for (Intent sourceIntent : findAndExpandProfileIntents(sourceIntents)) {
+            boolean conflict = false;
+            for (Intent excluded : sourceIntent.getExcludedIntents()) {
+                if (combinedTargetIntents.contains(excluded)) {
+                    conflict = true;
+                    break;
+                }
+            }
+            if (!conflict) {
+                targetIntents.add(sourceIntent);
+            }
+        }
+
+        // inherit policy sets in the source list that do not conflict with policy sets or intents
+        // in the target list
+        for (PolicySet sourcePolicySet : sourcePolicySets) {
+            boolean conflict = false;
+            List<Intent> providedIntents = findAndExpandProfileIntents(sourcePolicySet.getProvidedIntents());
+            checkConflict: for (Intent intent : providedIntents) {
+                for (Intent excluded : intent.getExcludedIntents()) {
+                    if (combinedTargetIntents.contains(excluded)) {
+                        conflict = true;
+                        break checkConflict;
+                    }
+                }
+            }
+            if (!conflict)
+                targetPolicySets.add(sourcePolicySet);
+        }
+
+    }
+
+    public static void checkForMutuallyExclusiveIntents(
+                         List<Intent> intents,
+                         List<PolicySet> policySets,
+                         IntentAttachPointType intentAttachPointType,
+                         String id) throws PolicyValidationException
+    {
+        // gather all intents (keeping track of where they come from)
+        Map<Intent, PolicySet> combinedIntents = new HashMap<Intent,PolicySet>();
+        for (PolicySet policySet : policySets) {
+            for (Intent providedIntent : findAndExpandProfileIntents(policySet.getProvidedIntents())) {
+                combinedIntents.put(providedIntent, policySet);
+            }
+        }
+        for (Intent intent : intents) {
+            combinedIntents.put(intent, null);
+        }
+
+        // check for conflicts
+        for (Intent intent : combinedIntents.keySet()) {
+            for (Intent excluded : intent.getExcludedIntents()) {
+                if (combinedIntents.keySet().contains(excluded)) {
+                    String sIntent1, sIntent2;
+                    if (combinedIntents.get(intent) == null)
+                        sIntent1 = intent.getName().toString();
+                    else
+                        sIntent1 = intent.getName().toString() + " in policy set " + combinedIntents.get(intent).getName().toString();
+                    if (combinedIntents.get(excluded) == null)
+                        sIntent2 = excluded.getName().toString();
+                    else
+                        sIntent2 = excluded.getName().toString() + " in policy set " + combinedIntents.get(excluded).getName().toString();
+                    throw new PolicyValidationException(
+                        intentAttachPointType.getName() + " for " + id +
+                        " uses mutually-exclusive intents " + sIntent1 + " and " + sIntent2);
+                }
+            }
+        }
+    }
+
+    public static void expandProfileIntents(List<Intent> intents) {
+        List<Intent> expandedIntents = null;
+        if ( intents.size() > 0 ) {
+            expandedIntents = findAndExpandProfileIntents(intents);
+            intents.clear();
+            intents.addAll(expandedIntents);
+        }
+    }
+
+    public static List<Intent> findAndExpandProfileIntents(List<Intent> intents) {
+        List<Intent> expandedIntents = new ArrayList<Intent>();
+        for ( Intent intent : intents ) {
+            if ( intent instanceof ProfileIntent ) {
+                ProfileIntent profileIntent = (ProfileIntent)intent;
+                List<Intent> requiredIntents = profileIntent.getRequiredIntents();
+                expandedIntents.addAll(findAndExpandProfileIntents(requiredIntents));
+            } else {
+                expandedIntents.add(intent);
+            }
+        }
+        return expandedIntents;
     }
 
     private static byte[] addApplicablePolicySets(Document doc, Collection<PolicySet> policySets)
