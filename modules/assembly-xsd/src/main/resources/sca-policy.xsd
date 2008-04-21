@@ -18,6 +18,7 @@
         <attribute name="name" type="QName" use="required"/>
 		<attribute name="constrains" type="sca:listOfQNames" use="optional"/>
 		<attribute name="requires" type="sca:listOfQNames" use="optional"/>
+		<attribute name="excludes" type="sca:listOfQNames" use="optional"/>
 		<anyAttribute namespace="##any" processContents="lax"/>    
 	</complexType>
 		
