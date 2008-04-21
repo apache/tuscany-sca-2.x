@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.policy.security;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.util.StringTokenizer;
 
@@ -28,70 +27,65 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
-
 public class AllowPolicyProcessor implements StAXArtifactProcessor<AllowPolicy> {
     private static final QName ALLOW_AUTHORIZATION_POLICY_QNAME = AllowPolicy.NAME;
     private static final String ROLES = "roles";
-    
+
     public QName getArtifactType() {
         return ALLOW_AUTHORIZATION_POLICY_QNAME;
     }
-    
+
     public AllowPolicyProcessor(ModelFactoryExtensionPoint modelFactories) {
     }
 
-    
     public AllowPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         AllowPolicy policy = new AllowPolicy();
         int event = reader.getEventType();
         QName name = null;
-        
+
         String roleNames = reader.getAttributeValue(null, ROLES);
         StringTokenizer st = new StringTokenizer(roleNames);
-        while ( st.hasMoreTokens() ) {
+        while (st.hasMoreTokens()) {
             policy.getRoleNames().add(st.nextToken());
         }
-        
+
         while (reader.hasNext()) {
             event = reader.getEventType();
-            
-            if ( event == END_ELEMENT ) {
-                if ( ALLOW_AUTHORIZATION_POLICY_QNAME.equals(reader.getName()) ) {
+
+            if (event == END_ELEMENT) {
+                if (ALLOW_AUTHORIZATION_POLICY_QNAME.equals(reader.getName())) {
                     break;
-                } 
+                }
             }
-            
+
             //Read the next element
             if (reader.hasNext()) {
                 reader.next();
             }
         }
-         
+
         return policy;
     }
 
-    public void write(AllowPolicy policy, XMLStreamWriter writer) throws ContributionWriteException,
-                                                        XMLStreamException {
+    public void write(AllowPolicy policy, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         writer.writeStartElement(ALLOW_AUTHORIZATION_POLICY_QNAME.getLocalPart());
-        
+
         StringBuffer sb = new StringBuffer();
-        for ( String role : policy.getRoleNames() ) {
+        for (String role : policy.getRoleNames()) {
             sb.append(role);
         }
-        
-        if ( sb.length() > 0 ) {
+
+        if (sb.length() > 0) {
             writer.writeAttribute(ROLES, sb.toString());
         }
-       
+
         writer.writeEndElement();
     }
 
@@ -101,7 +95,7 @@ public class AllowPolicyProcessor implements StAXArtifactProcessor<AllowPolicy> 
 
     public void resolve(AllowPolicy policy, ModelResolver resolver) throws ContributionResolveException {
         //right now nothing to resolve
-       policy.setUnresolved(false);
+        policy.setUnresolved(false);
     }
-    
+
 }
