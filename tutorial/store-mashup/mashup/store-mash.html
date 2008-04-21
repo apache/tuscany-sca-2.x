@@ -20,6 +20,8 @@
 <head>
 <title>Store Mashup</title>
 		
+<script type="text/javascript" src='/openajax/OpenAjax.js'></script>
+
 <script type="text/javascript" src="/mashup/store-mash.js"></script>
 
 <script language="JavaScript">
@@ -45,6 +47,8 @@
 	}
 	
 	function init() {
+		window.top.hub = OpenAjax.hub;
+		
 		storeGadget.get('', storeGadget_getResponse);
 		mapGadget.get('', mapGadget_getResponse);
 	}

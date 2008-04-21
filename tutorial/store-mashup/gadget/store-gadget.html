@@ -89,7 +89,7 @@
 		document.getElementById('store').innerHTML='<h2>' +
 				'Thanks for Shopping With Us!</h2>'+
 				'<h2>Your Order</h2>'+
-				'<form name="orderForm" action="/gadget">'+
+				'<form name="orderForm" action="/gadget/store">'+
 					document.getElementById('shoppingCart').innerHTML+
 					'<br>'+
 					document.getElementById('total').innerHTML+
@@ -107,10 +107,10 @@
 
 	function selectItem(i) {
 	    var item = catalogItems[i];
-	    if (window.top.geoSpatialCoords != null) {
-			window.top.geoSpatialCoords(item.origin);
+		if (window.top.hub != null) {
+			window.top.hub.publish("geospatial.coords", item.origin);
 		}
-	}			
+	}		
 
 	function init() {
 		catalog.get(catalog_getResponse);
