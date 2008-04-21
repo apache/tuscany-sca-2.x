@@ -19,7 +19,12 @@
 
 package org.apache.tuscany.sca.context;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.HashMap;
+
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
  * Default implementation of a model factory extension point.
@@ -32,6 +37,12 @@ public class DefaultContextFactoryExtensionPoint implements ContextFactoryExtens
      * The Map of Factories that have been registered.
      */
     private HashMap<Class<?>, Object> factories = new HashMap<Class<?>, Object>();
+
+    private ExtensionPointRegistry registry;
+
+    public DefaultContextFactoryExtensionPoint(ExtensionPointRegistry registry) {
+        this.registry = registry;
+    }
 
     /**
      * Add a model factory extension.
@@ -79,6 +90,26 @@ public class DefaultContextFactoryExtensionPoint implements ContextFactoryExtens
         }
 
         Object factory = factories.get(factoryInterface);
+        if (factory == null) {
+
+            // Dynamically load a factory class declared under META-INF/services
+            try {
+                Class<?> factoryClass = ServiceDiscovery.getInstance().loadFirstServiceClass(factoryInterface);
+                if (factoryClass != null) {
+            
+                    // Default empty constructor
+                    Constructor<?> constructor = factoryClass.getConstructor(ExtensionPointRegistry.class);
+                    factory = constructor.newInstance(registry);
+            
+                    // Cache the loaded factory
+                    addFactory(factory);
+                }
+            } catch (Exception e) {
+                throw new IllegalArgumentException(e);
+            }
+
+        }
+
         return factoryInterface.cast(factory);
     }
 }

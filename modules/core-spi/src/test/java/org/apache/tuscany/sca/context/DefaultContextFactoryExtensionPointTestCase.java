@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.context;
 
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -68,8 +71,10 @@ public class DefaultContextFactoryExtensionPointTestCase {
         FactoryWithOneInterface factory1 = new FactoryWithOneInterface();
         FactoryWithTwoInterfaces factory2 = new FactoryWithTwoInterfaces();
 
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+
         // Register the factories
-        DefaultContextFactoryExtensionPoint ctxFactory = new DefaultContextFactoryExtensionPoint();
+        DefaultContextFactoryExtensionPoint ctxFactory = new DefaultContextFactoryExtensionPoint(registry);
         ctxFactory.addFactory(factory1);
         ctxFactory.addFactory(factory2);
 
@@ -90,7 +95,9 @@ public class DefaultContextFactoryExtensionPointTestCase {
      */
     @Test
     public void testAddingNullFactory() {
-        DefaultContextFactoryExtensionPoint ctxFactory = new DefaultContextFactoryExtensionPoint();
+
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        DefaultContextFactoryExtensionPoint ctxFactory = new DefaultContextFactoryExtensionPoint(registry);
         try {
             ctxFactory.addFactory(null);
             Assert.fail("Should have thrown IllegalArgumentException");
@@ -104,7 +111,8 @@ public class DefaultContextFactoryExtensionPointTestCase {
      */
     @Test
     public void testRemovingNullFactory() {
-        DefaultContextFactoryExtensionPoint ctxFactory = new DefaultContextFactoryExtensionPoint();
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        DefaultContextFactoryExtensionPoint ctxFactory = new DefaultContextFactoryExtensionPoint(registry);
         try {
             ctxFactory.removeFactory(null);
             Assert.fail("Should have thrown IllegalArgumentException");
@@ -118,7 +126,8 @@ public class DefaultContextFactoryExtensionPointTestCase {
      */
     @Test
     public void testGetNullFactory() {
-        DefaultContextFactoryExtensionPoint ctxFactory = new DefaultContextFactoryExtensionPoint();
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        DefaultContextFactoryExtensionPoint ctxFactory = new DefaultContextFactoryExtensionPoint(registry);
         try {
             ctxFactory.getFactory(null);
             Assert.fail("Should have thrown IllegalArgumentException");
@@ -134,7 +143,8 @@ public class DefaultContextFactoryExtensionPointTestCase {
      * @param factoryInterfaces The list of interfaces implemented by the factory
      */
     private void addGetRemoveFactory(Object factory, Class<?>[] factoryInterfaces) {
-        DefaultContextFactoryExtensionPoint ctxFactory = new DefaultContextFactoryExtensionPoint();
+        ExtensionPointRegistry registry = new DefaultExtensionPointRegistry();
+        DefaultContextFactoryExtensionPoint ctxFactory = new DefaultContextFactoryExtensionPoint(registry);
 
         // Make sure factory not already present
         for (Class<?> iface : factoryInterfaces) {

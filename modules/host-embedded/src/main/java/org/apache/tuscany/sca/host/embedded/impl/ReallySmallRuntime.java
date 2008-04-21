@@ -106,7 +106,7 @@ public class ReallySmallRuntime {
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         
         // Create context factory extension point
-        ContextFactoryExtensionPoint contextFactories = new DefaultContextFactoryExtensionPoint();
+        ContextFactoryExtensionPoint contextFactories = new DefaultContextFactoryExtensionPoint(registry);
         registry.addExtensionPoint(contextFactories);
         
         // Create Message factory
