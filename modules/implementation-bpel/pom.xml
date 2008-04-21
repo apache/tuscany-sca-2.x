@@ -91,7 +91,7 @@
 		<dependency>
 			<groupId>org.apache.tuscany.sdo</groupId>
 			<artifactId>tuscany-sdo-impl</artifactId>
-			<version>1.0-incubating-SNAPSHOT</version>
+			<version>1.1-incubating</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
