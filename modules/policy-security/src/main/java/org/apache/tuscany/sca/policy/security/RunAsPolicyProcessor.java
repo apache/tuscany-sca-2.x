@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.policy.security;
 
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -31,33 +33,56 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
 
-public class PermitAllPolicyAssertionProcessor implements StAXArtifactProcessor<PermitAllPolicyAssertion> {
-    private static final QName PERMIT_ALL_AUTHORIZATION_POLICY_QNAME = PermitAllPolicyAssertion.NAME;
+public class RunAsPolicyProcessor implements StAXArtifactProcessor<RunAsPolicy> {
+    private static final QName RUNAS_AUTHORIZATION_POLICY_QNAME = RunAsPolicy.NAME;
+    private static final String ROLE = "role";
     
     public QName getArtifactType() {
-        return PERMIT_ALL_AUTHORIZATION_POLICY_QNAME;
+        return RUNAS_AUTHORIZATION_POLICY_QNAME;
     }
     
-    public PermitAllPolicyAssertionProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public RunAsPolicyProcessor(ModelFactoryExtensionPoint modelFactories) {
     }
 
     
-    public PermitAllPolicyAssertion read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        PermitAllPolicyAssertion policy = new PermitAllPolicyAssertion();
+    public RunAsPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        RunAsPolicy policy = new RunAsPolicy();
+        int event = reader.getEventType();
+        QName name = null;
+        
+        String role = reader.getAttributeValue(null, ROLE);
+        policy.setRole(role);
+        
+        while (reader.hasNext()) {
+            event = reader.getEventType();
+            
+            if ( event == END_ELEMENT ) {
+                if ( RUNAS_AUTHORIZATION_POLICY_QNAME.equals(reader.getName()) ) {
+                    break;
+                } 
+            }
+            
+            //Read the next element
+            if (reader.hasNext()) {
+                reader.next();
+            }
+        }
+         
         return policy;
     }
 
-    public void write(PermitAllPolicyAssertion policy, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(RunAsPolicy policy, XMLStreamWriter writer) throws ContributionWriteException,
                                                         XMLStreamException {
-       writer.writeStartElement(PERMIT_ALL_AUTHORIZATION_POLICY_QNAME.getLocalPart());
-       writer.writeEndElement();
+        writer.writeStartElement(RUNAS_AUTHORIZATION_POLICY_QNAME.getLocalPart());
+        writer.writeAttribute(ROLE, policy.getRole());
+        writer.writeEndElement();
     }
 
-    public Class<PermitAllPolicyAssertion> getModelType() {
-        return PermitAllPolicyAssertion.class;
+    public Class<RunAsPolicy> getModelType() {
+        return RunAsPolicy.class;
     }
 
-    public void resolve(PermitAllPolicyAssertion policy, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(RunAsPolicy policy, ModelResolver resolver) throws ContributionResolveException {
         //right now nothing to resolve
        policy.setUnresolved(false);
     }

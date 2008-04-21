@@ -24,15 +24,15 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 
 /**
- * Models the 'permitAll' authorization policy assertion
+ * Models the 'allow' authorization policy assertion
  * 
  * @version $Rev$ $Date$
  */
-public class PermitAllPolicyAssertion extends AuthorizationPolicyAssertion {
-    public static final QName NAME = new QName(Constants.SCA10_NS, "permitAll");
+public class AllowPolicy extends AuthorizationPolicy {
+    public static final QName NAME = new QName(Constants.SCA10_NS, "allow");
     
-    public PermitAllPolicyAssertion() {
-        super(ACCESS_LEVEL.PERMIT_ALL);
+    public AllowPolicy() {
+        super(AcessControl.ALLOW);
     }
     
     public QName getSchemaName() {

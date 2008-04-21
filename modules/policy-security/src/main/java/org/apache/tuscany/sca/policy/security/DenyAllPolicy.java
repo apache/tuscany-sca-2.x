@@ -28,11 +28,11 @@ import org.apache.tuscany.sca.assembly.xml.Constants;
  * 
  * @version $Rev$ $Date$
  */
-public class DenyAllPolicyAssertion extends AuthorizationPolicyAssertion {
+public class DenyAllPolicy extends AuthorizationPolicy {
     public static final QName NAME = new QName(Constants.SCA10_NS, "denyAll");
     
-    public DenyAllPolicyAssertion() {
-        super(ACCESS_LEVEL.DENY_ALL);
+    public DenyAllPolicy() {
+        super(AcessControl.DENY_ALL);
     }
     
     public QName getSchemaName() {

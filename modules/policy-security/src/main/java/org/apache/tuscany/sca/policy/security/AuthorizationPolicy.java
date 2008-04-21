@@ -29,36 +29,34 @@ import org.apache.tuscany.sca.policy.Policy;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class AuthorizationPolicyAssertion implements Policy {
+public abstract class AuthorizationPolicy implements Policy {
     private List<String> roleNames = null;
-    
-    public enum ACCESS_LEVEL { PERMIT_ALL,
-                                DENY_ALL,
-                                ALLOW };
-    
-    public AuthorizationPolicyAssertion(ACCESS_LEVEL accessLevel) {
+
+    public enum AcessControl {
+        PERMIT_ALL, DENY_ALL, ALLOW
+    };
+
+    public AuthorizationPolicy(AcessControl accessLevel) {
         this.accessLevel = accessLevel;
     }
-    
-    private ACCESS_LEVEL accessLevel;
 
+    private AcessControl accessLevel;
 
-    public ACCESS_LEVEL getAccessLevel() {
+    public AcessControl getAccessLevel() {
         return accessLevel;
     }
 
-    public void setAccessLevel(ACCESS_LEVEL accessLevel) {
+    public void setAccessLevel(AcessControl accessLevel) {
         this.accessLevel = accessLevel;
     }
 
     public List<String> getRoleNames() {
-        if ( accessLevel == ACCESS_LEVEL.ALLOW && 
-            roleNames == null ) {
+        if (accessLevel == AcessControl.ALLOW && roleNames == null) {
             roleNames = new ArrayList<String>();
         }
         return roleNames;
-    }              
-    
+    }
+
     public boolean isUnresolved() {
         return false;
     }

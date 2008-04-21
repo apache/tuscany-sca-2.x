@@ -22,20 +22,37 @@ package org.apache.tuscany.sca.policy.security;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.policy.Policy;
 
 /**
  * Models the 'allow' authorization policy assertion
  * 
  * @version $Rev$ $Date$
  */
-public class AllowPolicyAssertion extends AuthorizationPolicyAssertion {
-    public static final QName NAME = new QName(Constants.SCA10_NS, "allow");
+public class RunAsPolicy implements Policy {
+    private String role = null;
+    private boolean unResolved = false;
     
-    public AllowPolicyAssertion() {
-        super(ACCESS_LEVEL.ALLOW);
-    }
+    public static final QName NAME = new QName(Constants.SCA10_NS, "runAs");
     
+   
     public QName getSchemaName() {
         return NAME;
+    }
+    
+    public boolean isUnresolved() {
+        return unResolved;
+    }
+
+    public void setUnresolved(boolean unresolved) {
+        this.unResolved = unresolved;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

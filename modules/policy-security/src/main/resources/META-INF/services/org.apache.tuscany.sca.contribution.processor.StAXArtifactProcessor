@@ -16,9 +16,9 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.policy.security.PermitAllPolicyAssertionProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#permitAll,model=org.apache.tuscany.sca.policy.security.PermitAllPolicyAssertion
-org.apache.tuscany.sca.policy.security.DenyAllPolicyAssertionProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#denyAll,model=org.apache.tuscany.sca.policy.security.DenyAllPolicyAssertion
-org.apache.tuscany.sca.policy.security.AllowPolicyAssertionProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#allow,model=org.apache.tuscany.sca.policy.security.AllowPolicyAssertion
-org.apache.tuscany.sca.policy.security.RunAsPolicyAssertionProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#runAs,model=org.apache.tuscany.sca.policy.security.RunAsPolicyAssertion
+org.apache.tuscany.sca.policy.security.PermitAllPolicyProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#permitAll,model=org.apache.tuscany.sca.policy.security.PermitAllPolicy
+org.apache.tuscany.sca.policy.security.DenyAllPolicyProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#denyAll,model=org.apache.tuscany.sca.policy.security.DenyAllPolicy
+org.apache.tuscany.sca.policy.security.AllowPolicyProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#allow,model=org.apache.tuscany.sca.policy.security.AllowPolicy
+org.apache.tuscany.sca.policy.security.RunAsPolicyProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#runAs,model=org.apache.tuscany.sca.policy.security.RunAsPolicy
 org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#wsConfigParam,model=org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy
 org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicyProcessor;qname=http://tuscany.apache.org/xmlns/sca/1.0#jaasAuthentication,model=org.apache.tuscany.sca.policy.security.jaas.JaasAuthenticationPolicy

@@ -19,45 +19,53 @@
 package org.apache.tuscany.sca.policy.security;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
+import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
 
-public class RunAsPolicyAssertionProcessor implements StAXArtifactProcessor<RunAsPolicyAssertion> {
-    private static final QName RUNAS_AUTHORIZATION_POLICY_QNAME = RunAsPolicyAssertion.NAME;
-    private static final String ROLE = "role";
+public class AllowPolicyProcessor implements StAXArtifactProcessor<AllowPolicy> {
+    private static final QName ALLOW_AUTHORIZATION_POLICY_QNAME = AllowPolicy.NAME;
+    private static final String ROLES = "roles";
     
     public QName getArtifactType() {
-        return RUNAS_AUTHORIZATION_POLICY_QNAME;
+        return ALLOW_AUTHORIZATION_POLICY_QNAME;
     }
     
-    public RunAsPolicyAssertionProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public AllowPolicyProcessor(ModelFactoryExtensionPoint modelFactories) {
     }
 
     
-    public RunAsPolicyAssertion read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        RunAsPolicyAssertion policy = new RunAsPolicyAssertion();
+    public AllowPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        AllowPolicy policy = new AllowPolicy();
         int event = reader.getEventType();
         QName name = null;
         
-        String role = reader.getAttributeValue(null, ROLE);
-        policy.setRole(role);
+        String roleNames = reader.getAttributeValue(null, ROLES);
+        StringTokenizer st = new StringTokenizer(roleNames);
+        while ( st.hasMoreTokens() ) {
+            policy.getRoleNames().add(st.nextToken());
+        }
         
         while (reader.hasNext()) {
             event = reader.getEventType();
             
             if ( event == END_ELEMENT ) {
-                if ( RUNAS_AUTHORIZATION_POLICY_QNAME.equals(reader.getName()) ) {
+                if ( ALLOW_AUTHORIZATION_POLICY_QNAME.equals(reader.getName()) ) {
                     break;
                 } 
             }
@@ -71,18 +79,27 @@ public class RunAsPolicyAssertionProcessor implements StAXArtifactProcessor<RunA
         return policy;
     }
 
-    public void write(RunAsPolicyAssertion policy, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(AllowPolicy policy, XMLStreamWriter writer) throws ContributionWriteException,
                                                         XMLStreamException {
-        writer.writeStartElement(RUNAS_AUTHORIZATION_POLICY_QNAME.getLocalPart());
-        writer.writeAttribute(ROLE, policy.getRole());
+        writer.writeStartElement(ALLOW_AUTHORIZATION_POLICY_QNAME.getLocalPart());
+        
+        StringBuffer sb = new StringBuffer();
+        for ( String role : policy.getRoleNames() ) {
+            sb.append(role);
+        }
+        
+        if ( sb.length() > 0 ) {
+            writer.writeAttribute(ROLES, sb.toString());
+        }
+       
         writer.writeEndElement();
     }
 
-    public Class<RunAsPolicyAssertion> getModelType() {
-        return RunAsPolicyAssertion.class;
+    public Class<AllowPolicy> getModelType() {
+        return AllowPolicy.class;
     }
 
-    public void resolve(RunAsPolicyAssertion policy, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(AllowPolicy policy, ModelResolver resolver) throws ContributionResolveException {
         //right now nothing to resolve
        policy.setUnresolved(false);
     }
