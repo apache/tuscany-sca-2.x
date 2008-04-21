@@ -44,6 +44,7 @@ public interface PolicyConstants {
     String QUALIFIER = ".";
     String INTENT_MAP_QUALIFIER = "qualifier";
     String REQUIRES = "requires";
+    String EXCLUDES = "excludes";
     String DEFAULT = "default";
     
     String WS_POLICY_NS = "http://schemas.xmlsoap.org/ws/2004/09/policy";

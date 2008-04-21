@@ -82,9 +82,12 @@ public abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXAr
         if ( policyIntent instanceof ProfileIntent ) {
             readRequiredIntents((ProfileIntent)policyIntent, reader);
         }
+        else {
+            readExcludedIntents(policyIntent, reader);
+        }
         
         readConstrainedArtifacts(policyIntent, reader);
-        
+
         int event = reader.getEventType();
         QName name = null;
         while (reader.hasNext()) {
@@ -126,6 +129,17 @@ public abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXAr
                     sb.append(" ");
                 }
                 writer.writeAttribute(PolicyConstants.REQUIRES, sb.toString());
+            }
+        }
+        else {
+            if (policyIntent.getExcludedIntents() != null && 
+                policyIntent.getExcludedIntents().size() > 0) {
+                StringBuffer sb = new StringBuffer();
+                for (Intent excludedIntents : policyIntent.getExcludedIntents()) {
+                    sb.append(excludedIntents.getName());
+                    sb.append(" ");
+                }
+                writer.writeAttribute(PolicyConstants.EXCLUDES, sb.toString());
             }
         }
         
@@ -252,13 +266,16 @@ public abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXAr
         if (policyIntent instanceof ProfileIntent) {
             resolveProfileIntent((ProfileIntent)policyIntent, resolver);
         }
+        else {
+            resolveExcludedIntents(policyIntent, resolver);
+        }
 
         if (policyIntent instanceof QualifiedIntent) {
             resolveQualifiedIntent((QualifiedIntent)policyIntent, resolver);
         }
         
         resolveContrainedArtifacts(policyIntent, resolver);
-        
+
         if ( !policyIntent.isUnresolved() ) {
             resolver.addModel(policyIntent);
         }
@@ -298,5 +315,44 @@ public abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXAr
             }
         }
     }
-    
+
+    private void readExcludedIntents(Intent policyIntent, XMLStreamReader reader) {
+        String value = reader.getAttributeValue(null, "excludes");
+        if (value != null) {
+            List<Intent> excludedIntents = policyIntent.getExcludedIntents();
+            for (StringTokenizer tokens = new StringTokenizer(value); tokens.hasMoreTokens();) {
+                QName qname = getQNameValue(reader, tokens.nextToken());
+                Intent intent = policyFactory.createIntent();
+                intent.setName(qname);
+                intent.setUnresolved(true);
+                excludedIntents.add(intent);
+            }
+        }
+    }
+
+    private void resolveExcludedIntents(Intent policyIntent, ModelResolver resolver)
+        throws ContributionResolveException {
+        if (policyIntent != null) {
+            // resolve all excluded intents
+            List<Intent> excludedIntents = new ArrayList<Intent>();
+            for (Intent excludedIntent : policyIntent.getExcludedIntents()) {
+                if (excludedIntent.isUnresolved()) {
+                    Intent resolvedExcludedIntent = resolver.resolveModel(Intent.class, excludedIntent);
+                    if (resolvedExcludedIntent != null) {
+                        excludedIntents.add(resolvedExcludedIntent);
+                    } else {
+                        throw new ContributionResolveException(
+                                    "Excluded Intent " + excludedIntent
+                                  + " not found for intent " + policyIntent);
+
+                    }
+                } else {
+                    excludedIntents.add(excludedIntent);
+                }
+            }
+            policyIntent.getExcludedIntents().clear();
+            policyIntent.getExcludedIntents().addAll(excludedIntents);
+        }
+    }
+
 }
