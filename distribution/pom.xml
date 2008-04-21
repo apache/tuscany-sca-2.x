@@ -96,7 +96,7 @@
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
-            <version>1.0-incubating</version>
+            <version>1.1-incubating</version>
             <exclusions>
                 <exclusion>
                     <!-- sdo 1.0 uses 3.2.0 but sca uses 3.2.1 -->
