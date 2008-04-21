@@ -132,7 +132,7 @@
 
 <policySet name="ConfidentialityPolicies"
  provides="confidentiality"
- bindings="binding.ws"
+ appliesTo="binding.ws"
  xmlns="http://www.osoa.org/xmlns/sca/1.0"
     xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
     <intentMap provides="confidentiality"  default="transport">

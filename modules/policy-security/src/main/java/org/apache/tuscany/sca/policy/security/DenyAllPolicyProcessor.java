@@ -31,33 +31,33 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
 
-public class DenyAllPolicyAssertionProcessor implements StAXArtifactProcessor<DenyAllPolicyAssertion> {
-    private static final QName DENY_ALL_AUTHORIZATION_POLICY_QNAME = DenyAllPolicyAssertion.NAME;
+public class DenyAllPolicyProcessor implements StAXArtifactProcessor<DenyAllPolicy> {
+    private static final QName DENY_ALL_AUTHORIZATION_POLICY_QNAME = DenyAllPolicy.NAME;
     
     public QName getArtifactType() {
         return DENY_ALL_AUTHORIZATION_POLICY_QNAME;
     }
     
-    public DenyAllPolicyAssertionProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public DenyAllPolicyProcessor(ModelFactoryExtensionPoint modelFactories) {
     }
 
     
-    public DenyAllPolicyAssertion read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        DenyAllPolicyAssertion policy = new DenyAllPolicyAssertion();
+    public DenyAllPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        DenyAllPolicy policy = new DenyAllPolicy();
         return policy;
     }
 
-    public void write(DenyAllPolicyAssertion policy, XMLStreamWriter writer) throws ContributionWriteException,
+    public void write(DenyAllPolicy policy, XMLStreamWriter writer) throws ContributionWriteException,
                                                         XMLStreamException {
        writer.writeStartElement(DENY_ALL_AUTHORIZATION_POLICY_QNAME.getLocalPart());
        writer.writeEndElement();
     }
 
-    public Class<DenyAllPolicyAssertion> getModelType() {
-        return DenyAllPolicyAssertion.class;
+    public Class<DenyAllPolicy> getModelType() {
+        return DenyAllPolicy.class;
     }
 
-    public void resolve(DenyAllPolicyAssertion policy, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(DenyAllPolicy policy, ModelResolver resolver) throws ContributionResolveException {
         //right now nothing to resolve
        policy.setUnresolved(false);
     }
