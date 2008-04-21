@@ -68,6 +68,10 @@ public class RegistryInspectorTestCase extends TestCase {
         
         System.out.println(registryInspector.registryAsString(node)); 
         
+        RuntimeInspector runtimeInspector = new RuntimeInspector();
+        
+        System.out.println(runtimeInspector.runtimeAsString(node)); 
+        
         AssemblyInspector assemblyInspector = new AssemblyInspector();
         
         System.out.println(assemblyInspector.assemblyAsString(node)); 
