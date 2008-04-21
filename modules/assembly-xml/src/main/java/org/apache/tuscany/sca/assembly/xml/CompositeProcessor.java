@@ -23,6 +23,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -68,6 +69,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
 import org.apache.tuscany.sca.policy.util.PolicyValidationException;
 import org.apache.tuscany.sca.policy.util.PolicyValidationUtils;
 import org.w3c.dom.Document;
@@ -799,8 +801,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
             }
         }
         
-        //resolve intents and policysets first as they are going to be copied over
-        //to child elements as and when the child elements are being resolved
+        //resolve intents and policy sets
         List<Intent> compositeIntents = null;
         List<PolicySet> compositePolicySets = null;
         List<PolicySet> compositeApplicablePolicySets = null;
@@ -829,15 +830,17 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                 component.setConstrainingType(constrainingType);
             }
             
-            //resolve intents and policysets first as they are going to be copied over
-            //to child elements as and when the child elements are being resolved
+            //resolve intents and policy sets
             resolveIntents(component.getRequiredIntents(), resolver);
             resolvePolicySets(component.getPolicySets(), resolver);
             resolvePolicySets(component.getApplicablePolicySets(), resolver);
             
             //inherit composite intents and policysets
-            addInheritedIntents(compositeIntents, component.getRequiredIntents());
-            addInheritedPolicySets(compositePolicySets, component.getPolicySets());
+            PolicyComputationUtils.addDefaultPolicies(compositeIntents,
+                                                      compositePolicySets,
+                                                      component.getRequiredIntents(),
+                                                      component.getPolicySets());
+
             addInheritedPolicySets(compositeApplicablePolicySets, component.getApplicablePolicySets());
 
             //resolve component services and references 
@@ -867,7 +870,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     resolveImplIntentsAndPolicySets(implementation, 
                                                     component.getApplicablePolicySets(), 
                                                     resolver);
-                    
+
                     copyPoliciesToComponent(component, implementation, resolver, true);
                     
                     //now resolve the implementation so that even if there is a shared instance
@@ -920,10 +923,11 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     
                     PolicyValidationUtils.validatePolicySets(implConfOp, policiedImpl.getType());
                     
-                    addInheritedIntents(((PolicySetAttachPoint)implementation).getRequiredIntents(), 
-                                        implConfOp.getRequiredIntents());
-                    addInheritedPolicySets(((PolicySetAttachPoint)implementation).getPolicySets(), 
-                                           implConfOp.getPolicySets());
+                    PolicyComputationUtils.addDefaultPolicies(
+                                            ((PolicySetAttachPoint)implementation).getRequiredIntents(),
+                                            ((PolicySetAttachPoint)implementation).getPolicySets(),
+                                            implConfOp.getRequiredIntents(),
+                                            implConfOp.getPolicySets());
                 }
             }
         }
@@ -934,8 +938,44 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                          ModelResolver resolver,
                                          boolean clearImplSettings) throws ContributionResolveException {
         if (implementation instanceof PolicySetAttachPoint) {
-            //add implementation policies into component... since implementation instance are 
-            //reused and its likely that this implementation instance will not hold after its resolution
+            // Add implementation policies into component, since implementation instances are 
+            // reused and it's likely that this implementation instance will not hold after its resolution.
+            // On the first call to this method (clearImplSettings=true), we are moving policies from the
+            // implementation XML element up to the component.  In this case if there are mutually exclusive
+            // policies we must clear the component policy so that the implementation policy "wins".
+            // On the second call to this method (clearImplSettings=false), we are moving policies from the
+            // componentType implementation up to the component.  In this case if there are mutually
+            // exclusive policies it is an error.  This error will be detected later in the PolicyComputer.
+            if (clearImplSettings) {
+                for (Intent intent : ((PolicySetAttachPoint)implementation).getRequiredIntents()) {
+                    for (Intent excluded : intent.getExcludedIntents()) {
+                        if (component.getRequiredIntents().contains(excluded)) {
+                            component.getRequiredIntents().remove(excluded);
+                        }
+                        for (Iterator i = component.getPolicySets().iterator(); i.hasNext(); ) {
+                            PolicySet cmpPolicySet = (PolicySet) i.next();
+                            if (cmpPolicySet.getProvidedIntents().contains(excluded)) {
+                                i.remove();
+                            }
+                        }
+                    }
+                }
+                for (PolicySet policySet : ((PolicySetAttachPoint)implementation).getPolicySets()) {
+                    for (Intent intent : policySet.getProvidedIntents()) {
+                        for (Intent excluded : intent.getExcludedIntents()) {
+                            if (component.getRequiredIntents().contains(excluded)) {
+                                component.getRequiredIntents().remove(excluded);
+                            }
+                            for (Iterator i = component.getPolicySets().iterator(); i.hasNext(); ) {
+                                PolicySet cmpPolicySet = (PolicySet) i.next();
+                                if (cmpPolicySet.getProvidedIntents().contains(excluded)) {
+                                    i.remove();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             component.getRequiredIntents().addAll(((PolicySetAttachPoint)implementation).getRequiredIntents());
             component.getPolicySets().addAll(((PolicySetAttachPoint)implementation).getPolicySets());
             component.getApplicablePolicySets().addAll(((PolicySetAttachPoint)implementation).getApplicablePolicySets());
@@ -950,10 +990,35 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     for ( ConfiguredOperation compConfOp : ((OperationsConfigurator)component).getConfiguredOperations() ) {
                         if ( implConfOp.getName().equals(compConfOp.getName()) ) {
                             notFound = false;
+
+                            if (clearImplSettings) {
+                                for (Intent intent : implConfOp.getRequiredIntents()) {
+                                    for (Intent excluded : intent.getExcludedIntents()) {
+                                        if (compConfOp.getRequiredIntents().contains(excluded)) {
+                                            compConfOp.getRequiredIntents().remove(excluded);
+                                        }
+                                    }
+                                }
+                                for (PolicySet policySet : implConfOp.getPolicySets()) {
+                                    for (Intent intent : policySet.getProvidedIntents()) {
+                                        for (Intent excluded : intent.getExcludedIntents()) {
+                                            if (compConfOp.getRequiredIntents().contains(excluded)) {
+                                                compConfOp.getRequiredIntents().remove(excluded);
+                                            }
+                                            for (Iterator i = compConfOp.getPolicySets().iterator(); i.hasNext(); ) {
+                                                PolicySet cmpPolicySet = (PolicySet) i.next();
+                                                if (cmpPolicySet.getProvidedIntents().contains(excluded)) {
+                                                    i.remove();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                             addInheritedIntents(implConfOp.getRequiredIntents(), compConfOp.getRequiredIntents());
                             addInheritedPolicySets(implConfOp.getPolicySets(), compConfOp.getPolicySets());
                             addInheritedPolicySets(implConfOp.getApplicablePolicySets(), compConfOp.getApplicablePolicySets());
-                            notFound = false;
                         }
                     }
                     
