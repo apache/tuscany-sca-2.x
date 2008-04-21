@@ -866,49 +866,16 @@ public class CompositeWireBuilderImpl {
 
     
     public void computePolicies(Composite composite) {
-        
-        //compute policies for composite service bindings
-        for (Service service : composite.getServices()) {
-            addPoliciesFromPromotedService((CompositeService)service);
-            try {
-                //compute the intents for operations under service element
-                bindingPolicyComputer.computeIntentsForOperations(service);
-                //add or merge service operations to the binding
-                //addInheritedOpConfOnBindings(service);
-                bindingPolicyComputer.computeBindingIntentsAndPolicySets(service);
-                bindingPolicyComputer.determineApplicableBindingPolicySets(service, null);
-            } catch ( Exception e ) {
-                warning("Policy related exception: " + e, e);
-                //throw new RuntimeException(e);
-            }
-                
-        }
-    
-        for (Reference reference : composite.getReferences()) {
-            CompositeReference compReference = (CompositeReference)reference;
-            addPoliciesFromPromotedReference(compReference);
-            try {
-                //compute the intents for operations under service element
-                bindingPolicyComputer.computeIntentsForOperations(reference);
-                //addInheritedOpConfOnBindings(reference);
-                
-                if (compReference.getCallback() != null) {
-                    PolicyComputationUtils.addInheritedIntents(compReference.getRequiredIntents(), 
-                                        compReference.getCallback().getRequiredIntents());
-                    PolicyComputationUtils.addInheritedPolicySets(compReference.getPolicySets(), 
-                                           compReference.getCallback().getPolicySets(), 
-                                           false);
-                }
-                
-                bindingPolicyComputer.computeBindingIntentsAndPolicySets(reference);
-                bindingPolicyComputer.determineApplicableBindingPolicySets(reference, null);
-            } catch ( Exception e ) {
-                warning("Policy related exception: " + e, e);
-                //throw new RuntimeException(e);
-            }
-        }
     
         for (Component component : composite.getComponents()) {
+
+            // Inherit default policies from the component to component-level contracts.
+            // This must be done BEFORE computing implementation policies because the
+            // implementation policy computer removes from the component any
+            // intents and policy sets that don't apply to implementations.
+            bindingPolicyComputer.inheritDefaultPolicies(component, component.getServices());
+            bindingPolicyComputer.inheritDefaultPolicies(component, component.getReferences());
+
             Implementation implemenation = component.getImplementation(); 
             try {
                 implPolicyComputer.computeImplementationIntentsAndPolicySets(implemenation, component);
@@ -988,7 +955,52 @@ public class CompositeWireBuilderImpl {
                     //throw new RuntimeException(e);
                 }
             }
-        } 
+        }
+
+        bindingPolicyComputer.inheritDefaultPolicies(composite, composite.getServices());
+        bindingPolicyComputer.inheritDefaultPolicies(composite, composite.getReferences());
+
+        //compute policies for composite service bindings
+        for (Service service : composite.getServices()) {
+            addPoliciesFromPromotedService((CompositeService)service);
+            try {
+                //compute the intents for operations under service element
+                bindingPolicyComputer.computeIntentsForOperations(service);
+                //add or merge service operations to the binding
+                //addInheritedOpConfOnBindings(service);
+                bindingPolicyComputer.computeBindingIntentsAndPolicySets(service);
+                bindingPolicyComputer.determineApplicableBindingPolicySets(service, null);
+            } catch ( Exception e ) {
+                warning("Policy related exception: " + e, e);
+                //throw new RuntimeException(e);
+            }
+                
+        }
+    
+        for (Reference reference : composite.getReferences()) {
+            CompositeReference compReference = (CompositeReference)reference;
+            addPoliciesFromPromotedReference(compReference);
+            try {
+                //compute the intents for operations under service element
+                bindingPolicyComputer.computeIntentsForOperations(reference);
+                //addInheritedOpConfOnBindings(reference);
+                
+                if (compReference.getCallback() != null) {
+                    PolicyComputationUtils.addInheritedIntents(compReference.getRequiredIntents(), 
+                                        compReference.getCallback().getRequiredIntents());
+                    PolicyComputationUtils.addInheritedPolicySets(compReference.getPolicySets(), 
+                                           compReference.getCallback().getPolicySets(), 
+                                           false);
+                }
+                
+                bindingPolicyComputer.computeBindingIntentsAndPolicySets(reference);
+                bindingPolicyComputer.determineApplicableBindingPolicySets(reference, null);
+            } catch ( Exception e ) {
+                warning("Policy related exception: " + e, e);
+                //throw new RuntimeException(e);
+            }
+        }
+
     }
     
     private void addInheritedOperationConfigurations(OperationsConfigurator source, 

@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.Base;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.Contract;
@@ -50,13 +51,20 @@ public class BindingPolicyComputer extends PolicyComputer {
     public void computeBindingIntentsAndPolicySets(Contract contract)  throws PolicyValidationException {
         for (Binding binding : contract.getBindings()) {
             if (binding instanceof PolicySetAttachPoint) {
+                PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
                 computeIntents((IntentAttachPoint)binding, contract.getRequiredIntents());
                 
                 aggregateAndPruneApplicablePolicySets(contract.getApplicablePolicySets(), 
-                                                      ((PolicySetAttachPoint)binding).getApplicablePolicySets());
+                                                      policiedBinding.getApplicablePolicySets());
 
-                computePolicySets((PolicySetAttachPoint)binding, contract.getPolicySets());
-                
+                computePolicySets(policiedBinding, contract.getPolicySets());
+
+                PolicyComputationUtils.checkForMutuallyExclusiveIntents(
+                    policiedBinding.getRequiredIntents(),
+                    policiedBinding.getPolicySets(),
+                    policiedBinding.getType(),
+                    contract.getName());
+
                 if ( binding instanceof OperationsConfigurator && 
                         contract instanceof OperationsConfigurator ) {
                     //add or merge service operations to the binding
@@ -66,7 +74,16 @@ public class BindingPolicyComputer extends PolicyComputer {
                 
                     computeIntentsForOperations((IntentAttachPoint)binding);
                     computePolicySetsForOperations(contract.getApplicablePolicySets(), 
-                                                   (PolicySetAttachPoint)binding);
+                                                   policiedBinding);
+
+                    for ( ConfiguredOperation confOp : ((OperationsConfigurator)binding).getConfiguredOperations() ) {
+                        PolicyComputationUtils.checkForMutuallyExclusiveIntents(
+                            confOp.getRequiredIntents(),
+                            confOp.getPolicySets(),
+                            policiedBinding.getType(),
+                            contract.getName() + "." + confOp.getName());
+                    }
+
                 }
             }
         }
@@ -74,12 +91,20 @@ public class BindingPolicyComputer extends PolicyComputer {
         if ( contract.getCallback() != null ) {
             for (Binding binding : contract.getCallback().getBindings()) {
                 if (binding instanceof PolicySetAttachPoint) {
+                    PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)binding;
                     computeIntents((IntentAttachPoint)binding, contract.getCallback().getRequiredIntents());
             
                     aggregateAndPruneApplicablePolicySets(contract.getApplicablePolicySets(), 
-                                                          ((PolicySetAttachPoint)binding).getApplicablePolicySets());
+                                                          policiedBinding.getApplicablePolicySets());
 
-                    computePolicySets((PolicySetAttachPoint)binding, contract.getCallback().getPolicySets());
+                    computePolicySets(policiedBinding, contract.getCallback().getPolicySets());
+
+                    PolicyComputationUtils.checkForMutuallyExclusiveIntents(
+                        policiedBinding.getRequiredIntents(),
+                        policiedBinding.getPolicySets(),
+                        policiedBinding.getType(),
+                        contract.getName() + " callback");
+
                 }
             }
         }
@@ -259,4 +284,39 @@ public class BindingPolicyComputer extends PolicyComputer {
         target.clear();
         target.addAll(policySetTable.values());
     }
+
+    protected <C extends Contract> void inheritDefaultPolicies(Base parent, List<C> contracts) {
+
+        for (Contract contract : contracts) {
+
+            // The contract inherits default policies from the parent composite/component.
+            if ( parent instanceof PolicySetAttachPoint )  {
+                PolicyComputationUtils.addDefaultPolicies(
+                                         ((PolicySetAttachPoint)parent).getRequiredIntents(),
+                                         ((PolicySetAttachPoint)parent).getPolicySets(),
+                                         contract.getRequiredIntents(),
+                                         contract.getPolicySets());
+            }
+
+            // The contract's configured operations inherit default policies from the contract.
+            for ( ConfiguredOperation confOp : contract.getConfiguredOperations() ) {
+                PolicyComputationUtils.addDefaultPolicies(
+                                         contract.getRequiredIntents(),
+                                         contract.getPolicySets(),
+                                         confOp.getRequiredIntents(),
+                                         confOp.getPolicySets());
+            }
+
+            // The contract's callback inherits default policies from the contract.
+            if (contract.getCallback() != null) {
+                PolicyComputationUtils.addDefaultPolicies(
+                                         contract.getRequiredIntents(),
+                                         contract.getPolicySets(),
+                                         contract.getCallback().getRequiredIntents(),
+                                         contract.getCallback().getPolicySets());
+            }
+
+        }
+    }
+
 }
