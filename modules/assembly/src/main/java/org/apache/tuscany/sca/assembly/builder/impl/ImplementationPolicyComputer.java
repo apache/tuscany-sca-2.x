@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
 import org.apache.tuscany.sca.policy.util.PolicyValidationException;
 
 /**
@@ -52,7 +53,7 @@ public class ImplementationPolicyComputer extends PolicyComputer {
             parent.getRequiredIntents().clear();
             parent.getRequiredIntents().addAll(prunedIntents);
             normalizeIntents(parent);
-         
+
             computeIntentsForOperations((OperationsConfigurator)parent,
                                         (IntentAttachPoint)implementation,
                                         parent.getRequiredIntents());
@@ -63,11 +64,27 @@ public class ImplementationPolicyComputer extends PolicyComputer {
             parent.getPolicySets().clear();
             parent.getPolicySets().addAll(prunedPolicySets);
             normalizePolicySets(parent);
+
+            PolicyComputationUtils.checkForMutuallyExclusiveIntents(
+                parent.getRequiredIntents(),
+                parent.getPolicySets(),
+                policiedImplementation.getType(),
+                parent.getName());
+
             computePolicySetsForOperations(parent.getApplicablePolicySets(), 
                                            (OperationsConfigurator)parent, 
                                            (PolicySetAttachPoint)implementation);
+
+            for ( ConfiguredOperation confOp : ((OperationsConfigurator)parent).getConfiguredOperations() ) {
+                PolicyComputationUtils.checkForMutuallyExclusiveIntents(
+                    confOp.getRequiredIntents(),
+                    confOp.getPolicySets(),
+                    policiedImplementation.getType(),
+                    parent.getName() + "." + confOp.getName());
+            }
             
             determineApplicableImplementationPolicySets(parent);
+
         }
     }
     

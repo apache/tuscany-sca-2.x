@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.ProfileIntent;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
+import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
 import org.apache.tuscany.sca.policy.util.PolicyValidationException;
 import org.apache.tuscany.sca.policy.util.PolicyValidationUtils;
 
@@ -52,7 +53,7 @@ public abstract class PolicyComputer {
         List<Intent> validInheritableIntents = new ArrayList<Intent>();
         
         //expand profile intents in inherited intents
-        expandProfileIntents(inheritableIntents);
+        PolicyComputationUtils.expandProfileIntents(inheritableIntents);
 
         //validate if inherited intent applies to the attachpoint (binding / implementation) and 
         //only add such intents to the attachpoint (binding / implementation)
@@ -72,18 +73,9 @@ public abstract class PolicyComputer {
         return validInheritableIntents;
     }
     
-    protected void expandProfileIntents(List<Intent> intents) {
-        List<Intent> expandedIntents = null;
-        if ( intents.size() > 0 ) {
-            expandedIntents = findAndExpandProfileIntents(intents);
-            intents.clear();
-            intents.addAll(expandedIntents);
-        }
-    }
-    
     protected void normalizeIntents(IntentAttachPoint intentAttachPoint) {
         //expand profile intents specified in the attachpoint (binding / implementation)
-        expandProfileIntents(intentAttachPoint.getRequiredIntents());
+        PolicyComputationUtils.expandProfileIntents(intentAttachPoint.getRequiredIntents());
 
         //remove duplicates and ...
         //where qualified form of intent exists retain it and remove the qualifiable intent
@@ -118,7 +110,7 @@ public abstract class PolicyComputer {
         boolean found = false;
         for ( ConfiguredOperation confOp : opConfigurator.getConfiguredOperations() ) {
             //expand profile intents specified on operations
-            expandProfileIntents(confOp.getRequiredIntents());
+            PolicyComputationUtils.expandProfileIntents(confOp.getRequiredIntents());
             
             //validateIntents(confOp, attachPointType);
             
@@ -142,7 +134,16 @@ public abstract class PolicyComputer {
                 }
                 
                 if ( !found ) {
-                    attachPointOpIntents.add(anIntent);
+                    boolean conflict = false;
+                    for (Intent excluded : anIntent.getExcludedIntents()) {
+                        if (confOp.getRequiredIntents().contains(excluded)) {
+                            conflict = true;
+                            break;
+                        }
+                    }
+                    if (!conflict) {
+                        attachPointOpIntents.add(anIntent);
+                    }
                 }
             }
             
@@ -195,7 +196,7 @@ public abstract class PolicyComputer {
             
         //expand profile intents
         for ( PolicySet policySet : policySetAttachPoint.getPolicySets() ) {
-            expandProfileIntents(policySet.getProvidedIntents());
+            PolicyComputationUtils.expandProfileIntents(policySet.getProvidedIntents());
         }
     }
     
@@ -251,7 +252,7 @@ public abstract class PolicyComputer {
             
             //expand profile intents
             for ( PolicySet policySet : confOp.getPolicySets() ) {
-                expandProfileIntents(policySet.getProvidedIntents());
+                PolicyComputationUtils.expandProfileIntents(policySet.getProvidedIntents());
             }
         }
     }
@@ -268,9 +269,30 @@ public abstract class PolicyComputer {
                                                      IntentAttachPointType intentAttachPointType) {
 
         if (policySetAttachPoint.getRequiredIntents().size() > 0) {
+
+            // form a list of all intents required by the attach point
+            List<Intent> combinedTargetIntents = new ArrayList<Intent>();
+            combinedTargetIntents.addAll(policySetAttachPoint.getRequiredIntents());
+            for (PolicySet targetPolicySet : policySetAttachPoint.getPolicySets()) {
+                combinedTargetIntents.addAll(PolicyComputationUtils.findAndExpandProfileIntents(targetPolicySet.getProvidedIntents()));
+            }
+
             //since the set of applicable policysets for this attachpoint is known 
             //we only need to check in that list if there is a policyset that matches
             for (PolicySet policySet : applicablePolicySets) {
+                // do not use the policy set if it provides intents that conflict with required intents
+                boolean conflict = false;
+                List<Intent> providedIntents = PolicyComputationUtils.findAndExpandProfileIntents(policySet.getProvidedIntents());
+                checkConflict: for (Intent intent : providedIntents) {
+                    for (Intent excluded : intent.getExcludedIntents()) {
+                        if (combinedTargetIntents.contains(excluded)) {
+                            conflict = true;
+                            break checkConflict;
+                        }
+                    }
+                }
+                if (conflict)
+                    continue;
                 int prevSize = policySetAttachPoint.getRequiredIntents().size();
                 trimProvidedIntents(policySetAttachPoint.getRequiredIntents(), policySet);
                 // if any intent was trimmed off, then this policyset must
@@ -280,20 +302,6 @@ public abstract class PolicyComputer {
                 }
             } 
         }
-    }
-    
-    private List<Intent> findAndExpandProfileIntents(List<Intent> intents) {
-        List<Intent> expandedIntents = new ArrayList<Intent>();
-        for ( Intent intent : intents ) {
-            if ( intent instanceof ProfileIntent ) {
-                ProfileIntent profileIntent = (ProfileIntent)intent;
-                List<Intent> requiredIntents = profileIntent.getRequiredIntents();
-                expandedIntents.addAll(findAndExpandProfileIntents(requiredIntents));
-            } else {
-                expandedIntents.add(intent);
-            }
-        }
-        return expandedIntents;
     }
     
     private boolean isProvidedInherently(IntentAttachPointType attachPointType, Intent intent) {
