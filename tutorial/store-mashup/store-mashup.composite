@@ -39,4 +39,10 @@
 		 </reference>
     </component>
     
+    <component name="openajax">
+        <t:implementation.resource location="openajax"/>
+        <service name="Resource">
+        	<t:binding.http uri="/openajax"/>
+        </service>
+    </component>
 </composite>

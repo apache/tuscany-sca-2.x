@@ -23,19 +23,22 @@
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAzr2EBOXUKnm_jVnk0OJI7xSosDVG8KKPE1-m51RBrvYughuyMxQ-i1QfUnH94QxWIa6N4U6MouMmBA"></script>
 
 <script language="JavaScript">
-	var map;
 
-	function coordsChanged(coords) {
-		var latlng = coords.split(',');
-		map.setCenter(new GLatLng(latlng[0], latlng[1]));
+	function coordsChangedCallback(eventname, publisherData, subscriberData) {
+		var coords = publisherData.split(',');
+		if (coords.length >= 2) {
+        	subscriberData.setCenter(new GLatLng(coords[0], coords[1]));
+		}
 	}
        
 	function init() {
     	if (GBrowserIsCompatible()) {
-			map = new GMap2(document.getElementById("map_canvas"));
+			var map = new GMap2(document.getElementById("map_canvas"));
 			map.setCenter(new GLatLng(37.4419, -122.1419), 13);
 
-			window.top.geoSpatialCoords = coordsChanged;
+			if (window.top.hub != null) {
+				window.top.hub.subscribe("geospatial.coords", coordsChangedCallback, null, map);
+			}
 		}
 	}
 </script>
