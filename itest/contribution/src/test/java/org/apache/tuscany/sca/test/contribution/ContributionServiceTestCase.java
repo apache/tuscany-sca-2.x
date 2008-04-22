@@ -20,8 +20,13 @@
 package org.apache.tuscany.sca.test.contribution;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -150,7 +155,7 @@ public class ContributionServiceTestCase extends TestCase {
      * contributionService.
      */
     public void testContributeFolder() throws Exception {
-        File rootContributionFolder = new File(FOLDER_CONTRIBUTION);
+        final File rootContributionFolder = new File(FOLDER_CONTRIBUTION);
         String contributionId = CONTRIBUTION_001_ID;
         //first rename the sca-contribution metadata file 
         //File calculatorMetadataFile = new File("target/classes/calculator/sca-contribution.xml"); 
@@ -158,8 +163,20 @@ public class ContributionServiceTestCase extends TestCase {
         //if (!metadataDirectory.exists()) {
         //    FileHelper.forceMkdir(metadataDirectory); 
         //}
-        //FileHelper.copyFileToDirectory(calculatorMetadataFile, metadataDirectory); 
-        contributionService.contribute(contributionId, rootContributionFolder.toURL(), false);
+        //FileHelper.copyFileToDirectory(calculatorMetadataFile, metadataDirectory);
+
+        // Requires permission to read user.dir property. Requires PropertyPermision in security policy.
+        URL contributionFolderURL;
+        try {
+            contributionFolderURL = AccessController.doPrivileged(new PrivilegedExceptionAction<URL>() {
+                public URL run() throws IOException {
+                    return rootContributionFolder.toURL();
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (IOException)e.getException();
+        }        
+        contributionService.contribute(contributionId, contributionFolderURL, false);
         assertNotNull(contributionService.getContribution(contributionId));
     }
 

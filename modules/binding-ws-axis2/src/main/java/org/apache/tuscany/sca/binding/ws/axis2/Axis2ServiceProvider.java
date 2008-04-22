@@ -26,7 +26,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -503,14 +506,25 @@ public class Axis2ServiceProvider {
         
         Definition def = getDefinition(definition, serviceQName);
 
-        WSDLToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(def, serviceQName, portName);
+        final WSDLToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(def, serviceQName, portName);
         builder.setServerSide(true);
         // [rfeng] Add a custom resolver to work around WSCOMMONS-228
         builder.setCustomResolver(new URIResolverImpl(def));
         builder.setBaseUri(def.getDocumentBaseURI());
-        // [rfeng]
-        AxisService axisService = builder.populateService();
-
+        // [rfeng]        
+        // AxisService axisService = builder.populateService();
+        // Allow privileged access to read properties. Requires PropertiesPermission read in
+        // security policy.
+        AxisService axisService;
+        try {
+            axisService = AccessController.doPrivileged(new PrivilegedExceptionAction<AxisService>() {
+                public AxisService run() throws AxisFault {
+                    return builder.populateService();
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (AxisFault)e.getException();
+        }
         String path = URI.create(wsBinding.getURI()).getPath();
         String name = ( path.startsWith( "/") ? path.substring(1) : path );
         axisService.setName(name);

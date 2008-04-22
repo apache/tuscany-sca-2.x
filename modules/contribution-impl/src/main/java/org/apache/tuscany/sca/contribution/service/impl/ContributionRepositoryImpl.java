@@ -165,17 +165,28 @@ public class ContributionRepositoryImpl implements ContributionRepository {
         }
     }
 
-    public URL store(String contribution, URL sourceURL, InputStream contributionStream) throws IOException {
+    public URL store(final String contribution, URL sourceURL, InputStream contributionStream) throws IOException {
         // where the file should be stored in the repository
-        File location = mapToFile(sourceURL);
+        final File location = mapToFile(sourceURL);
         FileHelper.forceMkdir(location.getParentFile());
 
         copy(contributionStream, location);
 
         // add contribution to repositoryContent
-        URL contributionURL = location.toURL();
-        URI relative = rootFile.toURI().relativize(location.toURI());
-        contributionLocations.put(contribution, relative.toString());
+        // Allow ability to read user.dir property. Requires PropertyPermission in security policy.
+        URL contributionURL;
+        try {
+            contributionURL= AccessController.doPrivileged(new PrivilegedExceptionAction<URL>() {
+                public URL run() throws IOException {
+                    URL contributionURL = location.toURL();
+                    URI relative = rootFile.toURI().relativize(location.toURI());
+                    contributionLocations.put(contribution, relative.toString());
+                    return contributionURL;
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (IOException)e.getException();
+        }
         saveMap();
 
         return contributionURL;

@@ -341,7 +341,7 @@ public class ReallySmallRuntime {
         }
     }
 
-    private void stopModules(ExtensionPointRegistry registry, List<ModuleActivator> modules) {
+    private void stopModules(final ExtensionPointRegistry registry, List<ModuleActivator> modules) {
         boolean debug = logger.isLoggable(Level.FINE);
         for (ModuleActivator module : modules) {
             long start = 0L;

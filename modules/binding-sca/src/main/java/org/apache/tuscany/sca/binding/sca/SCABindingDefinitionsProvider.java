@@ -23,9 +23,11 @@ import java.net.URI;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
 
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.provider.SCADefinitionsProvider;
@@ -45,21 +47,25 @@ public class SCABindingDefinitionsProvider implements SCADefinitionsProvider {
 
     public SCADefinitions getSCADefinition() throws SCADefinitionsProviderException {
         // Allow privileged access to load resource. Requires RuntimePermssion in security policy.
-        URL definitionsFileUrl = AccessController.doPrivileged(new PrivilegedAction<URL>() {
+        final URL definitionsFileUrl = AccessController.doPrivileged(new PrivilegedAction<URL>() {
             public URL run() {
                 return getClass().getClassLoader().getResource(definitionsFile);
             }
-        });           
-        
-        Object scaDefn = null;
+        });
+
+        SCADefinitions scaDefn = null;
         try {
-            URI uri = new URI(definitionsFile);
-            return (SCADefinitions)urlArtifactProcessor.read(null, 
-                                                             uri, 
-                                                             definitionsFileUrl);
-        } catch ( Exception e ) {
+            final URI uri = new URI(definitionsFile);
+            // Allow bindings to read properties. Requires PropertyPermission read in security policy. 
+            scaDefn = AccessController.doPrivileged(new PrivilegedExceptionAction<SCADefinitions>() {
+                public SCADefinitions run() throws ContributionReadException {
+                    return (SCADefinitions)urlArtifactProcessor.read(null, uri, definitionsFileUrl);
+                }
+            });
+        } catch (Exception e) {
             throw new SCADefinitionsProviderException(e);
         }
+        return scaDefn;
     }
 
 }

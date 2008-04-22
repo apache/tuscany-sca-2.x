@@ -19,6 +19,9 @@
 
 package org.apache.tuscany.sca.http.jetty.module;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
@@ -37,13 +40,24 @@ public class JettyRuntimeModuleActivator implements ModuleActivator {
         // Register a Jetty Servlet host
         ServletHostExtensionPoint servletHosts =
             extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
-        WorkScheduler workScheduler = extensionPointRegistry.getExtensionPoint(WorkScheduler.class);
-        server = new JettyServer(workScheduler);
+        final WorkScheduler workScheduler = extensionPointRegistry.getExtensionPoint(WorkScheduler.class);
+        // Allow privileged access to start MBeans. Requires MBeanPermission in security policy.
+        server = AccessController.doPrivileged(new PrivilegedAction<JettyServer>() {
+            public JettyServer run() {
+                return new JettyServer(workScheduler);
+             }
+        });        
         servletHosts.addServletHost(server);
     }
 
     public void stop(ExtensionPointRegistry registry) {
-        server.stop();
+        // Allow privileged access to stop MBeans. Requires MBeanPermission in security policy.
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            public Object run() {
+                server.stop();
+                return null;
+            }
+        });            
     }
 
 }

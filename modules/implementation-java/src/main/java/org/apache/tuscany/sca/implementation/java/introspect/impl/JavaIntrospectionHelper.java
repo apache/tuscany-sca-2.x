@@ -84,10 +84,17 @@ public final class JavaIntrospectionHelper {
         }
         fields = getAllPublicAndProtectedFields(clazz.getSuperclass(), fields, validating);
         Field[] declaredFields = clazz.getDeclaredFields();
-        for (Field field : declaredFields) {
+        for (final Field field : declaredFields) {
             int modifiers = field.getModifiers();
             if ((Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) && !Modifier.isStatic(modifiers)) {
-                field.setAccessible(true); // ignore Java accessibility
+                // Allow privileged access to set accessibility. Requires ReflectPermission
+                // in security policy.
+                AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                    public Object run() {
+                        field.setAccessible(true); // ignore Java accessibility
+                        return null;
+                    }
+                });
                 fields.add(field);
             } else {
                 if (validating) {

@@ -22,6 +22,8 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.UUID;
 
 import javax.xml.stream.XMLStreamReader;
@@ -338,8 +340,14 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                 if (i instanceof JavaInterface) {
                     JavaInterface javaInterface = (JavaInterface)i;
                     if (javaInterface.isUnresolved()) {
-                        javaInterface.setJavaClass(Thread.currentThread().getContextClassLoader()
-                            .loadClass(javaInterface.getName()));
+                        // Allow privileged access to get ClassLoader. Requires RuntimePermission in
+                        // security policy.
+                        ClassLoader classLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                            public ClassLoader run() {
+                                return Thread.currentThread().getContextClassLoader();
+                            }
+                        });
+                        javaInterface.setJavaClass(classLoader.loadClass(javaInterface.getName()));
                         currentActivator.getJavaInterfaceFactory().createJavaInterface(javaInterface,
                                                                                        javaInterface.getJavaClass());
                     }

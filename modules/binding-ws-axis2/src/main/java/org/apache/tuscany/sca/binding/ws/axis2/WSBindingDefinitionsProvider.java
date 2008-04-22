@@ -21,9 +21,12 @@ package org.apache.tuscany.sca.binding.ws.axis2;
 
 import java.net.URI;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.provider.SCADefinitionsProvider;
@@ -42,16 +45,20 @@ public class WSBindingDefinitionsProvider implements SCADefinitionsProvider {
     }
 
     public SCADefinitions getSCADefinition() throws SCADefinitionsProviderException {
-        URL defintionsFileUrl = getClass().getClassLoader().getResource(definitionsFile);
-        Object scaDefn = null;
+        final URL definitionsFileUrl = getClass().getClassLoader().getResource(definitionsFile);
+        SCADefinitions scaDefn = null;
         try {
-            URI uri = new URI(definitionsFile);
-            return (SCADefinitions)urlArtifactProcessor.read(null, 
-                                                             uri, 
-                                                             defintionsFileUrl);
-        } catch ( Exception e ) {
+            final URI uri = new URI(definitionsFile);
+            // Allow bindings to read properties. Requires PropertyPermission read in security policy. 
+            scaDefn = AccessController.doPrivileged(new PrivilegedExceptionAction<SCADefinitions>() {
+                public SCADefinitions run() throws ContributionReadException {
+                    return (SCADefinitions)urlArtifactProcessor.read(null, uri, definitionsFileUrl);
+                }
+            });
+        } catch (Exception e) {
             throw new SCADefinitionsProviderException(e);
         }
+        return scaDefn;
     }
 
 }
