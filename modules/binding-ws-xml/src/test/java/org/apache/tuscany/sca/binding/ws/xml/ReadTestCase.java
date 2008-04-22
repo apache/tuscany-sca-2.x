@@ -44,6 +44,7 @@ import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
@@ -132,4 +133,23 @@ public class ReadTestCase extends TestCase {
         //new PrintUtil(System.out).print(composite);
     }
 
+    /**
+     * This test makes sure that an exception is thrown when a bad wsdlElement is present along with EndpointReference.
+     *
+     * Ref: Web Service Binding Specification v1.0 - Sec 2.1 - Lines 61 to 65.
+     * When an EndpointReference is present along with the wsdlElement attribute on the parent element, the wsdlElement attribute value MUST
+     * be of the 'Binding' form.
+     */
+    public void testReadBadWsdlElement() throws Exception {
+        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor);
+        InputStream is = getClass().getResourceAsStream("Calculator-bad-wsdlElement.composite");
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+        try {
+            Composite composite = compositeProcessor.read(reader);
+            fail("ContributionReadException expected.");
+        } catch(ContributionReadException e) {
+            // Expected
+            assertNotSame(-1, e.getMessage().indexOf("must use wsdl.binding when using wsa:EndpointReference"));
+        }
+    }
 }
