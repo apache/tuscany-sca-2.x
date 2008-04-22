@@ -23,7 +23,6 @@ import java.io.File;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -40,13 +39,10 @@ import org.apache.tuscany.sca.node.impl.NodeImpl;
 public class DuplicateComponentNameTestCase extends TestCase {
 
     private CalculatorService calculatorService;
-    //private SCADomain scaDomain;
     private SCANode2 node;
 
     @Override
     protected void setUp() throws Exception {
-        //scaDomain = SCADomain.newInstance("XsdValidation/Calculator.composite");
-        //calculatorService = scaDomain.getService(CalculatorService.class, "CalculatorServiceComponent");
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
         node = nodeFactory.createSCANode(new File("src/main/resources/DuplicateComponentName/Calculator.composite").toURL().toString(),
         		                 new SCAContribution("TestContribution", 
@@ -57,7 +53,6 @@ public class DuplicateComponentNameTestCase extends TestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        //scaDomain.close();
         node.stop();
     }
 

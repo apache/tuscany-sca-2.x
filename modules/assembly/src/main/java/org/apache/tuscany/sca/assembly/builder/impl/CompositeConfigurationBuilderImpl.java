@@ -323,9 +323,10 @@ public class CompositeConfigurationBuilderImpl {
             if (property != null) {
                 componentProperty.setProperty(property);
             } else {
-                warning("Property not found for component property: " + component.getName()
+                /*warning("Property not found for component property: " + component.getName()
                     + "/"
-                    + componentProperty.getName(), component);
+                    + componentProperty.getName(), component);*/
+			warning("PropertyNotFound", component, component.getName().toString(), componentProperty.getName());
             }
         }
 
@@ -544,9 +545,10 @@ public class CompositeConfigurationBuilderImpl {
             if (service != null) {
                 componentService.setService(service);
             } else {
-                warning("Service not found for component service: " + component.getName()
+                /*warning("Service not found for component service: " + component.getName()
                     + "/"
-                    + componentService.getName(), component);
+                    + componentService.getName(), component);*/
+			warning("ServiceNotFoundForComponentService", component, component.getName().toString(), componentService.getName());
             }
         }
 
@@ -612,27 +614,30 @@ public class CompositeConfigurationBuilderImpl {
                                                                Map<String, ComponentProperty> componentProperties) {
         for (ComponentService componentService : component.getServices()) {
             if (componentServices.containsKey(componentService.getName())) {
-                warning("Duplicate component service name: " + component.getName()
+                /*warning("Duplicate component service name: " + component.getName()
                     + "/"
-                    + componentService.getName(), component);
+                    + componentService.getName(), component);*/
+			warning("DuplicateComponentServiceName", component, component.getName().toString(), componentService.getName());
             } else {
                 componentServices.put(componentService.getName(), componentService);
             }
         }
         for (ComponentReference componentReference : component.getReferences()) {
             if (componentReferences.containsKey(componentReference.getName())) {
-                warning("Duplicate component reference name: " + component.getName()
+                /*warning("Duplicate component reference name: " + component.getName()
                     + "/"
-                    + componentReference.getName(), component);
+                    + componentReference.getName(), component);*/
+			warning("DuplicateComponentReferenceName", component, component.getName().toString(), componentReference.getName());
             } else {
                 componentReferences.put(componentReference.getName(), componentReference);
             }
         }
         for (ComponentProperty componentProperty : component.getProperties()) {
             if (componentProperties.containsKey(componentProperty.getName())) {
-                warning("Duplicate component property name: " + component.getName()
+                /*warning("Duplicate component property name: " + component.getName()
                     + "/"
-                    + componentProperty.getName(), component);
+                    + componentProperty.getName(), component);*/
+			warning("DuplicateComponentPropertyName", component, component.getName().toString(), componentProperty.getName());
             } else {
                 componentProperties.put(componentProperty.getName(), componentProperty);
             }
@@ -649,14 +654,16 @@ public class CompositeConfigurationBuilderImpl {
         if (implementation == null) {
 
             // A component must have an implementation
-            warning("No implementation for component: " + component.getName(), component);
+            /*warning("No implementation for component: " + component.getName(), component);*/
+		warning("NoComponentImplementation", component, component.getName().toString());
 
         } else if (implementation.isUnresolved()) {
 
             // The implementation must be fully resolved
-            warning("Component implementation not found: " + component.getName()
+            /*warning("Component implementation not found: " + component.getName()
                 + " : "
-                + implementation.getURI(), component);
+                + implementation.getURI(), component);*/
+		warning("UnresolvedComponentImplementation", component, component.getName().toString(), implementation.getURI());
 
         } else {
 
@@ -664,9 +671,10 @@ public class CompositeConfigurationBuilderImpl {
             // duplicates
             for (Property property : implementation.getProperties()) {
                 if (properties.containsKey(property.getName())) {
-                    warning("Duplicate property name: " + component.getName()
+                    /*warning("Duplicate property name: " + component.getName()
                         + "/"
-                        + property.getName(), component);
+                        + property.getName(), component);*/
+			warning("DuplicateImplementationPropertyName", component, component.getName().toString(), property.getName());
                 } else {
                     properties.put(property.getName(), property);
                 }
@@ -682,9 +690,10 @@ public class CompositeConfigurationBuilderImpl {
             }
             for (Reference reference : implementation.getReferences()) {
                 if (references.containsKey(reference.getName())) {
-                    warning("Duplicate reference name: " + component.getName()
+                    /*warning("Duplicate reference name: " + component.getName()
                         + "/"
-                        + reference.getName(), component);
+                        + reference.getName(), component);*/
+			warning("DuplicateImplementationReferenceName", component, component.getName().toString(), reference.getName());
                 } else {
                     references.put(reference.getName(), reference);
                 }

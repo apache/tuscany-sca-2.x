@@ -20,16 +20,24 @@ package calculator;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.osoa.sca.annotations.Property;
 
 /**
  * An implementation of the Add service
  */
 public class AddServiceImpl implements AddService {
 
+	@Property(name="serviceName")
+	protected String serviceName = "addService";
+
     public double add(double n1, double n2) {
         Logger logger = Logger.getLogger("calculator");
         logger.log(Level.FINEST, "Adding " + n1 + " and " + n2);
         return n1 + n2;
+    }
+
+    public String getServiceName(){
+	  return serviceName;
     }
 
 }
