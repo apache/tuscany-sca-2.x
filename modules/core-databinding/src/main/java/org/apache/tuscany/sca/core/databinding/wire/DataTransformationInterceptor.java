@@ -197,7 +197,8 @@ public class DataTransformationInterceptor implements Interceptor, DataExchangeS
         if (first instanceof XMLType && second instanceof XMLType) {
             XMLType t1 = (XMLType)first;
             XMLType t2 = (XMLType)second;
-            return matches(t1.getElementName(), t2.getElementName()) || matches(t1.getTypeName(), t2.getTypeName());
+            // TUSCANY-2113, we should compare element names only
+            return matches(t1.getElementName(), t2.getElementName());
         }
         return false;
     }
