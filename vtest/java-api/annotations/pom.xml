@@ -28,7 +28,7 @@
     <artifactId>java-api-annotations</artifactId>
     <packaging>pom</packaging>
 
-    <name>Apache Tuscany SCA Java APIs and Annoations Verification Tests - Annotations</name>
+    <name>Apache Tuscany SCA Java APIs and Annotations Verification Tests - Annotations</name>
 
     <dependencies>
         <dependency>
