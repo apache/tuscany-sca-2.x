@@ -25,6 +25,7 @@
 			class="org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.impl.AServiceImpl" />
 		<reference name="b" target="BComponent" />
 		<reference name="b2" target="B2Component" />
+		<reference name="c" target="CComponent" />
 	</component>
 
 	<component name="BComponent">
@@ -32,9 +33,14 @@
 			class="org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.impl.BServiceImpl" />
 	</component>
 
-	<component name="B2Component">
+    <component name="B2Component">
 		<implementation.java
 			class="org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.impl.B2ServiceImpl" />
+	</component>
+
+	<component name="CComponent">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.impl.CServiceImpl" />
 	</component>
 
 </composite>

@@ -20,23 +20,18 @@
 package org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.BService;
-import org.osoa.sca.annotations.ConversationAttributes;
-import org.osoa.sca.annotations.Scope;
+import org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.CService;
+import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Service;
 
-@Service(BService.class)
-@Scope("CONVERSATION")
-@ConversationAttributes(maxAge="1 seconds", singlePrincipal=true)
-public class BServiceImpl implements BService {
+@Service(CService.class)
+public class CServiceImpl implements CService {
 
-    String someState;
+    public void testSinglePricipal(ServiceReference<BService> bReference) {
+        
+        System.out.println("In C calling set state on passed reference to B");
+        bReference.getService().setState("someState");
 
-    public void setState(String someState) {
-        this.someState = someState;
-    }
-
-    public String getState() {
-        return someState;
     }
 
 }

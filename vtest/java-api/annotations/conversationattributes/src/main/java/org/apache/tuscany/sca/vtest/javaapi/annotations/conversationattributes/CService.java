@@ -16,27 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes;
 
-package org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.impl;
+import org.osoa.sca.ServiceReference;
 
-import org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.BService;
-import org.osoa.sca.annotations.ConversationAttributes;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+/**
+ * Simple Service
+ */
+public interface CService {
 
-@Service(BService.class)
-@Scope("CONVERSATION")
-@ConversationAttributes(maxAge="1 seconds", singlePrincipal=true)
-public class BServiceImpl implements BService {
-
-    String someState;
-
-    public void setState(String someState) {
-        this.someState = someState;
-    }
-
-    public String getState() {
-        return someState;
-    }
-
+    public void testSinglePricipal(ServiceReference<BService> bReference);
+    
 }

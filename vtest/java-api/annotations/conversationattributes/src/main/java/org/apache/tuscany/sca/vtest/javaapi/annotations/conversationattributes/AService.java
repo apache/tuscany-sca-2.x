@@ -25,5 +25,6 @@ public interface AService {
 
     public void testMaxAge() throws InterruptedException;
     public void testMaxIdle() throws InterruptedException;
-    
+    public void testSinglePrincipal();
+
 }

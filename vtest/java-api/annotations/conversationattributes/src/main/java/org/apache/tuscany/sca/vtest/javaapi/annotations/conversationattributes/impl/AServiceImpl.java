@@ -22,6 +22,9 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.
 import org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.AService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.B2Service;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.BService;
+import org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes.CService;
+import org.osoa.sca.ComponentContext;
+import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
@@ -34,7 +37,12 @@ public class AServiceImpl implements AService {
     @Reference
     protected B2Service b2;
 
-
+    @Reference
+    protected CService c;
+    
+    @Context 
+    protected ComponentContext context;
+    
     private void delayForSeconds(int numSeconds) {
         try {
             Thread.sleep(numSeconds * 1000);// millisecs
@@ -59,6 +67,14 @@ public class AServiceImpl implements AService {
         delayForSeconds(2);
         b2.setState(someState);
 
+    }
+
+    public void testSinglePrincipal() {
+        
+        b.setState("Some state");
+        System.out.println("Calling c and passing reference to b");
+        c.testSinglePricipal(context.getServiceReference(BService.class, "b"));
+        
     }
 
 }
