@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.core.work;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -108,7 +111,14 @@ public class Jsr237WorkScheduler implements WorkScheduler {
 
     public void destroy() {
         if (jsr237WorkManager instanceof ThreadPoolWorkManager) {
-            ((ThreadPoolWorkManager)jsr237WorkManager).destroy();
+            // Allow privileged access to modify threads. Requires RuntimePermission in security
+            // policy.
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                public Object run() {
+                    ((ThreadPoolWorkManager)jsr237WorkManager).destroy();
+                    return null;
+                }
+            });
         }
     }
 

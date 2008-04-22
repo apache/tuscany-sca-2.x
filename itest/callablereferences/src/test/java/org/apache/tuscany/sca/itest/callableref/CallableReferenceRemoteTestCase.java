@@ -76,8 +76,19 @@ public class CallableReferenceRemoteTestCase {
             // get a reference to the calculator service from domainA
             // which will be running this component
             acomponent = nodeA.getDomain().getService(AComponent.class, "AComponent/AComponent");   
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             System.out.println(ex.toString());
+            // Print detailed cause information.
+            ex.printStackTrace();
+            StringBuffer sb = new StringBuffer();
+            Throwable cause = ex.getCause();
+            while ( cause != null ) {
+                sb.append( "   " );
+                System.out.println( sb.toString() + "Cause: " + cause );
+                if (cause instanceof java.lang.reflect.InvocationTargetException)
+                    System.out.println( sb.toString() + "Target Exception: " + ((java.lang.reflect.InvocationTargetException)cause).getTargetException() );
+                cause = cause.getCause();                
+            }
         }
    }
 

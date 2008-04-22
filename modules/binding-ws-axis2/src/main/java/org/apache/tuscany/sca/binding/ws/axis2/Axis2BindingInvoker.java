@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -108,14 +112,25 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
     }
 
     protected Object invokeTarget(Message msg) throws AxisFault {
-        OperationClient operationClient = createOperationClient(msg);
+        final OperationClient operationClient = createOperationClient(msg);
 
         // ensure connections are tracked so that they can be closed by the reference binding
         MessageContext requestMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
         requestMC.getOptions().setProperty(HTTPConstants.REUSE_HTTP_CLIENT, Boolean.TRUE);
-        requestMC.getOptions().setTimeOutInMilliSeconds(120000L);
+        requestMC.getOptions().setTimeOutInMilliSeconds(240000L);
 
-        operationClient.execute(true);
+        // Allow privileged access to read properties. Requires PropertiesPermission read in
+        // security policy.
+        try {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                public Object run() throws AxisFault {
+                    operationClient.execute(true);
+                    return null;
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (AxisFault)e.getException();
+        }
 
         MessageContext responseMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
 
@@ -148,11 +163,11 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
                 }
             }
         }
-        MessageContext requestMC = new MessageContext();
+        final MessageContext requestMC = new MessageContext();
         requestMC.setEnvelope(env);
 
         // Axis2 operationClients can not be shared so create a new one for each request
-        OperationClient operationClient = serviceClient.getServiceClient().createClient(wsdlOperationName);
+        final OperationClient operationClient = serviceClient.getServiceClient().createClient(wsdlOperationName);
         operationClient.setOptions(options);
 
         ReferenceParameters parameters = msg.getFrom().getReferenceParameters();
@@ -208,9 +223,19 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
         } else {
             requestMC.setTo(new EndpointReference(options.getTo().getAddress())); 
         }
-
-        operationClient.addMessageContext(requestMC);
-
+        
+        // Allow privileged access to read properties. Requires PropertiesPermission read in
+        // security policy.
+        try {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                public Object run() throws AxisFault {
+                    operationClient.addMessageContext(requestMC);
+                    return null;
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (AxisFault)e.getException();
+        }
         return operationClient;
     }
     

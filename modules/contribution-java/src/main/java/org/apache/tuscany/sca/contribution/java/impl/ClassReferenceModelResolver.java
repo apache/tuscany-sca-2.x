@@ -43,11 +43,19 @@ public class ClassReferenceModelResolver implements ModelResolver {
 
     private ModelResolver osgiResolver;
 
-    public ClassReferenceModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
+    public ClassReferenceModelResolver(final Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
         if (this.contribution != null) {
-            ClassLoader cl = contribution.getClassLoader();
-            if (contribution.getClassLoader() == null) {
+            // Allow privileged access to get ClassLoader. Requires RuntimePermission in security policy.
+            // ClassLoader cl = contribution.getClassLoader();
+            ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                public ClassLoader run() {
+                    return contribution.getClassLoader();
+                }
+            });           
+
+            if (cl == null) {
+                // Allow privileged access to get ClassLoader. Requires RuntimePermission in security policy.
                 ClassLoader contextClassLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
                     public ClassLoader run() {
                         return Thread.currentThread().getContextClassLoader();
@@ -59,7 +67,14 @@ public class ClassReferenceModelResolver implements ModelResolver {
             this.classLoader = new WeakReference<ClassLoader>(cl);
         } else {
             // This path should be used only for unit testing.
-            this.classLoader = new WeakReference<ClassLoader>(this.getClass().getClassLoader());
+            // Allow privileged access to get ClassLoader. Requires RuntimePermission in security policy.
+            // this.classLoader = new WeakReference<ClassLoader>(this.getClass().getClassLoader());
+            ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                public ClassLoader run() {
+                    return this.getClass().getClassLoader();
+                }
+            });           
+            this.classLoader = new WeakReference<ClassLoader>( cl );
         }
 
         try {

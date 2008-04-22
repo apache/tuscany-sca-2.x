@@ -22,6 +22,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
@@ -39,6 +43,7 @@ import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.AxisConfigurator;
 import org.apache.axis2.i18n.Messages;
 import org.apache.axis2.util.Loader;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
 
 /**
  * Helps configure Axis2 from a resource in binding.ws.axis2 instead of Axis2.xml 
@@ -130,7 +135,7 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
                             axisConfig.getModuleClassLoader(),
                             true,
                             (File) axisConfig.getParameterValue(Constants.Configuration.ARTIFACTS_TEMP_DIR));
-            AxisModule module = new AxisModule();
+            final AxisModule module = new AxisModule();
             module.setModuleClassLoader(deploymentClassLoader);
             module.setParent(axisConfig);
             //String moduleFile = fileUrl.substring(0, fileUrl.indexOf(".mar"));
@@ -140,7 +145,19 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
             }
             populateModule(module, rampart_mar_url);
             module.setFileName(rampart_mar_url);
-            addNewModule(module, axisConfig);
+            // Allow privileged access to read properties. Requires PropertiesPermission read in
+            // security policy.
+            try {
+                AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                    public Object run() throws IOException {
+                        addNewModule(module, axisConfig);
+                        return null;
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                throw (AxisFault)e.getException();
+            }            
+           
             org.apache.axis2.util.Utils.
                     calculateDefaultModuleVersion(axisConfig.getModules(), axisConfig);
             axisConfig.validateSystemPredefinedPhases();

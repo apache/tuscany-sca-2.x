@@ -20,6 +20,11 @@ package org.apache.tuscany.sca.binding.ws.axis2;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLClassLoader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +84,7 @@ import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerUtils;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 
 public class Axis2ServiceClient {
@@ -249,13 +255,24 @@ public class Axis2ServiceClient {
                                                           String portName,
                                                           Options options) throws AxisFault {
         Definition def = getDefinition(wsdlDefinition, wsdlServiceName);
-        WSDL11ToAxisServiceBuilder serviceBuilder = new WSDL11ToAxisServiceBuilder(def, wsdlServiceName, portName);
+        final WSDL11ToAxisServiceBuilder serviceBuilder = new WSDL11ToAxisServiceBuilder(def, wsdlServiceName, portName);
         serviceBuilder.setServerSide(false);
         // [rfeng] Add a custom resolver to work around WSCOMMONS-228
         serviceBuilder.setCustomResolver(new URIResolverImpl(def));
         serviceBuilder.setBaseUri(def.getDocumentBaseURI());
         // [rfeng]
-        AxisService axisService = serviceBuilder.populateService();
+        // Allow access to read properties. Requires PropertiesPermission in security policy.
+        AxisService axisService;         
+        try {        
+            axisService = AccessController.doPrivileged(new PrivilegedExceptionAction<AxisService>() {
+                public AxisService run() throws AxisFault {
+                    return serviceBuilder.populateService();
+                }
+            });
+            } catch ( PrivilegedActionException e ) {
+               throw (AxisFault) e.getException();
+            }
+
         AxisEndpoint axisEndpoint = (AxisEndpoint)axisService.getEndpoints().get(axisService.getEndpointName());
         options.setTo(new EndpointReference(axisEndpoint.getEndpointURL()));
         if (axisEndpoint != null) {
@@ -346,8 +363,17 @@ public class Axis2ServiceClient {
 
         options.setTimeOutInMilliSeconds(30 * 1000); // 30 seconds
 
-        SOAPFactory soapFactory =
-            requiresSOAP12() ? OMAbstractFactory.getSOAP12Factory() : OMAbstractFactory.getSOAP11Factory();
+        // Allow privileged access to read properties. Requires PropertiesPermission read in
+        // security policy.
+        SOAPFactory soapFactory = AccessController.doPrivileged(new PrivilegedAction<SOAPFactory>() {
+            public SOAPFactory run() {
+                if (requiresSOAP12())
+                    return OMAbstractFactory.getSOAP12Factory();
+                else
+                    return OMAbstractFactory.getSOAP11Factory();
+
+            }
+        });
         QName wsdlOperationQName = new QName(operationName);
         if (requiresMTOM())
         {

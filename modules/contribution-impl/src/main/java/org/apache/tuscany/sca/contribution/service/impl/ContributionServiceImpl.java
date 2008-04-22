@@ -161,7 +161,6 @@ public class ContributionServiceImpl implements ContributionService {
         if (sourceURL == null) {
             throw new IllegalArgumentException("Source URL for the contribution is null");
         }
-
         return addContribution(contributionURI, sourceURL, null, null, storeInRepository);
     }
 
@@ -472,6 +471,7 @@ public class ContributionServiceImpl implements ContributionService {
             } else {
                 // resolve the model object
                 if (artifact.getModel() != null) {
+                    // System.out.println("Processing Resolve Phase : " + artifact.getURI());
                     this.artifactProcessor.resolve(artifact.getModel(), contribution.getModelResolver());
                 }
             }
@@ -481,7 +481,6 @@ public class ContributionServiceImpl implements ContributionService {
         for (Artifact artifact : composites) {
             // resolve the model object
             if (artifact.getModel() != null) {
-                // System.out.println("Processing Resolve Phase : " + artifact.getURI());
                 this.artifactProcessor.resolve(artifact.getModel(), contribution.getModelResolver());
             }
         }

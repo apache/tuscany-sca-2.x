@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.core.assembly;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -503,7 +505,7 @@ public class CompositeActivatorImpl implements CompositeActivator {
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("Stopping composite: " + composite.getName());
         }
-        for (Component component : composite.getComponents()) {
+        for (final Component component : composite.getComponents()) {
             stop(component);
         }
     }
@@ -526,9 +528,15 @@ public class CompositeActivatorImpl implements CompositeActivator {
             RuntimeComponentReference runtimeRef = ((RuntimeComponentReference)reference);
             runtimeRef.setComponent(runtimeComponent);
             for (Binding binding : reference.getBindings()) {
-                ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(binding);
+                final ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(binding);
                 if (bindingProvider != null) {
-                    bindingProvider.start();
+                    // Allow bindings to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy. 
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        public Object run() {
+                            bindingProvider.start();
+                            return null;
+                          }
+                    });                       
                 }
             }
         }
@@ -539,9 +547,16 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
             RuntimeComponentService runtimeService = (RuntimeComponentService)service;
             for (Binding binding : service.getBindings()) {
-                ServiceBindingProvider bindingProvider = runtimeService.getBindingProvider(binding);
+                final ServiceBindingProvider bindingProvider = runtimeService.getBindingProvider(binding);
                 if (bindingProvider != null) {
-                    bindingProvider.start();
+                    // bindingProvider.start();
+                    // Allow bindings to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy. 
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        public Object run() {
+                            bindingProvider.start();
+                            return null;
+                          }
+                    });                       
                 }
             }
         }
@@ -591,9 +606,15 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 logger.fine("Stopping component service: " + component.getURI() + "#" + service.getName());
             }
             for (Binding binding : service.getBindings()) {
-                ServiceBindingProvider bindingProvider = ((RuntimeComponentService)service).getBindingProvider(binding);
+                final ServiceBindingProvider bindingProvider = ((RuntimeComponentService)service).getBindingProvider(binding);
                 if (bindingProvider != null) {
-                    bindingProvider.stop();
+                    // Allow bindings to read properties. Requires PropertyPermission read in security policy. 
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        public Object run() {
+                            bindingProvider.stop();
+                            return null;
+                          }
+                    });                       
                 }
             }
         }
@@ -603,9 +624,15 @@ public class CompositeActivatorImpl implements CompositeActivator {
             }
             RuntimeComponentReference runtimeRef = ((RuntimeComponentReference)reference);
             for (Binding binding : reference.getBindings()) {
-                ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(binding);
+                final ReferenceBindingProvider bindingProvider = runtimeRef.getBindingProvider(binding);
                 if (bindingProvider != null) {
-                    bindingProvider.stop();
+                    // Allow bindings to read properties. Requires PropertyPermission read in security policy. 
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        public Object run() {
+                            bindingProvider.stop();
+                            return null;
+                          }
+                    });                       
                 }
             }
         }
@@ -613,9 +640,15 @@ public class CompositeActivatorImpl implements CompositeActivator {
         if (implementation instanceof Composite) {
             stop((Composite)implementation);
         } else {
-            ImplementationProvider implementationProvider = ((RuntimeComponent)component).getImplementationProvider();
+            final ImplementationProvider implementationProvider = ((RuntimeComponent)component).getImplementationProvider();
             if (implementationProvider != null) {
-                implementationProvider.stop();
+                // Allow bindings to read properties. Requires PropertyPermission read in security policy. 
+                AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                    public Object run() {
+                        implementationProvider.stop();
+                        return null;
+                      }
+                });                       
             }
         }
 

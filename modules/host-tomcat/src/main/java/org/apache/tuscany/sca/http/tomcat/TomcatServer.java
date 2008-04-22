@@ -24,6 +24,10 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,6 +45,7 @@ import javax.servlet.ServletException;
 import org.apache.catalina.Container;
 import org.apache.catalina.Context;
 import org.apache.catalina.Lifecycle;
+import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Loader;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
@@ -211,26 +216,38 @@ public class TomcatServer implements ServletHost {
         if (scheme == null) {
             scheme = "http";
         }
-        int portNumber = uri.getPort();
-        if (portNumber == -1) {
-            portNumber = defaultPortNumber;
-        }
+        final int portNumber = (uri.getPort() == -1 ? defaultPortNumber : uri.getPort() ); 
 
         // Get the port object associated with the given port number
         Port port = ports.get(portNumber);
         if (port == null) {
 
             // Create an engine
-            StandardEngine engine = new StandardEngine();
+            // Allow privileged access to read properties. Requires PropertiesPermission read in
+            // security policy.
+            final StandardEngine engine = 
+            AccessController.doPrivileged(new PrivilegedAction<StandardEngine>() {
+                public StandardEngine run() {
+                    return new StandardEngine();
+                }
+            });
+            
             engine.setBaseDir("");
             engine.setDefaultHost("localhost");
             engine.setName("engine/" + portNumber);
 
             // Create a host
-            StandardHost host = new StandardHost();
+            final StandardHost host = new StandardHost();
             host.setAppBase("");
             host.setName("localhost");
-            engine.addChild(host);
+            // Allow privileged access to read properties. Requires PropertiesPermission read in
+            // security policy.
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                public Object run() {
+                    engine.addChild(host);
+                    return null;
+                }
+            });
 
             // Create the root context
             StandardContext context = new StandardContext();
@@ -244,18 +261,36 @@ public class TomcatServer implements ServletHost {
             host.addChild(context);
 
             // Install an HTTP connector
-            Connector connector;
+            // Allow privileged access to read properties. Requires PropertiesPermission read in
+            // security policy.
             try {
-                engine.start();
-                connector = new CustomConnector();
-                connector.setPort(portNumber);
-                connector.setContainer(engine);
-                connector.initialize();
-                connector.start();
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                    public Object run() throws LifecycleException {
+                        engine.start();
+                        return null;
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                // throw (LifecycleException)e.getException();
+                throw new ServletMappingException(e);
+            }                
+            Connector connector;
+            // Allow privileged access to read properties. Requires PropertiesPermission read in
+            // security policy.
+            try {
+                connector = AccessController.doPrivileged(new PrivilegedExceptionAction<CustomConnector>() {
+                    public CustomConnector run() throws Exception {
+                       CustomConnector customConnector = new CustomConnector();
+                       customConnector.setPort(portNumber);
+                       customConnector.setContainer(engine);
+                       customConnector.initialize();
+                       customConnector.start();
+                       return customConnector;
+                   }
+                });
             } catch (Exception e) {
                 throw new ServletMappingException(e);
             }
-
             // Keep track of the running server
             port = new Port(engine, host, connector);
             ports.put(portNumber, port);
@@ -392,12 +427,19 @@ public class TomcatServer implements ServletHost {
             mapping = contextPath + mapping;
         }
 
-        Context context = port.getHost().map(mapping);
-        MappingData md = new MappingData();
-        MessageBytes mb = MessageBytes.newInstance();
+        final Context context = port.getHost().map(mapping);
+        final MappingData md = new MappingData();
+        final MessageBytes mb = MessageBytes.newInstance();
         mb.setString(mapping);
         try {
-            context.getMapper().map(mb, md);
+            // Allow privileged access to read properties. Requires PropertiesPermission read in
+            // security policy.
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                public Object run() throws Exception {
+                    context.getMapper().map(mb, md);
+                    return null;
+                }
+            });
         } catch (Exception e) {
             return null;
         }
@@ -434,12 +476,19 @@ public class TomcatServer implements ServletHost {
             mapping = contextPath + mapping;
         }
 
-        Context context = port.getHost().map(mapping);
-        MappingData md = new MappingData();
-        MessageBytes mb = MessageBytes.newInstance();
+        final Context context = port.getHost().map(mapping);
+        final MappingData md = new MappingData();
+        final MessageBytes mb = MessageBytes.newInstance();
         mb.setString(mapping);
         try {
-            context.getMapper().map(mb, md);
+            // Allow privileged access to read properties. Requires PropertiesPermission read in
+            // security policy.
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                public Object run() throws Exception {
+                    context.getMapper().map(mb, md);
+                    return null;
+                }
+            });
         } catch (Exception e) {
             return null;
         }

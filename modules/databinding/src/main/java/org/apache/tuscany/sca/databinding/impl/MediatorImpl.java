@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.databinding.impl;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.Map;
 
@@ -99,7 +101,14 @@ public class MediatorImpl implements Mediator {
                                                                             Object.class, targetDataType.getLogical());
         
         //FIXME The ClassLoader should be passed in
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        // Allow privileged access to get ClassLoader. Requires RuntimePermission in security
+        // policy.
+        ClassLoader classLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run() {
+                return Thread.currentThread().getContextClassLoader();
+            }
+        });           
+        
         TransformationContext context = new TransformationContextImpl(sourceType, targetType, classLoader, metadata);
         return context;
     }

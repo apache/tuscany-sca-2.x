@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.core.invocation;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
@@ -60,11 +62,16 @@ public class JDKProxyFactory implements ProxyFactory {
 
     public <T> T createProxy(CallableReference<T> callableReference) throws ProxyCreationException {
         assert callableReference != null;
-        Class<T> interfaze = callableReference.getBusinessInterface();
+        final Class<T> interfaze = callableReference.getBusinessInterface();
         InvocationHandler handler = new JDKInvocationHandler(messageFactory, callableReference);
-        ClassLoader cl = interfaze.getClassLoader();
-		Object proxy = Proxy.newProxyInstance(cl, new Class[] {interfaze}, handler);
-		((CallableReferenceImpl)callableReference).setProxy(proxy);
+        // Allow privileged access to class loader. Requires RuntimePermission in security policy.
+        ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run() {
+                return interfaze.getClassLoader();
+            }
+        });
+        Object proxy = Proxy.newProxyInstance(cl, new Class[] {interfaze}, handler);
+        ((CallableReferenceImpl)callableReference).setProxy(proxy);
         return interfaze.cast(proxy);
     }
 

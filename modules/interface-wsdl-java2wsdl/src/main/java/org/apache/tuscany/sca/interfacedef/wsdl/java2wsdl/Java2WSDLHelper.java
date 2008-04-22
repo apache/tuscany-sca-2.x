@@ -25,6 +25,9 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -124,15 +127,15 @@ public class Java2WSDLHelper {
             register(pkg2nsMap, outputType);
         }
 
-        Definition def = createDefinition(pkg2nsMap, iface.getJavaClass(), requiresSOAP12);
+        final Definition def = createDefinition(pkg2nsMap, iface.getJavaClass(), requiresSOAP12);
 
-        DefaultWSDLFactory wsdlFactory = new DefaultWSDLFactory();
+        final DefaultWSDLFactory wsdlFactory = new DefaultWSDLFactory();
 
         WSDLInterfaceContract wsdlContract = wsdlFactory.createWSDLInterfaceContract();
         WSDLInterface wsdlInterface = wsdlFactory.createWSDLInterface();
 
         wsdlContract.setInterface(wsdlInterface);
-        WSDLDefinition wsdlDefinition = new DefaultWSDLFactory().createWSDLDefinition();
+        final WSDLDefinition wsdlDefinition = new DefaultWSDLFactory().createWSDLDefinition();
         wsdlDefinition.setDefinition(def);
         wsdlInterface.setWsdlDefinition(wsdlDefinition);
         wsdlInterface.setRemotable(true);
@@ -142,7 +145,14 @@ public class Java2WSDLHelper {
         PortType portType = (PortType)def.getAllPortTypes().values().iterator().next();
         wsdlInterface.setPortType(portType);
 
-        readInlineSchemas(wsdlFactory, wsdlDefinition, def, new XmlSchemaCollection());
+        // Allow privileged access to read properties. Requires PropertiesPermission read in
+        // security policy.
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            public Object run() {
+                readInlineSchemas(wsdlFactory, wsdlDefinition, def, new XmlSchemaCollection());
+                return null;
+            }
+        });
 
         try {
             for (Operation op : iface.getOperations()) {
@@ -274,21 +284,41 @@ public class Java2WSDLHelper {
     /**
      * Create a WSDL4J Definition object from a Java interface
      */
-    protected static Definition createDefinition(Map map, Class<?> javaInterface, boolean requiresSOAP12) {
+    protected static Definition createDefinition(Map map, final Class<?> javaInterface, boolean requiresSOAP12) {
 
-        String className = javaInterface.getName();
-        ClassLoader cl = javaInterface.getClassLoader();
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        Java2WSDLBuilder builder = new Java2WSDLBuilder(os, className, cl);
+        final String className = javaInterface.getName();
+        // Allow privileged access to get ClassLoader. Requires RuntimePermission read in security
+        // policy.
+        final ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run() {
+                return javaInterface.getClassLoader();
+            }
+        });
+        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+        // Allow privileged access to read properties. Requires PropertiesPermission read in
+        // security policy.
+        final Java2WSDLBuilder builder = AccessController.doPrivileged(new PrivilegedAction<Java2WSDLBuilder>() {
+            public Java2WSDLBuilder run() {
+                return new Java2WSDLBuilder(os, className, cl);
+            }
+        });
         if (map != null) {
             builder.setPkg2nsMap(map);
         }
 
+        // builder.generateWSDL();
+        // Allow privileged access to read properties. Requires PropertiesPermission read in
+        // security policy.
         try {
-            builder.generateWSDL();
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                public Object run() throws Exception {
+                    builder.generateWSDL();
+                    return null;
+                }
+            });
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
+        }        
 
         try {
 

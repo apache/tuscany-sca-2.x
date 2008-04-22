@@ -37,9 +37,10 @@ import org.apache.tuscany.sca.contribution.java.JavaImport;
 
 
 public class ContributionClassLoader extends URLClassLoader {
+// public class ContributionClassLoader  {
     
     private Contribution contribution;
-
+    // private b urlClassLoader;
     
     /**
      * Constructor for contribution ClassLoader 
@@ -48,7 +49,7 @@ public class ContributionClassLoader extends URLClassLoader {
      * @param parent
      * @throws MalformedURLException
      */
-    public ContributionClassLoader(Contribution contribution, ClassLoader parent) {
+    public ContributionClassLoader(Contribution contribution, final ClassLoader parent) {
         super(new URL[0], parent);
         // Note that privileged use of getContextClassLoader have been promoted to callers.
         // super(new URL[0], parent == null?Thread.currentThread().getContextClassLoader(): null);
