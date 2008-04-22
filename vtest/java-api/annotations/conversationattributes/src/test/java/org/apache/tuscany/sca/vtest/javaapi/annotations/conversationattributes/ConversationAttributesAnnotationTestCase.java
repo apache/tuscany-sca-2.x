@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osoa.sca.ConversationEndedException;
 
@@ -79,4 +80,16 @@ public class ConversationAttributesAnnotationTestCase {
         aService.testMaxAge();
     }
 
+    /**
+     * Line 1669, 1670
+     * <p>
+     * singlePrincipal (optional) – If true, only the principal (the user) that
+     * started the conversation has authority to continue the conversation.
+     * The default value is false.
+     */
+    @Ignore
+    @Test(expected = Exception.class)
+    public void singlePrincipal() throws Exception {
+        aService.testSinglePrincipal();
+    }
 }
