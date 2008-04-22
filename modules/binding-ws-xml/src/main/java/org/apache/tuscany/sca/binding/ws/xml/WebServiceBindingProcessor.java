@@ -143,7 +143,7 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
 
             } else if (localName.startsWith("wsdl.binding")) {
 
-                // Read a wsdl.service
+                // Read a wsdl.binding
                 localName = localName.substring("wsdl.binding(".length(), localName.length() - 1);
                 wsBinding.setBindingName(new QName(namespace, localName));
 
@@ -164,7 +164,7 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
             switch (event) {
                 case START_ELEMENT: {
                     if (END_POINT_REFERENCE.equals(reader.getName().getLocalPart())) {
-                        if (wsdlElementIsBinding != null && wsdlElementIsBinding) {
+                        if (wsdlElement != null && (wsdlElementIsBinding == null || !wsdlElementIsBinding)) {
                             throw new ContributionReadException(
                                                                 wsdlElement + " must use wsdl.binding when using wsa:EndpointReference");
                         }
