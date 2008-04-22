@@ -27,7 +27,7 @@
     </parent>
     <artifactId>vtest-java-api</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Java APIs and Annoations Verification Tests</name>
+    <name>Apache Tuscany SCA Java APIs and Annotations Verification Tests</name>
 
     <dependencies>
         <dependency>
