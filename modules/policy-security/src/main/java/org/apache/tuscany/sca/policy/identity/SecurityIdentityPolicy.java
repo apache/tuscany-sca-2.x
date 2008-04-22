@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.policy.security;
+package org.apache.tuscany.sca.policy.identity;
 
 import javax.xml.namespace.QName;
 
@@ -25,34 +25,51 @@ import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.policy.Policy;
 
 /**
- * Models the 'allow' authorization policy assertion
+ * Models the SCA Implementatatoin Security Policy Assertion for Security Identity
  * 
  * @version $Rev$ $Date$
  */
-public class RunAsPolicy implements Policy {
-    private String role = null;
-    private boolean unResolved = false;
-    
-    public static final QName NAME = new QName(Constants.SCA10_NS, "runAs");
-    
-   
-    public QName getSchemaName() {
-        return NAME;
+public class SecurityIdentityPolicy implements Policy {
+    public static final QName NAME = new QName(Constants.SCA10_NS, "securityIdentity");
+
+    private boolean useCallerIdentity;
+
+    private String runAsRole;
+
+    public SecurityIdentityPolicy() {
     }
-    
+
     public boolean isUnresolved() {
-        return unResolved;
+        return false;
     }
 
     public void setUnresolved(boolean unresolved) {
-        this.unResolved = unresolved;
     }
 
-    public String getRole() {
-        return role;
+    public QName getSchemaName() {
+        return NAME;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public boolean isUseCallerIdentity() {
+        return useCallerIdentity;
+    }
+
+    public void setUseCallerIdentity(boolean useCallerIdentity) {
+        this.useCallerIdentity = useCallerIdentity;
+    }
+
+    public String getRunAsRole() {
+        return runAsRole;
+    }
+
+    public void setRunAsRole(String runAsRole) {
+        this.runAsRole = runAsRole;
+    }
+
+    public String toString() {
+        if (useCallerIdentity) {
+            return "useCallerIdentity";
+        }
+        return "runAs " + runAsRole;
     }
 }
