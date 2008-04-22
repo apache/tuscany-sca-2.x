@@ -73,4 +73,38 @@
 		<property name="p1">p1</property>	
 	</component>
 	
+	<component name="JComponent">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.scope.impl.JServiceImpl" />
+		<reference name="k1" target="KComponent"/>
+	</component>
+	
+	<component name="KComponent">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.scope.impl.KServiceImpl" />
+		<reference name="l1" target="LComponent"/>
+	</component>
+	
+	<component name="LComponent">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.scope.impl.LServiceImpl" />
+	</component>
+
+	<component name="MComponent">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.scope.impl.MServiceImpl" />
+		<reference name="n1" target="NComponent"/>
+	</component>
+
+	<component name="NComponent">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.scope.impl.NServiceImpl" />
+		<reference name="o1" target="OComponent"/>
+	</component>
+	
+	<component name="OComponent">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.annotations.scope.impl.OServiceImpl" />
+	</component>
+	
 </composite>

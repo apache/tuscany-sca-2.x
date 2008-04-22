@@ -29,6 +29,11 @@ import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.DService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.FService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.GService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.HService;
+import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.JService;
+import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.MService;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -51,6 +56,25 @@ public class ScopeAnnotationTestCase {
     protected static int numFThread = 5;
     protected static int numHThread = 5;
 	
+    @BeforeClass
+    public static void init() throws Exception {
+        try {
+            System.out.println("Setting up");
+            domain = SCADomain.newInstance(compositeName);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @AfterClass
+    public static void destroy() throws Exception {
+
+        System.out.println("Cleaning up");
+        if (domain != null)
+            domain.close();
+
+    }
+    
     /**
      * Line 259:<br>
      * <li>STATELESS</li>
@@ -71,12 +95,12 @@ public class ScopeAnnotationTestCase {
      */
     @Test
     public void atScope1() throws Exception {
-        System.out.println("atScope1 - Setting up");
-        domain = SCADomain.newInstance(compositeName);
+        System.out.println("atScope1");
         BThread b1 = new BThread("ThreadB1");
         BThread b2 = new BThread("ThreadB2");
         CThread c1 = new CThread("ThreadC1");
         CThread c2 = new CThread("ThreadC2");
+        
         b1.start();
         b2.start();
         c1.start();
@@ -85,14 +109,13 @@ public class ScopeAnnotationTestCase {
         b2.join();
         c1.join();
         c2.join();
-        System.out.println("atScope1 - Cleaning up");
-        if (domain != null)
-            domain.close();
+        
+        System.out.println("");
+
         Assert.assertEquals("None", b1.failedReason);
         Assert.assertEquals("None", b2.failedReason);
         Assert.assertEquals("None", c1.failedReason);
         Assert.assertEquals("None", c2.failedReason);
-        System.out.println("");
     }
     
     /**
@@ -106,21 +129,10 @@ public class ScopeAnnotationTestCase {
      * During that time, all service requests will be delegated to the same
      * implementation instance of a request-scoped component.<br>
      * <p>
-     * Lines 290 to 293:<br>
-     * There are times when a local request scoped service is called without
-     * there being a remotable service earlier in the call stack, such as when
-     * a local service is called from a non-SCA entity. In these cases, a
-     * remote request is always considered to be present, but the lifetime of
-     * the request is implementation dependent. For example, a timer event
-     * could be treated as a remote request..<br>
-     * <p>
-     * @TODO - Need to find out how to test lines 290 to 293
-     *       - Need to find out when destroy method be called
      */
     @Test
     public void atScope2() throws Exception {
-        System.out.println("atScope2 - Setting up");
-        domain = SCADomain.newInstance(compositeName);
+        System.out.println("atScope2");
         ArrayList<DThread> d = new ArrayList<DThread>();
         for (int i = 0; i < numDThread; i++)
         	d.add(new DThread("ThreadD"+i));
@@ -128,12 +140,9 @@ public class ScopeAnnotationTestCase {
         	d.get(i).start();
         for (int i = 0; i < numDThread; i++)
         	d.get(i).join();
-        System.out.println("atScope2 - Cleaning up");
-        if (domain != null)
-            domain.close();
+        System.out.println("");
         for (int i = 0; i < numDThread; i++)
         	Assert.assertEquals("None", d.get(i).failedReason);
-        System.out.println("");
     }
     
     /**
@@ -152,8 +161,7 @@ public class ScopeAnnotationTestCase {
      */
     @Test
     public void atScope3() throws Exception {
-        System.out.println("atScope3 - Setting up");
-        domain = SCADomain.newInstance(compositeName);
+        System.out.println("atScope3");
         FService fService = domain.getService(FService.class, "FComponent");
         String serviceName = fService.getName();
         boolean isInitReady   = fService.isInitReady();
@@ -171,15 +179,13 @@ public class ScopeAnnotationTestCase {
         
         int instanceCounter   = fService.getInstanceCounter();
         int initCalledCounter = fService.getInitCalledCounter();
+        int destroyCalledCounter = fService.getDestroyCalledCounter();
+        System.out.println("");
         
-        System.out.println("atScope3 - Cleaning up");
-        if (domain != null)
-            domain.close();
-        	
         Assert.assertTrue(isInitReady);
         Assert.assertEquals(1, instanceCounter);
         Assert.assertEquals(1, initCalledCounter);
-        System.out.println("");
+        Assert.assertEquals(0, destroyCalledCounter);
     }
     
     /**
@@ -192,24 +198,23 @@ public class ScopeAnnotationTestCase {
      * Section 1.8.9 "@EagerInit"<br>
      * <p>
      * GService is defined as eager initialization. It will be initialized
-     * when everytime calls SCADomain.newInstance(compositeName), so the 
-     * initCalledCounter is greater than 1.
+     * when calls SCADomain.newInstance(compositeName), so the 
+     * initCalledCounter is 1.
      */
     @Test
     public void atScope4() throws Exception {
-        System.out.println("atScope4 - Setting up");
-        domain = SCADomain.newInstance(compositeName);
+        System.out.println("atScope4");
+
         GService gService = domain.getService(GService.class, "GComponent");
         int initCalledCounter    = gService.getInitCalledCounter();
         int destroyCalledCounter = gService.getDestroyCalledCounter();
         
-        System.out.println("atScope4 - Cleaning up");
-        if (domain != null)
-            domain.close();
-        
-        Assert.assertTrue(initCalledCounter > 1);
-        Assert.assertTrue(destroyCalledCounter > 1);
+        System.out.println("initCalledCounter="+ initCalledCounter);
+        System.out.println("destroyCalledCounter="+ destroyCalledCounter);
         System.out.println("");
+
+        Assert.assertEquals(1, initCalledCounter);
+        Assert.assertEquals(0, destroyCalledCounter);
     }
     
     /**
@@ -229,8 +234,8 @@ public class ScopeAnnotationTestCase {
      */
     @Test
     public void atScope5() throws Exception {
-        System.out.println("atScope5 - Setting up");
-        domain = SCADomain.newInstance(compositeName);
+        System.out.println("atScope5");
+
         ArrayList<HThread> g = new ArrayList<HThread>();
         for (int i = 0; i < numHThread; i++)
         	g.add(new HThread("ThreadH"+i));
@@ -241,18 +246,61 @@ public class ScopeAnnotationTestCase {
         
         HService hService = domain.getService(HService.class, "HComponent");
         String failedReason = hService.testCounters(numHThread);
+        System.out.println("");
 
-        System.out.println("atScope5 - Cleaning up");
-        if (domain != null)
-            domain.close();
-        
         for (int i = 0; i < numHThread; i++)
         	Assert.assertEquals("None", g.get(i).failedReason);
         Assert.assertEquals("None", failedReason);
-
-        System.out.println("");
     }
 
+    /** Lines 290 to 293:<br>
+    * There are times when a local request scoped service is called without
+    * there being a remotable service earlier in the call stack, such as when
+    * a local service is called from a non-SCA entity. In these cases, a
+    * remote request is always considered to be present, but the lifetime of
+    * the request is implementation dependent. For example, a timer event
+    * could be treated as a remote request..<br>
+    * <p>
+    * When the composite runs, composite scope service JService kicks off a
+    * timer by the @Init method.  When the timer expires, JService invokes a
+    * method that calls an operation on the reference to a stateless scope
+    * sevice KService. KService calls a request scope service LService
+    * multiple times. The results of the calls to LService should be set up to
+    * differ depending on whether the same instance is called each time -
+    * without the interface being declared Conversational.<br>
+    * <p>
+    */
+    @Test
+    public void atScope6() throws Exception {
+        System.out.println("atScope6");
+
+        JService jService = domain.getService(JService.class, "JComponent");
+		jService.getName();
+		Thread.sleep(2000);
+		String failedReason = jService.getFailedReason();
+        System.out.println("");
+
+        Assert.assertEquals("", failedReason);
+    }
+    
+    /**
+     * Same as atScope6 but the timer triggers KService multiple times.<br>
+     */
+    @Test
+    @Ignore
+    // JIRA T-2256
+    public void atScope7() throws Exception {
+        System.out.println("atScope7");
+
+        MService mService = domain.getService(MService.class, "MComponent");
+        mService.getName();
+		Thread.sleep(6000);
+		String failedReason = mService.getFailedReason();
+        System.out.println("");
+
+        Assert.assertEquals("", failedReason);
+    }
+    
     private  class BThread extends Thread {
     	private String name = null;
     	public String failedReason = "Unknown";
@@ -435,4 +483,5 @@ public class ScopeAnnotationTestCase {
     }
 
 }
+
 
