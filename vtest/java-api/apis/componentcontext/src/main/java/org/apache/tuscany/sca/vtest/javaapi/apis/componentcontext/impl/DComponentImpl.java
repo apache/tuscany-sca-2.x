@@ -17,26 +17,16 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext;
+package org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.impl;
 
-/**
- * Simple Service A.
- */
-public interface AComponent {
+import org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.DComponent;
+import org.osoa.sca.annotations.Service;
 
-    public String getName();
+@Service(DComponent.class)
+public class DComponentImpl implements DComponent {
 
-    public String getContextURI();
-    public String getServiceBName();
-    public String getServiceReferenceBName();
-    public String getSelfReferenceName();
-    public String getProperty();
-    public String getRequestContextServiceName();
-    public String getCastCallableReferenceServiceName();
-    public String getCastServiceReferenceServiceName();
-    public void illegalCast();
-
-    public String testServiceLookup();
-    public String getRequestContextContent();
+    public String getName() {
+        return "ComponentD";
+    }
 
 }

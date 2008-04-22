@@ -21,16 +21,25 @@ package org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.AComponent;
 import org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.BService;
+import org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext.DComponent;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
+import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Context;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
 @Service(AComponent.class)
+@Scope("COMPOSITE")
+@EagerInit
 public class AComponentImpl implements AComponent {
+
+    public static String rcContent = null;
 
     protected ComponentContext componentContext;
     
@@ -49,12 +58,22 @@ public class AComponentImpl implements AComponent {
         this.componentContext = context;
     }
 
+    @Init
+    public void init() {
+        RequestContext rc = componentContext.getRequestContext();
+        if (rc != null) {
+            rcContent = "NotNull";
+        } else {
+            rcContent = "Null";
+        }
+    }
+
     public String getContextURI() {
         return componentContext.getURI();
     }
 
     public String getServiceBName() {
-        return componentContext.getService(BService.class, "bReference").getBName();        
+        return componentContext.getService(BService.class, "bReference").getBName();
     }
 
     public String getServiceReferenceBName() {
@@ -89,6 +108,14 @@ public class AComponentImpl implements AComponent {
 
     public void illegalCast() {
         componentContext.cast("");
+    }
+
+    public String testServiceLookup() {
+        return componentContext.getService(DComponent.class, "dReference").getName();
+    }
+
+    public String getRequestContextContent() {
+        return rcContent;
     }
 
 }

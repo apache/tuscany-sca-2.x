@@ -19,24 +19,8 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext;
 
-/**
- * Simple Service A.
- */
-public interface AComponent {
+public interface DComponent {
 
     public String getName();
-
-    public String getContextURI();
-    public String getServiceBName();
-    public String getServiceReferenceBName();
-    public String getSelfReferenceName();
-    public String getProperty();
-    public String getRequestContextServiceName();
-    public String getCastCallableReferenceServiceName();
-    public String getCastServiceReferenceServiceName();
-    public void illegalCast();
-
-    public String testServiceLookup();
-    public String getRequestContextContent();
 
 }
