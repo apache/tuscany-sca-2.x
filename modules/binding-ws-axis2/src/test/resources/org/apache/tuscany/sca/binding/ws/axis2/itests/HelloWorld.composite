@@ -24,7 +24,7 @@
     <service name="helloWorld" promote="HelloWorldService">
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" />
         <!-- interface.java interface="org.apache.tuscany.sca.binding.ws.axis2.itests.HelloWorld" / -->
-        <binding.ws wsdlElement="http://helloworld#wsdl.port(HelloWorldService/HelloWorldSoapPort)">
+        <binding.ws wsdlElement="http://helloworld#wsdl.binding(HelloWorldSoapBinding)">
            <wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
               <wsa:Address>http://localhost:8085/services/HelloWorldWebService</wsa:Address>
            </wsa:EndpointReference>
