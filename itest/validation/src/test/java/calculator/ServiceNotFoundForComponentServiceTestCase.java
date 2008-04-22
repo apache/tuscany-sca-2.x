@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.node.impl.NodeImpl;
 /**
  * This shows how to test the Calculator service component.
  */
-public class XSDValidationTestCase extends TestCase {
+public class ServiceNotFoundForComponentServiceTestCase extends TestCase {
 
     private CalculatorService calculatorService;
     private SCANode2 node;
@@ -44,9 +44,9 @@ public class XSDValidationTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-        node = nodeFactory.createSCANode(new File("src/main/resources/XsdValidation/Calculator.composite").toURL().toString(),
+        node = nodeFactory.createSCANode(new File("src/main/resources/ServiceNotFoundForComponentService/Calculator.composite").toURL().toString(),
         		                 new SCAContribution("TestContribution", 
-        		                                     new File("src/main/resources/XsdValidation").toURL().toString()));
+        		                                     new File("src/main/resources/ServiceNotFoundForComponentService").toURL().toString()));
         node.start();
         calculatorService = ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
     }
@@ -61,7 +61,9 @@ public class XSDValidationTestCase extends TestCase {
         MonitorFactory monitorFactory = registry.getExtensionPoint(MonitorFactory.class);
         Monitor monitor = monitorFactory.createMonitor();
         Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
-
-        // TODO - XSD errors need turing into monitored validation errors
+        
+        assertNotNull(problem);
+        assertEquals("ServiceNotFoundForComponentService", problem.getMessageId());
+ 
     }
 }

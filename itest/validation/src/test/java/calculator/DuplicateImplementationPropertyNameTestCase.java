@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.impl.DefaultLoggingMonitorImpl;
-import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
 import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
@@ -36,24 +35,19 @@ import org.apache.tuscany.sca.node.impl.NodeImpl;
 /**
  * This shows how to test the Calculator service component.
  */
-public class XSDValidationTestCase extends TestCase {
-
-    private CalculatorService calculatorService;
+public class DuplicateImplementationPropertyNameTestCase extends TestCase {
     private SCANode2 node;
 
     @Override
     protected void setUp() throws Exception {
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-        node = nodeFactory.createSCANode(new File("src/main/resources/XsdValidation/Calculator.composite").toURL().toString(),
+        node = nodeFactory.createSCANode(new File("src/main/resources/DuplicateImplementationPropertyName/Calculator.composite").toURL().toString(),
         		                 new SCAContribution("TestContribution", 
-        		                                     new File("src/main/resources/XsdValidation").toURL().toString()));
-        node.start();
-        calculatorService = ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
+        		                                     new File("src/main/resources/DuplicateImplementationPropertyName").toURL().toString()));
     }
 
     @Override
     protected void tearDown() throws Exception {
-        node.stop();
     }
 
     public void testCalculator() throws Exception {
@@ -61,7 +55,9 @@ public class XSDValidationTestCase extends TestCase {
         MonitorFactory monitorFactory = registry.getExtensionPoint(MonitorFactory.class);
         Monitor monitor = monitorFactory.createMonitor();
         Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
-
-        // TODO - XSD errors need turing into monitored validation errors
+        
+        assertNotNull(problem);
+        assertEquals("DuplicateImplementationPropertyName", problem.getMessageId());
+ 
     }
 }
