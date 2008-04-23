@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultUtilityServiceExtensionPoint implements UtilityServiceExtensionPoint {
+public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
     private Map<Class<?>, Object> services = new HashMap<Class<?>, Object>();
     
     private ExtensionPointRegistry extensionPoints;
@@ -43,7 +43,7 @@ public class DefaultUtilityServiceExtensionPoint implements UtilityServiceExtens
     /**
      * Constructs a new extension point. 
      */
-    public DefaultUtilityServiceExtensionPoint(ExtensionPointRegistry extensionPoints) {
+    public DefaultUtilityExtensionPoint(ExtensionPointRegistry extensionPoints) {
         this.extensionPoints = extensionPoints;
     }
 
