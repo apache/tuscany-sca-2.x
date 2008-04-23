@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.databinding.impl;
+package org.apache.tuscany.sca.core.databinding.transformers;
 
 import javax.xml.stream.XMLStreamReader;
 
@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
+import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.databinding.xml.StAXHelper;
 
 import org.osoa.sca.CallableReference;
