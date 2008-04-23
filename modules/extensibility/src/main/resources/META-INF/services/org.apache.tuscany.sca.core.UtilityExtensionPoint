@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-org.apache.tuscany.sca.core.DefaultUtilityServiceExtensionPoint
+org.apache.tuscany.sca.core.DefaultUtilityExtensionPoint
