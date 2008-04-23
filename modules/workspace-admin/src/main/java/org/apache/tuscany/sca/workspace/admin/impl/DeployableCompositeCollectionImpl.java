@@ -80,6 +80,7 @@ import org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocu
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
@@ -88,7 +89,6 @@ import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.apache.tuscany.sca.implementation.node.NodeImplementation;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
@@ -141,13 +141,13 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     @Init
     public void initialize() throws ParserConfigurationException {
         
-        // Bootstrap a runtime to get a populated registry
         // FIXME Remove this later
         ReallySmallRuntime runtime = newRuntime();
-        ExtensionPointRegistry registry = runtime.getExtensionPointRegistry();
+        
+        ExtensionPointRegistry extensionPoints = runtime.getExtensionPointRegistry();
         
         // Get model factories
-        modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
@@ -156,30 +156,30 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class);
         
         // Get and initialize artifact processors
-        StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         StAXArtifactProcessor<Object> staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
         staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory, staxProcessor));
         compositeProcessor = (StAXArtifactProcessor<Composite>)staxProcessors.getProcessor(Composite.class);
 
-        URLArtifactProcessorExtensionPoint urlProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        URLArtifactProcessorExtensionPoint urlProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         URLArtifactProcessor<Object> urlProcessor = new ExtensibleURLArtifactProcessor(urlProcessors);
         urlProcessors.addArtifactProcessor(new ContributionMetadataDocumentProcessor(staxProcessor, inputFactory));
         urlProcessors.addArtifactProcessor(new ContributionGeneratedMetadataDocumentProcessor(staxProcessor, inputFactory));
         
         // Create contribution processor
-        modelResolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);
+        modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
         contributionContentProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor);
 
         // Create a monitor
-        MonitorFactory monitorFactory = registry.getExtensionPoint(MonitorFactory.class);
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         Monitor monitor = monitorFactory.createMonitor();
         
         // Create contribution and composite builders
         contributionDependencyBuilder = new ContributionDependencyBuilderImpl(monitor);
-
         SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         IntentAttachPointTypeFactory intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
-        InterfaceContractMapper contractMapper = new InterfaceContractMapperImpl();
+        InterfaceContractMapper contractMapper = utilities.getUtility(InterfaceContractMapper.class);
         
         compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory,
                                                     contractMapper, monitor);
