@@ -23,6 +23,8 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.wsdl.Binding;
 import javax.wsdl.Port;
@@ -57,6 +59,8 @@ import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
+
+    private final static Logger logger = Logger.getLogger(WebServiceBindingProcessor.class.getName());    
 
     private WSDLFactory wsdlFactory;
     private WebServiceBindingFactory wsFactory;
@@ -297,11 +301,11 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
             PortType portType = getPortType(model);
             if (portType != null) {
                 WSDLInterfaceContract interfaceContract = wsdlFactory.createWSDLInterfaceContract();
-                WSDLInterface wsdlInterface;
+                WSDLInterface wsdlInterface = null;
                 try {
                     wsdlInterface = wsdlFactory.createWSDLInterface(portType, wsdlDefinition, resolver);
                 } catch (InvalidInterfaceException e) {
-                    throw new ContributionResolveException(e);
+                    logger.log(Level.WARNING, "Exception creating interface from WSDL for binding: " + model.getName(), e); 
                 }
                 interfaceContract.setInterface(wsdlInterface);
                 model.setBindingInterfaceContract(interfaceContract);
