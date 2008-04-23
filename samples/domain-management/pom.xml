@@ -208,6 +208,20 @@
                             <finalName>${artifactId}</finalName>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>client</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/test/resources/assembly/client.xml</descriptor>
+                            </descriptors>
+                            <tarLongFileMode>gnu</tarLongFileMode>
+                            <finalName>${artifactId}</finalName>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
