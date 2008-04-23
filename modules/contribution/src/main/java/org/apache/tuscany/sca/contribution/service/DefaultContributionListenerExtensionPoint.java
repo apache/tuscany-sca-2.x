@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
@@ -47,6 +48,14 @@ public class DefaultContributionListenerExtensionPoint implements ContributionLi
      */
     public DefaultContributionListenerExtensionPoint(ModelFactoryExtensionPoint modelFactories) {
         this.modelFactories = modelFactories;
+    }
+
+    /**
+     * Constructs a new DefaultContributionListenerExtensionPoint.
+     *  
+     */
+    public DefaultContributionListenerExtensionPoint(ExtensionPointRegistry extensionPoints) {
+        this.modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
     }
 
     public void addContributionListener(ContributionListener listener) {

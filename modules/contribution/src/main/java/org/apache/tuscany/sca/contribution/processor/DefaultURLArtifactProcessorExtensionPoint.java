@@ -29,6 +29,7 @@ import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
@@ -43,6 +44,13 @@ public class DefaultURLArtifactProcessorExtensionPoint
     
     private ModelFactoryExtensionPoint modelFactories;
     private boolean loaded;
+
+    /**
+     * Constructs a new extension point.
+     */
+    public DefaultURLArtifactProcessorExtensionPoint(ExtensionPointRegistry extensionPoints) {
+        this.modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+    }
 
     /**
      * Constructs a new extension point.
