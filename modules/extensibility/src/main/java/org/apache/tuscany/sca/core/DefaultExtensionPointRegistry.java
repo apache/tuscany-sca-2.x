@@ -60,8 +60,8 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
             throw new IllegalArgumentException("Cannot register null as an ExtensionPoint");
         }
 
-        Set<Class> interfaces = getAllInterfaces(extensionPoint.getClass());
-        for (Class i : interfaces) {
+        Set<Class<?>> interfaces = getAllInterfaces(extensionPoint.getClass());
+        for (Class<?> i : interfaces) {
             extensionPoints.put(i, extensionPoint);
         }
     }
@@ -151,8 +151,8 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
             throw new IllegalArgumentException("Cannot remove null as an ExtensionPoint");
         }
 
-        Set<Class> interfaces = getAllInterfaces(extensionPoint.getClass());
-        for (Class i : interfaces) {
+        Set<Class<?>> interfaces = getAllInterfaces(extensionPoint.getClass());
+        for (Class<?> i : interfaces) {
             extensionPoints.remove(i);
         }
     }
@@ -161,19 +161,15 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
      * Returns the set of interfaces implemented by the given class and its
      * ancestors or a blank set if none
      */
-    private static Set<Class> getAllInterfaces(Class clazz) {
-        Set<Class> implemented = new HashSet<Class>();
+    private static Set<Class<?>> getAllInterfaces(Class<?> clazz) {
+        Set<Class<?>> implemented = new HashSet<Class<?>>();
         getAllInterfaces(clazz, implemented);
         return implemented;
     }
 
-    private static void getAllInterfaces(Class clazz, Set<Class> implemented) {
-        Class[] interfaces = clazz.getInterfaces();
-        for (Class interfaze : interfaces) {
-//            String name = interfaze.getName();
-//            if (name.startsWith("java.") || name.startsWith("javax.")) {
-//                continue;
-//            }
+    private static void getAllInterfaces(Class<?> clazz, Set<Class<?>> implemented) {
+        Class<?>[] interfaces = clazz.getInterfaces();
+        for (Class<?> interfaze : interfaces) {
             if (Modifier.isPublic(interfaze.getModifiers())) {
                 implemented.add(interfaze);
             }

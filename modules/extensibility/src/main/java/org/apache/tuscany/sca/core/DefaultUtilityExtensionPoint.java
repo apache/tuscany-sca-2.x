@@ -31,12 +31,12 @@ import java.util.Set;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
- * Default implementation of an extension point to hold Tuscany utility services.
+ * Default implementation of an extension point to hold Tuscany utility utilities.
  *
  * @version $Rev$ $Date$
  */
 public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
-    private Map<Class<?>, Object> services = new HashMap<Class<?>, Object>();
+    private Map<Class<?>, Object> utilities = new HashMap<Class<?>, Object>();
     
     private ExtensionPointRegistry extensionPoints;
     
@@ -48,21 +48,21 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
     }
 
     /**
-     * Add a service to the extension point. This default implementation
-     * stores services against the interfaces that they implement.
+     * Add a utility to the extension point. This default implementation
+     * stores utilities against the interfaces that they implement.
      *
-     * @param service The instance of the service
+     * @param utility The instance of the utility
      *
-     * @throws IllegalArgumentException if service is null
+     * @throws IllegalArgumentException if utility is null
      */
-    public void addService(Object service) {
-        if (service == null) {
+    public void addUtility(Object utility) {
+        if (utility == null) {
             throw new IllegalArgumentException("Cannot register null as a Service");
         }
 
-        Set<Class> interfaces = getAllInterfaces(service.getClass());
-        for (Class i : interfaces) {
-            services.put(i, service);
+        Set<Class<?>> interfaces = getAllInterfaces(utility.getClass());
+        for (Class<?> i : interfaces) {
+            utilities.put(i, utility);
         }
     }
     
@@ -86,43 +86,43 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
     }
 
     /**
-     * Get the service by the interface that it implements
+     * Get the utility by the interface that it implements
      *
-     * @param serviceType The lookup key (service interface)
-     * @return The instance of the service
+     * @param utilityType The lookup key (utility interface)
+     * @return The instance of the utility
      *
-     * @throws IllegalArgumentException if serviceType is null
+     * @throws IllegalArgumentException if utilityType is null
      */
-    public <T> T getService(Class<T> serviceType) {
-        if (serviceType == null) {
+    public <T> T getUtility(Class<T> utilityType) {
+        if (utilityType == null) {
             throw new IllegalArgumentException("Cannot lookup Service of type null");
         }
 
-        Object service = services.get(serviceType);
-        if (service == null) {
+        Object utility = utilities.get(utilityType);
+        if (utility == null) {
             
-            // Dynamically load a service class declared under META-INF/services           
+            // Dynamically load a utility class declared under META-INF/utilities           
             try {
-                Class<?> serviceClass = 
-                	ServiceDiscovery.getInstance().loadFirstServiceClass(serviceType);
-                if (serviceClass != null) {
-                    // Construct the service
-                    Constructor<?>[] constructors = serviceClass.getConstructors();
+                Class<?> utilityClass = 
+                	ServiceDiscovery.getInstance().loadFirstServiceClass(utilityType);
+                if (utilityClass != null) {
+                    // Construct the utility
+                    Constructor<?>[] constructors = utilityClass.getConstructors();
                     Constructor<?> constructor = getConstructor(constructors, new Class<?>[] {ExtensionPointRegistry.class});
                     if (constructor != null) {
-                        service = constructor.newInstance(extensionPoints);
+                        utility = constructor.newInstance(extensionPoints);
                     } else {
                         constructor = getConstructor(constructors, new Class<?>[] {});
                         if (constructor != null) {
-                            service = constructor.newInstance();
+                            utility = constructor.newInstance();
                         } else {
                             throw new IllegalArgumentException(
-                                                               "No valid constructor is found for " + serviceClass);
+                                                               "No valid constructor is found for " + utilityClass);
                         }
                     }
                    
-                    // Cache the loaded service
-                    addService(service);
+                    // Cache the loaded utility
+                    addUtility(utility);
                 }
             } catch (InvocationTargetException e) {
                 throw new IllegalArgumentException(e);
@@ -136,24 +136,24 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
                 throw new IllegalArgumentException(e);
             }
         }
-        return serviceType.cast(service);
+        return utilityType.cast(utility);
     }
 
     /**
-     * Remove a service based on the interface that it implements
+     * Remove a utility based on the interface that it implements
      *
-     * @param service The service to remove
+     * @param utility The utility to remove
      *
-     * @throws IllegalArgumentException if service is null
+     * @throws IllegalArgumentException if utility is null
      */
-    public void removeService(Object service) {
-        if (service == null) {
+    public void removeUtility(Object utility) {
+        if (utility == null) {
             throw new IllegalArgumentException("Cannot remove null as a Service");
         }
 
-        Set<Class> interfaces = getAllInterfaces(service.getClass());
-        for (Class i : interfaces) {
-            services.remove(i);
+        Set<Class<?>> interfaces = getAllInterfaces(utility.getClass());
+        for (Class<?> i : interfaces) {
+            utilities.remove(i);
         }
     }
 
@@ -161,15 +161,15 @@ public class DefaultUtilityExtensionPoint implements UtilityExtensionPoint {
      * Returns the set of interfaces implemented by the given class and its
      * ancestors or a blank set if none
      */
-    private static Set<Class> getAllInterfaces(Class clazz) {
-        Set<Class> implemented = new HashSet<Class>();
+    private static Set<Class<?>> getAllInterfaces(Class<?> clazz) {
+        Set<Class<?>> implemented = new HashSet<Class<?>>();
         getAllInterfaces(clazz, implemented);
         return implemented;
     }
 
-    private static void getAllInterfaces(Class clazz, Set<Class> implemented) {
-        Class[] interfaces = clazz.getInterfaces();
-        for (Class interfaze : interfaces) {
+    private static void getAllInterfaces(Class<?> clazz, Set<Class<?>> implemented) {
+        Class<?>[] interfaces = clazz.getInterfaces();
+        for (Class<?> interfaze : interfaces) {
             if (Modifier.isPublic(interfaze.getModifiers())) {
                 implemented.add(interfaze);
             }
