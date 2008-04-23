@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.vtest.javaapi.apis.exception.AComponent;
 import org.apache.tuscany.sca.vtest.javaapi.apis.exception.BComponent;
 import org.apache.tuscany.sca.vtest.javaapi.apis.exception.CComponent;
 import org.apache.tuscany.sca.vtest.javaapi.apis.exception.DComponent;
+import org.apache.tuscany.sca.vtest.javaapi.apis.exception.DException;
 import org.junit.Assert;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
@@ -30,9 +31,9 @@ import org.osoa.sca.ConversationEndedException;
 import org.osoa.sca.NoRegisteredCallbackException;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
-import org.osoa.sca.ServiceUnavailableException;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.ConversationID;
+import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
@@ -104,13 +105,24 @@ public class AComponentImpl implements AComponent {
     }
 
     public boolean testServiceUnavailableException() {
+        return false;
+    }
+
+    public boolean testCheckedException() {
         try {
-            componentContext.getServiceReference(DComponent.class, "dReference").getService().getName();
-        } catch (ServiceUnavailableException sue) {
-            return true;
+            dReference.getService().testException();
+        } catch (DException e) {
+            if (e.getMessage().equals("ADException")) {
+                return true;
+            }
         }
 
         return false;
+    }
+
+    @Destroy
+    public void destroy() {
+        System.out.println("This is a Destroy of AComponent ..");
     }
 
 }

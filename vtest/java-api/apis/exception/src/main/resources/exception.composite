@@ -37,4 +37,8 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.javaapi.apis.exception.impl.CComponentImpl"/>
     </component>
 
+    <component name="DComponent">
+        <implementation.java class="org.apache.tuscany.sca.vtest.javaapi.apis.exception.impl.DComponentImpl"/>
+    </component>
+
 </composite>
