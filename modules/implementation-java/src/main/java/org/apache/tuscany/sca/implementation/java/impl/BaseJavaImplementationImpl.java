@@ -63,6 +63,11 @@ abstract class BaseJavaImplementationImpl extends ImplementationImpl implements 
     }
 
     @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
     public int hashCode() {
         return String.valueOf(getName()).hashCode();
     }
