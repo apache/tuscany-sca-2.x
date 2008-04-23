@@ -258,7 +258,7 @@ public class ContributionSPIsTestCase {
             for (Contribution tmpContribution : workspace.getContributions()){
                 for (Composite deployable : tmpContribution.getDeployables()){
                     if (deployable.getName().equals(chosenDeployableName)){
-                        contributionsToDeploy = analyzer.buildContributionDependencies(workspace, tmpContribution);
+                        contributionsToDeploy = analyzer.buildContributionDependencies(tmpContribution, workspace);
                     }
                 }
             }
