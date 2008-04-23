@@ -81,8 +81,8 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
         compositeActivator = runtime.getCompositeActivator();
 
         // Get the model factories
-        ExtensionPointRegistry registry = runtime.getExtensionPointRegistry();
-        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        ExtensionPointRegistry extensionPoints = runtime.getExtensionPointRegistry();
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         atomBindingFactory = modelFactories.getFactory(AtomBindingFactory.class);
     }

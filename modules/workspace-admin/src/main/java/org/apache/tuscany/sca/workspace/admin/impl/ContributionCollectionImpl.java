@@ -75,6 +75,7 @@ import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProce
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
@@ -117,7 +118,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     @Property
     public String deploymentContributionDirectory;
     
-    private ExtensionPointRegistry registry;
+    private ExtensionPointRegistry extensionPoints;
     private Monitor monitor;
     private ContributionFactory contributionFactory;
     private AssemblyFactory assemblyFactory;
@@ -135,10 +136,11 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     @Init
     public void initialize() throws ParserConfigurationException {
         
-        registry = new DefaultExtensionPointRegistry();
+        extensionPoints = new DefaultExtensionPointRegistry();
         
-        // create a validation monitor
-        MonitorFactory monitorFactory = registry.getExtensionPoint(MonitorFactory.class);
+        // Create a validation monitor
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         monitor = monitorFactory.createMonitor();
         
         
