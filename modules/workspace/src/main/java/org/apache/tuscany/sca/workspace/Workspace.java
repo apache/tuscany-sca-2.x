@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.workspace;
 
 import java.util.List;
 
-import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 
 /**
@@ -29,7 +28,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
  *
  * @version $Rev$ $Date$
  */
-public interface Workspace extends Artifact {
+public interface Workspace extends Contribution {
 
     /**
      * Returns the list of contributions in the workspace. 

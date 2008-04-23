@@ -22,7 +22,12 @@ package org.apache.tuscany.sca.workspace.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.Export;
+import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.workspace.Workspace;
 
 /**
@@ -31,13 +36,14 @@ import org.apache.tuscany.sca.workspace.Workspace;
  * @version $Rev$ $Date$
  */
 class WorkspaceImpl implements Workspace {
-    
+
+    private List<Contribution> contributions = new ArrayList<Contribution>();
     private String location;
     private String uri;
     private Object model;
     private byte[] contents;
     private boolean unresolved;
-    private List<Contribution> contributions = new ArrayList<Contribution>();
+    private ModelResolver modelResolver; 
     
     /**
      * Constructs a new workspace. 
@@ -88,5 +94,49 @@ class WorkspaceImpl implements Workspace {
     public List<Contribution> getContributions() {
         return contributions;
     }
+    
+    public List<Artifact> getArtifacts() {
+        return (List<Artifact>)(Object)contributions;
+    }
 
+    public ClassLoader getClassLoader() {
+        //FIXME Remove later
+        return null;
+    }
+    
+    public void setClassLoader(ClassLoader classLoader) {
+        //FIXME Remove later
+    }
+    
+    public List<Composite> getDeployables() {
+        List<Composite> deployables = new ArrayList<Composite>();
+        for (Contribution contribution: contributions) {
+            deployables.addAll(contribution.getDeployables());
+        }
+        return deployables;
+    }
+    
+    public List<Export> getExports() {
+        List<Export> exports = new ArrayList<Export>();
+        for (Contribution contribution: contributions) {
+            exports.addAll(contribution.getExports());
+        }
+        return exports;
+    }
+    
+    public List<Import> getImports() {
+        List<Import> imports = new ArrayList<Import>();
+        for (Contribution contribution: contributions) {
+            imports.addAll(contribution.getImports());
+        }
+        return imports;
+    }
+    
+    public ModelResolver getModelResolver() {
+        return modelResolver;
+    }
+    
+    public void setModelResolver(ModelResolver modelResolver) {
+        this.modelResolver = modelResolver;
+    }
 }
