@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.workspace.Workspace;
 
 /**
- * A contribution dependency analyzer.
+ * A contribution dependency builder.
  *
  * @version $Rev$ $Date$
  */
@@ -37,6 +37,6 @@ public interface ContributionDependencyBuilder {
      * @param contribution
      * @return
      */
-    List<Contribution> buildContributionDependencies(Workspace workspace, Contribution contribution);
+    List<Contribution> buildContributionDependencies(Contribution contribution, Workspace workspace);
 
 }
