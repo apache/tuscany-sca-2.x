@@ -61,7 +61,7 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
         // TODO - fix up the conversational flag and operation sequences in case the contract has come from WSDL
         // as we don't yet support requires="conversational" or sca:endConversation annotations
         // in WSDL interface descriptions (see section 1.5.4 of the Assembly Specification V1.0)
-        if ( reference.getInterfaceContract().getInterface() != null ) {
+        if ( reference.getInterfaceContract().getInterface() != null && contract.getInterface() != null) {
             contract.getInterface().setConversational(reference.getInterfaceContract().getInterface().isConversational());
     
             for (Operation operation : contract.getInterface().getOperations()){
@@ -81,7 +81,9 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
         }
 
         // Set to use the Axiom data binding
-        contract.getInterface().resetDataBinding(OMElement.class.getName());
+        if (contract.getInterface() != null) {
+            contract.getInterface().resetDataBinding(OMElement.class.getName());
+        }
 
         axisClient = new Axis2ServiceClient(component, reference, wsBinding, servletHost, messageFactory, policyHandlerClassnames);
     }
