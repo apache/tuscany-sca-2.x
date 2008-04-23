@@ -25,7 +25,7 @@ package org.apache.tuscany.sca.core;
  *
  * @version $Rev$ $Date$
  */
-public interface UtilityServiceExtensionPoint {
+public interface UtilityExtensionPoint {
 
     /**
      * Add a service to the registry
