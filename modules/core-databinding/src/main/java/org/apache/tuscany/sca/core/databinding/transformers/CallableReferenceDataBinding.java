@@ -17,15 +17,18 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.databinding.impl;
+package org.apache.tuscany.sca.core.databinding.transformers;
+
+import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
+import org.osoa.sca.CallableReference;
 
 public class CallableReferenceDataBinding extends BaseDataBinding {
     
-    public static final String NAME = org.osoa.sca.CallableReference.class.getName();
+    public static final String NAME = CallableReference.class.getName();
     public static final String[] ALIASES = new String[] {"callablereference"};
 
     public CallableReferenceDataBinding() {
-        super(NAME, ALIASES, org.osoa.sca.CallableReference.class);
+        super(NAME, ALIASES, CallableReference.class);
     }
 
 }

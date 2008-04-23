@@ -33,5 +33,4 @@ org.apache.tuscany.sca.databinding.xml.XMLStreamReader2Node;source=javax.xml.str
 org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;source=javax.xml.stream.XMLStreamReader,target=java.lang.String,weight=80
 # org.apache.tuscany.sca.databinding.xml.Node2SimpleJavaType;source=org.w3c.dom.Node,target=java:simpleType,weight=80000
 # org.apache.tuscany.sca.databinding.xml.SimpleJavaType2Node;source=java:simpleType,target=org.w3c.dom.Node,weight=80000
-org.apache.tuscany.sca.databinding.impl.CallableReference2XMLStreamReader;source=org.osoa.sca.CallableReference,target=javax.xml.stream.XMLStreamReader,weight=10
-org.apache.tuscany.sca.databinding.impl.XMLStreamReader2CallableReference;source=javax.xml.stream.XMLStreamReader,target=org.osoa.sca.CallableReference,weight=10
+
