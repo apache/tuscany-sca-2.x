@@ -22,11 +22,10 @@ package manager;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
-
-import manager.fixme.ContributionImportFixerHack;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
@@ -51,7 +50,6 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
@@ -60,10 +58,15 @@ import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
+import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
+import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
 
 /**
@@ -77,9 +80,7 @@ public class ListComponents {
     private static ModelResolverExtensionPoint modelResolvers;
     private static ModelFactoryExtensionPoint modelFactories;
     private static WorkspaceFactory workspaceFactory;
-    
-    //FIXME remove later
-    private static ContributionImportFixerHack importFixer;
+    private static Monitor monitor;
 
     private static void init() {
         
@@ -129,9 +130,10 @@ public class ListComponents {
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
         contributionContentProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlExtensionProcessor);
         
-        //FIXME remove later
-        importFixer = new ContributionImportFixerHack(extensionPoints);
-        
+        // Create a monitor
+        UtilityExtensionPoint services = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = services.getService(MonitorFactory.class);
+        monitor = monitorFactory.createMonitor();
     }
     
 
@@ -140,26 +142,27 @@ public class ListComponents {
 
         // Create workspace model
         Workspace workspace = workspaceFactory.createWorkspace();
-
-        // Read the contribution info for the sample assets contribution
-        URI assetsURI = URI.create("store");
-        URL assetsURL = new File("./target/sample-domain-management-store.jar").toURI().toURL();
-        Contribution assetsContribution = (Contribution)contributionContentProcessor.read(null, assetsURI, assetsURL);
-        workspace.getContributions().add(assetsContribution);
+        workspace.setModelResolver(new ExtensibleModelResolver(workspace, modelResolvers, modelFactories));
 
         // Read the contribution info for the sample contribution
         URI storeURI = URI.create("store");
         URL storeURL = new File("./target/sample-domain-management-store.jar").toURI().toURL();
         Contribution storeContribution = (Contribution)contributionContentProcessor.read(null, storeURI, storeURL);
         workspace.getContributions().add(storeContribution);
-        
-        //FIXME remove later
-        importFixer.fixContributionImports(workspace.getContributions());
+
+        // Read the contribution info for the sample assets contribution
+        URI assetsURI = URI.create("assets");
+        URL assetsURL = new File("./target/sample-domain-management-assets.jar").toURI().toURL();
+        Contribution assetsContribution = (Contribution)contributionContentProcessor.read(null, assetsURI, assetsURL);
+        workspace.getContributions().add(assetsContribution);
+
+        // Build the store contribution dependencies
+        ContributionDependencyBuilder dependencyBuilder = new ContributionDependencyBuilderImpl(monitor);
+        List<Contribution> dependencies = dependencyBuilder.buildContributionDependencies(storeContribution, workspace);
         
         // Resolve the contributions
-        for (Contribution contribution: workspace.getContributions()) {
-            ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
-            contributionContentProcessor.resolve(contribution, modelResolver);
+        for (Contribution contribution: dependencies) {
+            contributionContentProcessor.resolve(contribution, workspace.getModelResolver());
         }
         
         // List the components declared in the deployables found in the
@@ -184,11 +187,7 @@ public class ListComponents {
                     System.out.println("        interface: " + contract.getInterface());
                 }
             }
-            
-            // Write the composite out
-            
         }
-        
     }
 
 }

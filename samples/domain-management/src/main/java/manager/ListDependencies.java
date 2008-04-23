@@ -120,11 +120,11 @@ public class ListDependencies {
         Contribution assetsContribution = (Contribution)contributionInfoProcessor.read(null, assetsURI, assetsURL);
         workspace.getContributions().add(assetsContribution);
         
-        // List the contribution dependencies
+        // List the contribution dependencies of each contribution
         ContributionDependencyBuilder analyzer = new ContributionDependencyBuilderImpl(monitor);
         for (Contribution contribution: workspace.getContributions()) {
             System.out.println("Contribution: " + contribution.getURI());
-            for (Contribution dependency: analyzer.buildContributionDependencies(workspace, contribution)) {
+            for (Contribution dependency: analyzer.buildContributionDependencies(contribution, workspace)) {
                 System.out.println("  dependency: " + dependency.getURI());
             }
         }
