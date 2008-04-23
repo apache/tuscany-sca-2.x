@@ -142,7 +142,8 @@ public class CompositeWireBuilderImpl {
                         }
                     }
                     if (!promoted && !componentReference.isCallback()) {
-                        warning("No targets for reference: " + componentReference.getName(), composite);
+                        /*warning("No targets for reference: " + componentReference.getName(), composite);*/
+				warning("ReferenceWithoutTargets", composite, componentReference.getName());
                     }
                 } else {
                     warning("Too many targets on reference: " + componentReference.getName(), composite);
@@ -205,8 +206,8 @@ public class CompositeWireBuilderImpl {
      * @param message
      * @param model
      */
-    private void warning(String message, Object model) {
-        Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message);
+    private void warning(String message, Object model, String... messageParameters) {
+        Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
         monitor.problem(problem);
     }
 
@@ -276,7 +277,8 @@ public class CompositeWireBuilderImpl {
                     }
     
                 } else {
-                    warning("Promoted component service not found: " + promotedServiceName, composite);
+                    /*warning("Promoted component service not found: " + promotedServiceName, composite);*/
+			    warning("PromotedServiceNotFound", composite, promotedServiceName);
                 }
             }
         }
@@ -339,7 +341,8 @@ public class CompositeWireBuilderImpl {
                         	}
                         }
                     } else {
-                        warning("Promoted component reference not found: " + componentReferenceName, composite);
+                        /*warning("Promoted component reference not found: " + componentReferenceName, composite);*/
+				warning("PromotedReferenceNotFound", composite, componentReferenceName);
                     }
                 }
             }
@@ -408,11 +411,12 @@ public class CompositeWireBuilderImpl {
                         // see if an sca binding is associated with a resolved target or not
                         componentService.setUnresolved(false);
                     } else {
-                        warning("Incompatible interfaces on component reference and target: " + componentReference
+                        /*warning("Incompatible interfaces on component reference and target: " + componentReference
                                     .getName()
                                     + " : "
                                     + componentService.getName(),
-                                composite);
+                                composite);*/
+				warning("ReferenceIncompatibleInterface", composite, componentReference.getName(), componentService.getName());
                     }
                 } else {
                     // add all the reference bindings into the target so that they
@@ -422,7 +426,8 @@ public class CompositeWireBuilderImpl {
                     // The bindings will be cloned back into the reference when the 
                     // target is finally resolved. 
                     
-                    warning("Component reference target not found, it might be a remote service: " + componentService.getName(), composite);
+                    /*warning("Component reference target not found, it might be a remote service: " + componentService.getName(), composite);*/
+			    warning("ComponentReferenceTargetNotFound", composite, componentService.getName());
                 }
             }
         } else if (componentReference.getReference() != null) {

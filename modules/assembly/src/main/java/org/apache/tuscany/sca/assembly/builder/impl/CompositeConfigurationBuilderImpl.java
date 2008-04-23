@@ -353,11 +353,12 @@ public class CompositeConfigurationBuilderImpl {
                 // Check that a component property does not override the
                 // mustSupply attribute
                 if (!property.isMustSupply() && componentProperty.isMustSupply()) {
-                    warning("Component property mustSupply attribute incompatible with property: " + component
+                    /*warning("Component property mustSupply attribute incompatible with property: " + component
                                 .getName()
                                 + "/"
                                 + componentProperty.getName(),
-                            component);
+                            component);*/
+			warning("PropertyMustSupplyIncompatible", component, component.getName().toString(), componentProperty.getName());
                 }
 
                 // Default to the mustSupply attribute specified on the property
@@ -376,19 +377,21 @@ public class CompositeConfigurationBuilderImpl {
 
                 // Check that a value is supplied
                 if (componentProperty.getValue() == null && property.isMustSupply()) {
-                    warning("No value configured on a mustSupply property: " + component.getName()
+                    /*warning("No value configured on a mustSupply property: " + component.getName()
                         + "/"
-                        + componentProperty.getName(), component);
+                        + componentProperty.getName(), component);*/
+			warning("PropertyMustSupplyNull", component, component.getName().toString(), componentProperty.getName());
                 }
 
                 // Check that a a component property does not override the
                 // many attribute
                 if (!property.isMany() && componentProperty.isMany()) {
-                    warning("Component property many attribute incompatible with property: " + component
+                    /*warning("Component property many attribute incompatible with property: " + component
                                 .getName()
                                 + "/"
                                 + componentProperty.getName(),
-                            component);
+                            component);*/
+			warning("PropertyOverrideManyAttribute", component, component.getName().toString(), componentProperty.getName());
                 }
 
                 // Default to the many attribute defined on the property
@@ -435,9 +438,10 @@ public class CompositeConfigurationBuilderImpl {
                 componentReference.setReference(reference);
             } else {
                 if (!componentReference.getName().startsWith("$self$.")) {
-                    warning("Reference not found for component reference: " + component.getName()
+                    /*warning("Reference not found for component reference: " + component.getName()
                         + "/"
-                        + componentReference.getName(), component);
+                        + componentReference.getName(), component);*/
+			warning("ReferenceNotFound", component, component.getName().toString(), componentReference.getName());
                 }
             }
         }
@@ -465,11 +469,12 @@ public class CompositeConfigurationBuilderImpl {
                     if (!ReferenceUtil.isValidMultiplicityOverride(reference.getMultiplicity(),
                                                                    componentReference
                                                                        .getMultiplicity())) {
-                        warning("Component reference multiplicity incompatible with reference multiplicity: " + component
+                        /*warning("Component reference multiplicity incompatible with reference multiplicity: " + component
                                     .getName()
                                     + "/"
                                     + componentReference.getName(),
-                                component);
+                                component);*/
+				warning("ReferenceIncompatibleMultiplicity", component, component.getName().toString(), componentReference.getName());
                     }
                 } else {
                     componentReference.setMultiplicity(reference.getMultiplicity());
@@ -482,10 +487,11 @@ public class CompositeConfigurationBuilderImpl {
                         .getInterfaceContract())) {
                         if (!interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(),
                                                                   interfaceContract)) {
-                            warning("Component reference interface incompatible with reference interface: " + component
+                            /*warning("Component reference interface incompatible with reference interface: " + component
                                 .getName()
                                 + "/"
-                                + componentReference.getName(), component);
+                                + componentReference.getName(), component);*/
+					warning("ReferenceIncompatibleComponentInterface", component, component.getName().toString(), componentReference.getName());
                         }
                     }
                 } else {
@@ -1195,11 +1201,12 @@ public class CompositeConfigurationBuilderImpl {
                 continue;
             }
             if (binding.getName().equals(otherBinding.getName())) {
-                warning("Multiple bindings for service " + 
+                /*warning("Multiple bindings for service " + 
                                                     service.getName() + 
                                                     " have the same binding type and name " +
                                                     binding.getName() +
-                                                    ". Tuscany SCA can't create unique URIs to differentiate these bindings ", binding);
+                                                    ". Tuscany SCA can't create unique URIs to differentiate these bindings ", binding);*/
+			warning("MultipleBindingsForService", binding, service.getName(), binding.getName());
             }
         }
     }
