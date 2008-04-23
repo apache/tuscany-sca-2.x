@@ -91,7 +91,7 @@ public class ContributionDependencyBuilderTestCase extends TestCase {
         another.getExports().add(export);
         
         ContributionDependencyBuilderImpl analyzer = new ContributionDependencyBuilderImpl(null);
-        List<Contribution> dependencies = analyzer.buildContributionDependencies(workspace, importer);
+        List<Contribution> dependencies = analyzer.buildContributionDependencies(importer, workspace);
         assertTrue(dependencies.size() == 3);
         assertTrue(dependencies.contains(importer));
         assertTrue(dependencies.contains(imported));

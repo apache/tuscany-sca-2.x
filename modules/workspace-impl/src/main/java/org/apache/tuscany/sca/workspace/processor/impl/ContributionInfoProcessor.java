@@ -29,6 +29,7 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
@@ -132,6 +133,11 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
                     }
                 }
             }
+        }
+        
+        // Initialize the exports model resolvers
+        for (Export export: contribution.getExports()) {
+            export.setModelResolver(modelResolver);
         }
         
         return contribution;

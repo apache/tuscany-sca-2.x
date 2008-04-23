@@ -24,13 +24,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.resolver.DefaultImportAllModelResolver;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -57,17 +57,17 @@ public class ContributionDependencyBuilderImpl implements ContributionDependency
     
     /**
      * Calculate the set of contributions that a contribution depends on.
-     * @param workspace
      * @param contribution
+     * @param workspace
      * @return
      */
-    public List<Contribution> buildContributionDependencies(Workspace workspace, Contribution contribution) {
+    public List<Contribution> buildContributionDependencies(Contribution contribution, Workspace workspace) {
         List<Contribution> dependencies = new ArrayList<Contribution>();
         Set<Contribution> set = new HashSet<Contribution>();
 
         dependencies.add(contribution);
         set.add(contribution);
-        addContributionDependencies(workspace, contribution, dependencies, set);
+        addContributionDependencies(contribution, workspace, dependencies, set);
         
         Collections.reverse(dependencies);
         return dependencies;
@@ -75,18 +75,20 @@ public class ContributionDependencyBuilderImpl implements ContributionDependency
     
     /**
      * Analyze a contribution and add its dependencies to the given dependency set.
-     * @param workspace
      * @param contribution
+     * @param workspace
      * @param dependencies
      * @param set
      */
-    private void addContributionDependencies(Workspace workspace, Contribution contribution, List<Contribution> dependencies, Set<Contribution> set) {
+    private void addContributionDependencies(Contribution contribution, Workspace workspace, List<Contribution> dependencies, Set<Contribution> set) {
         
         // Go through the contribution imports
         for (Import import_: contribution.getImports()) {
             boolean resolved = false;
             
             // Go through all contribution candidates and their exports
+            List<Contribution> matched = new ArrayList<Contribution>();
+            Set<Contribution> mset = new HashSet<Contribution>();
             for (Contribution dependency: workspace.getContributions()) {
                 for (Export export: dependency.getExports()) {
                     
@@ -94,19 +96,29 @@ public class ContributionDependencyBuilderImpl implements ContributionDependency
                     // add that contribution to the dependency set
                     if (import_.match(export)) {
                         resolved = true;
+                        
+                        if (!mset.contains(dependency)) {
+                            mset.add(dependency);
+                            matched.add(dependency);
+                        }
 
                         if (!set.contains(dependency)) {
                             set.add(dependency);
                             dependencies.add(dependency);
                             
-                            // Now add the dependencies of that contribution
-                            addContributionDependencies(workspace, dependency, dependencies, set);
+                            // Now add the dependencies of that contribution 
+                            addContributionDependencies(dependency, workspace, dependencies, set);
                         }
                     }
                 }
             }
             
-            if (!resolved) {
+            if (resolved) {
+                
+                // Initialize the import's model resolver
+                import_.setModelResolver(new DefaultImportAllModelResolver(import_, matched));
+                
+            } else {
                 // Record import resolution issue
                 Problem problem = new ProblemImpl(this.getClass().getName(), "workspace-validation-messages", Severity.WARNING, import_, "Unresolved import");
                 monitor.problem(problem);
