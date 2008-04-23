@@ -92,14 +92,17 @@ public class RequestContextTestCase {
 
     /**
      * L863 <br>
-     * getServiceReference() – Returns the callable reference that represents the service or callback reference that the request was invoked on.
-     * It is illegal for the service implementation to try to call the setCallback() on a returned service reference.
+     * getServiceReference() – When invoked during the execution of a service operation,
+     * this API MUST return a CallableReference that represents the service.  When invoked during the execution of a callback operation,
+     * this API MUST return a CallableReference that represents the callback service.
      * 
      * @throws Exception
      */
     @Test
     public void testGetServiceReference() throws Exception {
-        
+        Assert.assertEquals("ComponentA", a.getServiceReferenceName());
+        Assert.assertEquals("ComponentB", b.getServiceReferenceName());
+        Assert.assertEquals("CallBackB", a.getCallbackServiceReferenceName());
     }
 
 }

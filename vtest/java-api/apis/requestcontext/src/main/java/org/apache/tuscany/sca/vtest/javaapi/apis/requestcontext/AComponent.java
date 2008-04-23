@@ -29,5 +29,7 @@ public interface AComponent {
     public boolean isJAASSubject();
     public String getServiceName();
     public String getCallbackResult();
+    public String getServiceReferenceName();
+    public String getCallbackServiceReferenceName();
 
 }

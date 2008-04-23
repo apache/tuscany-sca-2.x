@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.vtest.javaapi.apis.requestcontext;
 
 public interface BCallback {
 
+    public String getCallbackName();
     public void processResults(String result);        
 
 }
