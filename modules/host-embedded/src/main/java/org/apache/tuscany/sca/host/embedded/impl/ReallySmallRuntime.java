@@ -202,7 +202,7 @@ public class ReallySmallRuntime {
         if (monitorFactory != null){
             monitor = monitorFactory.createMonitor();
         } else {
-            logger.warning("Can't find monitor extension on the classpath");
+            logger.fine("No MonitorFactory is found on the classpath.");
         }
         
         //Create a composite builder
