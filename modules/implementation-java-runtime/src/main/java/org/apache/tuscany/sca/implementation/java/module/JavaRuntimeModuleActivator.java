@@ -77,8 +77,6 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
     public void start(ExtensionPointRegistry registry) {
 
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
-        AssemblyFactory assemblyFactory = factories.getFactory(AssemblyFactory.class);
-        PolicyFactory policyFactory = factories.getFactory(PolicyFactory.class);
 
         MessageFactory messageFactory = factories.getFactory(MessageFactory.class);
         ProxyFactoryExtensionPoint proxyFactory = registry.getExtensionPoint(ProxyFactoryExtensionPoint.class);
@@ -86,25 +84,6 @@ public class JavaRuntimeModuleActivator implements ModuleActivator {
             .getInterfaceContractMapper()));
 
         JavaInterfaceFactory javaFactory = factories.getFactory(JavaInterfaceFactory.class);
-        JavaImplementationFactory javaImplementationFactory = factories.getFactory(JavaImplementationFactory.class);
-
-        BaseJavaClassVisitor[] extensions =
-            new BaseJavaClassVisitor[] {new ConstructorProcessor(assemblyFactory),
-                                        new AllowsPassByReferenceProcessor(assemblyFactory),
-                                        new ComponentNameProcessor(assemblyFactory),
-                                        new ContextProcessor(assemblyFactory),
-                                        new ConversationIDProcessor(assemblyFactory),
-                                        new ConversationProcessor(assemblyFactory),
-                                        new DestroyProcessor(assemblyFactory), new EagerInitProcessor(assemblyFactory),
-                                        new InitProcessor(assemblyFactory), new PropertyProcessor(assemblyFactory),
-                                        new ReferenceProcessor(assemblyFactory, javaFactory),
-                                        new ResourceProcessor(assemblyFactory), new ScopeProcessor(assemblyFactory),
-                                        new ServiceProcessor(assemblyFactory, javaFactory),
-                                        new HeuristicPojoProcessor(assemblyFactory, javaFactory),
-                                        new PolicyProcessor(assemblyFactory, policyFactory)};
-        for (JavaClassVisitor extension : extensions) {
-            javaImplementationFactory.addClassVisitor(extension);
-        }
 
         DataBindingExtensionPoint dataBindings = registry.getExtensionPoint(DataBindingExtensionPoint.class);
         TransformerExtensionPoint transformers = registry.getExtensionPoint(TransformerExtensionPoint.class);
