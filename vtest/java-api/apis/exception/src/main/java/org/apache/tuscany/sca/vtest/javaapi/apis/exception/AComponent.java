@@ -35,4 +35,6 @@ public interface AComponent {
     public boolean testServiceRuntimeException();
     public boolean testServiceUnavailableException();
 
+    public boolean testCheckedException();
+
 }

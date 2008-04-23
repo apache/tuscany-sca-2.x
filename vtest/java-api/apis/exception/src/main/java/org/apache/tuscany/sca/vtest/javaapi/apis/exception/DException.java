@@ -17,21 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.vtest.javaapi.apis.exception.impl;
+package org.apache.tuscany.sca.vtest.javaapi.apis.exception;
 
-import org.apache.tuscany.sca.vtest.javaapi.apis.exception.DComponent;
-import org.apache.tuscany.sca.vtest.javaapi.apis.exception.DException;
-import org.osoa.sca.annotations.Service;
+public class DException extends Exception {
 
-@Service(DComponent.class)
-public class DComponentImpl implements DComponent {
+    private static final long serialVersionUID = -3819913841563109423L;
 
-    public String getName() {
-        return "ComponentD";
-    }
-
-    public void testException() throws DException {
-        throw new DException("ADException");
+    public DException(String message) {
+        super(message);
     }
 
 }

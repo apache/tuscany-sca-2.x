@@ -28,5 +28,6 @@ import org.osoa.sca.annotations.Remotable;
 public interface DComponent {
 
     public String getName();
+    public void testException() throws DException;
 
 }

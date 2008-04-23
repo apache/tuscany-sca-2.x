@@ -28,6 +28,7 @@ import org.junit.Test;
 
 /**
  * This test class tests the Exceptions described in 1.7.6, 1.7.7, 1.7.8, and 1.7.9 of the SCA Java Annotations & APIs Specification 1.0.
+ * This also covers 1.5 of the specification. 
  */
 public class ExceptionTestCase {
 
@@ -86,9 +87,22 @@ public class ExceptionTestCase {
      */
     @Ignore
     public void testServiceUnavailableException() throws Exception {
-        // TODO: Need a way to "stop" service to simulate service unavailability ..
-        // Simulate from Non-SCA Client to SCA Service? 
-        // Assert.assertTrue(a.testServiceUnavailableException());
+        domain.getComponentManager().stopComponent("AComponent");
+
+        try {
+            a.getName();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            AComponent ac = domain.getService(AComponent.class, "AComponent");
+            ac.getName();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        domain.getComponentManager().startComponent("AComponent");
     }
 
     /**
@@ -100,6 +114,18 @@ public class ExceptionTestCase {
     @Test
     public void testConversationEndedException() throws Exception {
         a.testConversation();
+    }
+
+    /**
+     * L360-361 <br>
+     * Business exceptions are thrown by the implementation of the called service method,
+     * and are defined as checked exceptions on the interface that types the service.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testCheckedException() throws Exception {
+        Assert.assertTrue(a.testCheckedException());
     }
 
 }
