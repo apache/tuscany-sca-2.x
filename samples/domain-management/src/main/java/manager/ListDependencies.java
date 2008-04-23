@@ -60,7 +60,7 @@ public class ListDependencies {
     
     private static URLArtifactProcessor<Contribution> contributionInfoProcessor;
     private static WorkspaceFactory workspaceFactory;
-    private static Monitor monitor;
+    private static ContributionDependencyBuilder contributionDependencyBuilder;
 
     private static void init() throws Exception {
         
@@ -97,8 +97,11 @@ public class ListDependencies {
 
         // Create a monitor
         UtilityExtensionPoint services = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = services.getService(MonitorFactory.class);
-        monitor = monitorFactory.createMonitor();
+        MonitorFactory monitorFactory = services.getUtility(MonitorFactory.class);
+        Monitor monitor = monitorFactory.createMonitor();
+        
+        // Create a contribution dependency builder
+        contributionDependencyBuilder = new ContributionDependencyBuilderImpl(monitor);
     }
     
 
@@ -121,10 +124,9 @@ public class ListDependencies {
         workspace.getContributions().add(assetsContribution);
         
         // List the contribution dependencies of each contribution
-        ContributionDependencyBuilder analyzer = new ContributionDependencyBuilderImpl(monitor);
         for (Contribution contribution: workspace.getContributions()) {
             System.out.println("Contribution: " + contribution.getURI());
-            for (Contribution dependency: analyzer.buildContributionDependencies(contribution, workspace)) {
+            for (Contribution dependency: contributionDependencyBuilder.buildContributionDependencies(contribution, workspace)) {
                 System.out.println("  dependency: " + dependency.getURI());
             }
         }

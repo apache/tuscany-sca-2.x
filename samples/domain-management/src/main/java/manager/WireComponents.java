@@ -19,21 +19,27 @@
 
 package manager;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.Implementation;
-import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
@@ -59,28 +65,36 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
 import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
+import org.w3c.dom.Document;
 
 /**
  * Sample ListComponents task
  *
  * @version $Rev$ $Date$
  */
-public class ListComponents {
+public class WireComponents {
     
     private static URLArtifactProcessor<Contribution> contributionContentProcessor;
     private static ModelResolverExtensionPoint modelResolvers;
     private static ModelFactoryExtensionPoint modelFactories;
     private static WorkspaceFactory workspaceFactory;
+    private static AssemblyFactory assemblyFactory;
+    private static XMLOutputFactory outputFactory;
+    private static StAXArtifactProcessor<Object> xmlProcessor; 
     private static ContributionDependencyBuilder contributionDependencyBuilder;
+    private static CompositeBuilder compositeBuilder;
 
     private static void init() {
         
@@ -96,17 +110,17 @@ public class ListComponents {
         // Get XML input/output factories
         modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
-        XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         
         // Get contribution, workspace, assembly and policy model factories
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class); 
-        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
         
         // Create XML and document artifact processors
         StAXArtifactProcessorExtensionPoint xmlProcessorExtensions = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        StAXArtifactProcessor<Object> xmlProcessor = new ExtensibleStAXArtifactProcessor(xmlProcessorExtensions, inputFactory, outputFactory);
+        xmlProcessor = new ExtensibleStAXArtifactProcessor(xmlProcessorExtensions, inputFactory, outputFactory);
         URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         URLArtifactProcessor<Object> urlExtensionProcessor = new ExtensibleURLArtifactProcessor(docProcessorExtensions);
         
@@ -137,6 +151,13 @@ public class ListComponents {
         
         // Create a contribution dependency builder
         contributionDependencyBuilder = new ContributionDependencyBuilderImpl(monitor);
+        
+        // Create a composite builder
+        SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
+        IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
+        InterfaceContractMapper contractMapper = utilities.getUtility(InterfaceContractMapper.class);
+        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper, monitor);
+        
     }
     
 
@@ -159,35 +180,51 @@ public class ListComponents {
         Contribution assetsContribution = (Contribution)contributionContentProcessor.read(null, assetsURI, assetsURL);
         workspace.getContributions().add(assetsContribution);
 
-        // Build the store contribution dependencies
-        List<Contribution> dependencies = contributionDependencyBuilder.buildContributionDependencies(storeContribution, workspace);
-        
-        // Resolve the contributions
-        for (Contribution contribution: dependencies) {
-            contributionContentProcessor.resolve(contribution, workspace.getModelResolver());
-        }
-        
-        // List the components declared in the deployables found in the
-        // contribution, their services, bindings, interfaces, and implementations
-        for (Composite deployable: storeContribution.getDeployables()) {
-            System.out.println("Deployable: " + deployable.getName());
-            for (Component component: deployable.getComponents()) {
-                System.out.println("  component: " + component.getName());
-                for (ComponentService componentService: component.getServices()) {
-                    System.out.println("    componentService: " + componentService.getName());
-                    for (Binding binding: componentService.getBindings()) {
-                        System.out.println("      binding: " + binding.getClass() + " - " + binding.getURI());
-                    }
-                }
-                Implementation implementation = component.getImplementation();
-                System.out.println("    implementation: " + implementation);
-                for (Service service: implementation.getServices()) {
-                    System.out.println("      service: " + service.getName());
-                    InterfaceContract contract = service.getInterfaceContract();
-                    System.out.println("        interface: " + contract.getInterface());
+        // Read the sample client contribution
+        URI clientURI = URI.create("client");
+        URL clientURL = new File("./target/sample-domain-management-client.jar").toURI().toURL();
+        Contribution clientContribution = (Contribution)contributionContentProcessor.read(null, clientURI, clientURL);
+        workspace.getContributions().add(clientContribution);
+
+        // Build the contribution dependencies
+        Set<Contribution> resolved = new HashSet<Contribution>();
+        for (Contribution contribution: workspace.getContributions()) {
+            List<Contribution> dependencies = contributionDependencyBuilder.buildContributionDependencies(contribution, workspace);
+            
+            // Resolve contributions
+            for (Contribution dependency: dependencies) {
+                if (!resolved.contains(dependency)) {
+                    resolved.add(dependency);
+                    contributionContentProcessor.resolve(contribution, workspace.getModelResolver());
                 }
             }
         }
+        
+        // Create a composite model for the domain
+        Composite domainComposite = assemblyFactory.createComposite();
+        domainComposite.setName(new QName("http://sample", "domain"));
+        
+        // Add all deployables to it, normally the domain administrator would select
+        // the deployables to include
+        domainComposite.getIncludes().addAll(workspace.getDeployables());
+        
+        // Build the domain composite and wire the components included
+        // in it
+        compositeBuilder.build(domainComposite);
+
+        // Print out the resulting domain composite
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
+        xmlProcessor.write(domainComposite, writer);
+        
+        // Parse and write again to pretty format it
+        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = documentBuilder.parse(new ByteArrayInputStream(bos.toByteArray()));
+        OutputFormat format = new OutputFormat();
+        format.setIndenting(true);
+        format.setIndent(2);
+        XMLSerializer serializer = new XMLSerializer(System.out, format);
+        serializer.serialize(document);
     }
 
 }
