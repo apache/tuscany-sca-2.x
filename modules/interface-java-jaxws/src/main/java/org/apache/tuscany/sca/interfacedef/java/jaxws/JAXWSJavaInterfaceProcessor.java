@@ -210,8 +210,10 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
 
     @SuppressWarnings("unchecked")
     private void introspectFaultTypes(Operation operation) {
-        for (DataType exceptionType : operation.getFaultTypes()) {
-            faultExceptionMapper.introspectFaultDataType(exceptionType);
+        if (operation!= null && operation.getFaultTypes() != null) {
+            for (DataType exceptionType : operation.getFaultTypes()) {
+                faultExceptionMapper.introspectFaultDataType(exceptionType);
+            }
         }
     }
 
