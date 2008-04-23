@@ -21,34 +21,34 @@ package org.apache.tuscany.sca.core;
 
 
 /**
- * The extension point for the Tuscany core utility service extensions.
+ * The extension point for the Tuscany core utility extensions.
  *
  * @version $Rev$ $Date$
  */
 public interface UtilityExtensionPoint {
 
     /**
-     * Add a service to the registry
-     * @param service The instance of the service
+     * Add a utility to the extension point
+     * @param utility The instance of the utility
      *
-     * @throws IllegalArgumentException if service is null
+     * @throws IllegalArgumentException if utility is null
      */
-    void addService(Object service);
+    void addUtility(Object utility);
 
     /**
-     * Get the service by the interface
-     * @param serviceType The lookup key (service interface)
-     * @return The instance of the service
+     * Get the utility by the interface
+     * @param utilityType The lookup key (utility interface)
+     * @return The instance of the utility
      *
-     * @throws IllegalArgumentException if serviceType is null
+     * @throws IllegalArgumentException if utilityType is null
      */
-    <T> T getService(Class<T> serviceType);
+    <T> T getUtility(Class<T> utilityType);
 
     /**
-     * Remove a service
-     * @param service The service to remove
+     * Remove a utility
+     * @param utility The utility to remove
      *
-     * @throws IllegalArgumentException if service is null
+     * @throws IllegalArgumentException if utility is null
      */
-    void removeService(Object service);
+    void removeUtility(Object utility);
 }
