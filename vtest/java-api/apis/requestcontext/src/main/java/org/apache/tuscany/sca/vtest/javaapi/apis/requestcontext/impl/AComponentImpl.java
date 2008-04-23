@@ -24,6 +24,7 @@ import javax.security.auth.Subject;
 import org.apache.tuscany.sca.vtest.javaapi.apis.requestcontext.AComponent;
 import org.apache.tuscany.sca.vtest.javaapi.apis.requestcontext.BCallback;
 import org.apache.tuscany.sca.vtest.javaapi.apis.requestcontext.BComponent;
+import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Context;
@@ -35,9 +36,10 @@ public class AComponentImpl implements AComponent, BCallback {
 
     private static Object monitor = new Object();
     private static String returnMessage = null;
+    private static CallableReference<BCallback> cbCR;
 
     protected ComponentContext componentContext;
-    
+
     @Reference
     protected BComponent bReference;
 
@@ -81,6 +83,20 @@ public class AComponentImpl implements AComponent, BCallback {
 
     public void processResults(String result) {
         returnMessage = result;
+        cbCR = componentContext.getRequestContext().getServiceReference();
+    }
+
+    public String getServiceReferenceName() {
+        CallableReference<AComponent> aCR = componentContext.getRequestContext().getServiceReference();
+        return aCR.getService().getName();
+    }
+
+    public String getCallbackServiceReferenceName() {
+        return cbCR.getService().getCallbackName();
+    }
+
+    public String getCallbackName() {
+        return "CallBackB";
     }
 
 }

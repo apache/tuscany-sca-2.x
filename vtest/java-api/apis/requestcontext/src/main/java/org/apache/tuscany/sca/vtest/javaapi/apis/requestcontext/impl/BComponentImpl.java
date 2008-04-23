@@ -53,8 +53,9 @@ public class BComponentImpl implements BComponent {
         Assert.assertEquals("ComponentACallBack", bCR.getCallbackID());
     }
 
-    public void testCallbackServiceReference() {
-        // ServiceReference bSR = componentContext.getRequestContext().getServiceReference();
+    public String getServiceReferenceName() {
+        CallableReference<BComponent> bCR = componentContext.getRequestContext().getServiceReference();
+        return bCR.getService().getName();
     }
 
 }

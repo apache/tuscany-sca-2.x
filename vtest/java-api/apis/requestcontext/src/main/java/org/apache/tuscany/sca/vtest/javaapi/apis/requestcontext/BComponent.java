@@ -30,5 +30,6 @@ public interface BComponent {
     public String getName();
     
     public void testCallback();
+    public String getServiceReferenceName();
 
 }
