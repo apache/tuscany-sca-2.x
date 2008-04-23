@@ -310,7 +310,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
 
                     // Compute the contribution dependencies
                     ContributionDependencyBuilder analyzer = new ContributionDependencyBuilderImpl(monitor);
-                    List<Contribution> dependencies = analyzer.buildContributionDependencies(workspace, contribution);
+                    List<Contribution> dependencies = analyzer.buildContributionDependencies(contribution, workspace);
                     
                     // Returns entries for the dependencies
                     // optionally skip the specified contribution
@@ -368,7 +368,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         
         StringBuffer sb = new StringBuffer();
         ContributionDependencyBuilderImpl analyzer = new ContributionDependencyBuilderImpl(monitor);
-        List<Contribution> dependencies = analyzer.buildContributionDependencies(workspace, contribution);
+        List<Contribution> dependencies = analyzer.buildContributionDependencies(contribution, workspace);
         if (dependencies.size() > 1) {
             sb.append("Dependencies: <span id=\"dependencies\">");
             for (int i = 0, n = dependencies.size(); i < n ; i++) {

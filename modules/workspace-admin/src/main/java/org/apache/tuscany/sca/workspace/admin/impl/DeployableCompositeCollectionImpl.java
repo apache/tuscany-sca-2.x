@@ -29,7 +29,6 @@ import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.locati
 import static org.apache.tuscany.sca.workspace.admin.impl.DomainAdminUtil.newRuntime;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -38,7 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
@@ -75,12 +73,8 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
-import org.apache.tuscany.sca.contribution.service.ContributionListener;
-import org.apache.tuscany.sca.contribution.service.ContributionListenerExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
-import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
@@ -98,7 +92,10 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.workspace.Workspace;
+import org.apache.tuscany.sca.workspace.WorkspaceFactory;
+import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
+import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
@@ -129,13 +126,14 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     private ModelFactoryExtensionPoint modelFactories;
     private ModelResolverExtensionPoint modelResolvers;
     private AssemblyFactory assemblyFactory;
+    private WorkspaceFactory workspaceFactory;
     private URLArtifactProcessor<Contribution> contributionContentProcessor;
     private StAXArtifactProcessor<Composite> compositeProcessor;
     private XMLOutputFactory outputFactory;
     private CompositeBuilder compositeBuilder;
     private CompositeIncludeBuilderImpl compositeIncludeBuilder;
     private CompositeConfigurationBuilderImpl compositeConfigurationBuilder;
-    private List<ContributionListener> contributionListeners;
+    private ContributionDependencyBuilder contributionDependencyBuilder;
     
     /**
      * Initialize the component.
@@ -155,7 +153,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-        PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class);
         
         // Get and initialize artifact processors
         StAXArtifactProcessorExtensionPoint staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
@@ -171,17 +169,17 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         // Create contribution processor
         modelResolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);
         contributionContentProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor);
-        contributionListeners = registry.getExtensionPoint(ContributionListenerExtensionPoint.class).getContributionListeners();
 
-        // Create composite builder
+        // Create a monitor
+        MonitorFactory monitorFactory = registry.getExtensionPoint(MonitorFactory.class);
+        Monitor monitor = monitorFactory.createMonitor();
+        
+        // Create contribution and composite builders
+        contributionDependencyBuilder = new ContributionDependencyBuilderImpl(monitor);
+
         SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         IntentAttachPointTypeFactory intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
         InterfaceContractMapper contractMapper = new InterfaceContractMapperImpl();
-        
-        // TODO need to get these messages back to the browser - So need
-        //      a monitor that caches all the problems for a set of processing
-        MonitorFactory monitorFactory = registry.getExtensionPoint(MonitorFactory.class);
-        Monitor monitor = monitorFactory.createMonitor();
         
         compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory,
                                                     contractMapper, monitor);
@@ -193,6 +191,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
                                                                              intentAttachPointTypeFactory,
                                                                              contractMapper,
                                                                              monitor);
+        
     }
     
     public Entry<String, Item>[] getAll() {
@@ -330,7 +329,8 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         Entry<String, Item>[] domainEntries = domainCompositeCollection.getAll();
         
         // Populate the domain composite
-        List<Contribution> loadedContributions = new ArrayList<Contribution>();
+        Workspace workspace = workspaceFactory.createWorkspace();
+        workspace.setModelResolver(new ExtensibleModelResolver(workspace, modelResolvers, modelFactories));
         Map<String, Contribution> contributionMap = new HashMap<String, Contribution>(); 
         for (Entry<String, Item> domainEntry: domainEntries) {
             
@@ -347,15 +347,18 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
                     // Read the contribution
                     Contribution c;
                     try {
-                        c = contribution(loadedContributions, entry.getKey(), contributionItem.getAlternate());
+                        c = contribution(workspace, entry.getKey(), contributionItem.getAlternate());
                     } catch (ContributionReadException e) {
                         continue;
                     }
-                    loadedContributions.add(c);
+                    workspace.getContributions().add(c);
                     if (contributionURI.equals(entry.getKey())) {
                         contribution = c;
                         contributionMap.put(contributionURI, contribution);
                     }
+                    
+                    // Build contribution dependencies
+                    
                 }
             }
             
@@ -483,13 +486,12 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         // Get the collection of cloud composites
         Entry<String, Item>[] cloudEntries = cloudCollection.getAll();
         
-        // Load the cloud composites
-        List<Contribution> loadedContributions = new ArrayList<Contribution>();
+        // Load the cloud contributions
+        Workspace workspace = workspaceFactory.createWorkspace();
         Map<String, Contribution> contributionMap = new HashMap<String, Contribution>(); 
         for (Entry<String, Item> cloudEntry: cloudEntries) {
             String key = cloudEntry.getKey();
             String contributionURI = contributionURI(key);
-            QName qname = compositeQName(key);
 
             // Load the contribution
             Contribution contribution = contributionMap.get(contributionURI);
@@ -498,15 +500,17 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
                 
                 // Read the contribution
                 try {
-                    contribution = contribution(loadedContributions, contributionURI, contributionItem.getAlternate());
+                    contribution = contribution(workspace, contributionURI, contributionItem.getAlternate());
                 } catch (ContributionReadException e) {
                     continue;
                 }
-                loadedContributions.add(contribution);
+                workspace.getContributions().add(contribution);
                 contributionMap.put(contributionURI, contribution);
+                
             }
-            
-            // Include the composite in the clouds composite
+
+            // Include the cloud composite in the clouds composite
+            QName qname = compositeQName(key);
             for (Artifact artifact : contribution.getArtifacts()) {
                 if (artifact.getModel() instanceof Composite) {
                     Composite composite = (Composite)artifact.getModel();
@@ -523,28 +527,22 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     /**
      * Returns the contribution with the given URI.
      * 
-     * @param contributions
+     * @param workspace
      * @param contributionURI
      * @param contributionLocation
      * @return
      * @throws NotFoundException
      */
-    private Contribution contribution(List<Contribution> contributions, String contributionURI, String contributionLocation) throws ContributionReadException {
+    private Contribution contribution(Workspace workspace, String contributionURI, String contributionLocation) throws ContributionReadException {
         try {
             URI uri = URI.create(contributionURI);
             URL location = locationURL(contributionLocation);
             Contribution contribution = (Contribution)contributionContentProcessor.read(null, uri, location);
             
-            // FIXME simplify this later
-            // Fix up contribution imports
-            ContributionRepository dummyRepository = new DummyContributionRepository(contributions);
-            for (ContributionListener listener: contributionListeners) {
-                listener.contributionAdded(dummyRepository, contribution);
-            }
+            // Resolve the contribution dependencies
+            contributionDependencyBuilder.buildContributionDependencies(contribution, workspace);
             
-            ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
-            contributionContentProcessor.resolve(contribution, modelResolver);
-            
+            contributionContentProcessor.resolve(contribution, workspace.getModelResolver());
             return contribution;
 
         } catch (ContributionReadException e) {
@@ -565,7 +563,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
      * @throws NotFoundException
      */
     private Contribution contribution(String contributionURI, String contributionLocation) throws ContributionReadException {
-        return contribution(new ArrayList<Contribution>(), contributionURI, contributionLocation);
+        return contribution(workspaceFactory.createWorkspace(), contributionURI, contributionLocation);
     }
     
     /**
@@ -663,28 +661,4 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         return item;
     }
 
-    /**
-     * FIXME Remove this later
-     * DummyContributionRepository
-     */
-    private class DummyContributionRepository implements ContributionRepository {
-        
-        private List<Contribution> contributions;
-
-        public DummyContributionRepository(List<Contribution> contributions) {
-            this.contributions = contributions;
-        }
-        
-        public void addContribution(Contribution contribution) {}
-        public URL find(String contribution) { return null; }
-        public Contribution getContribution(String uri) { return null; }
-        public List<Contribution> getContributions() { return contributions; }
-        public URI getDomain() { return null; }
-        public List<String> list() { return null; }
-        public void remove(String contribution) {}
-        public void removeContribution(Contribution contribution) {}
-        public URL store(String contribution, URL sourceURL, InputStream contributionStream) throws IOException { return null; }
-        public URL store(String contribution, URL sourceURL) throws IOException { return null;}
-        public void updateContribution(Contribution contribution) {}
-    }
 }
