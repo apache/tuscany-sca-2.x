@@ -87,7 +87,7 @@ import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.apache.tuscany.sca.implementation.node.NodeImplementation;
-import org.apache.tuscany.sca.implementation.node.builder.impl.NodeConfigurationBuilderImpl;
+import org.apache.tuscany.sca.implementation.node.builder.impl.NodeCompositeBuilderImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
@@ -183,7 +183,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         InterfaceContractMapper contractMapper = utilities.getUtility(InterfaceContractMapper.class);
         compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, contractMapper, monitor);
         compositeIncludeBuilder = new CompositeIncludeBuilderImpl(monitor);
-        nodeConfigurationBuilder = new NodeConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, contractMapper, null, monitor);
+        nodeConfigurationBuilder = new NodeCompositeBuilderImpl(assemblyFactory, scaBindingFactory, contractMapper, null, monitor);
     }
     
     public Entry<String, Item>[] getAll() {

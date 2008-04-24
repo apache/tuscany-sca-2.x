@@ -107,7 +107,7 @@ public class WireComponents {
     private static XMLOutputFactory outputFactory;
     private static StAXArtifactProcessor<Object> xmlProcessor; 
     private static ContributionDependencyBuilder contributionDependencyBuilder;
-    private static CompositeBuilder compositeBuilder;
+    private static CompositeBuilder domainCompositeBuilder;
 
     private static void init() {
         
@@ -169,7 +169,7 @@ public class WireComponents {
         SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
         InterfaceContractMapper contractMapper = utilities.getUtility(InterfaceContractMapper.class);
-        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper, monitor);
+        domainCompositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper, monitor);
         
     }
     
@@ -223,7 +223,7 @@ public class WireComponents {
         
         // Build the domain composite and wire the components included
         // in it
-        compositeBuilder.build(domainComposite);
+        domainCompositeBuilder.build(domainComposite);
 
         // Print out the resulting domain composite
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

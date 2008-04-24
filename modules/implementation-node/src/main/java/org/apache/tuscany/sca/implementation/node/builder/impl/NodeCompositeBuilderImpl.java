@@ -43,9 +43,9 @@ import org.apache.tuscany.sca.monitor.Monitor;
  *
  * @version $Rev$ $Date$
  */
-public class NodeConfigurationBuilderImpl extends BaseConfigurationBuilderImpl implements CompositeBuilder {
+public class NodeCompositeBuilderImpl extends BaseConfigurationBuilderImpl implements CompositeBuilder {
     
-    public NodeConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
+    public NodeCompositeBuilderImpl(AssemblyFactory assemblyFactory,
                                                   SCABindingFactory scaBindingFactory,
                                                   InterfaceContractMapper interfaceContractMapper,
                                                   SCADefinitions policyDefinitions,
