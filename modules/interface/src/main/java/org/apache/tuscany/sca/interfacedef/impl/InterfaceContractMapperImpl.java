@@ -280,7 +280,7 @@ public class InterfaceContractMapperImpl implements InterfaceContractMapper {
      */
     public Operation map(Interface target, Operation source) {
         // TODO: How to handle the case that source operation is dynamic?
-        if (target.isDynamic()) {
+        if (target == null || target.isDynamic()) {
             return source;
         } else if (target.isRemotable()) {
             for (Operation op : target.getOperations()) {
