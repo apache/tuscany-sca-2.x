@@ -49,6 +49,7 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.xml.WSPolicyProcessor;
 
 /**
  * Test writing SCA XML assemblies.
@@ -79,6 +80,7 @@ public class WriteAllTestCase extends TestCase {
         staxProcessors.addArtifactProcessor(new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new WSPolicyProcessor());
         resolver = new TestModelResolver();
         scaDefnDocProcessor = new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, XMLInputFactory.newInstance(), policyFactory);
     }

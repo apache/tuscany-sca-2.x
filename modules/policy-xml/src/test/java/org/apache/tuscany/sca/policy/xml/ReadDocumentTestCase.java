@@ -33,7 +33,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.neethi.Policy;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
@@ -69,7 +68,6 @@ public class ReadDocumentTestCase extends TestCase {
     public static final String scaNamespace = "http://www.osoa.org/xmlns/sca/1.0";
     public static final String namespace = "http://test";
     
-    private static final QName secureWsPolicy = new QName(namespace, "SecureWSPolicy");
     private static final QName confidentiality = new QName(namespace, "confidentiality");
     private static final QName integrity = new QName(namespace, "integrity");
     private static final QName messageProtection = new QName(namespace, "messageProtection");
@@ -163,7 +161,6 @@ public class ReadDocumentTestCase extends TestCase {
         
         assertNotNull(policySetTable.get(secureMessagingPolicies));
         assertEquals(policySetTable.get(secureMessagingPolicies).getMappedPolicies().size(), 3);
-        assertTrue(policySetTable.get(secureWsPolicy).getPolicies().get(0) instanceof Policy);
         
         assertEquals(bindingTypesTable.size(), 1);
         assertNotNull(bindingTypesTable.get(wsBinding));

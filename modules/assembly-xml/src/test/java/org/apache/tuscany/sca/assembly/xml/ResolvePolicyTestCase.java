@@ -50,6 +50,7 @@ import org.apache.tuscany.sca.policy.xml.PolicySetProcessor;
 import org.apache.tuscany.sca.policy.xml.ProfileIntentProcessor;
 import org.apache.tuscany.sca.policy.xml.QualifiedIntentProcessor;
 import org.apache.tuscany.sca.policy.xml.SimpleIntentProcessor;
+import org.apache.tuscany.sca.policy.xml.WSPolicyProcessor;
 
 /**
  * Test reading SCA XML assembly documents.
@@ -83,6 +84,7 @@ public class ResolvePolicyTestCase extends TestCase {
         staxProcessors.addArtifactProcessor(new ProfileIntentProcessor(policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new QualifiedIntentProcessor(policyFactory, staxProcessor));
         staxProcessors.addArtifactProcessor(new PolicySetProcessor(policyFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new WSPolicyProcessor());
         staxProcessors.addArtifactProcessor(new MockPolicyProcessor());
         
         // Create document processors

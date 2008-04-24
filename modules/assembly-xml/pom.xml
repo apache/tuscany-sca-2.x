@@ -34,17 +34,16 @@
             <artifactId>tuscany-assembly</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
         </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-definitions-xml</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        
+                
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-definitions</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-policy</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
         </dependency>
 
@@ -65,46 +64,42 @@
             <artifactId>tuscany-contribution-java</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
         </dependency>        
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-contribution-impl</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-policy</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-policy-xml</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>stax</groupId>
             <artifactId>stax-api</artifactId>
             <version>1.0.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
             <version>3.2.1</version>
             <scope>runtime</scope>
         </dependency>
+        
+		<!-- Test Dependencies -->        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-definitions-xml</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-            <version>2.7.0</version>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-policy-xml</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+            <scope>test</scope>
         </dependency>
-        
+		
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-policy-xml-ws</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+       
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-assembly-xsd</artifactId>
@@ -112,5 +107,11 @@
             <scope>test</scope>
         </dependency>
         
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-contribution-impl</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.xml.WSPolicyProcessor;
 
 /**
  * Test the wiring of SCA XML assemblies.
@@ -68,6 +69,7 @@ public class WireTestCase extends TestCase {
     public void setUp() throws Exception {
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
+        staxProcessors.addArtifactProcessor(new WSPolicyProcessor());
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         resolver = new TestModelResolver();
         assemblyFactory = new DefaultAssemblyFactory();

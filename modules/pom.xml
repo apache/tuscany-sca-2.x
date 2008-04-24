@@ -137,12 +137,12 @@
                 <module>osgi-runtime</module>
                 <module>policy</module>
                 <module>policy-xml</module>
+                <module>policy-xml-ws</module>
                 <module>policy-logging</module>
                 <module>policy-security</module>
+                <module>policy-security-ws</module>
                 <module>policy-transaction</module>
                 <module>runtime</module>
-                <!-- module>runtime-geronimo</module -->
-                <!-- module>runtime-standalone</module -->
                 <module>runtime-tomcat</module>
                 <module>runtime-war</module>
                 <module>sca-api</module>
