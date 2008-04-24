@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -37,12 +36,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
-import org.apache.neethi.Policy;
-import org.apache.neethi.PolicyEngine;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -131,11 +124,11 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                         PolicySet referredPolicySet = policyFactory.createPolicySet();
                         referredPolicySet.setName(getQName(reader, NAME));
                         policySet.getReferencedPolicySets().add(referredPolicySet);
-                    } else if ( WS_POLICY_QNAME.equals(name) )  {
+                    } /*else if ( WS_POLICY_QNAME.equals(name) )  {
                         OMElement policyElement = loadElement(reader);
                         org.apache.neethi.Policy wsPolicy = PolicyEngine.getPolicy(policyElement);
                         policySet.getPolicies().add(wsPolicy);
-                    } else {
+                    } */ else {
                         Object extension = extensionProcessor.read(reader);
                         if ( extension != null ) {
                             policySet.getPolicies().add(extension);
@@ -195,7 +188,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                                                                     providedIntent + " does not match parent qualifier " + qualifierName +
                                                                     " in policyset - " + policySet);
                                 }
-                            } else if ( WS_POLICY_QNAME.equals(name) )  {
+                            }/* else if ( WS_POLICY_QNAME.equals(name) )  {
                                 OMElement policyElement = loadElement(reader);
                                 Policy wsPolicy = PolicyEngine.getPolicy(policyElement);
                                 policySet.getPolicies().add(wsPolicy);
@@ -210,7 +203,7 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
                                     }
                                 }
                                 policyList.add((Policy)wsPolicy);
-                            } else {
+                            }*/ else {
                                 Object extension = extensionProcessor.read(reader);
                                 if ( extension != null ) {
                                     List<Object> policyList = mappedPolicies.get(qualifiedIntent);
@@ -320,64 +313,6 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
     
     public Class<PolicySet> getModelType() {
         return PolicySet.class;
-    }
-    
-    private OMElement loadElement(XMLStreamReader reader) throws XMLStreamException {
-        OMFactory fac = OMAbstractFactory.getOMFactory();
-        OMElement head = fac.createOMElement(reader.getName());
-        OMElement current = head;
-        
-        while (true) {
-            switch (reader.next()) {
-                case XMLStreamConstants.START_ELEMENT:
-                    QName name = reader.getName();
-                    OMElement child = fac.createOMElement(name, current);
-
-                    int count = reader.getNamespaceCount();
-                    for (int i = 0; i < count; i++) {
-                        String prefix = reader.getNamespacePrefix(i);
-                        String ns = reader.getNamespaceURI(i);
-                        child.declareNamespace(ns, prefix);
-                    }
-
-                    if(!"".equals(name.getNamespaceURI())) {
-                        child.declareNamespace(name.getNamespaceURI(), name.getPrefix());
-                    }
-
-                    // add the attributes for this element
-                    count = reader.getAttributeCount();
-                    for (int i = 0; i < count; i++) {
-                        OMNamespace omNs = null;
-                        String ns = reader.getAttributeNamespace(i);
-                        String prefix = reader.getAttributePrefix(i);
-                        String qname = reader.getAttributeLocalName(i);
-                        String value = reader.getAttributeValue(i);
-                        
-                        if ( ns != null ) {
-                            omNs = fac.createOMNamespace(ns, prefix);
-                        }
-                            
-                        child.addAttribute(qname, value, omNs);
-                        if (ns != null) {
-                            child.declareNamespace(ns, prefix);
-                        }
-                    }
-                    current = child;
-                    break;
-                case XMLStreamConstants.CDATA:
-                    fac.createOMText(current, reader.getText());
-                    break;
-                case XMLStreamConstants.CHARACTERS:
-                    fac.createOMText(current, reader.getText());
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if ( current == head ) {
-                        return head;
-                    } else {
-                        current = (OMElement)current.getParent();
-                    }
-            }
-        }
     }
     
     private void resolveProvidedIntents(PolicySet policySet, ModelResolver resolver) throws ContributionResolveException {

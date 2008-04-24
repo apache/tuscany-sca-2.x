@@ -57,6 +57,7 @@ public class SecurityPolicyDefinitionsProvider implements SCADefinitionsProvider
             });           
         
             URI uri = new URI(definitionsFile);
+
             scaDefns = (SCADefinitions)urlArtifactProcessor.read(null, 
                                                              uri, 
                                                              definitionsFileUrl);

@@ -41,8 +41,6 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
-import org.apache.tuscany.sca.definitions.SCADefinitionsBuilder;
-import org.apache.tuscany.sca.definitions.SCADefinitionsBuilderImpl;
 import org.apache.tuscany.sca.definitions.impl.SCADefinitionsImpl;
 import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
 import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
@@ -61,7 +59,7 @@ import org.apache.tuscany.sca.policy.xml.SimpleIntentProcessor;
  */
 public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SCADefinitions> {
     private StAXArtifactProcessor<Object> extensionProcessor;
-    private SCADefinitionsBuilder definitionsBuilder;
+    //private SCADefinitionsBuilder definitionsBuilder;
     private ModelResolver scaDefinitionsResolver;
     private XMLInputFactory inputFactory;
     private static final String TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
@@ -80,7 +78,7 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
                                            PolicyFactory policyFactory) {
         this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
         this.inputFactory = inputFactory;
-        definitionsBuilder = new SCADefinitionsBuilderImpl();
+        //definitionsBuilder = new SCADefinitionsBuilderImpl();
         this.scaDefinitionsResolver = new SCADefinitionsResolver();
         
         IntentAttachPointTypeFactory intentAttachPointFactory = new DefaultIntentAttachPointTypeFactory();

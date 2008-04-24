@@ -131,7 +131,7 @@ public class ReadDocumentTestCase extends TestCase {
         
         assertNotNull(policySetTable.get(secureMessagingPolicies));
         assertEquals(policySetTable.get(secureMessagingPolicies).getMappedPolicies().size(), 3);
-        assertTrue(policySetTable.get(secureWsPolicy).getPolicies().get(0) instanceof org.apache.neethi.Policy);
+        //assertTrue(policySetTable.get(secureWsPolicy).getPolicies().get(0) instanceof org.apache.neethi.Policy);
         
         assertEquals(bindingTypesTable.size(), 1);
         assertNotNull(bindingTypesTable.get(wsBinding));

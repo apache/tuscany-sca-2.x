@@ -57,6 +57,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.policy.xml.WSPolicyProcessor;
 
 /**
  * Test reading Java implementations.
@@ -86,6 +87,7 @@ public class ReadTestCase extends TestCase {
         mapper = new InterfaceContractMapperImpl();
         inputFactory = XMLInputFactory.newInstance();
         staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(modelFactories);
+        staxProcessors.addArtifactProcessor(new WSPolicyProcessor());
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         intentAttachPointTypeFactory = new DefaultIntentAttachPointTypeFactory();
         
