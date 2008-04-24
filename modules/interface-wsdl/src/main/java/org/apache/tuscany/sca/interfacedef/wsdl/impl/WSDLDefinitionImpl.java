@@ -55,6 +55,7 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
     private URI location;
     private List<XSDefinition> schemas = new ArrayList<XSDefinition>();
     private boolean unresolved;
+    private Binding binding;
 
     protected WSDLDefinitionImpl() {
     }
@@ -252,6 +253,14 @@ public class WSDLDefinitionImpl implements WSDLDefinition {
 
     public <T extends WSDLElement> WSDLObject<T> getWSDLObject(Class<T> type, QName name) {
         return getWSDLObject(definition, type, name);
+    }
+
+    public Binding getBinding() {
+        return binding;
+    }
+
+    public void setBinding(Binding binding) {
+        this.binding = binding;
     }
 
 }

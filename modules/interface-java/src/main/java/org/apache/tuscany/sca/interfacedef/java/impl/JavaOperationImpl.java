@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 public class JavaOperationImpl extends OperationImpl implements JavaOperation {
 
     private Method method;
+    private String action;
 
     public Method getJavaMethod() {
         return method;
@@ -39,6 +40,14 @@ public class JavaOperationImpl extends OperationImpl implements JavaOperation {
 
     public void setJavaMethod(Method method) {
         this.method = method;
+    }
+
+    public String getAction() {
+        return action;
+    }
+    
+    public void setAction(String action) {
+        this.action = action;
     }
 
     @Override

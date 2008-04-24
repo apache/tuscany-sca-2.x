@@ -24,9 +24,14 @@ import java.io.StringWriter;
 import javax.wsdl.Definition;
 import javax.wsdl.xml.WSDLWriter;
 
+import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfaceProcessor;
+import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;
+import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.TestJavaInterface;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.junit.Test;
 
 /**
@@ -39,10 +44,13 @@ public class Java2WSDLGeneratorTestCase {
         DefaultJavaInterfaceFactory iFactory = new DefaultJavaInterfaceFactory();
         JavaInterface iface = iFactory.createJavaInterface(TestJavaInterface.class);
         new JAXWSJavaInterfaceProcessor().visitInterface(iface);
+        DefaultDataBindingExtensionPoint dataBindings = new DefaultDataBindingExtensionPoint();
+        new DataBindingJavaInterfaceProcessor(dataBindings).visitInterface(iface);
+        WSDLDefinition wsdlDefinition = new DefaultWSDLFactory().createWSDLDefinition();
         Interface2WSDLGenerator generator = new Interface2WSDLGenerator();
-        Definition definition = generator.generate(iface);
-        // System.out.println(definition);
+        Definition definition = generator.generate(iface, wsdlDefinition);
 
+        // print the generated WSDL file and inline schemas
         WSDLWriter writer = generator.getFactory().newWSDLWriter();
         StringWriter sw = new StringWriter();
         writer.writeWSDL(definition, sw);
