@@ -38,14 +38,11 @@ import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 
 public class DomainWireBuilderImpl implements DomainBuilder {
     
-    private CompositeWireBuilderImpl wireBuilder;
-    
     public DomainWireBuilderImpl(AssemblyFactory assemblyFactory,
             SCABindingFactory scaBindingFactory,
             IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
             InterfaceContractMapper interfaceContractMapper,
             Monitor monitor) {
-        wireBuilder = new CompositeWireBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
     }
     
     public String getComponentNameFromReference(String referenceName){
@@ -239,7 +236,7 @@ public class DomainWireBuilderImpl implements DomainBuilder {
                                 //        bindings if we are going to do autowiring 
                                 List<Binding> source = targetService.getBindings();
                                 List<Binding> target = service.getBindings();
-                                Binding newBinding = BindingUtil.matchBinding(serviceComponent, (ComponentService)service, source, target);
+                                Binding newBinding = BindingConfigurationUtil.matchBinding(serviceComponent, (ComponentService)service, source, target);
                                 
                                 // update the existing binding to the new binding if required
                                 if (newBinding != null) {

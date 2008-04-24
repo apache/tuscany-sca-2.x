@@ -158,9 +158,9 @@ public class ReallySmallRuntimeBuilder {
         return new CompositeBuilderImpl(assemblyFactory, 
                                         scaBindingFactory, 
                                         intentAttachPointTypeFactory, 
-                                        interfaceContractMapper, 
-                                        monitor,
-                                        scaDefns);
+                                        interfaceContractMapper,
+                                        scaDefns,
+                                        monitor);
     }
     
     public static DomainBuilder createDomainBuilder(AssemblyFactory assemblyFactory,

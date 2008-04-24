@@ -51,9 +51,8 @@ import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 
-public class CompositeConfigurationBuilderImpl {
+public abstract class BaseConfigurationBuilderImpl {
     private final static String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     private final static String BINDING_SCA = "binding.sca";
     private final static QName BINDING_SCA_QNAME = new QName(SCA10_NS, BINDING_SCA);
@@ -62,18 +61,17 @@ public class CompositeConfigurationBuilderImpl {
     private SCABindingFactory scaBindingFactory;
     private Monitor monitor;
     private InterfaceContractMapper interfaceContractMapper;
-    private IntentAttachPointTypeFactory  intentAttachPointTypeFactory;
-    private SCADefinitions scaDefinitions = null;
+    private SCADefinitions policyDefinitions;
 
-    public CompositeConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
+    protected BaseConfigurationBuilderImpl(AssemblyFactory assemblyFactory,
                                              SCABindingFactory scaBindingFactory,
-                                             IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
                                              InterfaceContractMapper interfaceContractMapper,
+                                             SCADefinitions policyDefinitions,
                                              Monitor monitor) {
         this.assemblyFactory = assemblyFactory;
         this.scaBindingFactory = scaBindingFactory;
-        this.intentAttachPointTypeFactory = intentAttachPointTypeFactory;
         this.interfaceContractMapper = interfaceContractMapper;
+        this.policyDefinitions = policyDefinitions;
         this.monitor = monitor;
     }
 
@@ -83,7 +81,7 @@ public class CompositeConfigurationBuilderImpl {
      * @param composite
      * @param problems
      */
-    public void configureComponents(Composite composite) throws CompositeBuilderException {
+    protected void configureComponents(Composite composite) throws CompositeBuilderException {
         configureComponents(composite, null);
         configureSourcedProperties(composite, null);
         configureBindingURIs(composite, null, null);
@@ -466,7 +464,7 @@ public class CompositeConfigurationBuilderImpl {
             if (reference != null) {
                 // Reconcile multiplicity
                 if (componentReference.getMultiplicity() != null) {
-                    if (!ReferenceUtil.isValidMultiplicityOverride(reference.getMultiplicity(),
+                    if (!ReferenceConfigurationUtil.isValidMultiplicityOverride(reference.getMultiplicity(),
                                                                    componentReference
                                                                        .getMultiplicity())) {
                         /*warning("Component reference multiplicity incompatible with reference multiplicity: " + component
@@ -843,17 +841,17 @@ public class CompositeConfigurationBuilderImpl {
      * @param composite
      * @param problems
      */
-    public void activateCompositeServices(Composite composite) {
+    protected void configureCompositeServices(Composite composite) {
 
         // Process nested composites recursively
-        activateNestedCompositeServices(composite);
+        configureNestedCompositeServices(composite);
 
         // Process top level composite services
         for (Service service : composite.getServices()) {
             CompositeService compositeService = (CompositeService)service;
 
             // Get the inner most promoted service
-            ComponentService promotedService = getPromotedComponentService(compositeService);
+            ComponentService promotedService = ServiceConfigurationUtil.getPromotedComponentService(compositeService);
             if (promotedService != null) {
                 Component promotedComponent = getPromotedComponent(compositeService);
 
@@ -893,7 +891,7 @@ public class CompositeConfigurationBuilderImpl {
      * @param composite
      * @param problems
      */
-    public void activateNestedCompositeServices(Composite composite) {
+    private void configureNestedCompositeServices(Composite composite) {
 
         // Process nested composites recursively
         for (Component component : composite.getComponents()) {
@@ -901,7 +899,7 @@ public class CompositeConfigurationBuilderImpl {
             if (implementation instanceof Composite) {
 
                 // First process nested composites
-                activateNestedCompositeServices((Composite)implementation);
+                configureNestedCompositeServices((Composite)implementation);
 
                 // Process the component services declared on components
                 // in this composite
@@ -912,7 +910,7 @@ public class CompositeConfigurationBuilderImpl {
 
                         // Get the inner most promoted service
                         ComponentService promotedService =
-                            getPromotedComponentService(compositeService);
+                            ServiceConfigurationUtil.getPromotedComponentService(compositeService);
                         if (promotedService != null) {
                             Component promotedComponent = getPromotedComponent(compositeService);
 
@@ -976,7 +974,7 @@ public class CompositeConfigurationBuilderImpl {
     
         for (Component component : composite.getComponents()) {
             try {
-                PropertyUtil.sourceComponentProperties(compositeProperties, component);
+                PropertyConfigurationUtil.sourceComponentProperties(compositeProperties, component);
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -985,34 +983,6 @@ public class CompositeConfigurationBuilderImpl {
             if (impl instanceof Composite) {
                 configureSourcedProperties((Composite)impl, component.getProperties());
             }
-        }
-    }
-
-    /**
-     * Follow a service promotion chain down to the inner most (non composite)
-     * component service.
-     * 
-     * @param topCompositeService
-     * @return
-     */
-    static ComponentService getPromotedComponentService(CompositeService compositeService) {
-        ComponentService componentService = compositeService.getPromotedService();
-        if (componentService != null) {
-            Service service = componentService.getService();
-            if (componentService.getName() != null && service instanceof CompositeService) {
-
-                // Continue to follow the service promotion chain
-                return getPromotedComponentService((CompositeService)service);
-
-            } else {
-
-                // Found a non-composite service
-                return componentService;
-            }
-        } else {
-
-            // No promoted service
-            return null;
         }
     }
 
@@ -1058,8 +1028,8 @@ public class CompositeConfigurationBuilderImpl {
     private SCABinding createSCABinding() {
         SCABinding scaBinding = scaBindingFactory.createSCABinding();
         
-        if ( scaDefinitions != null ) {
-            for ( IntentAttachPointType attachPointType : scaDefinitions.getBindingTypes() ) {
+        if ( policyDefinitions != null ) {
+            for ( IntentAttachPointType attachPointType : policyDefinitions.getBindingTypes() ) {
                 if ( attachPointType.getName().equals(BINDING_SCA_QNAME)) {
                     ((IntentAttachPoint)scaBinding).setType(attachPointType);
                 }
@@ -1069,6 +1039,18 @@ public class CompositeConfigurationBuilderImpl {
         return scaBinding;
     }
 
+    /**
+     * Fully resolve the binding URIs based on available information. This includes information
+     * from the ".composite" files, from resources associated with the binding, e.g. WSDL files, 
+     * from any associated policies and from the default information for each binding type.
+     *  
+     * @param composite the composite to be configured
+     * @param defaultBindings list of default binding configurations
+     */
+    protected void configureBindingURIs(Composite composite, List<Binding> defaultBindings) throws CompositeBuilderException {
+        configureBindingURIs(composite, null, defaultBindings);
+    }
+       
      /**
       * Fully resolve the binding URIs based on available information. This includes information
       * from the ".composite" files, from resources associated with the binding, e.g. WSDL files, 
@@ -1083,7 +1065,7 @@ public class CompositeConfigurationBuilderImpl {
       * @param uri the path to the composite provided through any nested composite component implementations
       * @param defaultBindings list of default binding configurations
       */
-    public void configureBindingURIs(Composite composite, String uri, List<Binding> defaultBindings) throws CompositeBuilderException {
+    private void configureBindingURIs(Composite composite, String uri, List<Binding> defaultBindings) throws CompositeBuilderException {
         
         String parentComponentURI = uri;
         
@@ -1425,11 +1407,4 @@ public class CompositeConfigurationBuilderImpl {
         return uri.toString();
     }
 
-    public SCADefinitions getScaDefinitions() {
-        return scaDefinitions;
-    }
-
-    public void setScaDefinitions(SCADefinitions scaDefinitions) {
-        this.scaDefinitions = scaDefinitions;
-    }    
 }

@@ -80,7 +80,20 @@ import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 
 /**
- * Sample ListComponents task
+ * Sample WireComponents task.
+ * 
+ * This sample shows how to use a subset of Tuscany to read contribution
+ * metadata, analyze and resolve contribution dependencies, read and resolve
+ * the artifacts that they contribute (in particular implementation artifacts,
+ * interfaces, composites, componentTypes etc.) and assembe and wire the
+ * deployable composites together in a composite model representing an SCA
+ * domain composite.
+ * 
+ * The sample first reads the SCA metadata for three sample contributions,
+ * reads and resolve the artifacts contained in the contributions, includes all their
+ * deployable composites in a composite model representing an SCA domain, then
+ * uses a composite builder utility to assemble and wire the composites together.
+ * Finally it prints the resulting domain composite model.
  *
  * @version $Rev$ $Date$
  */

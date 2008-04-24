@@ -17,24 +17,27 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.assembly.builder;
+package org.apache.tuscany.sca.assembly.builder.impl;
 
+import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
- * A builder that handles the configuration of the components inside a
- * composite and the wiring of component references to component services.
+ * A composite builder that wires composite references.
  *
  * @version $Rev$ $Date$
  */
-public interface CompositeBuilder {
-    
-    /**
-     * Build a composite.
-     * 
-     * @param composite
-     * @throws CompositeBuilderException
-     */
-    void build(Composite composite) throws CompositeBuilderException;
-    
+public class CompositeReferenceWireBuilderImpl extends BaseWireBuilderImpl implements CompositeBuilder {
+
+    public CompositeReferenceWireBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper, Monitor monitor) {
+        super(assemblyFactory, interfaceContractMapper, monitor);
+    }
+
+    public void build(Composite composite) throws CompositeBuilderException {
+        wireCompositeReferences(composite);
+    }
 }
