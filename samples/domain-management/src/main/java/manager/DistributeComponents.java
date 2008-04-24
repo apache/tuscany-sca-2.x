@@ -22,6 +22,7 @@ package manager;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashSet;
@@ -31,11 +32,16 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
@@ -46,6 +52,7 @@ import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
+import org.apache.tuscany.sca.binding.atom.AtomBindingFactory;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -57,6 +64,7 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
+import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
@@ -65,6 +73,9 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.implementation.node.NodeImplementation;
+import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
+import org.apache.tuscany.sca.implementation.node.builder.impl.NodeCompositeBuilderImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
@@ -78,6 +89,7 @@ import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProces
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Sample DistributeComponents task
@@ -99,7 +111,8 @@ import org.w3c.dom.Document;
  * deployable composites in a composite model representing an SCA domain, then
  * uses several composite builder utilities to configure them as specified in the
  * SCA nodes hosting them and assemble and wire them together.
- * Finally it prints the resulting domain composite model.
+ * Finally it prints the resulting domain composite model, showing service bindings
+ * configured with the URIs from the nodes hosting them.
  *
  * @version $Rev$ $Date$
  */
@@ -113,7 +126,10 @@ public class DistributeComponents {
     private static XMLOutputFactory outputFactory;
     private static StAXArtifactProcessor<Object> xmlProcessor; 
     private static ContributionDependencyBuilder contributionDependencyBuilder;
-    private static CompositeBuilder compositeBuilder;
+    private static CompositeBuilder domainCompositeBuilder;
+    private static CompositeBuilder nodeCompositeBuilder;
+    private static NodeImplementationFactory nodeFactory;
+    private static AtomBindingFactory atomBindingFactory;
 
     private static void init() {
         
@@ -136,6 +152,8 @@ public class DistributeComponents {
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class); 
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        nodeFactory = modelFactories.getFactory(NodeImplementationFactory.class);
+        atomBindingFactory = modelFactories.getFactory(AtomBindingFactory.class);
         
         // Create XML and document artifact processors
         StAXArtifactProcessorExtensionPoint xmlProcessorExtensions = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
@@ -175,8 +193,10 @@ public class DistributeComponents {
         SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
         InterfaceContractMapper contractMapper = utilities.getUtility(InterfaceContractMapper.class);
-        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper, monitor);
+        domainCompositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper, monitor);
         
+        // Create a node composite builder
+        nodeCompositeBuilder = new NodeCompositeBuilderImpl(assemblyFactory, scaBindingFactory, contractMapper, null, monitor);
     }
     
 
@@ -219,6 +239,42 @@ public class DistributeComponents {
             }
         }
         
+        // Create a set of nodes, and assign the sample deployables to them
+        Composite cloudComposite = assemblyFactory.createComposite();
+        cloudComposite.setName(new QName("http://sample", "cloud"));
+        for (int i = 0, n = workspace.getDeployables().size(); i < n; i++) {
+            
+            // Create a node
+            Component node = assemblyFactory.createComponent();
+            node.setName("Node" + i);
+            cloudComposite.getComponents().add(node);
+            
+            // Add default binding configuration to the node, our samples use
+            // Atom bindings so here we're just creating default Atom binding
+            // configurations, but all the other binding types can be configured
+            // like that too
+            ComponentService nodeService = assemblyFactory.createComponentService();
+            Binding binding = atomBindingFactory.createAtomBinding();
+            binding.setURI("http://localhost:" + (8100 + i));
+            nodeService.getBindings().add(binding);
+            node.getServices().add(nodeService);
+
+            // Assign a deployable to the node
+            NodeImplementation nodeImplementation = nodeFactory.createNodeImplementation();
+            Composite deployable = workspace.getDeployables().get(i);
+            nodeImplementation.setComposite(deployable);
+            node.setImplementation(nodeImplementation);
+        }
+        
+        // Print the model describing the nodes that we just built
+        System.out.println("cloud.composite");
+        print(cloudComposite);
+        System.out.println();
+        
+        // Build the nodes, this will apply their default binding configuration to the
+        // composites assigned to them
+        nodeCompositeBuilder.build(cloudComposite);
+        
         // Create a composite model for the domain
         Composite domainComposite = assemblyFactory.createComposite();
         domainComposite.setName(new QName("http://sample", "domain"));
@@ -229,12 +285,18 @@ public class DistributeComponents {
         
         // Build the domain composite and wire the components included
         // in it
-        compositeBuilder.build(domainComposite);
+        domainCompositeBuilder.build(domainComposite);
 
         // Print out the resulting domain composite
+        System.out.println("domain.composite");
+        print(domainComposite);
+    }
+
+    private static void print(Composite composite) throws XMLStreamException, ContributionWriteException, ParserConfigurationException, SAXException, IOException {
+
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
-        xmlProcessor.write(domainComposite, writer);
+        xmlProcessor.write(composite, writer);
         
         // Parse and write again to pretty format it
         DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -245,5 +307,4 @@ public class DistributeComponents {
         XMLSerializer serializer = new XMLSerializer(System.out, format);
         serializer.serialize(document);
     }
-
 }

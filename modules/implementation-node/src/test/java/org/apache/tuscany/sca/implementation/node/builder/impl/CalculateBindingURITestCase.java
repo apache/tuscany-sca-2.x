@@ -76,7 +76,7 @@ public class CalculateBindingURITestCase extends TestCase {
                 }
             }
         };
-        configurationBuilder = new NodeConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, null, null, monitor);
+        configurationBuilder = new NodeCompositeBuilderImpl(assemblyFactory, scaBindingFactory, null, null, monitor);
         Binding defaultBinding = new TestBindingImpl();
         defaultBinding.setURI("http://myhost:8080/root");
         defaultBindings.add(defaultBinding);
