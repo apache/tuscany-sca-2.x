@@ -82,10 +82,6 @@ public class WSDLDefinitionGenerator {
         soapBinding.setStyle("document");
         soapBinding.setTransportURI("http://schemas.xmlsoap.org/soap/http");
         binding.addExtensibilityElement(soapBinding);
-
-        createBindingOperations(definition, binding, portType);
-        binding.setUndefined(false);
-        definition.addBinding(binding);
         return binding;
     }
 
@@ -97,43 +93,40 @@ public class WSDLDefinitionGenerator {
     }
 
     @SuppressWarnings("unchecked")
-    protected void createBindingOperations(Definition definition, Binding binding, PortType portType)
+    public BindingOperation createBindingOperation(Definition definition, Operation operation, String action)
         throws WSDLException {
-        for (Iterator oi = portType.getOperations().iterator(); oi.hasNext();) {
-            Operation operation = (Operation)oi.next();
-            BindingOperation bindingOperation = definition.createBindingOperation();
-            bindingOperation.setOperation(operation);
-            configureBindingOperation(bindingOperation, operation);
-            SOAPOperation soapOperation =
-                (SOAPOperation)definition.getExtensionRegistry().createExtension(BindingOperation.class, SOAP_OPERATION);
-            soapOperation.setSoapActionURI("");
-            bindingOperation.addExtensibilityElement(soapOperation);
-            if (operation.getInput() != null) {
-                BindingInput bindingInput = definition.createBindingInput();
-                configureBindingInput(bindingInput, operation.getInput());
-                SOAPBody soapBody =
-                    (SOAPBody)definition.getExtensionRegistry().createExtension(BindingInput.class, SOAP_BODY);
-                soapBody.setUse("literal");
-                bindingInput.addExtensibilityElement(soapBody);
-                bindingOperation.setBindingInput(bindingInput);
-            }
-            if (operation.getOutput() != null) {
-                BindingOutput bindingOutput = definition.createBindingOutput();
-                configureBindingOutput(bindingOutput, operation.getOutput());
-                SOAPBody soapBody =
-                    (SOAPBody)definition.getExtensionRegistry().createExtension(BindingOutput.class, SOAP_BODY);
-                soapBody.setUse("literal");
-                bindingOutput.addExtensibilityElement(soapBody);
-                bindingOperation.setBindingOutput(bindingOutput);
-            }
-            for (Iterator fi = operation.getFaults().values().iterator(); fi.hasNext();) {
-                Fault fault = (Fault)fi.next();
-                BindingFault bindingFault = definition.createBindingFault();
-                configureBindingFault(bindingFault, fault);
-                bindingOperation.addBindingFault(bindingFault);
-            }
-            binding.addBindingOperation(bindingOperation);
+        BindingOperation bindingOperation = definition.createBindingOperation();
+        bindingOperation.setOperation(operation);
+        configureBindingOperation(bindingOperation, operation);
+        SOAPOperation soapOperation =
+            (SOAPOperation)definition.getExtensionRegistry().createExtension(BindingOperation.class, SOAP_OPERATION);
+        soapOperation.setSoapActionURI(action);
+        bindingOperation.addExtensibilityElement(soapOperation);
+        if (operation.getInput() != null) {
+            BindingInput bindingInput = definition.createBindingInput();
+            configureBindingInput(bindingInput, operation.getInput());
+            SOAPBody soapBody =
+                (SOAPBody)definition.getExtensionRegistry().createExtension(BindingInput.class, SOAP_BODY);
+            soapBody.setUse("literal");
+            bindingInput.addExtensibilityElement(soapBody);
+            bindingOperation.setBindingInput(bindingInput);
         }
+        if (operation.getOutput() != null) {
+            BindingOutput bindingOutput = definition.createBindingOutput();
+            configureBindingOutput(bindingOutput, operation.getOutput());
+            SOAPBody soapBody =
+                (SOAPBody)definition.getExtensionRegistry().createExtension(BindingOutput.class, SOAP_BODY);
+            soapBody.setUse("literal");
+            bindingOutput.addExtensibilityElement(soapBody);
+            bindingOperation.setBindingOutput(bindingOutput);
+        }
+        for (Iterator fi = operation.getFaults().values().iterator(); fi.hasNext();) {
+            Fault fault = (Fault)fi.next();
+            BindingFault bindingFault = definition.createBindingFault();
+            configureBindingFault(bindingFault, fault);
+            bindingOperation.addBindingFault(bindingFault);
+        }
+        return bindingOperation;
     }
 
     protected void configureBindingOperation(BindingOperation bindingOperation, Operation operation)

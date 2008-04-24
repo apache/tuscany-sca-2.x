@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.interfacedef.wsdl;
 import java.net.URI;
 import java.util.List;
 
+import javax.wsdl.Binding;
 import javax.wsdl.Definition;
 import javax.wsdl.WSDLElement;
 import javax.xml.namespace.QName;
@@ -106,4 +107,15 @@ public interface WSDLDefinition extends Base {
      */
     <T extends WSDLElement> WSDLObject<T> getWSDLObject(Class<T> type, QName name);
 
+    /**
+     * Get the generated binding for a WSDLDefinition
+     * @return the WSDL binding
+     */
+    Binding getBinding();
+
+    /**
+     * Set the generated binding for a WSDLDefinition
+     * @param binding the WSDL binding
+     */
+    void setBinding(Binding binding);
 }

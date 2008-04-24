@@ -115,6 +115,11 @@ class WebServiceBindingImpl implements WebServiceBinding, PolicySetAttachPoint, 
     }
 
     public Binding getBinding() {
+        if (binding == null) {
+            if (getWSDLDefinition() != null && wsdlDefinition.getBinding() != null) {
+                binding = wsdlDefinition.getBinding();
+            }
+        }
         return binding;
     }
 

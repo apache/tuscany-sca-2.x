@@ -45,6 +45,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
+import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
@@ -55,6 +56,7 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  */
 public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
     private static final String JAXB_DATABINDING = "javax.xml.bind.JAXBElement";
+    private static final String SCHEMA_NS = "http://www.w3.org/2001/XMLSchema";
     private FaultExceptionMapper faultExceptionMapper;
 
     public JAXWSJavaInterfaceProcessor(FaultExceptionMapper faultExceptionMapper) {
@@ -71,8 +73,11 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
         Class<?> clazz = contract.getJavaClass();
         WebService webService = clazz.getAnnotation(WebService.class);
         String tns = JavaInterfaceUtil.getNamespace(clazz);
+        String localName = clazz.getSimpleName();
         if (webService != null) {
             tns = getValue(webService.targetNamespace(), tns);
+            localName = getValue(webService.name(), localName);
+            contract.setQName(new QName(tns, localName));
             // Mark SEI as Remotable
             contract.setRemotable(true);
         }
@@ -114,6 +119,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 }
                 operationName = getValue(webMethod.operationName(), operationName);
                 operation.setName(operationName);
+                operation.setAction(webMethod.action());
             }
 
             // Is one way?
@@ -197,8 +203,8 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                     if (logical instanceof XMLType) {
                         ((XMLType)logical).setElementName(element);
                     }
+                    outputElements.add(new ElementInfo(element, null));
                 }
-                outputElements.add(new ElementInfo(element, null));
 
                 WrapperInfo wrapperInfo =
                     new WrapperInfo(JAXB_DATABINDING, new ElementInfo(inputWrapper, null),

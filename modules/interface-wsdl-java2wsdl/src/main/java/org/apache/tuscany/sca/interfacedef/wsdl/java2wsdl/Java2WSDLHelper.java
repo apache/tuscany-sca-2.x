@@ -67,6 +67,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.impl.InvalidWSDLException;
 import org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLOperationIntrospectorImpl;
+import org.apache.tuscany.sca.interfacedef.wsdl.interface2wsdl.Interface2WSDLGenerator;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLModelResolver;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.XMLDocumentHelper;
 import org.apache.ws.commons.schema.XmlSchema;
@@ -114,28 +115,49 @@ public class Java2WSDLHelper {
      */
     public static WSDLInterfaceContract createWSDLInterfaceContract(JavaInterfaceContract contract,
                                                                     boolean requiresSOAP12) {
-        JavaInterface iface = (JavaInterface)contract.getInterface();
-        
-        // Create a package2ns map
-        Map<String, String> pkg2nsMap = new HashMap<String, String>();
-        for (Operation op : iface.getOperations()) {
-            DataType<List<DataType>> inputType = op.getInputType();
-            for (DataType t : inputType.getLogical()) {
-                register(pkg2nsMap, t);
-            }
-            DataType outputType = op.getOutputType();
-            register(pkg2nsMap, outputType);
-        }
-
-        final Definition def = createDefinition(pkg2nsMap, iface.getJavaClass(), requiresSOAP12);
-
         final DefaultWSDLFactory wsdlFactory = new DefaultWSDLFactory();
 
         WSDLInterfaceContract wsdlContract = wsdlFactory.createWSDLInterfaceContract();
         WSDLInterface wsdlInterface = wsdlFactory.createWSDLInterface();
-
         wsdlContract.setInterface(wsdlInterface);
-        final WSDLDefinition wsdlDefinition = new DefaultWSDLFactory().createWSDLDefinition();
+
+        final WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
+        JavaInterface iface = (JavaInterface)contract.getInterface();
+        
+        //FIXME: When Interface2WSDLGenerator is fully working, change this code
+        // to use it in all cases instead of calling createDefinition()
+        Definition def = null;
+        if (iface.getQName() == null) {  // plain Java interface 
+            // Create a package2ns map
+            Map<String, String> pkg2nsMap = new HashMap<String, String>();
+            for (Operation op : iface.getOperations()) {
+                DataType<List<DataType>> inputType = op.getInputType();
+                for (DataType t : inputType.getLogical()) {
+                    register(pkg2nsMap, t);
+                }
+                DataType outputType = op.getOutputType();
+                register(pkg2nsMap, outputType);
+            }
+            def = createDefinition(pkg2nsMap, iface.getJavaClass(), requiresSOAP12);
+
+        } else {  // interface with JAX-WS annotations
+            try {
+                Interface2WSDLGenerator wsdlGenerator = new Interface2WSDLGenerator();
+                //FIXME: add support for SOAP 1.2
+                def = wsdlGenerator.generate(iface, wsdlDefinition);
+            } catch (WSDLException e) {
+                throw new RuntimeException(e);
+            }
+ 
+            // temp for debugging
+            // try {
+            //     WSDLWriter writer =  javax.wsdl.factory.WSDLFactory.newInstance().newWSDLWriter();
+            //     writer.writeWSDL(def, System.out);
+            // } catch (WSDLException e) {
+            //     throw new RuntimeException(e);
+            // }
+        }
+
         wsdlDefinition.setDefinition(def);
         wsdlInterface.setWsdlDefinition(wsdlDefinition);
         wsdlInterface.setRemotable(true);
@@ -145,11 +167,15 @@ public class Java2WSDLHelper {
         PortType portType = (PortType)def.getAllPortTypes().values().iterator().next();
         wsdlInterface.setPortType(portType);
 
+        //FIXME: Should Interface2WSDLGenerator create an XmlSchemaCollection so that
+        // there's no need to call readInlineSchemas here?
+        //
         // Allow privileged access to read properties. Requires PropertiesPermission read in
         // security policy.
+        final Definition fdef = def;
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
-                readInlineSchemas(wsdlFactory, wsdlDefinition, def, new XmlSchemaCollection());
+                readInlineSchemas(wsdlFactory, wsdlDefinition, fdef, new XmlSchemaCollection());
                 return null;
             }
         });

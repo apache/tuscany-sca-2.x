@@ -17,41 +17,10 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.interfacedef.java;
+package org.apache.tuscany.sca.interfacedef.wsdl;
 
-import java.lang.reflect.Method;
-
-import org.apache.tuscany.sca.interfacedef.Operation;
-
-/**
- * Represents a Java operation.
- *
- * @version $Rev$ $Date$
- */
-public interface JavaOperation extends Operation {
-
-    /**
-     * Returns the Java method defining the operation.
-     * @return the Java method
-     */
-    Method getJavaMethod();
-    
-    /**
-     * Sets the Java method defining the operation.
-     * @param method the Java method
-     */
-    void setJavaMethod(Method method);
-
-    /**
-     * Returns the JAX-WS @WebMethod action parameter.
-     * @return the action value
-     */
-    String getAction();
-    
-    /**
-     * Sets the JAX-WS @WebMethod action parameter.
-     * @param action the action value
-     */
-    void setAction(String action);
-
+public class TestJavaClass {
+    public String name;
+    public int number;
+    public float balance;
 }

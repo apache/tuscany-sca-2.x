@@ -6,42 +6,46 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
+package zipcode;
 
-package org.apache.tuscany.sca.interfacedef.wsdl.interface2wsdl;
+import location.LocationClient;
+import weather.WeatherForecastClient;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import javax.jws.WebMethod;
-import javax.jws.WebService;
+/**
+ * Tests that the callback server is available
+ */
+public class ZipCodeClientTestCase {
 
-import org.osoa.sca.annotations.OneWay;
-import org.osoa.sca.annotations.Remotable;
+    @Before
+	public void startServer() throws Exception {
+	}
 
-@Remotable
-@WebService
-public interface TestJavaInterface {
-    String m1(String str);
-
-    @OneWay
-    @WebMethod
-    void m2(int i);
-
-    @WebMethod
-    String m3();
-
-    void m4();
-
-    @WebMethod
-    String m5(String str, int i);
-
-    @WebMethod(exclude = true)
-    void dummy();
+	@Test
+	public void testClient() throws Exception {
+        /*
+        System.out.println("Running LocationClient...");
+		LocationClient.main(null);
+        System.out.println("Running WeatherForecastClient...");
+        WeatherForecastClient.main(null);
+        */
+        System.out.println("Running ZipCodeClient...");
+        ZipCodeClient.main(null);
+	}
+    
+	@After
+	public void stopServer() throws Exception {
+	}
 }

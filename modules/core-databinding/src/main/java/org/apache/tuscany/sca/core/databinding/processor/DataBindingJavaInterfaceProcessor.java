@@ -85,6 +85,9 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 continue;
             }
             Operation operation = opMap.get(method.getName());
+            if (operation == null) {  // @WebMethod exclude=true
+                continue;
+            }
             DataBinding methodDataBinding = clazz.getAnnotation(DataBinding.class);
             if (methodDataBinding == null) {
                 methodDataBinding = dataBinding;

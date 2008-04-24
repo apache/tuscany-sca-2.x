@@ -23,7 +23,7 @@
     <component name="ZipCodeService">
         <implementation.java class="zipcode.ZipCodeServiceImpl" />
         <reference name="usZipService">
-            <binding.ws wsdlElement="http://www.webserviceX.NET#wsdl.port(USZip/USZipSoap)" />
+            <binding.ws uri="http://www.webservicex.net/uszip.asmx" />
         </reference>
         <reference name="weatherForecast">
             <binding.ws wsdlElement="http://www.webservicex.net#wsdl.port(WeatherForecast/WeatherForecastSoap)" />

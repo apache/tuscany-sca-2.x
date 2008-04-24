@@ -17,41 +17,34 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.interfacedef.java;
+package org.apache.tuscany.sca.interfacedef.wsdl;
 
-import java.lang.reflect.Method;
+import javax.jws.WebMethod;
+import javax.jws.WebService;
 
-import org.apache.tuscany.sca.interfacedef.Operation;
+import org.osoa.sca.annotations.OneWay;
+import org.osoa.sca.annotations.Remotable;
 
-/**
- * Represents a Java operation.
- *
- * @version $Rev$ $Date$
- */
-public interface JavaOperation extends Operation {
+@Remotable
+@WebService
+public interface TestJavaInterface {
+    String m1(String str);
 
-    /**
-     * Returns the Java method defining the operation.
-     * @return the Java method
-     */
-    Method getJavaMethod();
-    
-    /**
-     * Sets the Java method defining the operation.
-     * @param method the Java method
-     */
-    void setJavaMethod(Method method);
+    @OneWay
+    @WebMethod
+    void m2(int i);
 
-    /**
-     * Returns the JAX-WS @WebMethod action parameter.
-     * @return the action value
-     */
-    String getAction();
-    
-    /**
-     * Sets the JAX-WS @WebMethod action parameter.
-     * @param action the action value
-     */
-    void setAction(String action);
+    @WebMethod
+    String m3();
 
+    void m4();
+
+    @WebMethod
+    String m5(String str, int i);
+
+    @WebMethod(exclude = true)
+    void dummy();
+
+    @WebMethod
+    void m6(TestJavaClass info);
 }
