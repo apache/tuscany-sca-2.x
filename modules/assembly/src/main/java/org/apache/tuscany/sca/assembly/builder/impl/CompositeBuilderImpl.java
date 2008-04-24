@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
-import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -42,21 +41,45 @@ import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
  */
 public class CompositeBuilderImpl implements CompositeBuilder {
     private final static Logger logger = Logger.getLogger(CompositeBuilderImpl.class.getName());
-    private CompositeIncludeBuilderImpl includeBuilder;
-    private CompositeWireBuilderImpl wireBuilder;
-    private CompositeCloneBuilderImpl cloneBuilder;
-    private CompositeConfigurationBuilderImpl configurationBuilder;
+    private CompositeBuilder compositeIncludeBuilder;
+    private CompositeBuilder componentWireBuilder;
+    private CompositeBuilder compositeReferenceWireBuilder;
+    private CompositeBuilder compositeCloneBuilder;
+    private CompositeBuilder componentConfigurationBuilder;
+    private CompositeBuilder compositeServiceConfigurationBuilder;
 
     /**
-     * Constructs a new composite util.
+     * Constructs a new composite builder.
      * 
      * @param assemblyFactory
+     * @param scaBindingFactory
+     * @param intentAttachPointTypeFactory
      * @param interfaceContractMapper
+     * @param monitor
      */
     public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
                                 SCABindingFactory scaBindingFactory,
                                 IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
                                 InterfaceContractMapper interfaceContractMapper,
+                                Monitor monitor) {
+        this(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, interfaceContractMapper, null, monitor);
+    }
+    
+    /**
+     * Constructs a new composite builder.
+     * 
+     * @param assemblyFactory
+     * @param scaBindingFactory
+     * @param intentAttachPointTypeFactory
+     * @param interfaceContractMapper
+     * @param policyDefinitions
+     * @param monitor
+     */
+    public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
+                                SCABindingFactory scaBindingFactory,
+                                IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
+                                InterfaceContractMapper interfaceContractMapper,
+                                SCADefinitions policyDefinitions,
                                 Monitor monitor) {
         
         if (monitor == null){
@@ -84,48 +107,36 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             };
         }
         
-        includeBuilder = new CompositeIncludeBuilderImpl(monitor); 
-        wireBuilder = new CompositeWireBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
-        cloneBuilder = new CompositeCloneBuilderImpl(monitor);
-        configurationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, interfaceContractMapper, monitor);
-        
-    }
-    
-    public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
-                                SCABindingFactory scaBindingFactory,
-                                IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
-                                InterfaceContractMapper interfaceContractMapper,
-                                Monitor monitor, 
-                                SCADefinitions scaDefns) {
-        this(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, interfaceContractMapper, monitor);
-        configurationBuilder.setScaDefinitions(scaDefns);
+        compositeIncludeBuilder = new CompositeIncludeBuilderImpl(monitor); 
+        componentWireBuilder = new ComponentReferenceWireBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
+        compositeReferenceWireBuilder = new CompositeReferenceWireBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
+        compositeCloneBuilder = new CompositeCloneBuilderImpl(monitor);
+        componentConfigurationBuilder = new ComponentConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);
+        compositeServiceConfigurationBuilder = new CompositeServiceConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);
     }
 
     public void build(Composite composite) throws CompositeBuilderException {
 
         // Collect and fuse includes
-        includeBuilder.fuseIncludes(composite);
+        compositeIncludeBuilder.build(composite);
 
         // Expand nested composites
-        cloneBuilder.expandCompositeImplementations(composite);
+        compositeCloneBuilder.build(composite);
 
         // Configure all components
-        configurationBuilder.configureComponents(composite);
+        componentConfigurationBuilder.build(composite);
 
-        // Wire the composite
-        try {
-			wireBuilder.wireComposite(composite);
-		} catch (IncompatibleInterfaceContractException e) {
-			throw new CompositeBuilderException(e);
-		}
+        // Wire the components
+        componentWireBuilder.build(composite);
 
-        // Activate composite services
-        configurationBuilder.activateCompositeServices(composite);
+        // Configure composite services
+        compositeServiceConfigurationBuilder.build(composite);
 
-        // Wire composite references
-        wireBuilder.wireCompositeReferences(composite);
+        // Wire the composite references
+        compositeReferenceWireBuilder.build(composite);
         
         // Fuse nested composites
+        //FIXME do this later
         //cloneBuilder.fuseCompositeImplementations(composite);
     }
 

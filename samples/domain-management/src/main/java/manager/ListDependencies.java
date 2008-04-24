@@ -52,7 +52,14 @@ import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuild
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor;
 
 /**
- * Sample ListDependencies task
+ * Sample ListDependencies task.
+ * 
+ * This sample shows how to use a subset of Tuscany to read contribution
+ * metadata, analyze and resolve contribution dependencies given a set of
+ * available contributions.
+ * 
+ * The sample reads the SCA metadata for two sample contributions then
+ * prints their dependencies.
  *
  * @version $Rev$ $Date$
  */

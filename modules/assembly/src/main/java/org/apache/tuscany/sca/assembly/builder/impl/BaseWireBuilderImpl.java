@@ -44,21 +44,23 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.util.PolicyComputationUtils;
 
-public class CompositeWireBuilderImpl {
+/**
+ * A composite builder that handles wiring inside a composite.
+ *
+ * @version $Rev$ $Date$
+ */
+class BaseWireBuilderImpl {
 
     private Monitor monitor;
     private AssemblyFactory assemblyFactory;
     private InterfaceContractMapper interfaceContractMapper;
-    
-    private BindingPolicyComputer bindingPolicyComputer = null;
-    private ImplementationPolicyComputer implPolicyComputer = null;
     
     //Represents a target component and service
     private class Target {
@@ -79,15 +81,13 @@ public class CompositeWireBuilderImpl {
         }
     };
     
-    public CompositeWireBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper, Monitor monitor) {
+    protected BaseWireBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper, Monitor monitor) {
         this.assemblyFactory = assemblyFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.monitor = monitor;
         
-        this.bindingPolicyComputer = new BindingPolicyComputer();
-        this.implPolicyComputer = new ImplementationPolicyComputer();
     }
-
+    
     /**
      * Wire component references to component services and connect promoted
      * services/references to component services/references inside a composite.
@@ -95,13 +95,13 @@ public class CompositeWireBuilderImpl {
      * @param composite
      * @throws IncompatibleInterfaceContractException 
      */
-    public void wireComposite(Composite composite) throws IncompatibleInterfaceContractException {
+    protected void wireComponentReferences(Composite composite) throws IncompatibleInterfaceContractException {
 
         // Wire nested composites recursively
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
-                wireComposite((Composite)implementation);
+                wireComponentReferences((Composite)implementation);
             }
         }
 
@@ -128,7 +128,7 @@ public class CompositeWireBuilderImpl {
         // Validate that references are wired or promoted, according
         // to their multiplicity
         for (ComponentReference componentReference : componentReferences.values()) {
-            if (!ReferenceUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(), componentReference
+            if (!ReferenceConfigurationUtil.validateMultiplicityAndTargets(componentReference.getMultiplicity(), componentReference
                 .getTargets(), componentReference.getBindings())) {
                 if (componentReference.getTargets().isEmpty()) {
 
@@ -520,25 +520,25 @@ public class CompositeWireBuilderImpl {
                 if (targetComponentService.getService() instanceof CompositeService) {
                     CompositeService compositeService = (CompositeService) targetComponentService.getService();
                     // Find the promoted component service
-                    targetComponentService = CompositeConfigurationBuilderImpl.getPromotedComponentService(compositeService);
+                    targetComponentService = ServiceConfigurationUtil.getPromotedComponentService(compositeService);
                 }
                 
                 try  {
-                    bindingPolicyComputer.determineApplicableBindingPolicySets(componentReference, targetComponentService);
+                    PolicyConfigurationUtil.determineApplicableBindingPolicySets(componentReference, targetComponentService);
                 } catch ( Exception e ) {
                     warning("Policy related exception: " + e, e);
                     //throw new RuntimeException(e);
                 }
 
                 // Match the binding against the bindings of the target service
-                Binding selected = BindingUtil.resolveBindings(componentReference, targetComponent, targetComponentService);
+                Binding selected = BindingConfigurationUtil.resolveBindings(componentReference, targetComponent, targetComponentService);
                 if (selected == null) {
                     warning("Component reference doesn't have a matching binding", componentReference);
                 } else {
                     selectedBindings.add(selected);
                 }
                 if (bidirectional) {
-                    Binding selectedCallback = BindingUtil.resolveCallbackBindings(componentReference, targetComponent, targetComponentService);
+                    Binding selectedCallback = BindingConfigurationUtil.resolveCallbackBindings(componentReference, targetComponent, targetComponentService);
                     if (selectedCallback != null) {
                         selectedCallbackBindings.add(selectedCallback);
                     }
@@ -655,7 +655,7 @@ public class CompositeWireBuilderImpl {
      * @param composite
      * @param problems
      */
-    public void wireCompositeReferences(Composite composite) {
+    protected void wireCompositeReferences(Composite composite) {
     
         // Process nested composites recursively
         for (Component component : composite.getComponents()) {
@@ -736,7 +736,7 @@ public class CompositeWireBuilderImpl {
                                     // promoted by a composite service
                                     CompositeService compositeService = (CompositeService)target.getService();
                                     // Find the promoted component service
-                                    ComponentService componentService = CompositeConfigurationBuilderImpl.getPromotedComponentService(compositeService);
+                                    ComponentService componentService = ServiceConfigurationUtil.getPromotedComponentService(compositeService);
                                     if (componentService != null) {
                                         promotedReference.getTargets().add(componentService);
                                     }
@@ -870,7 +870,7 @@ public class CompositeWireBuilderImpl {
     }
 
     
-    public void computePolicies(Composite composite) {
+    private void computePolicies(Composite composite) {
     
         for (Component component : composite.getComponents()) {
 
@@ -878,12 +878,12 @@ public class CompositeWireBuilderImpl {
             // This must be done BEFORE computing implementation policies because the
             // implementation policy computer removes from the component any
             // intents and policy sets that don't apply to implementations.
-            bindingPolicyComputer.inheritDefaultPolicies(component, component.getServices());
-            bindingPolicyComputer.inheritDefaultPolicies(component, component.getReferences());
+            PolicyConfigurationUtil.inheritDefaultPolicies(component, component.getServices());
+            PolicyConfigurationUtil.inheritDefaultPolicies(component, component.getReferences());
 
             Implementation implemenation = component.getImplementation(); 
             try {
-                implPolicyComputer.computeImplementationIntentsAndPolicySets(implemenation, component);
+                PolicyConfigurationUtil.computeImplementationIntentsAndPolicySets(implemenation, component);
             } catch ( Exception e ) {
                 warning("Policy related exception: " + e, e);
                 //throw new RuntimeException(e);
@@ -918,11 +918,11 @@ public class CompositeWireBuilderImpl {
                 
                 try {
                     //compute the intents for operations under service element
-                    bindingPolicyComputer.computeIntentsForOperations(componentService);
+                    PolicyConfigurationUtil.computeIntentsForOperations(componentService);
                     //compute intents and policyset for each binding
                     //addInheritedOpConfOnBindings(componentService);
-                    bindingPolicyComputer.computeBindingIntentsAndPolicySets(componentService);
-                    bindingPolicyComputer.determineApplicableBindingPolicySets(componentService, null);
+                    PolicyConfigurationUtil.computeBindingIntentsAndPolicySets(componentService);
+                    PolicyConfigurationUtil.determineApplicableBindingPolicySets(componentService, null);
     
                 } catch ( Exception e ) {
                     warning("Policy related exception: " + e, e);
@@ -941,11 +941,11 @@ public class CompositeWireBuilderImpl {
                
                 try {
                     //compute the intents for operations under reference element
-                    bindingPolicyComputer.computeIntentsForOperations(componentReference);
+                    PolicyConfigurationUtil.computeIntentsForOperations(componentReference);
                     //compute intents and policyset for each binding
                     //addInheritedOpConfOnBindings(componentReference);
-                    bindingPolicyComputer.computeBindingIntentsAndPolicySets(componentReference);
-                    bindingPolicyComputer.determineApplicableBindingPolicySets(componentReference, null);
+                    PolicyConfigurationUtil.computeBindingIntentsAndPolicySets(componentReference);
+                    PolicyConfigurationUtil.determineApplicableBindingPolicySets(componentReference, null);
     
                 
                     if ( componentReference.getCallback() != null ) {
@@ -962,19 +962,19 @@ public class CompositeWireBuilderImpl {
             }
         }
 
-        bindingPolicyComputer.inheritDefaultPolicies(composite, composite.getServices());
-        bindingPolicyComputer.inheritDefaultPolicies(composite, composite.getReferences());
+        PolicyConfigurationUtil.inheritDefaultPolicies(composite, composite.getServices());
+        PolicyConfigurationUtil.inheritDefaultPolicies(composite, composite.getReferences());
 
         //compute policies for composite service bindings
         for (Service service : composite.getServices()) {
             addPoliciesFromPromotedService((CompositeService)service);
             try {
                 //compute the intents for operations under service element
-                bindingPolicyComputer.computeIntentsForOperations(service);
+                PolicyConfigurationUtil.computeIntentsForOperations(service);
                 //add or merge service operations to the binding
                 //addInheritedOpConfOnBindings(service);
-                bindingPolicyComputer.computeBindingIntentsAndPolicySets(service);
-                bindingPolicyComputer.determineApplicableBindingPolicySets(service, null);
+                PolicyConfigurationUtil.computeBindingIntentsAndPolicySets(service);
+                PolicyConfigurationUtil.determineApplicableBindingPolicySets(service, null);
             } catch ( Exception e ) {
                 warning("Policy related exception: " + e, e);
                 //throw new RuntimeException(e);
@@ -987,7 +987,7 @@ public class CompositeWireBuilderImpl {
             addPoliciesFromPromotedReference(compReference);
             try {
                 //compute the intents for operations under service element
-                bindingPolicyComputer.computeIntentsForOperations(reference);
+                PolicyConfigurationUtil.computeIntentsForOperations(reference);
                 //addInheritedOpConfOnBindings(reference);
                 
                 if (compReference.getCallback() != null) {
@@ -998,8 +998,8 @@ public class CompositeWireBuilderImpl {
                                            false);
                 }
                 
-                bindingPolicyComputer.computeBindingIntentsAndPolicySets(reference);
-                bindingPolicyComputer.determineApplicableBindingPolicySets(reference, null);
+                PolicyConfigurationUtil.computeBindingIntentsAndPolicySets(reference);
+                PolicyConfigurationUtil.determineApplicableBindingPolicySets(reference, null);
             } catch ( Exception e ) {
                 warning("Policy related exception: " + e, e);
                 //throw new RuntimeException(e);

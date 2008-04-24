@@ -59,7 +59,6 @@ import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
-import org.apache.tuscany.sca.assembly.builder.impl.CompositeConfigurationBuilderImpl;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeIncludeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
@@ -88,6 +87,7 @@ import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.apache.tuscany.sca.implementation.node.NodeImplementation;
+import org.apache.tuscany.sca.implementation.node.builder.impl.NodeConfigurationBuilderImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
@@ -130,10 +130,11 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     private URLArtifactProcessor<Contribution> contributionContentProcessor;
     private StAXArtifactProcessor<Composite> compositeProcessor;
     private XMLOutputFactory outputFactory;
-    private CompositeBuilder compositeBuilder;
-    private CompositeIncludeBuilderImpl compositeIncludeBuilder;
-    private CompositeConfigurationBuilderImpl compositeConfigurationBuilder;
     private ContributionDependencyBuilder contributionDependencyBuilder;
+    private CompositeBuilder compositeBuilder;
+    private CompositeBuilder compositeIncludeBuilder;
+    private CompositeBuilder nodeConfigurationBuilder;
+    private Monitor monitor;
     
     /**
      * Initialize the component.
@@ -173,25 +174,16 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        Monitor monitor = monitorFactory.createMonitor();
+        monitor = monitorFactory.createMonitor();
         
         // Create contribution and composite builders
         contributionDependencyBuilder = new ContributionDependencyBuilderImpl(monitor);
         SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         IntentAttachPointTypeFactory intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
         InterfaceContractMapper contractMapper = utilities.getUtility(InterfaceContractMapper.class);
-        
-        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory,
-                                                    contractMapper, monitor);
-        
+        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, contractMapper, monitor);
         compositeIncludeBuilder = new CompositeIncludeBuilderImpl(monitor);
-        
-        compositeConfigurationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, 
-                                                                             scaBindingFactory, 
-                                                                             intentAttachPointTypeFactory,
-                                                                             contractMapper,
-                                                                             monitor);
-        
+        nodeConfigurationBuilder = new NodeConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, contractMapper, null, monitor);
     }
     
     public Entry<String, Item>[] getAll() {
@@ -385,7 +377,11 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             domainComposite.getIncludes().add(deployable);
 
             // Fuse includes into the deployable composite
-            compositeIncludeBuilder.fuseIncludes(deployable);
+            try {
+                compositeIncludeBuilder.build(deployable);
+            } catch (CompositeBuilderException e) {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+            }
             
             // store away the composite we are generating the deployable XML for. 
             if (qname.equals(deployable.getName())){
@@ -417,22 +413,24 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             
             // find the node that will run this composite and the default
             // bindings that it configures
-            Component node = null;
+            Component nodeComponent = null;
             for (Composite cloudComposite : cloudsComposite.getIncludes()) {
                 for (Component nc : cloudComposite.getComponents()) {
                     NodeImplementation nodeImplementation = (NodeImplementation)nc.getImplementation();
                     if (nodeImplementation.getComposite().getName().equals(compositeName) &&
                         nodeImplementation.getComposite().getURI().equals(contributionURI)) {
-                        node = nc;
+                        nodeComponent = nc;
+                        nodeImplementation.setComposite(composite);
                         break;
                     }
                 }
             }
 
-            if (node != null) {
+            if (nodeComponent != null) {
                 try {
-                    List<Binding> defaultBindings = node.getServices().get(0).getBindings();
-                    compositeConfigurationBuilder.configureBindingURIs(composite, null, defaultBindings);
+                    Composite nodeComposite = assemblyFactory.createComposite();
+                    nodeComposite.getComponents().add(nodeComponent);
+                    nodeConfigurationBuilder.build(nodeComposite);
                 } catch (CompositeBuilderException e) {
                     throw new ServletException(e);
                 }

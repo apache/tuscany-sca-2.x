@@ -42,7 +42,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
-import org.apache.tuscany.sca.assembly.builder.impl.CompositeConfigurationBuilderImpl;
+import org.apache.tuscany.sca.assembly.builder.impl.ComponentConfigurationBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
@@ -124,7 +124,6 @@ public class ContributionSPIsTestCase {
     static List<ContributionListener> contributionListeners;
     
     static CompositeBuilder compositeBuilder;
-    static CompositeConfigurationBuilderImpl compositeConfigurationBuilder;
     
     @BeforeClass
     public static void init() throws Exception {
@@ -193,13 +192,6 @@ public class ContributionSPIsTestCase {
                                                         contractMapper, 
                                                         monitor);
             
-            compositeConfigurationBuilder = new CompositeConfigurationBuilderImpl(assemblyFactory, 
-                                                                                  scaBindingFactory, 
-                                                                                  intentAttachPointTypeFactory,
-                                                                                  contractMapper,
-                                                                                  monitor);            
-            
-
         } catch(Exception ex){
             ex.printStackTrace();
         } 

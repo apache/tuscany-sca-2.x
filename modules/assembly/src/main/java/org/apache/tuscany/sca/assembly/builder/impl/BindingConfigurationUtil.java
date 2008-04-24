@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 /**
  * This class encapsulates utility methods to deal with binding definitions
  */
-class BindingUtil {
+abstract class BindingConfigurationUtil {
     private static boolean hasCompatiblePolicySets(Binding refBinding, Binding svcBinding) {
         boolean isCompatible = true;
         if ( refBinding instanceof PolicySetAttachPoint && svcBinding instanceof PolicySetAttachPoint ) {
@@ -56,7 +56,7 @@ class BindingUtil {
     }
     
     
-    public static Binding matchBinding(Component component, ComponentService service, List<Binding> source, List<Binding> target) {
+    static Binding matchBinding(Component component, ComponentService service, List<Binding> source, List<Binding> target) {
         List<Binding> matched = new ArrayList<Binding>();
         // Find the corresponding bindings from the service side
         for (Binding binding : source) {

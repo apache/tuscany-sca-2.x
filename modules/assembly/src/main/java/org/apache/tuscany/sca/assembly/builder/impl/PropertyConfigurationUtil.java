@@ -42,7 +42,6 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentProperty;
@@ -56,7 +55,7 @@ import org.xml.sax.InputSource;
  * Utility class to deal with processing of component properties that are taking values from the parent 
  * composite's properties or an external file.
  */
-public class PropertyUtil {
+abstract class PropertyConfigurationUtil {
     private static final DocumentBuilderFactory DOC_BUILDER_FACTORY = DocumentBuilderFactory.newInstance();
     private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
     

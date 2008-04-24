@@ -26,14 +26,20 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
-public class CompositeIncludeBuilderImpl {
+public class CompositeIncludeBuilderImpl implements CompositeBuilder {
     
     public static Logger logger = Logger.getLogger(CompositeIncludeBuilderImpl.class.getName());
 	
     public CompositeIncludeBuilderImpl(Monitor monitor) {
+    }
+
+    public void build(Composite composite) throws CompositeBuilderException {
+        fuseIncludes(composite);
     }
 
     /**
@@ -48,7 +54,7 @@ public class CompositeIncludeBuilderImpl {
                 logger.warning("Composite " + include.getName() + " has already been included.");
                 continue;
             }
-        		
+                        
             includes.add(include);
             visited.add(include);
             collectIncludes(include, includes, visited);
@@ -60,7 +66,7 @@ public class CompositeIncludeBuilderImpl {
      * 
      * @param composite
      */
-    public void fuseIncludes(Composite composite) {
+    private void fuseIncludes(Composite composite) {
     
         // First collect all includes
         List<Composite> includes = new ArrayList<Composite>();

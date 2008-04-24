@@ -44,7 +44,7 @@ public class CompositeBuilderTestCase extends TestCase {
         assemblyFactory = null;
     }
     
-    public void testFuseIncludes() {
+    public void testFuseIncludes() throws Exception {
         Composite c1 = assemblyFactory.createComposite();
         c1.setName(new QName("http://foo", "C1"));
         Component a = assemblyFactory.createComponent();
@@ -68,7 +68,7 @@ public class CompositeBuilderTestCase extends TestCase {
         c.setName(new QName("http://foo", "C"));
         c.getIncludes().add(c1);
         
-        new CompositeIncludeBuilderImpl(null).fuseIncludes(c);
+        new CompositeIncludeBuilderImpl(null).build(c);
         
         assertTrue(c.getComponents().get(0).getName().equals("a"));
         assertTrue(c.getComponents().get(1).getName().equals("b"));
@@ -76,7 +76,7 @@ public class CompositeBuilderTestCase extends TestCase {
         assertTrue(c.getReferences().get(0).getName().equals("r"));
     }
     
-    public void testExpandComposites() {
+    public void testExpandComposites() throws Exception {
         Composite c1 = assemblyFactory.createComposite();
         c1.setName(new QName("http://foo", "C1"));
         Component a = assemblyFactory.createComponent();
@@ -110,7 +110,7 @@ public class CompositeBuilderTestCase extends TestCase {
         z.setImplementation(c1);
         c.getComponents().add(z);
         
-        new CompositeCloneBuilderImpl(null).expandCompositeImplementations(c);
+        new CompositeCloneBuilderImpl(null).build(c);
         
         assertTrue(c.getComponents().get(0).getImplementation() != c1);
         assertTrue(c.getComponents().get(1).getImplementation() != c2);

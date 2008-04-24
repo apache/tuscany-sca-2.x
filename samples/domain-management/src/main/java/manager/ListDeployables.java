@@ -46,7 +46,13 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor;
 
 /**
- * Sample ListDeployables task
+ * Sample ListDeployables task.
+ *
+ * This sample shows how to use a subset of Tuscany to read contribution
+ * metadata.
+ * 
+ * The sample reads the SCA metadata for two sample contributions then
+ * prints the names of their deployable composites.
  *
  * @version $Rev$ $Date$
  */

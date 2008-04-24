@@ -26,11 +26,22 @@ import java.util.List;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.Implementation;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.monitor.Monitor;
 
-public class CompositeCloneBuilderImpl {
+/**
+ * A composite builder that clones nested composites.
+ *
+ * @version $Rev$ $Date$
+ */
+public class CompositeCloneBuilderImpl implements CompositeBuilder {
     
     public CompositeCloneBuilderImpl(Monitor monitor) {
+    }
+    
+    public void build(Composite composite) throws CompositeBuilderException {
+        expandCompositeImplementations(composite);
     }
 
     /**
@@ -39,7 +50,7 @@ public class CompositeCloneBuilderImpl {
      * @param composite
      * @param problems
      */
-    public void expandCompositeImplementations(Composite composite) {
+    private void expandCompositeImplementations(Composite composite) {
         for (Component component : composite.getComponents()) {
             Implementation implementation = component.getImplementation();
             if (implementation instanceof Composite) {
@@ -79,7 +90,7 @@ public class CompositeCloneBuilderImpl {
      * 
      * @param composite
      */
-    public void fuseCompositeImplementations(Composite composite) {
+    private void fuseCompositeImplementations(Composite composite) {
     
         // First collect all nested composites
         List<Composite> nested = new ArrayList<Composite>();
