@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.workspace.manager.impl;
+package org.apache.tuscany.sca.domain.manager.impl;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
  *
  * @version $Rev$ $Date$
  */
-public class AdminTestCase extends TestCase {
+public class DomainManagerTestCase extends TestCase {
     
     private ContributionCollectionImpl contributionCollection;
     private DeployableCompositeCollectionImpl deployableCollection;
