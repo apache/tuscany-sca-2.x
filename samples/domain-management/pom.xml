@@ -189,6 +189,19 @@
        	<finalName>${artifactId}</finalName>
         <plugins>
             <plugin>
+                <groupId>org.apache.tuscany.sca</groupId>
+                <artifactId>tuscany-maven-ant-generator</artifactId>
+                <version>2.0-incubating-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
