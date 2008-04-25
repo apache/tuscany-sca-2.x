@@ -24,6 +24,7 @@ import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -86,6 +87,7 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
@@ -94,7 +96,9 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
 public class ReallySmallRuntimeBuilder {
-
+    
+	private final static Logger logger = Logger.getLogger(ReallySmallRuntimeBuilder.class.getName());
+	
     public static ProxyFactory createProxyFactory(ExtensionPointRegistry registry,
                                                   InterfaceContractMapper mapper,
                                                   MessageFactory messageFactory) {
@@ -181,7 +185,8 @@ public class ReallySmallRuntimeBuilder {
                                                                 AssemblyFactory assemblyFactory,
                                                                 PolicyFactory policyFactory,
                                                                 InterfaceContractMapper mapper,
-                                                                List scaDefinitionsSink)
+                                                                List scaDefinitionsSink,
+                                                                Monitor monitor)
         throws ActivationException {
 
         // Create a new XML input factory
@@ -203,8 +208,9 @@ public class ReallySmallRuntimeBuilder {
         });           
         schemas.addSchema(schemaURL.toString());
         
+       
         // Create a validating XML input factory
-        XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas);
+        XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, monitor);
         
         // Create StAX artifact processor extension point
         StAXArtifactProcessorExtensionPoint staxProcessors =
@@ -219,7 +225,7 @@ public class ReallySmallRuntimeBuilder {
         });           
         ExtensibleStAXArtifactProcessor staxProcessor =
             new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, staxProcessor));
+        staxProcessors.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, staxProcessor, monitor));
         staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
         staxProcessors
             .addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));

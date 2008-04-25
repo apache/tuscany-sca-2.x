@@ -23,6 +23,7 @@ import java.io.File;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -47,6 +48,9 @@ public class DuplicateComponentNameTestCase extends TestCase {
         node = nodeFactory.createSCANode(new File("src/main/resources/DuplicateComponentName/Calculator.composite").toURL().toString(),
         		                 new SCAContribution("TestContribution", 
         		                                     new File("src/main/resources/DuplicateComponentName").toURL().toString()));
+        /*
+        node = SCANode2Factory.createSCANodeWithComposite("DuplicateComponentName/Calculator.composite");
+        */
         node.start();
         calculatorService = ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
     }
@@ -58,7 +62,8 @@ public class DuplicateComponentNameTestCase extends TestCase {
 
     public void testCalculator() throws Exception {
         ExtensionPointRegistry registry = ((NodeImpl)node).getExtensionPointRegistry();
-        MonitorFactory monitorFactory = registry.getExtensionPoint(MonitorFactory.class);
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         Monitor monitor = monitorFactory.createMonitor();
         Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
         

@@ -23,6 +23,7 @@ import java.io.File;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
@@ -58,7 +59,8 @@ public class ReferenceIncompatibleInterfaceTestCase extends TestCase {
 
     public void testCalculator() throws Exception {
         ExtensionPointRegistry registry = ((NodeImpl)node).getExtensionPointRegistry();
-        MonitorFactory monitorFactory = registry.getExtensionPoint(MonitorFactory.class);
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         Monitor monitor = monitorFactory.createMonitor();
         Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
         

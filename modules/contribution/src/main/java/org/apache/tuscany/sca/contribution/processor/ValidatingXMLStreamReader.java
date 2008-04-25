@@ -36,6 +36,10 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.AttributesImpl;
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * 
@@ -48,6 +52,7 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
     
     private int level;
     private ValidatorHandler handler;
+    private final Monitor monitor;
     
     /**
      * Constructs a new ValidatingXMLStreamReader.
@@ -56,8 +61,9 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
      * @param schema
      * @throws XMLStreamException
      */
-    ValidatingXMLStreamReader(XMLStreamReader reader, Schema schema) throws XMLStreamException {
+    ValidatingXMLStreamReader(XMLStreamReader reader, Schema schema, Monitor monitor) throws XMLStreamException {
         super(reader);
+        this.monitor = monitor;
         if (schema == null) {
             return;
         }
@@ -73,23 +79,59 @@ class ValidatingXMLStreamReader extends StreamReaderDelegate implements XMLStrea
         // These validation errors are just warnings for us as we want to support
         // running from an XML document with XSD validation errors, as long as we can
         // get the metadata we need from the document
-        handler.setErrorHandler(new ErrorHandler() {
+        handler.setErrorHandler(new ErrorHandler() {        	
             private String getMessage(SAXParseException e) {
                 return "XMLSchema validation problem in: " + e.getSystemId() + ", line: " + e.getLineNumber() + ", column: " + e.getColumnNumber() + "\n" + e.getMessage();
             }
             
-            public void error(SAXParseException exception) throws SAXException {
-                logger.warning(getMessage(exception));
+            public void error(SAXParseException exception) throws SAXException {            	
+            	if (ValidatingXMLStreamReader.this.monitor == null)
+            		logger.warning(getMessage(exception));
+            	else            		
+            		ValidatingXMLStreamReader.this.error("SchemaError", ValidatingXMLStreamReader.this.getClass(), exception.getSystemId(), 
+                   		exception.getLineNumber(), exception.getColumnNumber(), exception.getMessage());                              
             }
             
-            public void fatalError(SAXParseException exception) throws SAXException {
-                logger.warning(getMessage(exception));
+            public void fatalError(SAXParseException exception) throws SAXException {            	
+            	if (ValidatingXMLStreamReader.this.monitor == null)
+            		logger.warning(getMessage(exception));
+            	else
+            		ValidatingXMLStreamReader.this.error("SchemaFatalError", ValidatingXMLStreamReader.this.getClass(), exception.getSystemId(), 
+                       	exception.getLineNumber(), exception.getColumnNumber(), exception.getMessage());               
             }
             
             public void warning(SAXParseException exception) throws SAXException {
-                logger.warning(getMessage(exception));
+            	if (ValidatingXMLStreamReader.this.monitor == null)
+            		logger.warning(getMessage(exception));
+            	else
+            		ValidatingXMLStreamReader.this.warning("SchemaWarning", ValidatingXMLStreamReader.this.getClass(), exception.getSystemId(), 
+                       	exception.getLineNumber(), exception.getColumnNumber(), exception.getMessage());                
             }
         });
+    }
+    
+    /**
+     * Report a warning.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void warning(String message, Object model, Object... messageParameters) {
+        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+        monitor.problem(problem);
+    }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+        monitor.problem(problem);
     }
 
     @Override
