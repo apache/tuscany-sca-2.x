@@ -40,6 +40,7 @@
                 <module>java2wsdl</module>
                 <module>maven</module>
                 <module>wsdl2java</module>
+                <module>runtime-inspector</module>
             </modules>
         </profile>
     </profiles>
