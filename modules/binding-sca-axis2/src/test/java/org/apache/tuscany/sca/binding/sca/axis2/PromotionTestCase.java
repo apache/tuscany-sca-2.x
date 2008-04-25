@@ -18,24 +18,27 @@
  */
 package org.apache.tuscany.sca.binding.sca.axis2;
 
+import junit.framework.Assert;
+
+import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class PromotionTestCase extends BaseTest {
+public class PromotionTestCase {
     
     public static TestNode nodeA;
     public static TestNode nodeB;
 
     @BeforeClass
     public static void init() throws Exception {
-        System.out.println("Setting up distributed nodes");
+        System.out.println("Setting up nodes");
 
         try {
             // create and start domains
-            nodeA = createNode("http://localhost:8100/nodeC");
-            nodeB = createNode("http://localhost:8200/nodeD");
-            testDomain.start();
+            nodeA = new TestNode("nodeC");
+            nodeB = new TestNode("nodeD");
+
             nodeA.start();
             nodeB.start();
 
@@ -48,17 +51,16 @@ public class PromotionTestCase extends BaseTest {
 
     @AfterClass
     public static void destroy() throws Exception {
-        nodeA.destroy();
-        nodeB.destroy();
-    }    
+        nodeA.stop();
+        nodeB.stop();
+    }     
     
     @Test
     public void testHelloWorldPromotion() throws Exception {  
-/*        
         HelloWorldClient helloWorldClientA;
         helloWorldClientA = nodeA.getService(HelloWorldClient.class, "AHelloWorldClientRemotePromotion");
         Assert.assertEquals(helloWorldClientA.getGreetings("fred"), "Hello fred");
-*/
+
     }      
   
 }

@@ -19,22 +19,22 @@
 
 package org.apache.tuscany.sca.itest.oneway;
 
+import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import javax.xml.namespace.QName;
-
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.core.invocation.NonBlockingInterceptor;
-import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.itest.oneway.impl.OneWayClientImpl;
 import org.apache.tuscany.sca.itest.oneway.impl.OneWayServiceImpl;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.SCAClient;
+import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,11 +51,8 @@ public class OneWayTestCase {
      */
     private static final int MAX_SLEEP_TIME = 10000;
 
-    /**
-     * The SCADomain that we are using for testing.
-     */
-    private SCADomain domain;
-
+    private SCANode2 node;
+    
     /**
      * Initialise the SCADomain.
      *
@@ -63,12 +60,15 @@ public class OneWayTestCase {
      */
     @Before
     public void setUp() throws Exception {
-        SCANode node = SCANodeFactory.newInstance().createSCANode(null, null);
-        node.addContribution("mycontribution",
-                             OneWayTestCase.class.getClassLoader().getResource("OneWayContribution/"));
-        node.addToDomainLevelComposite(new QName("http://oneway", "OneWayITest"));
+        
+        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        node = nodeFactory.createSCANode(new File("src/main/resources/OneWayContribution/META-INF/sca-deployables/oneWay.composite").toURL().toString(),
+                                         new SCAContribution("TestContribution", 
+                                                                     new File("src/main/resources/OneWayContribution").toURL().toString()));
+                
+         
         node.start();
-        domain = node.getDomain();
+        
     }
 
     /**
@@ -78,9 +78,7 @@ public class OneWayTestCase {
      */
     @After
     public void tearDown() throws Exception {
-        if (domain != null) {
-            domain.destroy();
-        }
+        node.stop();
     }
 
     /**
@@ -92,7 +90,7 @@ public class OneWayTestCase {
     @Test
     public void testOneWay() throws Exception {
         OneWayClient client =
-            domain.getService(OneWayClient.class, "OneWayClientComponent");
+            ((SCAClient)node).getService(OneWayClient.class, "OneWayClientComponent");
 
         int count = 100;
 
@@ -128,8 +126,8 @@ public class OneWayTestCase {
     @Test
     public void testOneWayUsingNonBlockingInterceptorThrowsAnException() {
         OneWayClient client =
-            domain.getService(OneWayClient.class, "OneWayClientComponentSCABinding");
-
+            ((SCAClient)node).getService(OneWayClient.class, "OneWayClientComponentSCABinding");
+            
         // We need to modify the JDK Logger for the NonBlockingInterceptor so we
         // can check that it logs a message for the @OneWay invocation that throws
         // an Exception

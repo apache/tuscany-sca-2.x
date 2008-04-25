@@ -19,29 +19,28 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:foo="http://foo" targetNamespace="http://foo"
     name="CompositeA" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <service name="AComponentService" promote="AComponent">
+    <!--service name="AComponentService" promote="AComponent">
         <interface.java interface="org.apache.tuscany.sca.itest.callableref.AComponent" />
-    </service>
+        <binding.sca uri="http://localhost:8084/AComponentService"/>
+    </service-->
 
     <component name="AComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.callableref.AComponentImpl" />
-        <reference name="bReference" target="BComponent" />
-        <reference name="cReference" target="CComponent" />
-        <reference name="cServiceReference" target="CComponent" />
-        <reference name="dReference1" target="DComponent" />
+        <service name="AComponent">
+            <binding.sca uri="http://localhost:8084/AComponent"/>
+        </service>
+        <reference name="bReference">
+            <binding.sca uri="http://localhost:8085/BComponent" />
+        </reference>
+        <reference name="cReference">
+            <binding.sca uri="http://localhost:8085/CComponent" />
+        </reference>        
+        <reference name="cServiceReference">
+            <binding.sca uri="http://localhost:8085/CComponent" />
+        </reference>        
+        <reference name="dReference1">
+            <binding.sca uri="http://localhost:8085/DComponent" />
+        </reference>
     </component>
 
-    <!-- 
-    <component name="BComponent">
-        <implementation.java class="org.apache.tuscany.sca.itest.callableref.BComponentImpl" />
-    </component>
-
-    <component name="CComponent">
-        <implementation.java class="org.apache.tuscany.sca.itest.callableref.CComponentImpl" />
-    </component>
-
-    <component name="DComponent">
-        <implementation.java class="org.apache.tuscany.sca.itest.callableref.DComponentImpl" />
-    </component>
-    -->
 </composite>

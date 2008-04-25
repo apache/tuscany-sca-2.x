@@ -84,9 +84,6 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             (BindingProviderFactory<DistributedSCABinding>)factoryExtensionPoint
                 .getProviderFactory(DistributedSCABinding.class);
 
-        // determine if the target is remote. If we can tell now then this will
-        // do some initialization before we get to run time
-        //isTargetRemote();
     }
 
     public boolean isTargetRemote() {
@@ -95,13 +92,15 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         // first look at the target service and see if this has been resolved
         OptimizableBinding optimizableBinding = (OptimizableBinding)binding;
 
-        // The decision is based primary on the results of the wiring process in the assembly model
-        // however there are two notable situations when this process doesn't give the right answer
-        // 1. When a callback is in operation. A callback reference bindings sometimes has to 
-        //    act as though there is a local wire and sometimes as if there is a remote wire
-        // 2. When a reference is retrieved from the domain. In this case the reference
-        //    will not have been part of the original wiring process and will only have 
-        //    a target set if the target is local 
+        // The decision is based on the results of the wiring process in the assembly model
+        // The SCA binding is used to represent unresolved reference targets, i.e. those
+        // reference targets that need resolving at run time. We can tell by lookin if the 
+        // service to which this binding refers is resolved or not. 
+        //
+        // TODO - When a callback is in operation. A callback reference bindings sometimes has to 
+        //        act as though there is a local wire and sometimes as if there is a remote wire
+        //        what are the implications of this here?
+
         if (optimizableBinding.getTargetComponentService() != null) {
             if (optimizableBinding.getTargetComponentService().isUnresolved() == true) {
                 targetIsRemote = true;
@@ -109,50 +108,14 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                 targetIsRemote = false;
             }
         } else {
-            // deal with the case where the wire is completely dynamic (e.g. callbacks) and
-            // look at the provided URI to decide whether is a local or remote case
+            // the case where the wire is specified by URI, e.g. callbacks or user specified bindings, and
+            // look at the provided URI to decide whether it is a local or remote case
             try {
                 URI uri = new URI(binding.getURI());
                 if (uri.isAbsolute()) {
                     targetIsRemote = true;
                 } else {
-                    // look in the domain to see if this referenced service is available on this node
-                    // or on some other node
-                    String serviceNode = null;
-
-                    SCADomainEventService domainProxy = (SCADomainEventService)nodeFactory.getNode().getDomain();
-
-                    try {
-                        serviceNode =
-                            domainProxy.findServiceNode(nodeFactory.getNode().getDomain().getURI(),
-                                                        binding.getURI(),
-                                                        binding.getClass().getName());
-                    } catch (Exception ex) {
-                        logger.log(Level.WARNING,
-                                   "Unable to contact domain to find service node. Service: " + nodeFactory.getNode()
-                                       .getDomain().getURI()
-                                       + " "
-                                       + nodeFactory.getNode().getURI()
-                                       + " "
-                                       + binding.getURI()
-                                       + " "
-                                       + SCABinding.class.getName());
-
-                    }
-
-                    if (serviceNode.equals(domainProxy.SERVICE_NOT_KNOWN)) {
-                        throw new IllegalStateException("Can't resolve : " + component.getName()
-                            + " and reference: "
-                            + reference.getName()
-                            + " as the service "
-                            + binding.getURI()
-                            + " has not been contributed to the domain");
-                    } else if ((serviceNode.equals(domainProxy.SERVICE_NOT_REGISTERED)) || (!serviceNode
-                        .equals(nodeFactory.getNode().getURI()))) {
-                        targetIsRemote = true;
-                    } else {
-                        targetIsRemote = false;
-                    }
+                    targetIsRemote = false;
                 }
             } catch (Exception ex) {
                 targetIsRemote = false;
@@ -167,7 +130,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             // initialize the remote provider if it hasn't been done already
             if (distributedProvider == null) {
                 if (!reference.getInterfaceContract().getInterface().isRemotable()) {
-                    throw new IllegalStateException("Reference interface not remoteable for component: " + component
+                    throw new IllegalStateException("Reference interface not remotable for component: " + component
                         .getName()
                         + " and reference: "
                         + reference.getName());
@@ -180,13 +143,6 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                         + reference.getName());
                 }
 
-                if ((nodeFactory != null) && (nodeFactory.getNode() == null)) {
-                    throw new IllegalStateException("No distributed domain available for component: " + component
-                        .getName()
-                        + " and reference: "
-                        + reference.getName());
-                }
-
                 // create the remote provider
                 DistributedSCABinding distributedBinding = new DistributedSCABindingImpl();
                 distributedBinding.setSCABinging(binding);
@@ -194,7 +150,6 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
                 distributedProvider =
                     distributedProviderFactory.createReferenceBindingProvider(component, reference, distributedBinding);
             }
-
         }
 
         return distributedProvider;
@@ -220,9 +175,6 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
         }
     }
 
-    /**
-     * @param wire
-     */
     private Invoker getInvoker(RuntimeWire wire, Operation operation) {
         EndpointReference target = wire.getTarget();
         if (target != null) {
@@ -244,16 +196,14 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
             RuntimeWire wire = reference.getRuntimeWire(binding);
             Invoker invoker = getInvoker(wire, operation);
             if (invoker == null) {
-                throw new ServiceUnavailableException("Service not found for component " + component.getName()
+                throw new ServiceUnavailableException("Unable to create SCA binding invoker for local target " + component.getName()
                     + " reference "
                     + reference.getName()
                     + " (bindingURI="
                     + binding.getURI()
                     + " operation="
                     + operation.getName()
-                    + "). Ensure that the composite containing the service is loaded and "
-                    + "started somewhere in the SCA domain and that if running in a "
-                    + "remote node that the interface of the target service marked as @Remotable");
+                    + ")" );
             }
             return invoker;
         }

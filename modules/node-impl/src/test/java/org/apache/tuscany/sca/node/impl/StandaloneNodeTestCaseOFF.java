@@ -38,7 +38,7 @@ import calculator.SubtractService;
  * Runs a distributed domain in a single VM by using and in memory 
  * implementation of the distributed domain
  */
-public class StandaloneNodeTestCase {
+public class StandaloneNodeTestCaseOFF {
     
     private static SCANodeFactory nodeFactory;
     private static SCANode   node;
@@ -56,7 +56,7 @@ public class StandaloneNodeTestCase {
         try {
             System.out.println("Setting up add node");
             
-            cl = StandaloneNodeTestCase.class.getClassLoader();
+            cl = StandaloneNodeTestCaseOFF.class.getClassLoader();
             nodeFactory = SCANodeFactory.newInstance();
             
         } catch(Exception ex){

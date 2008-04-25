@@ -26,6 +26,9 @@
     <!-- composite hierarchy -->
     <component name="BHelloWorldServiceRemotePromotion">
 		<implementation.composite name="sample:HelloWorldComponent" />
+		<service name="BHelloWorldServiceRemoteService">
+		    <binding.sca uri="http://localhost:8085/BHelloWorldServiceRemotePromotion"/>
+		</service>
     </component>   
 
     

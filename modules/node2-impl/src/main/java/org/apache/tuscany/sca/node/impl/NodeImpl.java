@@ -239,6 +239,11 @@ public class NodeImpl implements SCANode2, SCAClient {
         // Include the node composite in the top-level composite 
         tempComposite.getIncludes().add(composite);
         
+        // set the top level composite on the composite activator as 
+        // logic in callable reference resolution relies on this being 
+        // available
+        compositeActivator.setDomainComposite(tempComposite);
+        
         // Build the composite
         runtime.buildComposite(composite);
     }
@@ -354,6 +359,15 @@ public class NodeImpl implements SCANode2, SCAClient {
     public ExtensionPointRegistry getExtensionPointRegistry() {
         return runtime.getExtensionPointRegistry();
     }
+    
+    /**
+     * Returns the composite being run by this node.
+     * 
+     * @return
+     */
+    public Composite getComposite() {
+        return composite;
+    }    
 
     /**
      * Returns contribution JARs available on the classpath.

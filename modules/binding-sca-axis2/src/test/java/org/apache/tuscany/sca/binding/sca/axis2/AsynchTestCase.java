@@ -27,20 +27,20 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class AsynchTestCase extends BaseTest {
+public class AsynchTestCase {
     
     public static TestNode nodeA;
     public static TestNode nodeB;
 
     @BeforeClass
     public static void init() throws Exception {
-        System.out.println("Setting up distributed nodes");
+        System.out.println("Setting up nodes");
 
         try {
             // create and start domains
-            nodeA = createNode("http://localhost:8100/nodeG");
-            nodeB = createNode("http://localhost:8200/nodeH");
-            testDomain.start();
+            nodeA = new TestNode("nodeG");
+            nodeB = new TestNode("nodeH");
+
             nodeA.start();
             nodeB.start();
 
@@ -53,9 +53,9 @@ public class AsynchTestCase extends BaseTest {
 
     @AfterClass
     public static void destroy() throws Exception {
-        nodeA.destroy();
-        nodeB.destroy();
-    }   
+        nodeA.stop();
+        nodeB.stop();
+    }    
     
     @Test
     public void testHelloWorldAsynch() throws Exception {        

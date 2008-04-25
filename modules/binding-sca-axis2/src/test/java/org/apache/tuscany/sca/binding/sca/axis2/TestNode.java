@@ -53,31 +53,26 @@ import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
 
 /**
- * The very minimum domain implementation to get these tests going without creating a dependency on 
- * domain-impl
+ * The very minimum node implementation to get these tests going without creating a dependency on 
+ * any runtime/hosting implementation
  * 
  * @version $Rev: 552343 $ $Date: 2007-09-20 14:53:40 +0100 (Thu, 20 Sep 2007) $
  */
-public class TestNode implements SCANode {
+public class TestNode  {
     
     private final static Logger logger = Logger.getLogger(TestNode.class.getName());    
     
     private String nodeName;
-    private String domainURI;
     private ReallySmallRuntime nodeRuntime;
     
-    private ClassLoader cl = BaseTest.class.getClassLoader();
+    private ClassLoader cl = TestNode.class.getClassLoader();
+    
     private Composite nodeComposite = null;
     private Composite appComposite = null;
     
-    private SCADomain scaDomain;
-        
-    
-    public TestNode(String domainURI, String nodeName, SCADomain domain)
+    public TestNode(String nodeName)
       throws Exception {
-        this.domainURI = domainURI; 
         this.nodeName = nodeName;
-        this.scaDomain = domain;
               
         try {
 
@@ -85,49 +80,24 @@ public class TestNode implements SCANode {
             nodeRuntime = new ReallySmallRuntime(cl);
             nodeRuntime.start();
             
-            // If a non-null domain name is provided make the node available to the model
-            // this causes the runtime to start registering binding-sca service endpoints
-            // with the domain so only makes sense if we know we have a domain to talk to
-            if (domainURI != null) {
-                ModelFactoryExtensionPoint factories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
-                NodeFactoryImpl nodeFactory = new NodeFactoryImpl(this);
-                factories.addFactory(nodeFactory);    
-            }
- 
-            // Configure the default server port
-            int port = URI.create(nodeName).getPort();
-            if (port != -1) {
-                ServletHostExtensionPoint servletHosts = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ServletHostExtensionPoint.class);
-                for (ServletHost servletHost: servletHosts.getServletHosts()) {
-                    servletHost.setDefaultPort(port);
-                }
-            }
-            
             // Create an in-memory domain level composite
             AssemblyFactory assemblyFactory = nodeRuntime.getAssemblyFactory();
             nodeComposite = assemblyFactory.createComposite();
             nodeComposite.setName(new QName(Constants.SCA10_NS, "domain"));
-            nodeComposite.setURI(domainURI);
+            nodeComposite.setURI("http://localhost");
             
             // add the top level composite into the composite activator
-            nodeRuntime.getCompositeActivator().setDomainComposite(nodeComposite);  
-            
-            // make the domain available to the model. 
-            ModelFactoryExtensionPoint factories = nodeRuntime.getExtensionPointRegistry().getExtensionPoint(ModelFactoryExtensionPoint.class);
-            NodeFactoryImpl domainFactory = new NodeFactoryImpl(this);
-            factories.addFactory(domainFactory);                       
+            nodeRuntime.getCompositeActivator().setDomainComposite(nodeComposite);                     
 
             // add a contribution to the domain
             ContributionService contributionService = nodeRuntime.getContributionService();
 
             // find the current directory as a URL. This is where our contribution 
             // will come from
-            String contributionDirectory = nodeName.substring(nodeName.lastIndexOf('/') + 1);
-            URL contributionURL = Thread.currentThread().getContextClassLoader().getResource(contributionDirectory + "/");
+            URL contributionURL = Thread.currentThread().getContextClassLoader().getResource(nodeName + "/");
 
             // Contribute the SCA application
-            Contribution contribution = contributionService.contribute("http://calculator", contributionURL, null, //resolver, 
-                                                                       false);
+            Contribution contribution = contributionService.contribute("http://calculator", contributionURL, null, false);
             appComposite = contribution.getDeployables().get(0);
 
             // Add the deployable composite to the domain
@@ -135,12 +105,9 @@ public class TestNode implements SCANode {
             nodeRuntime.buildComposite(appComposite);
             nodeRuntime.getCompositeActivator().activate(appComposite);
             
-            ((TestDomain)domain).addComposite(appComposite);
-            
-            //registerRemoteServices(appComposite);
 
         } catch (Exception ex) {
-            System.err.println("Exception when creating domain " + ex.getMessage());
+            System.err.println("Exception when creating node " + ex.getMessage());
             ex.printStackTrace(System.err);
             throw ex;
         }         
@@ -150,7 +117,6 @@ public class TestNode implements SCANode {
         throws NodeException {
         
         try {
-
             nodeRuntime.getCompositeActivator().start(appComposite);
         } catch (Exception ex) {
             System.err.println("Exception when creating domain " + ex.getMessage());
@@ -159,11 +125,7 @@ public class TestNode implements SCANode {
         
     }
     
-    public void stop() 
-      throws NodeException {
-    }
-    
-    public void destroy() throws NodeException {
+    public void stop() throws NodeException {
         try {
             nodeRuntime.stop();
         } catch(Exception ex) {
@@ -171,35 +133,6 @@ public class TestNode implements SCANode {
         }
     }
     
-        
-    public String getURI(){
-        return nodeName;
-    }
-    
-    public SCADomain getDomain(){
-        return scaDomain;
-    }
-    
-    public void addContribution(String contributionURI, URL contributionURL) throws NodeException {
-        addContribution(contributionURI, contributionURL, null);
-    }
-        
-    public void addContribution(String contributionURI, URL contributionURL, ClassLoader contributionClassLoader ) throws NodeException {
-       
-    }
-    
-    public void removeContribution(String contributionURI) throws NodeException {
-    }
-
-    public void removeContributions() throws NodeException {
- 
-    }
-    
-    public void addToDomainLevelComposite(QName compositeName) throws NodeException {
-    }
-    
-    public void addToDomainLevelComposite(String compositePath) throws NodeException {
-    }
     
     public <B> B getService(Class<B> businessInterface, String serviceName) {
         ServiceReference<B> serviceReference = getServiceReference(businessInterface, serviceName);
@@ -302,8 +235,6 @@ public class TestNode implements SCANode {
             }
         }
     }
-
-    public void startContribution(String contributionURI) throws NodeException {
-    }     
+   
 }
 

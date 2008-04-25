@@ -19,26 +19,26 @@
 
 package org.apache.tuscany.sca.itest.conversational;
 
-import javax.xml.namespace.QName;
+import java.io.File;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatefulImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatefulNonConversationalCallbackImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatefulImpl;
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatelessImpl;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.SCAClient;
+import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class StatelessStatelessTestCase {
 
-    private static SCADomain domain;
-    private static SCANode node;
+    private static SCANode2 node;
     private static ConversationalClient conversationalStatelessClientStatelessService;
     private static ConversationalClient conversationalStatelessClientStatefulService;
     private static ConversationalClient conversationalStatefulClientStatelessService;
@@ -48,47 +48,47 @@ public class StatelessStatelessTestCase {
 
     @BeforeClass
     public static void setUp() throws Exception {
-    	try {
-                node = SCANodeFactory.newInstance().createSCANode(null, null);
-                node.addContribution("mycontribution",
-                                     StatefulStatefulTestCase.class.getResource("/Conversational/."));                                                                     
-                node.addToDomainLevelComposite(new QName("http://conversations", "ConversationalITest"));
-                node.start();
-                domain = node.getDomain();
-	
-	        conversationalStatelessClientStatelessService = domain.getService(ConversationalClient.class,
-	                                                                          "ConversationalStatelessClientStatelessService");
-	
-	        conversationalStatelessClientStatefulService  = domain.getService(ConversationalClient.class,
-	                                                                          "ConversationalStatelessClientStatefulService");
-	
-	        conversationalStatefulClientStatelessService  = domain.getService(ConversationalClient.class,
-	                                                                          "ConversationalStatefulClientStatelessService");
-	
-	        conversationalStatefulClientStatefulService   = domain.getService(ConversationalClient.class,
-	                                                                          "ConversationalStatefulClientStatefulService");
-	        conversationalStatelessClientRequestService    = domain.getService(ConversationalClient.class,
-	                                                                          "ConversationalStatelessClientRequestService");
-	        conversationalStatefulClientNonConversationalCallbackStatelessService    = domain.getService(ConversationalClient.class,
-	                                                                          "ConversationalStatefulClientNonConversationalCallbackStatefulService");
-	        
-	        // reset the place where we record the sequence of calls passing
-	        // through each component instance
-	        ConversationalServiceStatelessImpl.calls = new StringBuffer();
-	        ConversationalServiceStatefulImpl.calls  = new StringBuffer();
-	        ConversationalClientStatelessImpl.calls  = new StringBuffer();         
-	        ConversationalClientStatefulImpl.calls   = new StringBuffer();
+        try {
+            SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+            node = nodeFactory.createSCANode(new File("src/main/resources/Conversational/conversational.composite").toURL().toString(),
+                                             new SCAContribution("TestContribution", 
+                                                                 new File("src/main/resources/Conversational").toURL().toString()));
+                    
+             
+            node.start();
+            
+            conversationalStatelessClientStatelessService = ((SCAClient)node).getService(ConversationalClient.class, 
+                                                                                  "ConversationalStatelessClientStatelessService");
         
-    	} catch(Exception ex) {
-    		System.err.println(ex.toString());
-    	}
+            conversationalStatelessClientStatefulService  = ((SCAClient)node).getService(ConversationalClient.class, 
+                                                                                  "ConversationalStatelessClientStatefulService");
+        
+            conversationalStatefulClientStatelessService  = ((SCAClient)node).getService(ConversationalClient.class, 
+                                                                                  "ConversationalStatefulClientStatelessService");
+        
+            conversationalStatefulClientStatefulService   = ((SCAClient)node).getService(ConversationalClient.class, 
+                                                                                  "ConversationalStatefulClientStatefulService");
+            conversationalStatelessClientRequestService    = ((SCAClient)node).getService(ConversationalClient.class, 
+                                                                                  "ConversationalStatelessClientRequestService");
+            conversationalStatefulClientNonConversationalCallbackStatelessService    = ((SCAClient)node).getService(ConversationalClient.class, 
+                                                                                  "ConversationalStatefulClientNonConversationalCallbackStatefulService");
+                
+            // reset the place where we record the sequence of calls passing
+            // through each component instance
+            ConversationalServiceStatelessImpl.calls = new StringBuffer();
+            ConversationalServiceStatefulImpl.calls  = new StringBuffer();
+            ConversationalClientStatelessImpl.calls  = new StringBuffer();         
+            ConversationalClientStatefulImpl.calls   = new StringBuffer();
+        
+        } catch(Exception ex) {
+                System.err.println(ex.toString());
+        }
                
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        node.destroy();
-        domain = null;
+        node.stop();
         conversationalStatelessClientStatelessService = null;
         conversationalStatelessClientStatefulService = null;
         conversationalStatefulClientStatelessService = null;

@@ -27,13 +27,17 @@
     <component name="BHelloWorldServiceCallbackRemote">
         <implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldServiceCallbackRemoteImpl" />
         <service name="HelloWorldServiceCallbackRemote">
+            <binding.sca uri="http://localhost:8085/BHelloWorldServiceCallbackRemote"/>
+            <callback>
+                <binding.sca uri="http://localhost:8084/AHelloWorldClientCallbackRemote"/>
+            </callback>            
         </service>
     </component>
     
     <!-- callback local wire -->   
-    <!--component name="BHelloWorldClientCallbackLocal">
+    <component name="BHelloWorldClientCallbackLocal">
 		<implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldClientCallbackRemoteImpl" />
         <reference name="helloWorldService" target="BHelloWorldServiceCallbackRemote" />
-    </component-->
+    </component>
 
 </composite>

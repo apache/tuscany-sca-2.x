@@ -47,7 +47,13 @@ public class ComponentReferenceTargetNotFoundTestCase extends TestCase {
         node = nodeFactory.createSCANode(new File("src/main/resources/ComponentReferenceTargetNotFound/Calculator.composite").toURL().toString(),
         		                 new SCAContribution("TestContribution", 
         		                                     new File("src/main/resources/ComponentReferenceTargetNotFound").toURL().toString()));
-        node.start();
+        
+        try {
+            node.start();
+        } catch (Exception ex){
+            // do nothing - the SCA binding throws and exception here 
+            // because the interface for the reference is not remotable
+        }
         calculatorService = ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
     }
 

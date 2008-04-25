@@ -31,12 +31,6 @@
     <name>Apache Tuscany SCA Axis2-based Default Binding Extension</name>
 
     <dependencies>
-    
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-node</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
-        </dependency>    
        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>

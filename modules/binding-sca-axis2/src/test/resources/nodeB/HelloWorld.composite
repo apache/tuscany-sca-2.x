@@ -29,11 +29,17 @@
     <!-- unresolved remote wire --> 
     <component name="BHelloWorldServiceRemote">
         <implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldServiceRemoteImpl" />
+        <service name="HelloWorldServiceRemote">
+            <binding.sca uri="http://localhost:8085/BHelloWorldServiceRemote"/>
+        </service>
     </component>
     
     <!-- local and remote wires -->
     <component name="BHelloWorldServiceLocalAndRemote">
         <implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldServiceRemoteImpl" />
+        <service name="HelloWorldServiceRemote">
+            <binding.sca uri="http://localhost:8085/BHelloWorldServiceLocalAndRemote"/>
+        </service>
     </component>
     
     <component name="BHelloWorldClientLocalAndRemote">
@@ -44,6 +50,14 @@
     <!-- multiple services -->
     <component name="BHelloWorldServiceMultipleServices">
         <implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldServiceMultipleServicesImpl" />
+        <service name="HelloWorldServiceLocal">
+        </service>        
+        <service name="HelloWorldServiceRemote">
+            <binding.sca uri="http://localhost:8085/BHelloWorldServiceMultipleServices/HelloWorldServiceRemote"/>
+        </service>        
+        <service name="HelloWorldServiceRemote2">
+            <binding.sca uri="http://localhost:8085/BHelloWorldServiceMultipleServices/HelloWorldServiceRemote2"/>
+        </service>
     </component>
     
     <component name="BHelloWorldClientMultipleServices">
@@ -52,14 +66,14 @@
     </component>
     
     <!-- multiple bindings --> 
-    <!--component name="BHelloWorldMultipleBindings">
+    <component name="BHelloWorldMultipleBindings">
         <implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldServiceRemoteImpl" />
         <service name="HelloWorldServiceRemote">
             <interface.java interface="org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldServiceRemote" />
-            <binding.ws/>
-            <binding.sca/>
+            <binding.ws uri="http://localhost:8085/BHelloWorldMultipleBindings/HelloWorldServiceRemote-wsbinding"/>
+            <binding.sca uri="http://localhost:8085/BHelloWorldMultipleBindings/HelloWorldServiceRemote-scabinding"/>
         </service>
-    </component-->
+    </component>
      
     
     <!-- Dynamic interfaces -->

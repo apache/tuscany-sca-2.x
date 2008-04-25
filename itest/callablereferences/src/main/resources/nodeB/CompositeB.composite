@@ -21,14 +21,23 @@
 
     <component name="BComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.callableref.BComponentImpl" />
+        <service name="BComponent">
+             <binding.sca uri="http://localhost:8085/BComponent"/>
+        </service>
     </component>
 
     <component name="CComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.callableref.CComponentImpl" />
+        <service name="CComponent">
+             <binding.sca uri="http://localhost:8085/CComponent"/>
+        </service>        
     </component>
 
     <component name="DComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.callableref.DComponentImpl" />
+        <service name="DComponent">
+             <binding.sca uri="http://localhost:8085/DComponent"/>
+        </service>        
     </component>
 
 </composite>

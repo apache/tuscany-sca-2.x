@@ -28,7 +28,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -44,7 +43,6 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.builder.impl.ComponentConfigurationBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
-import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -310,7 +308,13 @@ public class ContributionSPIsTestCase {
             CalculatorService calculatorService = 
                 client.getService(CalculatorService.class, "CalculatorServiceComponentA");
             
-            System.out.println("Add 2.0 + 3.0 = " + calculatorService.add(2.0, 3.0));
+            System.out.println("Add 2.0 + 3.0 + 3.0 = " + calculatorService.add(2.0, 3.0));
+
+/*
+            AssemblyInspector assemblyInspector = new AssemblyInspector();
+            
+            System.out.println(assemblyInspector.assemblyAsString(node));
+*/
             
             
         } catch (Exception ex) {

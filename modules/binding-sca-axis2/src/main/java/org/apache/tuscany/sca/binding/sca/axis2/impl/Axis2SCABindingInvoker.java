@@ -37,8 +37,6 @@ public class Axis2SCABindingInvoker implements Interceptor {
     
     private final static Logger logger = Logger.getLogger(Axis2SCABindingInvoker.class.getName());    
     
-    private int retryCount = 100;
-    private int retryInterval = 5000; //ms
     private Invoker axis2Invoker;
     private Axis2SCAReferenceBindingProvider provider;
 
@@ -56,7 +54,7 @@ public class Axis2SCABindingInvoker implements Interceptor {
 
     /**
      * Fix up the URL for the message. The "to" EndPoint comes from the wire
-     * target and needs to b replaced with the endpoint from the registry. 
+     * target and needs to be replaced with the endpoint from the registry. 
      * The default URL for an Endpoint URI where there is no 
      * target component or service information, as in the case of a 
      * wire crossing a node boundary, is "/"
@@ -73,7 +71,7 @@ public class Axis2SCABindingInvoker implements Interceptor {
 
             EndpointReference eprTo = provider.getServiceEndpoint();
 
-            if (eprTo == null) {
+            if ( (eprTo == null) || (eprTo.getURI() == null)) {
                 throw new ServiceUnavailableException("Endpoint for service: " + provider.getSCABinding().getURI()
                     + " can't be found for component: "
                     + provider.getComponent().getName()
@@ -97,46 +95,6 @@ public class Axis2SCABindingInvoker implements Interceptor {
         }
 
         // do the axis2 stuff
-        Message returnMessage = null;
-        
-    //    for (int i =0; i < retryCount; i++){
-            
-            returnMessage = axis2Invoker.invoke(msg);
-   /*         
-            if ( AxisFault.class.isInstance(returnMessage.getBody())){
-                
-                AxisFault axisFault =  returnMessage.getBody();  
-                
-                if (axisFault.getCause().getClass() == ConnectException.class) {
-                    logger.log(Level.INFO, "Trying to send message to " + 
-                                           msg.getTo().getURI());
-                    
-                    // try and get the service endpoint again just in case
-                    // it's moved
-                    EndpointReference serviceEPR = provider.refreshServiceEndpoint();
-    
-                    if (serviceEPR == null) {
-                        throw new ServiceUnavailableException("Endpoint for service: " + provider.getSCABinding().getURI()
-                            + " can't be found for component: "
-                            + provider.getComponent().getName()
-                            + " reference: "
-                            + provider.getComponentReference().getName());
-                    }
-                    msg.setTo(serviceEPR);  
-                } else {
-                    break;
-                }
-          
-            } else {
-                break;
-            }
-            
-            try {
-                Thread.sleep(retryInterval);
-            } catch(InterruptedException ex) {
-            }
-         }            
-        */
-        return returnMessage;
+        return axis2Invoker.invoke(msg);
     }
 }
