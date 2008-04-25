@@ -51,6 +51,7 @@ import javax.wsdl.extensions.UnknownExtensibilityElement;
 import javax.wsdl.extensions.schema.Schema;
 import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
+import javax.wsdl.xml.WSDLWriter;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
@@ -148,15 +149,17 @@ public class Java2WSDLHelper {
             } catch (WSDLException e) {
                 throw new RuntimeException(e);
             }
- 
-            // temp for debugging
-            // try {
-            //     WSDLWriter writer =  javax.wsdl.factory.WSDLFactory.newInstance().newWSDLWriter();
-            //     writer.writeWSDL(def, System.out);
-            // } catch (WSDLException e) {
-            //     throw new RuntimeException(e);
-            // }
         }
+
+        /*
+        // for debugging
+        try {
+            WSDLWriter writer =  javax.wsdl.factory.WSDLFactory.newInstance().newWSDLWriter();
+            writer.writeWSDL(def, System.out);
+        } catch (WSDLException e) {
+            throw new RuntimeException(e);
+        }
+        */
 
         wsdlDefinition.setDefinition(def);
         wsdlInterface.setWsdlDefinition(wsdlDefinition);
