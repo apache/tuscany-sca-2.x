@@ -33,6 +33,8 @@ import org.osoa.sca.annotations.Destroy;
  * BPEL Implementation provider factory
  * 
  * We use the provider factory to instantiate a ODE server that is going to be injected in all BPEL components
+ * 
+ * @version $Rev$ $Date$
  */
 public class BPELImplementationProviderFactory implements ImplementationProviderFactory<BPELImplementation> {
 
