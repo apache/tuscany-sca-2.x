@@ -21,13 +21,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-vtest</artifactId>
+        <artifactId>vtest-java-api</artifactId>
         <version>2.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>vtest-java-api</artifactId>
+    <artifactId>vtest-java-api-conversation</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Java APIs and Annotations Verification Tests</name>
+
+    <name>Apache Tuscany SCA Java APIs and Annotations Verification Tests - Conversation</name>
 
     <dependencies>
         <dependency>
@@ -45,7 +46,6 @@
         
     </dependencies>
 
-
     <profiles>
         <profile>
             <id>default</id>
@@ -53,11 +53,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>annotations</module>
-                <module>apis</module>
-                <module>conversation</module>
+                <module>parameters</module>
            </modules>
         </profile>
     </profiles>
-
 </project>
