@@ -86,10 +86,16 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-node-xml</artifactId>
+            <artifactId>tuscany-node2-launcher</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node2-api</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+        </dependency>    
+        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-extensibility</artifactId>
@@ -108,6 +114,13 @@
             <version>2.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>        
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-node-xml</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
 
         <dependency>
             <groupId>xerces</groupId>
