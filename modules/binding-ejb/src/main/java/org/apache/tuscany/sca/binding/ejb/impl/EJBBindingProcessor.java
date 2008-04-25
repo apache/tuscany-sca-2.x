@@ -65,7 +65,7 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBindingImpl
      * {@inheritDoc}
      */
     public QName getArtifactType() {
-        return EJBBinding.BINDING_JMS_QNAME;
+        return EJBBinding.BINDING_EJB_QNAME;
     }
 
     /**
