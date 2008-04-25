@@ -79,6 +79,8 @@ public class Interface2WSDLGenerator {
     private static final String SCHEMA_NS = "http://www.w3.org/2001/XMLSchema";
     private static final String SCHEMA_NAME = "schema";
     private static final QName SCHEMA_QNAME = new QName(SCHEMA_NS, SCHEMA_NAME);
+    private static final String ANYTYPE_NAME = "anyType";
+    private static final QName ANYTYPE_QNAME = new QName(SCHEMA_NS, ANYTYPE_NAME);
 
     private WSDLFactory factory;
     private DataBindingExtensionPoint dataBindingExtensionPoint;
@@ -200,13 +202,23 @@ public class Interface2WSDLGenerator {
                 wrapper.setAttribute("name", entry.getKey().getLocalPart());
                 Element complexType = schemaDoc.createElementNS(SCHEMA_NS, "xs:complexType");
                 wrapper.appendChild(complexType);
-                for (ElementInfo element: entry.getValue()) {
-                    Element xsElement = schemaDoc.createElementNS(SCHEMA_NS, "xs:element"); 
-                    xsElement.setAttribute("minOccurs", "0");
-                    xsElement.setAttribute("name", element.getQName().getLocalPart());
-                    QName typeName = element.getType().getQName();
-                    xsElement.setAttribute("type", typeName.getLocalPart());
-                    complexType.appendChild(xsElement);
+                if (entry.getValue().size() > 0) {
+                    Element sequence = schemaDoc.createElementNS(SCHEMA_NS, "xs:sequence");
+                    complexType.appendChild(sequence);
+                    for (ElementInfo element: entry.getValue()) {
+                        Element xsElement = schemaDoc.createElementNS(SCHEMA_NS, "xs:element"); 
+                        if (element.isMany()) {
+                            xsElement.setAttribute("maxOccurs", "unbounded");
+                        }
+                        xsElement.setAttribute("minOccurs", "0");
+                        xsElement.setAttribute("name", element.getQName().getLocalPart());
+                        if (element.isNillable()) {
+                            xsElement.setAttribute("nillable", "true");
+                        }
+                        QName typeName = element.getType().getQName();
+                        xsElement.setAttribute("type", typeName.getLocalPart());
+                        sequence.appendChild(xsElement);
+                    }
                 }
             }
         }
@@ -350,33 +362,36 @@ public class Interface2WSDLGenerator {
                 Class<?>[] paramTypes = method.getParameterTypes();
                 for (int i = 0; i < paramTypes.length; i++) {
                     Object logical = operation.getInputType().getLogical().get(i).getLogical();
-                    TypeInfo typeInfo = getTypeInfo(paramTypes[i], logical);
-                    if (!typeInfo.isSimpleType()) {
-                        javaTypes.add(paramTypes[i]);
-                    }
-                    ElementInfo element = new ElementInfo(elements.get(i).getQName(), typeInfo);
-                    elements.set(i, element);
+                    elements.set(i, getElementInfo(paramTypes[i], logical, elements.get(i).getQName(), javaTypes));
                 }
             } else {
                 Class<?> returnType = method.getReturnType();
                 if (returnType != Void.TYPE) {
                     Object logical = operation.getOutputType().getLogical();
-                    TypeInfo typeInfo = getTypeInfo(returnType, logical);
-                    if (!typeInfo.isSimpleType()) {
-                        javaTypes.add(returnType);
-                    }
-                    ElementInfo element = new ElementInfo(elements.get(0).getQName(), typeInfo);
-                    elements.set(0, element);
+                    elements.set(0, getElementInfo(returnType, logical, elements.get(0).getQName(), javaTypes));
                 }
             }
         }
         return part;
     }
 
+    private ElementInfo getElementInfo(Class javaType, Object logical, QName name, ArrayList<Class> javaTypes) {
+        TypeInfo typeInfo = getTypeInfo(javaType.isArray() ? javaType.getComponentType() : javaType, logical);
+        if (!typeInfo.isSimpleType()) {
+            javaTypes.add(javaType);
+        }
+        ElementInfo element = new ElementInfo(name, typeInfo);
+        element.setMany(javaType.isArray());
+        element.setNillable(!javaType.isPrimitive());
+        return element;
+    }
+
     private TypeInfo getTypeInfo(Class javaType, Object logical) {
         QName xmlType = JavaXMLMapper.getXMLType(javaType);
         if (xmlType != null) {
             return new TypeInfo(xmlType, true, null);
+        } else if (javaType.isInterface()) {
+            return new TypeInfo(ANYTYPE_QNAME, true, null);
         } else {
             if (logical instanceof XMLType) {
                 xmlType = ((XMLType)logical).getTypeName();
