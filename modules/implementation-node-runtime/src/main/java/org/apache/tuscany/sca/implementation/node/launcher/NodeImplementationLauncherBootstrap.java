@@ -111,6 +111,22 @@ public class NodeImplementationLauncherBootstrap {
     }
 
     /**
+     * Bootstrap a new SCA node.
+     * 
+     * @param compositeURI
+     * @param uris
+     * @param locations
+     */
+    public NodeImplementationLauncherBootstrap(String compositeURI, String compositeContent, String[] uris, String[] locations) throws Exception {
+        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        SCAContribution[] contributions = new SCAContribution[uris.length];
+        for (int i = 0; i < uris.length; i++) {
+            contributions[i] = new SCAContribution(uris[i], locations[i]);
+        }
+        node = new NodeFacade(nodeFactory.createSCANode(compositeURI, compositeContent, contributions));
+    }
+
+    /**
      * Returns the SCA node.
      * 
      * @return

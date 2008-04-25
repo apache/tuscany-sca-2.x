@@ -19,7 +19,9 @@
 
 package org.apache.tuscany.sca.node.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -164,6 +166,52 @@ public class NodeImpl implements SCANode2, SCAClient {
         }        
     }
     
+    /** 
+     * Constructs a new SCA node.
+     *  
+     * @param compositeURI
+     * @param compositeContent
+     * @param contributions
+     */
+    NodeImpl(String compositeURI, String compositeContent, SCAContribution[] contributions) {
+        configurationName = compositeURI;
+        logger.log(Level.INFO, "Creating node: " + configurationName);               
+
+        try {
+            // Initialize the runtime
+            initRuntime();
+            
+            // Create a node configuration
+            NodeImplementationFactory nodeImplementationFactory = modelFactories.getFactory(NodeImplementationFactory.class);
+            ConfiguredNodeImplementation configuration = nodeImplementationFactory.createConfiguredNodeImplementation();
+            
+            // Read the composite model
+            StAXArtifactProcessor<Composite> compositeProcessor = artifactProcessors.getProcessor(Composite.class);
+            URL compositeURL = new URL(compositeURI);
+            logger.log(Level.INFO, "Loading composite: " + compositeURL);
+            InputStream is = new ByteArrayInputStream(compositeContent.getBytes());
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(compositeContent));
+            Composite composite = compositeProcessor.read(reader);
+            configuration.setComposite(composite);
+            
+            // Create contribution models
+            ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+            for (SCAContribution c: contributions) {
+                Contribution contribution = contributionFactory.createContribution();
+                contribution.setURI(c.getURI());
+                contribution.setLocation(c.getLocation());
+                contribution.setUnresolved(true);
+                configuration.getContributions().add(contribution);
+            }
+
+            // Configure the node
+            configureNode(configuration);
+
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
+        }        
+    }
+    
     /**
      * Initialize the Tuscany runtime.
      * 
@@ -219,11 +267,15 @@ public class NodeImpl implements SCANode2, SCAClient {
         
         // Load the specified composite
         StAXArtifactProcessor<Composite> compositeProcessor = artifactProcessors.getProcessor(Composite.class);
-        URL compositeURL = new URL(configuration.getComposite().getURI());
-        logger.log(Level.INFO, "Loading composite: " + compositeURL);
-        InputStream is = compositeURL.openStream();
-        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        composite = compositeProcessor.read(reader);
+        if (configuration.getComposite().getName() == null) {
+            URL compositeURL = new URL(configuration.getComposite().getURI());
+            logger.log(Level.INFO, "Loading composite: " + compositeURL);
+            InputStream is = compositeURL.openStream();
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+            composite = compositeProcessor.read(reader);
+        } else {
+            composite = configuration.getComposite();
+        }
         
         // Resolve it within the context of the first contribution
         Contribution mainContribution = contributions.get(contributions.size()-1);

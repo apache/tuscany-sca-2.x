@@ -41,4 +41,9 @@ public class NodeFactoryImpl extends SCANode2Factory {
     public SCANode2 createSCANode(String compositeURI, SCAContribution... contributions) {
         return new NodeImpl(compositeURI, contributions);
     }
+
+    @Override
+    public SCANode2 createSCANode(String compositeURI, String compositeContent, SCAContribution... contributions) {
+        return new NodeImpl(compositeURI, compositeContent, contributions);
+    }
 }
