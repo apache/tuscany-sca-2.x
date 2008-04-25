@@ -57,7 +57,7 @@ public class NodeLauncher {
      * @throws LauncherException
      */
     public <T> T createNode(String configurationURI) throws LauncherException {
-        return (T)node(configurationURI, null, null);
+        return (T)node(configurationURI, null, null, null);
     }
     
     /**
@@ -96,7 +96,20 @@ public class NodeLauncher {
      * @throws LauncherException
      */
     public <T> T createNode(String compositeURI, Contribution...contributions) throws LauncherException {
-        return (T)node(null, compositeURI, contributions);
+        return (T)node(null, compositeURI, null, contributions);
+    }
+    
+    /**
+     * Creates a new Node.
+     * 
+     * @param compositeURI
+     * @param compositeContent
+     * @param contributions
+     * @return a new node
+     * @throws LauncherException
+     */
+    public <T> T createNode(String compositeURI, String compositeContent, Contribution...contributions) throws LauncherException {
+        return (T)node(null, compositeURI, compositeContent, contributions);
     }
     
     public static void main(String[] args) throws Exception {

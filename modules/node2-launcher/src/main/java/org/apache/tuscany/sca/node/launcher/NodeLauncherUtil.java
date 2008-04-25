@@ -271,7 +271,7 @@ final class NodeLauncherUtil {
      * @param contributions
      * @throws LauncherException
      */
-    static Object node(String configurationURI, String compositeURI, NodeLauncher.Contribution[] contributions) throws LauncherException {
+    static Object node(String configurationURI, String compositeURI, String compositeContent, NodeLauncher.Contribution[] contributions) throws LauncherException {
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         try {
             // Set up runtime ClassLoader
@@ -296,6 +296,18 @@ final class NodeLauncherUtil {
                 // Construct the node with a configuration URI
                 bootstrap = bootstrapClass.getConstructor(String.class).newInstance(configurationURI);
                 
+            } else if (compositeContent != null) {
+                
+                // Construct the node with a composite URI and the URIs and
+                // locations of a list of contributions
+                Constructor<?> constructor = bootstrapClass.getConstructor(String.class, String.class, String[].class, String[].class);
+                String[] uris = new String[contributions.length];
+                String[] locations = new String[contributions.length];
+                for (int i = 0; i < contributions.length; i++) {
+                    uris[i] = contributions[i].getURI();
+                    locations[i] = contributions[i].getLocation();
+                }
+                bootstrap = constructor.newInstance(compositeURI, compositeContent, uris, locations);
             } else {
                 
                 // Construct the node with a composite URI and the URIs and
