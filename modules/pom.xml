@@ -90,6 +90,7 @@
                 <module>domain</module>
                 <module>domain-api</module>
                 <module>domain-impl</module>
+                <module>domain-manager</module>
                 <module>extensibility</module>
                 <module>extension-helper</module>
                 <module>host-embedded</module>
@@ -147,7 +148,6 @@
                 <module>runtime-war</module>
                 <module>sca-api</module>
                 <module>workspace</module>
-                <module>workspace-admin</module>
                 <module>workspace-impl</module>
                 <module>workspace-xml</module>
                 <module>definitions</module>
