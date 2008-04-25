@@ -176,11 +176,6 @@ public abstract class BaseConfigurationBuilderImpl {
 
             // Index all components and check for duplicates
             if (components.containsKey(component.getName())) {
-                /*                
-                warning("Duplicate component name: " + composite.getName()
-                        + " : "
-                        + component.getName(), composite);
-                */
                 warning("DuplicateComponentName", component, composite.getName().toString(), component.getName());
             } else {
                 components.put(component.getName(), component);
@@ -321,10 +316,7 @@ public abstract class BaseConfigurationBuilderImpl {
             if (property != null) {
                 componentProperty.setProperty(property);
             } else {
-                /*warning("Property not found for component property: " + component.getName()
-                    + "/"
-                    + componentProperty.getName(), component);*/
-			warning("PropertyNotFound", component, component.getName().toString(), componentProperty.getName());
+                warning("PropertyNotFound", component, component.getName().toString(), componentProperty.getName());
             }
         }
 
@@ -351,12 +343,7 @@ public abstract class BaseConfigurationBuilderImpl {
                 // Check that a component property does not override the
                 // mustSupply attribute
                 if (!property.isMustSupply() && componentProperty.isMustSupply()) {
-                    /*warning("Component property mustSupply attribute incompatible with property: " + component
-                                .getName()
-                                + "/"
-                                + componentProperty.getName(),
-                            component);*/
-			warning("PropertyMustSupplyIncompatible", component, component.getName().toString(), componentProperty.getName());
+                    warning("PropertyMustSupplyIncompatible", component, component.getName().toString(), componentProperty.getName());
                 }
 
                 // Default to the mustSupply attribute specified on the property
@@ -375,21 +362,14 @@ public abstract class BaseConfigurationBuilderImpl {
 
                 // Check that a value is supplied
                 if (componentProperty.getValue() == null && property.isMustSupply()) {
-                    /*warning("No value configured on a mustSupply property: " + component.getName()
-                        + "/"
-                        + componentProperty.getName(), component);*/
-			warning("PropertyMustSupplyNull", component, component.getName().toString(), componentProperty.getName());
+                    warning("PropertyMustSupplyNull", component, component.getName().toString(), componentProperty.getName());
                 }
 
                 // Check that a a component property does not override the
                 // many attribute
                 if (!property.isMany() && componentProperty.isMany()) {
-                    /*warning("Component property many attribute incompatible with property: " + component
-                                .getName()
-                                + "/"
-                                + componentProperty.getName(),
-                            component);*/
-			warning("PropertyOverrideManyAttribute", component, component.getName().toString(), componentProperty.getName());
+
+                    warning("PropertyOverrideManyAttribute", component, component.getName().toString(), componentProperty.getName());
                 }
 
                 // Default to the many attribute defined on the property
@@ -436,10 +416,7 @@ public abstract class BaseConfigurationBuilderImpl {
                 componentReference.setReference(reference);
             } else {
                 if (!componentReference.getName().startsWith("$self$.")) {
-                    /*warning("Reference not found for component reference: " + component.getName()
-                        + "/"
-                        + componentReference.getName(), component);*/
-			warning("ReferenceNotFound", component, component.getName().toString(), componentReference.getName());
+                    warning("ReferenceNotFound", component, component.getName().toString(), componentReference.getName());
                 }
             }
         }
@@ -467,12 +444,7 @@ public abstract class BaseConfigurationBuilderImpl {
                     if (!ReferenceConfigurationUtil.isValidMultiplicityOverride(reference.getMultiplicity(),
                                                                    componentReference
                                                                        .getMultiplicity())) {
-                        /*warning("Component reference multiplicity incompatible with reference multiplicity: " + component
-                                    .getName()
-                                    + "/"
-                                    + componentReference.getName(),
-                                component);*/
-				warning("ReferenceIncompatibleMultiplicity", component, component.getName().toString(), componentReference.getName());
+                        warning("ReferenceIncompatibleMultiplicity", component, component.getName().toString(), componentReference.getName());
                     }
                 } else {
                     componentReference.setMultiplicity(reference.getMultiplicity());
@@ -485,11 +457,7 @@ public abstract class BaseConfigurationBuilderImpl {
                         .getInterfaceContract())) {
                         if (!interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(),
                                                                   interfaceContract)) {
-                            /*warning("Component reference interface incompatible with reference interface: " + component
-                                .getName()
-                                + "/"
-                                + componentReference.getName(), component);*/
-					warning("ReferenceIncompatibleComponentInterface", component, component.getName().toString(), componentReference.getName());
+                            warning("ReferenceIncompatibleComponentInterface", component, component.getName().toString(), componentReference.getName());
                         }
                     }
                 } else {
@@ -549,10 +517,7 @@ public abstract class BaseConfigurationBuilderImpl {
             if (service != null) {
                 componentService.setService(service);
             } else {
-                /*warning("Service not found for component service: " + component.getName()
-                    + "/"
-                    + componentService.getName(), component);*/
-			warning("ServiceNotFoundForComponentService", component, component.getName().toString(), componentService.getName());
+                warning("ServiceNotFoundForComponentService", component, component.getName().toString(), componentService.getName());
             }
         }
 
@@ -618,30 +583,21 @@ public abstract class BaseConfigurationBuilderImpl {
                                                                Map<String, ComponentProperty> componentProperties) {
         for (ComponentService componentService : component.getServices()) {
             if (componentServices.containsKey(componentService.getName())) {
-                /*warning("Duplicate component service name: " + component.getName()
-                    + "/"
-                    + componentService.getName(), component);*/
-			warning("DuplicateComponentServiceName", component, component.getName().toString(), componentService.getName());
+                warning("DuplicateComponentServiceName", component, component.getName().toString(), componentService.getName());
             } else {
                 componentServices.put(componentService.getName(), componentService);
             }
         }
         for (ComponentReference componentReference : component.getReferences()) {
             if (componentReferences.containsKey(componentReference.getName())) {
-                /*warning("Duplicate component reference name: " + component.getName()
-                    + "/"
-                    + componentReference.getName(), component);*/
-			warning("DuplicateComponentReferenceName", component, component.getName().toString(), componentReference.getName());
+                warning("DuplicateComponentReferenceName", component, component.getName().toString(), componentReference.getName());
             } else {
                 componentReferences.put(componentReference.getName(), componentReference);
             }
         }
         for (ComponentProperty componentProperty : component.getProperties()) {
             if (componentProperties.containsKey(componentProperty.getName())) {
-                /*warning("Duplicate component property name: " + component.getName()
-                    + "/"
-                    + componentProperty.getName(), component);*/
-			warning("DuplicateComponentPropertyName", component, component.getName().toString(), componentProperty.getName());
+                warning("DuplicateComponentPropertyName", component, component.getName().toString(), componentProperty.getName());
             } else {
                 componentProperties.put(componentProperty.getName(), componentProperty);
             }
@@ -656,18 +612,13 @@ public abstract class BaseConfigurationBuilderImpl {
         // First check that the component has a resolved implementation
         Implementation implementation = component.getImplementation();
         if (implementation == null) {
-
             // A component must have an implementation
-            /*warning("No implementation for component: " + component.getName(), component);*/
-		warning("NoComponentImplementation", component, component.getName().toString());
+            warning("NoComponentImplementation", component, component.getName().toString());
 
         } else if (implementation.isUnresolved()) {
 
             // The implementation must be fully resolved
-            /*warning("Component implementation not found: " + component.getName()
-                + " : "
-                + implementation.getURI(), component);*/
-		warning("UnresolvedComponentImplementation", component, component.getName().toString(), implementation.getURI());
+            warning("UnresolvedComponentImplementation", component, component.getName().toString(), implementation.getURI());
 
         } else {
 
@@ -675,10 +626,7 @@ public abstract class BaseConfigurationBuilderImpl {
             // duplicates
             for (Property property : implementation.getProperties()) {
                 if (properties.containsKey(property.getName())) {
-                    /*warning("Duplicate property name: " + component.getName()
-                        + "/"
-                        + property.getName(), component);*/
-			warning("DuplicateImplementationPropertyName", component, component.getName().toString(), property.getName());
+                    warning("DuplicateImplementationPropertyName", component, component.getName().toString(), property.getName());
                 } else {
                     properties.put(property.getName(), property);
                 }
@@ -694,10 +642,7 @@ public abstract class BaseConfigurationBuilderImpl {
             }
             for (Reference reference : implementation.getReferences()) {
                 if (references.containsKey(reference.getName())) {
-                    /*warning("Duplicate reference name: " + component.getName()
-                        + "/"
-                        + reference.getName(), component);*/
-			warning("DuplicateImplementationReferenceName", component, component.getName().toString(), reference.getName());
+                    warning("DuplicateImplementationReferenceName", component, component.getName().toString(), reference.getName());
                 } else {
                     references.put(reference.getName(), reference);
                 }
@@ -1183,12 +1128,7 @@ public abstract class BaseConfigurationBuilderImpl {
                 continue;
             }
             if (binding.getName().equals(otherBinding.getName())) {
-                /*warning("Multiple bindings for service " + 
-                                                    service.getName() + 
-                                                    " have the same binding type and name " +
-                                                    binding.getName() +
-                                                    ". Tuscany SCA can't create unique URIs to differentiate these bindings ", binding);*/
-			warning("MultipleBindingsForService", binding, service.getName(), binding.getName());
+                warning("MultipleBindingsForService", binding, service.getName(), binding.getName());
             }
         }
     }

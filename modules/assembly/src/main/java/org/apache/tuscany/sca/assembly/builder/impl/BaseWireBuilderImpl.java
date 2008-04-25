@@ -142,7 +142,6 @@ class BaseWireBuilderImpl {
                         }
                     }
                     if (!promoted && !componentReference.isCallback()) {
-                        /*warning("No targets for reference: " + componentReference.getName(), composite);*/
                         warning("ReferenceWithoutTargets", composite, composite.getName().toString(), componentReference.getName());
                     }
                 } else {
@@ -277,8 +276,7 @@ class BaseWireBuilderImpl {
                     }
     
                 } else {
-                    /*warning("Promoted component service not found: " + promotedServiceName, composite);*/
-                    warning("PromotedServiceNotFound", composite, promotedServiceName);
+                    warning("PromotedServiceNotFound", composite, composite.getName().toString(), promotedServiceName);
                 }
             }
         }
@@ -341,8 +339,7 @@ class BaseWireBuilderImpl {
                         	}
                         }
                     } else {
-                        /*warning("Promoted component reference not found: " + componentReferenceName, composite);*/
-                        warning("PromotedReferenceNotFound", composite, componentReferenceName);
+                        warning("PromotedReferenceNotFound", composite, composite.getName().toString(), componentReferenceName);
                     }
                 }
             }
@@ -411,11 +408,6 @@ class BaseWireBuilderImpl {
                         // see if an sca binding is associated with a resolved target or not
                         componentService.setUnresolved(false);
                     } else {
-                        /*warning("Incompatible interfaces on component reference and target: " + componentReference
-                                    .getName()
-                                    + " : "
-                                    + componentService.getName(),
-                                composite);*/
                         warning("ReferenceIncompatibleInterface", composite, composite.getName().toString(), componentReference.getName(), componentService.getName());
                     }
                 } else {
@@ -425,8 +417,6 @@ class BaseWireBuilderImpl {
                     
                     // The bindings will be cloned back into the reference when the 
                     // target is finally resolved. 
-              
-                    /*warning("Component reference target not found, it might be a remote service: " + componentService.getName(), composite);*/
                     warning("ComponentReferenceTargetNotFound", composite, composite.getName().toString(), componentService.getName());
                 }
             }
