@@ -28,7 +28,7 @@
     
     <component name="HelloWorldService">
     	<implementation.bpel process="hns:HelloWorld"/>
-    	<reference name="greetingsService" target="GreetingsServiceComponent"/>
+    	<reference name="greetingsPartnerLink" target="GreetingsServiceComponent"/>
     </component>
     
     <component name="GreetingsServiceComponent">

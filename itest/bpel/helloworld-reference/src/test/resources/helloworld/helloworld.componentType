@@ -28,7 +28,7 @@
   </service>
 
   
-  <reference name="greetingsService">
+  <reference name="greetingsPartnerLink">
         <interface.wsdl interface="http://greetings#wsdl.interface(Greetings)" />
   </reference>
 
