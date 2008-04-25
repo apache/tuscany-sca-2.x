@@ -25,7 +25,7 @@
     <component name="AddServiceComponentB">
         <implementation.java class="calculator.AddServiceImpl" />
         <service name="AddService">
-            <binding.ws uri="http://L3AW203:8085/AddServiceComponentB"/>
+            <binding.ws uri="http://localhost:8085/AddServiceComponentB"/>
         </service>
     </component>
     
