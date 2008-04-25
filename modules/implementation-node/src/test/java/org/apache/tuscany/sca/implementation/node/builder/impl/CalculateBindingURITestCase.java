@@ -45,8 +45,6 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 
-import com.sun.org.apache.xerces.internal.impl.xs.opti.DefaultNode;
-
 public class CalculateBindingURITestCase extends TestCase {
     private final static Logger logger = Logger.getLogger(CalculateBindingURITestCase.class.getName());
     private AssemblyFactory assemblyFactory;

@@ -70,7 +70,6 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
             // Check the things that will generally be required to set up a 
             // distributed sca domain reference provider. I.e. make sure that we have a
             // - distributed implementation of the sca binding available
-            // - distributed domain in which to look for remote endpoints 
             // - remotable interface on the service
             if (distributedProviderFactory != null) {
                 
@@ -81,14 +80,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
                     
                 }
                 
-                if (((this.nodeFactory != null) && (this.nodeFactory.getNode() != null)) ||
-                      ((serviceURI != null) &&(serviceURI.isAbsolute()))) {
-                    if (!service.getInterfaceContract().getInterface().isRemotable()) {
-                        throw new IllegalStateException("Reference interface not remoteable for component: "+
-                                                        component.getName() +
-                                                        " and service: " + 
-                                                        service.getName());
-                    }           
+                if ((serviceURI != null) && (serviceURI.isAbsolute())) {          
                     
                     //  create a nested provider to handle the remote case
                     distributedBinding = new DistributedSCABindingImpl();

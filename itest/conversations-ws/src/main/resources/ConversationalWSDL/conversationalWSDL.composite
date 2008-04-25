@@ -21,23 +21,21 @@
 	targetNamespace="http://conversations"
 	name="ConversationalWSDLITest">
  	      
-    
     <component name="ConversationalStatelessClientStatefulService">
         <implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl"/>
         <reference name="conversationalReferenceClient" target="ConversationalReferenceClient"/>       
         <reference name="conversationalService" target="ConversationalServiceStateful">
-           <binding.ws wsdlElement="http://conversational.itest.sca.tuscany.apache.org#wsdl.binding(ConversationalServiceSOAP11Binding)"/>
+           <binding.ws wsdlElement="http://conversational.itest.sca.tuscany.apache.org#wsdl.port(ConversationalService/ConversationalServiceSOAP11port_http)"/>
         </reference>
         <reference name="conversationalService2" target="ConversationalServiceStateful">  
-            <binding.ws wsdlElement="http://conversational.itest.sca.tuscany.apache.org#wsdl.binding(ConversationalServiceSOAP11Binding)"/>
+            <binding.ws wsdlElement="http://conversational.itest.sca.tuscany.apache.org#wsdl.port(ConversationalService/ConversationalServiceSOAP11port_http)"/>
         </reference>     
     </component>     
        
-        
     <component name="ConversationalServiceStateful">
 		<implementation.java class="org.apache.tuscany.sca.itest.conversational.impl.ConversationalServiceStatefulImpl"/>
 		<service name="ConversationalService">
-		    <binding.ws wsdlElement="http://conversational.itest.sca.tuscany.apache.org#wsdl.binding(ConversationalServiceSOAP11Binding)"/>
+		    <binding.ws wsdlElement="http://conversational.itest.sca.tuscany.apache.org#wsdl.port(ConversationalService/ConversationalServiceSOAP11port_http)"/>
 		</service>
     </component>  
       

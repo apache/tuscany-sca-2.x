@@ -24,21 +24,22 @@ import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.osoa.sca.ServiceUnavailableException;
 
-public class SimpleTestCase extends BaseTest {
+public class SimpleTestCase {
     
     public static TestNode nodeA;
     public static TestNode nodeB;
 
     @BeforeClass
     public static void init() throws Exception {
-        System.out.println("Setting up distributed nodes");
+        System.out.println("Setting up nodes");
 
         try {
             // create and start domains
-            nodeA = createNode("http://localhost:8100/nodeA");
-            nodeB = createNode("http://localhost:8200/nodeB");
-            testDomain.start();
+            nodeA = new TestNode("nodeA");
+            nodeB = new TestNode("nodeB");
+
             nodeA.start();
             nodeB.start();
 
@@ -51,8 +52,8 @@ public class SimpleTestCase extends BaseTest {
 
     @AfterClass
     public static void destroy() throws Exception {
-        nodeA.destroy();
-        nodeB.destroy();
+        nodeA.stop();
+        nodeB.stop();
     }    
     
     @Test
@@ -66,7 +67,12 @@ public class SimpleTestCase extends BaseTest {
     public void testHelloWorldRemote() throws Exception {  
         HelloWorldClient helloWorldClientA;
         helloWorldClientA = nodeA.getService(HelloWorldClient.class, "AHelloWorldClientRemote");
-        Assert.assertEquals(helloWorldClientA.getGreetings("fred"), "Hello fred");
+        try {
+            helloWorldClientA.getGreetings("fred");
+        } catch (ServiceUnavailableException ex){
+            return;
+        }
+        Assert.fail();
         
     }    
     
@@ -88,7 +94,7 @@ public class SimpleTestCase extends BaseTest {
         Assert.assertEquals(helloWorldClientB.getGreetings("fred"), "Hello fred");
     }   
     
-    //@Test
+    @Test
     public void testHelloWorldMultipleBindings() throws Exception {  
         HelloWorldClient helloWorldClientA;
         helloWorldClientA = nodeA.getService(HelloWorldClient.class, "AHelloWorldClientMultipleBindings");

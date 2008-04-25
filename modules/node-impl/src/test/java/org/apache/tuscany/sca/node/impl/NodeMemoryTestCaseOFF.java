@@ -37,7 +37,7 @@ import calculator.SubtractService;
  * creates and destroys the node to see if memory is being leaked.
  * Looking for leaked memory is a manual task.
  */
-public class NodeMemoryTestCase {
+public class NodeMemoryTestCaseOFF {
     
     @Test
     public void testDoNothing() throws Exception {
@@ -47,7 +47,7 @@ public class NodeMemoryTestCase {
     //@Test
     public void testNodeMemoryUseage() throws Exception {   
         
-        ClassLoader cl = NodeMemoryTestCase.class.getClassLoader();
+        ClassLoader cl = NodeMemoryTestCaseOFF.class.getClassLoader();
         SCANodeFactory nodeFactory;
         SCANode   node;
         CalculatorService calculatorServiceB;

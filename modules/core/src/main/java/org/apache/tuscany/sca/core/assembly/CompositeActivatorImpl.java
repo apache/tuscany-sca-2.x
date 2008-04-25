@@ -216,64 +216,8 @@ public class CompositeActivatorImpl implements CompositeActivator {
      * @param reference
      */
     private void resolveTargets(RuntimeComponentReference reference) {
-        
-/* Not used now that domain wires are created using the domain wire builder
-        // go over any targets that have not been resolved yet (as they are running on other nodes)
-        // and try an resolve them remotely
-        // TODO - this should work for any kind of wired binding but the only wireable binding 
-        //        is currently the SCA binding so we assume that
-        for (ComponentService service : reference.getTargets()) {
-            if (service.isUnresolved()) {
-                for (Binding binding : service.getBindings()) {
-                    
-
-                    //binding.setURI(service.getName());
-                    
-                    // TODO - we should look at all the bindings now associated with the 
-                    //        unresolved target but we assume the SCA binding here as
-                    //        its currently the only wireable one
-                    if (binding instanceof SCABinding) {
-                        OptimizableBinding scaBinding = (OptimizableBinding)binding;
-
-                        // clone the SCA binding and fill in service details 
-                        // its cloned as each target 
-                        SCABinding clonedSCABinding = null;
-                        try {
-                            clonedSCABinding = (SCABinding)((OptimizableBinding)scaBinding).clone();
-                            // TODO - Reusing the name here to store the target name so the 
-                            //        binding can be found again once the URI is set to the real endpoint
-                            clonedSCABinding.setName(service.getName());
-                            clonedSCABinding.setURI(service.getName());
-                            // wireable binding stuff needs to go. SCA binding uses it
-                            // currently to get to the service to work out if the service
-                            // is resolved. 
-                            OptimizableBinding endpoint = ((OptimizableBinding)clonedSCABinding);
-                            endpoint.setTargetComponentService(service);
-                            //endpoint.setTargetComponent(component); - not known for unresolved target
-                            //endpoint.setTargetBinding(serviceBinding); - not known for unresolved target
-
-                            // add the cloned SCA binding to the reference as it will be used to look up the 
-                            // provider later
-                            reference.getBindings().remove(binding);
-                            reference.getBindings().add(clonedSCABinding);
-                        } catch (Exception e) {
-                            // warning("The binding doesn't support clone: " + binding.getClass().getSimpleName(), binding);
-                        }
-                    } else {
-                        
-                         * Just leave the binding as it. It will be filled in later 
-                         * when the node resolves the targets
-                        throw new IllegalStateException(
-                                                        "Unable to create a distributed SCA binding provider for reference: " + reference
-                                                            .getName()
-                                                            + " and target: "
-                                                            + service.getName());
-                     
-                    }
-                }
-            }
-        }
-*/        
+        // The code that used to be here to resolved unresolved targets is now 
+        // at the bottom of BaseWireBuilder.connectComponentReferences()
     }
 
     /**

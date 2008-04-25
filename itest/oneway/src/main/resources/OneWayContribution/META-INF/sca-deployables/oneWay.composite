@@ -33,7 +33,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.oneway.impl.OneWayServiceImpl"/>
         <service name="OneWayService">
             <interface.java interface="org.apache.tuscany.sca.itest.oneway.OneWayService" /> 
-            <binding.ws/>
+            <binding.ws uri="http://localhost:8085/OneWayServiceComponent"/>
         </service>
     </component> 	        
 

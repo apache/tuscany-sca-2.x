@@ -25,20 +25,20 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class CallbackTestCase extends BaseTest {
+public class CallbackTestCase {
     
     public static TestNode nodeA;
     public static TestNode nodeB;
 
     @BeforeClass
     public static void init() throws Exception {
-        System.out.println("Setting up distributed nodes");
+        System.out.println("Setting up nodes");
 
         try {
             // create and start domains
-            nodeA = createNode("http://localhost:8100/nodeE");
-            nodeB = createNode("http://localhost:8200/nodeF");
-            testDomain.start();
+            nodeA = new TestNode("nodeE");
+            nodeB = new TestNode("nodeF");
+
             nodeA.start();
             nodeB.start();
 
@@ -51,24 +51,27 @@ public class CallbackTestCase extends BaseTest {
 
     @AfterClass
     public static void destroy() throws Exception {
-        nodeA.destroy();
-        nodeB.destroy();
-    }   
+        nodeA.stop();
+        nodeB.stop();
+    } 
     
     //@Test
+    public void testKeepServerRunning() throws Exception {
+        System.out.println("press enter to continue");
+        System.in.read();
+    } 
+    
+    @Test
     public void testHelloWorldCallbackLocal() throws Exception {  
         HelloWorldClient helloWorldClientB;
         helloWorldClientB = nodeB.getService(HelloWorldClient.class, "BHelloWorldClientCallbackLocal");
         Assert.assertEquals("Hello callback fred", helloWorldClientB.getGreetings("fred"));  
-    }      
+    }     
     
     @Test
     public void testHelloWorldCallbackRemote() throws Exception {  
-        //FIXME works in Eclipse, doesn't with Maven
-//        HelloWorldClient helloWorldClientA;
-//        helloWorldClientA = nodeA.getService(HelloWorldClient.class, "AHelloWorldClientCallbackRemote");
-//        Assert.assertEquals("Hello callback fred", helloWorldClientA.getGreetings("fred"));
-        
+        HelloWorldClient helloWorldClientA;
+        helloWorldClientA = nodeA.getService(HelloWorldClient.class, "AHelloWorldClientCallbackRemote");
+        Assert.assertEquals("Hello callback fred", helloWorldClientA.getGreetings("fred"));
     }    
-    
 }

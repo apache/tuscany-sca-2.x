@@ -30,12 +30,22 @@
         <service name="CalculatorService">
             <binding.sca/>
         </service>		
-        <reference name="addService" target="AddServiceComponentB" />     
+        <reference name="addService" multiplicity="0..n" target="AddServiceComponentA AddServiceComponentB AddServiceComponentC">
+          <binding.sca/>
+          <binding.ws/>
+        </reference>
         <reference name="subtractService" target="SubtractServiceComponentB" />
-        <reference name="multiplyService" target="MultiplyServiceComponentA"/>     
+        <reference name="multiplyService" target="MultiplyServiceComponentA" />     
         <reference name="divideService" target="DivideServiceComponentA" />
     </component>  
 
+    <component name="AddServiceComponentA">
+        <implementation.java class="calculator.AddServiceImpl" />
+        <service name="AddService">
+            <binding.sca/>
+        </service>
+    </component>
+    
     <component name="MultiplyServiceComponentA">
         <implementation.java class="calculator.MultiplyServiceImpl" />
     </component>    

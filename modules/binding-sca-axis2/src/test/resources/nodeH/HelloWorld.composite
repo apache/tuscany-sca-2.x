@@ -26,6 +26,12 @@
     <!-- callback remote wire --> 
     <component name="BHelloWorldServiceCallbackRemote">
         <implementation.java class="org.apache.tuscany.sca.binding.sca.axis2.helloworld.impl.HelloWorldServiceCallbackOnewayRemoteImpl" />
+        <service name="HelloWorldServiceCallbackOnewayRemote">
+            <binding.sca uri="http://localhost:8085/BHelloWorldServiceCallbackRemote"/>
+            <callback>
+                <binding.sca uri="http://localhost:8084/AHelloWorldClientCallbackRemote"/>
+            </callback>            
+        </service>
     </component>
     
 

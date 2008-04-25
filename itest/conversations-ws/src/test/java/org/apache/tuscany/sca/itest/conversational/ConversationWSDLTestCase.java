@@ -20,11 +20,14 @@
 package org.apache.tuscany.sca.itest.conversational;
 
 
-import javax.xml.namespace.QName;
+import java.io.File;
+
 
 import org.apache.tuscany.sca.itest.conversational.impl.ConversationalClientStatelessImpl;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.SCAClient;
+import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,26 +35,28 @@ import org.junit.Test;
 
 public class ConversationWSDLTestCase {
 
-    private SCANode node; 
+    private SCANode2 node; 
     private ConversationalClient conversationalStatelessClientStatefulService;    
 
     @Before
     public void setUp() throws Exception {
-        node = SCANodeFactory.newInstance().createSCANode(null, null);
-        node.addContribution("mycontribution",      
-                             ConversationWSDLTestCase.class.getResource("/ConversationalWSDL/."));                                                                    
-        node.addToDomainLevelComposite(new QName("http://conversations", "ConversationalWSDLITest"));
+        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+        node = nodeFactory.createSCANode(new File("src/main/resources/ConversationalWSDL/ConversationalWSDL.composite").toURL().toString(),
+                                         new SCAContribution("TestContribution", 
+                                                                     new File("src/main/resources/ConversationalWSDL").toURL().toString()));
+                
+         
         node.start();
         
-        conversationalStatelessClientStatefulService  = node.getDomain().getService(ConversationalClient.class,
-                                                                                    "ConversationalStatelessClientStatefulService");
+        conversationalStatelessClientStatefulService = ((SCAClient)node).getService(ConversationalClient.class, "ConversationalStatelessClientStatefulService");
+        
         
         ConversationalClientStatelessImpl.calls  = new StringBuffer(); 
     }
 
     @After
     public void tearDown() throws Exception {
-        node.destroy();
+        node.stop();
         conversationalStatelessClientStatefulService = null;
     }
 

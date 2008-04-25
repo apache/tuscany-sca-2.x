@@ -87,7 +87,7 @@ public class AComponentImpl implements AComponent {
     
     /**
      * A test case to work out what needs to be done in a transformer to get the 
-     * CallableReference across the wire. Let here for interest in case anyone 
+     * CallableReference across the wire. Left here for interest in case anyone 
      * is looking for how to get at the innards of CallableReferences
      */
     public String fooStringD() {

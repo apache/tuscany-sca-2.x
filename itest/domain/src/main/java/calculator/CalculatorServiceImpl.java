@@ -26,13 +26,13 @@ import org.osoa.sca.annotations.Reference;
  */
 public class CalculatorServiceImpl implements CalculatorService {
 
-    private AddService addService;
+    private AddService[] addService;
     private SubtractService subtractService;
     private MultiplyService multiplyService; 
     private DivideService divideService;
 
     @Reference
-    public void setAddService(AddService addService) {
+    public void setAddService(AddService[] addService) {
         this.addService = addService;
     }
 
@@ -53,7 +53,7 @@ public class CalculatorServiceImpl implements CalculatorService {
     
     public double add(double n1, double n2) {
         System.out.println("CalculatorService - add " + n1 + " and " + n2);
-        return addService.add(n1, n2);
+        return addService[1].add(addService[0].add(n1, n2), n2);
     }
 
     public double subtract(double n1, double n2) {

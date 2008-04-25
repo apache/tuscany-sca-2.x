@@ -37,7 +37,7 @@ import org.osoa.sca.CallableReference;
  * This server can be replaced with any registry that is appropriate but the components
  * in each node that talk to the registry should be replaced also. 
  */
-public class DomainImplTestCase {
+public class DomainImplTestCaseOFF {
 
     private static SCADomain domain;
     private static SCADomainEventService domainEventService;
@@ -47,7 +47,7 @@ public class DomainImplTestCase {
     public static void init() throws Exception {
              
         try {
-            cl = DomainImplTestCase.class.getClassLoader();
+            cl = DomainImplTestCaseOFF.class.getClassLoader();
             SCADomainFactory domainFactory = SCADomainFactory.newInstance();
             domain = domainFactory.createSCADomain("http://localhost:9999"); 
             domainEventService = (SCADomainEventService)domain;

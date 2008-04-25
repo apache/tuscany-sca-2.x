@@ -21,16 +21,14 @@ package org.apache.tuscany.sca.itest.callableref;
 
 import static junit.framework.Assert.assertEquals;
 
-import javax.xml.namespace.QName;
-
+import java.io.File;
 
 import junit.framework.Assert;
 
-
-import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.domain.SCADomainFactory;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeFactory;
+import org.apache.tuscany.sca.node.SCAClient;
+import org.apache.tuscany.sca.node.SCANode2;
+import org.apache.tuscany.sca.node.SCANode2Factory;
+import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,9 +40,8 @@ import org.junit.Test;
  */
 public class CallableReferenceRemoteTestCase {
     
-    private static SCADomain domain;
-    private static SCANode nodeA;
-    private static SCANode nodeB;
+    private static SCANode2 nodeA;
+    private static SCANode2 nodeB;
    
     private static AComponent acomponent;
 
@@ -52,30 +49,25 @@ public class CallableReferenceRemoteTestCase {
     public static void init() throws Exception {
         
         try {
-            System.out.println("Setting up domain");
-            SCADomainFactory domainFactory = SCADomainFactory.newInstance();
-            domain= domainFactory.createSCADomain("http://localhost:9999");
             
             System.out.println("Setting up nodes");
                   
-            ClassLoader cl = CallableReferenceRemoteTestCase.class.getClassLoader();
+            SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+            nodeA = nodeFactory.createSCANode(new File("src/main/resources/nodeA/CompositeA.composite").toURL().toString(),
+                                             new SCAContribution("TestContribution", 
+                                                                 new File("src/main/resources/nodeA").toURL().toString()));
             
-            SCANodeFactory nodeFactory = SCANodeFactory.newInstance();
+     
+            nodeB = nodeFactory.createSCANode(new File("src/main/resources/nodeB/CompositeB.composite").toURL().toString(),
+                                             new SCAContribution("TestContribution", 
+                                                                 new File("src/main/resources/nodeB").toURL().toString()));
             
-            nodeA = nodeFactory.createSCANode("http://localhost:8100/nodeA", "http://localhost:9999");
-            nodeA.addContribution("nodeA", cl.getResource("nodeA/"));
-            nodeA.addToDomainLevelComposite(new QName("http://foo", "CompositeA"));
-
             
-            nodeB = nodeFactory.createSCANode("http://localhost:8200/nodeB", "http://localhost:9999");
-            nodeB.addContribution("nodeB", cl.getResource("nodeB/"));
-            nodeB.addToDomainLevelComposite(new QName("http://foo", "CompositeB"));
-
-            domain.start();
+            nodeA.start();
+            nodeB.start();
             
-            // get a reference to the calculator service from domainA
-            // which will be running this component
-            acomponent = nodeA.getDomain().getService(AComponent.class, "AComponent/AComponent");   
+            acomponent = ((SCAClient)nodeA).getService(AComponent.class, "AComponent/AComponent");
+               
         } catch (Throwable ex) {
             System.out.println(ex.toString());
             // Print detailed cause information.
@@ -95,8 +87,8 @@ public class CallableReferenceRemoteTestCase {
     @AfterClass
     public static void destroy() throws Exception {
         // stop the nodes and hence the domains they contain        
-        nodeA.destroy();
-        nodeB.destroy();
+        nodeA.stop();
+        nodeB.stop();
     }
 
     //@Test

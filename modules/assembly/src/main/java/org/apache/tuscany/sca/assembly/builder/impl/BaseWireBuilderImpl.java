@@ -143,7 +143,7 @@ class BaseWireBuilderImpl {
                     }
                     if (!promoted && !componentReference.isCallback()) {
                         /*warning("No targets for reference: " + componentReference.getName(), composite);*/
-				warning("ReferenceWithoutTargets", composite, componentReference.getName());
+                        warning("ReferenceWithoutTargets", composite, composite.getName().toString(), componentReference.getName());
                     }
                 } else {
                     warning("Too many targets on reference: " + componentReference.getName(), composite);
@@ -278,7 +278,7 @@ class BaseWireBuilderImpl {
     
                 } else {
                     /*warning("Promoted component service not found: " + promotedServiceName, composite);*/
-			    warning("PromotedServiceNotFound", composite, promotedServiceName);
+                    warning("PromotedServiceNotFound", composite, promotedServiceName);
                 }
             }
         }
@@ -342,7 +342,7 @@ class BaseWireBuilderImpl {
                         }
                     } else {
                         /*warning("Promoted component reference not found: " + componentReferenceName, composite);*/
-				warning("PromotedReferenceNotFound", composite, componentReferenceName);
+                        warning("PromotedReferenceNotFound", composite, componentReferenceName);
                     }
                 }
             }
@@ -416,7 +416,7 @@ class BaseWireBuilderImpl {
                                     + " : "
                                     + componentService.getName(),
                                 composite);*/
-				warning("ReferenceIncompatibleInterface", composite, componentReference.getName(), componentService.getName());
+                        warning("ReferenceIncompatibleInterface", composite, composite.getName().toString(), componentReference.getName(), componentService.getName());
                     }
                 } else {
                     // add all the reference bindings into the target so that they
@@ -425,9 +425,9 @@ class BaseWireBuilderImpl {
                     
                     // The bindings will be cloned back into the reference when the 
                     // target is finally resolved. 
-                    
+              
                     /*warning("Component reference target not found, it might be a remote service: " + componentService.getName(), composite);*/
-			    warning("ComponentReferenceTargetNotFound", composite, componentService.getName());
+                    warning("ComponentReferenceTargetNotFound", composite, composite.getName().toString(), componentService.getName());
                 }
             }
         } else if (componentReference.getReference() != null) {
@@ -545,7 +545,20 @@ class BaseWireBuilderImpl {
                 }
             }
                        
-            if (!targets.isEmpty()) {
+            
+            // Need to tidy up the reference binding list and add in the bindings that 
+            // have been selected above. The situation so far...
+            //    Wired reference (1 or more targets are specified)
+            //       Binding.uri = null  - remove as it's left over from target resolution
+            //                             the binding will have been moved to the target from where 
+            //                             it will be resolved later
+            //       Binding.uri != null - the selected and resolved reference binding
+            //    Unwired reference (0 targets)
+            //       Binding.uri = null  - Either a callback reference or the reference is yet to be wired
+            //                             by the implementation so leave the binding where it is
+            //       Binding.uri != null - from the composite file so leave it             
+            if ((componentReference.getTargets().size() > 0) ||
+                (!targets.isEmpty())){
 
                 // Add all the effective bindings
                 componentReference.getBindings().clear();
@@ -554,27 +567,43 @@ class BaseWireBuilderImpl {
                     componentReference.getCallback().getBindings().clear();
                     componentReference.getCallback().getBindings().addAll(selectedCallbackBindings);
                 }
-            }
-            
-            // Need to tidy up the reference binding list. The situation so far...
-            //    Wired reference (1 or more targets are specified)
-            //       Binding.uri = null  - remove as its left over from target resolution
-            //                             the binding will have been moved to the target from where 
-            //                             it will be resolved later
-            //       Binding.uri != null - the reference was resolved
-            //    Unwired reference (0 targets)
-            //       Binding.uri = null  - Either a callback reference or the reference is yet to be wired
-            //                             either manually or via autowire so leave the binding where it is
-            //       Binding.uri != null - from the composite file so leave it 
-            if (componentReference.getTargets().size() > 0){
-                List<Binding> bindingsToRemove = new ArrayList<Binding>();
-                for(Binding binding : componentReference.getBindings()){
-                    if(binding.getURI() == null){
-                        bindingsToRemove.add(binding);
+               
+                // add in sca bindings to represent all unresolved targets. The sca binding
+                // will try to resolve the target at a later date. 
+                for (ComponentService service : componentReference.getTargets()) {
+                    if (service.isUnresolved()) {
+                        SCABinding scaBinding = null;    
+                    
+                        // find the sca binding amongst the candidate binding list. We want to 
+                        // find this one and clone it as it may have been configured with
+                        // policies
+                        for (Binding binding : service.getBindings()) {
+
+                            if (binding instanceof SCABinding) {
+                                try {
+                                    scaBinding = (SCABinding)((OptimizableBinding)binding).clone();
+                                } catch (CloneNotSupportedException ex){
+                                    // we know it is supported on the SCA binding
+                                }
+                                break;
+                            }
+                        }
+                        
+                        if (scaBinding != null) {
+                            // configure the cloned SCA binding for this reference target
+                            scaBinding.setName(service.getName());
+                            
+                            // this service object holds the list of candidate bindings which 
+                            // can be used for later matching
+                            ((OptimizableBinding)scaBinding).setTargetComponentService(service);
+                            componentReference.getBindings().add(scaBinding);
+                        } else {
+                           // not sure we need to raise a warning here as a warning will already been 
+                           // thrown previously to indicate the reason why there is no sca binding
+                           // warning("NoSCABindingAvailableForUnresolvedService", componentReference, componentReference.getName(), service.getName());
+                        }
                     }
                 }
-                
-                componentReference.getBindings().removeAll(bindingsToRemove);
             }
         }
     }

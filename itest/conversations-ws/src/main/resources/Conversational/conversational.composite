@@ -29,7 +29,7 @@
                             callbackInterface="org.apache.tuscany.sca.itest.conversational.ConversationalCallback" />
             <binding.ws/>
             <callback>
-                <binding.ws/>
+                <binding.ws uri="http://localhost:8085/ConversationalStatelessClientStatelessService"/>
             </callback>
         </reference>
 		<reference name="conversationalService2" target="ConversationalServiceStatelessSL">
@@ -45,7 +45,7 @@
                             callbackInterface="org.apache.tuscany.sca.itest.conversational.ConversationalCallback" />
             <binding.ws/>
             <callback>
-                <binding.ws/>
+                <binding.ws uri="http://localhost:8085/ConversationalStatelessClientStatefulService"/>
             </callback>
         </reference>
         <reference name="conversationalService2" target="ConversationalServiceStateful">  
@@ -61,7 +61,7 @@
                             callbackInterface="org.apache.tuscany.sca.itest.conversational.ConversationalCallback" />
             <binding.ws/>
             <callback>
-                <binding.ws/>
+                <binding.ws uri="http://localhost:8085/ConversationalStatefulClientStatelessService"/>
             </callback>
         </reference>
         <reference name="conversationalService2" target="ConversationalServiceStatelessSL">
@@ -75,7 +75,7 @@
         <reference name="conversationalService" target="ConversationalServiceStateful">
             <binding.ws/>
             <callback>
-                <binding.ws/>
+                <binding.ws uri="http://localhost:8085/ConversationalStatefulClientStatefulService"/>
             </callback>            
         </reference>        
         <reference name="conversationalService2" target="ConversationalServiceStateful">
@@ -89,7 +89,7 @@
         <reference name="conversationalService" target="ConversationalServiceRequest">
             <binding.ws/>
             <callback>
-                <binding.ws/>
+                <binding.ws uri="http://localhost:8085/ConversationalStatelessClientRequestService"/>
             </callback>            
         </reference>        
         <reference name="conversationalService2" target="ConversationalServiceRequest">
@@ -102,7 +102,7 @@
         <reference name="conversationalService" target="ConversationalServiceStatefulNonConversationalCallback">
             <binding.ws/>
             <callback>
-                <binding.ws/>
+                <binding.ws uri="http://localhost:8085/ConversationalStatefulClientNonConversationalCallbackStatefulService"/>
             </callback>            
         </reference>        
         <reference name="conversationalService2" target="ConversationalServiceStatefulNonConversationalCallback">
@@ -119,7 +119,7 @@
 		<service name="ConversationalService">
             <interface.java interface="org.apache.tuscany.sca.itest.conversational.ConversationalService"
                             callbackInterface="org.apache.tuscany.sca.itest.conversational.ConversationalCallback" />		
-		    <binding.ws/>
+		    <binding.ws uri="http://localhost:8085/ConversationalServiceStateful"/>
             <callback>
                 <binding.ws/>
             </callback>
@@ -135,7 +135,7 @@
         <service name="ConversationalService">
             <interface.java interface="org.apache.tuscany.sca.itest.conversational.ConversationalService"
                             callbackInterface="org.apache.tuscany.sca.itest.conversational.ConversationalCallback" />       
-            <binding.ws/>
+            <binding.ws uri="http://localhost:8085/ConversationalServiceStatelessSL"/>
             <callback>
                 <binding.ws/>
             </callback>
@@ -147,7 +147,7 @@
         <service name="ConversationalService">
             <interface.java interface="org.apache.tuscany.sca.itest.conversational.ConversationalService"
                             callbackInterface="org.apache.tuscany.sca.itest.conversational.ConversationalCallback" />       
-            <binding.ws/>
+            <binding.ws uri="http://localhost:8085/ConversationalServiceRequest"/>
             <callback>
                 <binding.ws/>
             </callback>
@@ -159,7 +159,7 @@
         <service name="ConversationalServiceNonConversationalCallback">
             <interface.java interface="org.apache.tuscany.sca.itest.conversational.ConversationalServiceNonConversationalCallback"
                             callbackInterface="org.apache.tuscany.sca.itest.conversational.NonConversationalCallback" />       
-            <binding.ws/>
+            <binding.ws uri="http://localhost:8085/ConversationalServiceStatefulNonConversationalCallback"/>
             <callback>
                 <binding.ws/>
             </callback>
