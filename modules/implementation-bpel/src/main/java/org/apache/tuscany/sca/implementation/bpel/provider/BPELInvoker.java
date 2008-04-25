@@ -28,6 +28,8 @@ import javax.wsdl.Part;
 import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.ode.bpel.iapi.MyRoleMessageExchange;
 import org.apache.ode.bpel.iapi.MessageExchange.Status;
 import org.apache.ode.utils.DOMUtils;
@@ -50,8 +52,12 @@ import org.w3c.dom.Element;
  * component implementation logic. In this example we are simply delegating the
  * CRUD operation invocations to the corresponding methods on our fake
  * resource manager.
+ * 
+ * @version $Rev$ $Date$
  */
 public class BPELInvoker implements Invoker {
+    protected final Log __log = LogFactory.getLog(getClass());
+    
     private EmbeddedODEServer odeServer;
     private TransactionManager txMgr;
     
@@ -77,6 +83,9 @@ public class BPELInvoker implements Invoker {
     
     private void initializeInvocation() {
       
+        if(__log.isDebugEnabled()){
+            __log.debug("Initializing BPELInvoker");
+        }
         Interface interfaze = operation.getInterface();
         if(interfaze instanceof WSDLInterface){
             WSDLInterface wsdlInterface = null;
@@ -106,6 +115,10 @@ public class BPELInvoker implements Invoker {
         
         if(! (operation.getInterface() instanceof WSDLInterface)) {
             throw new InvocationTargetException(null,"Unsupported service contract");
+        }
+        
+        if(__log.isDebugEnabled()) {
+            __log.debug("Invoking bpel component : " + bpelServiceName + "#" + bpelOperationName);
         }
         
         org.apache.ode.bpel.iapi.MyRoleMessageExchange mex = null;
@@ -147,10 +160,12 @@ public class BPELInvoker implements Invoker {
             mex = (MyRoleMessageExchange)odeServer.getBpelServer().getEngine().getMessageExchange(mex.getMessageExchangeId());
 
             Status status = mex.getStatus();
-            System.out.println("Status: " + status.name());
             Element invocationResponse = mex.getResponse().getMessage();
-            System.out.println("Response: " + DOMUtils.domToString(invocationResponse));
-            
+        
+            if(__log.isDebugEnabled()) {
+                __log.debug("Invocation status:" + status.name());
+                __log.debug("Response:\n" + DOMUtils.domToString(invocationResponse));
+            }
             //process the method invocation result
             response = processResponse(invocationResponse);
             
@@ -192,8 +207,11 @@ public class BPELInvoker implements Invoker {
         contentMessage.appendChild(contentPart);
         dom.appendChild(contentMessage);
         
-        System.out.println("::arg:::::: " + DOMUtils.domToString((Element) args[0]));
-        System.out.println("::message:: " + DOMUtils.domToString(dom.getDocumentElement()));
+        if(__log.isDebugEnabled()) {
+            __log.debug("Creating invocation message:");
+            __log.debug(">> args.....: " + DOMUtils.domToString((Element) args[0]));
+            __log.debug(">> message..:" + DOMUtils.domToString(dom.getDocumentElement()));
+        }
 
         org.apache.ode.bpel.iapi.Message request = mex.createMessage(new QName("", ""));
         request.setMessage(dom.getDocumentElement());

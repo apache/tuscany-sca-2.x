@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.transaction.TransactionManager;
+import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -76,7 +77,7 @@ public class EmbeddedODEServer {
     
     protected ExecutorService _executorService;
 
-    private Map<String, RuntimeComponent> tuscanyRuntimeComponents = new ConcurrentHashMap<String, RuntimeComponent>();
+    private Map<QName, RuntimeComponent> tuscanyRuntimeComponents = new ConcurrentHashMap<QName, RuntimeComponent>();
     
     public EmbeddedODEServer(TransactionManager txMgr) {
         _txMgr = txMgr;
@@ -153,7 +154,7 @@ public class EmbeddedODEServer {
         _bpelServer.setInMemDaoConnectionFactory(new BpelDAOConnectionFactoryImpl(_scheduler));
         // _bpelServer.setEndpointReferenceContext(new EndpointReferenceContextImpl(this));
         _bpelServer.setMessageExchangeContext(new ODEMessageExchangeContext(this));
-        _bpelServer.setBindingContext(new ODEBindingContext(this));
+        _bpelServer.setBindingContext(new ODEBindingContext());
         _bpelServer.setScheduler(_scheduler);
         if (_config.isDehydrationEnabled()) {
             CountLRUDehydrationPolicy dehy = new CountLRUDehydrationPolicy();
@@ -279,11 +280,11 @@ public class EmbeddedODEServer {
         //TODO
     }
     
-    public void setTuscanyRuntimeComponent(String componentName, RuntimeComponent componentContext) {
-        tuscanyRuntimeComponents.put(componentName, componentContext);
+    public void registerTuscanyRuntimeComponent(QName processName,RuntimeComponent componentContext) {
+        tuscanyRuntimeComponents.put(processName, componentContext);
     }
-    
-    public RuntimeComponent getTuscanyRuntimeComponent(String componentName) {
-        return tuscanyRuntimeComponents.get(componentName);
+        
+    public RuntimeComponent getTuscanyRuntimeComponent(QName processName) {
+        return tuscanyRuntimeComponents.get(processName);
     }
 }

@@ -23,8 +23,8 @@ import java.net.URL;
 
 import javax.transaction.TransactionManager;
 
-import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.ode.EmbeddedODEServer;
 import org.apache.tuscany.sca.implementation.bpel.ode.ODEDeployment;
@@ -36,22 +36,18 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
- * The model representing a sample CRUD implementation in an SCA assembly model.
- * The sample CRUD implementation is not a full blown implementation, it only
- * supports a subset of what a component implementation can support: - a single
- * fixed service (as opposed to a list of services typed by different
- * interfaces) - a directory attribute used to specify where a CRUD component is
- * going to persist resources - no references or properties - no policy intents
- * or policy sets
+ * BPEL Implementation provider
+ * 
+ * @version $Rev$ $Date$
  */
 public class BPELImplementationProvider implements ImplementationProvider {
-
+    private final Log __log = LogFactory.getLog(getClass());
+    
     private RuntimeComponent component;
-
+    private BPELImplementation implementation;
+    
     private EmbeddedODEServer odeServer;
     private TransactionManager txMgr;
-
-    private BPELImplementation implementation;
     
     /**
      * Constructs a new BPEL Implementation.
@@ -76,7 +72,9 @@ public class BPELImplementationProvider implements ImplementationProvider {
     }
 
     public void start() {
-        System.out.println("Starting " + component.getName());
+        if(__log.isInfoEnabled()) {
+            __log.info("Starting " + component.getName());
+        }
         
         try {
             if (!odeServer.isInitialized()) {
@@ -87,13 +85,16 @@ public class BPELImplementationProvider implements ImplementationProvider {
             URL deployURL = this.implementation.getProcessDefinition().getLocation();
             
             File deploymentDir = new File(deployURL.toURI().getPath()).getParentFile();
-            System.out.println(">>> Deploying : " + deploymentDir.toString());
+            
+            if(__log.isInfoEnabled()) {
+                __log.info(">>> Deploying : " + deploymentDir.toString());
+            }
 
             // deploy the process
             if (odeServer.isInitialized()) {
                 try {
                     txMgr.begin();
-                    odeServer.setTuscanyRuntimeComponent(component.getName(), component);
+                    odeServer.registerTuscanyRuntimeComponent(implementation.getProcess(), component);
                     odeServer.deploy(new ODEDeployment(deploymentDir));
                     txMgr.commit();
                 } catch (Exception e) {
@@ -110,7 +111,9 @@ public class BPELImplementationProvider implements ImplementationProvider {
     }
 
     public void stop() {
-        System.out.println("Stopping " + component.getName());
+        if(__log.isInfoEnabled()) {
+            __log.info("Stopping " + component.getName());
+        }
         
         if (odeServer.isInitialized()) {
             // start ode server
@@ -118,9 +121,10 @@ public class BPELImplementationProvider implements ImplementationProvider {
         }
         
         txMgr = null;
-        
-        System.out.println("Stopped !!!");
 
+        if(__log.isInfoEnabled()) {
+            __log.info("Stopped !!!");
+        }
     }
 
 }

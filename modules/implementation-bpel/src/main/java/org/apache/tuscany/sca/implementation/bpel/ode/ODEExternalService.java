@@ -39,10 +39,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
+ * Helper Class to handle invocation to Tuscany Component References
+ * 
  * @version $Rev$ $Date$ 
  */
 public class ODEExternalService {
-    private static final Log __log = LogFactory.getLog(ODEExternalService.class);
+    protected final Log __log = LogFactory.getLog(getClass());
 
     private EmbeddedODEServer _server;
     private Scheduler _sched;
@@ -77,7 +79,12 @@ public class ODEExternalService {
                         public Object call() throws Exception {
                             try {
                                 // do execution
-                                RuntimeComponent tuscanyRuntimeComponent = _server.getTuscanyRuntimeComponent("HelloWorldService");
+                                if(! (partnerRoleMessageExchange.getChannel() instanceof TuscanyPRC)) {
+                                    throw new IllegalArgumentException("Channel should be an instance of TuscanyPRC");
+                                }
+                                
+                                TuscanyPRC channel = (TuscanyPRC) partnerRoleMessageExchange.getChannel();
+                                RuntimeComponent tuscanyRuntimeComponent = _server.getTuscanyRuntimeComponent(channel.getProcessName());
 
                                 RuntimeComponentReference runtimeComponentReference =
                                     (RuntimeComponentReference)tuscanyRuntimeComponent.getReferences().get(0);
@@ -103,12 +110,16 @@ public class ODEExternalService {
                                 Element msg = partnerRoleMessageExchange.getRequest().getMessage();
                                 if (msg != null) {
                                     String xml = DOMUtils.domToString(msg);
-                                    System.out.println(">>> Original message: " + xml);
-
+                                    
                                     String payload =
                                         DOMUtils.domToString(getPayload(partnerRoleMessageExchange.getRequest()));
-                                    System.out.println(">>> Payload: " + payload);
-
+                                    
+                                    if(__log.isDebugEnabled()) {
+                                        __log.debug("Starting invocation of SCA Reference");
+                                        __log.debug(">>> Original message: " + xml);
+                                        __log.debug(">>> Payload: " + payload);
+                                    }
+                                    
                                     Object[] args = new Object[] {getPayload(partnerRoleMessageExchange.getRequest())};
 
                                     Object result = null;
@@ -123,9 +134,11 @@ public class ODEExternalService {
                                                                                     null);
                                     }
 
-                                    // partnerRoleMessageExchange.getResponse().setMessage(null);
                                     
-                                    System.out.println(">>> Result : " + DOMUtils.domToString((Element)result));
+                                    if(__log.isDebugEnabled()) {
+                                        __log.debug("SCA Reference invocation finished");
+                                        __log.debug(">>> Result : " + DOMUtils.domToString((Element)result));
+                                    }
 
                                     if (!success) {
                                         return null;
@@ -257,7 +270,10 @@ public class ODEExternalService {
         contentMessage.appendChild(contentPart);
         dom.appendChild(contentMessage);
 
-        System.out.println("::result message:: " + DOMUtils.domToString(dom.getDocumentElement()));
+        if(__log.isDebugEnabled()) {
+            __log.debug("Creating result message:");
+            __log.debug(">>>" + DOMUtils.domToString(dom.getDocumentElement()));
+        }
 
         QName id = partnerRoleMessageExchange.getOperation().getOutput().getMessage().getQName();
         Message response = partnerRoleMessageExchange.createMessage(id);
