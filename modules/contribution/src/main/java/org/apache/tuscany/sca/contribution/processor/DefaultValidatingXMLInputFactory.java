@@ -44,6 +44,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -57,6 +58,7 @@ public class DefaultValidatingXMLInputFactory extends XMLInputFactory {
     
     private XMLInputFactory inputFactory;
     private ValidationSchemaExtensionPoint schemas;
+    private Monitor monitor;
     private boolean initialized;
     private Schema aggregatedSchema;
 
@@ -66,9 +68,10 @@ public class DefaultValidatingXMLInputFactory extends XMLInputFactory {
      * @param inputFactory
      * @param schemas
      */
-    public DefaultValidatingXMLInputFactory(XMLInputFactory inputFactory, ValidationSchemaExtensionPoint schemas) {
+    public DefaultValidatingXMLInputFactory(XMLInputFactory inputFactory, ValidationSchemaExtensionPoint schemas, Monitor monitor) {
         this.inputFactory = inputFactory;
         this.schemas = schemas;
+        this.monitor = monitor;
     }
     
     /**
@@ -168,32 +171,32 @@ public class DefaultValidatingXMLInputFactory extends XMLInputFactory {
 
     public XMLStreamReader createXMLStreamReader(InputStream arg0, String arg1) throws XMLStreamException {
         initializeSchemas();
-        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema);
+        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema, monitor);
     }
 
     public XMLStreamReader createXMLStreamReader(InputStream arg0) throws XMLStreamException {
         initializeSchemas();
-        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema);
+        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema, monitor);
     }
 
     public XMLStreamReader createXMLStreamReader(Reader arg0) throws XMLStreamException {
         initializeSchemas();
-        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema);
+        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema, monitor);
     }
 
     public XMLStreamReader createXMLStreamReader(Source arg0) throws XMLStreamException {
         initializeSchemas();
-        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema);
+        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema, monitor);
     }
 
     public XMLStreamReader createXMLStreamReader(String arg0, InputStream arg1) throws XMLStreamException {
         initializeSchemas();
-        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema);
+        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema, monitor);
     }
 
     public XMLStreamReader createXMLStreamReader(String arg0, Reader arg1) throws XMLStreamException {
         initializeSchemas();
-        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema);
+        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema, monitor);
     }
 
     public XMLEventAllocator getEventAllocator() {

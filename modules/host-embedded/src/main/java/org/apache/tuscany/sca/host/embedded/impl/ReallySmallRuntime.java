@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.RuntimeAssemblyFactory;
@@ -85,6 +86,7 @@ public class ReallySmallRuntime {
     private ScopeRegistry scopeRegistry;
     private ProxyFactory proxyFactory;
     private List scaDefnsSink = new ArrayList();
+    private Monitor monitor;
 
     public ReallySmallRuntime(ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -131,7 +133,18 @@ public class ReallySmallRuntime {
         SCABindingFactory scaBindingFactory = factories.getFactory(SCABindingFactory.class);
         IntentAttachPointTypeFactory intentAttachPointTypeFactory = new DefaultIntentAttachPointTypeFactory();
         factories.addFactory(intentAttachPointTypeFactory);
-        ContributionFactory contributionFactory = factories.getFactory(ContributionFactory.class); 
+        ContributionFactory contributionFactory = factories.getFactory(ContributionFactory.class);
+        
+        // Create a monitor
+        UtilityExtensionPoint utilities = registry.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
+        
+        if (monitorFactory != null){
+            monitor = monitorFactory.createMonitor();
+        } else {
+            logger.fine("No MonitorFactory is found on the classpath.");
+        }
+
         
         // Create a contribution service
         contributionService = ReallySmallRuntimeBuilder.createContributionService(classLoader,
@@ -140,7 +153,8 @@ public class ReallySmallRuntime {
                                                                                   assemblyFactory,
                                                                                   policyFactory,
                                                                                   mapper,
-                                                                                  scaDefnsSink);
+                                                                                  scaDefnsSink,
+                                                                                  monitor);
         
         // Create the ScopeRegistry
         scopeRegistry = ReallySmallRuntimeBuilder.createScopeRegistry(registry); 
@@ -195,15 +209,6 @@ public class ReallySmallRuntime {
         IntentAttachPointTypeFactory intentAttachPointTypeFactory = factories.getFactory(IntentAttachPointTypeFactory.class);
         InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
         
-        // create a monitor to catch validation errors
-        MonitorFactory monitorFactory = registry.getExtensionPoint(MonitorFactory.class);
-        Monitor monitor = null;
-        
-        if (monitorFactory != null){
-            monitor = monitorFactory.createMonitor();
-        } else {
-            logger.fine("No MonitorFactory is found on the classpath.");
-        }
         
         //Create a composite builder
         SCADefinitions scaDefns = new SCADefinitionsImpl();

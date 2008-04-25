@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.impl.DefaultLoggingMonitorImpl;
+import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
 import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
@@ -36,7 +37,7 @@ import org.apache.tuscany.sca.node.impl.NodeImpl;
 /**
  * This shows how to test the Calculator service component.
  */
-public class NoComponentImplementationTestCase extends TestCase {
+public class NoCompositeNamespaceTestCase extends TestCase {
 
     private CalculatorService calculatorService;
     private SCANode2 node;
@@ -44,13 +45,16 @@ public class NoComponentImplementationTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-        node = nodeFactory.createSCANode(new File("src/main/resources/NoComponentImplementation/Calculator.composite").toURL().toString(),
+        node = nodeFactory.createSCANode(new File("src/main/resources/NoCompositeNamespace/Calculator.composite").toURL().toString(),
         		                 new SCAContribution("TestContribution", 
-        		                                     new File("src/main/resources/NoComponentImplementation").toURL().toString()));
+        		                                     new File("src/main/resources/NoCompositeNamespace").toURL().toString()));
+        node.start();
+        calculatorService = ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
     }
 
     @Override
     protected void tearDown() throws Exception {
+        node.stop();
     }
 
     public void testCalculator() throws Exception {
@@ -61,7 +65,7 @@ public class NoComponentImplementationTestCase extends TestCase {
         Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
         
         assertNotNull(problem);
-        assertEquals("NoComponentImplementation", problem.getMessageId());
+        assertEquals("NoCompositeNamespace", problem.getMessageId());
  
     }
 }

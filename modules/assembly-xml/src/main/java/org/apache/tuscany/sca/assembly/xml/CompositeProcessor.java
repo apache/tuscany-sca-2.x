@@ -64,6 +64,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -83,6 +84,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
     // FIXME: to be refactored
     private XPathFactory xPathFactory = XPathFactory.newInstance();
     
+    // TODO Refactor the constructor to include a monoitor
     /**
      * Construct a new composite processor
      * 
@@ -96,10 +98,11 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                               PolicyFactory policyFactory,
                               InterfaceContractMapper interfaceContractMapper,
                               StAXArtifactProcessor extensionProcessor) {
-        super(contributionFactory, factory, policyFactory, extensionProcessor);
+        super(contributionFactory, factory, policyFactory, extensionProcessor, null);
         
     }
 
+    // TODO - remove in favour or following constructor that takes a monitor
     /**
      * Construct a new composite processor
      * 
@@ -112,8 +115,24 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                               AssemblyFactory factory,
                               PolicyFactory policyFactory,
                               StAXArtifactProcessor extensionProcessor) {
-        super(contributionFactory, factory, policyFactory, extensionProcessor);
+        super(contributionFactory, factory, policyFactory, extensionProcessor, null);
     }
+    
+    /**
+     * Construct a new composite processor
+     * 
+     * @param contributionFactory
+     * @param assemblyFactory
+     * @param policyFactory
+     * @param extensionProcessor
+     */
+    public CompositeProcessor(ContributionFactory contributionFactory,
+                              AssemblyFactory factory,
+                              PolicyFactory policyFactory,
+                              StAXArtifactProcessor extensionProcessor,
+                              Monitor monitor) {
+        super(contributionFactory, factory, policyFactory, extensionProcessor, monitor);
+    }    
 
     public Composite read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         Composite composite = null;
@@ -141,7 +160,14 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
 
                         // Read a <composite>
                         composite = assemblyFactory.createComposite();
+                        
                         composite.setName(new QName(getString(reader, TARGET_NAMESPACE), getString(reader, NAME)));
+
+                        if(!isSet(reader, TARGET_NAMESPACE)){
+                            // spec says that a composite must have a namespace
+                            warning("NoCompositeNamespace", composite, composite.getName().toString());   
+                        }
+                        
                         if(isSet(reader, AUTOWIRE)) {
                             composite.setAutowire(getBoolean(reader, AUTOWIRE));
                         }

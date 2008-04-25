@@ -140,7 +140,7 @@ public class ReadDocumentTestCase extends TestCase {
         
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
         schemas.addSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd").toString());
-        XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas);
+        XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, null);
         CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(staxProcessor, validatingInputFactory, null);
         
         URL url = getClass().getResource("JavaScriptReference.composite");
@@ -176,7 +176,7 @@ public class ReadDocumentTestCase extends TestCase {
         
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
         schemas.addSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd").toString());
-        XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas);
+        XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, null);
         CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(staxProcessor, validatingInputFactory, null);
         
         URL url = getClass().getResource("RMIBindingTest.composite");

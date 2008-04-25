@@ -155,6 +155,11 @@ public class DistributeComponents {
         nodeFactory = modelFactories.getFactory(NodeImplementationFactory.class);
         atomBindingFactory = modelFactories.getFactory(AtomBindingFactory.class);
         
+        // Create a monitor
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
+        Monitor monitor = monitorFactory.createMonitor();
+        
         // Create XML and document artifact processors
         StAXArtifactProcessorExtensionPoint xmlProcessorExtensions = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         xmlProcessor = new ExtensibleStAXArtifactProcessor(xmlProcessorExtensions, inputFactory, outputFactory);
@@ -164,7 +169,7 @@ public class DistributeComponents {
         // Create and register XML artifact processor extensions for sca-contribution XML and
         // SCDL <composite>, <componentType> and <constrainingType>
         xmlProcessorExtensions.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory, xmlProcessor));
-        xmlProcessorExtensions.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, xmlProcessor));
+        xmlProcessorExtensions.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, xmlProcessor, monitor));
         xmlProcessorExtensions.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, xmlProcessor));
         xmlProcessorExtensions.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, xmlProcessor));
         
@@ -180,11 +185,6 @@ public class DistributeComponents {
         // Create contribution content processor
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
         contributionContentProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlExtensionProcessor);
-        
-        // Create a monitor
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        Monitor monitor = monitorFactory.createMonitor();
         
         // Create a contribution dependency builder
         contributionDependencyBuilder = new ContributionDependencyBuilderImpl(monitor);

@@ -54,6 +54,7 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -61,6 +62,9 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
@@ -91,6 +95,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
     protected PolicyAttachPointProcessor policyProcessor;
     private DocumentBuilderFactory documentBuilderFactory;
     protected IntentAttachPointTypeFactory intentAttachPointTypeFactory;
+    private Monitor monitor;
 
     /**
      * Constructs a new BaseArtifactProcessor.
@@ -102,13 +107,15 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
     public BaseAssemblyProcessor(ContributionFactory contribFactory,
                                  AssemblyFactory factory,
                                  PolicyFactory policyFactory,
-                                 StAXArtifactProcessor extensionProcessor) {
+                                 StAXArtifactProcessor extensionProcessor,
+                                 Monitor monitor) {
         this.assemblyFactory = factory;
         this.policyFactory = policyFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
         this.contributionFactory = contribFactory;
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
         this.intentAttachPointTypeFactory = new IntentAttachPointTypeFactoryImpl();
+        this.monitor = monitor;
     }
 
     /**
@@ -124,7 +131,23 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
         this.policyFactory = policyFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
+        
+        //TODO - this constructor should take a monitor too. 
     }
+    
+    /**
+     * Marshals warnings into the monitor
+     * 
+     * @param message
+     * @param model
+     * @param messageParameters
+     */
+    protected void warning(String message, Object model, String... messageParameters) {
+        if (monitor != null){
+            Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-xml-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
+        }
+    }    
 
     /**
      * Start an element.
