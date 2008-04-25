@@ -445,7 +445,7 @@
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>tuscany-workspace-admin</artifactId>
+            <artifactId>tuscany-domain-manager</artifactId>
             <version>${pom.version}</version>
         </dependency>
         <dependency>

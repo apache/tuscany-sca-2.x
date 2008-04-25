@@ -375,7 +375,7 @@ final class NodeLauncherUtil {
     
             // Use Java reflection to create the node daemon as only the runtime class
             // loader knows the runtime classes required by the node
-            String className = "org.apache.tuscany.sca.workspace.admin.launcher.DomainManagerLauncherBootstrap";
+            String className = "org.apache.tuscany.sca.domain.manager.launcher.DomainManagerLauncherBootstrap";
             Class<?> bootstrapClass;
             if (runtimeClassLoader != null) {
                 bootstrapClass = Class.forName(className, true, runtimeClassLoader);
