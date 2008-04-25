@@ -41,7 +41,7 @@ public class ConversationWSDLTestCase {
     @Before
     public void setUp() throws Exception {
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-        node = nodeFactory.createSCANode(new File("src/main/resources/ConversationalWSDL/ConversationalWSDL.composite").toURL().toString(),
+        node = nodeFactory.createSCANode(new File("src/main/resources/ConversationalWSDL/conversationalWSDL.composite").toURL().toString(),
                                          new SCAContribution("TestContribution", 
                                                                      new File("src/main/resources/ConversationalWSDL").toURL().toString()));
                 
