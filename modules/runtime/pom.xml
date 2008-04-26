@@ -360,6 +360,7 @@
     </dependencies>
 
     <build>
+        <finalName>tuscany-sca</finalName>
         <resources>
             <resource>
                 <directory>src/main/java</directory>
@@ -373,7 +374,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <finalName>tuscany-sca</finalName>
                     <archive>
                         <manifest>
                             <mainClass>org.apache.tuscany.sca.runtime.standalone.Launcher</mainClass>
