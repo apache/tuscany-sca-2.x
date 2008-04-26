@@ -35,8 +35,8 @@ import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
 import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -51,15 +51,15 @@ public class OneWayTestCase {
      */
     private static final int MAX_SLEEP_TIME = 10000;
 
-    private SCANode2 node;
+    private static SCANode2 node;
     
     /**
      * Initialise the SCADomain.
      *
      * @throws Exception Failed to initialise the SCADomain
      */
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
         node = nodeFactory.createSCANode(new File("src/main/resources/OneWayContribution/META-INF/sca-deployables/oneWay.composite").toURL().toString(),
@@ -76,8 +76,8 @@ public class OneWayTestCase {
      *
      * @throws Exception Failed to shutdown the SCADomain
      */
-    @After
-    public void tearDown() throws Exception {
+    @AfterClass
+    public static void tearDown() throws Exception {
         node.stop();
     }
 
