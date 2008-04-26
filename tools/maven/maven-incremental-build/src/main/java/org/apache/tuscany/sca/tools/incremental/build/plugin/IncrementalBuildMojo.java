@@ -175,7 +175,7 @@ public class IncrementalBuildMojo extends AbstractMojo {
             // FIXME: The maven invoker doesn't handle the directory names with spaces
             // request.setLocalRepositoryDirectory(new File(localRepository.getBasedir()));
             request.setInteractive(false);
-            request.setShowErrors(true);
+            request.setShowErrors(false);
             request.setRecursive(false);
             // request.setDebug(true);
             request.setOffline(settings.isOffline());
@@ -272,7 +272,7 @@ public class IncrementalBuildMojo extends AbstractMojo {
             if (resource.getExcludes() != null && !resource.getExcludes().isEmpty()) {
                 scanner.setExcludes((String[])resource.getExcludes().toArray(new String[]{}));
             }
-    
+
             scanner.addDefaultExcludes();
             scanner.scan();
     
@@ -297,13 +297,16 @@ public class IncrementalBuildMojo extends AbstractMojo {
                 File destinationFile = new File(outputDirectory, destination);
                 
                 if (!destinationFile.exists()) {
+                    getLog().info("Source file " + sourceFile + ".");
                     getLog().info("Target file " + destinationFile + " could not be found.");
                     return true;
                 } else {
                     if (sourceFile.lastModified() > destinationFile.lastModified()) {
+                        getLog().info("Source file " + sourceFile + " has changed.");
                         getLog().info("Target file " + destinationFile + " is stale.");
                         return true;
                     } else if (sourceFile.lastModified() > outputFile.lastModified()) {
+                        getLog().info("Source file " + sourceFile + " has changed.");
                         getLog().info("Target build output file " + outputFile + " is stale.");
                         return true;
                     } else if (outputFile.lastModified() == 0) {
@@ -324,7 +327,8 @@ public class IncrementalBuildMojo extends AbstractMojo {
     private boolean isPOMStale() {
         File pom = project.getFile();
         if (pom.lastModified() > outputFile.lastModified()) {
-            getLog().info("File " + pom + " is stale.");
+            getLog().info("File " + pom + " has changed.");
+            getLog().info("Target build output file " + pom + " is stale.");
             return true;
         } else if (outputFile.lastModified() == 0) {
             getLog().info("Target build output file " + outputFile + " could not be found.");
@@ -356,6 +360,7 @@ public class IncrementalBuildMojo extends AbstractMojo {
             if (new File(root).exists()) {
                 Resource resource = new Resource();
                 resource.setDirectory(root);
+                resource.addInclude("*.java");
                 resources.add(resource);
             }
         }
