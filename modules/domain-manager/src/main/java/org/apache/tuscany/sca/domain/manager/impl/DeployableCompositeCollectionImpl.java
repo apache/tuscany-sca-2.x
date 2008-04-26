@@ -19,14 +19,14 @@
 
 package org.apache.tuscany.sca.domain.manager.impl;
 
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.compositeAlternateLink;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.compositeKey;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.compositeQName;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.compositeSourceLink;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.compositeTitle;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.contributionURI;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.locationURL;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.newRuntime;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeAlternateLink;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeKey;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeQName;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeSourceLink;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeTitle;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.contributionURI;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.locationURL;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.newRuntime;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -633,7 +633,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
      */
     private static Entry<String, Item> entry(Contribution contribution, Composite deployable) {
         Entry<String, Item> entry = new Entry<String, Item>();
-        entry.setKey(DomainAdminUtil.compositeKey(contribution.getURI(), deployable.getName()));
+        entry.setKey(DomainManagerUtil.compositeKey(contribution.getURI(), deployable.getName()));
         entry.setData(item(contribution, deployable));
         return entry;
     }

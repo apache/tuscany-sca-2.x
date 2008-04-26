@@ -46,7 +46,7 @@ import org.osoa.sca.ServiceRuntimeException;
  *
  * @version $Rev$ $Date$
  */
-public final class DomainAdminUtil {
+public final class DomainManagerUtil {
 
     static final String DEPLOYMENT_CONTRIBUTION_URI = "http://tuscany.apache.org/cloud";
 
@@ -110,7 +110,7 @@ public final class DomainAdminUtil {
      * @return
      */
     static String compositeSimpleTitle(String uri, QName qname) {
-        if (uri.equals(DomainAdminUtil.DEPLOYMENT_CONTRIBUTION_URI)) {
+        if (uri.equals(DomainManagerUtil.DEPLOYMENT_CONTRIBUTION_URI)) {
             return qname.getLocalPart();
         } else {
             return qname.getNamespaceURI() + ";" + qname.getLocalPart();

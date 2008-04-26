@@ -19,10 +19,10 @@
 
 package org.apache.tuscany.sca.domain.manager.impl;
 
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.DEPLOYMENT_CONTRIBUTION_URI;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.compositeSimpleTitle;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.compositeSourceLink;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.locationURL;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.DEPLOYMENT_CONTRIBUTION_URI;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeSimpleTitle;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeSourceLink;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.locationURL;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
