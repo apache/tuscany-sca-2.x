@@ -327,6 +327,9 @@ public class NodeImpl implements SCANode2, SCAClient {
             // Deactivate the composite
             compositeActivator.deactivate(composite);
             
+            // Stop the runtime
+            runtime.stop();
+            
         } catch (ActivationException e) {
             throw new ServiceRuntimeException(e);
         }
