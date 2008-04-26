@@ -19,9 +19,9 @@
 
 package org.apache.tuscany.sca.domain.manager.impl;
 
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.compositeQName;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.compositeTitle;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.contributionURI;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeQName;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeTitle;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.contributionURI;
 
 import java.io.IOException;
 import java.net.URLDecoder;

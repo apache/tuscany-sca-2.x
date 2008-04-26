@@ -19,10 +19,10 @@
 
 package org.apache.tuscany.sca.domain.manager.impl;
 
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.compositeKey;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.compositeQName;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.contributionURI;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainAdminUtil.nodeURI;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeKey;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeQName;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.contributionURI;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.nodeURI;
 
 import java.io.IOException;
 import java.net.URI;
