@@ -93,6 +93,7 @@ public class ScopeAnnotationTestCase {
      * CComponent is defined '@Scope("STATELESS")'<br>
      * <p>
      */
+    @Ignore ("TUSCANY-2274")
     @Test
     public void atScope1() throws Exception {
         System.out.println("atScope1");
