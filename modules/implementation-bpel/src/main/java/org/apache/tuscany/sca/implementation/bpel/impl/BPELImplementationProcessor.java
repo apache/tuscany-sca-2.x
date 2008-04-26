@@ -58,7 +58,9 @@ import org.apache.tuscany.sca.implementation.bpel.DefaultBPELFactory;
  *  @version $Rev$ $Date$
  */
 public class BPELImplementationProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<BPELImplementation> {
-    private static final QName IMPLEMENTATION_BPEL = new QName(Constants.SCA10_NS, "implementation.bpel");
+	private static final String PROCESS = "process";
+	private static final String IMPLEMENTATION_BPEL = "implementation.bpel";
+	private static final QName IMPLEMENTATION_BPEL_QNAME = new QName(Constants.SCA10_NS, IMPLEMENTATION_BPEL);
     
     private AssemblyFactory assemblyFactory;
     private BPELFactory bpelFactory;
@@ -70,7 +72,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
 
     public QName getArtifactType() {
         // Returns the QName of the XML element processed by this processor
-        return IMPLEMENTATION_BPEL;
+        return IMPLEMENTATION_BPEL_QNAME;
     }
 
     public Class<BPELImplementation> getModelType() {
@@ -79,22 +81,22 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     }
 
     public BPELImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        assert IMPLEMENTATION_BPEL.equals(reader.getName());
+        assert IMPLEMENTATION_BPEL_QNAME.equals(reader.getName());
         
         // Read an <implementation.bpel> element
 
         // Read the process attribute. 
-        QName process = getAttributeValueNS(reader, "process");
+        QName process = getAttributeValueNS(reader, PROCESS);
 
 
-        // Create an initialize the BPEL implementation model
+        // Create and initialize the BPEL implementation model
         BPELImplementation implementation = bpelFactory.createBPELImplementation();
         implementation.setProcess(process);
         implementation.setUnresolved(true);
         
         // Skip to end element
         while (reader.hasNext()) {
-            if (reader.next() == END_ELEMENT && IMPLEMENTATION_BPEL.equals(reader.getName())) {
+            if (reader.next() == END_ELEMENT && IMPLEMENTATION_BPEL_QNAME.equals(reader.getName())) {
                 break;
             }
         }
@@ -120,8 +122,33 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         
     }
 
-    public void write(BPELImplementation model, XMLStreamWriter outputSource) throws ContributionWriteException {
-        //FIXME Implement
+    /*
+     * Write out the XML representation of the BPEL implementation
+     * <implementation.bpel process="..." />
+     * 
+     * One complexity here is that the value of the process attribute is a QName
+     * In this implementation, the QName is written out in XML Namespaces recommendation format,
+     * as described in the documentation of the getAttributeValueNS method:
+     * 
+     * ie:  {http://example.com/somenamespace}SomeName
+     * 
+     * This may well NOT be the format in which the attribute was originally read from the
+     * composite file.
+     */
+    public void write( BPELImplementation bpelImplementation, 
+    		           XMLStreamWriter writer ) throws ContributionWriteException, XMLStreamException {
+        //FIXME Deal with policy processing...
+        // Write <implementation.bpel process="..."/>
+        // policyProcessor.writePolicyPrefixes(bpelImplementation, writer);
+        writer.writeStartElement(Constants.SCA10_NS, IMPLEMENTATION_BPEL);
+        // policyProcessor.writePolicyAttributes(bpelImplementation, writer);
+        
+        if (bpelImplementation.getProcess() != null) {
+            writer.writeAttribute(PROCESS, bpelImplementation.getProcess().toString() );
+        }
+
+        writer.writeEndElement();
+
     }
 
     private BPELProcessDefinition resolveBPELProcessDefinition(BPELImplementation impl, ModelResolver resolver) throws ContributionResolveException {
@@ -192,8 +219,40 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         return null;
     }
 
+    /*
+     * The process attribute of a BPEL process is a QName - this may be presented in one of
+     * two alternative formats:
+     * 1) In the form of a local name with a prefix, with the prefix referencing a namespace
+     * URI declaration elsewhere in the composite (typically on the composite element)
+     * 
+     * ie:   nms:SomeName
+     *       xmlns:nms="http://example.com/somenamespace"
+     *       
+     * 2) In the XML Namespaces recommendation format (see http://jclark.com/xml/xmlns.htm )
+     * where the namespace URI and the local name are encoded into a single string, with the 
+     * namespace URI enclosed between a pair of braces {...}
+     * 
+     *  ie:  {http://example.com/somenamespace}SomeName
+     */
     private QName getAttributeValueNS(XMLStreamReader reader, String attribute) {
         String fullValue = reader.getAttributeValue(null, "process");
+        
+        // Deal with the attribute in the XML Namespaces recommendation format
+        // - trim off any leading/trailing spaces and check that the first character is '{'
+        if( fullValue.trim().charAt(0) == '{' ){
+        	try{
+        		// Attempt conversion to a QName object
+        		QName theProcess = QName.valueOf( fullValue );
+        		return theProcess;
+        	} catch ( IllegalArgumentException e ) {
+        		// This exception happens if the attribute begins with '{' but doesn't conform
+        		// to the XML Namespaces recommendation format
+        		throw new BPELProcessException("Attribute " + attribute + " with value " + fullValue +
+                " in your composite should be of the form {namespaceURI}localname");
+        	}
+        } // endif
+        
+        // Deal with the attribute in the local name + prefix format
         if (fullValue.indexOf(":") < 0)
             throw new BPELProcessException("Attribute " + attribute + " with value " + fullValue +
                     " in your composite should be prefixed (process=\"prefix:name\").");
