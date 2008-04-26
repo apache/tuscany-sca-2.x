@@ -198,8 +198,9 @@ public class TomcatServer implements ServletHost {
             try {
                 Set<Entry<Integer, Port>> entries = new HashSet<Entry<Integer, Port>>(ports.entrySet());
                 for (Entry<Integer, Port> entry : entries) {
-                    entry.getValue().getConnector().stop();
-                    entry.getValue().getEngine().stop();
+                    Port port = entry.getValue();
+                    port.getConnector().stop();
+                    port.getEngine().stop();
                     ports.remove(entry.getKey());
                 }
             } catch (Exception e) {
@@ -509,10 +510,23 @@ public class TomcatServer implements ServletHost {
             try {
                 servletWrapper.destroyServlet();
             } catch (Exception ex) {
-                // Temporary hack to stop destruction of Servlets without Servlet
-                // context 
+                // Hack to handle destruction of Servlets without Servlet context 
             }
-            //logger.info("Remove Servlet mapping: " + suri);
+            
+            //logger.info("Removed Servlet mapping: " + suri);
+            
+            // Stop the port if there's no servlets on it anymore
+            String[] contextNames = port.getConnector().getMapper().getContextNames();
+            if (contextNames == null || contextNames.length ==0) {
+                try {
+                    port.getConnector().stop();
+                    port.getEngine().stop();
+                    ports.remove(portNumber);
+                } catch (LifecycleException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            
             return servletWrapper.getServlet();
         } else {
             logger.info("Trying to Remove servlet mapping: " + mapping + " where mapping is not registered");

@@ -131,19 +131,18 @@ public class JettyServer implements ServletHost {
      * Stop all the started servers.
      */
     public void stop() {
-        if (!ports.isEmpty()) {
-            synchronized (joinLock) {
-                joinLock.notifyAll();
+        synchronized (joinLock) {
+            joinLock.notifyAll();
+        }
+        try {
+            Set<Entry<Integer, Port>> entries = new HashSet<Entry<Integer, Port>>(ports.entrySet());
+            for (Entry<Integer, Port> entry: entries) {
+                Port port = entry.getValue();
+                port.getServer().stop();
+                ports.remove(entry.getKey());
             }
-            try {
-                Set<Entry<Integer, Port>> entries = new HashSet<Entry<Integer, Port>>(ports.entrySet());
-                for (Entry<Integer, Port> entry: entries) {
-                    entry.getValue().getServer().stop();
-                    ports.remove(entry.getKey());
-                }
-            } catch (Exception e) {
-                throw new ServletMappingException(e);
-            }
+        } catch (Exception e) {
+            throw new ServletMappingException(e);
         }
     }
 
@@ -394,12 +393,21 @@ public class JettyServer implements ServletHost {
                     throw new IllegalStateException(e);
                 }
                 mappings.remove(mapping);
-                //logger.info("Remove Servlet mapping: " + path);
+                //logger.info("Removed Servlet mapping: " + path);
                 break;
             }
         }
         if (removedServlet != null) {
             servletHandler.setServletMappings(mappings.toArray(new ServletMapping[mappings.size()]));
+            
+            // Stop the port if there are no servlet mappings on it anymore
+            try {
+                port.getServer().stop();
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
+            }
+            ports.remove(portNumber);
+            
         } else {
             logger.info("Trying to Remove servlet mapping: " + path + " where mapping is not registered");
         }
