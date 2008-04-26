@@ -79,6 +79,7 @@
                   <exclude>build.xml</exclude>
                   <exclude>target/**</exclude>
                   <exclude>webapp/**</exclude>
+                  <exclude>target/**</exclude>
               </excludes>
           </resource>
        </resources>
