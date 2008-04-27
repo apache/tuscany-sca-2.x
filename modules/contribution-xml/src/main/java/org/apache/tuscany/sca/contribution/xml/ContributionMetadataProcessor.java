@@ -160,11 +160,19 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
         writeEndDocument(writer);
     }
 
-    public void resolve(Contribution model, ModelResolver resolver) throws ContributionResolveException {
-        model.setUnresolved(false);
+    public void resolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
+        contribution.setUnresolved(false);
+
+        // Resolve the imports and exports
+        for (Import import_: contribution.getImports()) {
+            extensionProcessor.resolve(import_, resolver);
+        }
+        for (Export export: contribution.getExports()) {
+            extensionProcessor.resolve(export, resolver);
+        }
         
         // Resolve deployable composites
-        List<Composite> deployables = model.getDeployables();
+        List<Composite> deployables = contribution.getDeployables();
         for (int i = 0, n = deployables.size(); i < n; i++) {
             Composite deployable = deployables.get(i);
             Composite resolved = (Composite)resolver.resolveModel(Composite.class, deployable);
