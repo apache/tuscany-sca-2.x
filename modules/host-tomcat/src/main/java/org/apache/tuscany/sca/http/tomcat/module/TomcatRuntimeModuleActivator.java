@@ -40,21 +40,26 @@ public class TomcatRuntimeModuleActivator implements ModuleActivator {
         // Register a Tomcat Servlet host
         ServletHostExtensionPoint servletHosts =
             extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
-        final WorkScheduler workScheduler = extensionPointRegistry.getExtensionPoint(WorkScheduler.class);
-        // Allow privileged access to start MBeans. Requires MBeanPermission in security policy.
-        server = AccessController.doPrivileged(new PrivilegedAction<TomcatServer>() {
-            public TomcatServer run() {
-                return new TomcatServer(workScheduler);
-             }
-        });        
-        servletHosts.addServletHost(server);
+        
+        if (servletHosts.getServletHosts().size() < 1) {
+            final WorkScheduler workScheduler = extensionPointRegistry.getExtensionPoint(WorkScheduler.class);
+            // Allow privileged access to start MBeans. Requires MBeanPermission in security policy.
+            server = AccessController.doPrivileged(new PrivilegedAction<TomcatServer>() {
+                public TomcatServer run() {
+                    return new TomcatServer(workScheduler);
+                 }
+            });        
+            servletHosts.addServletHost(server);
+        }
     }
 
     public void stop(ExtensionPointRegistry registry) {
         // Allow privileged access to stop MBeans. Requires MBeanPermission in security policy.
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
-                server.stop();
+                if (server != null) {
+                    server.stop();
+                }
                 return null;
             }
         });            

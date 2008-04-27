@@ -263,11 +263,11 @@
             <artifactId>tuscany-host-rmi</artifactId>
             <version>${pom.version}</version>
         </dependency>
-        <!-- dependency> removed for now, see TUSCANY-1572 and TUSCANY-1568
+        <dependency> 
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-host-webapp</artifactId>
             <version>${pom.version}</version>
-        </dependency -->
+        </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-host-jetty</artifactId>
@@ -277,7 +277,7 @@
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-host-tomcat</artifactId>
             <version>${pom.version}</version>
-        </dependency-->
+        </dependency -->
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-interface</artifactId>
@@ -352,6 +352,12 @@
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-implementation-node-runtime</artifactId>
             <version>${pom.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-host-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>
@@ -447,6 +453,12 @@
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-domain-manager</artifactId>
             <version>${pom.version}</version>
+            <exclusions> 
+                <exclusion>
+                    <groupId>${pom.groupId}</groupId>
+                    <artifactId>tuscany-host-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>${pom.groupId}</groupId>

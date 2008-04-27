@@ -40,21 +40,26 @@ public class JettyRuntimeModuleActivator implements ModuleActivator {
         // Register a Jetty Servlet host
         ServletHostExtensionPoint servletHosts =
             extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
-        final WorkScheduler workScheduler = extensionPointRegistry.getExtensionPoint(WorkScheduler.class);
-        // Allow privileged access to start MBeans. Requires MBeanPermission in security policy.
-        server = AccessController.doPrivileged(new PrivilegedAction<JettyServer>() {
-            public JettyServer run() {
-                return new JettyServer(workScheduler);
-             }
-        });        
-        servletHosts.addServletHost(server);
+        
+        if (servletHosts.getServletHosts().size() < 1) {
+            final WorkScheduler workScheduler = extensionPointRegistry.getExtensionPoint(WorkScheduler.class);
+            // Allow privileged access to start MBeans. Requires MBeanPermission in security policy.
+            server = AccessController.doPrivileged(new PrivilegedAction<JettyServer>() {
+                public JettyServer run() {
+                    return new JettyServer(workScheduler);
+                 }
+            });        
+            servletHosts.addServletHost(server);
+        }
     }
 
     public void stop(ExtensionPointRegistry registry) {
         // Allow privileged access to stop MBeans. Requires MBeanPermission in security policy.
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
-                server.stop();
+                if (server != null) {
+                    server.stop();
+                }
                 return null;
             }
         });            
