@@ -120,10 +120,21 @@ public class ContributionDependencyBuilderImpl implements ContributionDependency
                 
             } else {
                 // Record import resolution issue
-                Problem problem = new ProblemImpl(this.getClass().getName(), "workspace-validation-messages", Severity.WARNING, import_, "Unresolved import");
-                monitor.problem(problem);
+                warning("UnresolvedImport", import_, import_);
             }
         }
+    }
+
+    /**
+     * Report a warning.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void warning(String message, Object model, Object... messageParameters) {
+        Problem problem = new ProblemImpl(getClass().getName(), "workspace-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+        monitor.problem(problem);
     }
 
 }
