@@ -54,7 +54,7 @@
 			'<th>Contribution</th>' +
 			'<th>Components</th>' +
 			'</tr>';
-			//'<th>Composite Install Image</th>' +
+			//'<th>Composite Configuration</th>' +
 			
 			for (var i=0; i<entries.length; i++) {
 				var id = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
@@ -84,7 +84,7 @@
 				composites += '<a href=\"' + link + '\">' + qname + '</a></td>';
 				composites += '<td><a href="/contribution/' + uri + '">' + uri + '</a></td>';
 				composites += '<td class=tdw>' + components + '</td>';
-				//composites += '<td><a href="/composite-image/?composite=' + id + '"><img src="icons/feed-icon.png" border="0"></a></td>';
+				//composites += '<td><a href="/composite-config/?composite=' + id + '"><img src="icons/feed-icon.png" border="0"></a></td>';
 				composites += '</tr>';
 			}
 			composites += '</table>';

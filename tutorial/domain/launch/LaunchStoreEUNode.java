@@ -23,6 +23,6 @@ import org.apache.tuscany.sca.node.launcher.NodeLauncher;
 
 public class LaunchStoreEUNode {
     public static void main(String[] args) throws Exception {
-        NodeLauncher.main(new String[] {"http://localhost:9990/node-image/StoreEUNode"});
+        NodeLauncher.main(new String[] {"http://localhost:9990/node-config/StoreEUNode"});
     }
 }

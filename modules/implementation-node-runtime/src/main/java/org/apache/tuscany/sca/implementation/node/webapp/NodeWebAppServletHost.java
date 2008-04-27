@@ -108,12 +108,12 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
             nodeName = nodeName.substring(0, nodeName.length() - 1); 
         }
         
-        // Determine the node image URI
-        String nodeImage = NodeImplementationLauncherUtil.nodeImageURI(nodeName);
+        // Determine the node configuration URI
+        String nodeConfiguration = NodeImplementationLauncherUtil.nodeConfigurationURI(nodeName);
         
         // Create the SCA node
         SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
-        node = nodeFactory.createSCANode(nodeImage);
+        node = nodeFactory.createSCANode(nodeConfiguration);
         
         // Register the Servlet host
         ServletHostExtensionPoint servletHosts = servletHosts(node);

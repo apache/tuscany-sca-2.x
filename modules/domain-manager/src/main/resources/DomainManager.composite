@@ -145,13 +145,13 @@
         <reference name="processCollection" target="NodeProcessCollectionFacadeComponent/LocalItemCollection"/>
     </component>
 
-    <component name="CompositeImageCollectionComponent">
-        <implementation.java class="org.apache.tuscany.sca.domain.manager.impl.CompositeImageCollectionImpl"/>
+    <component name="CompositeConfigurationCollectionComponent">
+        <implementation.java class="org.apache.tuscany.sca.domain.manager.impl.CompositeConfigurationCollectionImpl"/>
    		<service name="ItemCollection">
-   	 		<t:binding.atom uri="http://localhost:9990/composite-image" title="Install Image"/>
+   	 		<t:binding.atom uri="http://localhost:9990/composite-config" title="Node Configuration"/>
    		</service>
    		<service name="Servlet">
-   	 		<t:binding.http uri="http://localhost:9990/node-image"/>
+   	 		<t:binding.http uri="http://localhost:9990/node-config"/>
    		</service>
    		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalItemCollection"/>
    		<reference name="cloudCollection" target="CloudCollectionComponent/LocalItemCollection"/>

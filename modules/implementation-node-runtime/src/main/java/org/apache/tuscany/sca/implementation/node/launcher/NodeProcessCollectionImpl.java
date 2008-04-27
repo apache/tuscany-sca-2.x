@@ -191,7 +191,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
         Item item = new Item();
         String key = vm.getNodeName();
         item.setTitle(title(key));
-        item.setLink("/node-image/" + vm.getNodeName());
+        item.setLink("/node-config/" + vm.getNodeName());
         item.setContents("<span id=\"log\" style=\"white-space: nowrap; font-size: small\">" + vm.getLog().toString() + "</span>");
         return item;
     }
@@ -216,17 +216,17 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
          */
         private void start() throws IOException {
 
-            // Determine the node image URI
-            String nodeImageURI = NodeImplementationLauncherUtil.nodeImageURI(nodeName);
+            // Determine the node configuration URI
+            String nodeConfigurationURI = NodeImplementationLauncherUtil.nodeConfigurationURI(nodeName);
             
             // Build the Java VM command line
             Properties props = System.getProperties();
             String java = props.getProperty("java.home") + "/bin/java";
             String cp = props.getProperty("java.class.path");
             String main = NodeLauncher.class.getName();
-            final String[] command = new String[]{ java, "-cp", cp, main , nodeImageURI};
+            final String[] command = new String[]{ java, "-cp", cp, main , nodeConfigurationURI};
 
-            logger.info("Starting " + "java " + main + " " + nodeImageURI);
+            logger.info("Starting " + "java " + main + " " + nodeConfigurationURI);
             
             // Start the VM
             ProcessBuilder builder = new ProcessBuilder(command);
