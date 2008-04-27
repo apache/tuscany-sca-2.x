@@ -19,8 +19,11 @@
 
 package org.apache.tuscany.sca.host.webapp;
 
+import java.util.List;
+
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
+import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 
 /**
@@ -32,11 +35,30 @@ public class WebAppModuleActivator implements ModuleActivator {
 
         ServletHostExtensionPoint servletHosts =
             extensionPointRegistry.getExtensionPoint(ServletHostExtensionPoint.class);
-
-        servletHosts.addServletHost(WebAppServletHost.getInstance());
+        
+        List<ServletHost> hosts = servletHosts.getServletHosts();
+        if (isRunningInWebapp()) {
+            if (hosts.size() > 0) {
+                hosts.removeAll(hosts);
+            }
+            servletHosts.addServletHost(WebAppServletHost.getInstance());
+        }
     }
 
     public void stop(ExtensionPointRegistry registry) {
+    }
+
+    /**
+     * TODO: this seems a bit of a hacky way to find if its running in a webapp
+     *       is there a better way?
+     */
+    private boolean isRunningInWebapp() {
+        for (StackTraceElement ste : new Exception().getStackTrace()) {
+            if (ste.getClassName().equals(WebSCADomain.class.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
