@@ -103,11 +103,11 @@ public class DefaultModelResolverExtensionPoint implements ModelResolverExtensio
         }
         
         // Load model resolvers
-        for (ServiceDeclaration dataBindingDeclaration: modelResolverDeclarations) {
-            Map<String, String> attributes = dataBindingDeclaration.getAttributes();
+        for (ServiceDeclaration modelResolverDeclaration: modelResolverDeclarations) {
+            Map<String, String> attributes = modelResolverDeclaration.getAttributes();
             String model = attributes.get("model");
 
-            loadedResolvers.put(model, dataBindingDeclaration);
+            loadedResolvers.put(model, modelResolverDeclaration);
         }
     }
 
