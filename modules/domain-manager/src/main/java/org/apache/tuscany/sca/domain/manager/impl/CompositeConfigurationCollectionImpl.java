@@ -47,16 +47,16 @@ import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
 /**
- * Implementation of a composite install image collection service. 
+ * Implementation of a composite configuration collection service. 
  *
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
 @Service(interfaces={ItemCollection.class, LocalItemCollection.class, Servlet.class})
-public class CompositeImageCollectionImpl extends HttpServlet implements ItemCollection, LocalItemCollection, Servlet {
+public class CompositeConfigurationCollectionImpl extends HttpServlet implements ItemCollection, LocalItemCollection, Servlet {
     private static final long serialVersionUID = 1L;
 
-    private final static Logger logger = Logger.getLogger(CompositeImageCollectionImpl.class.getName());    
+    private final static Logger logger = Logger.getLogger(CompositeConfigurationCollectionImpl.class.getName());    
 
     @Reference
     public LocalItemCollection contributionCollection;
@@ -141,7 +141,7 @@ public class CompositeImageCollectionImpl extends HttpServlet implements ItemCol
         logger.info("get " + key);
         
         // The key contains a node name, redirect 
-        // to the corresponding composite image
+        // to the corresponding composite config
             
         // Get the collection of cloud composites
         Entry<String, Item>[] cloudEntries = cloudCollection.getAll();
@@ -156,9 +156,9 @@ public class CompositeImageCollectionImpl extends HttpServlet implements ItemCol
                 int i = related.indexOf("composite:");
                 if (i != -1) {
                     
-                    // Redirect to its composite image
-                    String compositeImage = "/composite-image/?composite=" + related.substring(i);
-                    response.sendRedirect(compositeImage);
+                    // Redirect to its composite config
+                    String compositeConfiguration = "/composite-config/?composite=" + related.substring(i);
+                    response.sendRedirect(compositeConfiguration);
                     return;
                 }
             }

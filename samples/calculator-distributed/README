@@ -91,7 +91,7 @@ calculator/
                                     you will see that the node is configured
                                     using a URL of the form:
                                     
-                                    http://localhost:9990/node-image/NodeA
+                                    http://localhost:9990/node-config/NodeA
                                     
                                     This retrieves the information required
                                     to configure NodeA from the domain.
@@ -249,10 +249,10 @@ vices_1_1.xsd
      [java] INFO: Added Servlet mapping: http://L3AW203:9990/cloud-source/*
      [java] 26-Mar-2008 12:55:21 org.apache.tuscany.sca.http.tomcat.TomcatServer
  addServletMapping
-     [java] INFO: Added Servlet mapping: http://L3AW203:9990/composite-image/*
+     [java] INFO: Added Servlet mapping: http://L3AW203:9990/composite-config/*
      [java] 26-Mar-2008 12:55:21 org.apache.tuscany.sca.http.tomcat.TomcatServer
  addServletMapping
-     [java] INFO: Added Servlet mapping: http://L3AW203:9990/node-image/*
+     [java] INFO: Added Servlet mapping: http://L3AW203:9990/node-config/*
      [java] 26-Mar-2008 12:55:21 org.apache.tuscany.sca.http.tomcat.TomcatServer
  addServletMapping
      [java] INFO: Added Servlet mapping: http://L3AW203:9990/quickstart/*
@@ -279,7 +279,7 @@ er main
      [java] INFO: Apache Tuscany SCA Node starting...
      [java] 26-Mar-2008 12:55:42 org.apache.tuscany.sca.node.launcher.NodeLaunch
 er main
-     [java] INFO: SCA Node configuration: http://localhost:9990/node-image/NodeB
+     [java] INFO: SCA Node configuration: http://localhost:9990/node-config/NodeB
 
      [java] 26-Mar-2008 12:55:42 org.apache.tuscany.sca.node.launcher.NodeLaunch
 erUtil collectJARFiles
@@ -293,7 +293,7 @@ distribution\target\apache-tuscany-sca-1.2-incubating-SNAPSHOT.dir\tuscany-sca-1
 .2-incubating-SNAPSHOT\modules
      [java] 26-Mar-2008 12:55:42 org.apache.tuscany.sca.node.impl.NodeImpl <init
 >
-     [java] INFO: Creating node: http://localhost:9990/node-image/NodeB
+     [java] INFO: Creating node: http://localhost:9990/node-config/NodeB
      [java] 26-Mar-2008 12:55:45 org.apache.tuscany.sca.node.impl.NodeImpl confi
 gureNode
      [java] INFO: Loading contribution: file:/C:/simon/tuscany/sca-java-1.2/dist
@@ -305,7 +305,7 @@ gureNode
 mposite:nodeB;http://sample;CalculatorB
      [java] 26-Mar-2008 12:55:47 org.apache.tuscany.sca.node.impl.NodeImpl start
 
-     [java] INFO: Starting node: http://localhost:9990/node-image/NodeB
+     [java] INFO: Starting node: http://localhost:9990/node-config/NodeB
      [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
      [java] 26-Mar-2008 12:55:53 org.apache.tuscany.sca.http.jetty.JettyServer a
 ddServletMapping
@@ -325,7 +325,7 @@ er main
      [java] INFO: Apache Tuscany SCA Node starting...
      [java] 26-Mar-2008 12:56:01 org.apache.tuscany.sca.node.launcher.NodeLaunch
 er main
-     [java] INFO: SCA Node configuration: http://localhost:9990/node-image/NodeC
+     [java] INFO: SCA Node configuration: http://localhost:9990/node-config/NodeC
 
      [java] 26-Mar-2008 12:56:01 org.apache.tuscany.sca.node.launcher.NodeLaunch
 erUtil collectJARFiles
@@ -339,7 +339,7 @@ distribution\target\apache-tuscany-sca-1.2-incubating-SNAPSHOT.dir\tuscany-sca-1
 .2-incubating-SNAPSHOT\modules
      [java] 26-Mar-2008 12:56:01 org.apache.tuscany.sca.node.impl.NodeImpl <init
 >
-     [java] INFO: Creating node: http://localhost:9990/node-image/NodeC
+     [java] INFO: Creating node: http://localhost:9990/node-config/NodeC
      [java] 26-Mar-2008 12:56:03 org.apache.tuscany.sca.node.impl.NodeImpl confi
 gureNode
      [java] INFO: Loading contribution: file:/C:/simon/tuscany/sca-java-1.2/dist
@@ -351,7 +351,7 @@ gureNode
 mposite:nodeC;http://sample;CalculatorC
      [java] 26-Mar-2008 12:56:04 org.apache.tuscany.sca.node.impl.NodeImpl start
 
-     [java] INFO: Starting node: http://localhost:9990/node-image/NodeC
+     [java] INFO: Starting node: http://localhost:9990/node-config/NodeC
      [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
      [java] 26-Mar-2008 12:56:10 org.apache.tuscany.sca.http.jetty.JettyServer a
 ddServletMapping
@@ -368,7 +368,7 @@ er main
 runNodeA:
      [java] 26-Mar-2008 12:56:10 org.apache.tuscany.sca.node.impl.NodeImpl <init
 >
-     [java] INFO: Creating node: http://localhost:9990/node-image/NodeA
+     [java] INFO: Creating node: http://localhost:9990/node-config/NodeA
      [java] 26-Mar-2008 12:56:12 org.apache.tuscany.sca.node.impl.NodeImpl confi
 gureNode
      [java] INFO: Loading contribution: file:/C:/simon/tuscany/sca-java-1.2/dist
@@ -388,7 +388,7 @@ mpositeBuilderImpl$1 problem
 service: AddServiceComponentB
      [java] 26-Mar-2008 12:56:14 org.apache.tuscany.sca.node.impl.NodeImpl start
 
-     [java] INFO: Starting node: http://localhost:9990/node-image/NodeA
+     [java] INFO: Starting node: http://localhost:9990/node-config/NodeA
      [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
      [java] Warning: Running an XSLT 1.0 stylesheet with an XSLT 2.0 processor
      [java] CalculatorService - add 3.0 and 2.0
@@ -400,7 +400,7 @@ service: AddServiceComponentB
      [java] CalculatorService - divide 3.0 and 2.0
      [java] 3 / 2=1.5
      [java] 26-Mar-2008 12:56:20 org.apache.tuscany.sca.node.impl.NodeImpl stop
-     [java] INFO: Stopping node: http://localhost:9990/node-image/NodeA
+     [java] INFO: Stopping node: http://localhost:9990/node-config/NodeA
 
 Building And Running The Sample Using Maven 
 -------------------------------------------
@@ -413,7 +413,7 @@ mvn
 
 You should see the following output at the end of the test phase.
 
-INFO: Starting node: http://localhost:9990/node-image/NodeA
+INFO: Starting node: http://localhost:9990/node-config/NodeA
 CalculatorService - add 3.0 and 2.0
 AddService - add 3.0 and 2.0
 CalculatorService - subtract 3.0 and 2.0
@@ -421,11 +421,11 @@ SubtractService - subtract 3.0 and 2.0
 CalculatorService - multiply 3.0 and 2.0
 CalculatorService - divide 3.0 and 2.0
 26-Mar-2008 13:00:52 org.apache.tuscany.sca.node.impl.NodeImpl stop
-INFO: Stopping node: http://localhost:9990/node-image/NodeC
+INFO: Stopping node: http://localhost:9990/node-config/NodeC
 26-Mar-2008 13:00:52 org.apache.tuscany.sca.node.impl.NodeImpl stop
-INFO: Stopping node: http://localhost:9990/node-image/NodeB
+INFO: Stopping node: http://localhost:9990/node-config/NodeB
 26-Mar-2008 13:00:52 org.apache.tuscany.sca.node.impl.NodeImpl stop
-INFO: Stopping node: http://localhost:9990/node-image/NodeA
+INFO: Stopping node: http://localhost:9990/node-config/NodeA
 Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 13.328 sec
 
 Results :

@@ -62,8 +62,8 @@
 			var entries = feed.getElementsByTagName("entry");
 			var composites = "";
 			composites += '<table width="100%">';
-			composites += '<tr><th>Node</th><th>Composite</th><th>Contribution</th><th>Install Image</th>' +
-			'<th>Log</th></tr>';
+			composites += '<tr><th>Node</th><th>Status</th><th>Composite</th>' +
+			'<th>Contribution</th><th>Node Config</th></tr>';
 			
 			for (var i=0; i<entries.length; i++) {
 				var nodeId = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
@@ -98,20 +98,45 @@
 				if (content.indexOf('<span id="problem"') != -1) {
 					composites += '<td><input name="composites" type="checkbox" value="' + nodeId + '">' +
 											'<a href=\"' + nodeLink + '\">' + nodeName + '</a></td>';
+					composites += '<td><span id="status_' + nodeName + '">unknown</span></td>';
 					composites += '<td>' + content + '</td>';
 					composites += '<td>' + uri + '</td>';
 				} else {
 					composites += '<td><input name="composites" type="checkbox" value="' + nodeId + '">' +
 											'<a href=\"' + nodeLink + '\">' + nodeName + '</a></td>';
+					composites += '<td><span id="status_' + nodeName + '">unknown</span></td>';
 					composites += '<td><a href=\"' + compositeLink + '\">' + qname + '</a></td>';
 					composites += '<td><a href="/contribution/' + uri + '">' + uri + '</a></td>';
 				}
-				composites += '<td><a href="/node-image/' + nodeName + '"><img src="icons/feed-icon.png" border="0"></a></td>';
-				composites += '<td><a href="/processes/?node=' + nodeName + '"><img src="icons/feed-icon.png" border="0"></a></td>';
+				composites += '<td><a href="/node-config/' + nodeName + '"><img src="icons/feed-icon.png" border="0"></a></td>';
 				composites += '</tr>';
 			}
 			composites += '</table>';
 			document.getElementById("composites").innerHTML = composites;
+
+			processCollection.get("", getProcessesResponse);
+		}
+	}
+	
+	function getProcessesResponse(feed) {
+		if (feed != null) {
+			var nodeStatus = new Array();
+			
+			var entries = feed.getElementsByTagName("entry");
+			for (var i=0; i<entries.length; i++) {
+				var nodeName = entries[i].getElementsByTagName("id")[0].firstChild.nodeValue;
+				nodeStatus[nodeName] = 'started';
+			}
+
+			for (var i = 0; i < nodeNames.length; i++) {
+				var element = document.getElementById('status_' + nodeNames[i]);
+				var nodeName = nodeNames[i];
+				if (nodeStatus[nodeName] == null) {
+					element.innerHTML = '<span>stopped</span>';
+				} else {
+					element.innerHTML = '<span><a style="color: green" href="/processes/?node=' + nodeName + '">started</a></span>';
+				}
+			}
 		}
 	}
 
@@ -188,6 +213,8 @@
 	}
 
 	function startNodeResponse() {
+		processCollection.get("", getProcessesResponse);
+		
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			  composites[i].checked = false;
@@ -206,6 +233,8 @@
 	}
 
 	function stopNodeResponse() {
+		processCollection.get("", getProcessesResponse);
+		
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			  composites[i].checked = false;

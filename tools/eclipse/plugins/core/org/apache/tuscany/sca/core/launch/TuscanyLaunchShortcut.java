@@ -182,7 +182,7 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
 
         // Pass the URL of the node install image to the launcher
         configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
-                                   "http://localhost:9990/node-image/" + nodeName);
+                                   "http://localhost:9990/node-config/" + nodeName);
 
         // Save the configuration
         configuration.doSave();
