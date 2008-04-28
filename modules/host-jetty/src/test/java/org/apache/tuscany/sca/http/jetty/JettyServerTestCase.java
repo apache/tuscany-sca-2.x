@@ -128,11 +128,15 @@ public class JettyServerTestCase extends TestCase {
         String uri = "http://127.0.0.1:" + HTTP_PORT + "/foo";
         service.addServletMapping(uri, servlet);
         service.removeServletMapping(uri);
-        Socket client = new Socket("127.0.0.1", HTTP_PORT);
-        OutputStream os = client.getOutputStream();
-        os.write(REQUEST1.getBytes());
-        os.flush();
-        read(client);
+        try {
+            Socket client = new Socket("127.0.0.1", HTTP_PORT);
+            OutputStream os = client.getOutputStream();
+            os.write(REQUEST1.getBytes());
+            os.flush();
+            read(client);
+            fail("Server still bound to port");
+        } catch (ConnectException e) {
+        }
         service.stop();
         assertFalse(servlet.invoked);
     }
