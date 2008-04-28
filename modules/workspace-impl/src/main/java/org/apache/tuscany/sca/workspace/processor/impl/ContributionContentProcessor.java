@@ -157,11 +157,13 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
      * @param modelResolvers
      */
     private static void hackResolvers(ModelResolverExtensionPoint modelResolvers) {
-        modelResolvers.getResolver(ClassReference.class);
-        try {
-            Class<?> loaderResolverClass = Class.forName("org.apache.tuscany.sca.contribution.java.impl.ClassLoaderModelResolver", true, ContributionContentProcessor.class.getClassLoader());
-            modelResolvers.addResolver(ClassReference.class, (Class<? extends ModelResolver>)loaderResolverClass);
-        } catch (ClassNotFoundException e) {
+        Class<?> resolverClass = modelResolvers.getResolver(ClassReference.class);
+        if (resolverClass==null || !resolverClass.getName().equals("org.apache.tuscany.sca.contribution.java.impl.ClassLoaderModelResolver")) {
+            try {
+                Class<?> loaderResolverClass = Class.forName("org.apache.tuscany.sca.contribution.java.impl.ClassLoaderModelResolver", true, ContributionContentProcessor.class.getClassLoader());
+                modelResolvers.addResolver(ClassReference.class, (Class<? extends ModelResolver>)loaderResolverClass);
+            } catch (ClassNotFoundException e) {
+            }
         }
     }
 }
