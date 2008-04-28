@@ -100,10 +100,10 @@ public class QuickStartServiceImpl extends HttpServlet {
             String compositeURI = request.getParameter("composite");
             String start = request.getParameter("start");
     
-            logger.info("Composite Quick Start.");
-            logger.info("Contribution URI: " + contributionURI);
-            logger.info("Contribution location: " + contributionLocation);
-            logger.info("Composite URI: " + compositeURI);
+            logger.fine("Composite Quick Start.");
+            logger.fine("Contribution URI: " + contributionURI);
+            logger.fine("Contribution location: " + contributionLocation);
+            logger.fine("Composite URI: " + compositeURI);
             
             // Look for the contribution in the workspace
             Entry<String, Item>[] contributionEntries = contributionCollection.getAll();

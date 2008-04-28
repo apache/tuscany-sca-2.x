@@ -59,7 +59,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
     }
     
     public Entry<String, Item>[] getAll() {
-        logger.info("getAll");
+        logger.fine("getAll");
         
         // Return all the running VMs
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
@@ -70,7 +70,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
     }
 
     public Item get(String key) throws NotFoundException {
-        logger.info("get " + key);
+        logger.fine("get " + key);
 
         // Return the specified VM
         SCANodeVM vm = vm(key);
@@ -82,7 +82,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
     }
 
     public String post(String key, Item item) {
-        logger.info("post " + key);
+        logger.fine("post " + key);
 
         // If the VM is already running just return it
         SCANodeVM vm = vm(key);
@@ -117,7 +117,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
     }
 
     public void delete(String key) throws NotFoundException {
-        logger.info("delete " + key);
+        logger.fine("delete " + key);
         
         // Stop a VM and remove it from the collection
         SCANodeVM vm = vm(key);
@@ -134,7 +134,7 @@ public class NodeProcessCollectionImpl implements ItemCollection, LocalItemColle
     }
     
     public Entry<String, Item>[] query(String queryString) {
-        logger.info("query " + queryString);
+        logger.fine("query " + queryString);
         
         if (queryString.startsWith("node=")) {
             
