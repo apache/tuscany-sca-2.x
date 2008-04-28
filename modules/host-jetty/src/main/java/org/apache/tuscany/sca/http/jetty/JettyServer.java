@@ -401,12 +401,14 @@ public class JettyServer implements ServletHost {
             servletHandler.setServletMappings(mappings.toArray(new ServletMapping[mappings.size()]));
             
             // Stop the port if there are no servlet mappings on it anymore
-            try {
-                port.getServer().stop();
-            } catch (Exception e) {
-                throw new IllegalStateException(e);
+            if (mappings.size() == 0) {
+                try {
+                    port.getServer().stop();
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+                ports.remove(portNumber);
             }
-            ports.remove(portNumber);
             
         } else {
             logger.info("Trying to Remove servlet mapping: " + path + " where mapping is not registered");
