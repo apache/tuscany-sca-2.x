@@ -92,7 +92,7 @@ public class CompositeConfigurationCollectionImpl extends HttpServlet implements
     }
     
     public Entry<String, Item>[] query(String queryString) {
-        logger.info("query " + queryString);
+        logger.fine("query " + queryString);
         
         if (queryString.startsWith("composite=")) {
 
@@ -138,7 +138,7 @@ public class CompositeConfigurationCollectionImpl extends HttpServlet implements
         // Get the request path
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
         String key = path.startsWith("/")? path.substring(1) : path;
-        logger.info("get " + key);
+        logger.fine("get " + key);
         
         // The key contains a node name, redirect 
         // to the corresponding composite config

@@ -178,7 +178,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     }
     
     public Entry<String, Item>[] getAll() {
-        logger.info("getAll");
+        logger.fine("getAll");
 
         // Return all the contributions
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
@@ -194,7 +194,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     }
 
     public Item get(String key) throws NotFoundException {
-        logger.info("get " + key);
+        logger.fine("get " + key);
 
         // Returns the contribution with the given URI key
         Workspace workspace = readContributions(readWorkspace());
@@ -214,7 +214,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
 
         // The key is the contribution URI
         String key = path.startsWith("/")? path.substring(1) : path;
-        logger.info("get " + key);
+        logger.fine("get " + key);
         
         // Get the item describing the composite
         Item item;
@@ -230,7 +230,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     }
 
     public String post(String key, Item item) {
-        logger.info("post " + key);
+        logger.fine("post " + key);
         
         // Adds a new contribution to the workspace
         Workspace workspace = readWorkspace();
@@ -274,7 +274,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     }
 
     public void delete(String key) throws NotFoundException {
-        logger.info("delete " + key);
+        logger.fine("delete " + key);
         
         // Delete a contribution from the workspace
         Workspace workspace = readWorkspace();
@@ -292,7 +292,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     }
 
     public Entry<String, Item>[] query(String queryString) {
-        logger.info("query " + queryString);
+        logger.fine("query " + queryString);
         
         if (queryString.startsWith("dependencies=") || queryString.startsWith("alldependencies=")) {
 

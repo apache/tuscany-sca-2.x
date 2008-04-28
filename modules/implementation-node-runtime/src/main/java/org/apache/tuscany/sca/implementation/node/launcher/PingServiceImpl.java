@@ -54,7 +54,7 @@ public class PingServiceImpl extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logger.info("ping");
+        logger.fine("ping");
         response.getWriter().print("<html><body><span id=\"ping\">OK</span></body></html>");
     }
     

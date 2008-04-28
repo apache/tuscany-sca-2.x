@@ -142,7 +142,7 @@ final class NodeLauncherUtil {
             home = System.getenv(TUSCANY_HOME);
         }
         if (home != null && home.length() != 0) {
-            logger.info(TUSCANY_HOME + ": " + home);
+            logger.fine(TUSCANY_HOME + ": " + home);
             File homeDirectory = new File(home);
             if (homeDirectory.exists()) {
                 
@@ -197,7 +197,7 @@ final class NodeLauncherUtil {
                 }
             }
             if (count != 0) {
-                logger.info("Runtime classpath: "+ count + " JAR" + (count > 1? "s":"")+ " from " + directory.toString());
+                logger.fine("Runtime classpath: "+ count + " JAR" + (count > 1? "s":"")+ " from " + directory.toString());
             }
         }
     }

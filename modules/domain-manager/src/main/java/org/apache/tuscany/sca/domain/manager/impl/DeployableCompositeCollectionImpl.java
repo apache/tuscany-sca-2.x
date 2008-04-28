@@ -71,6 +71,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -187,7 +188,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     }
     
     public Entry<String, Item>[] getAll() {
-        logger.info("getAll");
+        logger.fine("getAll");
         
         // Return all the deployable composites in the contributions
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
@@ -215,7 +216,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     }
 
     public Item get(String key) throws NotFoundException {
-        logger.info("get " + key);
+        logger.fine("get " + key);
 
         // Get the specified contribution info 
         String contributionURI = contributionURI(key);
@@ -258,7 +259,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     }
     
     public Entry<String, Item>[] query(String queryString) {
-        logger.info("query " + queryString);
+        logger.fine("query " + queryString);
         
         if (queryString.startsWith("contribution=")) {
 
@@ -301,7 +302,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         // Get the request path
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
         String key = path.startsWith("/")? path.substring(1) : path;
-        logger.info("get " + key);
+        logger.fine("get " + key);
         
         // Expect a key in the form
         // composite:contributionURI;namespace;localName
@@ -570,12 +571,14 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             URL location = locationURL(contributionLocation);
             Contribution contribution = (Contribution)contributionContentProcessor.read(null, uri, location);
             
-            //contributionContentProcessor.resolve(contribution, new DefaultModelResolver());
+            contributionContentProcessor.resolve(contribution, new DefaultModelResolver());
             return contribution;
 
         } catch (ContributionReadException e) {
             throw e;
         } catch (MalformedURLException e) {
+            throw new ContributionReadException(e);
+        } catch (ContributionResolveException e) {
             throw new ContributionReadException(e);
         }
     }

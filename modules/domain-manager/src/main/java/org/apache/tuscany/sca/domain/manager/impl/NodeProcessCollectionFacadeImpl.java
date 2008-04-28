@@ -88,7 +88,7 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
     }
     
     public Entry<String, Item>[] getAll() {
-        logger.info("getAll");
+        logger.fine("getAll");
         
         // Get the collection of nodes
         Entry<String, Item>[] nodeEntries = cloudCollection.getAll();
@@ -107,7 +107,7 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
     }
 
     public Item get(String key) throws NotFoundException {
-        logger.info("get " + key);
+        logger.fine("get " + key);
         
         // Get the host hosting the given node
         String host = host(key);
@@ -118,7 +118,7 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
     }
 
     public String post(String key, Item item) {
-        logger.info("post " + key);
+        logger.fine("post " + key);
 
         // Get the host hosting the given node
         String host;
@@ -138,7 +138,7 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
     }
 
     public void delete(String key) throws NotFoundException {
-        logger.info("delete " + key);
+        logger.fine("delete " + key);
         
         // Get the host hosting the given node
         String host = host(key);
@@ -149,7 +149,7 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
     }
     
     public Entry<String, Item>[] query(String queryString) {
-        logger.info("query " + queryString);
+        logger.fine("query " + queryString);
         
         if (queryString.startsWith("node=")) {
             String key = queryString.substring(queryString.indexOf('=') + 1);
