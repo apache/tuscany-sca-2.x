@@ -149,7 +149,7 @@ class AtomBindingListenerServlet extends HttpServlet {
         // Get the request path
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
 
-        logger.info(">>> FeedEndPointServlet " + request.getRequestURI());
+        logger.fine("get " + request.getRequestURI());
 
         // Handle an Atom request
         if (path != null && path.equals("/atomsvc")) {
