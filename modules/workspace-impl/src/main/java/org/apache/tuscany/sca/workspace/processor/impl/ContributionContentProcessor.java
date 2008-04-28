@@ -28,8 +28,10 @@ import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.Export;
+import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
@@ -54,6 +56,7 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
     public ContributionContentProcessor(ModelFactoryExtensionPoint modelFactories, ModelResolverExtensionPoint modelResolvers, URLArtifactProcessor<Object> artifactProcessor) {
         this.modelFactories = modelFactories;
         this.modelResolvers = modelResolvers;
+        hackResolvers(modelResolvers);
         this.artifactProcessor = artifactProcessor;
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
     }
@@ -126,11 +129,6 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
             }
         }
         
-        // Initialize the exports model resolvers
-        for (Export export: contribution.getExports()) {
-            export.setModelResolver(modelResolver);
-        }
-        
         return contribution;
     }
     
@@ -153,4 +151,17 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
         artifactProcessor.resolve(contribution, contributionResolver);
     }
 
+    /**
+     * FIXME Temporary hack for testing the ClassLoaderModelResolver.
+     * 
+     * @param modelResolvers
+     */
+    private static void hackResolvers(ModelResolverExtensionPoint modelResolvers) {
+        modelResolvers.getResolver(ClassReference.class);
+        try {
+            Class<?> loaderResolverClass = Class.forName("org.apache.tuscany.sca.contribution.java.impl.ClassLoaderModelResolver", true, ContributionContentProcessor.class.getClassLoader());
+            modelResolvers.addResolver(ClassReference.class, (Class<? extends ModelResolver>)loaderResolverClass);
+        } catch (ClassNotFoundException e) {
+        }
+    }
 }

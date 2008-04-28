@@ -30,7 +30,10 @@ import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.resolver.DefaultDelegatingModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.DefaultImportAllModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.DefaultImportModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
@@ -87,8 +90,7 @@ public class ContributionDependencyBuilderImpl implements ContributionDependency
             boolean resolved = false;
             
             // Go through all contribution candidates and their exports
-            List<Contribution> matched = new ArrayList<Contribution>();
-            Set<Contribution> mset = new HashSet<Contribution>();
+            List<Export> matchingExports = new ArrayList<Export>();
             for (Contribution dependency: workspace.getContributions()) {
                 for (Export export: dependency.getExports()) {
                     
@@ -96,11 +98,7 @@ public class ContributionDependencyBuilderImpl implements ContributionDependency
                     // add that contribution to the dependency set
                     if (import_.match(export)) {
                         resolved = true;
-                        
-                        if (!mset.contains(dependency)) {
-                            mset.add(dependency);
-                            matched.add(dependency);
-                        }
+                        matchingExports.add(export);
 
                         if (!set.contains(dependency)) {
                             set.add(dependency);
@@ -115,8 +113,9 @@ public class ContributionDependencyBuilderImpl implements ContributionDependency
             
             if (resolved) {
                 
-                // Initialize the import's model resolver
-                import_.setModelResolver(new DefaultImportAllModelResolver(import_, matched));
+                // Initialize the import's model resolver with a delegating model
+                // resolver which will delegate to the matching exports 
+                import_.setModelResolver(new DefaultImportModelResolver(matchingExports));
                 
             } else {
                 // Record import resolution issue

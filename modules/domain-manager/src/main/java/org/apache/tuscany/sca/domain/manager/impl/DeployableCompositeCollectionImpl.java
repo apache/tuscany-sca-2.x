@@ -29,7 +29,6 @@ import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.locat
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.newRuntime;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -72,13 +71,9 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
-import org.apache.tuscany.sca.contribution.service.ContributionListener;
-import org.apache.tuscany.sca.contribution.service.ContributionListenerExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
-import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
@@ -136,7 +131,6 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     private StAXArtifactProcessor<Composite> compositeProcessor;
     private XMLOutputFactory outputFactory;
     private ContributionDependencyBuilder contributionDependencyBuilder;
-    private List<ContributionListener> contributionListeners; 
     private CompositeBuilder compositeBuilder;
     private CompositeBuilder compositeIncludeBuilder;
     private CompositeBuilder nodeConfigurationBuilder;
@@ -190,9 +184,6 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, contractMapper, monitor);
         compositeIncludeBuilder = new CompositeIncludeBuilderImpl(monitor);
         nodeConfigurationBuilder = new NodeCompositeBuilderImpl(assemblyFactory, scaBindingFactory, contractMapper, null, monitor);
-        
-        //FIXME Remove this later
-        contributionListeners = extensionPoints.getExtensionPoint(ContributionListenerExtensionPoint.class).getContributionListeners();
     }
     
     public Entry<String, Item>[] getAll() {
@@ -332,6 +323,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         // Populate the domain composite
         Workspace workspace = workspaceFactory.createWorkspace();
         workspace.setModelResolver(new ExtensibleModelResolver(workspace, modelResolvers, modelFactories));
+        
         Map<String, Contribution> contributionMap = new HashMap<String, Contribution>(); 
         for (Entry<String, Item> domainEntry: domainEntries) {
             
@@ -343,23 +335,26 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
                 // The contribution has not been loaded yet, load it with all its dependencies
                 Entry<String, Item>[] entries = contributionCollection.query("alldependencies=" + contributionURI);
                 for (Entry<String, Item> entry: entries) {
-                    Item contributionItem = entry.getData();
-    
-                    // Read the contribution
-                    Contribution c;
-                    try {
-                        c = contribution(workspace, entry.getKey(), contributionItem.getAlternate());
-                    } catch (ContributionReadException e) {
-                        continue;
-                    }
-                    workspace.getContributions().add(c);
-                    if (contributionURI.equals(entry.getKey())) {
-                        contribution = c;
-                        contributionMap.put(contributionURI, contribution);
-                    }
+                    Item dependencyItem = entry.getData();
+                    String dependencyURI = entry.getKey();
                     
-                    // Build contribution dependencies
-                    
+                    if (!contributionMap.containsKey(dependencyURI)) {
+                        
+                        // Read the contribution
+                        Contribution dependency;
+                        try {
+                            String dependencyLocation = dependencyItem.getAlternate();
+                            dependency = contribution(workspace, dependencyURI, dependencyLocation);
+                        } catch (ContributionReadException e) {
+                            continue;
+                        }
+                        workspace.getContributions().add(dependency);
+                        contributionMap.put(dependencyURI, dependency);
+                        
+                        if (contributionURI.equals(entry.getKey())) {
+                            contribution = dependency;
+                        }
+                    }
                 }
             }
             
@@ -549,13 +544,6 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             // Resolve the contribution dependencies
             contributionDependencyBuilder.buildContributionDependencies(contribution, workspace);
             
-            // FIXME simplify this later
-            // Fix up contribution imports
-            ContributionRepository dummyRepository = new DummyContributionRepository(workspace.getContributions());
-            for (ContributionListener listener: contributionListeners) {
-                listener.contributionAdded(dummyRepository, contribution);
-            }            
-            
             contributionContentProcessor.resolve(contribution, workspace.getModelResolver());
             return contribution;
 
@@ -582,13 +570,11 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
             URL location = locationURL(contributionLocation);
             Contribution contribution = (Contribution)contributionContentProcessor.read(null, uri, location);
             
-            contributionContentProcessor.resolve(contribution, new DefaultModelResolver());
+            //contributionContentProcessor.resolve(contribution, new DefaultModelResolver());
             return contribution;
 
         } catch (ContributionReadException e) {
             throw e;
-        } catch (ContributionResolveException e) {
-            throw new ContributionReadException(e);
         } catch (MalformedURLException e) {
             throw new ContributionReadException(e);
         }
@@ -687,46 +673,6 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         item.setAlternate(compositeAlternateLink(contributionLocation, deployableURI));
         item.setRelated(relatedLink(deployable));
         return item;
-    }
-
-    /**
-     * FIXME Remove this later DummyContributionRepository
-     */
-    private class DummyContributionRepository implements ContributionRepository {
-        private List<Contribution> contributions;
-
-        public DummyContributionRepository(List<Contribution> contributions) {
-            this.contributions = contributions;
-        }
-        public void addContribution(Contribution contribution) {
-        }
-        public URL find(String contribution) {
-            return null;
-        }
-        public Contribution getContribution(String uri) {
-            return null;
-        }
-        public List<Contribution> getContributions() {
-            return contributions;
-        }
-        public URI getDomain() {
-            return null;
-        }
-        public List<String> list() {
-            return null;
-        }
-        public void remove(String contribution) {
-        }
-        public void removeContribution(Contribution contribution) {
-        }
-        public URL store(String contribution, URL sourceURL, InputStream contributionStream) throws IOException {
-            return null;
-        }
-        public URL store(String contribution, URL sourceURL) throws IOException {
-            return null;
-        }
-        public void updateContribution(Contribution contribution) {
-        }
     }
 
 }

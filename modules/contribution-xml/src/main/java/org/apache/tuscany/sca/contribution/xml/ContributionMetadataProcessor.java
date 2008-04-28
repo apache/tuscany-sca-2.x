@@ -162,13 +162,13 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
 
     public void resolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
         contribution.setUnresolved(false);
-
-        // Resolve the imports and exports
-        for (Import import_: contribution.getImports()) {
-            extensionProcessor.resolve(import_, resolver);
-        }
+        
+        // Resolve imports and exports
         for (Export export: contribution.getExports()) {
             extensionProcessor.resolve(export, resolver);
+        }
+        for (Import import_: contribution.getImports()) {
+            extensionProcessor.resolve(import_, resolver);
         }
         
         // Resolve deployable composites

@@ -30,12 +30,12 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resource.ResourceImport;
 
 /**
- * A Model Resolver for ComponentType models.
+ * A Model Resolver for contribution artifacts.
  *
  * @version $Rev$ $Date$
  */
 public class ArtifactModelResolver implements ModelResolver {
-	private Contribution contribution;
+    private Contribution contribution;
     private Map<String, Artifact> map = new HashMap<String, Artifact>();
     
     public ArtifactModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
@@ -53,20 +53,19 @@ public class ArtifactModelResolver implements ModelResolver {
     
     public <T> T resolveModel(Class<T> modelClass, T unresolved) {
 
-    	//get artifact URI
+    	// Get the artifact URI
         String uri = ((Artifact)unresolved).getURI();
         if (uri == null) {
         	return (T)unresolved;
         }
         
-        //lookup the componentType
+        // Lookup the artifact
         Artifact resolved = (Artifact) map.get(uri);
         if (resolved != null) {
             return modelClass.cast(resolved);
         } 
         
-        //If not found, delegate the resolution to the imports (in this case based on the resource imports)
-
+        // If not found, delegate the resolution to the imports (in this case based on the resource imports)
         for (Import import_ : this.contribution.getImports()) {
             if (import_ instanceof ResourceImport) {
             	ResourceImport resourceImport = (ResourceImport)import_;
