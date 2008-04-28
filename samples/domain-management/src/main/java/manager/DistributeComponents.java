@@ -234,7 +234,7 @@ public class DistributeComponents {
             for (Contribution dependency: dependencies) {
                 if (!resolved.contains(dependency)) {
                     resolved.add(dependency);
-                    contributionContentProcessor.resolve(contribution, workspace.getModelResolver());
+                    contributionContentProcessor.resolve(dependency, workspace.getModelResolver());
                 }
             }
         }
