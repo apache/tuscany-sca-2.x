@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.contribution.resolver;
 
 import java.lang.ref.WeakReference;
 
+import org.apache.tuscany.sca.assembly.Base;
+
 /**
  * A weak reference to a class, which should be used to register classes
  * with an ArtifactResolver and resolve these classes later.
@@ -30,9 +32,9 @@ import java.lang.ref.WeakReference;
  *
  * @version $Rev$ $Date$
  */
-public class ClassReference {
+public class ClassReference implements Base {
     
-    private WeakReference<Class> clazz;
+    private WeakReference<Class<?>> clazz;
     private String className;
 
     /**
@@ -40,8 +42,8 @@ public class ClassReference {
      * 
      * @param clazz The class reference
      */
-    public ClassReference(Class clazz) {
-        this.clazz = new WeakReference<Class>(clazz);
+    public ClassReference(Class<?> clazz) {
+        this.clazz = new WeakReference<Class<?>>(clazz);
         this.className = clazz.getName();
     }
     
@@ -59,7 +61,7 @@ public class ClassReference {
      * 
      * @return The referenced class
      */
-    public Class getJavaClass() {
+    public Class<?> getJavaClass() {
         if (clazz != null) {
             return clazz.get();
         } else {
@@ -76,13 +78,12 @@ public class ClassReference {
         return className;
     }
     
-    /**
-     * Returns true if the class reference is unresolved.
-     * 
-     * @return Whether or not the class has been resolved
-     */
     public boolean isUnresolved() {
         return clazz == null;
+    }
+    
+    public void setUnresolved(boolean unresolved) {
+        throw new IllegalStateException();
     }
 
     @Override

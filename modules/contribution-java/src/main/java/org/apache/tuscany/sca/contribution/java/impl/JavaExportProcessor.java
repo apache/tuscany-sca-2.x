@@ -114,7 +114,9 @@ public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
         writer.writeEndElement();
     }
 
-    public void resolve(JavaExport model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(JavaExport javaExport, ModelResolver resolver) throws ContributionResolveException {
         
+        // Initialize the export resolver
+        javaExport.setModelResolver(new JavaExportModelResolver(javaExport, resolver));
     }
 }

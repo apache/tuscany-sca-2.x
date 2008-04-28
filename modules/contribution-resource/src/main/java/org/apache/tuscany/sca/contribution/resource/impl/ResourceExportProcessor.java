@@ -112,7 +112,9 @@ public class ResourceExportProcessor implements StAXArtifactProcessor<ResourceEx
         writer.writeEndElement();
     }
 
-    public void resolve(ResourceExport model, ModelResolver resolver) throws ContributionResolveException {
-        
+    public void resolve(ResourceExport resourceExport, ModelResolver resolver) throws ContributionResolveException {
+
+        // Initialize the export's model resolver
+        resourceExport.setModelResolver(new ResourceExportModelResolver(resourceExport, resolver));
     }
 }

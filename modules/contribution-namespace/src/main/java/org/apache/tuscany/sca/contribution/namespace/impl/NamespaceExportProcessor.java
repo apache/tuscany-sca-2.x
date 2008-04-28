@@ -112,7 +112,9 @@ public class NamespaceExportProcessor implements StAXArtifactProcessor<Namespace
         writer.writeEndElement();
     }
 
-    public void resolve(NamespaceExport model, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(NamespaceExport namespaceExport, ModelResolver resolver) throws ContributionResolveException {
         
+        // Initialize the export's resolver
+        namespaceExport.setModelResolver(new NamespaceExportModelResolver(resolver));
     }
 }
