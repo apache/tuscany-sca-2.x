@@ -38,7 +38,6 @@ import com.sun.syndication.io.XmlReader;
 class RSSBindingInvoker implements Invoker , DataExchangeSemantics {
     private final static Logger logger = Logger.getLogger(RSSBindingInvoker.class.getName());
     
-    private String feedType;
     private String uri;
 
     RSSBindingInvoker(String uri, String feedType) {
@@ -47,7 +46,7 @@ class RSSBindingInvoker implements Invoker , DataExchangeSemantics {
 
     public Message invoke(Message msg) {
         try {
-            logger.info(">>> RSSBindingInvoker (" + feedType + ") " + uri);
+            logger.fine("invoke " + uri);
 
             // Read an RSS feed into a Synd feed
             SyndFeedInput input = new SyndFeedInput();

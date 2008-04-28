@@ -126,7 +126,7 @@ class RSSBindingListenerServlet extends HttpServlet {
         // Get the request path
         String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
 
-        logger.info(">>> RSSBindingListenerServlet " + request.getRequestURI());
+        logger.fine("get " + request.getRequestURI());
 
         // Handle an RSS request
         if (path == null || path.length() == 0 || path.equals("/")) {
