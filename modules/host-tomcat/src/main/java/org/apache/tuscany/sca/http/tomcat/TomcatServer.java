@@ -529,7 +529,7 @@ public class TomcatServer implements ServletHost {
             
             return servletWrapper.getServlet();
         } else {
-            logger.info("Trying to Remove servlet mapping: " + mapping + " where mapping is not registered");
+            logger.warning("Trying to Remove servlet mapping: " + mapping + " where mapping is not registered");
             return null;
         }
     }
