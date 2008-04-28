@@ -411,7 +411,7 @@ public class JettyServer implements ServletHost {
             }
             
         } else {
-            logger.info("Trying to Remove servlet mapping: " + path + " where mapping is not registered");
+            logger.warning("Trying to Remove servlet mapping: " + path + " where mapping is not registered");
         }
         
         return removedServlet;
