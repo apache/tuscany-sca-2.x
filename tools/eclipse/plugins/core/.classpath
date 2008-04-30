@@ -2,55 +2,55 @@
   <classpathentry kind="src" path="."/>
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/debug/ui/3.2.100-v20070531-1800/ui-3.2.100-v20070531-1800.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/ide/3.3.0-I20070531-1800/ide-3.3.0-I20070531-1800.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/resources/3.3.0-v20070530/resources-3.3.0-v20070530.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/expressions/3.3.0-v20070531-1300/expressions-3.3.0-v20070531-1300.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/runtime/3.3.100-v20070530/runtime-3.3.100-v20070530.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/osgi/3.3.0-v20070530/osgi-3.3.0-v20070530.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/equinox/common/3.3.0-v20070426/common-3.3.0-v20070426.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/jobs/3.3.0-v20070423/jobs-3.3.0-v20070423.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/net/1.0.0-I20070531/net-1.0.0-I20070531.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/update/configurator/3.2.100-v20070507/configurator-3.2.100-v20070507.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/team/ui/3.3.0-I20070524/ui-3.3.0-I20070524.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/equinox/registry/3.3.0-v20070522/registry-3.3.0-v20070522.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/equinox/preferences/3.2.100-v20070522/preferences-3.2.100-v20070522.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/contenttype/3.2.100-v20070319/contenttype-3.2.100-v20070319.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/equinox/app/1.0.0-v20070423/app-1.0.0-v20070423.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/filesystem/1.1.0-v20070510/filesystem-1.1.0-v20070510.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/help/3.3.0-v20070524/help-3.3.0-v20070524.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/3.3.0-I20070601-1200/ui-3.3.0-I20070601-1200.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/swt/3.3.0-v3345b/swt-3.3.0-v3345b.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jface/3.3.0-I20070601-1200/jface-3.3.0-I20070601-1200.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/commands/3.3.0-I20070523-1500/commands-3.3.0-I20070523-1500.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/workbench/3.3.0-I20070601-0010/workbench-3.3.0-I20070601-0010.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jface/databinding/1.1.0-I20070530-0100/databinding-1.1.0-I20070530-0100.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/databinding/1.0.0-I20070530-0100/databinding-1.0.0-I20070530-0100.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/views/3.2.100-I20070319-0010/views-3.2.100-I20070319-0010.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/update/configurator/3.2.100-v20070507/configurator-3.2.100-v20070507.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/equinox/common/3.3.0-v20070426/common-3.3.0-v20070426.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/update/core/3.2.100-v20070522/core-3.2.100-v20070522.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/net/1.0.0-I20070531/net-1.0.0-I20070531.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/update/ui/3.2.100-v20070601a/ui-3.2.100-v20070601a.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/forms/3.3.0-v20070511/forms-3.3.0-v20070511.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jface/text/3.3.0-v20070531-1300/text-3.3.0-v20070531-1300.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/text/3.3.0-v20070531-1300/text-3.3.0-v20070531-1300.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/workbench/texteditor/3.3.0-v20070531-1300/texteditor-3.3.0-v20070531-1300.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/editors/3.3.0-v20070531-1300/editors-3.3.0-v20070531-1300.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/filebuffers/3.3.0-v20070531-1300/filebuffers-3.3.0-v20070531-1300.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/variables/3.2.0-v20070426/variables-3.2.0-v20070426.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.3.0-v_768/core-3.3.0-v_768.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/debug/ui/3.3.0-v20070531-1800/ui-3.3.0-v20070531-1800.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/console/3.2.0-v20070530/console-3.2.0-v20070530.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/debug/core/3.3.0-v20070531-1800/core-3.3.0-v20070531-1800.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/debug/3.3.0-v20070530a/debug-3.3.0-v20070530a.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/launching/3.3.0-v20070510/launching-3.3.0-v20070510.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/ui/3.3.0-v20070531-1300/ui-3.3.0-v20070531-1300.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/search/3.3.0-v20070531-1300/search-3.3.0-v20070531-1300.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/compare/3.3.0-I20070528/compare-3.3.0-I20070528.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/team/ui/3.3.0-I20070524/ui-3.3.0-I20070524.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/team/core/3.2.100-I20070531/core-3.2.100-I20070531.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jface/3.3.0-I20070601-1200/jface-3.3.0-I20070601-1200.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jface/databinding/1.1.0-I20070530-0100/databinding-1.1.0-I20070530-0100.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/navigator/3.3.0-I20070531-1800/navigator-3.3.0-I20070531-1800.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/navigator/resources/3.2.100-I20070530-0100/resources-3.2.100-I20070530-0100.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/views/properties/tabbed/3.2.100-I20070424-0010/tabbed-3.2.100-I20070424-0010.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/views/3.2.100-I20070319-0010/views-3.2.100-I20070319-0010.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/search/3.3.0-v20070531-1300/search-3.3.0-v20070531-1300.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/ltk/core/refactoring/3.3.0-v20070531-1300/refactoring-3.3.0-v20070531-1300.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/ltk/ui/refactoring/3.3.0-v20070531-1300/refactoring-3.3.0-v20070531-1300.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/manipulation/1.1.0-v20070531-1300/manipulation-1.1.0-v20070531-1300.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/databinding/1.0.0-I20070530-0100/databinding-1.0.0-I20070530-0100.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/swt/3.3.0-v3345b/swt-3.3.0-v3345b.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/variables/3.2.0-v20070426/variables-3.2.0-v20070426.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/osgi/3.3.0-v20070530/osgi-3.3.0-v20070530.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/swt/win32/win32/x86/3.3.0-v3346/x86-3.3.0-v3346.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/jobs/3.3.0-v20070423/jobs-3.3.0-v20070423.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/filesystem/1.1.0-v20070510/filesystem-1.1.0-v20070510.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.3.0-v_768/core-3.3.0-v_768.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/team/core/3.2.100-I20070531/core-3.2.100-I20070531.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/debug/core/3.3.0-v20070531-1800/core-3.3.0-v20070531-1800.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/resources/3.3.0-v20070530/resources-3.3.0-v20070530.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/ui/3.3.0-v20070531-1300/ui-3.3.0-v20070531-1300.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/launching/3.3.0-v20070510/launching-3.3.0-v20070510.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/workbench/3.3.0-I20070601-0010/workbench-3.3.0-I20070601-0010.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/help/3.3.0-v20070524/help-3.3.0-v20070524.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/equinox/app/1.0.0-v20070423/app-1.0.0-v20070423.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/workbench/texteditor/3.3.0-v20070531-1300/texteditor-3.3.0-v20070531-1300.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/update/ui/3.2.100-v20070601a/ui-3.2.100-v20070601a.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/text/3.3.0-v20070531-1300/text-3.3.0-v20070531-1300.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/expressions/3.3.0-v20070531-1300/expressions-3.3.0-v20070531-1300.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/console/3.2.0-v20070530/console-3.2.0-v20070530.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/navigator/resources/3.2.100-I20070530-0100/resources-3.2.100-I20070530-0100.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/debug/ui/3.2.100-v20070531-1800/ui-3.2.100-v20070531-1800.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/compare/3.3.0-I20070528/compare-3.3.0-I20070528.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/contenttype/3.2.100-v20070319/contenttype-3.2.100-v20070319.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/filebuffers/3.3.0-v20070531-1300/filebuffers-3.3.0-v20070531-1300.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/views/properties/tabbed/3.2.100-I20070424-0010/tabbed-3.2.100-I20070424-0010.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/debug/3.3.0-v20070530a/debug-3.3.0-v20070530a.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/manipulation/1.1.0-v20070531-1300/manipulation-1.1.0-v20070531-1300.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/3.3.0-I20070601-1200/ui-3.3.0-I20070601-1200.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/jface/text/3.3.0-v20070531-1300/text-3.3.0-v20070531-1300.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/ltk/ui/refactoring/3.3.0-v20070531-1300/refactoring-3.3.0-v20070531-1300.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/ide/3.3.0-I20070531-1800/ide-3.3.0-I20070531-1800.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/forms/3.3.0-v20070511/forms-3.3.0-v20070511.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/commands/3.3.0-I20070523-1500/commands-3.3.0-I20070523-1500.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/ui/editors/3.3.0-v20070531-1300/editors-3.3.0-v20070531-1300.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/eclipse/core/runtime/3.3.100-v20070530/runtime-3.3.100-v20070530.jar"/>
 </classpath>

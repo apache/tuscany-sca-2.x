@@ -17,23 +17,15 @@
  * under the License.    
  */
 package workpool;
-
-import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.osoa.sca.annotations.Remotable;
-
+import org.osoa.sca.CallableReference;
 @Remotable
 public interface WorkerManager {
-    CallableReferenceImpl<WorkerService> addWorker();
-
+    CallableReference<WorkerService> addWorker();
     boolean removeWorker(String workerName);
-
     boolean removeWorkers(int k);
-
     boolean removeAllWorkers();
-
     double getNodeLoad();
-
     int activeWorkers();
-
     void start();
 }
