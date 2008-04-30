@@ -28,12 +28,11 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionServiceImpl;
-import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
-import org.apache.tuscany.sca.node.NodeManagerInitService;
+import org.osoa.sca.CallableReference;
+import org.apache.tuscany.sca.node.management.SCANodeManagerInitService;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.impl.SCANodeImpl;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Property;
@@ -43,10 +42,10 @@ import java.util.LinkedList;
 import java.util.ArrayList;
 
 @Scope("COMPOSITE")
-@Service(interfaces = { NodeManagerInitService.class, WorkerManager.class })
-public class WorkerManagerImpl implements WorkerManager, NodeManagerInitService {
+@Service(interfaces = { SCANodeManagerInitService.class, WorkerManager.class })
+public class WorkerManagerImpl implements WorkerManager, SCANodeManagerInitService {
     private Logger log = Logger.getLogger(WorkerManagerImpl.class.getName());
-    private LinkedList<CallableReferenceImpl<WorkerService>> activeWorkers = new LinkedList<CallableReferenceImpl<WorkerService>>();
+    private LinkedList<CallableReference<WorkerService>> activeWorkers = new LinkedList<CallableReference<WorkerService>>();
     private List<String> workerComponentNames = new ArrayList<String>();
     private SCANodeImpl node;
     @Property
@@ -60,12 +59,11 @@ public class WorkerManagerImpl implements WorkerManager, NodeManagerInitService 
     private double loadAverage;
 
     /* This method is used to find a composite inside all deployed artifacts */
-    private Composite findComposite(List<DeployedArtifact> artifacts) {
-        for (DeployedArtifact fact : artifacts) {
-            if (fact.getModel() instanceof Composite) {
+    private Composite findComposite(List<Composite> artifacts) {
+        for (Composite fact : artifacts) {
                 log.info("Searching in a contribution deployed artifacts -"
                         + compositeName);
-                Composite augmented = (Composite) fact.getModel();
+                Composite augmented = (Composite) fact;
                 // found
                 if (augmented.getURI().equals(compositeName)) {
                     log.info("Found composite..." + compositeName);
@@ -76,20 +74,18 @@ public class WorkerManagerImpl implements WorkerManager, NodeManagerInitService 
         return null;
     }
 
-    public CallableReferenceImpl<WorkerService> addWorker() {
+    public CallableReference<WorkerService> addWorker() {
         log.info("Adding a new worker call..");
         long addWorkerStartTime = System.nanoTime();
-        ContributionServiceImpl cServiceImpl = (ContributionServiceImpl) node
-                .getNodeRuntime().getContributionService();
+        ContributionServiceImpl cServiceImpl = (ContributionServiceImpl) node.getContributionService();
         Contribution contribution = cServiceImpl.getContribution(nodeName);
-        List<DeployedArtifact> artifacts = contribution.getArtifacts();
+        List<Composite> artifacts = contribution.getDeployables();
         CallableReference<WorkerService> workerReference = null;
-        CallableReferenceImpl<WorkerService> ref = null;
-        log.info("Instantiating a metacomponent..");
+        CallableReference<WorkerService> ref = null;
+        log.info("Creating a MetaComponentWorker..");
         MetaComponentWorker mcw = new MetaComponentWorker();
         boolean found = false;
         mcw.setWorkerClass(workerClass);
-        // ho trovato la composizione
         Composite augmented = findComposite(artifacts);
         try {
             if (augmented != null) {
@@ -101,15 +97,13 @@ public class WorkerManagerImpl implements WorkerManager, NodeManagerInitService 
                 RuntimeComponent workerComponent = (RuntimeComponent) node
                         .getComponent(mcw.getName());
                 if (workerComponent != null) {
-                    ref = (CallableReferenceImpl<WorkerService>) workerComponent
+                    ref = (CallableReference<WorkerService>) workerComponent
                             .getComponentContext().createSelfReference(
                                     WorkerService.class);
                     ref.getService().start();
                     activeWorkers.addLast(ref);
                     workerComponentNames.add(mcw.getName());
-                    log.info(context.getURI());
-                    // String name = context.getURI()+"/WorkerManager";
-                    CallableReferenceImpl<WorkerManager> manager = (CallableReferenceImpl) context
+                    CallableReference<WorkerManager> manager = (CallableReference) context
                             .createSelfReference(WorkerManager.class,
                                     "WorkerManager");
                     ref.getService().registerManager(manager);
@@ -129,14 +123,14 @@ public class WorkerManagerImpl implements WorkerManager, NodeManagerInitService 
     }
 
     public boolean removeAllWorkers() {
-        for (CallableReferenceImpl<WorkerService> callable : activeWorkers) {
+        for (CallableReference<WorkerService> callable : activeWorkers) {
             callable.getService().stop();
         }
         return true;
     }
 
     public boolean removeWorker() {
-        CallableReferenceImpl<WorkerService> callable = activeWorkers
+        CallableReference<WorkerService> callable = activeWorkers
                 .removeLast();
         callable.getService().stop();
         return true;

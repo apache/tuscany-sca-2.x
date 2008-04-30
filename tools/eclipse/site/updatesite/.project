@@ -1,17 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.apache.tuscany.sca.updatesite</name>
-	<comment></comment>
-	<projects>
-	</projects>
-	<buildSpec>
-		<buildCommand>
-			<name>org.eclipse.pde.UpdateSiteBuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-	</buildSpec>
-	<natures>
-		<nature>org.eclipse.pde.UpdateSiteNature</nature>
-	</natures>
+  <name>org.apache.tuscany.sca.updatesite</name>
+  <comment>Parent POM defining settings that can be used across Tuscany</comment>
+  <projects>
+    <project>org.apache.tuscany.sca.core</project>
+    <project>org.apache.tuscany.sca.feature</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
 </projectDescription>

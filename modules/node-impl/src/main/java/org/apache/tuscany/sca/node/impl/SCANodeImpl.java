@@ -587,7 +587,20 @@ public class SCANodeImpl implements SCANode, SCANodeSPI {
             }  
         }
     }
-    
+    public ContributionService getContributionService()
+    {
+    	return nodeRuntime.getContributionService();
+    }
+    /* TODO - giorgio:  These are just little steps to support contribution-updater,
+     * 
+     * in order to have more fine grain on updating stuffs.
+    public void addComponentToComposite(MetaComponent mc, String contributionURI, String compositeURI)
+    {
+    }
+    public void removeComponentFromComposite(String nodeName, String compositeURI,String componentName)
+    {
+    }
+    */
     private void activateComposite(Composite composite) throws CompositeBuilderException, ActivationException {
         logger.log(Level.INFO, "Building composite: " + composite.getName());
         

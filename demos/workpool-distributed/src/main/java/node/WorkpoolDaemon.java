@@ -44,6 +44,8 @@ import org.apache.tuscany.sca.node.NodeManagerInitService;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.apache.tuscany.sca.node.impl.SCANodeImpl;
+import org.apache.tuscany.sca.node.management.SCANodeManagerInitService;
+
 import java.net.URI;
 
 import workpool.WorkerManager;
@@ -183,8 +185,8 @@ public class WorkpoolDaemon implements Daemon, Runnable {
             WorkpoolService workpoolService = node.getDomain().getService(
                     WorkpoolService.class, "WorkpoolServiceComponent");
             workpoolService.start();
-            NodeManagerInitService nodeInit = node.getDomain().getService(
-                    NodeManagerInitService.class,
+            SCANodeManagerInitService nodeInit = node.getDomain().getService(
+                    SCANodeManagerInitService.class,
                     "WorkpoolManagerComponent/NodeManagerInitService");
             nodeInit.setNode(node);
             WorkpoolManager workpoolManager = node.getDomain().getService(
@@ -210,33 +212,33 @@ public class WorkpoolDaemon implements Daemon, Runnable {
 
         }
         if (nodeName.equals("nodeB")) {
-            NodeManagerInitService workerManagerNodeB = node
+            SCANodeManagerInitService workerManagerNodeB = node
                     .getDomain()
-                    .getService(NodeManagerInitService.class,
+                    .getService(SCANodeManagerInitService.class,
                             "WorkerManagerNodeBComponent/NodeManagerInitService");
             workerManagerNodeB.setNode(node);
         }
 
         if (nodeName.equals("nodeC")) {
-            NodeManagerInitService workerManagerNodeC = node
+            SCANodeManagerInitService workerManagerNodeC = node
                     .getDomain()
-                    .getService(NodeManagerInitService.class,
+                    .getService(SCANodeManagerInitService.class,
                             "WorkerManagerNodeCComponent/NodeManagerInitService");
             workerManagerNodeC.setNode(node);
         }
 
         if (nodeName.equals("nodeD")) {
-            NodeManagerInitService workerManagerNodeD = node
+            SCANodeManagerInitService workerManagerNodeD = node
                     .getDomain()
-                    .getService(NodeManagerInitService.class,
+                    .getService(SCANodeManagerInitService.class,
                             "WorkerManagerNodeDComponent/NodeManagerInitService");
             workerManagerNodeD.setNode(node);
         }
 
         if (nodeName.equals("nodeE")) {
-            NodeManagerInitService workerManagerNodeE = node
+            SCANodeManagerInitService workerManagerNodeE = node
                     .getDomain()
-                    .getService(NodeManagerInitService.class,
+                    .getService(SCANodeManagerInitService.class,
                             "WorkerManagerNodeEComponent/NodeManagerInitService");
             workerManagerNodeE.setNode(node);
         }
