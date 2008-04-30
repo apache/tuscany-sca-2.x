@@ -73,7 +73,7 @@ class AtomBindingUtil {
             } else {
                 String key = null; 
                 if ( feedEntry.getId() != null) {
-                        feedEntry.getId().toString();
+                	key = feedEntry.getId().toString();
                 }
                 
                 // Create the item from XML
