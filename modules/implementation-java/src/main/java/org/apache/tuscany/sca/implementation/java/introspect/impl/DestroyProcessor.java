@@ -53,8 +53,8 @@ public class DestroyProcessor extends BaseJavaClassVisitor {
         if (type.getDestroyMethod() != null) {
             throw new DuplicateDestructorException("More than one destructor found on implementation");
         }
-        if (Modifier.isProtected(method.getModifiers())) {
-            method.setAccessible(true);
+        if (!Modifier.isPublic(method.getModifiers())) {
+            throw new IllegalDestructorException("Destructor must be a public method. Invalid annotation @Destroy found on "+method);
         }
         type.setDestroyMethod(method);
     }

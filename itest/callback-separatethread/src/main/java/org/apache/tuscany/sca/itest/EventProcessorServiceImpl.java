@@ -119,7 +119,7 @@ public class EventProcessorServiceImpl implements EventProcessorService {
      * Shuts down the Event Processor
      */
     @Destroy
-    protected void shutdown()
+    public void shutdown()
     {
         System.out.println("Shutting down the EventProcessor");
         

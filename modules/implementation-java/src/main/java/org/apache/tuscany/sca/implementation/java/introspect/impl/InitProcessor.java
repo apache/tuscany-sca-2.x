@@ -53,8 +53,8 @@ public class InitProcessor extends BaseJavaClassVisitor {
         if (type.getInitMethod() != null) {
             throw new DuplicateInitException("More than one initializer found on implementaton");
         }
-        if (Modifier.isProtected(method.getModifiers())) {
-            method.setAccessible(true);
+        if (!Modifier.isPublic(method.getModifiers())) {
+            throw new IllegalInitException("Initializer must be a public method. Invalid annotation @Init found on "+method);
         }
         type.setInitMethod(method);
     }
