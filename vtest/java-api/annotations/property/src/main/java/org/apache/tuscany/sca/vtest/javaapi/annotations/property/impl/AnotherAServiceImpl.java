@@ -19,103 +19,55 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.annotations.property.impl;
 
-import org.apache.tuscany.sca.vtest.javaapi.annotations.property.AService;
+import org.apache.tuscany.sca.vtest.javaapi.annotations.property.AnotherAService;
 import org.osoa.sca.annotations.Service;
 
-@Service(AService.class)
-public class AnotherAServiceImpl implements AService {
+@Service(AnotherAService.class)
+public class AnotherAServiceImpl implements AnotherAService {
 
-    public String p13;                // injected via field and un-annotated
+    public String p13;              // injected via field and un-annotated
     
-    public String p14;                // injected via setter and un-annotated
-    
-    public boolean p14SetterIsCalled = false;
+    public String p14;              // injected via setter and un-annotated
     
     protected String p22;           // unannotated protected field should not be injected
 
+    protected String p23;			// un-annotated protected and has protected setter 
+
+    protected String p24;			// un-annotated protected field and has public setter
+
+    private String p25;				// un-annotated private field and has public setter
+    
+    public boolean p14SetterIsCalled = false;
+    
+    public boolean p23SetterIsCalled = false;
+    
+    public boolean p24SetterIsCalled = false;
+    
+    public boolean p25SetterIsCalled = false;
+    
+    
     public String getName() {
         return "AService";
     }
     
-    public AnotherAServiceImpl() {
-        super();
-    }
- 
     public void setP14(String p14) {
         p14SetterIsCalled = true;
         this.p14 = p14;
     }
-    
-    public String getP1() {
-        return null;
+
+    protected void setP23(String p23) {
+        p23SetterIsCalled = true;
+        this.p23 = p23;
     }
 
-    public String getP2() {
-        return null;
+    public void setP24(String p24) {
+        p24SetterIsCalled = true;
+        this.p24 = p24;
     }
 
-    public String getP3() {
-        return null;
-    }
-
-    public String getP4() {
-        return null;
-    }
-
-    public String getP5() {
-        return null;
-    }
-
-    public String getP6() {
-        return null;
-    }
-
-    public String getP7AString() {
-        return null;
-    }
-
-    public int getP7BInt() {
-        return -1;
-    }
-    
-    public String getP8AString() {
-        return null;
-    }
-
-    public int getP8BInt() {
-        return -1;
-    }
-    
-    public String getP9AString() {
-        return null;
-    }
-
-    public int getP9BInt() {
-        return -1;
-    }
-    
-    public String getP10AString() {
-        return null;
-    }
-
-    public int getP10BInt() {
-        return -1;
-    }
-
-    public String getP11AString() {
-        return null;
-    }
-
-    public int getP11BInt() {
-        return -1;
-    }
-
-    public String getP12AString() {
-        return null;
-    }
-
-    public int getP12BInt() {
-        return -1;
+    public void setP25(String p25) {
+        p25SetterIsCalled = true;
+        this.p25 = p25;
     }
 
     public String getP13() {
@@ -126,47 +78,39 @@ public class AnotherAServiceImpl implements AService {
         return p14;
     }
     
+    public String getP22() {
+        return p22;
+    }
+
+    public String getP23() {
+        return p23;
+    }
+
+    public String getP24() {
+        return p24;
+    }
+
+    public String getP25() {
+        return p25;
+    }
+
     public boolean getP14SetterIsCalled() {
         return p14SetterIsCalled;
     }
     
-    public String getP15() {
-        return null;
+
+    public boolean getP23SetterIsCalled() {
+        return p23SetterIsCalled;
+    }
+    
+
+    public boolean getP24SetterIsCalled() {
+        return p24SetterIsCalled;
+    }
+    
+
+    public boolean getP25SetterIsCalled() {
+        return p25SetterIsCalled;
     }
 
-    public String getP16() {
-        return null;
-    }
-
-    public String getP17() {
-        return null;
-    }
-
-    public String getP18() {
-        return null;
-    }
-
-    public int getP19Size() {
-        return -1;
-    }
-
-    public String getP20(int i) {
-        return null;
-    }
-
-    public int getP20Size() {
-        return -1;
-    }
-
-    public int getP21(int i) {
-        return -1;
-    }
-
-    public int getP21Size() {
-        return -1;
-    }
-
-    public String getP22() {
-        return p22;
-    }
 }

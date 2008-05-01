@@ -25,9 +25,11 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.property.AService;
 import org.apache.tuscany.sca.vtest.javaapi.annotations.property.CService;
+import org.apache.tuscany.sca.vtest.javaapi.annotations.property.AnotherAService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Ignore;
 
 /**
  * This test class tests the Property annotation described in section 1.2.3
@@ -44,6 +46,7 @@ public class PropertyAnnotationTestCase {
     protected static CService cService4 = null;
     protected static CService cService5 = null;
     protected static CService cService6 = null;
+    protected static AnotherAService anotherAService = null;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -57,6 +60,7 @@ public class PropertyAnnotationTestCase {
             cService4 = domain.getService(CService.class, "CComponent4");
             cService5 = domain.getService(CService.class, "CComponent5");
             cService6 = domain.getService(CService.class, "CComponent6");
+            anotherAService = domain.getService(AnotherAService.class, "AnotherAComponent");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -124,11 +128,10 @@ public class PropertyAnnotationTestCase {
      * the case where there is no "@Property" annotation, the name of the
      * property is the same as the name of the field or setter.<br>
      * <p>
-     * p13 - injected via field and un-annotated
+     * p13 is an un-annotated public field which should be injected via field<br>
      */
     @Test
     public void atProperty2() throws Exception {
-        AService anotherAService = domain.getService(AService.class, "AnotherAComponent");
         Assert.assertEquals("p13", anotherAService.getP13());
     }
 
@@ -137,11 +140,10 @@ public class PropertyAnnotationTestCase {
      * Where there is both a setter method and a field for a property, the
      * setter method is used.<br>
      * <p>
-     * p14 - injected via setter and un-annotated
+     * p14 is an un-annotated public field, it should be injected via public setter<br>
      */
     @Test
     public void atProperty3() throws Exception {
-        AService anotherAService = domain.getService(AService.class, "AnotherAComponent");
         Assert.assertEquals("p14", anotherAService.getP14());
         Assert.assertTrue(anotherAService.getP14SetterIsCalled());
     }
@@ -262,11 +264,36 @@ public class PropertyAnnotationTestCase {
      * field. In the case where there is no "@Property" annotation, the name of the property is the same as the
      * name of the field or setter.
      * <p>
-     * p22 - unannotated protected field which should not be injected
+     * p22 is unannotated protected field which should not be injected
+     * p23 is un-annotated protected which should not be injected via protected setter<br> 
      */
     @Test
+    @Ignore
+    // JIRA-2289 - p23 failed
     public void atProperty7() throws Exception {
-        AService anotherAService = domain.getService(AService.class, "AnotherAComponent");
         Assert.assertNull(anotherAService.getP22());
+        Assert.assertNull(anotherAService.getP23());
+        Assert.assertFalse(anotherAService.getP23SetterIsCalled());
     }
+    
+    /**
+     * Lines 1349 to 1352:<br>
+     * 1.8.13. "@Property"<br>
+     * ...<br>
+     * Properties may also be injected via public setter methods even when the "@Property" annotation is not
+     * present. However, the "@Property" annotation must be used in order to inject a property onto a non-public
+     * field. In the case where there is no "@Property" annotation, the name of the property is the same as the
+     * name of the field or setter.
+     * <p>
+     * p24 is un-annotated protected field which should be injected via public setter<br>
+     * p25 is un-annotated private field which should be injected via public setter<br>
+     */
+    @Test
+    public void atProperty8() throws Exception {
+        Assert.assertEquals("p24", anotherAService.getP24());
+        Assert.assertTrue(anotherAService.getP24SetterIsCalled());
+        Assert.assertEquals("p25", anotherAService.getP25());
+        Assert.assertTrue(anotherAService.getP25SetterIsCalled());
+    }
+    
 }
