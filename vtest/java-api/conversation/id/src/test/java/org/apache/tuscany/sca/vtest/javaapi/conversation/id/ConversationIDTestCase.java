@@ -22,9 +22,7 @@ package org.apache.tuscany.sca.vtest.javaapi.conversation.id;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.osoa.sca.ConversationEndedException;
 
 /**
  * 
@@ -63,8 +61,39 @@ public class ConversationIDTestCase {
      * injected onto the field
      */
     @Test
-    public void lifetime1() throws Exception {
+    public void idAnnotation() throws Exception {
         aService.testAnnotation();
+    }
+
+    /**
+     * Lines 505
+     * <p>
+     * The type of the field is not necessarily String
+     */
+    @Test
+    public void idAnnotation2() throws Exception {
+        aService.testAnnotation2();
+    }
+
+    /**
+     * Lines 505, 506
+     * <p>
+     * System generated conversation IDs are always strings
+     */
+    @Test
+    public void idAnnotation3() throws Exception {
+        aService.testAnnotation3();
+    }
+
+    /**
+     * Lines 506, 507
+     * <p>
+     * ... but application generated conversation IDs may be other complex
+     * types.
+     */
+    @Test
+    public void idAnnotation4() throws Exception {
+        aService.testAnnotation4();
     }
 
 }

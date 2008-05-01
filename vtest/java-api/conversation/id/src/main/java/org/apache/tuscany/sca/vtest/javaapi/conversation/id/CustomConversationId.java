@@ -16,22 +16,39 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.sca.vtest.javaapi.conversation.id;
 
-import org.osoa.sca.annotations.Remotable;
 
-/**
- * Simple Remotable Service
- */
-@Remotable
-public interface AService {
+public class CustomConversationId {
+    
+    int id;
+    String name;
 
-    public void testAnnotation();
+    public CustomConversationId(int id, String name) {
+        super();
+        this.id = id;
+        this.name = name;
+    }
 
-    public void testAnnotation2();
+    public String getName() {
+        return name;
+    }
 
-    public void testAnnotation3();
+    public int getNumber() {
+        return id;
+    }
 
-    public void testAnnotation4();
+    public void setName(String someName) {
+        name = someName;
+    }
 
+    public void setNumber(int someInt) {
+        id = someInt;
+    }
+
+    public String toString() {
+        return "id->" + id + " name->" + name;
+    }
+    
 }

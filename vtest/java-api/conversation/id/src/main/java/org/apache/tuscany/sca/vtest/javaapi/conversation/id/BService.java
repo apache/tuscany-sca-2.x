@@ -33,6 +33,9 @@ public interface BService {
     public String getState();
 
     public void testAnnotation();
-  
+
+    public void testAnnotation2();
+
+    public void testAnnotation3();
 
 }

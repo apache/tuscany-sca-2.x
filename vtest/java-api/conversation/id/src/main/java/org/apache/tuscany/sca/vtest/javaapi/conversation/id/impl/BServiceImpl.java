@@ -28,13 +28,16 @@ import org.osoa.sca.annotations.Service;
 
 @Service(BService.class)
 @Scope("CONVERSATION")
-@ConversationAttributes(maxAge="1 seconds")
+@ConversationAttributes(maxAge = "1 seconds")
 public class BServiceImpl implements BService {
 
     String someState;
-    
+
     @ConversationID
     protected String conversationID;
+
+    @ConversationID
+    protected Object conversationID2;
 
     public void setState(String someState) {
         this.someState = someState;
@@ -49,5 +52,14 @@ public class BServiceImpl implements BService {
         System.out.println(conversationID);
     }
 
+    public void testAnnotation2() {
+        Assert.assertNotNull(conversationID2);
+        System.out.println(conversationID);
+    }
+
+    public void testAnnotation3() {
+        Assert.assertTrue(conversationID2 instanceof String);
+        System.out.println(conversationID);
+    }
 
 }

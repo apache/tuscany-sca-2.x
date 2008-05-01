@@ -18,20 +18,20 @@
  */
 package org.apache.tuscany.sca.vtest.javaapi.conversation.id;
 
+import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.Remotable;
 
 /**
- * Simple Remotable Service
+ * Simple Local Service
  */
 @Remotable
-public interface AService {
+@Conversational
+public interface CService {
+
+    public void setState(String someState);
+    
+    public String getState();
 
     public void testAnnotation();
-
-    public void testAnnotation2();
-
-    public void testAnnotation3();
-
-    public void testAnnotation4();
 
 }

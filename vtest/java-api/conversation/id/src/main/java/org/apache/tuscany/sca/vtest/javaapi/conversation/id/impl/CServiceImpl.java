@@ -19,40 +19,38 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.conversation.id.impl;
 
-import org.apache.tuscany.sca.vtest.javaapi.conversation.id.AService;
-import org.apache.tuscany.sca.vtest.javaapi.conversation.id.BService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.id.CService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.id.CustomConversationId;
-import org.osoa.sca.ServiceReference;
-import org.osoa.sca.annotations.Reference;
+import org.junit.Assert;
+import org.osoa.sca.annotations.ConversationID;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
-@Service(AService.class)
+@Service(CService.class)
 @Scope("CONVERSATION")
-public class AServiceImpl implements AService {
+public class CServiceImpl implements CService {
 
-    @Reference
-    protected ServiceReference<BService> b;
-    
-    @Reference
-    protected ServiceReference<CService> c;
+    String someState;
+
+    @ConversationID
+    protected Object conversationID;
+
+
+    public void setState(String someState) {
+        this.someState = someState;
+    }
+
+    public String getState() {
+        return someState;
+    }
 
     public void testAnnotation() {
-        b.getService().testAnnotation();  
+        Assert.assertNotNull(conversationID);
+        Assert.assertTrue(conversationID instanceof CustomConversationId);
+        
+        Assert.assertSame(1, ((CustomConversationId)conversationID).getNumber());
+        Assert.assertSame("One", ((CustomConversationId)conversationID).getName());
+        System.out.println(conversationID);
     }
 
-    public void testAnnotation2() {
-        b.getService().testAnnotation2();     
-    }
-
-    public void testAnnotation3() {
-        b.getService().testAnnotation3();        
-    }
-
-    public void testAnnotation4() {
-        CustomConversationId id = new CustomConversationId (1, "One");
-        c.setConversationID(id);
-        c.getService().testAnnotation();        
-    }
 }
