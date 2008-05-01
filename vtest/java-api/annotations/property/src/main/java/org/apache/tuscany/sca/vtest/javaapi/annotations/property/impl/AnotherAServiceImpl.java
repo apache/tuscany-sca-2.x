@@ -31,6 +31,8 @@ public class AnotherAServiceImpl implements AService {
     
     public boolean p14SetterIsCalled = false;
     
+    protected String p22;           // unannotated protected field should not be injected
+
     public String getName() {
         return "AService";
     }
@@ -162,5 +164,9 @@ public class AnotherAServiceImpl implements AService {
 
     public int getP21Size() {
         return -1;
+    }
+
+    public String getP22() {
+        return p22;
     }
 }
