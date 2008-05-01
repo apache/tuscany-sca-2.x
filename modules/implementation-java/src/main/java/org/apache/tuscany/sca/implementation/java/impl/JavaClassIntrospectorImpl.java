@@ -100,6 +100,14 @@ public class JavaClassIntrospectorImpl {
             }
         }
 
+        // Check if any private methods have illegal annotations that should be raised as errors
+        Set<Method> privateMethods = JavaIntrospectionHelper.getPrivateMethods(clazz);
+        for (Method method : privateMethods) {
+            for (JavaClassVisitor processor : visitors) {
+                processor.visitMethod(method, type);
+            }
+        }
+
         Class superClass = clazz.getSuperclass();
         if (superClass != null) {
             visitSuperClass(superClass, type);

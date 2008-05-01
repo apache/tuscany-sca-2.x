@@ -548,4 +548,17 @@ public final class JavaIntrospectionHelper {
         buf.append(getSignature(componentType));
         return Class.forName(buf.toString(), false, componentType.getClassLoader());
     }
+
+    public static Set<Method> getPrivateMethods(Class clazz) {
+        Set<Method> methods = new HashSet<Method>();
+        Method[] declaredMethods = clazz.getDeclaredMethods();
+        for (final Method declaredMethod : declaredMethods) {
+            int modifiers = declaredMethod.getModifiers();
+            if(Modifier.isPrivate(modifiers)) {
+                methods.add(declaredMethod);
+            }
+        }
+        
+        return methods;
+    }
 }

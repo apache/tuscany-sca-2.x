@@ -71,11 +71,22 @@ public class DestroyProcessorTestCase extends TestCase {
         }
     }
 
-
-    public void testBadDestroy2() throws Exception {
+    public void testProtectedDestroy() throws Exception {
         DestroyProcessor processor = new DestroyProcessor(assemblyFactory);
         JavaImplementation type = javaImplementationFactory.createJavaImplementation();
-        Method method = Bar.class.getDeclaredMethod("badDestroy2");
+        Method method = Bar.class.getDeclaredMethod("protectedDestroy");
+        try {
+            processor.visitMethod(method, type);
+            fail();
+        } catch (IllegalDestructorException e) {
+            // expected
+        }
+    }
+
+    public void testPrivateDestroy() throws Exception {
+        DestroyProcessor processor = new DestroyProcessor(assemblyFactory);
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        Method method = Bar.class.getDeclaredMethod("privateDestroy");
         try {
             processor.visitMethod(method, type);
             fail();
@@ -106,10 +117,13 @@ public class DestroyProcessorTestCase extends TestCase {
         public void badDestroy(String foo) {
         }
 
+        @Destroy
+        protected void protectedDestroy(){
+        }
 
         @Destroy
-        public String badDestroy2() {
-            return null;
+        private void privateDestroy(){
         }
+
     }
 }
