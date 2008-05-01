@@ -65,8 +65,6 @@
 					<bInt>12</bInt>
 				</AObject>
 			</property>
-			<property name="p13">p13</property>
-			<property name="p14">p14</property>
 			<property name="pFifteen">p15</property>
 			<property name="pSixteen">p16</property>
 			<property name="p19" many="true"></property>
@@ -138,5 +136,8 @@
             <property name="p13">p13</property>
             <property name="p14">p14</property>
             <property name="p22">p22</property>
+            <property name="p23">p23</property>
+            <property name="p24">p24</property>
+            <property name="p25">p25</property>
     </component>
 </composite>

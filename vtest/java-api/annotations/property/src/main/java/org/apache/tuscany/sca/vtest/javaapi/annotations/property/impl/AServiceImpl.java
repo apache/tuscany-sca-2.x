@@ -56,12 +56,6 @@ public class AServiceImpl implements AService {
 	
 	public AObject p12;				// complex Java type injected via constructor parameter
 
-	public String p13;				// injected via field and un-annotated
-	
-	public String p14;				// injected via setter and un-annotated
-
-	public boolean p14SetterIsCalled = false;
-	
 	@Property(name="pFifteen")
 	protected String p15;			// injected via field with different name
 
@@ -80,8 +74,6 @@ public class AServiceImpl implements AService {
 	@Property(required=false)
 	public Integer[] p21;			// an array and injected via field
 	
-	protected String p22;           // unannotated protected field should not be injected
-
     public String getName() {
         return "AService";
     }
@@ -119,11 +111,6 @@ public class AServiceImpl implements AService {
 		this.p10 = p10;
 	}
     
-	public void setP14(String p14) {
-		p14SetterIsCalled = true;
-		this.p14 = p14;
-	}
-	
     @Property(name="pSixteen")
     public void setP16(String p16) {
 		this.p16 = p16;
@@ -211,18 +198,6 @@ public class AServiceImpl implements AService {
 		return p12.bInt;
 	}
 
-	public String getP13() {
-		return p13;
-	}
-	
-	public String getP14() {
-		return p14;
-	}
-	
-	public boolean getP14SetterIsCalled() {
-		return p14SetterIsCalled;
-	}
-	
 	public String getP15() {
 		return p15;
 	}
@@ -259,9 +234,7 @@ public class AServiceImpl implements AService {
 		return p21.length;
 	}
 
-	public String getP22() {
-	    return p22;
-	}
 }
+
 
 

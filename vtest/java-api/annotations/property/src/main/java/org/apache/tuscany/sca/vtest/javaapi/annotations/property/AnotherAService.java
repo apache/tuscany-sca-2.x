@@ -21,62 +21,28 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.property;
 /**
  * Simple Service
  */
-public interface AService {
+public interface AnotherAService {
 
     public String getName();
     
-    public String getP1();
+    public String getP13();
 
-    public String getP2();
+    public String getP14();
+    
+	public String getP22();
 
-    public String getP3();
+	public String getP23();
 
-    public String getP4();
+	public String getP24();
 
-    public String getP5();
+	public String getP25();
 
-    public String getP6();
+    public boolean getP14SetterIsCalled();
+    
+    public boolean getP23SetterIsCalled();
+    
+    public boolean getP24SetterIsCalled();
+    
+    public boolean getP25SetterIsCalled();
 
-    public String getP7AString();
-    
-    public int getP7BInt();
-    
-    public String getP8AString();
-    
-    public int getP8BInt();
-    
-    public String getP9AString();
-    
-    public int getP9BInt();
-    
-    public String getP10AString();
-    
-    public int getP10BInt();
-    
-    public String getP11AString();
-    
-    public int getP11BInt();
-    
-    public String getP12AString();
-    
-    public int getP12BInt();
-    
-    public String getP15();
-
-    public String getP16();
-    
-    public String getP17();
-    
-    public String getP18();
-    
-	public int getP19Size();
-
-	public String getP20(int i);
-
-	public int getP20Size();
-
-	public int getP21(int i);
-
-	public int getP21Size();
-	
 }
