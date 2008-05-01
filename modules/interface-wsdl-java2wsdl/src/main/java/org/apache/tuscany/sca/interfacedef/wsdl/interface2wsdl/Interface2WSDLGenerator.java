@@ -84,15 +84,22 @@ public class Interface2WSDLGenerator {
 
     private WSDLFactory factory;
     private DataBindingExtensionPoint dataBindingExtensionPoint;
-    private WSDLDefinitionGenerator definitionGenerator = new WSDLDefinitionGenerator();
+    private WSDLDefinitionGenerator definitionGenerator;
+    private boolean requiresSOAP12; 
 
-    public Interface2WSDLGenerator() throws WSDLException {
+    public Interface2WSDLGenerator(boolean requiresSOAP12) throws WSDLException {
         super();
+        this.requiresSOAP12 = requiresSOAP12; 
+        definitionGenerator = new WSDLDefinitionGenerator(requiresSOAP12);
         this.factory = WSDLFactory.newInstance();
     }
 
-    public Interface2WSDLGenerator(WSDLFactory factory, DataBindingExtensionPoint dataBindingExtensionPoint) {
+    public Interface2WSDLGenerator(boolean requiresSOAP12,
+                                   WSDLFactory factory,
+                                   DataBindingExtensionPoint dataBindingExtensionPoint) {
         super();
+        this.requiresSOAP12 = requiresSOAP12; 
+        definitionGenerator = new WSDLDefinitionGenerator(requiresSOAP12);
         this.factory = factory;
         this.dataBindingExtensionPoint = dataBindingExtensionPoint;
     }
@@ -109,13 +116,18 @@ public class Interface2WSDLGenerator {
         }
         QName name = getQName(interfaze);
         Definition definition = factory.newDefinition();
-        definition.addNamespace("soap", "http://schemas.xmlsoap.org/wsdl/soap/");
+        if (requiresSOAP12) {
+            definition.addNamespace("soap12", "http://schemas.xmlsoap.org/wsdl/soap12/");
+        } else {
+            definition.addNamespace("soap", "http://schemas.xmlsoap.org/wsdl/soap/");
+        }
         definition.addNamespace("wsdl", "http://schemas.xmlsoap.org/wsdl/");
         definition.addNamespace("xs", SCHEMA_NS);
 
-        definition.setTargetNamespace(name.getNamespaceURI());
-        definition.setQName(name);
-        definition.addNamespace(name.getPrefix(), name.getNamespaceURI());
+        String namespaceURI = name.getNamespaceURI();
+        definition.setTargetNamespace(namespaceURI);
+        definition.setQName(new QName(namespaceURI, name.getLocalPart() + "Service", name.getPrefix()));
+        definition.addNamespace(name.getPrefix(), namespaceURI);
 
         PortType portType = definition.createPortType();
         portType.setQName(name);
@@ -280,7 +292,7 @@ public class Interface2WSDLGenerator {
         Input input = definition.createInput();
         input.setName("input");
         Message inputMsg = definition.createMessage();
-        QName inputMsgName = new QName(definition.getQName().getNamespaceURI(), op.getName() + "_InputMessage");
+        QName inputMsgName = new QName(definition.getQName().getNamespaceURI(), op.getName());
         inputMsg.setQName(inputMsgName);
         inputMsg.setUndefined(false);
         definition.addMessage(inputMsg);
@@ -304,7 +316,7 @@ public class Interface2WSDLGenerator {
             Output output = definition.createOutput();
             output.setName("output");
             Message outputMsg = definition.createMessage();
-            QName outputMsgName = new QName(definition.getQName().getNamespaceURI(), op.getName() + "_OutputMessage");
+            QName outputMsgName = new QName(definition.getQName().getNamespaceURI(), op.getName() + "Response");
             outputMsg.setQName(outputMsgName);
             outputMsg.setUndefined(false);
             definition.addMessage(outputMsg);

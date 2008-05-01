@@ -86,6 +86,10 @@ import org.xml.sax.InputSource;
  * Utility methods to create WSDL objects from Java interfaces
  */
 public class Java2WSDLHelper {
+    // the following 3 switches are temporary for debugging
+    public static boolean newGenerator;  // external code sets this to force new generator
+    public static boolean oldGenerator;  // external code sets this to force old generator
+    public static boolean printWSDL;     // external code sets this to print generated WSDL
 
     private static void register(Map<String, String> map, DataType type) {
         if (type == null) {
@@ -103,6 +107,44 @@ public class Java2WSDLHelper {
             }
         }
     }
+
+    //FIXME: temp code to control whether the old or new path is used.
+    // Will be removed when the new path can handle all cases.
+    private static boolean useNewGenerator(JavaInterface iface) {
+        /* restore the following code when the new generator supports exception mapping 
+        // check databindings to see if new generator can be used
+        boolean newGenerator = true;
+        for (Operation op : iface.getOperations()) {
+            DataType<List<DataType>> inputType = op.getInputType();
+            for (DataType t : inputType.getLogical()) {
+                newGenerator &= checkDataBinding(t);
+            }
+            DataType outputType = op.getOutputType();
+            newGenerator &= checkDataBinding(outputType);
+        }
+        return newGenerator;
+        */
+        return iface.getQName() != null;  // use new generator for @WebService 
+    }
+
+    /*
+    //FIXME: temp code to control whether the old or new path is used.
+    // Will be removed when the new path can handle all databindings.
+    private static boolean checkDataBinding(DataType dt) {
+        boolean result = (dt == null ||
+               "java:simpleType".equals(dt.getDataBinding()) ||
+               "java:complexType".equals(dt.getDataBinding()) ||
+               "java:array".equals(dt.getDataBinding()) ||
+               "java.io.Externalizable".equals(dt.getDataBinding()) ||
+               "org.osoa.sca.CallableReference".equals(dt.getDataBinding()) ||
+               "org.apache.axiom.om.OMElement".equals(dt.getDataBinding()) ||
+               "javax.xml.bind.JAXBElement".equals(dt.getDataBinding()));
+        if (!result) {
+            System.out.println("$$ unsupported databinding " + dt.getDataBinding());
+        }
+        return result;
+    }
+    */
 
     /**
      * Create a WSDLInterfaceContract from a JavaInterfaceContract
@@ -124,11 +166,25 @@ public class Java2WSDLHelper {
 
         final WSDLDefinition wsdlDefinition = wsdlFactory.createWSDLDefinition();
         JavaInterface iface = (JavaInterface)contract.getInterface();
-        
-        //FIXME: When Interface2WSDLGenerator is fully working, change this code
-        // to use it in all cases instead of calling createDefinition()
+
+        //FIXME: When Interface2WSDLGenerator supports all databindings, change this
+        // code to use it in all cases instead of calling createDefinition()
         Definition def = null;
-        if (iface.getQName() == null) {  // plain Java interface 
+        if (newGenerator || (!oldGenerator && useNewGenerator(iface))) {
+            /*
+            System.out.println("$$ new gen: " + iface.getName());
+            */
+            try {
+                Interface2WSDLGenerator wsdlGenerator = new Interface2WSDLGenerator(requiresSOAP12);
+                def = wsdlGenerator.generate(iface, wsdlDefinition);
+            } catch (WSDLException e) {
+                throw new RuntimeException(e);
+            }
+
+        } else {
+            /*
+            System.out.println("$$ old gen: " + iface.getName());
+            */
             // Create a package2ns map
             Map<String, String> pkg2nsMap = new HashMap<String, String>();
             for (Operation op : iface.getOperations()) {
@@ -140,26 +196,17 @@ public class Java2WSDLHelper {
                 register(pkg2nsMap, outputType);
             }
             def = createDefinition(pkg2nsMap, iface.getJavaClass(), requiresSOAP12);
+        }
 
-        } else {  // interface with JAX-WS annotations
+        // for debugging
+        if (printWSDL) {
             try {
-                Interface2WSDLGenerator wsdlGenerator = new Interface2WSDLGenerator();
-                //FIXME: add support for SOAP 1.2
-                def = wsdlGenerator.generate(iface, wsdlDefinition);
+                WSDLWriter writer =  javax.wsdl.factory.WSDLFactory.newInstance().newWSDLWriter();
+                writer.writeWSDL(def, System.out);
             } catch (WSDLException e) {
                 throw new RuntimeException(e);
             }
         }
-
-        /*
-        // for debugging
-        try {
-            WSDLWriter writer =  javax.wsdl.factory.WSDLFactory.newInstance().newWSDLWriter();
-            writer.writeWSDL(def, System.out);
-        } catch (WSDLException e) {
-            throw new RuntimeException(e);
-        }
-        */
 
         wsdlDefinition.setDefinition(def);
         wsdlInterface.setWsdlDefinition(wsdlDefinition);
@@ -358,7 +405,7 @@ public class Java2WSDLHelper {
             WSDLLocatorImpl locator = new WSDLLocatorImpl(new ByteArrayInputStream(os.toByteArray()));
             Definition definition = reader.readWSDL(locator);
 
-            processSOAPVersion(definition, requiresSOAP12);
+            // processSOAPVersion(definition, requiresSOAP12);
             processNoArgAndVoidReturnMethods(definition, javaInterface);
 
             return definition;

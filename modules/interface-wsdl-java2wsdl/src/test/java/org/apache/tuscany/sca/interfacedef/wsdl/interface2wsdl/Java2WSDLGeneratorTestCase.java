@@ -47,7 +47,7 @@ public class Java2WSDLGeneratorTestCase {
         DefaultDataBindingExtensionPoint dataBindings = new DefaultDataBindingExtensionPoint();
         new DataBindingJavaInterfaceProcessor(dataBindings).visitInterface(iface);
         WSDLDefinition wsdlDefinition = new DefaultWSDLFactory().createWSDLDefinition();
-        Interface2WSDLGenerator generator = new Interface2WSDLGenerator();
+        Interface2WSDLGenerator generator = new Interface2WSDLGenerator(false);
         Definition definition = generator.generate(iface, wsdlDefinition);
 
         // print the generated WSDL file and inline schemas

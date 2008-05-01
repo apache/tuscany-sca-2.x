@@ -36,9 +36,15 @@ import javax.wsdl.PortType;
 import javax.wsdl.Service;
 import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
+import javax.wsdl.extensions.ExtensibilityElement;
+import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.wsdl.extensions.soap.SOAPBody;
 import javax.wsdl.extensions.soap.SOAPOperation;
+import javax.wsdl.extensions.soap12.SOAP12Address;
+import javax.wsdl.extensions.soap12.SOAP12Binding;
+import javax.wsdl.extensions.soap12.SOAP12Body;
+import javax.wsdl.extensions.soap12.SOAP12Operation;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
@@ -55,10 +61,30 @@ public class WSDLDefinitionGenerator {
     private static final QName SOAP_BINDING = new QName(SOAP_NS, "binding");
     private static final QName SOAP_BODY = new QName(SOAP_NS, "body");
     private static final QName SOAP_OPERATION = new QName(SOAP_NS, "operation");
+    private static final String SOAP12_NS = "http://schemas.xmlsoap.org/wsdl/soap12/";
+    private static final QName SOAP12_ADDRESS = new QName(SOAP12_NS, "address");
+    private static final QName SOAP12_BINDING = new QName(SOAP12_NS, "binding");
+    private static final QName SOAP12_BODY = new QName(SOAP12_NS, "body");
+    private static final QName SOAP12_OPERATION = new QName(SOAP12_NS, "operation");
 
-    private static final String BINDING_SUFFIX = "__SOAPBinding";
-    private static final String SERVICE_SUFFIX = "__Service";
-    private static final String PORT_SUFFIX = "__SOAPHTTPPort";
+    private static final String BINDING_SUFFIX = "Binding";
+    private static final String SERVICE_SUFFIX = "Service";
+    private static final String PORT_SUFFIX = "Port";
+
+    private boolean requiresSOAP12;
+    private QName soapAddress;
+    private QName soapBinding;
+    private QName soapBody;
+    private QName soapOperation;
+
+    public WSDLDefinitionGenerator(boolean requiresSOAP12) {
+        super();
+        this.requiresSOAP12 = requiresSOAP12;
+        soapAddress = requiresSOAP12 ? SOAP12_ADDRESS : SOAP_ADDRESS;
+        soapBinding = requiresSOAP12 ? SOAP12_BINDING : SOAP_BINDING;
+        soapBody = requiresSOAP12 ? SOAP12_BODY : SOAP_BODY;
+        soapOperation = requiresSOAP12 ? SOAP12_OPERATION : SOAP_OPERATION;
+    }
 
     public Definition cloneDefinition(WSDLFactory factory, Definition definition) throws WSDLException {
         Element root = definition.getDocumentationElement();
@@ -73,22 +99,52 @@ public class WSDLDefinitionGenerator {
         return types;
     }
 
-    public Binding createBinding(Definition definition, PortType portType) throws WSDLException {
-        Binding binding = definition.createBinding();
-        binding.setPortType(portType);
-        configureBinding(binding, portType);
-        SOAPBinding soapBinding =
-            (SOAPBinding)definition.getExtensionRegistry().createExtension(Binding.class, SOAP_BINDING);
-        soapBinding.setStyle("document");
-        soapBinding.setTransportURI("http://schemas.xmlsoap.org/soap/http");
-        binding.addExtensibilityElement(soapBinding);
-        return binding;
+    public Binding createBinding(Definition definition, PortType portType) {
+        try {
+            Binding binding = definition.createBinding();
+            binding.setPortType(portType);
+            configureBinding(definition, binding, portType);
+            ExtensibilityElement bindingExtension =
+                definition.getExtensionRegistry().createExtension(Binding.class, soapBinding);
+            if (requiresSOAP12) {
+                ((SOAP12Binding)bindingExtension).setStyle("document");
+                ((SOAP12Binding)bindingExtension).setTransportURI("http://schemas.xmlsoap.org/soap/http");
+            } else {
+                ((SOAPBinding)bindingExtension).setStyle("document");
+                ((SOAPBinding)bindingExtension).setTransportURI("http://schemas.xmlsoap.org/soap/http");
+            }
+            binding.addExtensibilityElement(bindingExtension);
+            return binding;
+        } catch (WSDLException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
-    protected void configureBinding(Binding binding, PortType portType) throws WSDLException {
+    protected void configureBinding(Definition definition, Binding binding, PortType portType) throws WSDLException {
         QName portTypeName = portType.getQName();
         if (portTypeName != null) {
-            binding.setQName(new QName(portTypeName.getNamespaceURI(), portTypeName.getLocalPart() + BINDING_SUFFIX));
+            // Choose <porttype>Binding if available.  If this name is in use, insert
+            // separating underscores until there is no clash.
+            for (String suffix = BINDING_SUFFIX; ; suffix = "_" + suffix) { 
+                QName name = new QName(portTypeName.getNamespaceURI(), portTypeName.getLocalPart() + suffix);
+                if (definition.getBinding(name) == null) {
+                    binding.setQName(name);
+                    break;
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void createBindingOperations(Definition definition, Binding binding, PortType portType) {
+        try {
+            for (Iterator oi = portType.getOperations().iterator(); oi.hasNext();) {
+                Operation operation = (Operation)oi.next();
+                BindingOperation bindingOperation = createBindingOperation(definition, operation, "");
+                binding.addBindingOperation(bindingOperation);
+            }
+        } catch (WSDLException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -98,26 +154,38 @@ public class WSDLDefinitionGenerator {
         BindingOperation bindingOperation = definition.createBindingOperation();
         bindingOperation.setOperation(operation);
         configureBindingOperation(bindingOperation, operation);
-        SOAPOperation soapOperation =
-            (SOAPOperation)definition.getExtensionRegistry().createExtension(BindingOperation.class, SOAP_OPERATION);
-        soapOperation.setSoapActionURI(action);
-        bindingOperation.addExtensibilityElement(soapOperation);
+        ExtensibilityElement operationExtension =
+            definition.getExtensionRegistry().createExtension(BindingOperation.class, soapOperation);
+        if (requiresSOAP12) {
+            ((SOAP12Operation)operationExtension).setSoapActionURI(action);
+        } else {
+            ((SOAPOperation)operationExtension).setSoapActionURI(action);
+        }
+        bindingOperation.addExtensibilityElement(operationExtension);
         if (operation.getInput() != null) {
             BindingInput bindingInput = definition.createBindingInput();
             configureBindingInput(bindingInput, operation.getInput());
-            SOAPBody soapBody =
-                (SOAPBody)definition.getExtensionRegistry().createExtension(BindingInput.class, SOAP_BODY);
-            soapBody.setUse("literal");
-            bindingInput.addExtensibilityElement(soapBody);
+            ExtensibilityElement inputExtension =
+                definition.getExtensionRegistry().createExtension(BindingInput.class, soapBody);
+            if (requiresSOAP12) {
+                ((SOAP12Body)inputExtension).setUse("literal");
+            } else {
+                ((SOAPBody)inputExtension).setUse("literal");
+            }
+            bindingInput.addExtensibilityElement(inputExtension);
             bindingOperation.setBindingInput(bindingInput);
         }
         if (operation.getOutput() != null) {
             BindingOutput bindingOutput = definition.createBindingOutput();
             configureBindingOutput(bindingOutput, operation.getOutput());
-            SOAPBody soapBody =
-                (SOAPBody)definition.getExtensionRegistry().createExtension(BindingOutput.class, SOAP_BODY);
-            soapBody.setUse("literal");
-            bindingOutput.addExtensibilityElement(soapBody);
+            ExtensibilityElement outputExtension =
+                definition.getExtensionRegistry().createExtension(BindingOutput.class, soapBody);
+            if (requiresSOAP12) {
+                ((SOAP12Body)outputExtension).setUse("literal");
+            } else {
+                ((SOAPBody)outputExtension).setUse("literal");
+            }
+            bindingOutput.addExtensibilityElement(outputExtension);
             bindingOperation.setBindingOutput(bindingOutput);
         }
         for (Iterator fi = operation.getFaults().values().iterator(); fi.hasNext();) {
@@ -149,9 +217,8 @@ public class WSDLDefinitionGenerator {
     public Service createService(Definition definition, PortType portType) {
         try {
             Service service = definition.createService();
-            configureService(service, portType);
-            Binding binding = createBinding(definition, portType);
-            createPort(definition, binding, service);
+            configureService(definition, service, portType);
+            // createPort(definition, binding, service);
             definition.addService(service);
             return service;
         } catch (WSDLException e) {
@@ -162,8 +229,8 @@ public class WSDLDefinitionGenerator {
     public Service createService(Definition definition, Binding binding) {
         try {
             Service service = definition.createService();
-            configureService(service, binding.getPortType());
-            createPort(definition, binding, service);
+            configureService(definition, service, binding.getPortType());
+            // createPort(definition, binding, service);
             definition.addService(service);
             return service;
         } catch (WSDLException e) {
@@ -171,28 +238,44 @@ public class WSDLDefinitionGenerator {
         }
     }
 
-    protected void configureService(Service service, PortType portType) throws WSDLException {
+    protected void configureService(Definition definition, Service service, PortType portType) throws WSDLException {
         QName portTypeName = portType.getQName();
         if (portTypeName != null) {
-            service.setQName(new QName(portTypeName.getNamespaceURI(), portTypeName.getLocalPart() + SERVICE_SUFFIX));
+            // Choose <porttype>Service if available.  If this name is in use, insert
+            // separating underscores until there is no clash.
+            for (String suffix = SERVICE_SUFFIX; ; suffix = "_" + suffix) {
+                QName name = new QName(portTypeName.getNamespaceURI(), portTypeName.getLocalPart() + suffix);
+                if (definition.getService(name) == null) {
+                    service.setQName(name);
+                     break;
+                }
+            }
         }
     }
 
-    protected Port createPort(Definition definition, Binding binding, Service service) throws WSDLException {
-        Port port = definition.createPort();
-        port.setBinding(binding);
-        configurePort(definition, port, binding);
-        /*
-        ExtensibilityElement soapAddress =
-            definition.getExtensionRegistry().createExtension(Port.class, SOAP_ADDRESS);
-        ((SOAPAddress)soapAddress).setLocationURI("");
-        port.addExtensibilityElement(soapAddress);
-        */
-        service.addPort(port);
-        return port;
+    public Port createPort(Definition definition, Binding binding, Service service, String uri) {
+        try {
+            Port port = definition.createPort();
+            port.setBinding(binding);
+            configurePort(port, binding);
+            if (uri != null) {
+                ExtensibilityElement portExtension =
+                    definition.getExtensionRegistry().createExtension(Port.class, soapAddress);
+                if (requiresSOAP12) {
+                    ((SOAP12Address)portExtension).setLocationURI(uri);
+                } else {
+                    ((SOAPAddress)portExtension).setLocationURI(uri);
+                }
+                port.addExtensibilityElement(portExtension);
+            }
+            service.addPort(port);
+            return port;
+        } catch (WSDLException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
-    protected void configurePort(Definition definition, Port port, Binding binding) throws WSDLException {
+    protected void configurePort(Port port, Binding binding) throws WSDLException {
         if (binding.getPortType() != null && binding.getPortType().getQName() != null) {
             port.setName(binding.getPortType().getQName().getLocalPart() + PORT_SUFFIX);
         }

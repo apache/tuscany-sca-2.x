@@ -34,6 +34,7 @@ import javax.wsdl.BindingOperation;
 import javax.wsdl.Definition;
 import javax.wsdl.Import;
 import javax.wsdl.Port;
+import javax.wsdl.PortType;
 import javax.wsdl.Service;
 import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.soap.SOAPAddress;
@@ -72,6 +73,7 @@ import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.interfacedef.wsdl.interface2wsdl.WSDLDefinitionGenerator;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.XMLDocumentHelper;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -302,19 +304,19 @@ public class Axis2ServiceClient {
             return;
         }
 
-        // If no service is specified in the binding element, allow for WSDL that
-        // only contains a portType and not a service and port.  Synthesize a
-        // service and port using WSDL4J and add them to the wsdlDefinition to
-        // keep Axis happy.
-        //FIXME: it would be better to do this for all WSDLs to explicitly control the
-        // service and port that Axis will use, rather than just hoping the user has
-        // placed a suitable service and/or port first in the WSDL.
-        WSDLDefinitionHelper helper = new WSDLDefinitionHelper();
+        // If no WSDL service or port is specified in the binding element, add a
+        // suitably configured service and port to the WSDL definition.  
+        WSDLDefinitionGenerator helper =
+                new WSDLDefinitionGenerator(Axis2ServiceBindingProvider.requiresSOAP12(wsBinding));
         if (wsBinding.getBinding() == null) {
             InterfaceContract ic = wsBinding.getBindingInterfaceContract();
             WSDLInterface wi = (WSDLInterface)ic.getInterface();
-            Service service = helper.createService(wsdlDefinition, wi.getPortType());
-            Binding binding = helper.createBinding(wsdlDefinition, wi.getPortType());
+            PortType portType = wi.getPortType();
+            Service service = helper.createService(wsdlDefinition, portType);
+            Binding binding = helper.createBinding(wsdlDefinition, portType);
+            helper.createBindingOperations(wsdlDefinition, binding, portType);
+            binding.setUndefined(false);
+            wsdlDefinition.addBinding(binding);
             
             Port port = helper.createPort(wsdlDefinition, binding, service, wsBinding.getURI());
             wsBinding.setService(service);
