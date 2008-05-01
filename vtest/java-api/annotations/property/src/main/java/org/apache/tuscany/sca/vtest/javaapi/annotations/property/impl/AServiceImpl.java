@@ -79,6 +79,8 @@ public class AServiceImpl implements AService {
 
 	@Property(required=false)
 	public Integer[] p21;			// an array and injected via field
+	
+	protected String p22;           // unannotated protected field should not be injected
 
     public String getName() {
         return "AService";
@@ -257,5 +259,9 @@ public class AServiceImpl implements AService {
 		return p21.length;
 	}
 
+	public String getP22() {
+	    return p22;
+	}
 }
+
 

@@ -137,5 +137,6 @@
             class="org.apache.tuscany.sca.vtest.javaapi.annotations.property.impl.AnotherAServiceImpl" />
             <property name="p13">p13</property>
             <property name="p14">p14</property>
+            <property name="p22">p22</property>
     </component>
 </composite>

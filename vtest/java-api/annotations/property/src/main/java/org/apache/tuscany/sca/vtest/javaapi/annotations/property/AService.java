@@ -85,4 +85,5 @@ public interface AService {
 
 	public int getP21Size();
 	
+	public String getP22();
 }

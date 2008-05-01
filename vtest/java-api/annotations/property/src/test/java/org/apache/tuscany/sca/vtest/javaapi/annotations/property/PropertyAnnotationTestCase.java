@@ -253,4 +253,20 @@ public class PropertyAnnotationTestCase {
 
     }
 
+    /**
+     * Lines 1349 to 1352:<br>
+     * 1.8.13. "@Property"<br>
+     * ...<br>
+     * Properties may also be injected via public setter methods even when the "@Property" annotation is not
+     * present. However, the "@Property" annotation must be used in order to inject a property onto a non-public
+     * field. In the case where there is no "@Property" annotation, the name of the property is the same as the
+     * name of the field or setter.
+     * <p>
+     * p22 - unannotated protected field which should not be injected
+     */
+    @Test
+    public void atProperty7() throws Exception {
+        AService anotherAService = domain.getService(AService.class, "AnotherAComponent");
+        Assert.assertNull(anotherAService.getP22());
+    }
 }
