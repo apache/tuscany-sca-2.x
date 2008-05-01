@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.assembly.builder.impl;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -148,6 +149,12 @@ class BaseWireBuilderImpl {
                     warning("Too many targets on reference: " + componentReference.getName(), composite);
                 }
             }
+        }
+        
+        // Finally clear the original reference target lists as we now have
+        // bindings to represent the targets
+        for (ComponentReference componentReference : componentReferences.values()) {
+            componentReference.getTargets().clear();
         }
     }
     
@@ -548,7 +555,7 @@ class BaseWireBuilderImpl {
             //                             by the implementation so leave the binding where it is
             //       Binding.uri != null - from the composite file so leave it             
             if ((componentReference.getTargets().size() > 0) ||
-                (!targets.isEmpty())){
+                (!targets.isEmpty())) {
 
                 // Add all the effective bindings
                 componentReference.getBindings().clear();
@@ -593,6 +600,55 @@ class BaseWireBuilderImpl {
                            // warning("NoSCABindingAvailableForUnresolvedService", componentReference, componentReference.getName(), service.getName());
                         }
                     }
+                }
+            }
+            
+            // Connect the optimizable bindings to their target component and
+            // service
+            for (Binding binding : componentReference.getBindings()) {
+                if (!(binding instanceof OptimizableBinding)) {
+                    continue;
+                }
+                OptimizableBinding optimizableBinding = (OptimizableBinding)binding;
+                if (optimizableBinding.getTargetComponentService() != null) {
+                    continue;
+                }
+                String uri = optimizableBinding.getURI();
+                if (uri == null) {
+                    continue;
+                }
+                uri = URI.create(uri).getPath();
+                if (uri.startsWith("/")) {
+                    uri = uri.substring(1);
+                }
+                
+                // Resolve the target component and service
+                ComponentService targetComponentService = componentServices.get(uri);
+                Component targetComponent;
+                int s = uri.indexOf('/');
+                if (s == -1) {
+                    targetComponent = components.get(uri);
+                } else {
+                    targetComponent = components.get(uri.substring(0, s));
+                }
+
+                if (targetComponentService != null) {
+
+                    // Check that the target component service provides
+                    // a superset of the component reference interface
+                    if (componentReference.getInterfaceContract() == null ||
+                        interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(), targetComponentService.getInterfaceContract())) {
+
+                    } else {
+                        warning("ReferenceIncompatibleInterface",
+                                composite,
+                                composite.getName().toString(),
+                                componentReference.getName(),
+                                uri);
+                    }
+                    optimizableBinding.setTargetComponent(targetComponent);
+                    optimizableBinding.setTargetComponentService(targetComponentService);
+                    optimizableBinding.setTargetBinding(targetComponentService.getBinding(optimizableBinding.getClass()));
                 }
             }
         }
