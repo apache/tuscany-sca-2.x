@@ -72,6 +72,18 @@ public class DestroyProcessorTestCase extends TestCase {
     }
 
 
+    public void testBadDestroy2() throws Exception {
+        DestroyProcessor processor = new DestroyProcessor(assemblyFactory);
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        Method method = Bar.class.getDeclaredMethod("badDestroy2");
+        try {
+            processor.visitMethod(method, type);
+            fail();
+        } catch (IllegalDestructorException e) {
+            // expected
+        }
+    }
+
     private class Foo {
 
         @Destroy
@@ -95,5 +107,9 @@ public class DestroyProcessorTestCase extends TestCase {
         }
 
 
+        @Destroy
+        public String badDestroy2() {
+            return null;
+        }
     }
 }

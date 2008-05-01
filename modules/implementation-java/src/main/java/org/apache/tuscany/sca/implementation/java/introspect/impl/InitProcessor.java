@@ -47,6 +47,9 @@ public class InitProcessor extends BaseJavaClassVisitor {
         if (method.getParameterTypes().length != 0) {
             throw new IllegalInitException("Initializer must not have argments", method);
         }
+        if(!method.getReturnType().equals(void.class)) {
+            throw new IllegalInitException("Initializer must return void.", method);
+        }
         if (type.getInitMethod() != null) {
             throw new DuplicateInitException("More than one initializer found on implementaton");
         }
