@@ -18,12 +18,14 @@
 	* under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	targetNamespace="http://java-api-tests" name="Converstion-Composite">
+	targetNamespace="http://java-api-tests" name="Converstion-Lifetime">
 
 	<component name="AComponent">
 		<implementation.java
 			class="org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.impl.AServiceImpl" />
 		<reference name="b" target="BComponent" />
+		<reference name="c" target="CComponent" />
+		<reference name="d" target="DComponent" />
 	</component>
 
 	<component name="BComponent">
@@ -31,4 +33,14 @@
 			class="org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.impl.BServiceImpl" />
 	</component>
 
+	<component name="CComponent">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.impl.CServiceImpl" />
+	</component>
+
+	<component name="DComponent">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.impl.DServiceImpl" />
+	</component>
+	
 </composite>

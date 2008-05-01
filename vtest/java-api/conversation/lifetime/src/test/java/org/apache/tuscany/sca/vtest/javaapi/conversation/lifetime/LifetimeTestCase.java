@@ -22,11 +22,12 @@ package org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.osoa.sca.ConversationEndedException;
 
 /**
- * This test class tests the Service annotation described in section 1.2.1 and
- * 1.8.17
+ * 
  */
 public class LifetimeTestCase {
 
@@ -55,17 +56,162 @@ public class LifetimeTestCase {
     }
 
     /**
-     * Line 423, 424, 425:<br>
+     * Lines 475, 476
      * <p>
-     * The service reference which represents a single conversation can be
-     * passed as a parameter to another service, even if that other service is
-     * remote. This may be used in order to allow one component to continue a
-     * conversation that had been started by another.
+     * Conversations start on the client side when one of the following occur: A
+     * "@Reference" to a conversational service is injected, ... and then a
+     * method of the service is called
      */
     @Test
-    public void passParameter1() throws Exception {
-        System.out.println("No tests yet");
+    public void lifetime1() throws Exception {
+        aService.testConversationStarted();
     }
 
+    /**
+     * Lines 477, 478, 479
+     * <p>
+     * Conversations start on the client side when one of the following occur
+     * ... A call is made to CompositeContext.getServiceReference and then a
+     * method of the service is called.
+     */
+    @Test
+    @Ignore("TUSCANY-2243")
+    public void lifetime2() throws Exception {
+        aService.testConversationStarted2();
+    }
+
+    /**
+     * Line 481, 482
+     * <p>
+     * The client can continue an existing conversation, by: Holding the service
+     * reference that was created when the conversation started
+     */
+    @Test
+    public void lifetime3() throws Exception {
+        aService.testConversationContinue();
+    }
+
+    /**
+     * Line 481, 483
+     * <p>
+     * The client can continue an existing conversation, by: ... • Getting the
+     * service reference object passed as a parameter from another service, even
+     * remotely
+     */
+    @Test
+    public void lifetime4() throws Exception {
+        // aService.testConversationContinue2();
+    }
+
+    /**
+     * Line 481, 484
+     * <p>
+     * The client can continue an existing conversation, by:<br> • Loading a
+     * service reference that had been written to some form of persistent
+     * storage
+     */
+    @Test
+    public void lifetime6() throws Exception {
+        aService.testConversationContinue3();
+    }
+
+    /**
+     * Line 487, 488
+     * <p>
+     * A conversation ends, and any state associated with the conversation is
+     * freed up, when: <br>
+     * ...A server operation that has been annotated "@EndConveration" has been
+     * called
+     */
+    @Test
+    public void lifetime7() throws Exception {
+        aService.testConversationEnd();
+    }
+
+    /**
+     * Line 487, 489
+     * <p>
+     * A conversation ends, and any state associated with the conversation is
+     * freed up, when: <br>
+     * ...The server calls an "@EndsConversation" method on the "@Callback"
+     * reference <br>
+     */
+    @Test
+    public void lifetime8() throws Exception {
+        aService.testConversationEnd2();
+    }
+
+    /**
+     * Line 487, 490
+     * <p>
+     * 487 A conversation ends, and any state associated with the conversation
+     * is freed up, when: <br>
+     * ... The server's conversation lifetime timeout occurs
+     */
+    @Test
+    public void lifetime9() throws Exception {
+        aService.testConversationEnd3();
+    }
+
+    /**
+     * Line 487, 491
+     * <p>
+     * A conversation ends, and any state associated with the conversation
+     * is freed up, when: <br>
+     * ...The client calls Conversation.end()
+     */
+    @Test
+    public void lifetime10() throws Exception {
+        aService.testConversationEnd4();
+    }
+
+    /**
+     * Line 487, 492
+     * <p>
+     * A conversation ends, and any state associated with the conversation
+     * is freed up, when: <br>
+     * ...Any non-business exception is thrown by a conversational operation
+     */
+    @Test
+    @Ignore("TUSCANY-2283")
+    public void lifetime11() throws Exception {
+        aService.testConversationEnd5();
+    }
+
+    /**
+     * Line 494, 495
+     * <p>
+     * If a method is invoked on a service reference after an
+     * "@EndsConversation" method has been called then a new conversation will
+     * automatically be started.
+     */
+    @Test
+    public void lifetime12() throws Exception {
+        aService.testConversationEnd6();
+    }
+
+    /**
+     * Line 495, 496, 497
+     * <p>
+     * If ServiceReference.getConversationID() is called after the
+     * "@EndsConversation" method: is called, but before the next conversation has
+     * been started, it will return null.
+     */
+    @Test
+    public void lifetime13() throws Exception {
+        aService.testConversationEnd7();
+    }
+
+    /**
+     * Line 498, 499
+     * <p>
+     * If a service reference is used after the service provider's
+     * conversation timeout has caused the conversation to be ended, then
+     * ConversationEndedException will be thrown.
+     */
+    @Test(expected=ConversationEndedException.class)
+    public void lifetime14() throws Exception {
+        aService.testConversationEnd8();
+    }
 
 }

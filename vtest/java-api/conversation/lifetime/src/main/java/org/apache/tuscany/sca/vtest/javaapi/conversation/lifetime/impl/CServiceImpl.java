@@ -16,40 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime;
 
-import org.osoa.sca.annotations.Remotable;
+package org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.impl;
 
-/**
- * Simple Remotable Service
- */
-@Remotable
-public interface AService {
+import org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.CService;
+import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Service;
 
-    public void testConversationStarted();
+@Service(CService.class)
+@Scope("CONVERSATION")
+public class CServiceImpl implements CService {
 
-    public void testConversationStarted2();
+    String someState;
 
-    public void testConversationContinue();
+    public void setState(String someState) {
+        this.someState = someState;
+    }
 
-    public void testConversationContinue2();
+    public String getState() {
+        return someState;
+    }
 
-    public void testConversationContinue3();
-
-    public void testConversationEnd();
-
-    public void testConversationEnd2();
-
-    public void testConversationEnd3();
-
-    public void testConversationEnd4();
-
-    public void testConversationEnd5();
-
-    public void testConversationEnd6();
-
-    public void testConversationEnd7();
-
-    public void testConversationEnd8();
-    
 }

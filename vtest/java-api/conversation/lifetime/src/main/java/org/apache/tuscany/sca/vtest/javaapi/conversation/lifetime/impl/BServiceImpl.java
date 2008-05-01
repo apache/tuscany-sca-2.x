@@ -19,15 +19,22 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.impl;
 
+import org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.AServiceCallback;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.BService;
+import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
 @Service(BService.class)
 @Scope("CONVERSATION")
+@ConversationAttributes(maxAge="1 seconds")
 public class BServiceImpl implements BService {
 
     String someState;
+
+    @Callback
+    protected AServiceCallback callback;
 
     public void setState(String someState) {
         this.someState = someState;
@@ -35,6 +42,20 @@ public class BServiceImpl implements BService {
 
     public String getState() {
         return someState;
+    }
+
+    public void endConversation() {
+        System.out.println("Someone called Bservice.endsConversation()");
+    }
+
+    public void endConversationViaCallback() {
+        callback.endConversation();
+    }
+
+    public void throwNonBusinessException() {
+       
+        throw new Error();
+        
     }
 
 }

@@ -18,38 +18,18 @@
  */
 package org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime;
 
+import org.osoa.sca.annotations.Conversational;
+import org.osoa.sca.annotations.EndsConversation;
 import org.osoa.sca.annotations.Remotable;
 
 /**
  * Simple Remotable Service
  */
 @Remotable
-public interface AService {
+@Conversational
+public interface AServiceCallback {
 
-    public void testConversationStarted();
-
-    public void testConversationStarted2();
-
-    public void testConversationContinue();
-
-    public void testConversationContinue2();
-
-    public void testConversationContinue3();
-
-    public void testConversationEnd();
-
-    public void testConversationEnd2();
-
-    public void testConversationEnd3();
-
-    public void testConversationEnd4();
-
-    public void testConversationEnd5();
-
-    public void testConversationEnd6();
-
-    public void testConversationEnd7();
-
-    public void testConversationEnd8();
+    @EndsConversation
+    public void endConversation();
     
 }

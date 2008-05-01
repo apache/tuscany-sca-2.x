@@ -18,7 +18,9 @@
  */
 package org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime;
 
+import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Conversational;
+import org.osoa.sca.annotations.EndsConversation;
 import org.osoa.sca.annotations.Remotable;
 
 /**
@@ -26,9 +28,18 @@ import org.osoa.sca.annotations.Remotable;
  */
 @Remotable
 @Conversational
+@Callback(AServiceCallback.class)
 public interface BService {
 
     public void setState(String someState);
+    
     public String getState();
+    
+    @EndsConversation
+    public void endConversation();
+    
+    public void endConversationViaCallback();
+
+    public void throwNonBusinessException();
 
 }
