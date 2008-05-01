@@ -47,6 +47,9 @@ public class DestroyProcessor extends BaseJavaClassVisitor {
         if (method.getParameterTypes().length != 0) {
             throw new IllegalDestructorException("Destructor must not have argments", method);
         }
+        if(!method.getReturnType().equals(void.class)) {
+            throw new IllegalDestructorException("Destructor must return void.", method);
+        }
         if (type.getDestroyMethod() != null) {
             throw new DuplicateDestructorException("More than one destructor found on implementation");
         }

@@ -74,6 +74,18 @@ public class InitProcessorTestCase extends TestCase {
     }
 
 
+    public void testBadInit2() throws Exception {
+        InitProcessor processor = new InitProcessor(new DefaultAssemblyFactory());
+        JavaImplementation type = javaImplementationFactory.createJavaImplementation();
+        Method method = InitProcessorTestCase.Bar.class.getDeclaredMethod("badInit2");
+        try {
+            processor.visitMethod(method, type);
+            fail();
+        } catch (IllegalInitException e) {
+            // expected
+        }
+    }
+
     private class Foo {
         @Init
         public void init() {
@@ -95,5 +107,9 @@ public class InitProcessorTestCase extends TestCase {
         }
 
 
+        @Init
+        public String badInit2() {
+            return null;
+        }
     }
 }
