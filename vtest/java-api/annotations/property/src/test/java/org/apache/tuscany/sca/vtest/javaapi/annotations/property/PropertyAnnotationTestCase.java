@@ -28,7 +28,6 @@ import org.apache.tuscany.sca.vtest.javaapi.annotations.property.CService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.Ignore;
 
 /**
  * This test class tests the Property annotation described in section 1.2.3
@@ -128,10 +127,9 @@ public class PropertyAnnotationTestCase {
      * p13 - injected via field and un-annotated
      */
     @Test
-    @Ignore
-    // (Jira Tuscany-2210)
     public void atProperty2() throws Exception {
-    	Assert.assertEquals("p13", aService.getP13());
+        AService anotherAService = domain.getService(AService.class, "AnotherAComponent");
+        Assert.assertEquals("p13", anotherAService.getP13());
     }
 
     /**
@@ -142,11 +140,10 @@ public class PropertyAnnotationTestCase {
      * p14 - injected via setter and un-annotated
      */
     @Test
-    @Ignore
-    // (Jira Tuscany-2210)
     public void atProperty3() throws Exception {
-    	Assert.assertEquals("p14", aService.getP14());
-    	Assert.assertTrue(aService.getP14SetterIsCalled());
+        AService anotherAService = domain.getService(AService.class, "AnotherAComponent");
+        Assert.assertEquals("p14", anotherAService.getP14());
+        Assert.assertTrue(anotherAService.getP14SetterIsCalled());
     }
     
     /**

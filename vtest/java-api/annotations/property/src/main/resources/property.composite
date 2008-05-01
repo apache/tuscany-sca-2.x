@@ -132,4 +132,10 @@
         <implementation.java class="org.apache.tuscany.sca.vtest.javaapi.annotations.property.impl.BServiceImpl"/>
     </component>    
     
+    <component name="AnotherAComponent">
+        <implementation.java
+            class="org.apache.tuscany.sca.vtest.javaapi.annotations.property.impl.AnotherAServiceImpl" />
+            <property name="p13">p13</property>
+            <property name="p14">p14</property>
+    </component>
 </composite>
