@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.vtest.javaapi.conversation.id.AService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.id.BService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.id.CService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.id.CustomConversationId;
+import org.junit.Assert;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
@@ -54,5 +55,15 @@ public class AServiceImpl implements AService {
         CustomConversationId id = new CustomConversationId (1, "One");
         c.setConversationID(id);
         c.getService().testAnnotation();        
+    }
+
+    public void testAnnotation5() {
+        b.getService().getState();
+        Assert.assertNotNull(b.getConversation().getConversationID());
+//        Assert.assertNotNull(b.getConversationID());  
+        
+        CustomConversationId id = new CustomConversationId (1, "One");
+        c.setConversationID(id);
+        Assert.assertSame(id, c.getConversationID());
     }
 }
