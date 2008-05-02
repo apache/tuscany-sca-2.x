@@ -34,4 +34,6 @@ public interface AService {
 
     public void testAnnotation4();
 
+    public void testAnnotation5();
+
 }
