@@ -24,6 +24,7 @@
   <include name="ns2:CatalogsNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
   <include name="ns2:StoreNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
   <include name="ns2:StoreMergerNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
+  <include name="ns2:StoreClientNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
   <include name="ns2:StoreDBNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
   <include name="ns2:StoreSupplierNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
   <include name="ns2:StoreEUNode" uri="http://tuscany.apache.org/cloud" xmlns:ns2="http://tuscany.apache.org/cloud"/>
