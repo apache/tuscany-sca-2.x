@@ -7,10 +7,14 @@
   </projects>
   <buildSpec>
     <buildCommand>
+      <name>org.eclipse.pde.UpdateSiteBuilder</name>
+    </buildCommand>
+    <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
     </buildCommand>
   </buildSpec>
   <natures>
+    <nature>org.eclipse.pde.UpdateSiteNature</nature>
     <nature>org.eclipse.jdt.core.javanature</nature>
   </natures>
 </projectDescription>
