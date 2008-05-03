@@ -23,16 +23,17 @@ import java.io.StringReader;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
-import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
  * @version $Rev$ $Date$
@@ -46,23 +47,26 @@ public class BPELImplementationProcessorTestCase extends TestCase {
         + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:hns=\"http://tuscany.apache.org/implementation/bpel/example/helloworld\" targetNamespace=\"http://bpel\" name=\"bpel\">"
             + " <component name=\"BPELHelloWorldComponent\">"
             + "   <implementation.bpel process=\"hns:HelloWorld\" />"
-            + "</component>";
+            + " </component>"
+            + "</composite>";
 
     private static final String COMPOSITE_INVALID =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
             + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:hns=\"http://tuscany.apache.org/implementation/bpel/example/helloworld\" targetNamespace=\"http://bpel\" name=\"bpel\">"
             + " <component name=\"BPELHelloWorldComponent\">"
             + "   <implementation.bpel/>"
-            + "</component>";
+            + " </component>"
+            + "</composite>";
 
-    private StAXArtifactProcessorExtensionPoint staxProcessors;
-    private XMLInputFactory xmlFactory;
+    private XMLInputFactory inputFactory;
+    private StAXArtifactProcessor<Object> staxProcessor;
 
     @Override
     protected void setUp() throws Exception {
-        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
-        staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        xmlFactory = XMLInputFactory.newInstance();
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        inputFactory = XMLInputFactory.newInstance();
+        StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
     }
 
     /**
@@ -70,18 +74,10 @@ public class BPELImplementationProcessorTestCase extends TestCase {
      * @throws Exception
      */
     public void testLoadValidComposite() throws Exception {
-        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(COMPOSITE));
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(COMPOSITE));
         
-        StAXArtifactProcessor<BPELImplementation> bpelProcessor = staxProcessors.getProcessor(BPELImplementation.class);
-        
-        while(true) {
-            int event = reader.next();
-            if(event == XMLStreamConstants.START_ELEMENT && IMPLEMENTATION_BPEL.equals(reader.getName())) {
-                break;
-            }
-        }
-
-        BPELImplementation implementation = bpelProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader);
+        BPELImplementation implementation = (BPELImplementation)composite.getComponents().get(0).getImplementation();
         
         assertNotNull(implementation);
         assertEquals(new QName("http://tuscany.apache.org/implementation/bpel/example/helloworld", "HelloWorld"), implementation.getProcess());
@@ -92,19 +88,10 @@ public class BPELImplementationProcessorTestCase extends TestCase {
      * @throws Exception
      */
     public void testLoadInvalidComposite() throws Exception {
-        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(COMPOSITE_INVALID));
-
-        StAXArtifactProcessor<BPELImplementation> bpelProcessor = staxProcessors.getProcessor(BPELImplementation.class);
-        
-        while(true) {
-            int event = reader.next();
-            if(event == XMLStreamConstants.START_ELEMENT && IMPLEMENTATION_BPEL.equals(reader.getName())) {
-                break;
-            }
-        }
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(COMPOSITE_INVALID));
 
         try {
-            bpelProcessor.read(reader);
+            staxProcessor.read(reader);
             
             fail("InvalidException should have been thrown");
         } catch(Exception e) {

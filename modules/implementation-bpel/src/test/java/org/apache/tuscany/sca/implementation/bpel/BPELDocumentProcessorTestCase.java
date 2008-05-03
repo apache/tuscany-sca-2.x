@@ -26,11 +26,10 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.implementation.bpel.impl.BPELDocumentProcessor;
-import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 
 /**
  * @version $Rev$ $Date$
@@ -39,26 +38,19 @@ public class BPELDocumentProcessorTestCase extends TestCase {
 
     protected static final String BPEL_PROCESS_FILE = "helloworld/helloworld.bpel";
 
-    private ModelFactoryExtensionPoint modelFactories;
+    private URLArtifactProcessor<Object> documentProcessor;
 
     @Override
     protected void setUp() throws Exception {
-        super.setUp();
-
-        modelFactories = new DefaultModelFactoryExtensionPoint();
-        modelFactories.addFactory(new DefaultAssemblyFactory());
-        modelFactories.addFactory(new DefaultWSDLFactory());
-
-        BPELFactory bpelFactory = new DefaultBPELFactory(modelFactories);
-        modelFactories.addFactory(bpelFactory);
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
     }
 
     public void testLoadBPELProcessDefinition() throws Exception {
-        BPELDocumentProcessor bpelDocumentProcessor = new BPELDocumentProcessor(modelFactories);
-
         URI processURI = getClass().getClassLoader().getResource(BPEL_PROCESS_FILE).toURI();
         URL processLocation = getClass().getClassLoader().getResource(BPEL_PROCESS_FILE);
-        BPELProcessDefinition bpelProcessDefinition = bpelDocumentProcessor.read(null, processURI, processLocation);
+        BPELProcessDefinition bpelProcessDefinition = (BPELProcessDefinition)documentProcessor.read(null, processURI, processLocation);
 
         assertNotNull(bpelProcessDefinition);
         assertEquals(new QName("http://tuscany.apache.org/implementation/bpel/example/helloworld", "HelloWorld"), bpelProcessDefinition.getName());

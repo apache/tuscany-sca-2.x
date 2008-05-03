@@ -23,7 +23,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
@@ -31,18 +30,14 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
-import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
-import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
-import org.apache.tuscany.sca.binding.sca.impl.SCABindingFactoryImpl;
-import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestBundles;
@@ -50,11 +45,7 @@ import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestImpl;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
-import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
-import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 
 /**
  * Test reading OSGi implementations.
@@ -63,77 +54,53 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 public class OSGiReadImplTestCase extends TestCase {
 
     private XMLInputFactory inputFactory;
-    private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
-    private ExtensibleStAXArtifactProcessor staxProcessor;
-    private AssemblyFactory assemblyFactory;
-    private SCABindingFactory scaBindingFactory;
-    private PolicyFactory policyFactory;
-    private InterfaceContractMapper mapper;
-    private OSGiImplementationProcessor osgiProcessor;
+    private StAXArtifactProcessor<Object> staxProcessor;
+    private CompositeBuilder compositeBuilder;
 
     @Override
     public void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
-        ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
-        assemblyFactory = new DefaultAssemblyFactory();
-        modelFactories.addFactory(assemblyFactory);
-        scaBindingFactory = new SCABindingFactoryImpl();
-        policyFactory = new DefaultPolicyFactory();
-        mapper = new InterfaceContractMapperImpl();
         inputFactory = XMLInputFactory.newInstance();
-        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        JavaInterfaceFactory javaInterfaceFactory = new DefaultJavaInterfaceFactory();
-        modelFactories.addFactory(javaInterfaceFactory);
-
-        osgiProcessor = new OSGiImplementationProcessor(modelFactories);
-        staxProcessors.addArtifactProcessor(osgiProcessor);
+        StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
+        
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
+        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
+        IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
+        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper, null);
 
         OSGiTestBundles.createBundle("target/test-classes/OSGiTestService.jar", OSGiTestInterface.class, OSGiTestImpl.class);
 
     }
 
-    @Override
-    public void tearDown() throws Exception {
-        inputFactory = null;
-        staxProcessors = null;
-        policyFactory = null;
-        assemblyFactory = null;
-        mapper = null;
-    }
-
     public void testReadComposite() throws Exception {
-        StAXArtifactProcessor<Composite> compositeProcessor = staxProcessors.getProcessor(Composite.class);
         InputStream is = getClass().getClassLoader().getResourceAsStream("osgitest.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = compositeProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader);
         assertNotNull(composite);
 
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null);
-        compositeUtil.build(composite);
-
+        compositeBuilder.build(composite);
     }
 
     public void testReadAndResolveComposite() throws Exception {
-        StAXArtifactProcessor<Composite> compositeProcessor = staxProcessors.getProcessor(Composite.class);
         InputStream is = getClass().getClassLoader().getResourceAsStream("osgitest.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = compositeProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader);
         assertNotNull(composite);
         
-        StAXArtifactProcessor<ComponentType> componentTypeProcessor = staxProcessors.getProcessor(ComponentType.class);
         is = getClass().getClassLoader().getResourceAsStream("OSGiTestService.componentType");
         reader = inputFactory.createXMLStreamReader(is);
-        ComponentType componentType = componentTypeProcessor.read(reader);
+        ComponentType componentType = (ComponentType)staxProcessor.read(reader);
 
         ModelResolver resolver = new TestModelResolver(getClass().getClassLoader());
-        componentTypeProcessor.resolve(componentType, resolver);
+        staxProcessor.resolve(componentType, resolver);
         resolver.addModel(componentType);
         
-        compositeProcessor.resolve(composite, resolver);
+        staxProcessor.resolve(composite, resolver);
 
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null);
-        compositeUtil.build(composite);
+        compositeBuilder.build(composite);
     }
 
     public void testReadOSGiImplementation() throws Exception {
@@ -149,8 +116,7 @@ public class OSGiReadImplTestCase extends TestCase {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         reader.next();
 
-
-        OSGiImplementation osgiImpl = osgiProcessor.read(reader);
+        OSGiImplementation osgiImpl = (OSGiImplementation)staxProcessor.read(reader);
 
         assertEquals(osgiImpl.getBundleSymbolicName(), "OSGiTestService");
         assertEquals(osgiImpl.getBundleVersion(), "2.0.0");

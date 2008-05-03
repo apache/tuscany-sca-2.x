@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.contribution.xml;
+package org.apache.tuscany.sca.workspace.xml;
 
 import java.io.StringReader;
 
@@ -27,15 +27,15 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
-import org.apache.tuscany.sca.workspace.DefaultWorkspaceFactory;
+import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.workspace.Workspace;
-import org.apache.tuscany.sca.workspace.WorkspaceFactory;
-import org.apache.tuscany.sca.workspace.xml.WorkspaceProcessor;
 
 /**
- * Test the contribution metadata processor.
+ * Test the workspace processor.
  * 
  * @version $Rev$ $Date$
  */
@@ -57,20 +57,20 @@ public class ContributionWorkspaceProcessorTestCase extends TestCase {
             + "</contribution>"
             + "</workspace>";
 
-    private XMLInputFactory xmlFactory;
+    private XMLInputFactory inputFactory;
+    private StAXArtifactProcessor<Object> staxProcessor;
 
     @Override
     protected void setUp() throws Exception {
-        xmlFactory = XMLInputFactory.newInstance();
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        inputFactory = XMLInputFactory.newInstance();
+        StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
     }
 
     public void testRead() throws Exception {
-        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(VALID_XML));
-
-        WorkspaceFactory workspaceFactory = new DefaultWorkspaceFactory();
-        ContributionFactory contributionFactory = new DefaultContributionFactory();
-        WorkspaceProcessor processor = new WorkspaceProcessor(workspaceFactory, contributionFactory, null);
-        Workspace workspace = processor.read(reader);
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_XML));
+        Workspace workspace = (Workspace)staxProcessor.read(reader);
         assertNotNull(workspace);
         assertEquals(2, workspace.getContributions().size());
         assertEquals("uri2", workspace.getContributions().get(1).getURI());
@@ -78,12 +78,9 @@ public class ContributionWorkspaceProcessorTestCase extends TestCase {
   }
 
     public void testReadInvalid() throws Exception {
-        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(INVALID_XML));
-        WorkspaceFactory workspaceFactory = new DefaultWorkspaceFactory();
-        ContributionFactory contributionFactory = new DefaultContributionFactory();
-        WorkspaceProcessor processor = new WorkspaceProcessor(workspaceFactory, contributionFactory, null);
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(INVALID_XML));
         try {
-            processor.read(reader);
+            staxProcessor.read(reader);
             fail("InvalidException should have been thrown");
         } catch (XMLStreamException e) {
             assertTrue(true);

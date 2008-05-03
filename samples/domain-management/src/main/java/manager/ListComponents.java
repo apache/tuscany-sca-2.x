@@ -32,7 +32,6 @@ import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
@@ -49,7 +48,6 @@ import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
 import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
-import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
 
 /**
  * Sample ListComponents task.
@@ -69,7 +67,7 @@ import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProces
  */
 public class ListComponents {
     
-    private static URLArtifactProcessor<Contribution> contributionContentProcessor;
+    private static URLArtifactProcessor<Contribution> contributionProcessor;
     private static ModelResolverExtensionPoint modelResolvers;
     private static ModelFactoryExtensionPoint modelFactories;
     private static WorkspaceFactory workspaceFactory;
@@ -86,19 +84,16 @@ public class ListComponents {
             activator.start(extensionPoints);
         }
 
-        // Get XML input/output factories
+        // Get workspace contribution factory
         modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
-        
-        // Get contribution, workspace, assembly and policy model factories
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class); 
         
-        // Create XML and document artifact processors
-        URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        URLArtifactProcessor<Object> urlExtensionProcessor = new ExtensibleURLArtifactProcessor(docProcessorExtensions);
-        
         // Create contribution content processor
+        URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        contributionProcessor = docProcessorExtensions.getProcessor("contribution/content");
+        
+        // Get the model resolvers
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-        contributionContentProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlExtensionProcessor);
         
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
@@ -120,13 +115,13 @@ public class ListComponents {
         // Read the sample store contribution
         URI storeURI = URI.create("store");
         URL storeURL = new File("./target/sample-domain-management-store.jar").toURI().toURL();
-        Contribution storeContribution = (Contribution)contributionContentProcessor.read(null, storeURI, storeURL);
+        Contribution storeContribution = contributionProcessor.read(null, storeURI, storeURL);
         workspace.getContributions().add(storeContribution);
 
         // Read the sample assets contribution
         URI assetsURI = URI.create("assets");
         URL assetsURL = new File("./target/sample-domain-management-assets.jar").toURI().toURL();
-        Contribution assetsContribution = (Contribution)contributionContentProcessor.read(null, assetsURI, assetsURL);
+        Contribution assetsContribution = contributionProcessor.read(null, assetsURI, assetsURL);
         workspace.getContributions().add(assetsContribution);
 
         // Build the store contribution dependencies
@@ -134,7 +129,7 @@ public class ListComponents {
         
         // Resolve the contributions
         for (Contribution contribution: dependencies) {
-            contributionContentProcessor.resolve(contribution, workspace.getModelResolver());
+            contributionProcessor.resolve(contribution, workspace.getModelResolver());
         }
         
         // List the components declared in the deployables found in the

@@ -23,20 +23,27 @@ import java.io.StringReader;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
+import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.data.engine.config.ConnectionInfo;
 import org.apache.tuscany.sca.data.engine.config.ConnectionProperties;
-import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 
 /**
  * @version $Rev: 538445 $ $Date: 2007-05-15 23:20:37 -0700 (Tue, 15 May 2007) $
@@ -70,35 +77,30 @@ public class DATAImplementationProcessorTestCase extends TestCase {
             + " </component>"
             + "</composite>";
 
-    private XMLInputFactory xmlFactory;
-    private ModelFactoryExtensionPoint modelFactories;
+    private XMLInputFactory inputFactory;
+    private StAXArtifactProcessor<Object> staxProcessor;
+    private CompositeBuilder compositeBuilder;
 
     @Override
     protected void setUp() throws Exception {
-        super.setUp();
-        xmlFactory = XMLInputFactory.newInstance();
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        inputFactory = XMLInputFactory.newInstance();
+        StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
         
-        modelFactories = new DefaultModelFactoryExtensionPoint();
-        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        modelFactories.addFactory(assemblyFactory);
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
-        modelFactories.addFactory(javaFactory);
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
+        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
+        IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
+        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper, null);
     }
 
     public void testLoadCompositeUsingDatasource() throws Exception {
-        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(COMPOSITE_USING_DATASOURCE));
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(COMPOSITE_USING_DATASOURCE));
         
-        DATAImplementationProcessor dataProcessor = new DATAImplementationProcessor(modelFactories);
-        
-        while(true) {
-            int event = reader.next();
-            if(event == XMLStreamConstants.START_ELEMENT && IMPLEMENTATION_DATA.equals(reader.getName())) {
-                break;
-            }
-        }
-
-        DATAImplementation implementation = dataProcessor.read(reader);
-        
+        Composite composite = (Composite)staxProcessor.read(reader);
+        DATAImplementation implementation = (DATAImplementation)composite.getComponents().get(0).getImplementation();
         assertNotNull(implementation);
 
         ConnectionInfo connInfo = implementation.getConnectionInfo();
@@ -110,19 +112,10 @@ public class DATAImplementationProcessorTestCase extends TestCase {
     }
 
     public void testLoadCompositeUsingConnectionProperties() throws Exception {
-        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(COMPOSITE_USING_CONNECTION_PROPERTIES));
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(COMPOSITE_USING_CONNECTION_PROPERTIES));
 
-        DATAImplementationProcessor dataProcessor = new DATAImplementationProcessor(modelFactories);
-        
-        while(true) {
-            int event = reader.next();
-            if(event == XMLStreamConstants.START_ELEMENT && IMPLEMENTATION_DATA.equals(reader.getName())) {
-                break;
-            }
-        }
-
-        DATAImplementation implementation = dataProcessor.read(reader);
-        
+        Composite composite = (Composite)staxProcessor.read(reader);
+        DATAImplementation implementation = (DATAImplementation)composite.getComponents().get(0).getImplementation();
         assertNotNull(implementation);
 
         ConnectionInfo connInfo = implementation.getConnectionInfo();

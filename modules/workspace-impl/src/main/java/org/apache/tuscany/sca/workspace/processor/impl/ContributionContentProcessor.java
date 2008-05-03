@@ -27,10 +27,11 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.Export;
-import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -38,6 +39,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.workspace.scanner.impl.DirectoryContributionScanner;
 import org.apache.tuscany.sca.workspace.scanner.impl.JarContributionScanner;
 
@@ -53,6 +55,15 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
     private ModelFactoryExtensionPoint modelFactories;
     private URLArtifactProcessor<Object> artifactProcessor;
 
+    public ContributionContentProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor) {
+        this.modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        this.modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
+        hackResolvers(modelResolvers);
+        URLArtifactProcessorExtensionPoint artifactProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        this.artifactProcessor = new ExtensibleURLArtifactProcessor(artifactProcessors);
+        this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+    }
+    
     public ContributionContentProcessor(ModelFactoryExtensionPoint modelFactories, ModelResolverExtensionPoint modelResolvers, URLArtifactProcessor<Object> artifactProcessor) {
         this.modelFactories = modelFactories;
         this.modelResolvers = modelResolvers;
@@ -62,7 +73,7 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
     }
     
     public String getArtifactType() {
-        return null;
+        return "contribution/content";
     }
     
     public Class<Contribution> getModelType() {
@@ -90,7 +101,8 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
         // Scan the contribution and list the artifacts contained in it
         List<Artifact> artifacts = contribution.getArtifacts();
         boolean contributionMetadata = false;
-        for (String artifactURI: scanner.getArtifacts(contributionURL)) {
+        List<String> artifactURIs = scanner.getArtifacts(contributionURL);
+        for (String artifactURI: artifactURIs) {
             URL artifactURL = scanner.getArtifactURL(contributionURL, artifactURI);
 
             // Add the deployed artifact model to the contribution

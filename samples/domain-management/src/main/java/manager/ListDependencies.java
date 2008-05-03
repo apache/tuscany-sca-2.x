@@ -25,10 +25,8 @@ import java.net.URL;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -38,7 +36,6 @@ import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
 import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
-import org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor;
 
 /**
  * Sample ListDependencies task.
@@ -54,7 +51,7 @@ import org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor
  */
 public class ListDependencies {
     
-    private static URLArtifactProcessor<Contribution> contributionInfoProcessor;
+    private static URLArtifactProcessor<Contribution> contributionProcessor;
     private static WorkspaceFactory workspaceFactory;
     private static ContributionDependencyBuilder contributionDependencyBuilder;
 
@@ -63,19 +60,13 @@ public class ListDependencies {
         // Create extension point registry 
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         
-        // Get XML input/output factories
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
-        
         // Get contribution, workspace and assembly model factories
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class); 
         
-        // Create XML and document artifact processors
-        URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        URLArtifactProcessor<Object> docProcessor = new ExtensibleURLArtifactProcessor(docProcessorExtensions);
-        
         // Create contribution info processor
-        ModelResolverExtensionPoint modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-        contributionInfoProcessor = new ContributionInfoProcessor(modelFactories, modelResolvers, docProcessor);
+        URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        contributionProcessor = docProcessorExtensions.getProcessor("contribution/info");
 
         // Create a monitor
         UtilityExtensionPoint services = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
@@ -96,13 +87,13 @@ public class ListDependencies {
         // Read the contribution info for the sample contribution
         URI storeURI = URI.create("store");
         URL storeURL = new File("./target/sample-domain-management-store.jar").toURI().toURL();
-        Contribution storeContribution = (Contribution)contributionInfoProcessor.read(null, storeURI, storeURL);
+        Contribution storeContribution = (Contribution)contributionProcessor.read(null, storeURI, storeURL);
         workspace.getContributions().add(storeContribution);
         
         // Read the contribution info for the assets contribution
         URI assetsURI = URI.create("assets");
         URL assetsURL = new File("./target/sample-domain-management-assets.jar").toURI().toURL();
-        Contribution assetsContribution = (Contribution)contributionInfoProcessor.read(null, assetsURI, assetsURL);
+        Contribution assetsContribution = contributionProcessor.read(null, assetsURI, assetsURL);
         workspace.getContributions().add(assetsContribution);
         
         // List the contribution dependencies of each contribution
