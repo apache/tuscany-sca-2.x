@@ -46,12 +46,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
-import org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;
-import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
-import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
-import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
-import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
-import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.binding.atom.AtomBindingFactory;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -65,9 +59,6 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensi
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
-import org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;
-import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
-import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
@@ -165,22 +156,6 @@ public class DistributeComponents {
         xmlProcessor = new ExtensibleStAXArtifactProcessor(xmlProcessorExtensions, inputFactory, outputFactory);
         URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         URLArtifactProcessor<Object> urlExtensionProcessor = new ExtensibleURLArtifactProcessor(docProcessorExtensions);
-        
-        // Create and register XML artifact processor extensions for sca-contribution XML and
-        // SCDL <composite>, <componentType> and <constrainingType>
-        xmlProcessorExtensions.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory, xmlProcessor));
-        xmlProcessorExtensions.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, xmlProcessor, monitor));
-        xmlProcessorExtensions.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, xmlProcessor));
-        xmlProcessorExtensions.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, xmlProcessor));
-        
-        // Create and register document processor extensions for sca-contribution.xml, 
-        // sca-contribution-generated.xml, .composite, .componentType and
-        // .constrainingType documents 
-        docProcessorExtensions.addArtifactProcessor(new ContributionMetadataDocumentProcessor(xmlProcessor, inputFactory));
-        docProcessorExtensions.addArtifactProcessor(new ContributionGeneratedMetadataDocumentProcessor(xmlProcessor, inputFactory));
-        docProcessorExtensions.addArtifactProcessor(new CompositeDocumentProcessor(xmlProcessor, inputFactory, null));
-        docProcessorExtensions.addArtifactProcessor(new ComponentTypeDocumentProcessor(xmlProcessor, inputFactory));
-        docProcessorExtensions.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(xmlProcessor, inputFactory));
         
         // Create contribution content processor
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);

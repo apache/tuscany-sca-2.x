@@ -23,23 +23,12 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
-
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
-import org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;
-import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
-import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -76,27 +65,13 @@ public class ListDependencies {
         
         // Get XML input/output factories
         ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
-        XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
-        XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         
         // Get contribution, workspace and assembly model factories
-        ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class); 
-        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         
         // Create XML and document artifact processors
-        StAXArtifactProcessorExtensionPoint xmlProcessorExtensions = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        StAXArtifactProcessor<Object> xmlProcessor = new ExtensibleStAXArtifactProcessor(xmlProcessorExtensions, inputFactory, outputFactory);
         URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         URLArtifactProcessor<Object> docProcessor = new ExtensibleURLArtifactProcessor(docProcessorExtensions);
-        
-        // Create and register XML artifact processor extension for sca-contribution XML
-        xmlProcessorExtensions.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory, xmlProcessor));
-
-        // Create and register document processors for sca-contribution.xml and
-        // sca-contribution-generated.xml documents
-        docProcessorExtensions.addArtifactProcessor(new ContributionMetadataDocumentProcessor(xmlProcessor, inputFactory));
-        docProcessorExtensions.addArtifactProcessor(new ContributionGeneratedMetadataDocumentProcessor(xmlProcessor, inputFactory));
         
         // Create contribution info processor
         ModelResolverExtensionPoint modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
