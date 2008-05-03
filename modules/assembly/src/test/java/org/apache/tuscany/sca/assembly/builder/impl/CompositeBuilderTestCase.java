@@ -39,11 +39,6 @@ public class CompositeBuilderTestCase extends TestCase {
         assemblyFactory = new DefaultAssemblyFactory();
     }
     
-    @Override
-    protected void tearDown() throws Exception {
-        assemblyFactory = null;
-    }
-    
     public void testFuseIncludes() throws Exception {
         Composite c1 = assemblyFactory.createComposite();
         c1.setName(new QName("http://foo", "C1"));

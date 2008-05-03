@@ -28,12 +28,12 @@ import java.util.ArrayList;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.java.JavaImport;
 import org.apache.tuscany.sca.contribution.java.JavaImportExportFactory;
-import org.apache.tuscany.sca.contribution.java.impl.JavaImportExportFactoryImpl;
-import org.junit.After;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,12 +50,10 @@ public class ContributionClassLoaderTestCase  {
     
     @Before
     public void setUp() throws Exception {
-        contributionFactory = new DefaultContributionFactory();
-        javaImportExportFactory = new JavaImportExportFactoryImpl();
-    }
-    
-    @After
-    public void tearDown() throws Exception {
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        javaImportExportFactory = modelFactories.getFactory(JavaImportExportFactory.class);
     }
     
     private Contribution createContribution(String fileName) throws MalformedURLException {

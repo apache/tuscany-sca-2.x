@@ -21,36 +21,20 @@ package org.apache.tuscany.sca.assembly.xml;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
-import org.apache.tuscany.sca.definitions.xml.SCADefinitionsDocumentProcessor;
-import org.apache.tuscany.sca.definitions.xml.SCADefinitionsProcessor;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.apache.tuscany.sca.policy.xml.PolicySetProcessor;
-import org.apache.tuscany.sca.policy.xml.ProfileIntentProcessor;
-import org.apache.tuscany.sca.policy.xml.QualifiedIntentProcessor;
-import org.apache.tuscany.sca.policy.xml.SimpleIntentProcessor;
-import org.apache.tuscany.sca.policy.xml.WSPolicyProcessor;
 
 /**
  * Test reading SCA XML assembly documents.
@@ -59,45 +43,22 @@ import org.apache.tuscany.sca.policy.xml.WSPolicyProcessor;
  */
 public class ResolvePolicyTestCase extends TestCase {
 
-    private ExtensibleURLArtifactProcessor documentProcessor;
-    private TestModelResolver resolver;  
-    private SCADefinitionsDocumentProcessor scaDefnDocProcessor;
+    private URLArtifactProcessor<Object> documentProcessor;
+    private ModelResolver resolver;  
+    private URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
 
     @Override
     public void setUp() throws Exception {
-        List scaDefnSink = new ArrayList();
-        AssemblyFactory factory = new DefaultAssemblyFactory();
-        PolicyFactory policyFactory = new DefaultPolicyFactory();
-        resolver = new TestModelResolver();
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        resolver = new DefaultModelResolver();
         
-        URLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
-        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors); 
+        URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
+        policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);
         
         // Create StAX processors
-        DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
-        ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(new DefaultContributionFactory(), factory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new SCADefinitionsProcessor(policyFactory, staxProcessor, resolver));
-        staxProcessors.addArtifactProcessor(new SimpleIntentProcessor(policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ProfileIntentProcessor(policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new QualifiedIntentProcessor(policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new PolicySetProcessor(policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new WSPolicyProcessor());
-        staxProcessors.addArtifactProcessor(new MockPolicyProcessor());
-        
-        // Create document processors
-        XMLInputFactory inputFactory = XMLInputFactory.newInstance(); 
-        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory, scaDefnSink));
-        documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory));
-        documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
-        scaDefnDocProcessor = new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, inputFactory, policyFactory);
-        documentProcessors.addArtifactProcessor(scaDefnDocProcessor);
-    }
-
-    @Override
-    public void tearDown() throws Exception {
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        staxProcessors.addArtifactProcessor(new TestPolicyProcessor());
     }
 
     public void testResolveConstrainingType() throws Exception {
@@ -115,7 +76,7 @@ public class ResolvePolicyTestCase extends TestCase {
         
         url = getClass().getResource("test_definitions.xml");
         uri = URI.create("test_definitions.xml");
-        SCADefinitions scaDefns = (SCADefinitions)scaDefnDocProcessor.read(null, uri, url);
+        SCADefinitions scaDefns = (SCADefinitions)policyDefinitionsProcessor.read(null, uri, url);
         assertNotNull(scaDefns);
         
         preResolvePolicyTests(composite);

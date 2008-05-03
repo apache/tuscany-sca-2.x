@@ -16,4 +16,6 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.definitions.xml.SCADefinitionsProcessor;qname=http://www.osoa.org/xmlns/sca/1.0#definitions,model=org.apache.tuscany.sca.definitions.SCADefinitions
+org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;type=.componentType,model=org.apache.tuscany.sca.assembly.ComponentType
+org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;type=.constrainingType,model=org.apache.tuscany.sca.assembly.ConstrainingType
+org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;type=.composite,model=org.apache.tuscany.sca.assembly.Composite

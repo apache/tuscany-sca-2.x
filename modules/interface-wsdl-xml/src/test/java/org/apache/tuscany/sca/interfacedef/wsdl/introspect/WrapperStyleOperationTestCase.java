@@ -40,7 +40,7 @@ public class WrapperStyleOperationTestCase extends AbstractWSDLTestCase {
 
     public final void testWrappedOperation() throws Exception {
         URL url = getClass().getResource("../xml/stockquote.wsdl");
-        WSDLDefinition definition = processor.read(null, new URI("stockquote.wsdl"), url);
+        WSDLDefinition definition = (WSDLDefinition)documentProcessor.read(null, new URI("stockquote.wsdl"), url);
         resolver.addModel(definition);
         definition = resolver.resolveModel(WSDLDefinition.class, definition);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);
@@ -53,7 +53,7 @@ public class WrapperStyleOperationTestCase extends AbstractWSDLTestCase {
 
     public final void testUnwrappedOperation() throws Exception {
         URL url = getClass().getResource("../xml/unwrapped-stockquote.wsdl");
-        WSDLDefinition definition = processor.read(null, new URI("unwrapped-stockquote.wsdl"), url);
+        WSDLDefinition definition = (WSDLDefinition)documentProcessor.read(null, new URI("unwrapped-stockquote.wsdl"), url);
         resolver.addModel(definition);
         definition = resolver.resolveModel(WSDLDefinition.class, definition);
         PortType portType = definition.getDefinition().getPortType(PORTTYPE_NAME);

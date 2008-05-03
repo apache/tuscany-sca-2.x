@@ -34,11 +34,11 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.definitions.impl.SCADefinitionsImpl;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
 
@@ -49,7 +49,6 @@ import org.apache.tuscany.sca.policy.QualifiedIntent;
 public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<SCADefinitions> {
     
     private StAXArtifactProcessor<Object> extensionProcessor;
-    private ModelResolver definitionsResolver;
     
     public static final String BINDING = "binding";
     public static final String IMPLEMENTATION = "implementation";
@@ -60,16 +59,17 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
     public static final String NAME = "name";
     
     /**
-     * Construct a new (sca) definitions processor
-     * @param policyFactory
+     * Construct a new definitions processor
      * @param extensionProcessor 
      * @param modelResolver 
      */
-    public SCADefinitionsProcessor(PolicyFactory policyFactory,
-                              StAXArtifactProcessor<Object> extensionProcessor,
+    public SCADefinitionsProcessor(StAXArtifactProcessor<Object> extensionProcessor,
                               ModelResolver modelResolver) {
         this.extensionProcessor = extensionProcessor;
-        this.definitionsResolver = modelResolver;
+    }
+    
+    public SCADefinitionsProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor) {
+        this.extensionProcessor = extensionProcessor;
     }
 
     public SCADefinitions read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
@@ -114,7 +114,6 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
                                     definitions.getImplementationTypes().add((IntentAttachPointType)extension);
                                 }
                             } 
-                            definitionsResolver.addModel(extension);
                         }
                         break;
                     }

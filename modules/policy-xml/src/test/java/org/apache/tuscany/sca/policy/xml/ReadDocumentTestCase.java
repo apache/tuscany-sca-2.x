@@ -28,20 +28,18 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.ProfileIntent;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
@@ -55,18 +53,16 @@ import org.apache.tuscany.sca.policy.impl.ImplementationTypeImpl;
  */
 public class ReadDocumentTestCase extends TestCase {
 
-    //private ModelResolver resolver;
-    PolicySetProcessor policySetProcessor;
-    TestModelResolver resolver = null;
-    ExtensibleStAXArtifactProcessor staxProcessor = null;
+    private ModelResolver resolver;
+    private StAXArtifactProcessor<Object> staxProcessor;
     
         
-    Map<QName, Intent> intentTable = new Hashtable<QName, Intent>();
-    Map<QName, PolicySet> policySetTable = new Hashtable<QName, PolicySet>();
-    Map<QName, IntentAttachPointType> bindingTypesTable = new Hashtable<QName, IntentAttachPointType>();
-    Map<QName, IntentAttachPointType> implTypesTable = new Hashtable<QName, IntentAttachPointType>();
-    public static final String scaNamespace = "http://www.osoa.org/xmlns/sca/1.0";
-    public static final String namespace = "http://test";
+    private Map<QName, Intent> intentTable = new Hashtable<QName, Intent>();
+    private Map<QName, PolicySet> policySetTable = new Hashtable<QName, PolicySet>();
+    private Map<QName, IntentAttachPointType> bindingTypesTable = new Hashtable<QName, IntentAttachPointType>();
+    private Map<QName, IntentAttachPointType> implTypesTable = new Hashtable<QName, IntentAttachPointType>();
+    private static final String scaNamespace = "http://www.osoa.org/xmlns/sca/1.0";
+    private static final String namespace = "http://test";
     
     private static final QName confidentiality = new QName(namespace, "confidentiality");
     private static final QName integrity = new QName(namespace, "integrity");
@@ -83,25 +79,16 @@ public class ReadDocumentTestCase extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        resolver = new TestModelResolver();
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        resolver = new DefaultModelResolver();
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-        PolicyFactory policyFactory = new DefaultPolicyFactory();
-        IntentAttachPointTypeFactory intentAttachPointFactory = new DefaultIntentAttachPointTypeFactory();
-        DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        
-        staxProcessors.addArtifactProcessor(new SimpleIntentProcessor(policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ProfileIntentProcessor(policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new QualifiedIntentProcessor(policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new PolicySetProcessor(policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ImplementationTypeProcessor(policyFactory, intentAttachPointFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new BindingTypeProcessor(policyFactory, intentAttachPointFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new MockPolicyProcessor());
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
+        staxProcessors.addArtifactProcessor(new TestPolicyProcessor());
         
         URL url = getClass().getResource("test_definitions.xml");
         InputStream urlStream = url.openStream();
         XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
-        QName name = null;
         reader.next();
         while ( true ) {
             int event = reader.getEventType();

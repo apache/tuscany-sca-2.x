@@ -55,7 +55,7 @@ import org.junit.Test;
 public class PrintUtilTestCase {
 
     private AssemblyFactory factory = new DefaultAssemblyFactory();
-
+    
     /**
      * Create a composite
      */

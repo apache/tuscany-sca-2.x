@@ -37,7 +37,10 @@ import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.DefaultContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -85,7 +88,8 @@ public class ReallySmallRuntime {
     private WorkScheduler workScheduler;
     private ScopeRegistry scopeRegistry;
     private ProxyFactory proxyFactory;
-    private List scaDefnsSink = new ArrayList();
+    private List<SCADefinitions> policyDefinitions;
+    private ModelResolver policyDefinitionsResolver;
     private Monitor monitor;
 
     public ReallySmallRuntime(ClassLoader classLoader) {
@@ -147,13 +151,16 @@ public class ReallySmallRuntime {
 
         
         // Create a contribution service
+        policyDefinitions = new ArrayList<SCADefinitions>();
+        policyDefinitionsResolver = new DefaultModelResolver();
         contributionService = ReallySmallRuntimeBuilder.createContributionService(classLoader,
                                                                                   registry,
                                                                                   contributionFactory,
                                                                                   assemblyFactory,
                                                                                   policyFactory,
                                                                                   mapper,
-                                                                                  scaDefnsSink,
+                                                                                  policyDefinitions,
+                                                                                  policyDefinitionsResolver,
                                                                                   monitor);
         
         // Create the ScopeRegistry
@@ -170,7 +177,7 @@ public class ReallySmallRuntime {
                                                                                 workScheduler);
 
         // Load the definitions.xml
-        loadSCADefinitions(registry);
+        loadSCADefinitions();
         
         if (logger.isLoggable(Level.FINE)) {
             long end = System.currentTimeMillis();
@@ -211,16 +218,16 @@ public class ReallySmallRuntime {
         
         
         //Create a composite builder
-        SCADefinitions scaDefns = new SCADefinitionsImpl();
-        for ( SCADefinitions aDef : ((List<SCADefinitions>)scaDefnsSink) ) {
-            SCADefinitionsUtil.aggregateSCADefinitions(aDef, scaDefns);
+        SCADefinitions aggregatedDefinitions = new SCADefinitionsImpl();
+        for ( SCADefinitions definition : ((List<SCADefinitions>)policyDefinitions) ) {
+            SCADefinitionsUtil.aggregateSCADefinitions(definition, aggregatedDefinitions);
         }
         compositeBuilder = ReallySmallRuntimeBuilder.createCompositeBuilder(monitor,
                                                                             assemblyFactory,
                                                                             scaBindingFactory,
                                                                             intentAttachPointTypeFactory,
                                                                             mapper, 
-                                                                            scaDefns);
+                                                                            aggregatedDefinitions);
         compositeBuilder.build(composite);
         
     }
@@ -257,10 +264,10 @@ public class ReallySmallRuntime {
         return domainBuilder;
     }
     
-    private void  loadSCADefinitions(ExtensionPointRegistry registry) throws ActivationException {
+    private void  loadSCADefinitions() throws ActivationException {
         try {
             URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-            SCADefinitionsDocumentProcessor definitionsProcessor = (SCADefinitionsDocumentProcessor)documentProcessors.getProcessor(SCADefinitions.class);
+            URLArtifactProcessor<SCADefinitions> definitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);
             SCADefinitionsProviderExtensionPoint scaDefnProviders = registry.getExtensionPoint(SCADefinitionsProviderExtensionPoint.class);
             
             SCADefinitions systemSCADefinitions = new SCADefinitionsImpl();
@@ -270,28 +277,29 @@ public class ReallySmallRuntime {
                SCADefinitionsUtil.aggregateSCADefinitions(aSCADefn, systemSCADefinitions);
             }
             
-            scaDefnsSink.add(systemSCADefinitions);
+            policyDefinitions.add(systemSCADefinitions);
+            
             //we cannot expect that providers will add the intents and policysets into the resolver
             //so we do this here explicitly
             for ( Intent intent : systemSCADefinitions.getPolicyIntents() ) {
-                definitionsProcessor.getSCADefinitionsResolver().addModel(intent);
+                policyDefinitionsResolver.addModel(intent);
             }
             
             for ( PolicySet policySet : systemSCADefinitions.getPolicySets() ) {
-                definitionsProcessor.getSCADefinitionsResolver().addModel(policySet);
+                policyDefinitionsResolver.addModel(policySet);
             }
             
             for ( IntentAttachPointType attachPoinType : systemSCADefinitions.getBindingTypes() ) {
-                definitionsProcessor.getSCADefinitionsResolver().addModel(attachPoinType);
+                policyDefinitionsResolver.addModel(attachPoinType);
             }
             
             for ( IntentAttachPointType attachPoinType : systemSCADefinitions.getImplementationTypes() ) {
-                definitionsProcessor.getSCADefinitionsResolver().addModel(attachPoinType);
+                policyDefinitionsResolver.addModel(attachPoinType);
             }
             
             //now that all system sca definitions have been read, lets resolve them right away
             definitionsProcessor.resolve(systemSCADefinitions, 
-                                         definitionsProcessor.getSCADefinitionsResolver());
+                                         policyDefinitionsResolver);
         } catch ( Exception e ) {
             throw new ActivationException(e);
         }

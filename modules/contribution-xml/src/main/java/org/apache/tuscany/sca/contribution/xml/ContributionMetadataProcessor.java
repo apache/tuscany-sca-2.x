@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -61,6 +62,12 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
     public ContributionMetadataProcessor(AssemblyFactory assemblyFactory, ContributionFactory contributionFactory, StAXArtifactProcessor<Object> extensionProcessor) {
         this.assemblyFactory = assemblyFactory;
         this.contributionFactory = contributionFactory;
+        this.extensionProcessor = extensionProcessor;
+    }
+    
+    public ContributionMetadataProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor<Object> extensionProcessor) {
+        this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         this.extensionProcessor = extensionProcessor;
     }
     

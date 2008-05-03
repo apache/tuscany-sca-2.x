@@ -25,29 +25,26 @@ import java.net.URL;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.ValidatorHandler;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.processor.DefaultValidationSchemaExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ValidationSchemaExtensionPoint;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
@@ -58,38 +55,24 @@ import org.xml.sax.XMLReader;
  */
 public class ReadDocumentTestCase extends TestCase {
 
-    private ExtensibleURLArtifactProcessor documentProcessor;
-    private TestModelResolver resolver;
+    private URLArtifactProcessor<Object> documentProcessor;
+    private ModelResolver resolver;
     private XMLInputFactory inputFactory;
-    private ExtensibleStAXArtifactProcessor staxProcessor; 
+    private StAXArtifactProcessor<Object> staxProcessor; 
 
     @Override
     public void setUp() throws Exception {
-        AssemblyFactory factory = new DefaultAssemblyFactory();
-        PolicyFactory policyFactory = new DefaultPolicyFactory();
-        
-        URLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors); 
         
-        // Create StAX processors
-        DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(new DefaultContributionFactory(), factory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
-        
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         inputFactory = XMLInputFactory.newInstance();
-        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory, null));
-        documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, inputFactory));
-        documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, inputFactory));
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
         
-        resolver = new TestModelResolver();
+        resolver = new DefaultModelResolver();
     }
 
-    @Override
-    public void tearDown() throws Exception {
-    }
-    
     public void testValidateAssembly() throws Exception {
         
         SchemaFactory schemaFactory;

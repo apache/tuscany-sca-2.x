@@ -35,21 +35,21 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
-import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
-import org.apache.tuscany.sca.definitions.xml.SCADefinitionsDocumentProcessor;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
-import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.policy.xml.WSPolicyProcessor;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 
 /**
  * Test writing SCA XML assemblies.
@@ -57,32 +57,31 @@ import org.apache.tuscany.sca.policy.xml.WSPolicyProcessor;
  * @version $Rev$ $Date$
  */
 public class WriteAllTestCase extends TestCase {
-    private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
+    private XMLInputFactory inputFactory;
+    private XMLOutputFactory outputFactory;
     private ExtensibleStAXArtifactProcessor staxProcessor;
-    private TestModelResolver resolver; 
-    private AssemblyFactory assemblyFactory;
-    private SCABindingFactory scaBindingFactory;
-    private PolicyFactory policyFactory;
-    private InterfaceContractMapper mapper;
-    private CompositeBuilderImpl compositeUtil;
-    private SCADefinitionsDocumentProcessor scaDefnDocProcessor;
-
+    private ModelResolver resolver; 
+    private CompositeBuilder compositeBuilder;
+    private URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
 
     @Override
     public void setUp() throws Exception {
-        assemblyFactory = new DefaultAssemblyFactory();
-        scaBindingFactory = new TestSCABindingFactoryImpl();
-        policyFactory = new DefaultPolicyFactory();
-        mapper = new InterfaceContractMapperImpl();
-        compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null);
-        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new WSPolicyProcessor());
-        resolver = new TestModelResolver();
-        scaDefnDocProcessor = new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, XMLInputFactory.newInstance(), policyFactory);
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        inputFactory = XMLInputFactory.newInstance();
+        outputFactory = XMLOutputFactory.newInstance();
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
+        resolver = new DefaultModelResolver();
+        
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        SCABindingFactory scaBindingFactory = new TestSCABindingFactoryImpl();
+        IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
+        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
+        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper, null);
+
+        URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);
     }
 
     @Override
@@ -112,12 +111,12 @@ public class WriteAllTestCase extends TestCase {
         
         URL url = getClass().getResource("test_definitions.xml");
         URI uri = URI.create("test_definitions.xml");
-        SCADefinitions scaDefns = (SCADefinitions)scaDefnDocProcessor.read(null, uri, url);
+        SCADefinitions scaDefns = (SCADefinitions)policyDefinitionsProcessor.read(null, uri, url);
         assertNotNull(scaDefns);
-        scaDefnDocProcessor.resolve(scaDefns, resolver);
+        policyDefinitionsProcessor.resolve(scaDefns, resolver);
         
         staxProcessor.resolve(composite, resolver);
-        compositeUtil.build(composite);
+        compositeBuilder.build(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(composite, bos);
     }

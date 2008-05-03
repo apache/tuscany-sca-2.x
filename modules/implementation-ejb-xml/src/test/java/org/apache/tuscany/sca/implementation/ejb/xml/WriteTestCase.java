@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.ejb.EJBImplementationFactory;
 import org.apache.tuscany.sca.implementation.ejb.impl.EJBImplementationFactoryImpl;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
@@ -57,22 +58,19 @@ public class WriteTestCase extends TestCase {
 
     @Override
     public void setUp() throws Exception {
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
         factory = new DefaultAssemblyFactory();
         factories.addFactory(factory);
         policyFactory = new DefaultPolicyFactory();
         factories.addFactory(policyFactory);
         
-        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
+        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         
         EJBImplementationFactory nodeFactory = new EJBImplementationFactoryImpl();
         factories.addFactory(nodeFactory);
         
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(new DefaultContributionFactory(), factory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
-
         EJBImplementationProcessor ejbProcessor = new EJBImplementationProcessor(factories);
         staxProcessors.addArtifactProcessor(ejbProcessor);
 

@@ -23,11 +23,9 @@ import java.io.InputStream;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Callback;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.ComponentReference;
@@ -35,16 +33,11 @@ import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.Property;
-import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,29 +48,20 @@ import org.w3c.dom.Element;
  * @version $Rev$ $Date$
  */
 public class ReadAllTestCase extends TestCase {
-    private ExtensibleStAXArtifactProcessor staxProcessor;
+    private StAXArtifactProcessor<Object> staxProcessor;
+    private XMLInputFactory inputFactory;
 
     @Override
     public void setUp() throws Exception {
-        AssemblyFactory factory = new DefaultAssemblyFactory();
-        PolicyFactory policyFactory = new DefaultPolicyFactory();
-        ContributionFactory  contributionFactory = new DefaultContributionFactory();
-        
-        StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(contributionFactory, factory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
-    }
-
-    @Override
-    public void tearDown() throws Exception {
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        inputFactory = XMLInputFactory.newInstance();
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
     }
 
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestAllCalculator.composite");
-        Composite composite = (Composite)staxProcessor.read(is, Composite.class);
+        Composite composite = (Composite)staxProcessor.read(inputFactory.createXMLStreamReader(is));
         assertNotNull(composite);
         assertEquals(composite.getName(), new QName("http://calc", "TestAllCalculator"));
         assertEquals(composite.getConstrainingType().getName(), new QName("http://calc", "CalculatorComponent"));
@@ -156,7 +140,6 @@ public class ReadAllTestCase extends TestCase {
         assertNotNull(calcCallback);
         // TODO test operations
 
-        //new PrintUtil(System.out).print(composite);
     }
 
 }

@@ -26,10 +26,13 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.java.JavaExport;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
  * Test JavaExportProcessorTestCase
@@ -40,21 +43,21 @@ public class JavaExportProcessorTestCase extends TestCase {
 
     private static final String VALID_XML =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
-            + "<export.java package=\"org.apache.tuscany.sca.contribution.java\"/>"
-            + "</contribution>";
+            + "<export.java  xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\" package=\"org.apache.tuscany.sca.contribution.java\"/>";
 
     private static final String INVALID_XML =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
-            + "<export.java/>"
-            + "</contribution>";
+            + "<export.java  xmlns=\"http://www.osoa.org/xmlns/sca/1.0\"/>";
 
-    private XMLInputFactory xmlFactory;
+    private XMLInputFactory inputFactory;
+    private StAXArtifactProcessor<Object> staxProcessor;
 
     @Override
     protected void setUp() throws Exception {
-        xmlFactory = XMLInputFactory.newInstance();
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        inputFactory = XMLInputFactory.newInstance();
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
     }
 
     /**
@@ -62,13 +65,8 @@ public class JavaExportProcessorTestCase extends TestCase {
      * @throws Exception
      */
     public void testLoad() throws Exception {
-        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(VALID_XML));
-
-        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
-        factories.addFactory(new JavaImportExportFactoryImpl());
-        JavaExportProcessor exportProcessor = new JavaExportProcessor(factories);
-        JavaExport javaExport = exportProcessor.read(reader);
-        
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_XML));
+        JavaExport javaExport = (JavaExport)staxProcessor.read(reader);
         assertEquals("org.apache.tuscany.sca.contribution.java", javaExport.getPackage());
     }
 
@@ -77,13 +75,9 @@ public class JavaExportProcessorTestCase extends TestCase {
      * @throws Exception
      */
     public void testLoadInvalid() throws Exception {
-        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(INVALID_XML));
-
-        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
-        factories.addFactory(new JavaImportExportFactoryImpl());
-        JavaExportProcessor exportProcessor = new JavaExportProcessor(factories);
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(INVALID_XML));
         try {
-            exportProcessor.read(reader);
+            staxProcessor.read(reader);
             fail("readerException should have been thrown");
         } catch (ContributionReadException e) {
             assertTrue(true);

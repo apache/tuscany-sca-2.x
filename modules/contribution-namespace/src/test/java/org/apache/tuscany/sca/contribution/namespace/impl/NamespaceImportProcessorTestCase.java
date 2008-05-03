@@ -28,10 +28,13 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
  * Test NamespaceImportProcessorTestCase
@@ -42,21 +45,21 @@ public class NamespaceImportProcessorTestCase extends TestCase {
 
     private static final String VALID_XML =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
-            + "<import namespace=\"http://foo\" location=\"sca://contributions/001\"/>"
-            + "</contribution>";
+            + "<import  xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\" namespace=\"http://foo\" location=\"sca://contributions/001\"/>";
 
     private static final String INVALID_XML =
         "<?xml version=\"1.0\" encoding=\"ASCII\"?>" 
-            + "<contribution xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\">"
-            + "<import location=\"sca://contributions/001\"/>"
-            + "</contribution>";
+            + "<import  xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:ns=\"http://ns\" location=\"sca://contributions/001\"/>";
 
-    private XMLInputFactory xmlFactory;
+    private XMLInputFactory inputFactory;
+    private StAXArtifactProcessor<Object> staxProcessor;
 
     @Override
     protected void setUp() throws Exception {
-        xmlFactory = XMLInputFactory.newInstance();
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        inputFactory = XMLInputFactory.newInstance();
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
     }
 
     /**
@@ -64,12 +67,8 @@ public class NamespaceImportProcessorTestCase extends TestCase {
      * @throws Exception
      */
     public void testLoad() throws Exception {
-        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(VALID_XML));
-
-        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
-        factories.addFactory(new NamespaceImportExportFactoryImpl());
-        NamespaceImportProcessor importProcessor = new NamespaceImportProcessor(factories);
-        NamespaceImport namespaceImport = importProcessor.read(reader);
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_XML));
+        NamespaceImport namespaceImport = (NamespaceImport)staxProcessor.read(reader);
         
         assertEquals("http://foo", namespaceImport.getNamespace());
         assertEquals("sca://contributions/001", namespaceImport.getLocation());
@@ -80,13 +79,9 @@ public class NamespaceImportProcessorTestCase extends TestCase {
      * @throws Exception
      */
     public void testLoadInvalid() throws Exception {
-        XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(INVALID_XML));
-
-        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
-        factories.addFactory(new NamespaceImportExportFactoryImpl());
-        NamespaceImportProcessor importProcessor = new NamespaceImportProcessor(factories);
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(INVALID_XML));
         try {
-            importProcessor.read(reader);
+            staxProcessor.read(reader);
             fail("readerException should have been thrown");
         } catch (ContributionReadException e) {
             assertTrue(true);

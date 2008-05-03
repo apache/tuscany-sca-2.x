@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.definitions;
+package org.apache.tuscany.sca.policy.xml;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -30,7 +30,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.policy.Policy;
 
-public class MockPolicyProcessor implements StAXArtifactProcessor<Policy> {
+public class TestPolicyProcessor implements StAXArtifactProcessor<Policy> {
 
     public QName getArtifactType() {
         return new QName("http://schemas.xmlsoap.org/ws/2004/09/policy", "PolicyAttachment");

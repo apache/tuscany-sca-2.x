@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -44,9 +45,14 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
     private final StAXArtifactProcessor staxProcessor;
     private final XMLInputFactory inputFactory;
 
-    public ContributionMetadataDocumentProcessor(StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory) {
-        this.staxProcessor = staxProcessor; 
+    public ContributionMetadataDocumentProcessor(XMLInputFactory inputFactory, StAXArtifactProcessor staxProcessor) {
         this.inputFactory = inputFactory;
+        this.staxProcessor = staxProcessor; 
+    }
+    
+    public ContributionMetadataDocumentProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor staxProcessor) {
+        this.inputFactory = modelFactories.getFactory(XMLInputFactory.class);
+        this.staxProcessor = staxProcessor; 
     }
     
     public String getArtifactType() {

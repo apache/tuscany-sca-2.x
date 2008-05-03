@@ -36,8 +36,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
@@ -68,6 +70,16 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
         this.scaDefnSink = scaDefnsSink;
     }
 
+    /**
+     * Constructs a new composite processor.
+     * @param modelFactories
+     * @param staxProcessor
+     */
+    public CompositeDocumentProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor staxProcessor) {
+        super(null, null, staxProcessor);
+        this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
+    }
+    
     public Composite read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
         InputStream scdlStream = null;
         try {

@@ -31,6 +31,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -58,12 +59,24 @@ public class WorkspaceProcessor extends BaseStAXArtifactProcessor implements StA
     
     /**
      * Constructs a new contribution workspace processor.
+     * 
      * @param contributionFactory
      * @param extensionProcessor
      */
     public WorkspaceProcessor(WorkspaceFactory workspaceFactory, ContributionFactory contributionFactory, StAXArtifactProcessor<Object> extensionProcessor) {
         this.workspaceFactory = workspaceFactory;
         this.contributionFactory = contributionFactory;
+    }
+
+    /**
+     * Constructs a new contribution workspace processor.
+     * 
+     * @param modelFactories
+     * @param extensionProcessor
+     */
+    public WorkspaceProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor<Object> extensionProcessor) {
+        this.workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class);
+        this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
     }
     
     public Workspace read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {

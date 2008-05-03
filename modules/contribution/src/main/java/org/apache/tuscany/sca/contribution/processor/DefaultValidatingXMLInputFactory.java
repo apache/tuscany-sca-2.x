@@ -54,7 +54,7 @@ import org.xml.sax.SAXParseException;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultValidatingXMLInputFactory extends XMLInputFactory {
+public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory {
     
     private XMLInputFactory inputFactory;
     private ValidationSchemaExtensionPoint schemas;

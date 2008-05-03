@@ -151,22 +151,16 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         // Get model factories
         modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-        XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
-        ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class);
         
         // Get and initialize artifact processors
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        StAXArtifactProcessor<Object> staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
-        staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory, staxProcessor));
         compositeProcessor = (StAXArtifactProcessor<Composite>)staxProcessors.getProcessor(Composite.class);
 
         URLArtifactProcessorExtensionPoint urlProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         URLArtifactProcessor<Object> urlProcessor = new ExtensibleURLArtifactProcessor(urlProcessors);
-        urlProcessors.addArtifactProcessor(new ContributionMetadataDocumentProcessor(staxProcessor, inputFactory));
-        urlProcessors.addArtifactProcessor(new ContributionGeneratedMetadataDocumentProcessor(staxProcessor, inputFactory));
         
         // Create contribution processor
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);

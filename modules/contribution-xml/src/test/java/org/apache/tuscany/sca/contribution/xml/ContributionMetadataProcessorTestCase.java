@@ -30,12 +30,13 @@ import javax.xml.stream.XMLStreamWriter;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
  * Test the contribution metadata processor.
@@ -59,40 +60,32 @@ public class ContributionMetadataProcessorTestCase extends TestCase {
             + "<deployable/>"
             + "</contribution>";
     
-    private XMLInputFactory xmlInputFactory;
-    private XMLOutputFactory xmlOutputFactory;
+    private XMLInputFactory inputFactory;
+    private XMLOutputFactory outputFactory;
+    private StAXArtifactProcessor<Object> staxProcessor;
 
     @Override
     protected void setUp() throws Exception {
-        xmlInputFactory = XMLInputFactory.newInstance();
-        xmlOutputFactory = XMLOutputFactory.newInstance();
-        xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        
+        inputFactory = XMLInputFactory.newInstance();
+        outputFactory = XMLOutputFactory.newInstance();
+        
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
     }
 
     public void testRead() throws Exception {
-        XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(new StringReader(VALID_XML));
-
-        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        ContributionFactory contributionFactory = new DefaultContributionFactory();
-        ContributionMetadataProcessor processor = 
-            new ContributionMetadataProcessor(assemblyFactory, contributionFactory, null);
-        Contribution contribution = contributionFactory.createContribution();
-        contribution.setModelResolver(new TestModelResolver(contribution, null));
-        contribution = processor.read(reader);
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_XML));
+        Contribution contribution = (Contribution)staxProcessor.read(reader);
         assertNotNull(contribution);
         assertEquals(2, contribution.getDeployables().size());
   }
 
     public void testReadInvalid() throws Exception {
-        XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(new StringReader(INVALID_XML));
-        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        ContributionFactory contributionFactory = new DefaultContributionFactory();
-        ContributionMetadataProcessor processor = 
-            new ContributionMetadataProcessor(assemblyFactory, contributionFactory, null);
-        Contribution contribution = contributionFactory.createContribution();
-        contribution.setModelResolver(new TestModelResolver(contribution, null));
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(INVALID_XML));
         try {
-            processor.read(reader);
+            staxProcessor.read(reader);
             fail("InvalidException should have been thrown");
         } catch (ContributionReadException e) {
             assertTrue(true);
@@ -100,32 +93,24 @@ public class ContributionMetadataProcessorTestCase extends TestCase {
     }    
 
     public void testWrite() throws Exception {
-        XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(new StringReader(VALID_XML));
-
-        //read the original contribution metadata file
-        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        ContributionFactory contributionFactory = new DefaultContributionFactory();
-        ContributionMetadataProcessor processor = 
-            new ContributionMetadataProcessor(assemblyFactory, contributionFactory, null);
-        Contribution contribution = contributionFactory.createContribution();
-        contribution.setModelResolver(new TestModelResolver(contribution, null));
-        contribution = processor.read(reader);
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_XML));
+        Contribution contribution = (Contribution)staxProcessor.read(reader);
 
         validateContribution(contribution);
         
         //write the contribution metadata contents
         StringWriter stringWriter = new StringWriter();
-        XMLStreamWriter writer = xmlOutputFactory.createXMLStreamWriter(stringWriter);
-        processor.write(contribution, writer);
+        XMLStreamWriter writer = outputFactory.createXMLStreamWriter(stringWriter);
+        staxProcessor.write(contribution, writer);
         stringWriter.close();
 
-        reader = xmlInputFactory.createXMLStreamReader(new StringReader(stringWriter.toString()));
-        contribution = processor.read(reader);
+        reader = inputFactory.createXMLStreamReader(new StringReader(stringWriter.toString()));
+        contribution = (Contribution)staxProcessor.read(reader);
         
         validateContribution(contribution);
   }
     
-  public void validateContribution(Contribution contribution) {
+  private void validateContribution(Contribution contribution) {
 	  QName deployable;
 	  
 	  assertNotNull(contribution);

@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.policy.Policy;
  * @author administrator
  *
  */
-public class MockPolicyProcessor implements StAXArtifactProcessor<Policy> {
+public class TestPolicyProcessor implements StAXArtifactProcessor<Policy> {
 
     public QName getArtifactType() {
         return new QName("http://schemas.xmlsoap.org/ws/2004/09/policy", "PolicyAttachment");

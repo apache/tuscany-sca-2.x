@@ -25,6 +25,11 @@ import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+
 import junit.framework.TestCase;
 
 /**
@@ -41,15 +46,16 @@ public class PolicyReadTestCase extends TestCase {
     public void tearDown() throws Exception {
     }
 
-    public void testPolicyReading() throws Exception { 
-        Axis2ConfigParamPolicyProcessor processor = new Axis2ConfigParamPolicyProcessor(null);
+    public void testPolicyReading() throws Exception {
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessor<Axis2ConfigParamPolicy>processor = staxProcessors.getProcessor(Axis2ConfigParamPolicy.class);
         
         URL url = getClass().getResource("mock_policies.xml");
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         
         InputStream urlStream = url.openStream();
         XMLStreamReader reader = inputFactory.createXMLStreamReader(urlStream);
-        
         
         Axis2ConfigParamPolicy policy = processor.read(reader);
         assertEquals(policy.getParamElements().size(), 2);

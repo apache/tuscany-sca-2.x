@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.assembly.AbstractReference;
 import org.apache.tuscany.sca.assembly.AbstractService;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -61,6 +62,17 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
         super(factory, policyFactory, extensionProcessor);
     }
 
+    /**
+     * Constructs a new constrainingType processor.
+     * 
+     * @param modelFactories
+     * @param extensionProcessor
+     */
+    public ConstrainingTypeProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor extensionProcessor) {
+        super(modelFactories.getFactory(AssemblyFactory.class),
+              modelFactories.getFactory(PolicyFactory.class), extensionProcessor);
+    }
+    
     public ConstrainingType read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         ConstrainingType constrainingType = null;
         AbstractService abstractService = null;

@@ -30,6 +30,8 @@ import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
@@ -47,7 +49,8 @@ public class WSDLTestCase extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        documentProcessors = new DefaultURLArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        documentProcessors = new DefaultURLArtifactProcessorExtensionPoint(extensionPoints);
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
 
         WSDLFactory wsdlFactory = new DefaultWSDLFactory();

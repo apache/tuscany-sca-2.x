@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.policy.xml;
 
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import javax.xml.namespace.QName;
@@ -52,11 +51,9 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements StAX
     public final static QName WS_POLICY_QNAME =new QName(WS_POLICY_NS, WS_POLICY);
 
     public WSPolicyProcessor() {
-    	System.out.println(">>>Initializing WSPolicyProcessor");
     }
     
     public WSPolicyProcessor(ModelFactoryExtensionPoint modelFactories) {
-    	System.out.println(">>>Initializing WSPolicyProcessor");
     }
     
     public QName getArtifactType() {

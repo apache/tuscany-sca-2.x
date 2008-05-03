@@ -23,22 +23,21 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLDocumentProcessor;
-import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLModelResolver;
-import org.apache.tuscany.sca.interfacedef.wsdl.xml.XSDModelResolver;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
  * Test case for WSDLOperation
  */
 public abstract class AbstractWSDLTestCase extends TestCase {
-    protected WSDLDocumentProcessor processor;
+    protected URLArtifactProcessor<Object> documentProcessor;
     protected ModelResolver resolver;
     protected WSDLFactory wsdlFactory;
 
@@ -47,22 +46,18 @@ public abstract class AbstractWSDLTestCase extends TestCase {
      */
     @Override
     protected void setUp() throws Exception {
-        super.setUp();
-        ContributionFactory contributionFactory = new DefaultContributionFactory();
-        Contribution contribution = contributionFactory.createContribution();
-        ModelResolverExtensionPoint modelResolvers = new DefaultModelResolverExtensionPoint();
-        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
-        wsdlFactory = new DefaultWSDLFactory();
-        factories.addFactory(wsdlFactory); 
-        javax.wsdl.factory.WSDLFactory wsdl4jFactory = javax.wsdl.factory.WSDLFactory.newInstance();
-        factories.addFactory(wsdlFactory);
-        factories.addFactory(wsdl4jFactory);
-        resolver = new ExtensibleModelResolver(contribution, modelResolvers, factories, null);
-        contribution.setModelResolver(resolver);
-        modelResolvers.addResolver(WSDLDefinition.class, WSDLModelResolver.class);
-        modelResolvers.addResolver(XSDefinition.class, XSDModelResolver.class);
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         
-        processor = new WSDLDocumentProcessor(factories);
+        ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        Contribution contribution = contributionFactory.createContribution();
+        ModelResolverExtensionPoint modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
+        resolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
+        contribution.setModelResolver(resolver);
+        
+        URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
     }
 
 }

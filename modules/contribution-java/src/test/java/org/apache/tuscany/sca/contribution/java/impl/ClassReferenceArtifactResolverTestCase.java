@@ -21,12 +21,12 @@ package org.apache.tuscany.sca.contribution.java.impl;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ClassReference;
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
  * Test ClassReferenceArtifactResolver.
@@ -38,17 +38,12 @@ public class ClassReferenceArtifactResolverTestCase extends TestCase {
     
     @Override
     protected void setUp() throws Exception {
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         
-        ModelResolverExtensionPoint resolvers = new DefaultModelResolverExtensionPoint();
+        ModelResolverExtensionPoint resolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
         resolvers.addResolver(ClassReference.class, ClassReferenceModelResolver.class);
-        
-        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
-        
-        resolver = new ExtensibleModelResolver(null, resolvers, factories, null);
-    }
-    
-    @Override
-    protected void tearDown() throws Exception {
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        resolver = new ExtensibleModelResolver(null, resolvers, modelFactories);
     }
     
     /**

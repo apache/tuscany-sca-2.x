@@ -57,8 +57,9 @@ public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StA
     private StAXArtifactProcessor<Object> extensionProcessor;
     private XPathFactory xpathFactory = XPathFactory.newInstance();
     
-    public PolicySetProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public PolicySetProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor<Object> extensionProcessor) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        this.extensionProcessor = extensionProcessor;
     }
     
     public PolicySetProcessor(PolicyFactory policyFactory, StAXArtifactProcessor<Object> extensionProcessor) {

@@ -54,8 +54,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
-import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
@@ -70,9 +68,6 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
-import org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;
-import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
-import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -90,7 +85,6 @@ import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
 import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
 import org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor;
-import org.apache.tuscany.sca.workspace.xml.WorkspaceProcessor;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.osoa.sca.ServiceRuntimeException;
@@ -158,17 +152,11 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
 
         // Create artifact processors
         inputFactory = modelFactories.getFactory(XMLInputFactory.class);
-        StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(modelFactories);
+        StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
-        staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new WorkspaceProcessor(workspaceFactory, contributionFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, staxProcessor));
 
-        URLArtifactProcessorExtensionPoint urlProcessors = new DefaultURLArtifactProcessorExtensionPoint(modelFactories);
+        URLArtifactProcessorExtensionPoint urlProcessors = new DefaultURLArtifactProcessorExtensionPoint(extensionPoints);
         urlProcessor = new ExtensibleURLArtifactProcessor(urlProcessors);
-        urlProcessors.addArtifactProcessor(new ContributionMetadataDocumentProcessor(staxProcessor, inputFactory));
-        urlProcessors.addArtifactProcessor(new ContributionGeneratedMetadataDocumentProcessor(staxProcessor, inputFactory));
-        urlProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory, null));
         
         // Create contribution info processor
         contributionInfoProcessor = new ContributionInfoProcessor(modelFactories, modelResolvers, urlProcessor);
