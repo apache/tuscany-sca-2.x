@@ -47,9 +47,9 @@ public class ShoppingCartTableImpl implements Cart, Total {
 
     @Init
     public void init() throws Exception {
-        Class.forName("org.apache.derby.jdbc.EmbeddedDriver", true, getClass().getClassLoader());
+        Class.forName("org.apache.derby.jdbc.EmbeddedDriver", true, Thread.currentThread().getContextClassLoader());
         String baseDir = System.getProperty("basedir");
-        String url = "jdbc:derby:" + (baseDir != null? baseDir + "/" + database : database);
+        String url = "jdbc:derby:directory:" + (baseDir != null? baseDir + "/" + database : database);
         System.out.println("Connecting to database: " + url);
         connection = DriverManager.getConnection(url, "", "");
     }
