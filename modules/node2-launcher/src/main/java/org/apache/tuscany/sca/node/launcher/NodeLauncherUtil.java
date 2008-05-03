@@ -375,7 +375,7 @@ final class NodeLauncherUtil {
      * 
      * @throws LauncherException
      */
-    static Object domainManager() throws LauncherException {
+    static Object domainManager(String rootDirectory) throws LauncherException {
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         try {
             // Set up runtime ClassLoader
@@ -394,7 +394,8 @@ final class NodeLauncherUtil {
             } else {
                 bootstrapClass = Class.forName(className);
             }
-            Object bootstrap = bootstrapClass.getConstructor().newInstance();
+            Constructor<?> constructor = bootstrapClass.getConstructor(String.class);
+            Object bootstrap = constructor.newInstance(rootDirectory);
             
             Object domainManager = bootstrapClass.getMethod("getNode").invoke(bootstrap);
             return domainManager;

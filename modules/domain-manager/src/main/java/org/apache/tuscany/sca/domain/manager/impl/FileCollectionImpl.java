@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
@@ -48,6 +49,9 @@ public class FileCollectionImpl implements ItemCollection {
     @Property
     public String directoryName;
 
+    @Reference
+    public LauncherConfiguration launcherConfiguration;
+    
     /**
      * Initialize the component.
      */
@@ -58,9 +62,11 @@ public class FileCollectionImpl implements ItemCollection {
     public Entry<String, Item>[] getAll() {
         logger.fine("getAll");
         
+        String rootDirectory = launcherConfiguration.getRootDirectory();
+        
         // Return all the files
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
-        File directory = new File(directoryName);
+        File directory = new File(rootDirectory + "/" + directoryName);
         if (directory.exists()) {
             for (File file: directory.listFiles()) {
                 if (file.getName().startsWith(".")) {
@@ -88,7 +94,8 @@ public class FileCollectionImpl implements ItemCollection {
     public void delete(String key) throws NotFoundException {
         logger.fine("delete " + key);
 
-        File directory = new File(directoryName);
+        String rootDirectory = launcherConfiguration.getRootDirectory();
+        File directory = new File(rootDirectory + "/" + directoryName);
         File file = new File(directory, key);
         if (file.exists()) {
             file.delete();

@@ -22,7 +22,7 @@
 	targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0"
     name="DomainManager">
 
-    <component name="AdminUI">
+    <component name="HomeUI">
         <t:implementation.widget location="home.html"/>
         <service name="Widget">
         	<t:binding.http uri="http://localhost:9990/ui/home"/>
@@ -88,6 +88,7 @@
    		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/contribution"/>
    		</service>
+   		<reference name="launcherConfiguration" target="LauncherConfigurationComponent"/>
     </component>
 
     <component name="FileCollectionComponent">
@@ -96,6 +97,7 @@
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/feed/files" title="Files"/>
    		</service>
+   		<reference name="launcherConfiguration" target="LauncherConfigurationComponent"/>
     </component>
 
     <component name="FileServiceComponent">
@@ -104,6 +106,7 @@
    		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/files"/>
    		</service>
+   		<reference name="launcherConfiguration" target="LauncherConfigurationComponent"/>
     </component>
 
     <component name="DomainCompositeCollectionComponent">
@@ -116,6 +119,7 @@
    	 		<t:binding.http uri="http://localhost:9990/composite-source"/>
    		</service>
         <reference name="deployableCollection" target="DeployableCompositeCollectionComponent/LocalItemCollection"/>
+   		<reference name="launcherConfiguration" target="LauncherConfigurationComponent"/>
     </component>
 
     <component name="DeployableCompositeCollectionComponent">
@@ -143,6 +147,7 @@
    		</service>
         <reference name="deployableCollection" target="DeployableCompositeCollectionComponent/LocalItemCollection"/>
         <reference name="processCollection" target="NodeProcessCollectionFacadeComponent/LocalItemCollection"/>
+   		<reference name="launcherConfiguration" target="LauncherConfigurationComponent"/>
     </component>
 
     <component name="CompositeConfigurationCollectionComponent">
@@ -189,6 +194,10 @@
    		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/ping"/>
    		</service>
+    </component>
+    
+    <component name="LauncherConfigurationComponent">
+        <implementation.java class="org.apache.tuscany.sca.domain.manager.impl.LauncherConfigurationImpl"/>
     </component>
 
 </composite>

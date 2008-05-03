@@ -42,6 +42,7 @@ public class DomainManagerTestCase extends TestCase {
     
     private ContributionCollectionImpl contributionCollection;
     private DeployableCompositeCollectionImpl deployableCollection;
+    private LauncherConfigurationImpl launcherConfiguration;
     
     private final static String WORKSPACE_XML =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -62,9 +63,14 @@ public class DomainManagerTestCase extends TestCase {
         writer.close();
         
         // Create a workspace collection component
+        launcherConfiguration = new LauncherConfigurationImpl();
+        String root = url.getFile();
+        root = root.substring(0, root.lastIndexOf('/'));
+        launcherConfiguration.setRootDirectory(root);
         contributionCollection = new ContributionCollectionImpl();
-        contributionCollection.workspaceFile = url.getFile();
+        contributionCollection.workspaceFile = "workspace.xml";
         contributionCollection.deploymentContributionDirectory = "cloud";
+        contributionCollection.launcherConfiguration = launcherConfiguration;
         deployableCollection = new DeployableCompositeCollectionImpl();
         deployableCollection.contributionCollection = contributionCollection;
         contributionCollection.initialize();

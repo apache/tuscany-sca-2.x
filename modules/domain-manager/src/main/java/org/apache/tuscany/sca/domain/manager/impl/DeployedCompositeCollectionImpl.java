@@ -108,6 +108,9 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
     @Reference(required=false)
     public LocalItemCollection processCollection;
 
+    @Reference
+    public LauncherConfiguration launcherConfiguration;
+    
     private ExtensionPointRegistry extensionPoints;
     private ModelFactoryExtensionPoint modelFactories;
     private AssemblyFactory assemblyFactory;
@@ -252,7 +255,9 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
         // under the deployment composites directory, if that directory is
         // configured on this component
         if (deploymentContributionDirectory != null && item.getContents() != null) {
-            File directory = new File(deploymentContributionDirectory);
+            String rootDirectory = launcherConfiguration.getRootDirectory();
+            
+            File directory = new File(rootDirectory + "/" + deploymentContributionDirectory);
             if (!directory.exists()) {
                 directory.mkdirs();
             }
@@ -329,7 +334,9 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
 
         // Delete the file too if it is in the deployment contribution directory
         if (deploymentContributionDirectory != null && contributionURI.equals(DEPLOYMENT_CONTRIBUTION_URI)) {
-            File file = new File(deploymentContributionDirectory, qname.getLocalPart() + ".composite");
+            String rootDirectory = launcherConfiguration.getRootDirectory();
+            
+            File file = new File(rootDirectory + "/" + deploymentContributionDirectory, qname.getLocalPart() + ".composite");
             if (file.exists()) {
                 file.delete();
             }
@@ -351,8 +358,10 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
      * @throws ServiceRuntimeException
      */
     private Composite readCompositeCollection() throws ServiceRuntimeException {
+        String rootDirectory = launcherConfiguration.getRootDirectory();
+        
         Composite compositeCollection;
-        File file = new File(compositeFile);
+        File file = new File(rootDirectory + "/" + compositeFile);
         if (file.exists()) {
             XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
             try {
@@ -383,6 +392,8 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
      */
     private void writeCompositeCollection(Composite compositeCollection) {
         try {
+            String rootDirectory = launcherConfiguration.getRootDirectory();
+            
             // First write to a byte stream
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
@@ -395,7 +406,7 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
             format.setIndent(2);
             
             // Write to domain.composite
-            FileOutputStream os = new FileOutputStream(new File(compositeFile));
+            FileOutputStream os = new FileOutputStream(new File(rootDirectory + "/" + compositeFile));
             XMLSerializer serializer = new XMLSerializer(os, format);
             serializer.serialize(document);
         } catch (Exception e) {
