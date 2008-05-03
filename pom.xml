@@ -68,6 +68,7 @@
                 <module>samples</module>
                 <module>itest</module>
                 <module>vtest</module>
+                <module>tutorial</module>
             </modules>
         </profile>
 
@@ -79,6 +80,8 @@
                 <module>samples</module>
                 <module>itest</module>
                 <module>vtest</module>
+                <module>tutorial</module>
+                <module>demos</module>
                 <module>distribution</module>
             </modules>
         </profile>
@@ -91,8 +94,8 @@
                 <module>samples</module>
                 <module>itest</module>
                 <module>vtest</module>
-                <module>demos</module>
                 <module>tutorial</module>
+                <module>demos</module>
                 <module>distribution</module>
             </modules>
         </profile>
@@ -102,6 +105,7 @@
             <modules>
                 <module>modules</module>
                 <module>samples</module>
+                <module>tutorial</module>
                 <module>demos</module>
             </modules>
             <build>
