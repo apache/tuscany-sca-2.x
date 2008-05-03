@@ -25,8 +25,8 @@
         <version>2.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tutorial-domain</artifactId>
-    <name>Apache Tuscany SCA Tutorial Domain</name>
+    <artifactId>tutorial-store-test</artifactId>
+    <name>Apache Tuscany SCA Tutorial Integration Test</name>
 
     <repositories>
        <repository>
@@ -38,7 +38,25 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-sca-api</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-data-api</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-node2-launcher</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-node2-api</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
         </dependency>
 
@@ -133,11 +151,18 @@
             <scope>runtime</scope>
         </dependency>
 
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.2</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
     
     <build>
        <finalName>${artifactId}</finalName>
-       <sourceDirectory>${basedir}</sourceDirectory>
+       <testSourceDirectory>${basedir}</testSourceDirectory>
        <resources>
           <resource>
               <directory>${basedir}</directory>
@@ -157,15 +182,46 @@
                 <version>2.0-incubating-SNAPSHOT</version>
                 <executions>
                     <execution>
-                        <configuration>
-                            <mainClass>launch.LaunchTutorialAdmin</mainClass>
-                        </configuration>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+
+	        <plugin>
+	             <groupId>org.codehaus.mojo</groupId>
+	             <artifactId>sql-maven-plugin</artifactId>
+	             <version>1.0</version>
+	
+	             <dependencies>
+	                 <dependency>
+	                     <groupId>org.apache.derby</groupId>
+	                     <artifactId>derby</artifactId>
+	                     <version>10.1.2.1</version>
+	                 </dependency>
+	             </dependencies>
+	
+	             <executions>
+	                 <execution>
+	                     <id>create-db</id>
+	                     <phase>generate-resources</phase>
+	                     <goals>
+	                         <goal>execute</goal>
+	                     </goals>
+	                     <configuration>
+	                         <driver>org.apache.derby.jdbc.EmbeddedDriver</driver>
+	                         <url>jdbc:derby:${basedir}/../store-supplier/target/cart-db;create=true</url>
+	                         <autocommit>true</autocommit>
+	                         <onError>continue</onError>
+	                         <delimiter>;</delimiter>
+	                         <srcFiles>
+	                             <srcFile>${basedir}/../assets/services/db/cart.sql</srcFile>
+	                         </srcFiles>
+	                     </configuration>
+	                 </execution>
+	             </executions>
+	         </plugin>
        </plugins>
     </build>
 

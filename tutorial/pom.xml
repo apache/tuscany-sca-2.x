@@ -40,6 +40,7 @@
                 <module>assets</module>
                 <module>store</module>
                 <module>store-merger</module>
+                <module>store-client</module>
                 <module>store-db</module>
                 <module>store-supplier</module>
                 <module>store-market</module>
@@ -49,6 +50,7 @@
                 <module>catalog-webapp</module>
                 <module>catalog-ejb</module>
                 <module>catalog-mediation</module>
+                <module>store-test</module>
             </modules>
         </profile>
 

@@ -66,6 +66,7 @@
 		</service>    	
 		<service name="Total">
 			<t:binding.jsonrpc/>
+			<binding.ws uri="/ShoppinCartTotalWebService"/>
 		</service>
 	</component>
     

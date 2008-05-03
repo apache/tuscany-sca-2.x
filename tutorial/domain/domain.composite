@@ -22,6 +22,7 @@
   xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:ns1="http://www.osoa.org/xmlns/sca/1.0">
   <include name="ns2:store" uri="store" xmlns:ns2="http://store"/>
   <include name="ns2:store-merger" uri="store-merger" xmlns:ns2="http://store"/>
+  <include name="ns2:store-client" uri="store-client" xmlns:ns2="http://store"/>
   <include name="ns2:store-db" uri="store-db" xmlns:ns2="http://store"/>
   <include name="ns2:store-supplier" uri="store-supplier" xmlns:ns2="http://store"/>
   <include name="ns2:store-market" uri="store-market" xmlns:ns2="http://store"/> 

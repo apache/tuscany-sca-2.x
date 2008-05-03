@@ -21,6 +21,7 @@
   <contribution location="file:../assets/target/tutorial-assets.jar" uri="assets"/>
   <contribution location="file:../store/target/tutorial-store.jar" uri="store"/>
   <contribution location="file:../store-merger/target/tutorial-store-merger.jar" uri="store-merger"/>
+  <contribution location="file:../store-client/target/tutorial-store-client.jar" uri="store-client"/>
   <contribution location="file:../store-db/target/tutorial-store-db.jar" uri="store-db"/>
   <contribution location="file:../store-supplier/target/tutorial-store-supplier.jar" uri="store-supplier"/>
   <contribution location="file:../store-market/target/tutorial-store-market.jar" uri="store-market"/> 
