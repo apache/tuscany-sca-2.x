@@ -56,13 +56,6 @@ public class InterfaceContractTestCase {
         Assert.assertEquals(contract, copy);
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
-    
     private static class MockInterfaceContract extends InterfaceContractImpl implements InterfaceContract {
     }
 

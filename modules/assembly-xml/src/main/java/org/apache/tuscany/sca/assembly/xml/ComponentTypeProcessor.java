@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.assembly.Extensible;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -64,6 +65,17 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
      */
     public ComponentTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor extensionProcessor) {
         super(factory, policyFactory, extensionProcessor);
+    }
+
+    /**
+     * Constructs a new componentType processor.
+     * 
+     * @param modelFactories
+     * @param extensionProcessor
+     */
+    public ComponentTypeProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor extensionProcessor) {
+        super(modelFactories.getFactory(AssemblyFactory.class),
+              modelFactories.getFactory(PolicyFactory.class), extensionProcessor);
     }
     
     public ComponentType read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {

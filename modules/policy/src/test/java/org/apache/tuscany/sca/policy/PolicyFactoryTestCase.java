@@ -36,11 +36,6 @@ public class PolicyFactoryTestCase extends TestCase {
         factory = new DefaultPolicyFactory();
     }
 
-    @Override
-    public void tearDown() throws Exception {
-        factory = null;
-    }
-
     public void testCreateIntent() {
         Intent intent = factory.createIntent();
         intent.setName(new QName("http://test", "reliability"));

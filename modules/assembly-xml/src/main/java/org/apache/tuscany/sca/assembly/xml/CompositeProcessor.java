@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -57,14 +58,19 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -84,38 +90,30 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
     // FIXME: to be refactored
     private XPathFactory xPathFactory = XPathFactory.newInstance();
     
-    // TODO Refactor the constructor to include a monoitor
     /**
      * Construct a new composite processor
      * 
-     * @param contributionFactory
-     * @param assemblyFactory
-     * @param policyFactory
+     * @param extensionPoints
      * @param extensionProcessor
      */
-    public CompositeProcessor(ContributionFactory contributionFactory,
-                              AssemblyFactory factory,
-                              PolicyFactory policyFactory,
-                              InterfaceContractMapper interfaceContractMapper,
-                              StAXArtifactProcessor extensionProcessor) {
-        super(contributionFactory, factory, policyFactory, extensionProcessor, null);
-        
+    public CompositeProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor extensionProcessor) {
+        this(modelFactories(extensionPoints), extensionProcessor, monitor(extensionPoints));
     }
-
-    // TODO - remove in favour or following constructor that takes a monitor
+    
     /**
-     * Construct a new composite processor
+     * Constructs a new composite processor
      * 
-     * @param contributionFactory
-     * @param assemblyFactory
-     * @param policyFactory
+     * @param modelFactories
      * @param extensionProcessor
+     * @param monitor
      */
-    public CompositeProcessor(ContributionFactory contributionFactory,
-                              AssemblyFactory factory,
-                              PolicyFactory policyFactory,
-                              StAXArtifactProcessor extensionProcessor) {
-        super(contributionFactory, factory, policyFactory, extensionProcessor, null);
+    private CompositeProcessor(ModelFactoryExtensionPoint modelFactories,
+                               StAXArtifactProcessor extensionProcessor,
+                               Monitor monitor) {
+        super(modelFactories.getFactory(ContributionFactory.class),
+            modelFactories.getFactory(AssemblyFactory.class),
+            modelFactories.getFactory(PolicyFactory.class),
+            extensionProcessor, monitor);
     }
     
     /**
@@ -127,11 +125,11 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
      * @param extensionProcessor
      */
     public CompositeProcessor(ContributionFactory contributionFactory,
-                              AssemblyFactory factory,
+                              AssemblyFactory assemblyFactory,
                               PolicyFactory policyFactory,
                               StAXArtifactProcessor extensionProcessor,
                               Monitor monitor) {
-        super(contributionFactory, factory, policyFactory, extensionProcessor, monitor);
+        super(contributionFactory, assemblyFactory, policyFactory, extensionProcessor, monitor);
     }    
 
     public Composite read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
@@ -1074,4 +1072,32 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
     public Class<Composite> getModelType() {
         return Composite.class;
     }
+
+    /**
+     * Returns the model factory extension point to use.
+     * 
+     * @param extensionPoints
+     * @return
+     */
+    private static ModelFactoryExtensionPoint modelFactories(ExtensionPointRegistry extensionPoints) {
+        return extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+    }
+    
+    /**
+     * Returns the monitor to use.
+     * 
+     * @param extensionPoints
+     * @return
+     */
+    private static Monitor monitor(ExtensionPointRegistry extensionPoints) {
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        if (utilities != null) {
+            MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
+            if (monitorFactory != null) {
+                return monitorFactory.createMonitor();
+            }
+        }
+        return null;
+    }
+    
 }

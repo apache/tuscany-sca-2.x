@@ -39,6 +39,8 @@ import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.ejb.EJBImplementation;
 import org.apache.tuscany.sca.implementation.ejb.EJBImplementationFactory;
 import org.apache.tuscany.sca.implementation.ejb.impl.EJBImplementationFactoryImpl;
@@ -65,6 +67,7 @@ public class ReadTestCase extends TestCase {
 
     @Override
     public void setUp() throws Exception {
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
         assemblyFactory = new DefaultAssemblyFactory();
         factories.addFactory(assemblyFactory);
@@ -74,7 +77,7 @@ public class ReadTestCase extends TestCase {
         factories.addFactory(policyFactory);
         mapper = new InterfaceContractMapperImpl();
         inputFactory = XMLInputFactory.newInstance();
-        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
+        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         
         EJBImplementationFactory nodeFactory = new EJBImplementationFactoryImpl();
@@ -89,7 +92,7 @@ public class ReadTestCase extends TestCase {
     }
 
     public void testReadComposite() throws Exception {
-        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor);
+        StAXArtifactProcessor<Composite> compositeProcessor = staxProcessors.getProcessor(Composite.class);
         InputStream is = getClass().getResourceAsStream("TestEJB.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);

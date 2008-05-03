@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -47,21 +49,20 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 public class DefaultStAXArtifactProcessorExtensionPoint extends
     DefaultArtifactProcessorExtensionPoint<StAXArtifactProcessor> implements StAXArtifactProcessorExtensionPoint {
 
+    private ExtensionPointRegistry extensionPoints;
     private ModelFactoryExtensionPoint modelFactories;
     private boolean loaded;
+    private StAXArtifactProcessor<Object> extensibleStAXProcessor;
 
     /**
      * Constructs a new extension point.
      */
     public DefaultStAXArtifactProcessorExtensionPoint(ExtensionPointRegistry extensionPoints) {
+        this.extensionPoints = extensionPoints;
         this.modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
-    }
-
-    /**
-     * Constructs a new extension point.
-     */
-    public DefaultStAXArtifactProcessorExtensionPoint(ModelFactoryExtensionPoint modelFactories) {
-        this.modelFactories = modelFactories;
+        XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
+        XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        this.extensibleStAXProcessor = new ExtensibleStAXArtifactProcessor(this, inputFactory, outputFactory);
     }
 
     public void addArtifactProcessor(StAXArtifactProcessor artifactProcessor) {
@@ -143,8 +144,8 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
 
             // Create a processor wrapper and register it
             StAXArtifactProcessor processor =
-                new LazyStAXArtifactProcessor(modelFactories, artifactType, modelTypeName, factoryName,
-                                              processorDeclaration);
+                new LazyStAXArtifactProcessor(artifactType, modelTypeName, factoryName,
+                                              processorDeclaration, extensionPoints, modelFactories, extensibleStAXProcessor);
             addArtifactProcessor(processor);
         }
 
@@ -157,25 +158,29 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
      */
     private static class LazyStAXArtifactProcessor implements StAXArtifactProcessor {
 
-        private ModelFactoryExtensionPoint modelFactories;
+        private ExtensionPointRegistry extensionPoints;
         private QName artifactType;
         private String modelTypeName;
         private String factoryName;
         private ServiceDeclaration processorDeclaration;
         private StAXArtifactProcessor processor;
         private Class<?> modelType;
+        private StAXArtifactProcessor<Object> extensionProcessor;
 
-        LazyStAXArtifactProcessor(ModelFactoryExtensionPoint modelFactories,
-                                  QName artifactType,
+        LazyStAXArtifactProcessor(QName artifactType,
                                   String modelTypeName,
                                   String factoryName,
-                                  ServiceDeclaration processorDeclaration) {
+                                  ServiceDeclaration processorDeclaration,
+                                  ExtensionPointRegistry extensionPoints,
+                                  ModelFactoryExtensionPoint modelFactories,
+                                  StAXArtifactProcessor<Object> extensionProcessor) {
 
-            this.modelFactories = modelFactories;
+            this.extensionPoints = extensionPoints;
             this.artifactType = artifactType;
             this.modelTypeName = modelTypeName;
             this.factoryName = factoryName;
             this.processorDeclaration = processorDeclaration;
+            this.extensionProcessor = extensionProcessor;
         }
 
         public QName getArtifactType() {
@@ -190,6 +195,7 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
                     .equals("org.apache.tuscany.sca.assembly.xml.DefaultBeanModelProcessor")) {
 
                     // Specific initialization for the DefaultBeanModelProcessor
+                    ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
                     AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
                     PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
                     try {
@@ -218,14 +224,27 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
                         throw new IllegalStateException(e);
                     }
                 } else {
+                    ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
 
                     // Load and instantiate the processor class
                     try {
                         Class<StAXArtifactProcessor> processorClass =
                             (Class<StAXArtifactProcessor>)processorDeclaration.loadClass();
-                        Constructor<StAXArtifactProcessor> constructor =
-                            processorClass.getConstructor(ModelFactoryExtensionPoint.class);
-                        processor = constructor.newInstance(modelFactories);
+                        try {
+                            Constructor<StAXArtifactProcessor> constructor =
+                                processorClass.getConstructor(ModelFactoryExtensionPoint.class);
+                            processor = constructor.newInstance(modelFactories);
+                        } catch (NoSuchMethodException e) {
+                            try {
+                                Constructor<StAXArtifactProcessor> constructor =
+                                    processorClass.getConstructor(ModelFactoryExtensionPoint.class, StAXArtifactProcessor.class);
+                                processor = constructor.newInstance(modelFactories, extensionProcessor);
+                            } catch (NoSuchMethodException e2) {
+                                Constructor<StAXArtifactProcessor> constructor =
+                                    processorClass.getConstructor(ExtensionPointRegistry.class, StAXArtifactProcessor.class);
+                                processor = constructor.newInstance(extensionPoints, extensionProcessor);
+                            }
+                        }
                     } catch (Exception e) {
                         throw new IllegalStateException(e);
                     }

@@ -24,7 +24,6 @@ import java.net.URI;
 import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
@@ -32,32 +31,25 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
-import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
-import org.apache.tuscany.sca.binding.sca.impl.SCABindingFactoryImpl;
-import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
-import org.apache.tuscany.sca.definitions.xml.SCADefinitionsDocumentProcessor;
-import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
-import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
-import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
-import org.apache.tuscany.sca.policy.xml.WSPolicyProcessor;
 
 /**
  * Test reading Java implementations.
@@ -67,82 +59,54 @@ import org.apache.tuscany.sca.policy.xml.WSPolicyProcessor;
 public class ReadTestCase extends TestCase {
 
     private XMLInputFactory inputFactory;
-    private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
-    private ExtensibleStAXArtifactProcessor staxProcessor;
-    private AssemblyFactory assemblyFactory;
-    private SCABindingFactory scaBindingFactory;
-    private PolicyFactory policyFactory;
-    private InterfaceContractMapper mapper;
-    private SCADefinitionsDocumentProcessor scaDefnDocProcessor;
-    private IntentAttachPointTypeFactory  intentAttachPointTypeFactory;
+    private StAXArtifactProcessor<Object> staxProcessor;
+    private URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
+    private CompositeBuilder compositeBuilder;
     
     @Override
     public void setUp() throws Exception {
-        ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
-        assemblyFactory = new DefaultAssemblyFactory();
-        modelFactories.addFactory(assemblyFactory);
-        scaBindingFactory = new SCABindingFactoryImpl();
-        policyFactory = new DefaultPolicyFactory();
-        modelFactories.addFactory(policyFactory);
-        mapper = new InterfaceContractMapperImpl();
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
-        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(modelFactories);
-        staxProcessors.addArtifactProcessor(new WSPolicyProcessor());
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        intentAttachPointTypeFactory = new DefaultIntentAttachPointTypeFactory();
-        
-        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
-        modelFactories.addFactory(javaImplementationFactory);
-        
-        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor);
-        staxProcessors.addArtifactProcessor(compositeProcessor);
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
 
-        JavaImplementationProcessor javaProcessor = new JavaImplementationProcessor(modelFactories);
-        staxProcessors.addArtifactProcessor(javaProcessor);  
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
+        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
+        IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
+        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper, null);
         
-        scaDefnDocProcessor = new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, inputFactory, policyFactory);
-    }
-
-    @Override
-    public void tearDown() throws Exception {
-        inputFactory = null;
-        staxProcessors = null;
-        policyFactory = null;
-        assemblyFactory = null;
-        mapper = null;
+        URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class); 
+        policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);
     }
 
     public void testReadComposite() throws Exception {
-        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor);
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = compositeProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader);
         assertNotNull(composite);
 
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, mapper, null);
-        compositeUtil.build(composite);
+        compositeBuilder.build(composite);
 
     }
 
-    public void stestPolicyIntents() throws Exception {
+    public void fixmeTestPolicyIntents() throws Exception {
         ModelResolver resolver = new TestModelResolver(getClass().getClassLoader());
         
         URL url = getClass().getResource("definitions.xml");
         URI uri = URI.create("definitions.xml");
-        scaDefnDocProcessor.setDomainModelResolver(resolver);
-        SCADefinitions scaDefns = scaDefnDocProcessor.read(null, uri, url);
+        SCADefinitions scaDefns = policyDefinitionsProcessor.read(null, uri, url);
                 
-        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor);
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = compositeProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader);
         assertNotNull(composite);
         
         staxProcessor.resolve(scaDefns, resolver);
         staxProcessor.resolve(composite, resolver);
 
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, mapper, null);
-        compositeUtil.build(composite);
+        compositeBuilder.build(composite);
         
         //intents are computed and aggregate intents from ancestor elements
         assertEquals(((PolicySetAttachPoint)composite.getComponents().get(0)).getRequiredIntents().size(), 3);
@@ -189,8 +153,6 @@ public class ReadTestCase extends TestCase {
                 fail();
             }
         }
-        
-        //new PrintUtil(System.out).print(composite);
     }
     
     public void testPolicySets() throws Exception {
@@ -198,26 +160,23 @@ public class ReadTestCase extends TestCase {
         
         URL url = getClass().getResource("definitions_with_policysets.xml");
         URI uri = URI.create("definitions_with_policysets.xml");
-        scaDefnDocProcessor.setDomainModelResolver(resolver);
-        SCADefinitions scaDefns = scaDefnDocProcessor.read(null, uri, url);
+        SCADefinitions policyDefinitions = policyDefinitionsProcessor.read(null, uri, url);
                 
-        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor);
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = compositeProcessor.read(reader);
+        Composite composite = (Composite)staxProcessor.read(reader);
         assertNotNull(composite);
         
         for ( Component component : composite.getComponents() ) {
-            for ( PolicySet policySet : scaDefns.getPolicySets() ) {
+            for ( PolicySet policySet : policyDefinitions.getPolicySets() ) {
                 component.getApplicablePolicySets().add(policySet);
             }
         }
         
-        staxProcessor.resolve(scaDefns, resolver);
+        staxProcessor.resolve(policyDefinitions, resolver);
         staxProcessor.resolve(composite, resolver);
 
-        CompositeBuilderImpl compositeUtil = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, mapper, null);
-        compositeUtil.build(composite);
+        compositeBuilder.build(composite);
         
         //test for determination of policysets for implementation
         assertEquals(((PolicySetAttachPoint)composite.getComponents().get(0)).getPolicySets().size(), 1);

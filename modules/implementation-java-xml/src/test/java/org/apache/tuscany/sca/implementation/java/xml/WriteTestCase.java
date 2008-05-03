@@ -27,20 +27,11 @@ import javax.xml.stream.XMLOutputFactory;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
-import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
-import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
-import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.sca.implementation.java.DefaultJavaImplementationFactory;
-import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 
 /**
  * Test writing Java implementations.
@@ -49,38 +40,25 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  */
 public class WriteTestCase extends TestCase {
 
-    private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
-    private ExtensibleStAXArtifactProcessor staxProcessor;
-    private AssemblyFactory factory;
-    private PolicyFactory policyFactory;
+    private StAXArtifactProcessor<Object> staxProcessor;
+    private XMLInputFactory inputFactory;
+    private XMLOutputFactory outputFactory;
     
     @Override
     public void setUp() throws Exception {
-        ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
-        factory = new DefaultAssemblyFactory();
-        modelFactories.addFactory(factory);
-        policyFactory = new DefaultPolicyFactory();
-        modelFactories.addFactory(policyFactory);
-        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(modelFactories);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        
-        JavaImplementationFactory javaImplementationFactory = new DefaultJavaImplementationFactory();
-        modelFactories.addFactory(javaImplementationFactory);
-
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(null, factory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
-
-        JavaImplementationProcessor javaProcessor = new JavaImplementationProcessor(modelFactories);
-        staxProcessors.addArtifactProcessor(javaProcessor);
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        inputFactory = XMLInputFactory.newInstance();
+        outputFactory = XMLOutputFactory.newInstance();
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
     }
 
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
-        Composite composite = staxProcessor.read(is, Composite.class);
+        Composite composite = (Composite)staxProcessor.read(inputFactory.createXMLStreamReader(is));
         assertNotNull(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        staxProcessor.write(composite, bos);
+        staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
     }
 
 }

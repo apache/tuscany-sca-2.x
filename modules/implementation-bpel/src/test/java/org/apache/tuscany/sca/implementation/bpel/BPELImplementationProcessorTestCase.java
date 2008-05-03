@@ -28,14 +28,11 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.implementation.bpel.impl.BPELImplementationProcessor;
-import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
-import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
  * @version $Rev$ $Date$
@@ -58,19 +55,14 @@ public class BPELImplementationProcessorTestCase extends TestCase {
             + "   <implementation.bpel/>"
             + "</component>";
 
+    private StAXArtifactProcessorExtensionPoint staxProcessors;
     private XMLInputFactory xmlFactory;
-    private ModelFactoryExtensionPoint modelFactories;
 
     @Override
     protected void setUp() throws Exception {
-        super.setUp();
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         xmlFactory = XMLInputFactory.newInstance();
-        
-        modelFactories = new DefaultModelFactoryExtensionPoint();
-        AssemblyFactory assemblyFactory = new DefaultAssemblyFactory();
-        modelFactories.addFactory(assemblyFactory);
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory();
-        modelFactories.addFactory(javaFactory);
     }
 
     /**
@@ -80,7 +72,7 @@ public class BPELImplementationProcessorTestCase extends TestCase {
     public void testLoadValidComposite() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(COMPOSITE));
         
-        BPELImplementationProcessor bpelProcessor = new BPELImplementationProcessor(modelFactories);
+        StAXArtifactProcessor<BPELImplementation> bpelProcessor = staxProcessors.getProcessor(BPELImplementation.class);
         
         while(true) {
             int event = reader.next();
@@ -102,7 +94,7 @@ public class BPELImplementationProcessorTestCase extends TestCase {
     public void testLoadInvalidComposite() throws Exception {
         XMLStreamReader reader = xmlFactory.createXMLStreamReader(new StringReader(COMPOSITE_INVALID));
 
-        BPELImplementationProcessor bpelProcessor = new BPELImplementationProcessor(modelFactories);
+        StAXArtifactProcessor<BPELImplementation> bpelProcessor = staxProcessors.getProcessor(BPELImplementation.class);
         
         while(true) {
             int event = reader.next();

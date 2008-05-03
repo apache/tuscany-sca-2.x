@@ -53,7 +53,7 @@ public class WSDLInterfaceIntrospectorTestCase extends AbstractWSDLTestCase {
         super.setUp();
 
         URL url = getClass().getResource("../xml/stockquote.wsdl");
-        definition = processor.read(null, new URI("stockquote.wsdl"), url);
+        definition = (WSDLDefinition)documentProcessor.read(null, new URI("stockquote.wsdl"), url);
         resolver.addModel(definition);
         definition = resolver.resolveModel(WSDLDefinition.class, definition);
         portType = definition.getDefinition().getPortType(PORTTYPE_NAME);

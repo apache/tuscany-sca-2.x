@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.policy.xml;
 
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
 
@@ -30,11 +29,11 @@ import org.apache.tuscany.sca.policy.QualifiedIntent;
 public class QualifiedIntentProcessor extends PolicyIntentProcessor<QualifiedIntent> {
 
     public QualifiedIntentProcessor(ModelFactoryExtensionPoint modelFactories) {
-        super(modelFactories.getFactory(PolicyFactory.class), null);
+        super(modelFactories);
     }
     
-    public QualifiedIntentProcessor(PolicyFactory policyFactory, StAXArtifactProcessor<Object> extensionProcessor) {
-        super(policyFactory, extensionProcessor);
+    public QualifiedIntentProcessor(PolicyFactory policyFactory) {
+        super(policyFactory);
     }
 
     public Class<QualifiedIntent> getModelType() {

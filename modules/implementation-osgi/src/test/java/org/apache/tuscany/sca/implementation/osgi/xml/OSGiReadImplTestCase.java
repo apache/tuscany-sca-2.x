@@ -42,7 +42,9 @@ import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestBundles;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestImpl;
 import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestInterface;
@@ -71,6 +73,7 @@ public class OSGiReadImplTestCase extends TestCase {
 
     @Override
     public void setUp() throws Exception {
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
         assemblyFactory = new DefaultAssemblyFactory();
         modelFactories.addFactory(assemblyFactory);
@@ -78,7 +81,7 @@ public class OSGiReadImplTestCase extends TestCase {
         policyFactory = new DefaultPolicyFactory();
         mapper = new InterfaceContractMapperImpl();
         inputFactory = XMLInputFactory.newInstance();
-        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
+        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         JavaInterfaceFactory javaInterfaceFactory = new DefaultJavaInterfaceFactory();
         modelFactories.addFactory(javaInterfaceFactory);
@@ -100,7 +103,7 @@ public class OSGiReadImplTestCase extends TestCase {
     }
 
     public void testReadComposite() throws Exception {
-        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor);
+        StAXArtifactProcessor<Composite> compositeProcessor = staxProcessors.getProcessor(Composite.class);
         InputStream is = getClass().getClassLoader().getResourceAsStream("osgitest.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);
@@ -112,20 +115,20 @@ public class OSGiReadImplTestCase extends TestCase {
     }
 
     public void testReadAndResolveComposite() throws Exception {
-        CompositeProcessor compositeProcessor = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor);
+        StAXArtifactProcessor<Composite> compositeProcessor = staxProcessors.getProcessor(Composite.class);
         InputStream is = getClass().getClassLoader().getResourceAsStream("osgitest.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
         Composite composite = compositeProcessor.read(reader);
         assertNotNull(composite);
         
-        ComponentTypeProcessor ctProcessor = new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor);
+        StAXArtifactProcessor<ComponentType> componentTypeProcessor = staxProcessors.getProcessor(ComponentType.class);
         is = getClass().getClassLoader().getResourceAsStream("OSGiTestService.componentType");
         reader = inputFactory.createXMLStreamReader(is);
-        ComponentType ct = ctProcessor.read(reader);
+        ComponentType componentType = componentTypeProcessor.read(reader);
 
         ModelResolver resolver = new TestModelResolver(getClass().getClassLoader());
-        ctProcessor.resolve(ct, resolver);
-        resolver.addModel(ct);
+        componentTypeProcessor.resolve(componentType, resolver);
+        resolver.addModel(componentType);
         
         compositeProcessor.resolve(composite, resolver);
 

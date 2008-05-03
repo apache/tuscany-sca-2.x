@@ -25,21 +25,17 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.sca.definitions.xml.SCADefinitionsDocumentProcessor;
-import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.ProfileIntent;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
@@ -51,9 +47,8 @@ import org.apache.tuscany.sca.policy.QualifiedIntent;
  */
 public class ReadDocumentTestCase extends TestCase {
 
-    //private ModelResolver resolver; 
-    private SCADefinitionsDocumentProcessor scaDefnDocProcessor = null;
-    private SCADefinitions scaDefinitions;
+    private URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor = null;
+    private SCADefinitions definitions;
     Map<QName, Intent> intentTable = new Hashtable<QName, Intent>();
     Map<QName, PolicySet> policySetTable = new Hashtable<QName, PolicySet>();
     Map<QName, IntentAttachPointType> bindingTypesTable = new Hashtable<QName, IntentAttachPointType>();
@@ -77,48 +72,38 @@ public class ReadDocumentTestCase extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-        PolicyFactory policyFactory = new DefaultPolicyFactory();
-        IntentAttachPointTypeFactory intentAttachPointFactory = new DefaultIntentAttachPointTypeFactory();
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         
         // Create StAX processors
-        DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
-        ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        staxProcessors.addArtifactProcessor(new MockPolicyProcessor());
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        staxProcessors.addArtifactProcessor(new TestPolicyProcessor());
         
-        scaDefnDocProcessor = new SCADefinitionsDocumentProcessor(staxProcessors, 
-                                                                  staxProcessor, 
-                                                                  inputFactory, 
-                                                                  policyFactory);
+        URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class); 
         
         URL url = getClass().getResource("test_definitions.xml");
         URI uri = URI.create("test_definitions.xml");
-        scaDefinitions = scaDefnDocProcessor.read(null, uri, url);
+        definitions = policyDefinitionsProcessor.read(null, uri, url);
         
-        for ( Intent intent : scaDefinitions.getPolicyIntents() ) {
+        for ( Intent intent : definitions.getPolicyIntents() ) {
             intentTable.put(intent.getName(), intent);
         }
         
-        for ( PolicySet policySet : scaDefinitions.getPolicySets() ) {
+        for ( PolicySet policySet : definitions.getPolicySets() ) {
             policySetTable.put(policySet.getName(), policySet);
         }
         
-        for ( IntentAttachPointType bindingType : scaDefinitions.getBindingTypes() ) {
+        for ( IntentAttachPointType bindingType : definitions.getBindingTypes() ) {
             bindingTypesTable.put(bindingType.getName(), bindingType);
         }
         
-        for ( IntentAttachPointType implType : scaDefinitions.getImplementationTypes() ) {
+        for ( IntentAttachPointType implType : definitions.getImplementationTypes() ) {
             implTypesTable.put(implType.getName(), implType);
         }
     }
 
-    @Override
-    public void tearDown() throws Exception {
-        scaDefnDocProcessor = null;
-    }
-
     public void testReadSCADefinitions() throws Exception {
-        assertNotNull(scaDefinitions);
+        assertNotNull(definitions);
         
         assertNotNull(intentTable.get(confidentiality));
         assertNotNull(intentTable.get(messageProtection));
@@ -171,7 +156,8 @@ public class ReadDocumentTestCase extends TestCase {
         assertNull(javaImplType.getAlwaysProvidedIntents().get(0).getDescription());
         assertNull(javaImplType.getMayProvideIntents().get(0).getDescription());
         
-        scaDefnDocProcessor.resolve(scaDefinitions, null);
+        ModelResolver resolver = new DefaultModelResolver();
+        policyDefinitionsProcessor.resolve(definitions, resolver);
         //builder.build(scaDefinitions);
         
         //testing if policy intents have been linked have property been linked up 

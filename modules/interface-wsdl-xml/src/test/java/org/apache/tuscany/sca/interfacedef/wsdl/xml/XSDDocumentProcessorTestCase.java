@@ -26,15 +26,17 @@ import javax.xml.namespace.QName;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchemaInclude;
 import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
 import org.apache.ws.commons.schema.XmlSchemaType;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,40 +44,31 @@ import org.junit.Test;
  * @version $Rev$ $Date$
  */
 public class XSDDocumentProcessorTestCase {
-    private XSDDocumentProcessor processor;
-    private WSDLFactory wsdlFactory;
+    private URLArtifactProcessor<Object> documentProcessor;
+    private ModelResolver resolver;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
     public void setUp() throws Exception {
-        ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
-        wsdlFactory = new DefaultWSDLFactory();
-        modelFactories.addFactory(wsdlFactory);
-        processor = new XSDDocumentProcessor(modelFactories);
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        resolver = new XSDModelResolver(null, modelFactories);
     }
 
     @Test
     public void testXSD() throws Exception {
         URL url = getClass().getResource("/xsd/greeting.xsd");
-        XSDefinition definition = processor.read(null, URI.create("xsd/greeting.xsd"), url);
+        XSDefinition definition = (XSDefinition)documentProcessor.read(null, URI.create("xsd/greeting.xsd"), url);
         Assert.assertNull(definition.getSchema());
         Assert.assertEquals("http://greeting", definition.getNamespace());
         URL url1 = getClass().getResource("/xsd/name.xsd");
-        XSDefinition definition1 = processor.read(null, URI.create("xsd/name.xsd"), url1);
+        XSDefinition definition1 = (XSDefinition)documentProcessor.read(null, URI.create("xsd/name.xsd"), url1);
         Assert.assertNull(definition1.getSchema());
         Assert.assertEquals("http://greeting", definition1.getNamespace());
-        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
-        factories.addFactory(wsdlFactory);
-        XSDModelResolver resolver = new XSDModelResolver(null, factories);
         resolver.addModel(definition);
         XSDefinition resolved = resolver.resolveModel(XSDefinition.class, definition);
         XmlSchemaObjectCollection collection = resolved.getSchema().getIncludes();

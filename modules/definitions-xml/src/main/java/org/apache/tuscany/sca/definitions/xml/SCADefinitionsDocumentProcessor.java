@@ -23,10 +23,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.net.URLConnection;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
@@ -34,8 +34,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -43,15 +43,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.definitions.impl.SCADefinitionsImpl;
 import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
-import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.apache.tuscany.sca.policy.xml.BindingTypeProcessor;
-import org.apache.tuscany.sca.policy.xml.ImplementationTypeProcessor;
-import org.apache.tuscany.sca.policy.xml.PolicySetProcessor;
-import org.apache.tuscany.sca.policy.xml.ProfileIntentProcessor;
-import org.apache.tuscany.sca.policy.xml.QualifiedIntentProcessor;
-import org.apache.tuscany.sca.policy.xml.SimpleIntentProcessor;
 
 /**
  * A SCA Definitions Document processor.
@@ -59,12 +50,10 @@ import org.apache.tuscany.sca.policy.xml.SimpleIntentProcessor;
  */
 public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SCADefinitions> {
     private StAXArtifactProcessor<Object> extensionProcessor;
-    //private SCADefinitionsBuilder definitionsBuilder;
-    private ModelResolver scaDefinitionsResolver;
     private XMLInputFactory inputFactory;
     private static final String TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
     private static final String DEFINITIONS = "definitions";
-    private static final QName tuscanyDefinitions = new QName(TUSCANY_NS,DEFINITIONS);
+    private static final QName DEFINITIONS_QNAME = new QName(TUSCANY_NS, DEFINITIONS);
 
     /**
      * Construct a new SCADefinitions processor
@@ -72,26 +61,21 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
      * @param policyFactory
      * @param staxProcessor
      */
-    public SCADefinitionsDocumentProcessor(StAXArtifactProcessorExtensionPoint staxProcessors,
-                                           StAXArtifactProcessor<Object> staxProcessor,
-                                           XMLInputFactory inputFactory,
-                                           PolicyFactory policyFactory) {
+    public SCADefinitionsDocumentProcessor(StAXArtifactProcessor<Object> staxProcessor,
+                                           XMLInputFactory inputFactory) {
         this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
         this.inputFactory = inputFactory;
-        //definitionsBuilder = new SCADefinitionsBuilderImpl();
-        this.scaDefinitionsResolver = new SCADefinitionsResolver();
-        
-        IntentAttachPointTypeFactory intentAttachPointFactory = new DefaultIntentAttachPointTypeFactory();
-            
-        SCADefinitionsProcessor scaDefnProcessor = new SCADefinitionsProcessor(policyFactory, extensionProcessor, scaDefinitionsResolver);
-        staxProcessors.addArtifactProcessor(scaDefnProcessor);
-        
-        staxProcessors.addArtifactProcessor(new SimpleIntentProcessor(policyFactory, extensionProcessor));
-        staxProcessors.addArtifactProcessor(new ProfileIntentProcessor(policyFactory, extensionProcessor));
-        staxProcessors.addArtifactProcessor(new QualifiedIntentProcessor(policyFactory, extensionProcessor));
-        staxProcessors.addArtifactProcessor(new PolicySetProcessor(policyFactory, extensionProcessor));
-        staxProcessors.addArtifactProcessor(new ImplementationTypeProcessor(policyFactory, intentAttachPointFactory, extensionProcessor));
-        staxProcessors.addArtifactProcessor(new BindingTypeProcessor(policyFactory, intentAttachPointFactory, extensionProcessor));
+    }
+
+    /**
+     * Constructs a new SCADefinitions processor.
+     * 
+     * @param modelFactories
+     * @param staxProcessor
+     */
+    public SCADefinitionsDocumentProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor<Object> staxProcessor) {
+        this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
+        this.inputFactory = modelFactories.getFactory(XMLInputFactory.class);
     }
     
 
@@ -115,7 +99,7 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
             //urlStream = createInputStream(url);
             XMLStreamReader reader = inputFactory.createXMLStreamReader(url.toString(), urlStream);
             
-            SCADefinitions scaDefns = new SCADefinitionsImpl();
+            SCADefinitions definitions = new SCADefinitionsImpl();
             QName name = null;
             int event;
             while ( reader.hasNext() ) {
@@ -124,18 +108,18 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
                 if ( event == XMLStreamConstants.START_ELEMENT  ||
                     event == XMLStreamConstants.END_ELEMENT ) {
                     name = reader.getName();
-                    if ( name.equals(tuscanyDefinitions) ) {
+                    if ( name.equals(DEFINITIONS_QNAME) ) {
                         if ( event == XMLStreamConstants.END_ELEMENT ) {
-                            return scaDefns;
+                            return definitions;
                         } 
                     } else {
                         SCADefinitions aDefn = (SCADefinitions)extensionProcessor.read(reader);
-                        SCADefinitionsUtil.aggregateSCADefinitions(aDefn, scaDefns);
+                        SCADefinitionsUtil.aggregateSCADefinitions(aDefn, definitions);
                     }
                 }
             }
             
-            return scaDefns;
+            return definitions;
         } catch (XMLStreamException e) {
             throw new ContributionReadException(e);
         } catch (IOException e) {
@@ -154,9 +138,6 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
     }
     
     public void resolve(SCADefinitions scaDefinitions, ModelResolver resolver) throws ContributionResolveException {
-        if ( resolver == null ) {
-            resolver = this.scaDefinitionsResolver;
-        }
         SCADefinitionsUtil.stripDuplicates(scaDefinitions);
         extensionProcessor.resolve(scaDefinitions, resolver);
     }
@@ -169,11 +150,4 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
         return SCADefinitions.class;
     }
 
-    public ModelResolver getSCADefinitionsResolver() {
-        return scaDefinitionsResolver;
-    }
-
-    public void setDomainModelResolver(ModelResolver scaDefnsModelResolver) {
-        this.scaDefinitionsResolver = scaDefnsModelResolver;
-    }
 }

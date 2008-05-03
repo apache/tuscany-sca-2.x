@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
@@ -61,6 +62,7 @@ public class WriteTestCase extends TestCase {
 
     @Override
     public void setUp() throws Exception {
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
         factory = new DefaultAssemblyFactory();
         factories.addFactory(factory);
@@ -68,17 +70,13 @@ public class WriteTestCase extends TestCase {
         factories.addFactory(policyFactory);
         
         inputFactory = XMLInputFactory.newInstance();
-        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
+        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
         
         WebServiceBindingFactory wsFactory = new DefaultWebServiceBindingFactory();
         factories.addFactory(wsFactory);
         WSDLFactory wsdlFactory = new DefaultWSDLFactory();
         factories.addFactory(wsdlFactory);
-
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(new DefaultContributionFactory(), factory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(factory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(factory, policyFactory, staxProcessor));
 
         WebServiceBindingProcessor wsdlProcessor = new WebServiceBindingProcessor(factories);
         staxProcessors.addArtifactProcessor(wsdlProcessor);

@@ -31,8 +31,10 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.validation.Schema;
 
 import org.apache.tuscany.sca.assembly.ConstrainingType;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
@@ -57,6 +59,16 @@ public class ConstrainingTypeDocumentProcessor extends BaseAssemblyProcessor imp
         this.inputFactory = inputFactory;
     }
 
+    /**
+     * Constructs a new constrainingType processor.
+     * @param modelFactories
+     * @param staxProcessor
+     */
+    public ConstrainingTypeDocumentProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor staxProcessor) {
+        super(null, null, staxProcessor);
+        this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
+    }
+    
     public ConstrainingType read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
         InputStream urlStream = null;
         try {

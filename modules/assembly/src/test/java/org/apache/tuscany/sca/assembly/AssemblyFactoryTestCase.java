@@ -30,16 +30,11 @@ import junit.framework.TestCase;
  */
 public class AssemblyFactoryTestCase extends TestCase {
 
-    private AssemblyFactory factory;
+    private AssemblyFactory assemblyFactory;
 
     @Override
     public void setUp() throws Exception {
-        factory = new DefaultAssemblyFactory();
-    }
-
-    @Override
-    public void tearDown() throws Exception {
-        factory = null;
+        assemblyFactory = new DefaultAssemblyFactory();
     }
 
     public void testCreateComponent() {
@@ -62,31 +57,31 @@ public class AssemblyFactoryTestCase extends TestCase {
      * Create a composite
      */
     Composite createComposite() {
-        Composite c = factory.createComposite();
+        Composite c = assemblyFactory.createComposite();
 
         Component c1 = createComponent("AccountServiceComponent1");
         c.getComponents().add(c1);
         Component c2 = createComponent("AccountServiceComponent2");
         c.getComponents().add(c2);
 
-        Wire w = factory.createWire();
+        Wire w = assemblyFactory.createWire();
         w.setSource(c1.getReferences().get(0));
         w.setTarget(c2.getServices().get(0));
         c.getWires().add(w);
 
-        CompositeService cs = factory.createCompositeService();
+        CompositeService cs = assemblyFactory.createCompositeService();
         cs.setName("AccountService");
         cs.setPromotedService(c1.getServices().get(0));
-        cs.setInterfaceContract(new TestInterfaceContract(factory));
+        cs.setInterfaceContract(new TestInterfaceContract(assemblyFactory));
         c.getServices().add(cs);
-        cs.getBindings().add(new TestBinding(factory));
+        cs.getBindings().add(new TestBinding(assemblyFactory));
 
-        CompositeReference cr = factory.createCompositeReference();
+        CompositeReference cr = assemblyFactory.createCompositeReference();
         cr.setName("StockQuoteService");
         cr.getPromotedReferences().add(c2.getReferences().get(1));
-        cr.setInterfaceContract(new TestInterfaceContract(factory));
+        cr.setInterfaceContract(new TestInterfaceContract(assemblyFactory));
         c.getReferences().add(cr);
-        cr.getBindings().add(new TestBinding(factory));
+        cr.getBindings().add(new TestBinding(assemblyFactory));
 
         return c;
     }
@@ -95,16 +90,16 @@ public class AssemblyFactoryTestCase extends TestCase {
      * Create a new component
      */
     Component createComponent(String name) {
-        Component c = factory.createComponent();
+        Component c = assemblyFactory.createComponent();
         c.setName(name);
 
         ConstrainingType constraint = createConstrainingType();
         c.setConstrainingType(constraint);
 
-        Implementation i = new TestImplementation(factory);
+        Implementation i = new TestImplementation(assemblyFactory);
         c.setImplementation(i);
 
-        ComponentProperty p = factory.createComponentProperty();
+        ComponentProperty p = assemblyFactory.createComponentProperty();
         p.setName("currency");
         p.setValue("USD");
         p.setMustSupply(true);
@@ -112,28 +107,28 @@ public class AssemblyFactoryTestCase extends TestCase {
         p.setProperty(i.getProperties().get(0));
         c.getProperties().add(p);
 
-        ComponentReference ref1 = factory.createComponentReference();
+        ComponentReference ref1 = assemblyFactory.createComponentReference();
         ref1.setName("accountDataService");
         ref1.setMultiplicity(Multiplicity.ONE_ONE);
-        ref1.setInterfaceContract(new TestInterfaceContract(factory));
+        ref1.setInterfaceContract(new TestInterfaceContract(assemblyFactory));
         ref1.setReference(i.getReferences().get(0));
         c.getReferences().add(ref1);
-        ref1.getBindings().add(new TestBinding(factory));
+        ref1.getBindings().add(new TestBinding(assemblyFactory));
 
-        ComponentReference ref2 = factory.createComponentReference();
+        ComponentReference ref2 = assemblyFactory.createComponentReference();
         ref2.setName("stockQuoteService");
         ref2.setMultiplicity(Multiplicity.ONE_ONE);
-        ref2.setInterfaceContract(new TestInterfaceContract(factory));
+        ref2.setInterfaceContract(new TestInterfaceContract(assemblyFactory));
         ref2.setReference(i.getReferences().get(1));
         c.getReferences().add(ref2);
-        ref2.getBindings().add(new TestBinding(factory));
+        ref2.getBindings().add(new TestBinding(assemblyFactory));
 
-        ComponentService s = factory.createComponentService();
+        ComponentService s = assemblyFactory.createComponentService();
         s.setName("AccountService");
-        s.setInterfaceContract(new TestInterfaceContract(factory));
+        s.setInterfaceContract(new TestInterfaceContract(assemblyFactory));
         s.setService(i.getServices().get(0));
         c.getServices().add(s);
-        s.getBindings().add(new TestBinding(factory));
+        s.getBindings().add(new TestBinding(assemblyFactory));
 
         return c;
     }
@@ -144,34 +139,34 @@ public class AssemblyFactoryTestCase extends TestCase {
      * @return
      */
     ComponentType createComponentType() {
-        ComponentType ctype = factory.createComponentType();
+        ComponentType ctype = assemblyFactory.createComponentType();
 
-        Property p = factory.createProperty();
+        Property p = assemblyFactory.createProperty();
         p.setName("currency");
         p.setValue("USD");
         p.setMustSupply(true);
         p.setXSDType(new QName("", ""));
         ctype.getProperties().add(p);
 
-        Reference ref1 = factory.createReference();
+        Reference ref1 = assemblyFactory.createReference();
         ref1.setName("accountDataService");
-        ref1.setInterfaceContract(new TestInterfaceContract(factory));
+        ref1.setInterfaceContract(new TestInterfaceContract(assemblyFactory));
         ref1.setMultiplicity(Multiplicity.ONE_ONE);
         ctype.getReferences().add(ref1);
-        ref1.getBindings().add(new TestBinding(factory));
+        ref1.getBindings().add(new TestBinding(assemblyFactory));
 
-        Reference ref2 = factory.createReference();
+        Reference ref2 = assemblyFactory.createReference();
         ref2.setName("stockQuoteService");
-        ref2.setInterfaceContract(new TestInterfaceContract(factory));
+        ref2.setInterfaceContract(new TestInterfaceContract(assemblyFactory));
         ref2.setMultiplicity(Multiplicity.ONE_ONE);
         ctype.getReferences().add(ref2);
-        ref2.getBindings().add(new TestBinding(factory));
+        ref2.getBindings().add(new TestBinding(assemblyFactory));
 
-        Service s = factory.createService();
+        Service s = assemblyFactory.createService();
         s.setName("AccountService");
-        s.setInterfaceContract(new TestInterfaceContract(factory));
+        s.setInterfaceContract(new TestInterfaceContract(assemblyFactory));
         ctype.getServices().add(s);
-        s.getBindings().add(new TestBinding(factory));
+        s.getBindings().add(new TestBinding(assemblyFactory));
 
         return ctype;
     }
@@ -182,30 +177,30 @@ public class AssemblyFactoryTestCase extends TestCase {
      * @return
      */
     ConstrainingType createConstrainingType() {
-        ConstrainingType ctype = factory.createConstrainingType();
+        ConstrainingType ctype = assemblyFactory.createConstrainingType();
 
-        AbstractProperty p = factory.createAbstractProperty();
+        AbstractProperty p = assemblyFactory.createAbstractProperty();
         p.setName("currency");
         p.setValue("USD");
         p.setMustSupply(true);
         p.setXSDType(new QName("", ""));
         ctype.getProperties().add(p);
 
-        AbstractReference ref1 = factory.createAbstractReference();
+        AbstractReference ref1 = assemblyFactory.createAbstractReference();
         ref1.setName("accountDataService");
-        ref1.setInterfaceContract(new TestInterfaceContract(factory));
+        ref1.setInterfaceContract(new TestInterfaceContract(assemblyFactory));
         ref1.setMultiplicity(Multiplicity.ONE_ONE);
         ctype.getReferences().add(ref1);
 
-        AbstractReference ref2 = factory.createAbstractReference();
+        AbstractReference ref2 = assemblyFactory.createAbstractReference();
         ref2.setName("stockQuoteService");
-        ref2.setInterfaceContract(new TestInterfaceContract(factory));
+        ref2.setInterfaceContract(new TestInterfaceContract(assemblyFactory));
         ref2.setMultiplicity(Multiplicity.ONE_ONE);
         ctype.getReferences().add(ref2);
 
-        AbstractService s = factory.createAbstractService();
+        AbstractService s = assemblyFactory.createAbstractService();
         s.setName("AccountService");
-        s.setInterfaceContract(new TestInterfaceContract(factory));
+        s.setInterfaceContract(new TestInterfaceContract(assemblyFactory));
         ctype.getServices().add(s);
 
         return ctype;

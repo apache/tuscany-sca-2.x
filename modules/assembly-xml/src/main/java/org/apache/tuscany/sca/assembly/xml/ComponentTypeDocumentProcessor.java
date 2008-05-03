@@ -30,8 +30,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
@@ -53,6 +55,16 @@ public class ComponentTypeDocumentProcessor extends BaseAssemblyProcessor implem
     public ComponentTypeDocumentProcessor(StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory) {
         super(null, null, staxProcessor);
         this.inputFactory = inputFactory;
+    }
+    
+    /**
+     * Constructs a new componentType processor.
+     * @param modelFactories
+     * @param staxProcessor
+     */
+    public ComponentTypeDocumentProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor staxProcessor) {
+        super(null, null, staxProcessor);
+        this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
     }
     
     public ComponentType read(URL contributionURL, URI uri, URL url) throws ContributionReadException {

@@ -28,6 +28,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -65,12 +66,18 @@ public class ExtensibleStAXArtifactProcessor
         this.processors = processors;
         this.inputFactory = inputFactory;
         this.outputFactory = outputFactory;
-        this.outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.TRUE);
+        if (this.outputFactory != null) {
+            this.outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.TRUE);
+        }
     }
 
     public Object read(XMLStreamReader source) throws ContributionReadException, XMLStreamException {
         
         // Delegate to the processor associated with the element QName
+        int event = source.getEventType();
+        if (event == XMLStreamConstants.START_DOCUMENT) {
+            source.nextTag();
+        }
         QName name = source.getName();
         StAXArtifactProcessor<?> processor = (StAXArtifactProcessor<?>)processors.getProcessor(name);
         if (processor == null) {

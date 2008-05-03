@@ -64,6 +64,10 @@ import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
@@ -104,9 +108,10 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
     @Reference(required=false)
     public LocalItemCollection processCollection;
 
+    private ExtensionPointRegistry extensionPoints;
     private ModelFactoryExtensionPoint modelFactories;
     private AssemblyFactory assemblyFactory;
-    private CompositeProcessor compositeProcessor;
+    private StAXArtifactProcessor<Composite> compositeProcessor;
     private XMLOutputFactory outputFactory;
     private DocumentBuilder documentBuilder;
     
@@ -117,7 +122,8 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
     public void initialize() throws ParserConfigurationException {
         
         // Create factories
-        modelFactories = new DefaultModelFactoryExtensionPoint();
+        extensionPoints = new DefaultExtensionPointRegistry();
+        modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
@@ -125,7 +131,8 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
         // Create composite processor
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
-        compositeProcessor = new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, null);
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        compositeProcessor = staxProcessors.getProcessor(Composite.class);
 
         // Create a document builder (used to pretty print XML)
         documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();

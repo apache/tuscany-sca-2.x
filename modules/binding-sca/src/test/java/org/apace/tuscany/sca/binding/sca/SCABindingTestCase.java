@@ -21,64 +21,58 @@ package org.apace.tuscany.sca.binding.sca;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
+import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.CompositeModelResolver;
-import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.binding.sca.impl.SCABindingFactoryImpl;
-import org.apache.tuscany.sca.contribution.DefaultContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
-import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
-import org.junit.After;
+import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * SCABindingTestCase
+ *
+ * @version $Rev$ $Date$
+ */
 public class SCABindingTestCase {
 	
     private XMLInputFactory inputFactory;
-    private DefaultStAXArtifactProcessorExtensionPoint staxProcessors;
-    private ExtensibleStAXArtifactProcessor staxProcessor; 
+    private StAXArtifactProcessor<Object> staxProcessor; 
     private CompositeModelResolver resolver; 
-    private AssemblyFactory assemblyFactory;
-    private SCABindingFactory scaBindingFactory;
-    private PolicyFactory policyFactory;
-    private InterfaceContractMapper mapper;
+    private CompositeBuilder compositeBuilder;
 
     @Before
     public void init() throws Exception { 
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
-        staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(new DefaultModelFactoryExtensionPoint());
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
+
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
+        
         resolver = new CompositeModelResolver(null, null);
-        assemblyFactory = new DefaultAssemblyFactory();
-        scaBindingFactory = new SCABindingFactoryImpl();
-        policyFactory = new DefaultPolicyFactory();
-        mapper = new InterfaceContractMapperImpl();    	
-    }
-    
-    @After
-    public void destroy() throws Exception {
-        inputFactory = null;
-        staxProcessors = null;
-        resolver = null;
-        policyFactory = null;
-        assemblyFactory = null;
-        mapper = null;    	
+        
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
+        IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
+        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
+        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper, null);
+        
     }
     
     @Test
@@ -91,18 +85,16 @@ public class SCABindingTestCase {
     public void testBuildModel() {
     	try{
 	        InputStream is = getClass().getResourceAsStream("/Calculator.composite");      
-	        CompositeProcessor compositeReader = new CompositeProcessor(new DefaultContributionFactory(), assemblyFactory, policyFactory, staxProcessor);
 	        XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-	        Composite composite = compositeReader.read(reader);
+	        Composite composite = (Composite)staxProcessor.read(reader);
 	        
 	        is.close();
 	        Assert.assertNotNull(composite);
 	        
 	        resolver.addModel(composite);
 	       
-	        compositeReader.resolve(composite, resolver);
+	        staxProcessor.resolve(composite, resolver);
 	        
-	        CompositeBuilderImpl compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, new DefaultIntentAttachPointTypeFactory(), mapper, null);
 	        compositeBuilder.build(composite);
 	        
 	        SCABinding referenceSCABinding = (SCABinding) composite.getComponents().get(0).getReferences().get(0).getBindings().get(0);

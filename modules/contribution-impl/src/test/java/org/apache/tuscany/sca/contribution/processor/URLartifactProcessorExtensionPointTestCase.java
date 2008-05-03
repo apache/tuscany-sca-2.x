@@ -24,10 +24,11 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 
 /**
@@ -42,7 +43,8 @@ public class URLartifactProcessorExtensionPointTestCase extends TestCase {
     
     @Override
     protected void setUp() throws Exception {
-        artifactProcessors = new DefaultURLArtifactProcessorExtensionPoint((ModelFactoryExtensionPoint)null);
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        artifactProcessors = new DefaultURLArtifactProcessorExtensionPoint(extensionPoints);
         artifactProcessors.addArtifactProcessor(new FileTypeArtifactProcessor());
         artifactProcessors.addArtifactProcessor(new FileNameArtifactProcessor());
     }

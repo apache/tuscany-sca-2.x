@@ -36,10 +36,6 @@ public class PolicyReadTestCase extends TestCase {
     public void setUp() throws Exception {
     }
 
-    @Override
-    public void tearDown() throws Exception {
-    }
-
     public void testPolicyReading() throws Exception {
 
         TransactionPolicyProcessor processor = new TransactionPolicyProcessor(null);

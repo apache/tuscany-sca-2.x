@@ -53,6 +53,10 @@ import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.contribution.service.ExtensibleContributionListener;
 import org.apache.tuscany.sca.contribution.service.util.IOHelper;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
+import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.policy.Intent;
+import org.apache.tuscany.sca.policy.IntentAttachPointType;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Service interface that manages artifacts contributed to a Tuscany runtime.
@@ -119,10 +123,9 @@ public class ContributionServiceImpl implements ContributionService {
     private ContributionFactory contributionFactory;
     
     
-    private ModelResolver domainResolver;
+    private ModelResolver policyDefinitionsResolver;
 
-
-    private List scaDefinitionsSink = null; 
+    private List policyDefinitions; 
     
     private String COMPOSITE_FILE_EXTN = ".composite";    
 
@@ -131,13 +134,13 @@ public class ContributionServiceImpl implements ContributionService {
                                    URLArtifactProcessor documentProcessor,
                                    StAXArtifactProcessor staxProcessor,
                                    ExtensibleContributionListener contributionListener,
-                                   ModelResolver domainResolver,
+                                   ModelResolver policyDefinitionsResolver,
                                    ModelResolverExtensionPoint modelResolvers,
                                    ModelFactoryExtensionPoint modelFactories,
                                    AssemblyFactory assemblyFactory,
                                    ContributionFactory contributionFactory,
                                    XMLInputFactory xmlFactory,
-                                   List scaDefnSink) {
+                                   List<SCADefinitions> policyDefinitions) {
         super();
         this.contributionRepository = repository;
         this.packageProcessor = packageProcessor;
@@ -149,8 +152,8 @@ public class ContributionServiceImpl implements ContributionService {
         this.xmlFactory = xmlFactory;
         this.assemblyFactory = assemblyFactory;
         this.contributionFactory = contributionFactory;
-        this.domainResolver = domainResolver;
-        this.scaDefinitionsSink = scaDefnSink;
+        this.policyDefinitionsResolver = policyDefinitionsResolver;
+        this.policyDefinitions = policyDefinitions;
     }
 
     public Contribution contribute(String contributionURI, URL sourceURL, boolean storeInRepository)
@@ -232,7 +235,7 @@ public class ContributionServiceImpl implements ContributionService {
         Contribution contributionMetadata = contributionFactory.createContribution();
 
         ContributionMetadataDocumentProcessor metadataDocumentProcessor =
-            new ContributionMetadataDocumentProcessor(staxProcessor, xmlFactory);
+            new ContributionMetadataDocumentProcessor(modelFactories, staxProcessor);
         
         final URL[] urls = {sourceURL};
         // Allow access to create classloader. Requires RuntimePermission in security policy.
@@ -313,7 +316,7 @@ public class ContributionServiceImpl implements ContributionService {
         if (modelResolver == null) {
             //FIXME Remove this domain resolver, visibility of policy declarations should be handled by
             // the contribution import/export mechanism instead of this domainResolver hack.
-            modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories, domainResolver);
+            modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories, policyDefinitionsResolver);
         }
 
         //set contribution initial information
@@ -426,8 +429,26 @@ public class ContributionServiceImpl implements ContributionService {
                     // Add the loaded model to the model resolver
                     modelResolver.addModel(model);
                     
-                    if ( isSCADefnsFile(anArtifactUri) ) {
-                        scaDefinitionsSink.add(model);
+                    // Add policy definitions to the list of policy definitions
+                    if (model instanceof SCADefinitions) { 
+                        policyDefinitions.add(model);
+                        
+                        SCADefinitions definitions = (SCADefinitions)model;
+                        for (Intent intent : definitions.getPolicyIntents() ) {
+                            policyDefinitionsResolver.addModel(intent);
+                        }
+                        
+                        for (PolicySet policySet : definitions.getPolicySets() ) {
+                            policyDefinitionsResolver.addModel(policySet);
+                        }
+                        
+                        for (IntentAttachPointType attachPointType : definitions.getBindingTypes() ) {
+                            policyDefinitionsResolver.addModel(attachPointType);
+                        }
+                        
+                        for (IntentAttachPointType attachPointType : definitions.getImplementationTypes() ) {
+                            policyDefinitionsResolver.addModel(attachPointType);
+                        }
                     }
                 }
             }
@@ -495,13 +516,5 @@ public class ContributionServiceImpl implements ContributionService {
         }
         contribution.getDeployables().clear();
         contribution.getDeployables().addAll(resolvedDeployables);
-    }
-
-    private boolean isSCADefnsFile(URI uri) {
-        int index = uri.toString().lastIndexOf("/");
-
-        index = (index != -1) ? index + 1 : 0;
-
-        return uri.toString().substring(index).equals("definitions.xml");
     }
 }

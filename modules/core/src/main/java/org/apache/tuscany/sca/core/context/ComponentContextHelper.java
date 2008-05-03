@@ -46,7 +46,6 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
-import org.apache.tuscany.sca.core.assembly.ReferenceParameterProcessor;
 import org.apache.tuscany.sca.core.invocation.ThreadMessageContext;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
@@ -79,7 +78,6 @@ public class ComponentContextHelper {
         this.assemblyFactory = assemblyFactory;
         this.javaInterfaceFactory = javaInterfaceFactory;
         this.staxProcessors = processors;
-        staxProcessors.addArtifactProcessor(new ReferenceParameterProcessor());
     }
 
     /**

@@ -17,17 +17,26 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.assembly.dsl;
+package org.apache.tuscany.sca.contribution.processor;
 
-import junit.framework.TestCase;
+import javax.xml.stream.XMLInputFactory;
 
-public class BigBankBuilderTestCase extends TestCase {
+/**
+ * Base marker class for validating XML input factories.
+ *
+ * @version $Rev$ $Date$
+ */
+public abstract class ValidatingXMLInputFactory extends XMLInputFactory {
 
-    public void testBuild() throws Exception {
-
-        BigBankBuilder builder = new BigBankBuilder();
-        CompositeBuilder domain = builder.build();
-        assertNotNull(domain);
+    /**
+     * Create a new default validating XML input factory. 
+     * @return
+     */
+    public static ValidatingXMLInputFactory newInstance() {
+        return new DefaultValidatingXMLInputFactory(
+                                                    XMLInputFactory.newInstance(),
+                                                    new DefaultValidationSchemaExtensionPoint(),
+                                                    null);
     }
 
 }

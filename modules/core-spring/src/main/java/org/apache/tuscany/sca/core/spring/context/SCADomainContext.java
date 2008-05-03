@@ -24,6 +24,8 @@ import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
@@ -39,7 +41,10 @@ import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
+import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.spring.assembly.impl.BeanAssemblyFactory;
 import org.apache.tuscany.sca.core.spring.implementation.java.impl.BeanJavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
@@ -89,15 +94,14 @@ public class SCADomainContext {
         beanFactory = new DefaultListableBeanFactory();
 
         // Create SCA assembly and SCA Java factories
-        ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
+        DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = new BeanAssemblyFactory(new DefaultAssemblyFactory(), beanFactory);
         modelFactories.addFactory(assemblyFactory);
-        SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
-        PolicyFactory policyFactory = new DefaultPolicyFactory();
-        modelFactories.addFactory(policyFactory);
-        ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         InterfaceContractMapper interfaceContractMapper = new InterfaceContractMapperImpl();
-        JavaInterfaceFactory javaFactory = new DefaultJavaInterfaceFactory(modelFactories);
+        JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+        PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         modelFactories.addFactory(javaFactory);
         JavaImplementationFactory javaImplementationFactory = new BeanJavaImplementationFactory(beanFactory);
         modelFactories.addFactory(javaImplementationFactory);
@@ -124,14 +128,8 @@ public class SCADomainContext {
         }
 
         // Populate ArtifactProcessor registry
-        DefaultStAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(modelFactories);
-        ExtensibleStAXArtifactProcessor staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, XMLInputFactory.newInstance(), XMLOutputFactory.newInstance());
-        CompositeProcessor compositeProcessor = new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, staxProcessor);
-        staxProcessors.addArtifactProcessor(compositeProcessor);
-        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
-        staxProcessors.addArtifactProcessor(new JavaInterfaceProcessor(modelFactories));
-        staxProcessors.addArtifactProcessor(new JavaImplementationProcessor(modelFactories));
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
+        StAXArtifactProcessor<Composite> compositeProcessor = staxProcessors.getProcessor(Composite.class);
         
         // Create a resolver
         //FIXME The ClassLoader should be passed in 
@@ -139,12 +137,14 @@ public class SCADomainContext {
         ModelResolverImpl resolver = new ModelResolverImpl(classLoader);
 
         try {
+            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
             
             // Read the composite files
             List<Composite> composites = new ArrayList<Composite>();
             for (String compositeFile: compositeFiles) {
                 InputStream is = classLoader.getResourceAsStream(compositeFile);
-                Composite composite = staxProcessor.read(is, Composite.class);
+                XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+                Composite composite = compositeProcessor.read(reader);
                 resolver.addModel(composite);
                 composites.add(composite);
             }
@@ -162,7 +162,9 @@ public class SCADomainContext {
             throw new RuntimeException(e);
         } catch (CompositeBuilderException e) {
             throw new RuntimeException(e);
-        }
+        } catch (XMLStreamException e) {
+            throw new RuntimeException(e);
+        } 
     }
     
     private void buildComposite(Composite composite, AssemblyFactory assemblyFactory,

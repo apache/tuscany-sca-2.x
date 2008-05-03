@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.policy.xml;
 
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.ProfileIntent;
 
@@ -28,8 +28,12 @@ import org.apache.tuscany.sca.policy.ProfileIntent;
  */
 public class ProfileIntentProcessor extends PolicyIntentProcessor<ProfileIntent> {
 
-    public ProfileIntentProcessor(PolicyFactory policyFactory, StAXArtifactProcessor<Object> extensionProcessor) {
-        super(policyFactory, extensionProcessor);
+    public ProfileIntentProcessor(PolicyFactory policyFactory) {
+        super(policyFactory);
+    }
+    
+    public ProfileIntentProcessor(ModelFactoryExtensionPoint modelFactories) {
+        super(modelFactories);
     }
 
     public Class<ProfileIntent> getModelType() {

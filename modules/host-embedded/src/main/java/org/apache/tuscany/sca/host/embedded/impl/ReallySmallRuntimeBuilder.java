@@ -30,17 +30,15 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.DomainBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.assembly.builder.impl.DomainWireBuilderImpl;
 import org.apache.tuscany.sca.assembly.xml.ComponentTypeDocumentProcessor;
-import org.apache.tuscany.sca.assembly.xml.ComponentTypeProcessor;
 import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
-import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeDocumentProcessor;
-import org.apache.tuscany.sca.assembly.xml.ConstrainingTypeProcessor;
 import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -64,7 +62,6 @@ import org.apache.tuscany.sca.contribution.service.TypeDescriber;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionRepositoryImpl;
 import org.apache.tuscany.sca.contribution.service.impl.ContributionServiceImpl;
 import org.apache.tuscany.sca.contribution.service.impl.PackageTypeDescriberImpl;
-import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
@@ -87,7 +84,6 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
@@ -97,7 +93,7 @@ import org.apache.tuscany.sca.work.WorkScheduler;
 
 public class ReallySmallRuntimeBuilder {
     
-	private final static Logger logger = Logger.getLogger(ReallySmallRuntimeBuilder.class.getName());
+    private final static Logger logger = Logger.getLogger(ReallySmallRuntimeBuilder.class.getName());
 	
     public static ProxyFactory createProxyFactory(ExtensionPointRegistry registry,
                                                   InterfaceContractMapper mapper,
@@ -156,14 +152,14 @@ public class ReallySmallRuntimeBuilder {
                                                           SCABindingFactory scaBindingFactory,
                                                           IntentAttachPointTypeFactory intentAttachPointTypeFactory,
                                                           InterfaceContractMapper interfaceContractMapper,
-                                                          SCADefinitions scaDefns) {
+                                                          SCADefinitions policyDefinitions) {
       
         
         return new CompositeBuilderImpl(assemblyFactory, 
                                         scaBindingFactory, 
                                         intentAttachPointTypeFactory, 
                                         interfaceContractMapper,
-                                        scaDefns,
+                                        policyDefinitions,
                                         monitor);
     }
     
@@ -185,9 +181,13 @@ public class ReallySmallRuntimeBuilder {
                                                                 AssemblyFactory assemblyFactory,
                                                                 PolicyFactory policyFactory,
                                                                 InterfaceContractMapper mapper,
-                                                                List scaDefinitionsSink,
+                                                                List<SCADefinitions> policyDefinitions,
+                                                                ModelResolver policyDefinitionResolver,
                                                                 Monitor monitor)
         throws ActivationException {
+
+        // Get the model factory extension point
+        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
 
         // Create a new XML input factory
         // Allow privileged access to factory. Requires RuntimePermission in security policy file.
@@ -195,7 +195,8 @@ public class ReallySmallRuntimeBuilder {
             public XMLInputFactory run() {
                 return XMLInputFactory.newInstance();
             }
-        });           
+        });
+        modelFactories.addFactory(inputFactory);
         
         // Create a validation XML schema extension point
         ValidationSchemaExtensionPoint schemas = registry.getExtensionPoint(ValidationSchemaExtensionPoint.class);
@@ -207,10 +208,10 @@ public class ReallySmallRuntimeBuilder {
             }
         });           
         schemas.addSchema(schemaURL.toString());
-        
        
         // Create a validating XML input factory
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, monitor);
+        modelFactories.addFactory(validatingInputFactory);
         
         // Create StAX artifact processor extension point
         StAXArtifactProcessorExtensionPoint staxProcessors =
@@ -225,31 +226,14 @@ public class ReallySmallRuntimeBuilder {
         });           
         ExtensibleStAXArtifactProcessor staxProcessor =
             new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
-        staxProcessors.addArtifactProcessor(new CompositeProcessor(contributionFactory, assemblyFactory, policyFactory, staxProcessor, monitor));
-        staxProcessors.addArtifactProcessor(new ComponentTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
-        staxProcessors
-            .addArtifactProcessor(new ConstrainingTypeProcessor(assemblyFactory, policyFactory, staxProcessor));
-
-        // Register StAX processors for Contribution Metadata
-        staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory,
-                                                                              staxProcessor));
 
         // Create URL artifact processor extension point
         URLArtifactProcessorExtensionPoint documentProcessors =
             registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
 
         // Create and register document processors for SCA assembly XML
-        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, validatingInputFactory, scaDefinitionsSink));
-        documentProcessors.addArtifactProcessor(new ComponentTypeDocumentProcessor(staxProcessor, validatingInputFactory));
-        documentProcessors.addArtifactProcessor(new ConstrainingTypeDocumentProcessor(staxProcessor, validatingInputFactory));
-
-        // Create and register document processor for definitions.xml
-        //TODO No XMLSchema validation for definitions.xml for now
-        // as the XSD for it is not quite right yet
-        SCADefinitionsDocumentProcessor definitionsDocumentProcessor =
-            new SCADefinitionsDocumentProcessor(staxProcessors, staxProcessor, inputFactory, policyFactory);
-        documentProcessors.addArtifactProcessor(definitionsDocumentProcessor);
-        ModelResolver domainModelResolver = definitionsDocumentProcessor.getSCADefinitionsResolver();
+        documentProcessors.getProcessor(Composite.class);
+        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, validatingInputFactory, policyDefinitions));
 
         // Create Model Resolver extension point
         ModelResolverExtensionPoint modelResolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);
@@ -258,9 +242,6 @@ public class ReallySmallRuntimeBuilder {
         TypeDescriber describer = new PackageTypeDescriberImpl();
         PackageProcessor packageProcessor =
             new ExtensiblePackageProcessor(registry.getExtensionPoint(PackageProcessorExtensionPoint.class), describer);
-
-        // Get the model factory extension point
-        ModelFactoryExtensionPoint modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
 
         // Create contribution listener
         ExtensibleContributionListener contributionListener =
@@ -279,8 +260,8 @@ public class ReallySmallRuntimeBuilder {
         // Create the contribution service
         ContributionService contributionService =
             new ContributionServiceImpl(repository, packageProcessor, documentProcessor, staxProcessor,
-                                        contributionListener, domainModelResolver, modelResolvers, modelFactories,
-                                        assemblyFactory, contributionFactory, inputFactory, scaDefinitionsSink);
+                                        contributionListener, policyDefinitionResolver, modelResolvers, modelFactories,
+                                        assemblyFactory, contributionFactory, inputFactory, policyDefinitions);
         return contributionService;
     }
 

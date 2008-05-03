@@ -24,6 +24,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
@@ -32,11 +33,21 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 
 /**
+ * Artifact processor for reference parameters.
+ * 
  * @version $Rev$ $Date$
  */
 public class ReferenceParameterProcessor implements StAXArtifactProcessor<ReferenceParameters> {
     private final static QName REFERENCE_PARAMETERS =
         new QName("http://tuscany.apache.org/xmlns/sca/1.0", "referenceParameters", "tuscany");
+
+    /**
+     * Constructs a new processor.
+     * 
+     * @param modelFactories
+     */
+    public ReferenceParameterProcessor(ModelFactoryExtensionPoint modelFactories) {
+    }
 
     /**
      * @see org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor#getArtifactType()

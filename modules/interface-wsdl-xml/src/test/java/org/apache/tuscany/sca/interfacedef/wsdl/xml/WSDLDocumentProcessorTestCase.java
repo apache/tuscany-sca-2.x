@@ -58,12 +58,12 @@ public class WSDLDocumentProcessorTestCase extends AbstractWSDLTestCase {
     public void testWSDL() throws Exception {
        
         URL url = getClass().getResource("/wsdl/helloworld-service.wsdl");
-        WSDLDefinition definition = processor.read(null, URI.create("wsdl/helloworld-service.wsdl"), url);
+        WSDLDefinition definition = (WSDLDefinition)documentProcessor.read(null, URI.create("wsdl/helloworld-service.wsdl"), url);
         
         Assert.assertNull(definition.getDefinition());
         Assert.assertEquals("http://helloworld", definition.getNamespace());
         URL url1 = getClass().getResource("/wsdl/helloworld-interface.wsdl");
-        WSDLDefinition definition1 = processor.read(null, URI.create("wsdl/helloworld-interface.wsdl"), url1);
+        WSDLDefinition definition1 = (WSDLDefinition)documentProcessor.read(null, URI.create("wsdl/helloworld-interface.wsdl"), url1);
         Assert.assertNull(definition1.getDefinition());
         Assert.assertEquals("http://helloworld", definition1.getNamespace());
 
