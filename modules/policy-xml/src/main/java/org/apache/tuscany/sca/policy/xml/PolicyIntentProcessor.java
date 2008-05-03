@@ -276,9 +276,11 @@ abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactP
         
         resolveContrainedArtifacts(policyIntent, resolver);
 
+        /* This is too late in the processing
         if ( !policyIntent.isUnresolved() ) {
             resolver.addModel(policyIntent);
         }
+        */
     }
     
     public QName getArtifactType() {

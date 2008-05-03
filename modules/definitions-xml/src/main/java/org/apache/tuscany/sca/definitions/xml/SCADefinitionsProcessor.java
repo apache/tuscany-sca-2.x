@@ -163,6 +163,29 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
     }
     
     public void resolve(SCADefinitions scaDefns, ModelResolver resolver) throws ContributionResolveException {
+        // start by adding all of the top level artifacts into the resolver as there
+        // are many cross artifact references in a definitions file and we don't want
+        // to be dependent on the order things appear
+        
+        for (Intent policyIntent : scaDefns.getPolicyIntents()) {
+            resolver.addModel(policyIntent);
+        }
+        
+        for (PolicySet policySet : scaDefns.getPolicySets()) {
+            resolver.addModel(policySet);
+        }
+        
+        for (IntentAttachPointType bindingType : scaDefns.getBindingTypes()) {
+            resolver.addModel(bindingType);
+        }
+        
+        for (IntentAttachPointType implType : scaDefns.getImplementationTypes()) {
+            resolver.addModel(implType);
+        }
+        
+        // now resolve everything to ensure that any references between
+        // artifacts are satisfied
+        
         for (int count = 0, size = scaDefns.getPolicyIntents().size(); count < size; count++) {
             Intent intent = scaDefns.getPolicyIntents().get(count);
             extensionProcessor.resolve(intent, resolver);
