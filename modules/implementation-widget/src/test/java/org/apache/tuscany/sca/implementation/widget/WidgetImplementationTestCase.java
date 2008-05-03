@@ -43,7 +43,6 @@ public class WidgetImplementationTestCase extends TestCase {
     
     public void testPing() throws Exception {
         new Socket("127.0.0.1", 8085);
-        //System.in.read();
     }
 
 }

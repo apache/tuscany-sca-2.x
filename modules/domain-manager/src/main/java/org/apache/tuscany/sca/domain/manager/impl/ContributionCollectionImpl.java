@@ -52,7 +52,6 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -79,7 +78,6 @@ import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
@@ -115,7 +113,6 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     private ExtensionPointRegistry extensionPoints;
     private Monitor monitor;
     private ContributionFactory contributionFactory;
-    private AssemblyFactory assemblyFactory;
     private WorkspaceFactory workspaceFactory;
     private StAXArtifactProcessor<Object> staxProcessor;
     private URLArtifactProcessor<Object> urlProcessor;
@@ -143,9 +140,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-        assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class);
-        PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
         
         // Create model resolvers
         ModelResolverExtensionPoint modelResolvers = new DefaultModelResolverExtensionPoint();

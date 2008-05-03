@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.itest.domain;
 
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -31,55 +29,33 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.SCABindingFactory;
-import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
-import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
-import org.apache.tuscany.sca.contribution.service.ContributionListener;
-import org.apache.tuscany.sca.contribution.service.ContributionListenerExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
-import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
-import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
-import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
-import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
 import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
-import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
+import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
 import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
-import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
-import org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -93,32 +69,20 @@ public class ContributionSPIsTestCase {
     
      final static Logger logger = Logger.getLogger(ContributionSPIsTestCase.class.getName());
     
-    static ModelFactoryExtensionPoint modelFactories;
-    static ContributionFactory contributionFactory;
-    static AssemblyFactory assemblyFactory;
-    static WorkspaceFactory workspaceFactory;  
-    static PolicyFactory policyFactory;
-    static XMLInputFactory inputFactory;
-    static XMLOutputFactory outputFactory;    
+    private static ModelFactoryExtensionPoint modelFactories;
+    private static WorkspaceFactory workspaceFactory;  
+    private static XMLOutputFactory outputFactory;    
     
-    static ModelResolverExtensionPoint modelResolvers;
+    private static ModelResolverExtensionPoint modelResolvers;
     
-    static StAXArtifactProcessorExtensionPoint staxProcessors;
-    static StAXArtifactProcessor<Object> staxProcessor;
-    static URLArtifactProcessorExtensionPoint urlProcessors;
-    static URLArtifactProcessor<Object> urlProcessor;
-    static URLArtifactProcessor<Contribution> contributionInfoProcessor;
-    static URLArtifactProcessor<Contribution> contributionContentProcessor;
-    static StAXArtifactProcessor<Composite> compositeProcessor;
+    private static URLArtifactProcessorExtensionPoint urlProcessors;
+    private static URLArtifactProcessor<Contribution> contributionInfoProcessor;
+    private static URLArtifactProcessor<Contribution> contributionContentProcessor;
     
-    static Workspace workspace;
+    private static Workspace workspace;
     
-    static List<String> problems = new ArrayList<String>();
-    static Monitor dependencyBuilderMonitor;
-    static ContributionDependencyBuilderImpl analyzer;
-    static List<ContributionListener> contributionListeners;
-    
-    static CompositeBuilder compositeBuilder;
+    private static List<String> problems = new ArrayList<String>();
+    private static ContributionDependencyBuilder dependencyBuilder;
     
     @BeforeClass
     public static void init() throws Exception {
@@ -133,55 +97,26 @@ public class ContributionSPIsTestCase {
             
             // Create model factories
             modelFactories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
-            contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-            assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-            inputFactory = modelFactories.getFactory(XMLInputFactory.class);
             outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
             outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
-            contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-            policyFactory = modelFactories.getFactory(PolicyFactory.class); 
             workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class);
             
             // Create model resolvers
             modelResolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);
 
             // Create artifact processors
-            staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-            staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
-            compositeProcessor = (StAXArtifactProcessor<Composite>)staxProcessors.getProcessor(Composite.class);
-           
             urlProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-            urlProcessor = new ExtensibleURLArtifactProcessor(urlProcessors);
                  
             // Create contribution processor
-            contributionInfoProcessor = new ContributionInfoProcessor(modelFactories, modelResolvers, urlProcessor);
-            contributionContentProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor);
-            contributionListeners = registry.getExtensionPoint(ContributionListenerExtensionPoint.class).getContributionListeners();            
+            contributionInfoProcessor = urlProcessors.getProcessor("contribution/info");
+            contributionContentProcessor = urlProcessors.getProcessor("contribution/content");
             
             // Create workspace model to hold contribution information
             workspace = workspaceFactory.createWorkspace();
             
-            // create a dependency builder 
-            dependencyBuilderMonitor = new Monitor() {
-                    public void problem(Problem problem) {
-                        problems.add(problem.getMessageId() + " " + problem.getProblemObject().toString());
-                    }
-                };
-                
             MonitorFactory monitorFactory = registry.getExtensionPoint(MonitorFactory.class);
             Monitor monitor = monitorFactory.createMonitor();
-            analyzer = new ContributionDependencyBuilderImpl(monitor);  
-            
-            // Create composite builder
-            SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
-            IntentAttachPointTypeFactory intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
-            InterfaceContractMapper contractMapper = new InterfaceContractMapperImpl();
-                       
-            compositeBuilder = new CompositeBuilderImpl(assemblyFactory, 
-                                                        scaBindingFactory, 
-                                                        intentAttachPointTypeFactory,
-                                                        contractMapper, 
-                                                        monitor);
+            dependencyBuilder = new ContributionDependencyBuilderImpl(monitor);  
             
         } catch(Exception ex){
             ex.printStackTrace();
@@ -189,11 +124,6 @@ public class ContributionSPIsTestCase {
         
    }
 
-    @AfterClass
-    public static void destroy() throws Exception {
-       
-    }
-    
     @Test
     public void testReadDependentContributions() throws Exception { 
         try {            
@@ -241,7 +171,7 @@ public class ContributionSPIsTestCase {
             for (Contribution tmpContribution : workspace.getContributions()){
                 for (Composite deployable : tmpContribution.getDeployables()){
                     if (deployable.getName().equals(chosenDeployableName)){
-                        contributionsToDeploy = analyzer.buildContributionDependencies(tmpContribution, workspace);
+                        contributionsToDeploy = dependencyBuilder.buildContributionDependencies(tmpContribution, workspace);
                     }
                 }
             }
@@ -249,7 +179,6 @@ public class ContributionSPIsTestCase {
             // load all the contributions in the dependency chain to find the chosen 
             // composite
             List<Contribution> loadedContributions = new ArrayList<Contribution>();
-            Composite deployable = null;
             for (Contribution tmpContribution : contributionsToDeploy){
                 Contribution loadedContribution = contribution(loadedContributions, tmpContribution.getURI(), tmpContribution.getLocation());
                 loadedContributions.add(loadedContribution);
@@ -305,10 +234,8 @@ public class ContributionSPIsTestCase {
 
 /*
             AssemblyInspector assemblyInspector = new AssemblyInspector();
-            
             System.out.println(assemblyInspector.assemblyAsString(node));
 */
-            
             
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -317,23 +244,11 @@ public class ContributionSPIsTestCase {
     }
     
     
-    /**
-     * FIXME Remove this later
-     * Waiting for more tidying of contribution processing. At the moment we have to 
-     * set up a dummy contribution repository to make it work
-     */    
     private Contribution contribution(List<Contribution> contributions, String contributionURI, String contributionLocation) throws ContributionReadException {
         try {
             URI uri = URI.create(contributionURI);
             URL location = locationURL(contributionLocation);
             Contribution contribution = (Contribution)contributionContentProcessor.read(null, uri, location);
-            
-            // FIXME simplify this later
-            // Fix up contribution imports
-            ContributionRepository dummyRepository = new DummyContributionRepository(contributions);
-            for (ContributionListener listener: contributionListeners) {
-                listener.contributionAdded(dummyRepository, contribution);
-            }
             
             ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
             contributionContentProcessor.resolve(contribution, modelResolver);
@@ -349,7 +264,7 @@ public class ContributionSPIsTestCase {
         }
     }
     
-    static URL locationURL(String location) throws MalformedURLException {
+    private static URL locationURL(String location) throws MalformedURLException {
         URI uri = URI.create(location);
         String scheme = uri.getScheme();
         if (scheme == null) {
@@ -363,27 +278,4 @@ public class ContributionSPIsTestCase {
         }
     }
     
-    /**
-     * FIXME Remove this later
-     */
-    private class DummyContributionRepository implements ContributionRepository {
-        
-        private List<Contribution> contributions;
-
-        public DummyContributionRepository(List<Contribution> contributions) {
-            this.contributions = contributions;
-        }
-        
-        public void addContribution(Contribution contribution) {}
-        public URL find(String contribution) { return null; }
-        public Contribution getContribution(String uri) { return null; }
-        public List<Contribution> getContributions() { return contributions; }
-        public URI getDomain() { return null; }
-        public List<String> list() { return null; }
-        public void remove(String contribution) {}
-        public void removeContribution(Contribution contribution) {}
-        public URL store(String contribution, URL sourceURL, InputStream contributionStream) throws IOException { return null; }
-        public URL store(String contribution, URL sourceURL) throws IOException { return null;}
-        public void updateContribution(Contribution contribution) {}
-    }    
 }

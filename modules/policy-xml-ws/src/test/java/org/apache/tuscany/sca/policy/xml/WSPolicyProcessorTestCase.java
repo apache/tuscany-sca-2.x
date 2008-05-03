@@ -69,21 +69,16 @@ public class WSPolicyProcessorTestCase extends TestCase {
             + " </policySet>"
             + " </definitions>";
 	
-	private XMLInputFactory xmlInputFactory;
+	private XMLInputFactory inputFactory;
         
     @Override
     public void setUp() throws Exception {
-        xmlInputFactory = XMLInputFactory.newInstance();
+        inputFactory = XMLInputFactory.newInstance();
         
     }
 
-    @Override
-    public void tearDown() throws Exception {
-    	
-    }
-
     public void testReadWsPolicy() throws Exception {
-    	XMLStreamReader reader = xmlInputFactory.createXMLStreamReader(new StringReader(VALID_WS_POLICY));
+    	XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_WS_POLICY));
     	WSPolicyProcessor processor = new WSPolicyProcessor();
     	Object artifact = null;
     	

@@ -25,14 +25,10 @@ import java.net.URL;
 
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
-import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor;
 
 /**
  * Sample ListDeployables task.
@@ -47,23 +43,17 @@ import org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor
  */
 public class ListDeployables {
     
-    private static URLArtifactProcessor<Contribution> contributionInfoProcessor;
+    private static URLArtifactProcessor<Contribution> contributionProcessor;
 
     private static void init() {
         
         // Create extension point registry 
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
-        
-        // Create XML and document artifact processors
-        URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        URLArtifactProcessor<Object> docProcessor = new ExtensibleURLArtifactProcessor(docProcessorExtensions);
         
         // Create contribution info processor
-        ModelResolverExtensionPoint modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-        contributionInfoProcessor = new ContributionInfoProcessor(modelFactories, modelResolvers, docProcessor);
+        URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        contributionProcessor = docProcessorExtensions.getProcessor("contribution/info");
     }
-    
 
     public static void main(String[] args) throws Exception {
         init();
@@ -71,7 +61,7 @@ public class ListDeployables {
         // Read the contribution info for the sample contribution
         URI uri = URI.create("store");
         URL url = new File("./target/sample-domain-management-store.jar").toURI().toURL();
-        Contribution contribution = (Contribution)contributionInfoProcessor.read(null, uri, url);
+        Contribution contribution = contributionProcessor.read(null, uri, url);
         
         // List the deployables in the contribution
         for (Composite deployable: contribution.getDeployables()) {

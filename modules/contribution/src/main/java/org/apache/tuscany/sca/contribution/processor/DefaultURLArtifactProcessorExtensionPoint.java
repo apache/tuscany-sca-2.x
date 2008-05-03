@@ -172,7 +172,7 @@ public class DefaultURLArtifactProcessorExtensionPoint
         }
         
         public Class<?> getModelType() {
-            if (modelType == null) {
+            if (modelTypeName != null && modelType == null) {
                 try {
                     modelType = processorDeclaration.loadClass(modelTypeName);
                 } catch (Exception e) {

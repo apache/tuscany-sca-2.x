@@ -60,6 +60,7 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
     private ValidationSchemaExtensionPoint schemas;
     private Monitor monitor;
     private boolean initialized;
+    private boolean hasSchemas;
     private Schema aggregatedSchema;
 
     /**
@@ -88,6 +89,11 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
         try {
             List<String> uris = schemas.getSchemas();
             int n = uris.size();
+            if (n ==0) {
+                return;
+            } else {
+                hasSchemas = true;
+            }
             final Source[] sources = new Source[n];
             for (int i =0; i < n; i++) {
                 final String uri = uris.get(i);
@@ -171,32 +177,56 @@ public class DefaultValidatingXMLInputFactory extends ValidatingXMLInputFactory 
 
     public XMLStreamReader createXMLStreamReader(InputStream arg0, String arg1) throws XMLStreamException {
         initializeSchemas();
-        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema, monitor);
+        if (hasSchemas) {
+            return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema, monitor);
+        }else {
+            return inputFactory.createXMLStreamReader(arg0, arg1);
+        }
     }
 
     public XMLStreamReader createXMLStreamReader(InputStream arg0) throws XMLStreamException {
         initializeSchemas();
-        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema, monitor);
+        if (hasSchemas) {
+            return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema, monitor);
+        } else {
+            return inputFactory.createXMLStreamReader(arg0);
+        }
     }
 
     public XMLStreamReader createXMLStreamReader(Reader arg0) throws XMLStreamException {
         initializeSchemas();
-        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema, monitor);
+        if (hasSchemas) {
+            return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema, monitor);
+        } else {
+            return inputFactory.createXMLStreamReader(arg0);
+        }
     }
 
     public XMLStreamReader createXMLStreamReader(Source arg0) throws XMLStreamException {
         initializeSchemas();
-        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema, monitor);
+        if (hasSchemas) {
+            return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0), aggregatedSchema, monitor);
+        } else {
+            return inputFactory.createXMLStreamReader(arg0);
+        }
     }
 
     public XMLStreamReader createXMLStreamReader(String arg0, InputStream arg1) throws XMLStreamException {
         initializeSchemas();
-        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema, monitor);
+        if (hasSchemas) {
+            return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema, monitor);
+        } else {
+            return inputFactory.createXMLStreamReader(arg0, arg1);
+        }
     }
 
     public XMLStreamReader createXMLStreamReader(String arg0, Reader arg1) throws XMLStreamException {
         initializeSchemas();
-        return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema, monitor);
+        if (hasSchemas) {
+            return new ValidatingXMLStreamReader(inputFactory.createXMLStreamReader(arg0, arg1), aggregatedSchema, monitor);
+        } else {
+            return inputFactory.createXMLStreamReader(arg0, arg1);
+        }
     }
 
     public XMLEventAllocator getEventAllocator() {

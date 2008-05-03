@@ -53,7 +53,6 @@ import org.apache.tuscany.sca.binding.atom.AtomBindingFactory;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -79,7 +78,6 @@ import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
 import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
-import org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
@@ -96,7 +94,7 @@ import org.xml.sax.SAXException;
  */
 public class DistributeAndRunComponents {
     
-    private static URLArtifactProcessor<Contribution> contributionContentProcessor;
+    private static URLArtifactProcessor<Contribution> contributionProcessor;
     private static ModelResolverExtensionPoint modelResolvers;
     private static ModelFactoryExtensionPoint modelFactories;
     private static WorkspaceFactory workspaceFactory;
@@ -125,21 +123,22 @@ public class DistributeAndRunComponents {
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         
-        // Get contribution, workspace, assembly and policy model factories
+        // Get contribution workspace and assembly model factories
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class); 
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         nodeFactory = modelFactories.getFactory(NodeImplementationFactory.class);
         atomBindingFactory = modelFactories.getFactory(AtomBindingFactory.class);
         
-        // Create XML and document artifact processors
+        // Create XML artifact processors
         StAXArtifactProcessorExtensionPoint xmlProcessorExtensions = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         xmlProcessor = new ExtensibleStAXArtifactProcessor(xmlProcessorExtensions, inputFactory, outputFactory);
-        URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        URLArtifactProcessor<Object> urlExtensionProcessor = new ExtensibleURLArtifactProcessor(docProcessorExtensions);
         
         // Create contribution content processor
+        URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        contributionProcessor = docProcessorExtensions.getProcessor("contribution/content");
+        
+        // Get the model resolvers
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-        contributionContentProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlExtensionProcessor);
         
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
@@ -170,19 +169,19 @@ public class DistributeAndRunComponents {
         // Read the sample store contribution
         URI storeURI = URI.create("store");
         URL storeURL = new File("./target/sample-domain-management-store.jar").toURI().toURL();
-        Contribution storeContribution = (Contribution)contributionContentProcessor.read(null, storeURI, storeURL);
+        Contribution storeContribution = contributionProcessor.read(null, storeURI, storeURL);
         workspace.getContributions().add(storeContribution);
 
         // Read the sample assets contribution
         URI assetsURI = URI.create("assets");
         URL assetsURL = new File("./target/sample-domain-management-assets.jar").toURI().toURL();
-        Contribution assetsContribution = (Contribution)contributionContentProcessor.read(null, assetsURI, assetsURL);
+        Contribution assetsContribution = contributionProcessor.read(null, assetsURI, assetsURL);
         workspace.getContributions().add(assetsContribution);
 
         // Read the sample client contribution
         URI clientURI = URI.create("client");
         URL clientURL = new File("./target/sample-domain-management-client.jar").toURI().toURL();
-        Contribution clientContribution = (Contribution)contributionContentProcessor.read(null, clientURI, clientURL);
+        Contribution clientContribution = contributionProcessor.read(null, clientURI, clientURL);
         workspace.getContributions().add(clientContribution);
 
         // Build the contribution dependencies
@@ -195,7 +194,7 @@ public class DistributeAndRunComponents {
             for (Contribution dependency: dependencies) {
                 if (!resolved.contains(dependency)) {
                     resolved.add(dependency);
-                    contributionContentProcessor.resolve(dependency, workspace.getModelResolver());
+                    contributionProcessor.resolve(dependency, workspace.getModelResolver());
                 }
             }
             
@@ -253,8 +252,7 @@ public class DistributeAndRunComponents {
         // the deployables to include
         domainComposite.getIncludes().addAll(workspace.getDeployables());
         
-        // Build the domain composite and wire the components included
-        // in it
+        // Build the domain composite and wire the components included in it
         domainCompositeBuilder.build(domainComposite);
 
         // Print out the resulting domain composite
