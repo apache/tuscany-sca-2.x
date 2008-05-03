@@ -56,7 +56,19 @@ public class DomainManagerLauncher {
      * @throws LauncherException
      */
     public <T> T createDomainManager() throws LauncherException {
-        return (T)domainManager();
+        return (T)domainManager(".");
+    }
+    
+    /**
+     * Creates a new DomainManager.
+     * 
+     * @param rootDirectory the domain's root configuration directory 
+     * 
+     * @return a new DomainManager
+     * @throws LauncherException
+     */
+    public <T> T createDomainManager(String rootDirectory) throws LauncherException {
+        return (T)domainManager(rootDirectory);
     }
     
     public static void main(String[] args) throws Exception {

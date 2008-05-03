@@ -41,6 +41,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
@@ -59,6 +60,9 @@ public class FileServiceImpl extends HttpServlet {
     @Property
     public String directoryName;
     
+    @Reference
+    public LauncherConfiguration launcherConfiguration;
+    
     private ServletFileUpload upload;
     
     /**
@@ -73,10 +77,11 @@ public class FileServiceImpl extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         // Upload files
+        String rootDirectory = launcherConfiguration.getRootDirectory();
         try {
             for (FileItem item: (List<FileItem>)upload.parseRequest(request)) {
                 if (!item.isFormField()) {
-                    File directory = new File(directoryName);
+                    File directory = new File(rootDirectory + "/" + directoryName);
                     if (!directory.exists()) {
                         directory.mkdirs();
                     }
@@ -113,7 +118,8 @@ public class FileServiceImpl extends HttpServlet {
 
                 // If no scheme is specified then the path identifies file
                 // inside our directory
-                uri = new File(directoryName, path).toURI();
+                String rootDirectory = launcherConfiguration.getRootDirectory();
+                uri = new File(rootDirectory + "/" + directoryName, path).toURI();
                 
             } else if (!scheme.equals("file")) {
                 

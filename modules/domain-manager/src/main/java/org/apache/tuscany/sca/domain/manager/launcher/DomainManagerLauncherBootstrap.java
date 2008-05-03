@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.domain.manager.launcher;
 
+import org.apache.tuscany.sca.domain.manager.impl.LauncherConfiguration;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.node.SCANode2;
 
@@ -37,8 +38,10 @@ public class DomainManagerLauncherBootstrap {
         private ClassLoader threadContextClassLoader;
         private ClassLoader runtimeClassLoader;
         private SCADomain domainManager;
+        private String rootDirectory;
         
-        private NodeFacade() {
+        private NodeFacade(String rootDirectory) {
+            this.rootDirectory = rootDirectory;
             runtimeClassLoader = Thread.currentThread().getContextClassLoader();
         }
         
@@ -48,6 +51,11 @@ public class DomainManagerLauncherBootstrap {
             try {
                 Thread.currentThread().setContextClassLoader(runtimeClassLoader);
                 domainManager = SCADomain.newInstance("DomainManager.composite");
+
+                // Set the domain manager's root directory
+                LauncherConfiguration launcherConfiguration = domainManager.getService(LauncherConfiguration.class, "LauncherConfigurationComponent");
+                launcherConfiguration.setRootDirectory(rootDirectory);
+                
                 started = true;
             } finally {
                 if (!started) {
@@ -69,8 +77,8 @@ public class DomainManagerLauncherBootstrap {
     /**
      * Constructs a new domain manager bootstrap.
      */
-    public DomainManagerLauncherBootstrap() throws Exception {
-        node = new NodeFacade();
+    public DomainManagerLauncherBootstrap(String rootDirectory) throws Exception {
+        node = new NodeFacade(rootDirectory);
     }
 
     /**

@@ -88,6 +88,7 @@ import org.apache.xml.serialize.XMLSerializer;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Document;
@@ -109,6 +110,9 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     
     @Property
     public String deploymentContributionDirectory;
+    
+    @Reference
+    public LauncherConfiguration launcherConfiguration;
     
     private ExtensionPointRegistry extensionPoints;
     private Monitor monitor;
@@ -134,27 +138,26 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         monitor = monitorFactory.createMonitor();
         
-        
         // Create model factories
-        ModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class);
         
         // Create model resolvers
-        ModelResolverExtensionPoint modelResolvers = new DefaultModelResolverExtensionPoint();
+        ModelResolverExtensionPoint modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
 
         // Create artifact processors
         inputFactory = modelFactories.getFactory(XMLInputFactory.class);
-        StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
+        StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
 
-        URLArtifactProcessorExtensionPoint urlProcessors = new DefaultURLArtifactProcessorExtensionPoint(extensionPoints);
+        URLArtifactProcessorExtensionPoint urlProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         urlProcessor = new ExtensibleURLArtifactProcessor(urlProcessors);
         
         // Create contribution info processor
-        contributionInfoProcessor = new ContributionInfoProcessor(modelFactories, modelResolvers, urlProcessor);
+        contributionInfoProcessor = urlProcessors.getProcessor("contribution/info");
 
         // Create a document builder (used to pretty print XML)
         documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -425,8 +428,10 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
      * @return
      */
     private Workspace readWorkspace() {
+        String rootDirectory = launcherConfiguration.getRootDirectory();
+        
         Workspace workspace;
-        File file = new File(workspaceFile);
+        File file = new File(rootDirectory + "/" + workspaceFile);
         if (file.exists()) {
             try {
                 FileInputStream is = new FileInputStream(file);
@@ -452,7 +457,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         if (cloudContribution == null) {
             Contribution contribution = contributionFactory.createContribution();
             contribution.setURI(DEPLOYMENT_CONTRIBUTION_URI);
-            File cloudDirectory = new File(deploymentContributionDirectory);
+            File cloudDirectory = new File(rootDirectory + "/" + deploymentContributionDirectory);
             contribution.setLocation(cloudDirectory.toURI().toString());
             workspace.getContributions().add(contribution);
         }
@@ -466,6 +471,8 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
      */
     private void writeWorkspace(Workspace workspace) {
         try {
+            String rootDirectory = launcherConfiguration.getRootDirectory();
+            
             // First write to a byte stream
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bos);
@@ -478,7 +485,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
             format.setIndent(2);
             
             // Write to workspace.xml
-            FileOutputStream os = new FileOutputStream(new File(workspaceFile));
+            FileOutputStream os = new FileOutputStream(new File(rootDirectory + "/" + workspaceFile));
             XMLSerializer serializer = new XMLSerializer(os, format);
             serializer.serialize(document);
             os.close();
