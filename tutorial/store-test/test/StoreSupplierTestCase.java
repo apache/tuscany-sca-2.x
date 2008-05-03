@@ -37,7 +37,7 @@ import client.Shopper;
  *
  * @version $Rev$ $Date$
  */
-public class StoreSupplierTestCaseFIXME {
+public class StoreSupplierTestCase {
     
     private SCANode2 domainManager;
     private SCANode2 storeSupplierNode;
@@ -46,9 +46,11 @@ public class StoreSupplierTestCaseFIXME {
 
     @Before
     public void setup() throws Exception {
+        String baseDir = System.getProperty("basedir");
+        String domainDir = baseDir != null? baseDir + "/" + "../domain" : "../domain";
         
         DomainManagerLauncher managerLauncher = DomainManagerLauncher.newInstance();
-        domainManager = managerLauncher.createDomainManager("../domain");
+        domainManager = managerLauncher.createDomainManager(domainDir);
         domainManager.start();
         
         NodeLauncher nodeLauncher = NodeLauncher.newInstance();

@@ -57,6 +57,10 @@
                   <exclude>target/**</exclude>
               </excludes>
           </resource>
+          <resource>
+              <directory>${basedir}/target/new-db</directory>
+              <targetPath>../cart-db</targetPath>
+          </resource>
        </resources>
        <plugins>
             <plugin>
@@ -94,7 +98,7 @@
 	                     </goals>
 	                     <configuration>
 	                         <driver>org.apache.derby.jdbc.EmbeddedDriver</driver>
-	                         <url>jdbc:derby:${basedir}/target/cart-db;create=true</url>
+	                         <url>jdbc:derby:${basedir}/target/new-db;create=true</url>
 	                         <autocommit>true</autocommit>
 	                         <onError>continue</onError>
 	                         <delimiter>;</delimiter>
