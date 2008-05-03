@@ -41,8 +41,6 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
-import org.apache.tuscany.sca.assembly.builder.impl.ComponentConfigurationBuilderImpl;
-import org.apache.tuscany.sca.assembly.xml.CompositeDocumentProcessor;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -53,6 +51,7 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
+import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ExtensibleModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
@@ -61,8 +60,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionListenerExtension
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionRepository;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
-import org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;
-import org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;
 import org.apache.tuscany.sca.contribution.xml.ContributionMetadataProcessor;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
@@ -151,14 +148,10 @@ public class ContributionSPIsTestCase {
             // Create artifact processors
             staxProcessors = registry.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
             staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
-            staxProcessors.addArtifactProcessor(new ContributionMetadataProcessor(assemblyFactory, contributionFactory, staxProcessor));
             compositeProcessor = (StAXArtifactProcessor<Composite>)staxProcessors.getProcessor(Composite.class);
            
             urlProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
             urlProcessor = new ExtensibleURLArtifactProcessor(urlProcessors);
-            urlProcessors.addArtifactProcessor(new ContributionMetadataDocumentProcessor(staxProcessor, inputFactory));
-            urlProcessors.addArtifactProcessor(new ContributionGeneratedMetadataDocumentProcessor(staxProcessor, inputFactory));
-            urlProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, inputFactory, null));
                  
             // Create contribution processor
             contributionInfoProcessor = new ContributionInfoProcessor(modelFactories, modelResolvers, urlProcessor);
