@@ -40,10 +40,12 @@ import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.wsdl.extensions.soap.SOAPBody;
+import javax.wsdl.extensions.soap.SOAPFault;
 import javax.wsdl.extensions.soap.SOAPOperation;
 import javax.wsdl.extensions.soap12.SOAP12Address;
 import javax.wsdl.extensions.soap12.SOAP12Binding;
 import javax.wsdl.extensions.soap12.SOAP12Body;
+import javax.wsdl.extensions.soap12.SOAP12Fault;
 import javax.wsdl.extensions.soap12.SOAP12Operation;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
@@ -60,11 +62,13 @@ public class WSDLDefinitionGenerator {
     private static final QName SOAP_ADDRESS = new QName(SOAP_NS, "address");
     private static final QName SOAP_BINDING = new QName(SOAP_NS, "binding");
     private static final QName SOAP_BODY = new QName(SOAP_NS, "body");
+    private static final QName SOAP_FAULT = new QName(SOAP_NS, "fault");
     private static final QName SOAP_OPERATION = new QName(SOAP_NS, "operation");
     private static final String SOAP12_NS = "http://schemas.xmlsoap.org/wsdl/soap12/";
     private static final QName SOAP12_ADDRESS = new QName(SOAP12_NS, "address");
     private static final QName SOAP12_BINDING = new QName(SOAP12_NS, "binding");
     private static final QName SOAP12_BODY = new QName(SOAP12_NS, "body");
+    private static final QName SOAP12_FAULT = new QName(SOAP12_NS, "fault");
     private static final QName SOAP12_OPERATION = new QName(SOAP12_NS, "operation");
 
     private static final String BINDING_SUFFIX = "Binding";
@@ -75,6 +79,7 @@ public class WSDLDefinitionGenerator {
     private QName soapAddress;
     private QName soapBinding;
     private QName soapBody;
+    private QName soapFault;
     private QName soapOperation;
 
     public WSDLDefinitionGenerator(boolean requiresSOAP12) {
@@ -83,6 +88,7 @@ public class WSDLDefinitionGenerator {
         soapAddress = requiresSOAP12 ? SOAP12_ADDRESS : SOAP_ADDRESS;
         soapBinding = requiresSOAP12 ? SOAP12_BINDING : SOAP_BINDING;
         soapBody = requiresSOAP12 ? SOAP12_BODY : SOAP_BODY;
+        soapFault = requiresSOAP12 ? SOAP12_FAULT : SOAP_FAULT;
         soapOperation = requiresSOAP12 ? SOAP12_OPERATION : SOAP_OPERATION;
     }
 
@@ -191,7 +197,10 @@ public class WSDLDefinitionGenerator {
         for (Iterator fi = operation.getFaults().values().iterator(); fi.hasNext();) {
             Fault fault = (Fault)fi.next();
             BindingFault bindingFault = definition.createBindingFault();
-            configureBindingFault(bindingFault, fault);
+            ExtensibilityElement faultExtension =
+                definition.getExtensionRegistry().createExtension(BindingFault.class, soapFault);
+            configureBindingFault(bindingFault, faultExtension, fault);
+            bindingFault.addExtensibilityElement(faultExtension);
             bindingOperation.addBindingFault(bindingFault);
         }
         return bindingOperation;
@@ -210,8 +219,19 @@ public class WSDLDefinitionGenerator {
         bindingOutput.setName(output.getName());
     }
 
-    protected void configureBindingFault(BindingFault bindingFault, Fault fault) throws WSDLException {
-        bindingFault.setName(fault.getName());
+    protected void configureBindingFault(BindingFault bindingFault,
+                                         ExtensibilityElement faultExtension,
+                                         Fault fault)
+                                     throws WSDLException {
+        String faultName = fault.getName();
+        bindingFault.setName(faultName);
+        if (requiresSOAP12) {
+            ((SOAP12Fault)faultExtension).setName(faultName);
+            ((SOAP12Fault)faultExtension).setUse("literal");
+        } else {
+            ((SOAPFault)faultExtension).setName(faultName);
+            ((SOAPFault)faultExtension).setUse("literal");
+        }
     }
 
     public Service createService(Definition definition, PortType portType) {

@@ -19,8 +19,11 @@
 package org.apache.tuscany.sca.interfacedef;
 
 import java.util.List;
+import java.util.Map;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
@@ -171,6 +174,19 @@ public interface Operation extends Cloneable, PolicySetAttachPoint {
      * @param b
      */
     void setDynamic(boolean b);
+
+    /**
+     * Get the synthesized fault beans for this operation
+     * 
+     * @return the fault beans
+     */
+    Map<QName, List<DataType<XMLType>>> getFaultBeans();
+    
+    /**
+     * Set the synthesized fault beans for this operation
+     * @param faultBeans
+     */
+    void setFaultBeans(Map<QName, List<DataType<XMLType>>> faultBeans);
 
     /**
      * Implementations must support cloning.

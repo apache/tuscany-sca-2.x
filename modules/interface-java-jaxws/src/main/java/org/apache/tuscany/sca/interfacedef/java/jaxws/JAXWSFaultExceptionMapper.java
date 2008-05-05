@@ -41,6 +41,11 @@ import org.osoa.sca.ServiceRuntimeException;
  * @version $Rev$ $Date$
  */
 public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
+    public static final String GETCAUSE = "getCause";
+    public static final String GETLOCALIZEDMESSAGE = "getLocalizedMessage";
+    public static final String GETSTACKTRACE = "getStackTrace";
+    public static final String GETCLASS = "getClass";
+
     private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];
     private DataBindingExtensionPoint dataBindingExtensionPoint;
 
@@ -154,9 +159,7 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
             for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
                 Method getter = pd.getReadMethod();
                 String name = getter.getName();
-                if ("getClass".equals(name) || "getStackTrace".equals(name)
-                    || "getCause".equals(name)
-                    || "getLocalizedMessage".equals(name)) {
+                if (!isMappedGetter(name)) {
                     continue;
                 }
                 String prefix = "get";
@@ -195,9 +198,16 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
         Class<?> faultBean = null;
         WebFault fault = cls.getAnnotation(WebFault.class);
         if (fault != null) {
-            faultName = new QName(fault.targetNamespace(), fault.name());
-            XMLType xmlType = new XMLType(faultName, null);
-            faultType.setLogical(xmlType);
+            if (!"".equals(fault.name()) || !"".equals(fault.targetNamespace())) {
+                QName faultQName = ((XMLType)faultType.getLogical()).getElementName(); 
+                String faultNS = "".equals(fault.targetNamespace()) ?
+                                     faultQName.getNamespaceURI() : fault.targetNamespace(); 
+                String faultLocal = "".equals(fault.name()) ?
+                                        faultQName.getLocalPart() : fault.name(); 
+                faultName = new QName(faultNS, faultLocal);
+                XMLType xmlType = new XMLType(faultName, null);
+                faultType.setLogical(xmlType);
+            }
             if (!"".equals(fault.faultBean())) {
                 try {
                     faultBean = Class.forName(fault.faultBean(), false, cls.getClassLoader());
@@ -244,6 +254,17 @@ public class JAXWSFaultExceptionMapper implements FaultExceptionMapper {
         }
 
         return result;
+    }
+
+    public static boolean isMappedGetter(String methodName) {
+        if (GETCAUSE.equals(methodName)
+            || GETLOCALIZEDMESSAGE.equals(methodName)
+            || GETSTACKTRACE.equals(methodName)
+            || GETCLASS.equals(methodName)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public void setDataBindingExtensionPoint(DataBindingExtensionPoint dataBindingExtensionPoint) {

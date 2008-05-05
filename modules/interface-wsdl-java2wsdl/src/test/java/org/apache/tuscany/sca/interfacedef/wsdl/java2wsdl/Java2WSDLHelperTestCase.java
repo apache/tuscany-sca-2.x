@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSFaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;
 import org.apache.tuscany.sca.interfacedef.wsdl.TestJavaInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
@@ -66,8 +67,9 @@ public class Java2WSDLHelperTestCase extends TestCase {
         DefaultJavaInterfaceFactory factory = new DefaultJavaInterfaceFactory();
         JavaInterfaceContract javaIC = factory.createJavaInterfaceContract();
         JavaInterface iface = factory.createJavaInterface(HelloWorld.class);
-        new JAXWSJavaInterfaceProcessor().visitInterface(iface);
         DefaultDataBindingExtensionPoint dataBindings = new DefaultDataBindingExtensionPoint();
+        JAXWSFaultExceptionMapper faultExceptionMapper = new JAXWSFaultExceptionMapper(dataBindings);
+        new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper).visitInterface(iface);
         new DataBindingJavaInterfaceProcessor(dataBindings).visitInterface(iface);
         javaIC.setInterface(iface);
         WSDLInterfaceContract wsdlIC = Java2WSDLHelper.createWSDLInterfaceContract(javaIC);
@@ -80,7 +82,7 @@ public class Java2WSDLHelperTestCase extends TestCase {
  
         JavaInterfaceContract javaIC2 = factory.createJavaInterfaceContract();
         JavaInterface iface2 = factory.createJavaInterface(TestJavaInterface.class);
-        new JAXWSJavaInterfaceProcessor().visitInterface(iface2);
+        new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper).visitInterface(iface2);
         new DataBindingJavaInterfaceProcessor(dataBindings).visitInterface(iface2);
         javaIC2.setInterface(iface2);
         WSDLInterfaceContract wsdlIC2 = Java2WSDLHelper.createWSDLInterfaceContract(javaIC2);

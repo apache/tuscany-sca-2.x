@@ -30,6 +30,7 @@ import javax.wsdl.Binding;
 import javax.wsdl.BindingOperation;
 import javax.wsdl.Definition;
 import javax.wsdl.Input;
+import javax.wsdl.Fault;
 import javax.wsdl.Message;
 import javax.wsdl.OperationType;
 import javax.wsdl.Output;
@@ -212,24 +213,31 @@ public class Interface2WSDLGenerator {
                 Element wrapper = schemaDoc.createElementNS(SCHEMA_NS, "xs:element");
                 schema.appendChild(wrapper);
                 wrapper.setAttribute("name", entry.getKey().getLocalPart());
-                Element complexType = schemaDoc.createElementNS(SCHEMA_NS, "xs:complexType");
-                wrapper.appendChild(complexType);
-                if (entry.getValue().size() > 0) {
-                    Element sequence = schemaDoc.createElementNS(SCHEMA_NS, "xs:sequence");
-                    complexType.appendChild(sequence);
-                    for (ElementInfo element: entry.getValue()) {
-                        Element xsElement = schemaDoc.createElementNS(SCHEMA_NS, "xs:element"); 
-                        if (element.isMany()) {
-                            xsElement.setAttribute("maxOccurs", "unbounded");
+                if (entry.getValue().size() == 1 && entry.getValue().get(0).getQName() == null) {
+                    // special case for global fault element
+                    QName typeName = entry.getValue().get(0).getType().getQName();
+                    wrapper.setAttribute("type", typeName.getLocalPart());
+                } else {
+                    // normal wrapper containing type definition inline
+                    Element complexType = schemaDoc.createElementNS(SCHEMA_NS, "xs:complexType");
+                    wrapper.appendChild(complexType);
+                    if (entry.getValue().size() > 0) {
+                        Element sequence = schemaDoc.createElementNS(SCHEMA_NS, "xs:sequence");
+                        complexType.appendChild(sequence);
+                        for (ElementInfo element: entry.getValue()) {
+                            Element xsElement = schemaDoc.createElementNS(SCHEMA_NS, "xs:element"); 
+                            if (element.isMany()) {
+                                xsElement.setAttribute("maxOccurs", "unbounded");
+                            }
+                            xsElement.setAttribute("minOccurs", "0");
+                            xsElement.setAttribute("name", element.getQName().getLocalPart());
+                            if (element.isNillable()) {
+                                xsElement.setAttribute("nillable", "true");
+                            }
+                            QName typeName = element.getType().getQName();
+                            xsElement.setAttribute("type", typeName.getLocalPart());
+                            sequence.appendChild(xsElement);
                         }
-                        xsElement.setAttribute("minOccurs", "0");
-                        xsElement.setAttribute("name", element.getQName().getLocalPart());
-                        if (element.isNillable()) {
-                            xsElement.setAttribute("nillable", "true");
-                        }
-                        QName typeName = element.getType().getQName();
-                        xsElement.setAttribute("type", typeName.getLocalPart());
-                        sequence.appendChild(xsElement);
                     }
                 }
             }
@@ -290,9 +298,9 @@ public class Interface2WSDLGenerator {
         operation.setUndefined(false);
 
         Input input = definition.createInput();
-        input.setName("input");
         Message inputMsg = definition.createMessage();
-        QName inputMsgName = new QName(definition.getQName().getNamespaceURI(), op.getName());
+        String namespaceURI = definition.getQName().getNamespaceURI();
+        QName inputMsgName = new QName(namespaceURI, op.getName());
         inputMsg.setQName(inputMsgName);
         inputMsg.setUndefined(false);
         definition.addMessage(inputMsg);
@@ -314,9 +322,8 @@ public class Interface2WSDLGenerator {
 
         if (!op.isNonBlocking()) {
             Output output = definition.createOutput();
-            output.setName("output");
             Message outputMsg = definition.createMessage();
-            QName outputMsgName = new QName(definition.getQName().getNamespaceURI(), op.getName() + "Response");
+            QName outputMsgName = new QName(namespaceURI, op.getName() + "Response");
             outputMsg.setQName(outputMsgName);
             outputMsg.setUndefined(false);
             definition.addMessage(outputMsg);
@@ -332,6 +339,37 @@ public class Interface2WSDLGenerator {
             operation.setStyle(OperationType.REQUEST_RESPONSE);
         } else {
             operation.setStyle(OperationType.ONE_WAY);
+        }
+
+        for (DataType<DataType> faultType: op.getFaultTypes()) {
+            Fault fault = definition.createFault();
+            QName faultName = ((XMLType)faultType.getLogical().getLogical()).getElementName();
+            fault.setName(faultName.getLocalPart());
+            Message faultMsg = definition.getMessage(faultName);
+            if (faultMsg == null) {
+                faultMsg = definition.createMessage();
+                faultMsg.setQName(faultName);
+                faultMsg.setUndefined(false);
+                definition.addMessage(faultMsg);
+                faultMsg.addPart(generatePart(definition, faultType.getLogical(), faultName.getLocalPart()));
+            }
+            fault.setMessage(faultMsg);
+            operation.addFault(fault);
+            List<ElementInfo> elements = null;
+            if (faultType.getLogical().getPhysical() != faultType.getPhysical()) {
+                // create special wrapper for type indirection to real fault bean
+                elements = new ArrayList<ElementInfo>(1);
+                DataType logical = faultType.getLogical();
+                elements.add(getElementInfo(logical.getPhysical(),logical.getLogical(), null, javaTypes));
+             } else {
+                // convert synthesized fault bean to a wrapper type
+                elements = new ArrayList<ElementInfo>();
+                for (DataType<XMLType> propDT: op.getFaultBeans().get(faultName)) {
+                    XMLType logical = propDT.getLogical();
+                    elements.add(getElementInfo(propDT.getPhysical(), logical, logical.getElementName(), javaTypes));
+                }
+            }
+            wrappers.put(faultName, elements);
         }
 
         operation.setUndefined(false);

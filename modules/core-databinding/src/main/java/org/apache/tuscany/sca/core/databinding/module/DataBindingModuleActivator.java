@@ -81,7 +81,7 @@ public class DataBindingModuleActivator implements ModuleActivator {
 
         // [rfeng] The JAX-WS processor should come before the Databinding processor to make sure @WebService
         // is honored as Remoteable
-        javaFactory.addInterfaceVisitor(new JAXWSJavaInterfaceProcessor(faultExceptionMapper));
+        javaFactory.addInterfaceVisitor(new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper));
 
         javaFactory.addInterfaceVisitor(new DataBindingJavaInterfaceProcessor(dataBindings));
 
