@@ -62,13 +62,21 @@ public class DefaultURLArtifactProcessorExtensionPoint
     }
 
     public void addArtifactProcessor(URLArtifactProcessor artifactProcessor) {
-        processorsByArtifactType.put((Object)artifactProcessor.getArtifactType(), artifactProcessor);
-        processorsByModelType.put(artifactProcessor.getModelType(), artifactProcessor);
+        if (artifactProcessor.getArtifactType() != null) {
+            processorsByArtifactType.put((Object)artifactProcessor.getArtifactType(), artifactProcessor);
+        }
+        if (artifactProcessor.getModelType() != null) {
+            processorsByModelType.put(artifactProcessor.getModelType(), artifactProcessor);
+        }
     }
     
     public void removeArtifactProcessor(URLArtifactProcessor artifactProcessor) {
-        processorsByArtifactType.remove((Object)artifactProcessor.getArtifactType());
-        processorsByModelType.remove(artifactProcessor.getModelType());        
+        if (artifactProcessor.getArtifactType() != null) {
+            processorsByArtifactType.remove((Object)artifactProcessor.getArtifactType());
+        }
+        if (artifactProcessor.getModelType() != null) {
+            processorsByModelType.remove(artifactProcessor.getModelType());
+        }
     }
     
     @Override
