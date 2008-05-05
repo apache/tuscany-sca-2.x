@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -36,10 +37,13 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
 
+import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
+import org.apache.tuscany.sca.databinding.javabeans.JavaExceptionDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
@@ -57,10 +61,14 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
 public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
     private static final String JAXB_DATABINDING = "javax.xml.bind.JAXBElement";
     private static final String SCHEMA_NS = "http://www.w3.org/2001/XMLSchema";
+    private static final String GET = "get";
+    private DataBindingExtensionPoint dataBindingExtensionPoint;
     private FaultExceptionMapper faultExceptionMapper;
 
-    public JAXWSJavaInterfaceProcessor(FaultExceptionMapper faultExceptionMapper) {
+    public JAXWSJavaInterfaceProcessor(DataBindingExtensionPoint dataBindingExtensionPoint,
+                                       FaultExceptionMapper faultExceptionMapper) {
         super();
+        this.dataBindingExtensionPoint = dataBindingExtensionPoint;
         this.faultExceptionMapper = faultExceptionMapper;
     }
 
@@ -219,8 +227,56 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
         if (operation!= null && operation.getFaultTypes() != null) {
             for (DataType exceptionType : operation.getFaultTypes()) {
                 faultExceptionMapper.introspectFaultDataType(exceptionType);
+                DataType faultType = (DataType)exceptionType.getLogical();
+                if (faultType.getDataBinding() == JavaExceptionDataBinding.NAME) {
+                    // The exception class doesn't have an associated bean class, so
+                    // synthesize a virtual bean by introspecting the exception class.
+                    createSyntheticBean(operation, exceptionType);
+                }
             }
         }
+    }
+
+    private void createSyntheticBean(Operation operation, DataType exceptionType) {
+        DataType faultType = (DataType)exceptionType.getLogical();
+        QName faultBeanName = ((XMLType)faultType.getLogical()).getElementName();
+        List<DataType<XMLType>> beanDataTypes = new ArrayList<DataType<XMLType>>();
+        for (Method aMethod : exceptionType.getPhysical().getMethods()) {
+            if (Modifier.isPublic(aMethod.getModifiers())
+                && aMethod.getName().startsWith(GET)
+                && aMethod.getParameterTypes().length == 0
+                && JAXWSFaultExceptionMapper.isMappedGetter(aMethod.getName())) {
+                String propName = resolvePropertyFromMethod(aMethod.getName());
+                QName propQName = new QName(faultBeanName.getNamespaceURI(), propName);
+                Class propType = aMethod.getReturnType();
+                XMLType xmlPropType = new XMLType(propQName, null);
+                DataType<XMLType> propDT = new DataTypeImpl<XMLType>(propType, xmlPropType);
+                org.apache.tuscany.sca.databinding.annotation.DataType dt =
+                    aMethod.getAnnotation(org.apache.tuscany.sca.databinding.annotation.DataType.class);
+                if (dt != null) {
+                    propDT.setDataBinding(dt.value());
+                }
+                dataBindingExtensionPoint.introspectType(propDT, aMethod.getAnnotations());
+
+                // sort the list lexicographically as specified in JAX-WS spec section 3.7
+                int i = 0;
+                for (; i < beanDataTypes.size(); i++) {
+                    if (beanDataTypes.get(i).getLogical().getElementName()
+                            .getLocalPart().compareTo(propName) > 0) {
+                        break;
+                    }
+                } 
+                beanDataTypes.add(i, propDT);
+            }
+        }
+        operation.getFaultBeans().put(faultBeanName, beanDataTypes);
+    }
+
+    private String resolvePropertyFromMethod(String methodName) {
+        StringBuffer propName = new StringBuffer();
+        propName.append(Character.toLowerCase(methodName.charAt(GET.length())));
+        propName.append(methodName.substring(GET.length() + 1));
+        return propName.toString();
     }
 
     private <T extends Annotation> T getAnnotation(Method method, int index, Class<T> annotationType) {

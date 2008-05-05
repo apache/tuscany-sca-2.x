@@ -19,13 +19,17 @@
 package org.apache.tuscany.sca.interfacedef.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
@@ -49,6 +53,7 @@ public class OperationImpl implements Operation {
     private WrapperInfo wrapper;
     private String dataBinding;
     private boolean dynamic;
+    private Map<QName, List<DataType<XMLType>>> faultBeans;
     
     private List<PolicySet> applicablePolicySets = new ArrayList<PolicySet>();
     private List<PolicySet> policySets = new ArrayList<PolicySet>();
@@ -61,6 +66,7 @@ public class OperationImpl implements Operation {
     public OperationImpl() {
         inputType = new DataTypeImpl<List<DataType>>("idl:input", Object[].class, new ArrayList<DataType>());
         faultTypes = new ArrayList<DataType>();
+        faultBeans = new HashMap<QName, List<DataType<XMLType>>>();
     }
 
     public String getName() {
@@ -272,6 +278,14 @@ public class OperationImpl implements Operation {
     public void setDynamic(boolean b) {
         this.dynamic = b;
     }
+    
+    public Map<QName, List<DataType<XMLType>>> getFaultBeans() {
+        return faultBeans;
+    }
+    
+    public void setFaultBeans(Map<QName, List<DataType<XMLType>>> faultBeans) {
+        this.faultBeans = faultBeans;
+    }
 
     @Override
     public OperationImpl clone() throws CloneNotSupportedException {
@@ -293,7 +307,7 @@ public class OperationImpl implements Operation {
         clonedInputType.setDataBinding(inputType.getDataBinding());
         copy.inputType = clonedInputType;
         
-        if(this.outputType!=null) {
+        if (this.outputType != null) {
             copy.outputType = (DataType) this.outputType.clone();
         }
         

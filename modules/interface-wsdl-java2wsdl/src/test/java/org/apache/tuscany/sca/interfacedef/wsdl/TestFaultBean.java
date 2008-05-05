@@ -19,35 +19,32 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl;
 
-import javax.jws.WebMethod;
-import javax.jws.WebService;
+public class TestFaultBean {
+    private String lastName;
+    private String firstName;
+    private float age;
 
-import org.osoa.sca.annotations.OneWay;
-import org.osoa.sca.annotations.Remotable;
+    public String getLastName() {
+        return lastName;
+    }
 
-@Remotable
-@WebService
-public interface TestJavaInterface {
-    String m1(String str);
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-    @OneWay
-    @WebMethod
-    void m2(int i);
+    public String getFirstName() {
+        return firstName;
+    }
 
-    @WebMethod
-    String m3();
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-    void m4();
+    public float getAge() {
+        return age;
+    }
 
-    @WebMethod
-    String m5(String str, int i);
-
-    @WebMethod(exclude = true)
-    void dummy();
-
-    @WebMethod
-    void m6(TestJavaClass info) throws TestException;
-
-    @WebMethod
-    void m7(TestJavaClass info) throws TestFault;
+    public void setAge(float age) {
+        this.age = age;
+    }
 }
