@@ -26,15 +26,12 @@ import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
+import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 
 /**
  * Test reading WSDL interfaces.
@@ -43,29 +40,17 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
  */
 public class WSDLTestCase extends TestCase {
 
-    private DefaultURLArtifactProcessorExtensionPoint documentProcessors;
     private ExtensibleURLArtifactProcessor documentProcessor;
     private WSDLModelResolver wsdlResolver;
 
     @Override
     public void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
-        documentProcessors = new DefaultURLArtifactProcessorExtensionPoint(extensionPoints);
+        URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
 
-        WSDLFactory wsdlFactory = new DefaultWSDLFactory();
-        ModelFactoryExtensionPoint factories = new DefaultModelFactoryExtensionPoint();
-        factories.addFactory(wsdlFactory);
-        javax.wsdl.factory.WSDLFactory wsdl4jFactory = javax.wsdl.factory.WSDLFactory.newInstance();
-        factories.addFactory(wsdl4jFactory);
-        WSDLDocumentProcessor wsdlProcessor = new WSDLDocumentProcessor(factories);
-        documentProcessors.addArtifactProcessor(wsdlProcessor);
-        wsdlResolver = new WSDLModelResolver(null, factories);
-    }
-
-    @Override
-    public void tearDown() throws Exception {
-        documentProcessors = null;
+        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
+        wsdlResolver = new WSDLModelResolver(null, modelFactories);
     }
 
     public void testReadWSDLDocument() throws Exception {
