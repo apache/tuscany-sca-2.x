@@ -21,49 +21,25 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>vtest-java-api</artifactId>
+        <artifactId>java-api-annotations</artifactId>
         <version>2.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>java-api-annotations</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>vtest-java-api-annotations-destroy</artifactId>
 
-    <name>Apache Tuscany SCA Java APIs and Annotations Verification Tests - Annotations</name>
+    <name>Apache Tuscany SCA Java APIs and Annotations Verification Tests - Annotations - @Destroy</name>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-host-embedded</artifactId>
+            <artifactId>tuscany-node2-impl</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-implementation-java-runtime</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
-        
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>reference</module>
-                <module>service</module>
-                <module>property</module>
-                <module>scope</module>
-                <module>init</module>
-                <module>destroy</module>
-                <module>oneway</module>
-                <module>conversational</module>
-                <module>conversationattributes</module>
-                <module>endsconversation</module>
-           </modules>
-        </profile>
-    </profiles>
 </project>
