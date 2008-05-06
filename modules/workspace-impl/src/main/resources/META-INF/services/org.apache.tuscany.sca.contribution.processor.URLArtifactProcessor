@@ -16,5 +16,4 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;type=contribution/content
-org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor;type=contribution/info
+org.apache.tuscany.sca.workspace.processor.impl.ContributionContentProcessor;model=org.apache.tuscany.sca.contribution.Contribution

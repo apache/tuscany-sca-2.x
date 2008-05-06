@@ -66,7 +66,7 @@ public class ListDependencies {
         
         // Create contribution info processor
         URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        contributionProcessor = docProcessorExtensions.getProcessor("contribution/info");
+        contributionProcessor = docProcessorExtensions.getProcessor(Contribution.class);
 
         // Create a monitor
         UtilityExtensionPoint services = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);

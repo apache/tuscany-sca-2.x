@@ -30,8 +30,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.Export;
 import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -47,7 +47,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
  * 
  * @version $Rev$ $Date$
  */
-public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<Contribution> {
+public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<ContributionMetadata> {
     
     private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     
@@ -76,12 +76,12 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
         return CONTRIBUTION_QNAME;
     }
 
-    public Class<Contribution> getModelType() {
-        return Contribution.class;
+    public Class<ContributionMetadata> getModelType() {
+        return ContributionMetadata.class;
     }
 
-    public Contribution read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        Contribution contribution = null;
+    public ContributionMetadata read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
+        ContributionMetadata contribution = null;
         QName name = null;
         
         while (reader.hasNext()) {
@@ -93,7 +93,7 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
                     if (CONTRIBUTION_QNAME.equals(name)) {
 
                         // Read <contribution>
-                        contribution = this.contributionFactory.createContribution();
+                        contribution = this.contributionFactory.createContributionMetadata();
                         contribution.setUnresolved(true);
                         
                     } else if (DEPLOYABLE_QNAME.equals(name)) {
@@ -142,7 +142,7 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
         return contribution;
     }
 
-    public void write(Contribution contribution, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
+    public void write(ContributionMetadata contribution, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
         
         // Write <contribution>
         writeStartDocument(writer, CONTRIBUTION_QNAME.getNamespaceURI(), CONTRIBUTION_QNAME.getLocalPart());
@@ -167,7 +167,7 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
         writeEndDocument(writer);
     }
 
-    public void resolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(ContributionMetadata contribution, ModelResolver resolver) throws ContributionResolveException {
         contribution.setUnresolved(false);
         
         // Resolve imports and exports

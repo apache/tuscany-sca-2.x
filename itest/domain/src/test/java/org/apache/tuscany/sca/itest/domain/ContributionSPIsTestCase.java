@@ -76,8 +76,7 @@ public class ContributionSPIsTestCase {
     private static ModelResolverExtensionPoint modelResolvers;
     
     private static URLArtifactProcessorExtensionPoint urlProcessors;
-    private static URLArtifactProcessor<Contribution> contributionInfoProcessor;
-    private static URLArtifactProcessor<Contribution> contributionContentProcessor;
+    private static URLArtifactProcessor<Contribution> contributionProcessor;
     
     private static Workspace workspace;
     
@@ -108,8 +107,7 @@ public class ContributionSPIsTestCase {
             urlProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
                  
             // Create contribution processor
-            contributionInfoProcessor = urlProcessors.getProcessor("contribution/info");
-            contributionContentProcessor = urlProcessors.getProcessor("contribution/content");
+            contributionProcessor = urlProcessors.getProcessor(Contribution.class);
             
             // Create workspace model to hold contribution information
             workspace = workspaceFactory.createWorkspace();
@@ -137,7 +135,7 @@ public class ContributionSPIsTestCase {
             URI uri = URI.create("contributionPrimary");
             File file = new File("./src/main/resources/contributionPrimary");
             URL url = file.toURI().toURL();
-            Contribution contribution = (Contribution)contributionInfoProcessor.read(null,uri, url);
+            Contribution contribution = (Contribution)contributionProcessor.read(null,uri, url);
             workspace.getContributions().add(contribution);
             System.out.println("Added contributionPrimary");
             
@@ -145,7 +143,7 @@ public class ContributionSPIsTestCase {
             uri = URI.create("contributionDependent");
             file = new File("./src/main/resources/contributionDependent");
             url = file.toURI().toURL();      
-            contribution = (Contribution)contributionInfoProcessor.read(null,uri, url);        
+            contribution = (Contribution)contributionProcessor.read(null,uri, url);        
             workspace.getContributions().add(contribution);
             System.out.println("Added contributionDependent");
               
@@ -248,10 +246,10 @@ public class ContributionSPIsTestCase {
         try {
             URI uri = URI.create(contributionURI);
             URL location = locationURL(contributionLocation);
-            Contribution contribution = (Contribution)contributionContentProcessor.read(null, uri, location);
+            Contribution contribution = (Contribution)contributionProcessor.read(null, uri, location);
             
             ModelResolver modelResolver = new ExtensibleModelResolver(contribution, modelResolvers, modelFactories);
-            contributionContentProcessor.resolve(contribution, modelResolver);
+            contributionProcessor.resolve(contribution, modelResolver);
             
             return contribution;
 

@@ -128,7 +128,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
     private ModelResolverExtensionPoint modelResolvers;
     private AssemblyFactory assemblyFactory;
     private WorkspaceFactory workspaceFactory;
-    private URLArtifactProcessor<Contribution> contributionContentProcessor;
+    private URLArtifactProcessor<Contribution> contributionProcessor;
     private StAXArtifactProcessor<Composite> compositeProcessor;
     private XMLOutputFactory outputFactory;
     private ContributionDependencyBuilder contributionDependencyBuilder;
@@ -151,6 +151,7 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         // Get model factories
         modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class);
@@ -158,13 +159,14 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         // Get and initialize artifact processors
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         compositeProcessor = (StAXArtifactProcessor<Composite>)staxProcessors.getProcessor(Composite.class);
+        StAXArtifactProcessor<Object> staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
 
         URLArtifactProcessorExtensionPoint urlProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         URLArtifactProcessor<Object> urlProcessor = new ExtensibleURLArtifactProcessor(urlProcessors);
         
         // Create contribution processor
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-        contributionContentProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor);
+        contributionProcessor = new ContributionContentProcessor(modelFactories, modelResolvers, urlProcessor, staxProcessor);
 
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
@@ -534,12 +536,12 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         try {
             URI uri = URI.create(contributionURI);
             URL location = locationURL(contributionLocation);
-            Contribution contribution = (Contribution)contributionContentProcessor.read(null, uri, location);
+            Contribution contribution = (Contribution)contributionProcessor.read(null, uri, location);
             
             // Resolve the contribution dependencies
             contributionDependencyBuilder.buildContributionDependencies(contribution, workspace);
             
-            contributionContentProcessor.resolve(contribution, workspace.getModelResolver());
+            contributionProcessor.resolve(contribution, workspace.getModelResolver());
             return contribution;
 
         } catch (ContributionReadException e) {
@@ -563,9 +565,9 @@ public class DeployableCompositeCollectionImpl extends HttpServlet implements It
         try {
             URI uri = URI.create(contributionURI);
             URL location = locationURL(contributionLocation);
-            Contribution contribution = (Contribution)contributionContentProcessor.read(null, uri, location);
+            Contribution contribution = (Contribution)contributionProcessor.read(null, uri, location);
             
-            contributionContentProcessor.resolve(contribution, new DefaultModelResolver());
+            contributionProcessor.resolve(contribution, new DefaultModelResolver());
             return contribution;
 
         } catch (ContributionReadException e) {

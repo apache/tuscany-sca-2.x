@@ -31,6 +31,7 @@ import javax.xml.stream.XMLStreamWriter;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -77,7 +78,7 @@ public class ContributionMetadataProcessorTestCase extends TestCase {
 
     public void testRead() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_XML));
-        Contribution contribution = (Contribution)staxProcessor.read(reader);
+        ContributionMetadata contribution = (ContributionMetadata)staxProcessor.read(reader);
         assertNotNull(contribution);
         assertEquals(2, contribution.getDeployables().size());
   }
@@ -94,7 +95,7 @@ public class ContributionMetadataProcessorTestCase extends TestCase {
 
     public void testWrite() throws Exception {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(VALID_XML));
-        Contribution contribution = (Contribution)staxProcessor.read(reader);
+        ContributionMetadata contribution = (ContributionMetadata)staxProcessor.read(reader);
 
         validateContribution(contribution);
         
@@ -105,12 +106,12 @@ public class ContributionMetadataProcessorTestCase extends TestCase {
         stringWriter.close();
 
         reader = inputFactory.createXMLStreamReader(new StringReader(stringWriter.toString()));
-        contribution = (Contribution)staxProcessor.read(reader);
+        contribution = (ContributionMetadata)staxProcessor.read(reader);
         
         validateContribution(contribution);
   }
     
-  private void validateContribution(Contribution contribution) {
+  private void validateContribution(ContributionMetadata contribution) {
 	  QName deployable;
 	  
 	  assertNotNull(contribution);

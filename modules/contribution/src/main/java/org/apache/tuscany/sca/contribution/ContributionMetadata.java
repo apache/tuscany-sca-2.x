@@ -19,41 +19,37 @@
 
 package org.apache.tuscany.sca.contribution;
 
+import java.util.List;
+
+import org.apache.tuscany.sca.assembly.Base;
+import org.apache.tuscany.sca.assembly.Composite;
 
 /**
- * A factory for the contribution model.
- * 
+ * The representation of SCA contribution metadata.
+ *
  * @version $Rev$ $Date$
  */
-public interface ContributionFactory {
+public interface ContributionMetadata extends Base {
     
     /**
-     * Create a contribution model object
+     * Returns a list of exports based on the contribution metadata.
      * 
-     * @return The new contribution model object
+     * @return The list of exports
      */
-    Contribution createContribution();
-        
-    /**
-     * Create a contribution metadata model object
-     * 
-     * @return The new contribution metadata model object
-     */
-    ContributionMetadata createContributionMetadata();
-        
-    /**
-     * Create a deployedArtifact model object
-     * 
-     * @return The new deployedArtifact model object
-     */
-    @Deprecated
-    DeployedArtifact createDeployedArtifact();   
+    List<Export> getExports();
 
     /**
-     * Create an artifact model object
+     * Returns a list of imports based on the contribution metadata.
      * 
-     * @return The new artifact model object
+     * @return The list of imports
      */
-    Artifact createArtifact();
+    List<Import> getImports();
     
+    /**
+     * Returns the list of deployable based on the contribution metadata.
+     * 
+     * @return The list of deployable composites
+     */
+    List<Composite> getDeployables();
+
 }
