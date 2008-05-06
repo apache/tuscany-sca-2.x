@@ -50,7 +50,9 @@
                 <module>catalog-webapp</module>
                 <module>catalog-ejb</module>
                 <module>catalog-mediation</module>
+                <!--
                 <module>store-test</module>
+                -->
             </modules>
         </profile>
 
