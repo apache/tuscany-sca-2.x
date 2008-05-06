@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.contribution.impl;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.DeployedArtifact;
 
 
@@ -37,6 +38,10 @@ public class ContributionFactoryImpl implements ContributionFactory {
     
     public Contribution createContribution() {
         return new ContributionImpl();
+    }
+    
+    public ContributionMetadata createContributionMetadata() {
+        return new ContributionMetadataImpl();
     }
 
     public Artifact createArtifact() {

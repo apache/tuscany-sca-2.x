@@ -55,18 +55,15 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultStAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.processor.DefaultURLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.DefaultModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
+import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
@@ -82,7 +79,6 @@ import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
 import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
-import org.apache.tuscany.sca.workspace.processor.impl.ContributionInfoProcessor;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.osoa.sca.ServiceRuntimeException;
@@ -120,7 +116,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     private WorkspaceFactory workspaceFactory;
     private StAXArtifactProcessor<Object> staxProcessor;
     private URLArtifactProcessor<Object> urlProcessor;
-    private URLArtifactProcessor<Contribution> contributionInfoProcessor;
+    private URLArtifactProcessor<Contribution> contributionProcessor;
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
     private DocumentBuilder documentBuilder;
@@ -157,7 +153,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         urlProcessor = new ExtensibleURLArtifactProcessor(urlProcessors);
         
         // Create contribution info processor
-        contributionInfoProcessor = urlProcessors.getProcessor("contribution/info");
+        contributionProcessor = urlProcessors.getProcessor(Contribution.class);
 
         // Create a document builder (used to pretty print XML)
         documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -507,8 +503,10 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
             for (Contribution c: workspace.getContributions()) {
                 URI uri = URI.create(c.getURI());
                 URL url = locationURL(c.getLocation());
-                Contribution contribution = (Contribution)contributionInfoProcessor.read(null, uri, url);
-                dependencyWorkspace.getContributions().add(contribution);
+                try {
+                    Contribution contribution = (Contribution)contributionProcessor.read(null, uri, url);
+                    dependencyWorkspace.getContributions().add(contribution);
+                } catch (ContributionReadException e) {}
             }
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);

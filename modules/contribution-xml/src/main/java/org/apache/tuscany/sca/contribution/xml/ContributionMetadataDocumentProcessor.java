@@ -28,7 +28,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.sca.contribution.Contribution;
+import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -41,7 +41,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
  * 
  * @version $Rev$ $Date$
  */
-public class ContributionMetadataDocumentProcessor implements URLArtifactProcessor<Contribution>{
+public class ContributionMetadataDocumentProcessor implements URLArtifactProcessor<ContributionMetadata>{
     private final StAXArtifactProcessor staxProcessor;
     private final XMLInputFactory inputFactory;
 
@@ -59,11 +59,11 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
         return "sca-contribution.xml";
     }
     
-    public Class<Contribution> getModelType() {
-        return Contribution.class;
+    public Class<ContributionMetadata> getModelType() {
+        return ContributionMetadata.class;
     }
     
-    public Contribution read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
+    public ContributionMetadata read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
         InputStream urlStream = null;
         try {
             
@@ -75,10 +75,7 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
             reader.nextTag();
             
             // Read the contribution model
-            Contribution contribution = (Contribution)staxProcessor.read(reader);
-            if (contribution != null) {
-                contribution.setURI(uri.toString());
-            }
+            ContributionMetadata contribution = (ContributionMetadata)staxProcessor.read(reader);
 
             return contribution;
             
@@ -98,7 +95,7 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
         }
     }
     
-    public void resolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
+    public void resolve(ContributionMetadata contribution, ModelResolver resolver) throws ContributionResolveException {
         staxProcessor.resolve(contribution, resolver);
     }
 

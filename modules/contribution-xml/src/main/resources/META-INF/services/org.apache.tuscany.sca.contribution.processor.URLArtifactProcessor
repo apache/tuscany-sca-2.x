@@ -16,5 +16,5 @@
 # under the License. 
 
 # Implementation class for the artifact processor extension
-org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;type=sca-contribution.xml,model=org.apache.tuscany.sca.contribution.Contribution
-org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;type=sca-contribution-generated.xml,model=org.apache.tuscany.sca.contribution.Contribution
+org.apache.tuscany.sca.contribution.xml.ContributionMetadataDocumentProcessor;type=sca-contribution.xml,model=org.apache.tuscany.sca.contribution.ContributionMetadata
+org.apache.tuscany.sca.contribution.xml.ContributionGeneratedMetadataDocumentProcessor;type=sca-contribution-generated.xml

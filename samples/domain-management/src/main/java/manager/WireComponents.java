@@ -122,7 +122,7 @@ public class WireComponents {
         
         // Create contribution content processor
         URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        contributionProcessor = docProcessorExtensions.getProcessor("contribution/content");
+        contributionProcessor = docProcessorExtensions.getProcessor(Contribution.class);
         
         // Get the model resolvers
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);

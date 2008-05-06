@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.PackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -249,7 +250,7 @@ public class ContributionServiceImpl implements ContributionService {
                                        Contribution.SCA_CONTRIBUTION_META}) {
             URL url = cl.getResource(path);
             if (url != null) {
-                Contribution contribution = metadataDocumentProcessor.read(sourceURL, URI.create(path), url);
+                ContributionMetadata contribution = metadataDocumentProcessor.read(sourceURL, URI.create(path), url);
                 contributionMetadata.getImports().addAll(contribution.getImports());
                 contributionMetadata.getExports().addAll(contribution.getExports());
                 contributionMetadata.getDeployables().addAll(contribution.getDeployables());

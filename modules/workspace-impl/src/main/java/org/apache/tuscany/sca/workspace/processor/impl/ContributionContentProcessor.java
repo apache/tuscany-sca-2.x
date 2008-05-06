@@ -27,6 +27,9 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
+import org.apache.tuscany.sca.contribution.ContributionMetadata;
+import org.apache.tuscany.sca.contribution.Export;
+import org.apache.tuscany.sca.contribution.Import;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -54,6 +57,7 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
     private ModelResolverExtensionPoint modelResolvers;
     private ModelFactoryExtensionPoint modelFactories;
     private URLArtifactProcessor<Object> artifactProcessor;
+    private StAXArtifactProcessor<Object> extensionProcessor;
 
     public ContributionContentProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor) {
         this.modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
@@ -61,19 +65,22 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
         hackResolvers(modelResolvers);
         URLArtifactProcessorExtensionPoint artifactProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         this.artifactProcessor = new ExtensibleURLArtifactProcessor(artifactProcessors);
+        this.extensionProcessor = extensionProcessor;
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
     }
     
-    public ContributionContentProcessor(ModelFactoryExtensionPoint modelFactories, ModelResolverExtensionPoint modelResolvers, URLArtifactProcessor<Object> artifactProcessor) {
+    public ContributionContentProcessor(ModelFactoryExtensionPoint modelFactories, ModelResolverExtensionPoint modelResolvers,
+                                        URLArtifactProcessor<Object> artifactProcessor, StAXArtifactProcessor<Object> extensionProcessor) {
         this.modelFactories = modelFactories;
         this.modelResolvers = modelResolvers;
         hackResolvers(modelResolvers);
         this.artifactProcessor = artifactProcessor;
+        this.extensionProcessor = extensionProcessor;
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
     }
     
     public String getArtifactType() {
-        return "contribution/content";
+        return null;
     }
     
     public Class<Contribution> getModelType() {
@@ -121,9 +128,9 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
                 modelResolver.addModel(model);
 
                 // Merge contribution metadata into the contribution model
-                if (model instanceof Contribution) {
+                if (model instanceof ContributionMetadata) {
                     contributionMetadata = true;
-                    Contribution c = (Contribution)model;
+                    ContributionMetadata c = (ContributionMetadata)model;
                     contribution.getImports().addAll(c.getImports());
                     contribution.getExports().addAll(c.getExports());
                     contribution.getDeployables().addAll(c.getDeployables());
@@ -146,8 +153,19 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
     
     public void resolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
         
-        // Resolve all artifact models
+        // Resolve the contribution model itself
         ModelResolver contributionResolver = contribution.getModelResolver();
+        contribution.setUnresolved(false);
+        
+        // Resolve imports and exports
+        for (Export export: contribution.getExports()) {
+            extensionProcessor.resolve(export, contributionResolver);
+        }
+        for (Import import_: contribution.getImports()) {
+            extensionProcessor.resolve(import_, contributionResolver);
+        }
+        
+        // Resolve all artifact models
         for (Artifact artifact : contribution.getArtifacts()) {
             Object model = artifact.getModel();
             if (model != null) {
@@ -159,8 +177,15 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
             }
         }
         
-        // Resolve the contribution model itself
-        artifactProcessor.resolve(contribution, contributionResolver);
+        // Resolve deployable composites
+        List<Composite> deployables = contribution.getDeployables();
+        for (int i = 0, n = deployables.size(); i < n; i++) {
+            Composite deployable = deployables.get(i);
+            Composite resolved = (Composite)contributionResolver.resolveModel(Composite.class, deployable);
+            if (resolved != deployable) {
+                deployables.set(i, resolved);
+            }
+        }
     }
 
     /**

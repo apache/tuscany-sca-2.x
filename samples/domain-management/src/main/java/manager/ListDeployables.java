@@ -52,7 +52,7 @@ public class ListDeployables {
         
         // Create contribution info processor
         URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        contributionProcessor = docProcessorExtensions.getProcessor("contribution/info");
+        contributionProcessor = docProcessorExtensions.getProcessor(Contribution.class);
     }
 
     public static void main(String[] args) throws Exception {
