@@ -22,14 +22,19 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.Collection;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import javax.wsdl.PortType;
+
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
@@ -42,10 +47,19 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.databinding.xml.DOMDataBinding;
+
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+
 import org.apache.tuscany.sca.implementation.bpel.BPELFactory;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
 import org.apache.tuscany.sca.implementation.bpel.DefaultBPELFactory;
+import org.apache.tuscany.sca.implementation.bpel.xml.BPELPartnerLinkElement;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 
 /**
  * Implements a STAX artifact processor for BPEL implementations.
@@ -64,9 +78,11 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     
     private AssemblyFactory assemblyFactory;
     private BPELFactory bpelFactory;
+    private WSDLFactory wsdlFactory;
     
     public BPELImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         this.bpelFactory = new DefaultBPELFactory(modelFactories);
     }
 
@@ -113,6 +129,9 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             
             impl.setProcessDefinition(processDefinition);
             
+            // Get the component type from the process definition
+            generateComponentType( impl );
+            
             //resolve component type
             mergeComponentType(resolver, impl);
                         
@@ -120,7 +139,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             impl.setUnresolved(false);
         }
         
-    }
+    } // end resolve
 
     /*
      * Write out the XML representation of the BPEL implementation
@@ -149,7 +168,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
 
         writer.writeEndElement();
 
-    }
+    } // end write
 
     private BPELProcessDefinition resolveBPELProcessDefinition(BPELImplementation impl, ModelResolver resolver) throws ContributionResolveException {
         QName processName = impl.getProcess();
@@ -158,16 +177,136 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         processDefinition.setUnresolved(true);
         
         return resolver.resolveModel(BPELProcessDefinition.class, processDefinition);
-    }
+    } // end resolveBPELProcessDefinition
     
+    // Calculates the component type of the supplied implementation and attaches it to the
+    // implementation
+    private void generateComponentType(BPELImplementation impl ) {
+        // Create a ComponentType and mark it unresolved
+        ComponentType componentType = assemblyFactory.createComponentType();
+        componentType.setUnresolved(true);
+        impl.setComponentType(componentType);
+        
+        // Each partner link in the process represents either a service or a reference
+        // - or both, in the sense of involving a callback
+        BPELProcessDefinition theProcess = impl.getProcessDefinition();
+        List<BPELPartnerLinkElement> partnerLinks = theProcess.getPartnerLinks();
+        
+        for( BPELPartnerLinkElement pLink : partnerLinks ) {
+        	// check that the partner link has been designated as service or reference in SCA terms
+        	if ( pLink.isSCATyped() ) {
+        		String SCAName = pLink.getSCAName(); 
+        		if( pLink.querySCAType().equals("reference") ) {
+        			componentType.getReferences().add(
+	        			generateReference( SCAName, 
+	        					           pLink.getMyRolePortType(), 
+	        					           pLink.getPartnerRolePortType(),
+		        					       theProcess.getInterfaces() )
+        			);
+        		} else {
+        			componentType.getServices().add(
+	        			generateService( SCAName, 
+	        					         pLink.getMyRolePortType(), 
+	        					         pLink.getPartnerRolePortType(),
+	        					         theProcess.getInterfaces() ) 
+        			);
+        		} // end if
+        	} // end if
+        } // end for
+        
+    	
+    } // end getComponentType
     
     /**
-     * Merge the componentType from introspection and external file
+     * Create an SCA reference for a partnerLink
+     * @param name - name of the reference
+     * @param myRolePT - partner link type of myRole
+     * @param partnerRolePT - partner link type of partnerRole
+     * @param theInterfaces - list of WSDL interfaces associated with the BPEL process
+     * @return
+     */
+    private Reference generateReference( String name, PortType myRolePT, 
+    		PortType partnerRolePT, Collection<WSDLInterface> theInterfaces  ) {
+        Reference reference = assemblyFactory.createReference();
+        WSDLInterfaceContract interfaceContract = wsdlFactory.createWSDLInterfaceContract();
+        reference.setInterfaceContract(interfaceContract);
+        
+        // Set the name of the reference to the supplied name and the multiplicity of the reference
+        // to 1..1 
+        // TODO: support other multiplicities 
+        reference.setName(name);
+        reference.setMultiplicity(Multiplicity.ONE_ONE);
+
+        // Set the call interface and, if present, the callback interface
+        WSDLInterface callInterface = null;
+        for( WSDLInterface anInterface : theInterfaces ) {
+        	if( anInterface.getPortType().equals(myRolePT)) callInterface = anInterface;
+        } // end for
+        //TODO need to throw an exception here if no interface is found
+        reference.getInterfaceContract().setInterface(callInterface);
+ 
+        // There is a callback if the partner role is not null and if the partner role port type
+        // is not the same as the port type for my role
+        if (partnerRolePT != null && !myRolePT.equals(partnerRolePT) ) {
+            WSDLInterface callbackInterface = null;
+            for( WSDLInterface anInterface : theInterfaces ) {
+            	if( anInterface.getPortType().equals(myRolePT)) callbackInterface = anInterface;
+            } // end for
+            //TODO need to throw an exception here if no interface is found
+             reference.getInterfaceContract().setCallbackInterface(callbackInterface);
+        } // end if
+    	
+    	return reference;
+    } // end generateReference
+    
+    /**
+     * Create an SCA service for a partnerLink
+     * @param name - name of the reference
+     * @param myRolePT - partner link type of myRole
+     * @param partnerRolePT - partner link type of partnerRole
+     * @param theInterfaces - list of WSDL interfaces associated with the BPEL process
+     * @return
+     */
+    private Service generateService( String name, PortType myRolePT, 
+    		PortType partnerRolePT, Collection<WSDLInterface> theInterfaces ) {
+        Service service = assemblyFactory.createService();
+        WSDLInterfaceContract interfaceContract = wsdlFactory.createWSDLInterfaceContract();
+        service.setInterfaceContract(interfaceContract);
+        
+        // Set the name of the service to the supplied name 
+        service.setName(name);
+
+        // Set the call interface and, if present, the callback interface
+        WSDLInterface callInterface = null;
+        for( WSDLInterface anInterface : theInterfaces ) {
+        	if( anInterface.getPortType().equals(myRolePT)) callInterface = anInterface;
+        } // end for
+        //TODO need to throw an exception here if no interface is found
+        service.getInterfaceContract().setInterface(callInterface);    
+        
+        // There is a callback if the partner role is not null and if the partner role port type
+        // is not the same as the port type for my role
+        if (partnerRolePT != null && !myRolePT.equals(partnerRolePT) ) {
+            WSDLInterface callbackInterface = null;
+            for( WSDLInterface anInterface : theInterfaces ) {
+            	if( anInterface.getPortType().equals(myRolePT)) callbackInterface = anInterface;
+            } // end for
+            //TODO need to throw an exception here if no interface is found
+            service.getInterfaceContract().setCallbackInterface(callbackInterface);
+        } // end if
+    	
+    	return service;
+    } // end generateService
+    
+    /**
+     * Merge the componentType from introspection and from external file
      * @param resolver
      * @param impl
      */
     private void mergeComponentType(ModelResolver resolver, BPELImplementation impl) {
         // FIXME: Need to clarify how to merge
+    	
+    	// Load the component type from a component type file, if any
         ComponentType componentType = getComponentType(resolver, impl);
         if (componentType != null && !componentType.isUnresolved()) {
             
@@ -184,17 +323,20 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             impl.getReferences().addAll(refMap.values());
 
             Map<String, Service> serviceMap = new HashMap<String, Service>();
-            for (Service svc : impl.getServices()) {
-                if(svc != null) {
-                    serviceMap.put(svc.getName(), svc);    
-                }
-            }
             for (Service service : componentType.getServices()) {
                 //set default dataBinding to DOM
                 service.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
                 
                 serviceMap.put(service.getName(), service);
             }
+            // For the present, overwrite anything arising from the component type sidefile if
+            // equivalent services are defined in the implementation
+            for (Service svc : impl.getServices()) {
+                if(svc != null) {
+                    serviceMap.put(svc.getName(), svc);    
+                }
+            }
+
             impl.getServices().clear();
             impl.getServices().addAll(serviceMap.values());
 
@@ -208,6 +350,8 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
 
     private ComponentType getComponentType(ModelResolver resolver, BPELImplementation impl) {
         String bpelProcessURI = impl.getProcessDefinition().getURI().toString();
+        
+        // Get the component type definition contained in the componentType file, if any
         String componentTypeURI = bpelProcessURI.replace(".bpel", ".componentType");
         ComponentType componentType = assemblyFactory.createComponentType();
         componentType.setUnresolved(true);
@@ -217,9 +361,12 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             return componentType;
         }
         return null;
-    }
+    } // end getComponentType
 
     /*
+     * Returns a QName of a BPEL process as from its string representation in the process
+     * attribute in the process XML
+     * 
      * The process attribute of a BPEL process is a QName - this may be presented in one of
      * two alternative formats:
      * 1) In the form of a local name with a prefix, with the prefix referencing a namespace

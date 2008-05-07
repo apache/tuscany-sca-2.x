@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.implementation.bpel;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Implementation;
 
 /**
@@ -51,4 +52,15 @@ public interface BPELImplementation extends Implementation {
      * @param processDefinition
      */
     void setProcessDefinition(BPELProcessDefinition processDefinition);
+    
+    /** 
+     * Returns the componentType for this Spring implementation 
+     */
+    public ComponentType getComponentType(); 
+
+    /**
+     * Sets the componentType for this Spring implementation
+     * @parma componentType the component type to set
+     */
+    public void setComponentType(ComponentType componentType); 
 }
