@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.vtest.javaapi.conversation.callback;
+package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.local;
 
 import org.osoa.sca.annotations.Conversational;
 
@@ -24,7 +24,7 @@ import org.osoa.sca.annotations.Conversational;
  *
  */
 @Conversational
-public interface ALocalServiceCallback {
+public interface AServiceCallback {
 
     public void callBack(String someState);
     

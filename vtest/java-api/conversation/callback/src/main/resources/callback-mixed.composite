@@ -18,17 +18,17 @@
 	* under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	targetNamespace="http://java-api-tests" name="Converstion-callback-remote">
+	targetNamespace="http://java-api-tests" name="Converstion-callback-mixed">
 
 	<component name="AComponent">
 		<implementation.java
-			class="org.apache.tuscany.sca.vtest.javaapi.conversation.callback.impl.AServiceImpl" />
-		<reference name="b" target="BLocalComponent" />
+			class="org.apache.tuscany.sca.vtest.javaapi.conversation.callback.mixed.impl.AServiceImpl" />
+		<reference name="b" target="BComponent" />
 	</component>
 
-	<component name="BLocalComponent">
+	<component name="BComponent">
 		<implementation.java
-			class="org.apache.tuscany.sca.vtest.javaapi.conversation.callback.impl.BLocalServiceImpl" />
+			class="org.apache.tuscany.sca.vtest.javaapi.conversation.callback.mixed.impl.BServiceImpl" />
 	</component>
 
 </composite>

@@ -16,37 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.mixed;
 
-package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.impl;
-
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.AServiceCallback;
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.BLocalService;
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.BService;
 import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.osoa.sca.annotations.Conversational;
+import org.osoa.sca.annotations.Remotable;
 
-@Service(BService.class)
-@Scope("CONVERSATION")
-public class BLocalServiceImpl implements BLocalService {
+/**
+ * Simple Local Service
+ */
+@Remotable
+@Conversational
+@Callback(AServiceCallback.class)
+public interface BService {
 
-    String someState;
-
-    @Callback
-    protected AServiceCallback callback;
-
-    public void setState(String someState) {
-        this.someState = someState;
-    }
-
-    public String getState() {
-        return someState;
-    }
-
-    public void testCallBack(String someState) {
-        callback.callBack(someState);
-    }
+    public void setState(String someState);
     
-    
+    public String getState();
+
+    public void testCallBack(String string);
 
 }

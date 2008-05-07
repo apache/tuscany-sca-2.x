@@ -18,17 +18,11 @@
  */
 package org.apache.tuscany.sca.vtest.javaapi.conversation.callback;
 
-import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.Remotable;
 
 /**
- * Simple Remotable Service
+ * Simple Service
  */
-@Remotable
-@Conversational
 public interface AService {
-
-    public void testAnnotation();
 
     public void testCallback();
  

@@ -17,11 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.impl;
+package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.mixed.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.AService;
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.AServiceCallback;
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.BService;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.local.AServiceCallback;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.local.BService;
 import org.junit.Assert;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Reference;

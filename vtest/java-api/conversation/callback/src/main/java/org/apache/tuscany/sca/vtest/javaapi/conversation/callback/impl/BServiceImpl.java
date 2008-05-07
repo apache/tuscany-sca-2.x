@@ -45,6 +45,10 @@ public class BServiceImpl implements BService {
     public void testCallBack(String someState) {
         callback.callBack(someState);
     }
+
+    public boolean isCallBackNull() {
+        return (callback == null) ;
+    }
     
     
 
