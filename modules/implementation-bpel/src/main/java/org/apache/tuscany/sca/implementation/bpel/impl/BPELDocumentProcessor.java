@@ -19,16 +19,32 @@
 
 package org.apache.tuscany.sca.implementation.bpel.impl;
 
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+
+import javax.wsdl.Definition;
+import javax.wsdl.extensions.ExtensibilityElement;
+import javax.wsdl.extensions.UnknownExtensibilityElement;
+import javax.wsdl.PortType;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
 
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
@@ -38,23 +54,52 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.implementation.bpel.BPELFactory;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
+import org.apache.tuscany.sca.implementation.bpel.xml.BPELImportElement;
+import org.apache.tuscany.sca.implementation.bpel.xml.BPELPartnerLinkElement;
+import org.apache.tuscany.sca.implementation.bpel.xml.BPELPartnerLinkTypeElement;
+
+import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+
+import org.apache.tuscany.sca.interfacedef.wsdl.xml.BPELPartnerLinkTypeExt;
 
 /**
  * BPEL document processor responsible for reading a BPEL file and producing necessary model info about it
  * 
+ * TODO: The namespaces for WS-BPEL include 2 versions - only the earlier BPEL 1.1 versions are
+ * supported at present - the BPEL 2.0 namespaces also need support.  This will require inspection
+ * of both BPEL process files and of WSDL files for their BPEL namespaces
  * @version $Rev$ $Date$
  */
 public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements URLArtifactProcessor<BPELProcessDefinition> {
     public final static QName BPEL_PROCESS_DEFINITION = new QName("http://schemas.xmlsoap.org/ws/2004/03/business-process/", "process");
     public final static QName BPEL_EXECUTABLE_DEFINITION = new QName("http://docs.oasis-open.org/wsbpel/2.0/process/executable", "process");
+    private static final String SCA_BPEL_NS = "http://docs.oasis-open.org/ns/opencsa/sca-bpel/200801";
+    private static final String BPEL_NS = "http://schemas.xmlsoap.org/ws/2004/03/business-process/";
+    private static final String BPEL_PLINK_NS = "http://schemas.xmlsoap.org/ws/2004/03/partner-link/";
+    private static final QName PROCESS_ELEMENT = new QName(BPEL_NS, "process");
+    private static final QName PARTNERLINK_ELEMENT = new QName(BPEL_NS, "partnerLink");
+    private static final QName ONEVENT_ELEMENT = new QName(BPEL_NS, "onEvent");
+    private static final QName RECEIVE_ELEMENT = new QName(BPEL_NS, "receive");
+    private static final QName ONMESSAGE_ELEMENT = new QName(BPEL_NS, "onMessage");
+    private static final QName INVOKE_ELEMENT = new QName(BPEL_NS, "invoke");
+    private static final QName IMPORT_ELEMENT = new QName(BPEL_NS, "import");
+    private static final String LINKTYPE_NAME = "partnerLinkType";
+    private static final QName LINKTYPE_ELEMENT = new QName(BPEL_PLINK_NS, LINKTYPE_NAME);
+
     public final static String NAME_ELEMENT = "name";
     
     private final static XMLInputFactory inputFactory = XMLInputFactory.newInstance();
     
     private final BPELFactory factory;
-    
+    private WSDLFactory WSDLfactory;
+
     public BPELDocumentProcessor(ModelFactoryExtensionPoint modelFactories) {
-        this.factory = modelFactories.getFactory(BPELFactory.class);
+        this.factory     = modelFactories.getFactory(BPELFactory.class);
+        this.WSDLfactory = modelFactories.getFactory(WSDLFactory.class);
     }
     
     public String getArtifactType() {
@@ -71,7 +116,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
             //for now we are just using process name
             //and relying on componentType file for service definition
             //so it's OK to set resolved for now
-            processDefinition = indexRead(artifactURL);
+            processDefinition = indexRead2(artifactURL);
             processDefinition.setURI(artifactURI);
             processDefinition.setUnresolved(false);
         } catch (Exception e) {
@@ -81,20 +126,207 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
         return processDefinition;
     }
 
-
-    public void resolve(BPELProcessDefinition model, ModelResolver resolver) throws ContributionResolveException {
-        
-    }
+    /**
+     * Resolve the BPEL process
+     * - one of the things that needs doing is to pin down the WSDLs that are being used by
+     * the process, in particular the partnerLinkType and the related PortType definitions
+     */
+    public void resolve(BPELProcessDefinition model, ModelResolver resolver) 
+    	throws ContributionResolveException {
+        // FIXME - serious resolving needs to happen here
+    	
+    	// Step 1 is to resolve the WSDL files referenced from this BPEL process
+    	// - one complexity here is that the WSDL definitions hold BPEL extension elements for
+    	// the partnerLinkType declarations - and these must be used in later steps
+    	//
+    	// Step 2 is to take all the partnerLink definitions and establish the PortType being
+    	// used, by tracing through the related partnerLinkType declarations - the PortType is
+    	// effectively a definition of the interface used by the partnerLink.
+    	// - another consideration here is that each partnerLink can involve 2 interfaces, one
+    	// for the forward calls to the process, the other for calls from the process - depending
+    	// on whether the partnerLink is a reference or a service, one of these interfaces is a
+    	// callback interface.
+    	
+    	List<BPELImportElement> theImports = model.getImports();
+    	for ( BPELImportElement theImport : theImports ) {
+    		// Deal with WSDL imports
+    		if ( theImport.getImportType().equals("http://schemas.xmlsoap.org/wsdl/") ) {
+    			String WSDLLocation = theImport.getLocation();
+    			String WSDLNamespace = theImport.getNamespace();
+    			// FIXME both Location & Namespace attributes are optional - for the present
+    			// we don't deal with these cases - they are skipped
+    			if ( WSDLLocation == null || WSDLNamespace == null ) continue;
+    			// Resolve the WSDL definition
+                WSDLDefinition proxy = WSDLfactory.createWSDLDefinition();
+                proxy.setUnresolved(true);
+                proxy.setNamespace(WSDLNamespace);
+                proxy.setLocation(URI.create(WSDLLocation));
+                WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, proxy);
+                if (resolved != null && !resolved.isUnresolved()) {
+                    theImport.setWSDLDefinition( resolved );
+                } // end if	
+    		} // end if
+    	} // end for
+    	
+    	// Fetch the sets of partner links, port types and interfaces
+    	List<BPELPartnerLinkTypeElement> thePLinkTypes = getPartnerLinkTypes( theImports );
+    	Collection<WSDLInterface> theInterfaces = (Collection<WSDLInterface>)new ArrayList<WSDLInterface>();
+    	Collection<PortType> thePortTypes = getAllPortTypes( theImports, theInterfaces, resolver );
+    	
+    	// Store the Port Types and the Interfaces for later calculation of the component type...
+    	model.setPortTypes(thePortTypes);
+    	model.setInterfaces(theInterfaces);
+    	
+    	// Now, for each partnerLink in the BPEL process, find the related partnerLinkType
+    	// element 
+    	List<BPELPartnerLinkElement> thePartnerLinks = model.getPartnerLinks();
+    	for ( BPELPartnerLinkElement thePartnerLink : thePartnerLinks ) {
+    		QName partnerLinkType = thePartnerLink.getPartnerLinkType();
+    		BPELPartnerLinkTypeElement pLinkType = 
+    			findPartnerLinkType( partnerLinkType, thePLinkTypes );
+    		if( pLinkType == null ) throw new ContributionResolveException( "PartnerLink " 
+    				+ thePartnerLink.getName() + " has no matching partner link type");	
+    		thePartnerLink.setPartnerLinkType(pLinkType);
+    	} // end for
+    	
+    } // end resolve
+    
+    /*
+     * Retrieve all the Partner Link types defined in the imported WSDL files
+     */
+    private List<BPELPartnerLinkTypeElement> getPartnerLinkTypes( List<BPELImportElement> theImports )
+    	throws ContributionResolveException {
+    	
+    	List<BPELPartnerLinkTypeElement> thePLinks = 
+    		new ArrayList<BPELPartnerLinkTypeElement>();
+    		
+    	// We must find the partner link type elements from amongst the imported WSDLs
+    	for ( BPELImportElement theImport : theImports ){
+    		WSDLDefinition theWSDL = theImport.getWSDLDefinition();
+    		Definition WSDLDefinition = theWSDL.getDefinition();
+    		// The BPEL partnerLinkType elements are extension elements within the WSDL
+    		List<ExtensibilityElement> extensibilityElements = WSDLDefinition.getExtensibilityElements();
+    		
+    		for ( ExtensibilityElement theElement : extensibilityElements ) {
+    			QName elementType = theElement.getElementType();
+    			if ( elementType.equals( LINKTYPE_ELEMENT ) ) {
+    				BPELPartnerLinkTypeExt pLinkExt = (BPELPartnerLinkTypeExt)theElement;
+    				// Fetch the name of the partnerLinkType
+    				String name = pLinkExt.getName();
+    				QName qName = new QName( WSDLDefinition.getTargetNamespace(), name );
+    				BPELPartnerLinkTypeElement pLinkElement = new BPELPartnerLinkTypeElement( qName );
+    				
+    				// The partnerLinkType must have one and may have 2 role child elements
+    				int count = 0;
+    				for( int i = 0; i < 2; i++ ) {
+    					if(pLinkExt.getRoleName(i) == null ) continue;
+    					PortType pType = WSDLDefinition.getPortType(pLinkExt.getRolePortType(i));
+    					if ( count == 0 ) {
+    						pLinkElement.setRole1(pLinkExt.getRoleName(i),
+    								              pLinkExt.getRolePortType(i),
+    								              pType );
+    						count++;
+    					} else if (count == 1) {
+    						pLinkElement.setRole2(pLinkExt.getRoleName(i),
+						                          pLinkExt.getRolePortType(i),
+						                          pType );
+    						count++;
+    					} else {
+    						break;
+    					} // end if 
+    				} // end for
+    				if( count == 0 ) throw new ContributionResolveException( "partnerLinkType "+ 
+    						                         pLinkElement.getName() +" has no Roles defined" );
+    				thePLinks.add( pLinkElement );
+    			} // end if
+    			
+    		} // end for
+    	} // end for
+    	return thePLinks;
+    } // end getPartnerLinkTypes
+    
+    protected Collection<PortType> getAllPortTypes( List<BPELImportElement> theImports,
+    												Collection<WSDLInterface> theInterfaces,
+    												ModelResolver resolver) 
+    				throws ContributionResolveException {
+    	
+    	Collection<PortType> thePortTypes = (Collection<PortType>)new ArrayList<PortType>();
+    	for ( BPELImportElement theImport : theImports ){
+    		WSDLDefinition theWSDL = theImport.getWSDLDefinition();
+    		Definition wsdlDefinition = theWSDL.getDefinition();
+    		
+    		Collection<PortType> portTypes = (Collection<PortType>)wsdlDefinition.getPortTypes().values();
+    		thePortTypes.addAll( portTypes );
+    		
+    		// Create WSDLInterface elements for each PortType found
+    		for( PortType portType : portTypes ) {
+    			WSDLObject<PortType> wsdlPortType = theWSDL.getWSDLObject(PortType.class, portType.getQName() );
+    			WSDLInterface wsdlInterface;
+                if (wsdlPortType != null) {      
+                    // Introspect the WSDL portType and add the resulting
+                    // WSDLInterface to the resolver
+                    try {
+                        theWSDL.setDefinition( wsdlPortType.getDefinition() );
+                        wsdlInterface = WSDLfactory.createWSDLInterface(wsdlPortType.getElement(), 
+                        		theWSDL, resolver);
+                        wsdlInterface.setWsdlDefinition(theWSDL);
+                    } catch (InvalidInterfaceException e) {
+                        throw new ContributionResolveException(e);
+                    } // end try
+                    resolver.addModel(wsdlInterface);
+                    theInterfaces.add(wsdlInterface);
+                } // end if
+            } // end for
+      
+    		//-----------------------
+    		
+    	} // end for
+    	
+    	return thePortTypes;
+    } // end getAllPortTypes
     
     /**
-     * Read the namespace for the WSDL definition and inline schemas
-     * 
-     * @param doc
+     * Returns a QName from a string.  
+     * @param definition - a WSDL Definition
+     * @param value - the String from which to form the QName in the form "pref:localName"
      * @return
-     * @throws IOException
-     * @throws XMLStreamException
      */
-    protected BPELProcessDefinition indexRead(URL doc) throws Exception {
+    protected QName getQNameValue(Definition definition, String value) {
+        if (value != null && definition != null) {
+            int index = value.indexOf(':');
+            String prefix = index == -1 ? "" : value.substring(0, index);
+            String localName = index == -1 ? value : value.substring(index + 1);
+            String ns = definition.getNamespace(prefix);
+            if (ns == null) {
+                ns = "";
+            }
+            return new QName(ns, localName, prefix);
+        } else {
+            return null;
+        }
+    } // end getQNameValue
+
+    
+    /*
+     * Method which finds a partnerLinkType definition within the WSDLs imported by the BPEL
+     * process.
+     * @param partnerLinkTypeName - the name of the partnerLinkType
+     * @param theImports a list of the WSDL import declarations
+     * @returns a BPELPartnerLinkTypeElement for the partnerLinkType or null if it cannot be
+     * found
+     */
+    private BPELPartnerLinkTypeElement findPartnerLinkType( QName partnerLinkTypeName,
+    										List<BPELPartnerLinkTypeElement> thePLinkTypes) {
+    	// We must find the partner link type element from amongst the imported WSDLs
+    	for ( BPELPartnerLinkTypeElement thePLinkType : thePLinkTypes ){
+    		if( thePLinkType.getName().equals(partnerLinkTypeName) ) return thePLinkType;
+     	} // end for
+    	return null;
+    } // end findPartnerLinkType
+    
+    
+
+    protected BPELProcessDefinition indexRead2(URL doc) throws Exception {
         BPELProcessDefinition processDefinition = factory.createBPELProcessDefinition();
         processDefinition.setUnresolved(true);
         processDefinition.setLocation(doc);
@@ -103,31 +335,138 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
         XMLStreamReader reader = null;
         try {
             reader = inputFactory.createXMLStreamReader(is);
-            int eventType = reader.getEventType();
-            while (true) {
-                if (eventType == XMLStreamConstants.START_ELEMENT) {
-                    QName elementName = reader.getName();
-                    if (BPEL_PROCESS_DEFINITION.equals(elementName) || BPEL_EXECUTABLE_DEFINITION.equals(elementName) ) {
-                        QName processName = new QName(getString(reader, org.apache.tuscany.sca.assembly.xml.Constants.TARGET_NAMESPACE), getString(reader, NAME_ELEMENT));
-                        processDefinition.setName(processName);
+            /*
+             * The principle here is to look for partnerLink elements, which form either services
+             * or references.  A partnerLink can be EITHER - the algorithm for deciding is:
+             * 1) Explicit marking with sca:reference or sca:service attribute
+             * 2) "first use" of the partnerLink by specific BPEL activity elements:
+             * <onEvent../>, <receive../> or <pick../> elements imply a service
+             * <invoke../> implies a reference
+             */
+            // TODO - need to handle <scope../> elements as kind of "nested" processes
+            // - and scopes introduce the possibility of partnerLinks with the same name at
+            // different levels of scope.... (yuk!!)
+            boolean completed = false;
+            while (!completed) {
+                switch (reader.next()) {
+                    case START_ELEMENT:
+                        QName qname = reader.getName();
+                        //System.out.println("BPEL TypeLoader - found element with name: " + qname.toString());
+                        if (BPEL_PROCESS_DEFINITION.equals(qname) || 
+                        	BPEL_EXECUTABLE_DEFINITION.equals(qname)) {
+                            QName processName = new QName(getString(reader, org.apache.tuscany.sca.assembly.xml.Constants.TARGET_NAMESPACE), 
+                            		                      getString(reader, NAME_ELEMENT));
+                            processDefinition.setName(processName);
+                		} else if (PARTNERLINK_ELEMENT.equals(qname)) { 
+                            processDefinition.getPartnerLinks().add(processPartnerLinkElement( reader ));
+                        } else if (ONEVENT_ELEMENT.equals(qname) || 
+                        		   RECEIVE_ELEMENT.equals(qname) ||
+                        		   ONMESSAGE_ELEMENT.equals(qname) ) {
+                        	processPartnerLinkAsService( reader.getAttributeValue(null, "partnerLink"), processDefinition.getPartnerLinks() );
+                        } else if (INVOKE_ELEMENT.equals(qname)) { 
+                        	processPartnerLinkAsReference( reader.getAttributeValue(null, "partnerLink"), processDefinition.getPartnerLinks() );
+                        } else if (IMPORT_ELEMENT.equals(qname)) {
+                        	processDefinition.getImports().add( processImportElement( reader ) );
+                        } // end if
                         break;
-                    }
-                }
-                if (reader.hasNext()) {
-                    eventType = reader.next();
-                } else {
-                    break;
-                }
-            }
+                    case END_ELEMENT:
+                        if (PROCESS_ELEMENT.equals(reader.getName())) {
+                            //System.out.println("BPEL TypeLoader - finished read of process file");
+                            completed = true;
+                            break;
+                        } // end if
+                } // end switch
+            } // end while
         } finally {
-            if(reader != null) {
-                reader.close();
-            }
+            if(reader != null) reader.close();
             is.close();
-        }
+        } // end try
         
         return processDefinition;
-    }
-    
+    } // end indexRead2
+
+	/*
+	 * Processes a partnerLink element from the BPEL process and creates a
+	 * BPELPartnerLink object
+	 */
+	private BPELPartnerLinkElement processPartnerLinkElement( XMLStreamReader reader ) 
+					throws ContributionReadException {
+		BPELPartnerLinkElement partnerLink = new BPELPartnerLinkElement(
+	    		reader.getAttributeValue(null, "name"), 
+	    		getQNameValue(reader, reader.getAttributeValue(null, "partnerLinkType") ),
+	    		reader.getAttributeValue(null, "myRole"),
+	    		reader.getAttributeValue(null, "partnerRole"));
+	    // See if there are any SCA extension attributes
+	    String scaService = reader.getAttributeValue( SCA_BPEL_NS, "service");
+	    String scaReference = reader.getAttributeValue( SCA_BPEL_NS, "reference");
+	    if( (scaService != null) && (scaReference != null) ) {
+	    	// It is incorrect to set both service & reference attributes
+	    	throw new ContributionReadException( "BPEL PartnerLink " 
+	    			+ reader.getAttributeValue(null, "name") + 
+	    			" has both sca:reference and sca:service attributes set" );
+	    }
+	    // Set the SCA type and the related name, if present
+	    if( scaService != null ) partnerLink.setAsService( scaService );
+	    else if ( scaReference != null ) partnerLink.setAsReference( scaReference );
+	    return partnerLink;
+	} // end processPartnerLinkElement
+
+	/*
+	 * Processes an <import../> element from the BPEL process and creates a 
+	 * BPELImportElement object
+	 */
+	private BPELImportElement processImportElement( XMLStreamReader reader ) {
+		return ( new BPELImportElement( reader.getAttributeValue(null, "location"),
+				                        reader.getAttributeValue(null, "importType"),
+				                        reader.getAttributeValue(null, "namespace") ));
+	} // end processImportElement
+
+	/*
+	 * Mark a named partnerLink as a Service, unless it is already marked as a Reference
+	 */
+	private void processPartnerLinkAsService( String partnerLinkName, 
+										List<BPELPartnerLinkElement> partnerLinks ) {
+		BPELPartnerLinkElement partnerLink = findPartnerLinkByName( partnerLinks, partnerLinkName );
+		if( partnerLink == null ) {
+			System.out.println("BPEL TypeLoader - element references partnerLink " 
+								+ partnerLinkName + " not in the list");
+		} else {
+			// Set the type of the partnerLink to "service" if not already set...
+			if( !partnerLink.isSCATyped() ) partnerLink.setAsService( partnerLinkName );
+		} // endif
+	} // end processPartnerLinkAsReference
+
+	/*
+	 * Mark a named partnerLink as a Reference, unless it is already marked as a Service
+	 */
+	private void processPartnerLinkAsReference( String partnerLinkName, 
+			List<BPELPartnerLinkElement> partnerLinks ) {
+		BPELPartnerLinkElement partnerLink = findPartnerLinkByName( partnerLinks, partnerLinkName );
+		if( partnerLink == null ) {
+			System.out.println("BPEL TypeLoader - element references partnerLink " 
+								+ partnerLinkName + " not in the list");
+		} else {
+			// Set the type of the partnerLink to "service" if not already set...
+			if( !partnerLink.isSCATyped() ) partnerLink.setAsReference( partnerLinkName );
+		} // endif
+	} // end processPartnerLinkAsReference
+
+	/*
+	 * Finds a PartnerLink by name from a List of PartnerLinks
+	 * 
+	 * returns null if there is no partnerLink with a matching name
+	 * - returns the PartnerLink with a matching name
+	 */
+	private BPELPartnerLinkElement findPartnerLinkByName( List<BPELPartnerLinkElement> partnerLinks, 
+														  String partnerLinkName ) {
+		// Scan the list looking for a partner link with the supplied name
+		Iterator<BPELPartnerLinkElement> it = partnerLinks.iterator();
+		while( it.hasNext() ) {
+			BPELPartnerLinkElement thePartnerLink = it.next();
+			if( thePartnerLink.getName().equals(partnerLinkName) ) return thePartnerLink;
+		}
+		return null;
+	} // end method findPartnerLinkByName
+
 
 }

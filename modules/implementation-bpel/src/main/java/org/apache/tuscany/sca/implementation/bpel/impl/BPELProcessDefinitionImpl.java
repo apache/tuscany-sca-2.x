@@ -21,10 +21,18 @@ package org.apache.tuscany.sca.implementation.bpel.impl;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collection;
 
 import javax.xml.namespace.QName;
+import javax.wsdl.PortType;
+
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
+import org.apache.tuscany.sca.implementation.bpel.xml.BPELImportElement;
+import org.apache.tuscany.sca.implementation.bpel.xml.BPELPartnerLinkElement;
 
 /**
  * The BPEL process definition implementation.
@@ -36,6 +44,10 @@ public class BPELProcessDefinitionImpl implements BPELProcessDefinition {
     private URI     uri;
     private URL     location;
     private boolean unresolved;
+    private List<BPELPartnerLinkElement> partnerLinks = new ArrayList<BPELPartnerLinkElement>();
+    private List<BPELImportElement> imports = new ArrayList<BPELImportElement>();
+    private Collection<PortType> thePortTypes = null;
+    private Collection<WSDLInterface> theInterfaces = null;
     
     public QName getName() {
         return name;
@@ -67,7 +79,47 @@ public class BPELProcessDefinitionImpl implements BPELProcessDefinition {
 
     public void setUnresolved(boolean undefined) {
         this.unresolved = undefined;
-    }   
+    }  
+    
+    /**
+     * Return the list of PartnerLinks for this process
+     * @return List<BPELPartnerLinkElement> the list of Partner Links
+     */
+    public List<BPELPartnerLinkElement> getPartnerLinks() {
+    	return partnerLinks;
+    }
+    
+    /**
+     * Return the list of imports for this process
+     * @return List<BPELImportElement> the list of Import elements
+     */
+    public List<BPELImportElement> getImports() {
+    	return imports;
+    }
+    
+    public void setPortTypes( Collection<PortType> thePortTypes ) {
+    	this.thePortTypes = thePortTypes;
+    }
+    
+    public Collection<PortType> getPortTypes() {
+    	return thePortTypes;
+    }
+    
+    /**
+     * Set the associated collection of WSDL interfaces
+     * @param theInterfaces
+     */
+    public void setInterfaces( Collection<WSDLInterface> theInterfaces ) {
+    	this.theInterfaces = theInterfaces;
+    } // end setInterfaces
+    
+    /**
+     * Return the collection of associated WSDL interfaces
+     * @return
+     */
+    public Collection<WSDLInterface> getInterfaces() {
+    	return theInterfaces;
+    } // end getInterfaces
     
     public void compile() {
         /*

@@ -24,8 +24,11 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.assembly.Property;
+import org.apache.tuscany.sca.assembly.Reference;
+import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.impl.ImplementationImpl;
 import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
 import org.apache.tuscany.sca.implementation.bpel.BPELProcessDefinition;
@@ -40,6 +43,7 @@ public class BPELImplementationImpl extends ImplementationImpl implements BPELIm
 
     private QName _processName;
     private BPELProcessDefinition _processDefinition;
+    private ComponentType componentType;
 
     /**
      * Constructs a new BPEL implementation.
@@ -86,6 +90,36 @@ public class BPELImplementationImpl extends ImplementationImpl implements BPELIm
     public List<Property> getProperties() {
         // The sample BPEL implementation does not support properties
         return Collections.emptyList();
+    }
+    
+    /* 
+     * Returns the componentType for this BPEL process implementation 
+     */
+    public ComponentType getComponentType() {
+        return componentType;
+    }
+
+    /*
+     * Sets the componentType for this BPEL process implementation
+     */
+    public void setComponentType(ComponentType componentType) {
+        this.componentType = componentType;
+    }
+    
+    @Override
+    /**
+     * Returns a List of the services for this BPEL process implementation
+     */
+    public List<Service> getServices() {
+        return componentType.getServices();
+    }
+
+    @Override
+    /**
+     * Returns a List of the references for this BPEL process implementation
+     */
+    public List<Reference> getReferences() {
+        return componentType.getReferences();
     }
     
     @Override
