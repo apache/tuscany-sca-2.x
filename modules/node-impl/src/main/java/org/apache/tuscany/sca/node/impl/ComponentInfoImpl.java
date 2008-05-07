@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.node.impl;
 
 import java.io.Serializable;
 
-import org.apache.tuscany.sca.node.ComponentInfo;
+import org.apache.tuscany.sca.node.spi.ComponentInfo;
 
 public class ComponentInfoImpl implements ComponentInfo, Serializable {
     

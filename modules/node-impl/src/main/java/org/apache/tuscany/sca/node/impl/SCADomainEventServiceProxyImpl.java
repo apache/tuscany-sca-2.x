@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.domain.DomainException;
-import org.apache.tuscany.sca.domain.SCADomainEventService;
+import org.apache.tuscany.sca.domain.spi.SCADomainEventService;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;

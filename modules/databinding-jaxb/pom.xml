@@ -169,6 +169,20 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+
+                <configuration>
+                    <instructions>
+                        <Bundle-Version>${tuscany.version}</Bundle-Version>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.databinding.jaxb</Bundle-SymbolicName>
+                        <Bundle-Description>${pom.name}</Bundle-Description>
+                        <Export-Package>org.apache.tuscany.sca.databinding.jaxb*</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 

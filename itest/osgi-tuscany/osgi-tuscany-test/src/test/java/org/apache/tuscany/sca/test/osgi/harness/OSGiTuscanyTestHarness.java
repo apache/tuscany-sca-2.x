@@ -94,6 +94,8 @@ public class OSGiTuscanyTestHarness {
 
         System.out.println("Run tests from : " + mainTestDir);
 
+        long startTime = System.currentTimeMillis();
+        
         tuscanyRuntime = TuscanyLoader.loadTuscanyIntoOSGi(bundleContext);
         
         String[] dirs = new String[testDirs.length + 2];
@@ -114,6 +116,11 @@ public class OSGiTuscanyTestHarness {
     
         
         TuscanyLoader.startTuscany(tuscanyRuntime);
+        
+
+        long endTime = System.currentTimeMillis();
+        
+        System.out.println("Loaded Tuscany, time taken = " + (endTime-startTime) + " ms" );
         
         testBundle.start();
         
@@ -136,6 +143,7 @@ public class OSGiTuscanyTestHarness {
         File manifestFile = new File(manifestFileName);
         Manifest manifest = new Manifest();
         manifest.read(new FileInputStream(manifestFile));
+        manifest.getMainAttributes().putValue("Bundle-Version", (String)tuscanyRuntime.getHeaders().get("Bundle-Version"));
 
         JarOutputStream jarOut = new JarOutputStream(out, manifest);
         

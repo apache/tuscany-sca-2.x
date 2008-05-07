@@ -17,31 +17,32 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node;
+package org.apache.tuscany.sca.node.spi;
 
-import java.util.EventListener;
-
-import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.domain.DomainException;
+import org.apache.tuscany.sca.node.SCANode;
 
 /**
- * A listener interface for changes in component state
- * 
- * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
+ * The SPI for a domain proxy
+ *
+ * @version $Rev: 580520 $ $Date: 2007-09-29 00:50:25 +0100 (Sat, 29 Sep 2007) $
  */
-public interface ComponentListener extends EventListener {
-    
+public interface SCADomainProxySPI  {
+
     /**
-     * Component has been started
-     * 
-     * @param component
-     */ 
-    void componentStarted(Component component);
-    
-    /** 
-     * Component has been stopped
-     * 
-     * @param component
+     * Add a node implementation with the domain proxy
+     *
+     * @param nodeImpl
+     * @throws DomainException
      */
-    void componentStopped(Component component);
+    void addNode(SCANode nodeImpl) throws DomainException;
+
+    /**
+     * Remove a node implementation from the domain proxy
+     *
+     * @param nodeImpl
+     * @throws DomainException
+     */
+    void removeNode(SCANode nodeImpl) throws DomainException;
 
 }

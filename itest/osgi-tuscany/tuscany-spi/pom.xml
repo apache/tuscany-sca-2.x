@@ -107,14 +107,14 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Version>1.2.0</Bundle-Version>
+                        <Bundle-Version>2.0</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.spi</Bundle-SymbolicName>
                         <Bundle-Description>Apache Tuscany SCA SPI Bundle</Bundle-Description>
                         <Embed-StripVersion>true</Embed-StripVersion>
                         <Embed-StripGroup>true</Embed-StripGroup>
                         <Embed-Dependency>tuscany*</Embed-Dependency>
                         <_exportcontents>
-                            org.apache.tuscany.sca.*,
+                            org.apache.tuscany.sca.*;version="2.0"
                         </_exportcontents>
                     </instructions>
                 </configuration>

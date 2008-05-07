@@ -17,30 +17,35 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.domain;
+package org.apache.tuscany.sca.node.spi;
 
-import org.apache.tuscany.sca.domain.model.DomainModel;
+import java.util.List;
+
+import org.osoa.sca.annotations.Remotable;
 
 /**
- * Represents an SCA domain SPI.
+ * A service interface for managing the components in a node
  * 
- * @version $Rev: 580520 $ $Date: 2007-09-29 00:50:25 +0100 (Sat, 29 Sep 2007) $
+ * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public interface SCADomainSPI {
+@Remotable
+public interface ComponentManagerService {
 
-    
-    /** 
-     * Returns the model of the domain
+    /**
+     * Get a list of component info. On for each component in the node
+     * 
      * @return
      */
-    DomainModel getDomainModel();
-    
+    List<ComponentInfo> getComponentInfos();
+
     /**
-     * Registers all of the services in the composite with the domain
+     * The info for a named component
      * 
-     * @param composite
+     * @param componentName
+     * @return
      */
- //   public void registerRemoteServices(String nodeURI, Composite composite);
-  
-    
+    ComponentInfo getComponentInfo(String componentName);
+
+
+
 }

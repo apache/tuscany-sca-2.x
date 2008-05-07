@@ -59,9 +59,9 @@ import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.node.NodeException;
-import org.apache.tuscany.sca.node.NodeFactoryImpl;
 import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.SCANodeSPI;
+import org.apache.tuscany.sca.node.spi.NodeFactoryImpl;
+import org.apache.tuscany.sca.node.spi.SCANodeSPI;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 

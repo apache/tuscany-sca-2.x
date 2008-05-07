@@ -55,4 +55,25 @@
 
     </dependencies>
 
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+
+                <configuration>
+                    <instructions>
+                        <Bundle-Version>${tuscany.version}</Bundle-Version>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.osgi.runtime</Bundle-SymbolicName>
+                        <Bundle-Description>${pom.name}</Bundle-Description>
+                        <Export-Package>org.apache.tuscany.sca.osgi.runtime*</Export-Package>
+                        <Bundle-Activator>org.apache.tuscany.sca.osgi.runtime.OSGiBundleActivator</Bundle-Activator>
+                        <DynamicImport-Package>org.apache.felix.main,org.eclipse.core.runtime.adaptor</DynamicImport-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

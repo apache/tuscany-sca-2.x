@@ -29,14 +29,14 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.core.assembly.RuntimeComponentImpl;
-import org.apache.tuscany.sca.node.ComponentInfo;
-import org.apache.tuscany.sca.node.ComponentManagerService;
 import org.apache.tuscany.sca.node.NodeException;
 import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.impl.ComponentInfoImpl;
 import org.apache.tuscany.sca.node.impl.SCANodeImpl;
 import org.apache.tuscany.sca.node.management.SCANodeManagerInitService;
 import org.apache.tuscany.sca.node.management.SCANodeManagerService;
+import org.apache.tuscany.sca.node.spi.ComponentInfo;
+import org.apache.tuscany.sca.node.spi.ComponentManagerService;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 

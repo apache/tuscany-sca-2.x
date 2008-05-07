@@ -47,10 +47,10 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Version>1.2.0</Bundle-Version>
+                        <Bundle-Version>2.0</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.api</Bundle-SymbolicName>
                         <Bundle-Description>Apache Tuscany SCA API Bundle</Bundle-Description>
-                        <Export-Package>org.osoa.sca*</Export-Package>
+                        <Export-Package>org.osoa.sca*;version="2.0"</Export-Package>
                     </instructions>
                 </configuration>
             </plugin> 

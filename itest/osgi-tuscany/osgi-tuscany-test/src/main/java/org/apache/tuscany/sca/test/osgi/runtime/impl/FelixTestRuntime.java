@@ -49,18 +49,18 @@ public class FelixTestRuntime extends OSGiTestRuntime implements BundleActivator
     }
     
     
-    private void deleteDirectory(File dir) {
-        File[] files = dir.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isDirectory()) 
-                deleteDirectory(files[i]);
-            else {
-                files[i].delete();
-            }
-        }
-        dir.delete();
-        
-    }
+//    private void deleteDirectory(File dir) {
+//        File[] files = dir.listFiles();
+//        for (int i = 0; i < files.length; i++) {
+//            if (files[i].isDirectory()) 
+//                deleteDirectory(files[i]);
+//            else {
+//                files[i].delete();
+//            }
+//        }
+//        dir.delete();
+//        
+//    }
     
 //    private void deleteProfile() {
 //        String profileDirName = System.getProperty("felix.cache.profiledir");
@@ -95,7 +95,7 @@ public class FelixTestRuntime extends OSGiTestRuntime implements BundleActivator
                 "org.osgi.service.url; version=1.0.0, " +
                 "org.osgi.util.tracker; version=1.3.2, " +
                 "javax.xml, " +
-                "javax.xml.datatype, " +
+                "javax.xml.datatype, " +               
                 "javax.xml.namespace, " +
                 "javax.xml.parsers, " +
                 "javax.xml.transform, " +
@@ -119,6 +119,10 @@ public class FelixTestRuntime extends OSGiTestRuntime implements BundleActivator
                 "sun.misc, " +
                 "javax.net, " +
                 "javax.crypto, " +
+                "javax.rmi, " +
+                "javax.transaction, " +
+                "javax.transaction.xa, " +
+                
                 "org.apache.felix.main";
         
         

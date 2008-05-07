@@ -20,8 +20,8 @@
 package org.apache.tuscany.sca.domain.management;
 
 import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.domain.SCADomainEventService;
-import org.apache.tuscany.sca.domain.SCADomainSPI;
+import org.apache.tuscany.sca.domain.spi.SCADomainEventService;
+import org.apache.tuscany.sca.domain.spi.SCADomainSPI;
 
 
 

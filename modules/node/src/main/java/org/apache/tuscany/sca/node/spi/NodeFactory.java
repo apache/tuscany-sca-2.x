@@ -17,28 +17,30 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node;
+package org.apache.tuscany.sca.node.spi;
 
-import java.net.URL;
+import org.apache.tuscany.sca.node.SCANode;
 
-import javax.xml.namespace.QName;
 
 /**
- * The SPI for a node
+ * A factory that always returns the same domain object
  *
- * @version $Rev: 580520 $ $Date: 2007-09-29 00:50:25 +0100 (Sat, 29 Sep 2007) $
+ * @version $Rev: 556897 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public interface SCANodeSPI {
+public interface NodeFactory {
 
-    Object getNodeRuntime();
+    /**
+     * Returns the node object
+     *
+     * @return the node
+     */
+    SCANode getNode();
 
-    void startFromDomain() throws NodeException;
+    /**
+     * Set the node object
+     *
+     * @param node the node
+     */
+    void setNode(SCANode node);
 
-    void stopFromDomain() throws NodeException;
-
-    void addContributionFromDomain(String contributionURI, URL contributionURL, ClassLoader contributionClassLoader ) throws NodeException;   
-
-    void removeContributionFromDomain(String contributionURI) throws NodeException;
-
-    void addToDomainLevelCompositeFromDomain(QName compositeQName) throws NodeException;
 }

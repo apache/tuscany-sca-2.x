@@ -27,15 +27,15 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.domain.DomainException;
 import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.domain.SCADomainAPIService;
-import org.apache.tuscany.sca.domain.SCADomainEventService;
-import org.apache.tuscany.sca.domain.SCADomainSPI;
 import org.apache.tuscany.sca.domain.management.DomainInfo;
 import org.apache.tuscany.sca.domain.management.NodeInfo;
 import org.apache.tuscany.sca.domain.management.SCADomainManagerInitService;
 import org.apache.tuscany.sca.domain.management.SCADomainManagerService;
 import org.apache.tuscany.sca.domain.model.DomainModel;
 import org.apache.tuscany.sca.domain.model.NodeModel;
+import org.apache.tuscany.sca.domain.spi.SCADomainAPIService;
+import org.apache.tuscany.sca.domain.spi.SCADomainEventService;
+import org.apache.tuscany.sca.domain.spi.SCADomainSPI;
 import org.apache.tuscany.sca.node.management.SCANodeManagerService;
 import org.osoa.sca.CallableReference;
 import org.osoa.sca.annotations.Scope;

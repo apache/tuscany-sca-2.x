@@ -74,8 +74,17 @@ public class ServiceDiscovery {
      * 
      * @param classLoader
      */
-    public void registerClassLoader(ClassLoader classLoader) {
+    public synchronized void registerClassLoader(ClassLoader classLoader) {
         registeredClassLoaders.add(classLoader);
+    }
+    
+    /**
+     * Unregister a ClassLoader with this discovery mechanism. 
+     * 
+     * @param classLoader
+     */
+    public synchronized void unregisterClassLoader(ClassLoader classLoader) {
+        registeredClassLoaders.remove(classLoader);
     }
 
     /**

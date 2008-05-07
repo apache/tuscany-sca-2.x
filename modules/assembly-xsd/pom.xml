@@ -28,4 +28,22 @@
     <artifactId>tuscany-assembly-xsd</artifactId>
     <name>Apache Tuscany SCA Assembly Model XML Schemas</name>
 
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+
+                <configuration>
+                    <instructions>
+                        <Bundle-Version>${tuscany.version}</Bundle-Version>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.assembly.xsd</Bundle-SymbolicName>
+                        <Bundle-Description>${pom.name}</Bundle-Description>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

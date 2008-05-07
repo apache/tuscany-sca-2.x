@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.osgi.framework.Bundle;
@@ -22,7 +23,8 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
 	private static final String TUSCANY_SCA_BUNDLE_PREFIX = "org.apache.tuscany.sca";
 	private static final String TUSCANY_3RD_PARTY_BUNDLE_PREFIX = "org.apache.tuscany.sca.3rdparty";
 	private OSGiRuntime runtime;
-	private BundleClassLoader serviceDiscoveryClassLoader;
+    private ClassLoader serviceDiscoveryClassLoaderParent;
+    private ConcurrentHashMap<Bundle, ClassLoader> serviceDiscoveryClassLoaders = new ConcurrentHashMap<Bundle, ClassLoader>();
 	private BundleClassLoader threadContextClassLoader;
 	private ClassLoader origTCCL;
 	private Bundle thisBundle;
@@ -57,22 +59,29 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
 		thisBundle = bundleContext.getBundle();
 
 		origTCCL = Thread.currentThread().getContextClassLoader();
+        
+        serviceDiscoveryClassLoaderParent = origTCCL;
+        try {
+            serviceDiscoveryClassLoaderParent.loadClass(this.getClass().getName());
+            if (serviceDiscoveryClassLoaderParent.getParent() != null)
+                serviceDiscoveryClassLoaderParent = serviceDiscoveryClassLoaderParent.getParent();
+        } catch (ClassNotFoundException e) {
+            // Expected exception - ignore
+        }
 		
 		threadContextClassLoader = new BundleClassLoader(thisBundle, origTCCL);
 		
 		Thread.currentThread().setContextClassLoader(threadContextClassLoader);
 		
-		serviceDiscoveryClassLoader = new BundleClassLoader(thisBundle, origTCCL);
+        ClassLoader cl = new BundleClassLoader(thisBundle, serviceDiscoveryClassLoaderParent);
+        ServiceDiscovery.getInstance().registerClassLoader(cl);
+        serviceDiscoveryClassLoaders.put(thisBundle, cl);
 
 		Bundle[] bundles = bundleContext.getBundles();
 		for (Bundle bundle : bundles) {
-			updateBundleClassLoader(bundle);			
+			updateBundleClassLoader(bundle);
 		}
 		bundleContext.addBundleListener(this);
-		
-		ServiceDiscovery.getInstance().registerClassLoader(serviceDiscoveryClassLoader);
-		
-		
 		
 	}
 	
@@ -100,29 +109,27 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
 			// This may be the third party bundle.
 		    if (bundle.getSymbolicName().startsWith(TUSCANY_3RD_PARTY_BUNDLE_PREFIX)) {
 					
-				try {
-					String xmlInputFactory = "javax.xml.stream.XMLInputFactory";
-					if (thisBundle.loadClass(xmlInputFactory) == bundle.loadClass(xmlInputFactory)) {
-							
-					    threadContextClassLoader.addBundle(bundle);
-					}
-				} catch (ClassNotFoundException e) {
-					// Ignore
+                String thisBundleVersion = (String)thisBundle.getHeaders().get("Bundle-Version");
+                String bundleVersion = (String)bundle.getHeaders().get("Bundle-Version");
+                
+                if (thisBundleVersion == null || bundleVersion == null || thisBundleVersion.equals(bundleVersion)) {							
+                    threadContextClassLoader.addBundle(bundle);					
 				}
 			} 
 		    else {
 			
-			    String moduleActivator = "org.apache.tuscany.sca.core.ModuleActivator";
-			
-			    try {
-				    if (thisBundle.loadClass(moduleActivator) == bundle.loadClass(moduleActivator)) {
+                String thisBundleVersion = (String)thisBundle.getHeaders().get("Bundle-Version");
+                String bundleVersion = (String)bundle.getHeaders().get("Bundle-Version");
+			    
+                if (thisBundleVersion == null || bundleVersion == null || thisBundleVersion.equals(bundleVersion)) {
 					
-				        serviceDiscoveryClassLoader.addBundle(bundle);
+                    if (!threadContextClassLoader.bundles.contains(bundle)) {
+                        ClassLoader cl = new BundleClassLoader(bundle, serviceDiscoveryClassLoaderParent);
+                        ServiceDiscovery.getInstance().registerClassLoader(cl);
+                        serviceDiscoveryClassLoaders.put(bundle, cl);
 				        threadContextClassLoader.addBundle(bundle);
-				    }
-			    } catch (ClassNotFoundException e) {
-				    // Ignore				
-			    }
+                    }
+                }
 		    }
 		}
 	}
@@ -135,7 +142,10 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
 		
 		Bundle bundle = event.getBundle();
 		if (event.getType() == BundleEvent.UNINSTALLED) {
-			serviceDiscoveryClassLoader.removeBundle(bundle);
+            ClassLoader cl = serviceDiscoveryClassLoaders.get(bundle);
+            if (cl != null) {
+                ServiceDiscovery.getInstance().unregisterClassLoader(cl);
+            }
 			threadContextClassLoader.removeBundle(bundle);
 		}
 		else if (event.getType() == BundleEvent.INSTALLED) {
