@@ -16,27 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.vtest.javaapi.conversation.callback;
+package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.stateless;
 
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.AServiceCallback;
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.Remotable;
 
 /**
- * Simple Service
+ * Simple Remotable Service
  */
 @Remotable
-@Conversational
-@Callback(AServiceCallback.class)
-public interface BService {
+public interface AServiceCallback {
 
-    public void setState(String someState);
+    public void callBack(String someState);
     
-    public String getState();
-
-    public void testCallBack(String string);
-
-    public boolean isCallBackNull();
-
 }

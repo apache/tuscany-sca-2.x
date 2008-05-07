@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.vtest.javaapi.conversation.callback;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -34,6 +35,7 @@ public class CallbackTestCase {
     protected static SCADomain domain;
     protected static String compositeName = "callback-remote.composite";
     protected static AService aService = null;
+    protected static BService bService = null;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -109,8 +111,8 @@ public class CallbackTestCase {
      */
     @Test
     public void statefulCallback() throws Exception {
-        System.out.println("Setting up for remote callback tests");
-        domain = SCADomain.newInstance("callback-remote.composite");
+        System.out.println("Setting up for callback tests");
+        domain = SCADomain.newInstance("callback.composite");
         aService = domain.getService(AService.class, "AComponent");
         aService.testCallback();
     }
@@ -168,12 +170,12 @@ public class CallbackTestCase {
      * should be used.
      * <p>
      * This tests the *local* bidirectional interfaces option
-     */ 
+     */
     @Test
-    public void statefulCallback2() throws Exception {
+    public void localstatefulCallback() throws Exception {
         System.out.println("Setting up for local callback tests");
         domain = SCADomain.newInstance("callback-local.composite");
-        aService = domain.getService(AService.class, "ALocalComponent");
+        aService = domain.getService(AService.class, "AComponent");
         aService.testCallback();
     }
 
@@ -184,13 +186,54 @@ public class CallbackTestCase {
      * interfaces of a bidirectional service must be remotable, or both must be
      * local. It is illegal to mix the two.
      */
-    @Test(expected=ServiceRuntimeException.class)
+    @Test(expected = ServiceRuntimeException.class)
     @Ignore("TUSCANY-2291")
-    public void statefulCallback3() throws Exception {
+    public void statefulMixedCallback() throws Exception {
         System.out.println("Setting up for mixed local/remote callback tests");
         domain = SCADomain.newInstance("callback-mixed.composite");
         aService = domain.getService(AService.class, "AComponent");
         aService.testCallback();
+    }
+
+    /**
+     * Lines 613-615
+     * <p>
+     * A stateless callback interface is a callback whose interface is not
+     * marked as conversational. Unlike stateless services, the client of that
+     * uses stateless callbacks will not have callback methods routed to an
+     * instance of the client that contains any state that is relevant to the
+     * conversation.
+     */
+    @Test
+    public void statelessCallback() throws Exception {
+        System.out.println("Setting up for stateless callback tests");
+        domain = SCADomain.newInstance("callback-stateless.composite");
+        aService = domain.getService(AService.class, "AComponent");
+        aService.testCallback();
+    }
+
+    /**
+     * Lines 616-621
+     * <p>
+     * The only information that the client has to work with (other than the
+     * parameters of the callback method) is a callback ID object that is passed
+     * with requests to the service and is guaranteed to be returned with any
+     * callback.
+     * <p>
+     * The following is a repeat of the client code fragment above, but with the
+     * assumption that in this case the MyServiceCallback is stateless. The
+     * client in this case needs to set the callback ID before invoking the
+     * service and then needs to get the callback ID when the response is
+     * received.
+     */
+    @Test
+    @Ignore("TUSCANY-2299")
+    public void statelessCallback2() throws Exception {
+        System.out.println("Setting up for stateless callback tests");
+        domain = SCADomain.newInstance("callback-stateless-callbackid.composite");
+        aService = domain.getService(AService.class, "AComponent");
+        aService.testCallback();
+
     }
 
 }

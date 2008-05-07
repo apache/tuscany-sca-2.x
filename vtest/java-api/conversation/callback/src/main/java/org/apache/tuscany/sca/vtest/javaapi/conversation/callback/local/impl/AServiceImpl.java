@@ -17,11 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.impl;
+package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.local.impl;
 
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.ALocalServiceCallback;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.AService;
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.BService;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.local.AServiceCallback;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.local.BService;
 import org.junit.Assert;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Reference;
@@ -30,19 +30,15 @@ import org.osoa.sca.annotations.Service;
 
 @Service(AService.class)
 @Scope("CONVERSATION")
-public class ALocalServiceImpl implements AService, ALocalServiceCallback {
+public class AServiceImpl implements AService, AServiceCallback {
 
     @Reference
     protected ServiceReference<BService> b;
 
     private String someState;
 
-    public void testAnnotation() {
-        b.getService();
-    }
-
     public void callBack(String someState) {
-        System.out.println("A callback called with this state => " + someState);
+        System.out.println("A-callback called with this state => " + someState);
         this.someState = someState;
     }
 
@@ -54,7 +50,7 @@ public class ALocalServiceImpl implements AService, ALocalServiceCallback {
             count--;
         }
         if (someState == null)
-            Assert.fail("Callback not called");
+            Assert.fail("Callback not received by this instance");
     }
 
     // Utilities
