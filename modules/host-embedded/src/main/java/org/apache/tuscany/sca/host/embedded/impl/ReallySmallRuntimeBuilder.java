@@ -204,7 +204,10 @@ public class ReallySmallRuntimeBuilder {
         // Allow privileged access to load resource. Requires RuntimePermssion in security policy.
         URL schemaURL = AccessController.doPrivileged(new PrivilegedAction<URL>() {
             public URL run() {
-                return ReallySmallRuntimeBuilder.class.getClassLoader().getResource("tuscany-sca.xsd");
+                // ClassLoader of this class may not be the same as that of ReallySmallRuntimeBuilder
+                // ClassLoader xsdClassLoader = ReallySmallRuntimeBuilder.class.getClassLoader();
+                ClassLoader xsdClassLoader = Thread.currentThread().getContextClassLoader();
+                return xsdClassLoader.getResource("tuscany-sca.xsd");
             }
         });           
         schemas.addSchema(schemaURL.toString());

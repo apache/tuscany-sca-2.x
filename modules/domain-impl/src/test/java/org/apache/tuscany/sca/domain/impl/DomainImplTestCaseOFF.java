@@ -23,8 +23,8 @@ import java.io.Externalizable;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.domain.SCADomain;
-import org.apache.tuscany.sca.domain.SCADomainEventService;
 import org.apache.tuscany.sca.domain.SCADomainFactory;
+import org.apache.tuscany.sca.domain.spi.SCADomainEventService;
 import org.apache.tuscany.sca.node.management.SCANodeManagerService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

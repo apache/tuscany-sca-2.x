@@ -17,31 +17,30 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node;
+package org.apache.tuscany.sca.domain.spi;
 
-import org.apache.tuscany.sca.domain.DomainException;
+import org.apache.tuscany.sca.domain.model.DomainModel;
 
 /**
- * The SPI for a domain proxy
- *
+ * Represents an SCA domain SPI.
+ * 
  * @version $Rev: 580520 $ $Date: 2007-09-29 00:50:25 +0100 (Sat, 29 Sep 2007) $
  */
-public interface SCADomainProxySPI  {
+public interface SCADomainSPI {
 
-    /**
-     * Add a node implementation with the domain proxy
-     *
-     * @param nodeImpl
-     * @throws DomainException
+    
+    /** 
+     * Returns the model of the domain
+     * @return
      */
-    void addNode(SCANode nodeImpl) throws DomainException;
-
+    DomainModel getDomainModel();
+    
     /**
-     * Remove a node implementation from the domain proxy
-     *
-     * @param nodeImpl
-     * @throws DomainException
+     * Registers all of the services in the composite with the domain
+     * 
+     * @param composite
      */
-    void removeNode(SCANode nodeImpl) throws DomainException;
-
+ //   public void registerRemoteServices(String nodeURI, Composite composite);
+  
+    
 }

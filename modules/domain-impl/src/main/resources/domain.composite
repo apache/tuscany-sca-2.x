@@ -40,11 +40,11 @@
             <t:binding.jsonrpc/>
         </service>         
         <service name="SCADomainEventService">
-            <interface.java interface="org.apache.tuscany.sca.domain.SCADomainEventService"/>
+            <interface.java interface="org.apache.tuscany.sca.domain.spi.SCADomainEventService"/>
             <binding.ws/>
         </service>
         <service name="SCADomainAPIService">
-            <interface.java interface="org.apache.tuscany.sca.domain.SCADomainAPIService"/>
+            <interface.java interface="org.apache.tuscany.sca.domain.spi.SCADomainAPIService"/>
             <binding.ws/>
         </service>        
     </component>  

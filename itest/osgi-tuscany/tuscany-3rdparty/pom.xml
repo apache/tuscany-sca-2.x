@@ -305,7 +305,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Version>1.2.0</Bundle-Version>
+                        <Bundle-Version>2.0</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.3rdparty</Bundle-SymbolicName>
                         <Bundle-Description>Apache Tuscany SCA 3rd party Bundle</Bundle-Description>
                         <Embed-StripVersion>true</Embed-StripVersion>
@@ -319,6 +319,8 @@
                         <_exportcontents>
                             !org.apache.tuscany.sca*,
                             !org.osoa.sca*,
+                            org.mortbay*;version="6.1.7",
+                            commonj.sdo*;version="2.1.0",
                             *
                         </_exportcontents>
                         <Import-Package>*;resolution:=optional</Import-Package>

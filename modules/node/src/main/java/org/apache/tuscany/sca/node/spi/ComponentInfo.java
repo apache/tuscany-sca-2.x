@@ -17,35 +17,41 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node;
-
-import java.util.List;
-
-import org.osoa.sca.annotations.Remotable;
+package org.apache.tuscany.sca.node.spi;
 
 /**
- * A service interface for managing the components in a node
- * 
+ * A collection of information about a component
+ *
  * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-@Remotable
-public interface ComponentManagerService {
+public interface ComponentInfo {
 
     /**
-     * Get a list of component info. On for each component in the node
-     * 
-     * @return
+     * Get the component name
+     *
+     * @return component name
      */
-    List<ComponentInfo> getComponentInfos();
+    String getName();
 
     /**
-     * The info for a named component
-     * 
-     * @param componentName
-     * @return
+     * Set the component name
+     *
+     * @param name component name
      */
-    ComponentInfo getComponentInfo(String componentName);
+    void setName(String name);
 
+    /**
+     * Set to true if the component has been started
+     *
+     * @return true if the component is started
+     */
+    boolean isStarted();
 
+    /**
+     * Set the started status of the component
+     *
+     * @param started
+     */
+    void setStarted(boolean started);
 
 }

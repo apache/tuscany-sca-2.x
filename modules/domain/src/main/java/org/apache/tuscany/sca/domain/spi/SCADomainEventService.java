@@ -17,10 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.domain;
+package org.apache.tuscany.sca.domain.spi;
 
 import java.io.Externalizable;
 
+import org.apache.tuscany.sca.domain.DomainException;
 import org.osoa.sca.annotations.Remotable;
 
 

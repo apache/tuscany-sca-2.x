@@ -28,4 +28,23 @@
     <artifactId>tuscany-extensibility</artifactId>
     <name>Apache Tuscany SCA Extensibility</name>
 
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+
+                <configuration>
+                    <instructions>
+                        <Bundle-Version>${tuscany.version}</Bundle-Version>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.extensibility</Bundle-SymbolicName>
+                        <Bundle-Description>${pom.name}</Bundle-Description>
+                        <Export-Package>org.apache.tuscany.sca.*</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

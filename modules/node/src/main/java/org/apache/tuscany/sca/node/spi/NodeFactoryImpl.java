@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node;
+package org.apache.tuscany.sca.node.spi;
 
 import org.apache.tuscany.sca.node.SCANode;
 

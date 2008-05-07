@@ -182,6 +182,20 @@
                 </executions>
             </plugin>
             -->
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+
+                <configuration>
+                    <instructions>
+                        <Bundle-Version>${tuscany.version}</Bundle-Version>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.interface.java.jaxws</Bundle-SymbolicName>
+                        <Bundle-Description>${pom.name}</Bundle-Description>
+                        <Export-Package>org.apache.tuscany.sca.interfacedef.java.jaxws*</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

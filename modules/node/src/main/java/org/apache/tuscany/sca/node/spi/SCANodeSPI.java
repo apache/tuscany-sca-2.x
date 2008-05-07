@@ -17,41 +17,30 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node;
+package org.apache.tuscany.sca.node.spi;
+
+import java.net.URL;
+
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.node.NodeException;
 
 /**
- * A collection of information about a component
+ * The SPI for a node
  *
- * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
+ * @version $Rev: 580520 $ $Date: 2007-09-29 00:50:25 +0100 (Sat, 29 Sep 2007) $
  */
-public interface ComponentInfo {
+public interface SCANodeSPI {
 
-    /**
-     * Get the component name
-     *
-     * @return component name
-     */
-    String getName();
+    Object getNodeRuntime();
 
-    /**
-     * Set the component name
-     *
-     * @param name component name
-     */
-    void setName(String name);
+    void startFromDomain() throws NodeException;
 
-    /**
-     * Set to true if the component has been started
-     *
-     * @return true if the component is started
-     */
-    boolean isStarted();
+    void stopFromDomain() throws NodeException;
 
-    /**
-     * Set the started status of the component
-     *
-     * @param started
-     */
-    void setStarted(boolean started);
+    void addContributionFromDomain(String contributionURI, URL contributionURL, ClassLoader contributionClassLoader ) throws NodeException;   
 
+    void removeContributionFromDomain(String contributionURI) throws NodeException;
+
+    void addToDomainLevelCompositeFromDomain(QName compositeQName) throws NodeException;
 }

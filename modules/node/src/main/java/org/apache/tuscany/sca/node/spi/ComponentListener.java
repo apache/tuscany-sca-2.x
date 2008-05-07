@@ -17,28 +17,31 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.node;
+package org.apache.tuscany.sca.node.spi;
 
+import java.util.EventListener;
+
+import org.apache.tuscany.sca.assembly.Component;
 
 /**
- * A factory that always returns the same domain object
- *
- * @version $Rev: 556897 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
+ * A listener interface for changes in component state
+ * 
+ * @version $Rev: 552343 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
-public interface NodeFactory {
-
+public interface ComponentListener extends EventListener {
+    
     /**
-     * Returns the node object
-     *
-     * @return the node
+     * Component has been started
+     * 
+     * @param component
+     */ 
+    void componentStarted(Component component);
+    
+    /** 
+     * Component has been stopped
+     * 
+     * @param component
      */
-    SCANode getNode();
-
-    /**
-     * Set the node object
-     *
-     * @param node the node
-     */
-    void setNode(SCANode node);
+    void componentStopped(Component component);
 
 }

@@ -32,11 +32,11 @@
     <component name="SCADomainEventServiceProxyComponent">
         <implementation.java class="org.apache.tuscany.sca.node.impl.SCADomainEventServiceProxyImpl"/>
         <service name="SCADomainEventService">
-            <interface.java interface="org.apache.tuscany.sca.domain.SCADomainEventService"/>
+            <interface.java interface="org.apache.tuscany.sca.domain.spi.SCADomainEventService"/>
             <binding.sca/>
         </service>
         <reference name="domainManager">
-            <interface.java interface="org.apache.tuscany.sca.domain.SCADomainEventService"/>
+            <interface.java interface="org.apache.tuscany.sca.domain.spi.SCADomainEventService"/>
             <binding.ws uri="http://localhost:9999/SCADomainManagerComponent/SCADomainEventService"/>
         </reference>
     </component> 
@@ -44,11 +44,11 @@
     <component name="SCADomainAPIServiceProxyComponent">
         <implementation.java class="org.apache.tuscany.sca.node.impl.SCADomainAPIServiceProxyImpl"/>
         <service name="SCADomainAPIService">
-            <interface.java interface="org.apache.tuscany.sca.domain.SCADomainAPIService"/>
+            <interface.java interface="org.apache.tuscany.sca.domain.spi.SCADomainAPIService"/>
             <binding.sca/>
         </service>
         <reference name="domainManager">
-            <interface.java interface="org.apache.tuscany.sca.domain.SCADomainAPIService"/>
+            <interface.java interface="org.apache.tuscany.sca.domain.spi.SCADomainAPIService"/>
             <binding.ws uri="http://localhost:9999/SCADomainManagerComponent/SCADomainAPIService"/>
         </reference>
     </component> 
@@ -64,7 +64,7 @@
             <binding.ws/>
         </service>
         <service name="ComponentManagerService">
-            <interface.java interface="org.apache.tuscany.sca.node.ComponentManagerService"/>
+            <interface.java interface="org.apache.tuscany.sca.node.spi.ComponentManagerService"/>
             <t:binding.jsonrpc/>
         </service>
     </component>           

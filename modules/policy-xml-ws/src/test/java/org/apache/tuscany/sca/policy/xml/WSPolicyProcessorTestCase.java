@@ -27,6 +27,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.policy.xml.ws.WSPolicyProcessor;
+
 import junit.framework.TestCase;
 
 /**

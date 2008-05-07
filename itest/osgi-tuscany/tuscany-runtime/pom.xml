@@ -117,6 +117,11 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-policy-xml-ws</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-definitions</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
         </dependency>
@@ -182,7 +187,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Version>1.2.0</Bundle-Version>
+                        <Bundle-Version>2.0</Bundle-Version>
                         <Bundle-SymbolicName>org.apache.tuscany.sca.runtime</Bundle-SymbolicName>
                         <Bundle-Description>Apache Tuscany SCA Runtime Bundle</Bundle-Description>
                         <Bundle-Activator>org.apache.tuscany.sca.osgi.runtime.OSGiBundleActivator</Bundle-Activator>
@@ -191,7 +196,7 @@
                         <Embed-StripGroup>true</Embed-StripGroup>
                         <Embed-Dependency>tuscany*</Embed-Dependency>
                         <_exportcontents>
-                            org.apache.tuscany.sca.*,
+                            org.apache.tuscany.sca.*;version="2.0"
                         </_exportcontents>
                     </instructions>
                 </configuration>

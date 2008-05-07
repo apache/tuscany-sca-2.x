@@ -29,4 +29,26 @@
     <artifactId>tuscany-sca-api</artifactId>
     <name>Apache Tuscany SCA API</name>
 
+    <description>API classes for the Service Component Architecture</description>
+    <packaging>jar</packaging>
+ 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+
+                <configuration>
+                    <instructions>
+                        <Bundle-Version>2.0</Bundle-Version>
+                        <Bundle-SymbolicName>org.apache.tuscany.sca.api</Bundle-SymbolicName>
+                        <Bundle-Description>${pom.description}</Bundle-Description>
+                        <Export-Package>org.osoa.sca*</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
 </project>

@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.spi.NodeFactory;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerDefinitionsLoader;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;

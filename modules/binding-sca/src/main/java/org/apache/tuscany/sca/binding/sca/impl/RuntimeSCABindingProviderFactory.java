@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.binding.sca.impl;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.node.NodeFactory;
+import org.apache.tuscany.sca.node.spi.NodeFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
