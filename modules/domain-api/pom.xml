@@ -52,6 +52,7 @@
                         <Bundle-SymbolicName>org.apache.tuscany.sca.domain.api</Bundle-SymbolicName>
                         <Bundle-Description>${pom.name}</Bundle-Description>
                         <Export-Package>org.apache.tuscany.sca.domain*</Export-Package>
+                        <Import-Package>org.apache.tuscany.sca.domain.impl, *</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
