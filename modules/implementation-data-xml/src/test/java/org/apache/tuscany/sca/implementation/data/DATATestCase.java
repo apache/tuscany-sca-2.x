@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.implementation.data;
+package src.test.java.org.apache.tuscany.sca.implementation.data;
 
 import java.io.FileInputStream;
 
@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.implementation.data.DATA;
 
 /**
  * Tests the DAS service
@@ -44,7 +45,7 @@ public class DATATestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("data.composite");
-        dataService = scaDomain.getService(DATA.class, "DataComponent/COMPANY");
+        dataService = scaDomain.getService(DATA.class, "DataComponent/COMPANY_DATA");
     }
     
     /**

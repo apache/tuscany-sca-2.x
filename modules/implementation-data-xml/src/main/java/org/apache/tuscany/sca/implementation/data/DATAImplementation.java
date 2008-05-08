@@ -73,18 +73,32 @@ public class DATAImplementation implements Implementation {
             while(tables.next()) {
                 //create the SCA service for the table
                 Service dataService = assemblyFactory.createService();
-                dataService.setName( tables.getString(3));
-                JavaInterface javaInterface;
+                Service dataCollectionService = assemblyFactory.createService();
+                
+                dataService.setName(tables.getString(3)+"_DATA");
+                dataCollectionService.setName(tables.getString(3));
+                
+                JavaInterface dataInterface;
+                JavaInterface dataCollectionInterface;
+                
                 try {
-                    javaInterface = javaFactory.createJavaInterface(DATA.class);
+                    dataInterface = javaFactory.createJavaInterface(DATA.class);
+                    dataCollectionInterface = javaFactory.createJavaInterface(DATACollection.class);
                 } catch (InvalidInterfaceException e) {
                     throw new IllegalArgumentException(e);
                 }
-                JavaInterfaceContract interfaceContract = javaFactory.createJavaInterfaceContract();
-                interfaceContract.setInterface(javaInterface);
-                dataService.setInterfaceContract(interfaceContract);
+                JavaInterfaceContract dataInterfaceContract = javaFactory.createJavaInterfaceContract();
+                JavaInterfaceContract dataCollectionInterfaceContract = javaFactory.createJavaInterfaceContract();
                 
+                dataInterfaceContract.setInterface(dataInterface);
+                dataCollectionInterfaceContract.setInterface(dataCollectionInterface);
+                
+                dataService.setInterfaceContract(dataInterfaceContract);
+                dataCollectionService.setInterfaceContract(dataCollectionInterfaceContract);  
+               
                 services.add(dataService);
+                services.add(dataCollectionService);           
+                
             }
         } catch(SQLException e) {
             

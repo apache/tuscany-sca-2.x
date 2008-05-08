@@ -16,8 +16,7 @@
     * KIND, either express or implied.  See the License for the
     * specific language governing permissions and limitations
     * under the License.    
--->
-<project>
+--><project>
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
@@ -120,8 +119,8 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
+			<version>4.2</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
@@ -129,6 +128,12 @@
 			<version>2.2</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-data-api</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 	</dependencies>
 
     <build>
