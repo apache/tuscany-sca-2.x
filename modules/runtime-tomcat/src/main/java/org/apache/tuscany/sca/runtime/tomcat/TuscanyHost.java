@@ -35,7 +35,7 @@ import org.apache.catalina.deploy.FilterMap;
 
 /**
  * To use this copy all the Tuscany jars to the Tomcat lib folder and update
- * the Tomcat conf/server.xml <Host> to include className="org.apache.tuscany.sca.runtime.tomcat.TomcatHost2"
+ * the Tomcat conf/server.xml <Host> to include className="org.apache.tuscany.sca.runtime.tomcat.TomcatHost"
  * 
  * For example: 
  * 
@@ -56,7 +56,7 @@ public class TuscanyHost extends StandardHost {
             super.start();
             
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Exception starting Tuscany/SCA runtime");
+            logger.log(Level.SEVERE, "Exception starting Tuscany/SCA runtime", e);
         }
     }
 
@@ -67,7 +67,7 @@ public class TuscanyHost extends StandardHost {
             super.stop();
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Exception Stopping Tuscany/SCA runtime");
+            logger.log(Level.SEVERE, "Exception Stopping Tuscany/SCA runtime", e);
         }
     }
 
