@@ -46,16 +46,41 @@ public class DATAImplementationProvider implements ImplementationProvider {
         String operationName = operation.getName();
         String tableName = service.getName();
 
-        if (operationName.equals("get")) {
-            return new DATAInvoker.GetInvoker(operation, implementation.getConnectionInfo(), tableName);
-        } else if (operationName.equals("insert")) {
-        	return new DATAInvoker.InsertInvoker(operation, implementation.getConnectionInfo(), tableName);
-        } else if (operationName.equals("update")) {
-        	return new DATAInvoker.UpdateInvoker(operation, implementation.getConnectionInfo(), tableName);
-        } else if (operationName.equals("delete")) {
-            return new DATAInvoker.DeleteInvoker(operation, implementation.getConnectionInfo(), tableName);
-        }
+        String interfaceFullName = operation.getInterface().toString();
+        int index = interfaceFullName.lastIndexOf(".") + 1;
+        String interfaceName = interfaceFullName.substring(index, interfaceFullName.length());
 
+        if (interfaceName.equals("DATACollection")) {
+
+            if (operationName.equals("getAll")) {
+                return new DATAInvoker.GetAllInvoker(operation, implementation.getConnectionInfo(), tableName);
+            } else if (operationName.equals("query")) {
+                return new DATAInvoker.QueryInvoker(operation, implementation.getConnectionInfo(), tableName);
+            } else if (operationName.equals("post")) {
+                return new DATAInvoker.PostInvoker(operation, implementation.getConnectionInfo(), tableName);
+            } else if (operationName.equals("get")) {
+                return new DATAInvoker.GetInvoker(operation, implementation.getConnectionInfo(), tableName);
+            } else if (operationName.equals("put")) {
+                return new DATAInvoker.PutInvoker(operation, implementation.getConnectionInfo(), tableName);
+            } else if (operationName.equals("delete")) {
+                return new DATAInvoker.DeleteInvoker(operation, implementation.getConnectionInfo(), tableName);
+            }
+
+        } else if (interfaceName.equals("DATA")) {
+            
+            tableName = tableName.split("_")[0];
+            
+            if (operationName.equals("get")) {
+                return new DATAInvoker.GetDATAInvoker(operation, implementation.getConnectionInfo(), tableName);
+            } else if (operationName.equals("insert")) {
+                return new DATAInvoker.InsertDATAInvoker(operation, implementation.getConnectionInfo(), tableName);
+            } else if (operationName.equals("update")) {
+                return new DATAInvoker.UpdateDATAInvoker(operation, implementation.getConnectionInfo(), tableName);
+            } else if (operationName.equals("delete")) {
+                return new DATAInvoker.DeleteDATAInvoker(operation, implementation.getConnectionInfo(), tableName);
+            }
+        }
+        
         return new DATAInvoker(operation, implementation.getConnectionInfo(), tableName);
     }
 
@@ -64,11 +89,10 @@ public class DATAImplementationProvider implements ImplementationProvider {
     }
 
     public void start() {
-        // System.out.println("Starting " + component.getName());
+    // System.out.println("Starting " + component.getName());
     }
 
     public void stop() {
-        // System.out.println("Stopping " + component.getName());
+    // System.out.println("Stopping " + component.getName());
     }
-
 }
