@@ -153,17 +153,20 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
     		if ( theImport.getImportType().equals("http://schemas.xmlsoap.org/wsdl/") ) {
     			String WSDLLocation = theImport.getLocation();
     			String WSDLNamespace = theImport.getNamespace();
-    			// FIXME both Location & Namespace attributes are optional - for the present
-    			// we don't deal with these cases - they are skipped
-    			if ( WSDLLocation == null || WSDLNamespace == null ) continue;
+    			
     			// Resolve the WSDL definition
                 WSDLDefinition proxy = WSDLfactory.createWSDLDefinition();
                 proxy.setUnresolved(true);
                 proxy.setNamespace(WSDLNamespace);
-                proxy.setLocation(URI.create(WSDLLocation));
+                if ( WSDLLocation != null ) proxy.setLocation(URI.create(WSDLLocation));
                 WSDLDefinition resolved = resolver.resolveModel(WSDLDefinition.class, proxy);
                 if (resolved != null && !resolved.isUnresolved()) {
                     theImport.setWSDLDefinition( resolved );
+                } else {
+                	throw new ContributionResolveException("BPELDocumentProcessor:resolve -" +
+                			" unable to resolve WSDL referenced by BPEL import" +
+                			"WSDL location: " + WSDLLocation + " WSDLNamespace: " +
+                			WSDLNamespace );
                 } // end if	
     		} // end if
     	} // end for

@@ -181,7 +181,8 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     
     // Calculates the component type of the supplied implementation and attaches it to the
     // implementation
-    private void generateComponentType(BPELImplementation impl ) {
+    private void generateComponentType(BPELImplementation impl ) 
+    	throws ContributionResolveException {
         // Create a ComponentType and mark it unresolved
         ComponentType componentType = assemblyFactory.createComponentType();
         componentType.setUnresolved(true);
@@ -226,10 +227,29 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
      * @return
      */
     private Reference generateReference( String name, PortType myRolePT, 
-    		PortType partnerRolePT, Collection<WSDLInterface> theInterfaces  ) {
+    		PortType partnerRolePT, Collection<WSDLInterface> theInterfaces  ) 
+    		throws ContributionResolveException {
         Reference reference = assemblyFactory.createReference();
         WSDLInterfaceContract interfaceContract = wsdlFactory.createWSDLInterfaceContract();
         reference.setInterfaceContract(interfaceContract);
+        
+        // Establish whether there is just a call interface or a call + callback interface
+        PortType callPT = null;
+        PortType callbackPT = null;
+        if( myRolePT != null ) {
+        	callPT = myRolePT;
+        	if( partnerRolePT != null ) {
+        		if( !myRolePT.equals(partnerRolePT) ){
+        			callbackPT = partnerRolePT;
+        		} // end if
+        	} // end if
+        } else if ( partnerRolePT != null ) {
+        	callPT = partnerRolePT;
+        } // end if
+        // No interfaces mean an error - throw an exception
+        if( callPT == null && callbackPT == null ) {
+        	throw new ContributionResolveException("Error: myRole and partnerRole port types are both null");
+        } // end if 
         
         // Set the name of the reference to the supplied name and the multiplicity of the reference
         // to 1..1 
@@ -240,20 +260,28 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         // Set the call interface and, if present, the callback interface
         WSDLInterface callInterface = null;
         for( WSDLInterface anInterface : theInterfaces ) {
-        	if( anInterface.getPortType().equals(myRolePT)) callInterface = anInterface;
+        	if( anInterface.getPortType().equals(callPT)) callInterface = anInterface;
         } // end for
-        //TODO need to throw an exception here if no interface is found
+        // Throw an exception if no interface is found
+        if( callInterface == null ) {
+        	throw new ContributionResolveException("Interface not found for port type " +
+        			callPT.getQName().toString() );
+        } // end if 
         reference.getInterfaceContract().setInterface(callInterface);
  
         // There is a callback if the partner role is not null and if the partner role port type
         // is not the same as the port type for my role
-        if (partnerRolePT != null && !myRolePT.equals(partnerRolePT) ) {
+        if ( callbackPT != null ) {
             WSDLInterface callbackInterface = null;
             for( WSDLInterface anInterface : theInterfaces ) {
-            	if( anInterface.getPortType().equals(myRolePT)) callbackInterface = anInterface;
+            	if( anInterface.getPortType().equals(callbackPT)) callbackInterface = anInterface;
             } // end for
-            //TODO need to throw an exception here if no interface is found
-             reference.getInterfaceContract().setCallbackInterface(callbackInterface);
+            // Throw an exception if no interface is found
+            if( callbackInterface == null ) {
+            	throw new ContributionResolveException("Interface not found for port type " +
+            			callbackPT.getQName().toString() );
+            } // end if 
+            reference.getInterfaceContract().setCallbackInterface(callbackInterface);
         } // end if
     	
     	return reference;
@@ -268,30 +296,60 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
      * @return
      */
     private Service generateService( String name, PortType myRolePT, 
-    		PortType partnerRolePT, Collection<WSDLInterface> theInterfaces ) {
+    		PortType partnerRolePT, Collection<WSDLInterface> theInterfaces ) 
+    		throws ContributionResolveException {
         Service service = assemblyFactory.createService();
         WSDLInterfaceContract interfaceContract = wsdlFactory.createWSDLInterfaceContract();
         service.setInterfaceContract(interfaceContract);
         
         // Set the name of the service to the supplied name 
         service.setName(name);
+        
+        // Establish whether there is just a call interface or a call + callback interface
+        PortType callPT = null;
+        PortType callbackPT = null;
+        if( myRolePT != null ) {
+        	callPT = myRolePT;
+        	if( partnerRolePT != null ) {
+        		if( !myRolePT.equals(partnerRolePT) ){
+        			callbackPT = partnerRolePT;
+        		} // end if
+        	} // end if
+        } else if ( partnerRolePT != null ) {
+        	callPT = partnerRolePT;
+        } // end if
+        // No interfaces mean an error - throw an exception
+        if( callPT == null && callbackPT == null ) {
+        	throw new ContributionResolveException("Error: myRole and partnerRole port types are both null");
+        } // end if 
+
 
         // Set the call interface and, if present, the callback interface
         WSDLInterface callInterface = null;
         for( WSDLInterface anInterface : theInterfaces ) {
-        	if( anInterface.getPortType().equals(myRolePT)) callInterface = anInterface;
+        	if( anInterface.getPortType().equals(callPT)) callInterface = anInterface;
         } // end for
-        //TODO need to throw an exception here if no interface is found
+        // Throw an exception if no interface is found
+        if( callInterface == null ) {
+        	throw new ContributionResolveException("Interface not found for port type " +
+        			callPT.getQName().toString() );
+        } // end if 
+
         service.getInterfaceContract().setInterface(callInterface);    
         
         // There is a callback if the partner role is not null and if the partner role port type
         // is not the same as the port type for my role
-        if (partnerRolePT != null && !myRolePT.equals(partnerRolePT) ) {
+        if ( callbackPT != null ) {
             WSDLInterface callbackInterface = null;
             for( WSDLInterface anInterface : theInterfaces ) {
-            	if( anInterface.getPortType().equals(myRolePT)) callbackInterface = anInterface;
+            	if( anInterface.getPortType().equals(callbackPT)) callbackInterface = anInterface;
             } // end for
-            //TODO need to throw an exception here if no interface is found
+            // Throw an exception if no interface is found
+            if( callbackInterface == null ) {
+            	throw new ContributionResolveException("Interface not found for port type " +
+            			callbackPT.getQName().toString() );
+            } // end if 
+
             service.getInterfaceContract().setCallbackInterface(callbackInterface);
         } // end if
     	
