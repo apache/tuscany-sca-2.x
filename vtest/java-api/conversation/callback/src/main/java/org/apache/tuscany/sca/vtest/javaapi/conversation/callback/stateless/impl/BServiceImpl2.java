@@ -17,25 +17,30 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.local.impl;
+package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.stateless.impl;
 
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.AServiceCallback;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.BService;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.stateless.BServiceCallback;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.CService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.Utilities;
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.local.AServiceCallback;
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.local.BService;
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.local.BServiceCallback;
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.local.CService;
 import org.junit.Assert;
+import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
 @Service(BService.class)
 @Scope("CONVERSATION")
-public class BServiceImpl implements BService, BServiceCallback {
+public class BServiceImpl2 implements BService, BServiceCallback {
 
     String someState;
+    
+    @Context
+    protected RequestContext rc;
 
     @Callback
     protected AServiceCallback callback;
@@ -54,9 +59,12 @@ public class BServiceImpl implements BService, BServiceCallback {
     public void callBack(String someState) {
         System.out.println("B-callback called with this state => " + someState);
         this.someState = someState;
+        Assert.assertSame("1234", rc.getServiceReference().getCallbackID());
     }
 
     public void testCallBack(String someState) {
+
+        c.setCallbackID("1234");
 
         c.getService().testCallBack(someState);
         int count = 4;
@@ -64,8 +72,8 @@ public class BServiceImpl implements BService, BServiceCallback {
             Utilities.delayQuarterSecond();
             count--;
         }
-        if (this.someState == null)
-            Assert.fail("Callback not received by this instance");
+        if (this.someState != null)
+            Assert.fail("Callback should NOT have been received by this instance");
 
         callback.callBack(someState);
     }

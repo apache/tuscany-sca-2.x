@@ -19,46 +19,55 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.stateless.impl;
 
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.AService;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.AServiceCallback;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.BService;
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.stateless.AServiceCallback;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.stateless.BServiceCallback;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.CService;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.Utilities;
 import org.junit.Assert;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Reference;
+import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
-@Service(AService.class)
-public class AServiceImpl implements AService, AServiceCallback {
+@Service(BService.class)
+@Scope("CONVERSATION")
+public class BServiceImpl implements BService, BServiceCallback {
+
+    String someState;
+
+    @Callback
+    protected AServiceCallback callback;
 
     @Reference
-    protected ServiceReference<BService> b;
+    protected ServiceReference<CService> c;
 
-    private String someState;
-    
-    public void callBack(String someState) {
-        System.out.println("A callback called with this state => " + someState);
+    public void setState(String someState) {
         this.someState = someState;
-    }  
-
-    public void testCallback() {
-
-        b.getService().testCallBack("Some remote string");
-        int count = 4;
-        while (someState == null && count > 0) {
-            delayQuarterSecond();
-            count--;
-        }
-        if (someState != null)
-            Assert.fail("Same instance received statefull calledback");
     }
 
-    // Utilities
-    private void delayQuarterSecond() {
-        try {
-            Thread.sleep(250);// millisecs
-        } catch (InterruptedException ex) {
-            throw new Error(ex);
+    public String getState() {
+        return someState;
+    }
+
+    public void callBack(String someState) {
+        System.out.println("B-callback called with this state => " + someState);
+        this.someState = someState;
+    }
+
+    public void testCallBack(String someState) {
+
+        c.getService().testCallBack(someState);
+        int count = 4;
+        while (this.someState == null && count > 0) {
+            Utilities.delayQuarterSecond();
+            count--;
         }
+        if (this.someState != null)
+            Assert.fail("Callback should NOT have been received by this instance");
+
+        callback.callBack(someState);
     }
 
 }

@@ -20,9 +20,8 @@
 package org.apache.tuscany.sca.vtest.javaapi.conversation.callback;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.osoa.sca.ServiceRuntimeException;
@@ -33,12 +32,10 @@ import org.osoa.sca.ServiceRuntimeException;
 public class CallbackTestCase {
 
     protected static SCADomain domain;
-    protected static String compositeName = "callback-remote.composite";
     protected static AService aService = null;
-    protected static BService bService = null;
 
-    @BeforeClass
-    public static void init() throws Exception {
+    @Before
+    public void init() throws Exception {
         try {
             System.out.println("Setting up");
         } catch (Exception ex) {
@@ -46,8 +43,8 @@ public class CallbackTestCase {
         }
     }
 
-    @AfterClass
-    public static void destroy() throws Exception {
+    @After
+    public void destroy() throws Exception {
 
         System.out.println("Cleaning up");
         if (domain != null)
@@ -185,6 +182,9 @@ public class CallbackTestCase {
      * Callbacks may be used for both remotable and local services. Either both
      * interfaces of a bidirectional service must be remotable, or both must be
      * local. It is illegal to mix the two.
+     * <p>
+     * In this test configuration BServiceCallback is remotable and CService is
+     * not
      */
     @Test(expected = ServiceRuntimeException.class)
     @Ignore("TUSCANY-2291")
@@ -203,6 +203,10 @@ public class CallbackTestCase {
      * uses stateless callbacks will not have callback methods routed to an
      * instance of the client that contains any state that is relevant to the
      * conversation.
+     * <p>
+     * This test is identical in structure to the stateful test except that
+     * BServiceCallback is not conversational and we test that the callback is
+     * NOT routed to the same instance.
      */
     @Test
     public void statelessCallback() throws Exception {
@@ -228,8 +232,31 @@ public class CallbackTestCase {
      */
     @Test
     public void statelessCallback2() throws Exception {
-        System.out.println("Setting up for stateless callback tests");
+        System.out.println("Setting up for stateless callback id tests");
         domain = SCADomain.newInstance("callback-stateless-callbackid.composite");
+        aService = domain.getService(AService.class, "AComponent");
+        aService.testCallback();
+
+    }
+
+    /**
+     * Lines 650-654
+     * <p>
+     * The difference for stateless services is that the callback field would
+     * not be available if the component is servicing a request for anything
+     * other than the original client. So, the technique used in the previous
+     * section, where there was a response from the backend Service which was
+     * forwarded as a callback from MyService would not work because the
+     * callback field would be null when the message from the backend system was
+     * received.
+     * <p>
+     * 
+     */
+    @Test
+    @Ignore("TUSCANY-2306")
+    public void statelessCallback3() throws Exception {
+        System.out.println("Setting up for stateless callback ref null tests");
+        domain = SCADomain.newInstance("callback-stateless-callbackfieldnull.composite");
         aService = domain.getService(AService.class, "AComponent");
         aService.testCallback();
 

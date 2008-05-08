@@ -18,17 +18,23 @@
 	* under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	targetNamespace="http://java-api-tests" name="Converstion-callback-stateless">
+	targetNamespace="http://java-api-tests" name="Conversation-callback-stateless">
 
 	<component name="AComponent">
 		<implementation.java
-			class="org.apache.tuscany.sca.vtest.javaapi.conversation.callback.stateless.impl.AServiceImpl2" />
+			class="org.apache.tuscany.sca.vtest.javaapi.conversation.callback.impl.AServiceImpl" />
 		<reference name="b" target="BComponent" />
 	</component>
 
 	<component name="BComponent">
 		<implementation.java
-			class="org.apache.tuscany.sca.vtest.javaapi.conversation.callback.impl.BServiceImpl" />
+			class="org.apache.tuscany.sca.vtest.javaapi.conversation.callback.stateless.impl.BServiceImpl2" />
+		<reference name="c" target="CComponent" />
+	</component>
+	
+	<component name="CComponent">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.conversation.callback.stateless.impl.CServiceImpl" />
 	</component>
 
 </composite>

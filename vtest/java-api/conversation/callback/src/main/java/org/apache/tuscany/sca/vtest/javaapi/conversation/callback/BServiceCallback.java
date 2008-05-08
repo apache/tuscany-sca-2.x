@@ -18,23 +18,16 @@
  */
 package org.apache.tuscany.sca.vtest.javaapi.conversation.callback;
 
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.AServiceCallback;
-import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.Remotable;
 
 /**
- * Simple Service
+ * Simple Remotable Service
  */
 @Remotable
 @Conversational
-@Callback(AServiceCallback.class)
-public interface BService {
+public interface BServiceCallback {
 
-    public void setState(String someState);
+    public void callBack(String someState);
     
-    public String getState();
-
-    public void testCallBack(String string);
-
 }
