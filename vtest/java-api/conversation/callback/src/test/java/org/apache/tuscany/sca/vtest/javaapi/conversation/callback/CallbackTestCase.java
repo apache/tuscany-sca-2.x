@@ -227,7 +227,6 @@ public class CallbackTestCase {
      * received.
      */
     @Test
-    @Ignore("TUSCANY-2299")
     public void statelessCallback2() throws Exception {
         System.out.println("Setting up for stateless callback tests");
         domain = SCADomain.newInstance("callback-stateless-callbackid.composite");
