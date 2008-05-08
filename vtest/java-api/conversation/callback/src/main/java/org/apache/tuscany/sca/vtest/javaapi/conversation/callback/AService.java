@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.vtest.javaapi.conversation.callback;
 
-
 /**
  * Simple Service
  */

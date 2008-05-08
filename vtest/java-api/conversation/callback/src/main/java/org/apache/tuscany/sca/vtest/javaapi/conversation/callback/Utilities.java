@@ -16,24 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.mixed;
 
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.Remotable;
+package org.apache.tuscany.sca.vtest.javaapi.conversation.callback;
 
-/**
- * Simple Local Service
- */
-@Remotable
-@Conversational
-@Callback(AServiceCallback.class)
-public interface BService {
-
-    public void setState(String someState);
+public class Utilities {
     
-    public String getState();
-
-    public void testCallBack(String string);
+    public static void delayQuarterSecond() {
+        try {
+            Thread.sleep(250);// millisecs
+        } catch (InterruptedException ex) {
+            throw new Error(ex);
+        }
+    }
 
 }

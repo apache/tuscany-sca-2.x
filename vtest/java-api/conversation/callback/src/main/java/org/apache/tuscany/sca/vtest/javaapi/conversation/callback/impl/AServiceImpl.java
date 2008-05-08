@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.impl;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.AService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.AServiceCallback;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.BService;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.Utilities;
 import org.junit.Assert;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Reference;
@@ -46,20 +47,11 @@ public class AServiceImpl implements AService, AServiceCallback {
         b.getService().testCallBack("Some string");
         int count = 4;
         while (someState == null && count > 0) {
-            delayQuarterSecond();
+            Utilities.delayQuarterSecond();
             count--;
         }
         if (someState == null)
             Assert.fail("Callback not received by this instance");
-    }
-
-    // Utilities
-    private void delayQuarterSecond() {
-        try {
-            Thread.sleep(250);// millisecs
-        } catch (InterruptedException ex) {
-            throw new Error(ex);
-        }
     }
 
 }

@@ -18,7 +18,7 @@
 	* under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	targetNamespace="http://java-api-tests" name="Converstion-callback">
+	targetNamespace="http://java-api-tests" name="Conversation-callback">
 
 	<component name="AComponent">
 		<implementation.java
@@ -29,6 +29,12 @@
 	<component name="BComponent">
 		<implementation.java
 			class="org.apache.tuscany.sca.vtest.javaapi.conversation.callback.impl.BServiceImpl" />
+		<reference name="c" target="CComponent" />
+	</component>
+	
+	<component name="CComponent">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.conversation.callback.impl.CServiceImpl" />
 	</component>
 
 </composite>
