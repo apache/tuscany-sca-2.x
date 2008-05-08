@@ -23,12 +23,17 @@ import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.AService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.BService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.stateless.AServiceCallback;
 import org.junit.Assert;
+import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
 @Service(AService.class)
 public class AServiceImpl2 implements AService, AServiceCallback {
+
+    @Context
+    protected RequestContext rc;
 
     @Reference
     protected ServiceReference<BService> b;
@@ -40,12 +45,12 @@ public class AServiceImpl2 implements AService, AServiceCallback {
     public void callBack(String someState) {
         System.out.println("A callback called with this state => " + someState);
         this.someState = someState;
-        Assert.assertSame(someKey, b.getCallbackID());
+        Assert.assertSame(someKey, rc.getServiceReference().getCallbackID());
     }  
 
     public void testCallback() {
 
-        b.setCallbackID("someKey");
+        b.setCallbackID(someKey);
         b.getService().testCallBack("Some string");
         int count = 4;
         while (someState == null && count > 0) {
