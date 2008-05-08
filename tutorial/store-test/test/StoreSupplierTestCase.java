@@ -20,6 +20,7 @@
 package test;
 
 import junit.framework.Assert;
+import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.node.SCAClient;
 import org.apache.tuscany.sca.node.SCANode2;
