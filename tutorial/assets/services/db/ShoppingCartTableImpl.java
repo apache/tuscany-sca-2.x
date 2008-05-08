@@ -31,6 +31,7 @@ import java.util.UUID;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
 import org.osoa.sca.ServiceRuntimeException;
+import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
@@ -52,6 +53,14 @@ public class ShoppingCartTableImpl implements Cart, Total {
         String url = "jdbc:derby:directory:" + (baseDir != null? baseDir + "/" + database : database);
         System.out.println("Connecting to database: " + url);
         connection = DriverManager.getConnection(url, "", "");
+    }
+    
+    @Destroy
+    public void shutdown() throws Exception {
+        if(connection != null) {
+            connection.close();
+            connection = null;
+        }
     }
 
     public Entry<String, Item>[] getAll() {
