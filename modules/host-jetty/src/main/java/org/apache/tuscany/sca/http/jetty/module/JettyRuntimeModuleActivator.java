@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.http.jetty.module;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
@@ -32,6 +34,7 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  * @version $Rev$ $Date$
  */
 public class JettyRuntimeModuleActivator implements ModuleActivator {
+    private final static Logger logger = Logger.getLogger(JettyRuntimeModuleActivator.class.getName());
 
     private JettyServer server;
 
@@ -44,12 +47,16 @@ public class JettyRuntimeModuleActivator implements ModuleActivator {
         if (servletHosts.getServletHosts().size() < 1) {
             final WorkScheduler workScheduler = extensionPointRegistry.getExtensionPoint(WorkScheduler.class);
             // Allow privileged access to start MBeans. Requires MBeanPermission in security policy.
-            server = AccessController.doPrivileged(new PrivilegedAction<JettyServer>() {
-                public JettyServer run() {
-                    return new JettyServer(workScheduler);
-                 }
-            });        
-            servletHosts.addServletHost(server);
+            try {
+                server = AccessController.doPrivileged(new PrivilegedAction<JettyServer>() {
+                    public JettyServer run() {
+                        return new JettyServer(workScheduler);
+                     }
+                });        
+                servletHosts.addServletHost(server);
+            } catch (Exception e) {
+                logger.log(Level.WARNING, "Exception creating JettyServer", e);
+            }
         }
     }
 
