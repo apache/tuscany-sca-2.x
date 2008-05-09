@@ -76,8 +76,8 @@ public class JDKProxyFactory implements ProxyFactory {
     }
 
     public <T> T createCallbackProxy(Class<T> interfaze, List<RuntimeWire> wires) throws ProxyCreationException {
-        CallbackReferenceImpl<T> callbackReference = new CallbackReferenceImpl(interfaze, this, wires);
-        return createCallbackProxy(callbackReference);
+        CallbackReferenceImpl<T> callbackReference = CallbackReferenceImpl.newInstance(interfaze, this, wires);
+        return callbackReference != null ? createCallbackProxy(callbackReference) : null;
     }
 
     public <T> T createCallbackProxy(CallbackReferenceImpl<T> callbackReference) throws ProxyCreationException {
