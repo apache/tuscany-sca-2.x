@@ -17,12 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.impl;
+package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.multi.impl;
 
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.AService;
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.AServiceCallback;
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.BService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.Utilities;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.AService;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.multi.AServiceCallback;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.multi.AServiceCallback2;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.multi.BService;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.multi.BService2;
 import org.junit.Assert;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.annotations.Reference;
@@ -31,18 +33,28 @@ import org.osoa.sca.annotations.Service;
 
 @Service(AService.class)
 @Scope("CONVERSATION")
-public class AServiceImpl implements AService, AServiceCallback {
+public class AServiceImpl implements AService, AServiceCallback , AServiceCallback2 {
 
     @Reference
     protected ServiceReference<BService> b;
+    
+    @Reference
+    protected ServiceReference<BService2> b2;
+
 
     private String someState;
+    private String someState2;
 
     public void callBack(String someState) {
         System.out.println("A-callback called with this state => " + someState);
         this.someState = someState;
     }
 
+    public void callBack2(String someState) {
+        System.out.println("A-callback2 called with this state => " + someState);
+        this.someState2 = someState;    
+    }
+    
     public void testCallback() {
         b.getService().testCallBack("Some string");
         int count = 4;
@@ -55,7 +67,13 @@ public class AServiceImpl implements AService, AServiceCallback {
     }
 
     public void testCallback2() {
-       Assert.fail("Should not be called");
+        b2.getService().testCallBack2("Some string");
+        int count = 4;
+        while (someState2 == null && count > 0) {
+            Utilities.delayQuarterSecond();
+            count--;
+        }
+        if (someState2 == null)
+            Assert.fail("Callback not received by this instance");
     }
-
 }

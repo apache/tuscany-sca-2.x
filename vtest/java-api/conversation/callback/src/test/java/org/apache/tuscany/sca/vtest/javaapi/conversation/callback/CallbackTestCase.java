@@ -250,7 +250,6 @@ public class CallbackTestCase {
      * callback field would be null when the message from the backend system was
      * received.
      * <p>
-     * 
      */
     @Test
     // @Ignore("TUSCANY-2306")
@@ -262,4 +261,25 @@ public class CallbackTestCase {
 
     }
 
+    /**
+     * Lines 658-669
+     * <p>
+     * Since it is possible for a single implementation class to implement
+     * multiple services, it is also possible for callbacks to be defined for
+     * each of the services that it implements. The service implementation can
+     * include an injected field for each of its callbacks. The runtime injects
+     * the callback onto the appropriate field based on the type of the
+     * callback. The following shows the declaration of two fields, each of
+     * which corresponds to a particular service offered by the implementation.
+     * <p>
+     */
+    @Test
+    public void statefulMultiBidirectional() throws Exception {
+        System.out.println("Setting up for multi-bidirectional interfaces tests");
+        domain = SCADomain.newInstance("callback-multi.composite");
+        aService = domain.getService(AService.class, "AComponent");
+        aService.testCallback();
+        aService.testCallback2();
+
+    }
 }

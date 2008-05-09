@@ -16,15 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.sca.vtest.javaapi.conversation.callback;
+package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.multi;
+
+import org.osoa.sca.annotations.Conversational;
+import org.osoa.sca.annotations.Remotable;
 
 /**
- * Simple Service
+ * Simple Remotable Service
  */
-public interface AService {
+@Remotable
+@Conversational
+public interface AServiceCallback2 {
 
-    public void testCallback();
-
-    public void testCallback2();
- 
+    public void callBack2(String someState);
+    
 }
