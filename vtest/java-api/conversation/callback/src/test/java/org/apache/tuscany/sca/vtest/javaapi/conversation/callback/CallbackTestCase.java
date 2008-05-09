@@ -284,7 +284,37 @@ public class CallbackTestCase {
         domain = SCADomain.newInstance("callback-multi.composite");
         aService = domain.getService(AService.class, "AComponent");
         aService.testCallback();
-        aService.testCallback2(); //Includes test for 670,671
+        aService.testCallback2(); // Includes test for 670,671
+
+    }
+
+    /**
+     * Lines 675-706
+     * <p>
+     * In addition to injecting a reference to a callback service, it is also
+     * possible to obtain a reference to a Callback instance by annotating a
+     * field or method with the "@Callback" annotation. A reference implementing
+     * the callback service interface may be obtained using
+     * CallableReference.getService(). The following fragments come from a
+     * service implementation that uses the callback API:
+     * <p>
+     * Alternatively a callback may be retrieved programmatically using the
+     * RequestContext API. The snippet below show how to retrieve a callback in
+     * a method programmatically:
+     * <p>
+     * Lines 695, 696
+     * <p>
+     * Alternatively a callback may be retrieved programmatically using the
+     * RequestContext API. The snippet below show how to retrieve a callback in
+     * a method programmatically:
+     */
+    @Test
+    public void accessingCallbacks() throws Exception {
+        System.out.println("Setting up for callback accessing tests");
+        domain = SCADomain.newInstance("callback-accessing.composite");
+        aService = domain.getService(AService.class, "AComponent");
+        aService.testCallback();
+        aService.testCallback2(); //Lines 695-696
 
     }
 }
