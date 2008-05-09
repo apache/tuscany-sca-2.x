@@ -53,5 +53,9 @@ public class AServiceImpl implements AService, AServiceCallback {
         if (someState == null)
             Assert.fail("Callback not received by this instance");
     }
+    
+    public void testCallback2() {
+        Assert.fail("Not implemented");
+     }
 
 }
