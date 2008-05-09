@@ -272,14 +272,19 @@ public class CallbackTestCase {
      * callback. The following shows the declaration of two fields, each of
      * which corresponds to a particular service offered by the implementation.
      * <p>
+     * Lines 670,671
+     * <p>
+     * If a single callback has a type that is compatible with multiple declared
+     * callback fields, then all of them will be set.
      */
     @Test
+    @Ignore("TUSCANY-2311")
     public void statefulMultiBidirectional() throws Exception {
         System.out.println("Setting up for multi-bidirectional interfaces tests");
         domain = SCADomain.newInstance("callback-multi.composite");
         aService = domain.getService(AService.class, "AComponent");
         aService.testCallback();
-        aService.testCallback2();
+        aService.testCallback2(); //Includes test for 670,671
 
     }
 }
