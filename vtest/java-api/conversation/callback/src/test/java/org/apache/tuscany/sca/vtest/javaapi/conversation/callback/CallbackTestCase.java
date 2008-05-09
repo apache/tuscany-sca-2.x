@@ -253,7 +253,7 @@ public class CallbackTestCase {
      * 
      */
     @Test
-    @Ignore("TUSCANY-2306")
+    // @Ignore("TUSCANY-2306")
     public void statelessCallback3() throws Exception {
         System.out.println("Setting up for stateless callback ref null tests");
         domain = SCADomain.newInstance("callback-stateless-callbackfieldnull.composite");

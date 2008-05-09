@@ -42,7 +42,7 @@ public class CallbackReferenceObjectFactory implements ObjectFactory<CallableRef
     }
 
     public CallableReference<?> getInstance() throws ObjectCreationException {
-        return new CallbackReferenceImpl(businessInterface, proxyFactory, wires);
+        return CallbackReferenceImpl.newInstance(businessInterface, proxyFactory, wires);
     }
 
 }

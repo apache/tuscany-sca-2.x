@@ -43,7 +43,14 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
     private EndpointReference resolvedEndpoint;
 	private Object convID;
 
-    public CallbackReferenceImpl(Class<B> interfaze, ProxyFactory proxyFactory, List<RuntimeWire> wires) {
+    public static CallbackReferenceImpl newInstance(Class interfaze,
+                                                    ProxyFactory proxyFactory,
+                                                    List<RuntimeWire> wires) {
+        CallbackReferenceImpl ref = new CallbackReferenceImpl(interfaze, proxyFactory, wires);
+        return ref.getResolvedEndpoint() != null ? ref : null;
+    }
+
+    private CallbackReferenceImpl(Class<B> interfaze, ProxyFactory proxyFactory, List<RuntimeWire> wires) {
         super(interfaze, null, proxyFactory);
         this.wires = wires;
 		init();

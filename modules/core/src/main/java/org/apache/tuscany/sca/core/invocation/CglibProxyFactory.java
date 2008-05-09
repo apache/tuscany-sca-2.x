@@ -79,8 +79,8 @@ public class CglibProxyFactory implements ProxyFactory {
      * JDKCallbackInvocationHandler as JDKProxyService.
      */
     public <T> T createCallbackProxy(Class<T> interfaze, final List<RuntimeWire> wires) throws ProxyCreationException {
-        CallbackReferenceImpl<T> callbackReference = new CallbackReferenceImpl(interfaze, this, wires);
-        return createCallbackProxy(callbackReference);
+        CallbackReferenceImpl<T> callbackReference = CallbackReferenceImpl.newInstance(interfaze, this, wires);
+        return callbackReference != null ? createCallbackProxy(callbackReference) : null;
     }
 
     /**
