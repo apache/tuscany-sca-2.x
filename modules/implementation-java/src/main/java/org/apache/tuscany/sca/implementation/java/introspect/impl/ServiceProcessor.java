@@ -22,6 +22,7 @@ import static org.apache.tuscany.sca.implementation.java.introspect.impl.JavaInt
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -102,6 +103,9 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         if (annotation == null) {
             return;
         }
+        if(Modifier.isPrivate(method.getModifiers())) {
+            throw new IllegalCallbackReferenceException("Illegal annotation @Callback found on "+method, method);
+        }
         if (method.getParameterTypes().length != 1) {
             throw new IllegalCallbackReferenceException("Setter must have one parameter", method);
         }
@@ -115,6 +119,9 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         Callback annotation = field.getAnnotation(Callback.class);
         if (annotation == null) {
             return;
+        }
+        if(Modifier.isPrivate(field.getModifiers())) {
+            throw new IllegalCallbackReferenceException("Illegal annotation @Callback found on "+field, field);
         }
         JavaElementImpl element = new JavaElementImpl(field);
         createCallback(type, element);
