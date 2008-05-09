@@ -23,6 +23,7 @@ import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.multi.AService
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.multi.AServiceCallback2;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.multi.BService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.multi.BService2;
+import org.junit.Assert;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
@@ -38,6 +39,10 @@ public class BServiceImpl implements BService, BService2 {
 
     @Callback
     protected AServiceCallback2 callback2;
+    
+    @Callback
+    protected AServiceCallback2 callback3;
+
 
     public void setState(String someState) {
         this.someState = someState;
@@ -52,6 +57,7 @@ public class BServiceImpl implements BService, BService2 {
     }
 
     public void testCallBack2(String someState) {
+        Assert.assertNotNull(callback3); //Spec lines 670,671
         callback2.callBack2(someState);
     }
 
