@@ -92,6 +92,14 @@ public class JavaClassIntrospectorImpl {
                 extension.visitField(field, type);
             }
         }
+
+        // Check if any private fields have illegal annotations that should be raised as errors
+        Set<Field> privateFields = JavaIntrospectionHelper.getPrivateFields(clazz);
+        for (Field field : privateFields) {
+            for (JavaClassVisitor processor : visitors) {
+                processor.visitField(field, type);
+            }
+        }
         
         Set<Method> methods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(clazz, true);
         for (Method method : methods) {

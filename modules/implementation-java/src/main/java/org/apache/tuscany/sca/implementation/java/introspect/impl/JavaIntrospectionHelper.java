@@ -561,4 +561,17 @@ public final class JavaIntrospectionHelper {
         
         return methods;
     }
+
+    public static Set<Field> getPrivateFields(Class clazz) {
+        Set<Field> fields = new HashSet<Field>();
+        Field[] declaredFields = clazz.getDeclaredFields();
+        for (final Field declaredField : declaredFields) {
+            int modifiers = declaredField.getModifiers();
+            if(Modifier.isPrivate(modifiers)) {
+                fields.add(declaredField);
+            }
+        }
+        
+        return fields;
+    }
 }
