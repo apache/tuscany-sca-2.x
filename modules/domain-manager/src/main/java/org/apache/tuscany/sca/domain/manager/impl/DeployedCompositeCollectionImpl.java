@@ -30,6 +30,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,10 +60,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.xml.CompositeProcessor;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
-import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
@@ -206,24 +205,20 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
             return;
         }
 
-        // Support reading source composite file inside a JAR
-        String uri = item.getAlternate();
-        int e = uri.indexOf("!/"); 
-        if (e != -1) {
-            int s = uri.lastIndexOf('/', e - 2) +1;
-            if (uri.substring(s, e).contains(".")) {
-                uri = "jar:" + uri;
-            } else {
-                uri = uri.substring(0, e) + uri.substring(e + 1);
-            }
-        }
-        
         // Read the composite file and write to response
+        String uri = item.getAlternate();
+        InputStream is;
+        try {
+            URLConnection connection = new URL(uri).openConnection();
+            connection.setUseCaches(false);
+            connection.connect();
+            is = connection.getInputStream();
+        } catch (FileNotFoundException ex) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, key);
+            return;
+        }
+
         response.setContentType("text/xml");
-        URLConnection connection = new URL(uri).openConnection();
-        connection.setUseCaches(false);
-        connection.connect();
-        InputStream is = connection.getInputStream();
         ServletOutputStream os = response.getOutputStream();
         byte[] buffer = new byte[4096];
         for (;;) {
