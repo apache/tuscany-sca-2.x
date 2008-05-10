@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package src.test.java.org.apache.tuscany.sca.implementation.data;
+package org.apache.tuscany.sca.implementation.data;
 
 import java.io.FileInputStream;
 import javax.xml.stream.XMLInputFactory;
