@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package src.test.java.org.apache.tuscany.sca.implementation.data;
+package org.apache.tuscany.sca.implementation.data;
 
 import java.io.FileInputStream;
 
