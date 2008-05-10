@@ -18,7 +18,7 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://www.osog.org/sca/sca.tld" prefix="sca" %>
+<%@ taglib uri="http://www.osoa.org/sca/sca_jsp.tld" prefix="sca" %>
 
 <sca:reference name="CalculatorServiceComponent" type="calculator.CalculatorService" />
 
