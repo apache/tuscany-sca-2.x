@@ -51,11 +51,22 @@ public class ContributionModelResolver implements ModelResolver {
         
         // Lookup a contribution for the given URI
         String uri = ((Contribution)unresolved).getURI();
-        Contribution resolved = (Contribution) map.get(uri);
-        if (resolved != null) {
-            return modelClass.cast(resolved);
+        if (uri != null) {
+            Contribution resolved = (Contribution) map.get(uri);
+            if (resolved != null) {
+                return modelClass.cast(resolved);
+            }
+            return unresolved;
+        } else {
+            
+            // If no URI was specified, just return the first contribution
+            if (!map.isEmpty()) {
+                Contribution resolved = map.values().iterator().next();
+                return modelClass.cast(resolved);
+            } else {
+                return unresolved;
+            }
         }
-        return (T)unresolved;
     }
     
 }
