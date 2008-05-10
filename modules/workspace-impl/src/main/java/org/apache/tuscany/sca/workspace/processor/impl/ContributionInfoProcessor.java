@@ -19,12 +19,14 @@
 package org.apache.tuscany.sca.workspace.processor.impl;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
@@ -47,44 +49,44 @@ import org.apache.tuscany.sca.workspace.scanner.impl.DirectoryContributionScanne
 import org.apache.tuscany.sca.workspace.scanner.impl.JarContributionScanner;
 
 /**
- * URLArtifactProcessor that handles contribution files and the artifacts they contain
- * and returns a contribution model.
+ * URLArtifactProcessor that handles contribution files and returns a contribution
+ * info model.
  * 
  * @version $Rev$ $Date$
  */
-public class ContributionContentProcessor implements URLArtifactProcessor<Contribution>{
+public class ContributionInfoProcessor implements URLArtifactProcessor<Contribution>{
     private ContributionFactory contributionFactory;
     private ModelResolverExtensionPoint modelResolvers;
     private ModelFactoryExtensionPoint modelFactories;
+    private URLArtifactProcessorExtensionPoint artifactProcessors;
     private URLArtifactProcessor<Object> artifactProcessor;
     private StAXArtifactProcessor<Object> extensionProcessor;
 
-    public ContributionContentProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor) {
+    public ContributionInfoProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor) {
         this.modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         this.modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
         hackResolvers(modelResolvers);
         URLArtifactProcessorExtensionPoint artifactProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
+        this.artifactProcessors = artifactProcessors;
         this.artifactProcessor = new ExtensibleURLArtifactProcessor(artifactProcessors);
         this.extensionProcessor = extensionProcessor;
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
     }
     
-    public ContributionContentProcessor(ModelFactoryExtensionPoint modelFactories, ModelResolverExtensionPoint modelResolvers,
-                                        URLArtifactProcessor<Object> artifactProcessor, StAXArtifactProcessor<Object> extensionProcessor) {
+    public ContributionInfoProcessor(ModelFactoryExtensionPoint modelFactories, ModelResolverExtensionPoint modelResolvers, URLArtifactProcessor<Object> artifactProcessor) {
         this.modelFactories = modelFactories;
         this.modelResolvers = modelResolvers;
         hackResolvers(modelResolvers);
         this.artifactProcessor = artifactProcessor;
-        this.extensionProcessor = extensionProcessor;
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
     }
     
     public String getArtifactType() {
-        return ".contribution/content";
+        return ".contribution/info";
     }
     
     public Class<Contribution> getModelType() {
-        return Contribution.class;
+        return null;
     }
     
     public Contribution read(URL parentURL, URI contributionURI, URL contributionURL) throws ContributionReadException {
@@ -105,45 +107,62 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
             scanner = new JarContributionScanner();
         }
         
-        // Scan the contribution and list the artifacts contained in it
-        List<Artifact> artifacts = contribution.getArtifacts();
+        // Read generated and user sca-contribution.xml files
         boolean contributionMetadata = false;
-        List<String> artifactURIs = scanner.getArtifacts(contributionURL);
-        for (String artifactURI: artifactURIs) {
-            URL artifactURL = scanner.getArtifactURL(contributionURL, artifactURI);
-
-            // Add the deployed artifact model to the contribution
-            Artifact artifact = this.contributionFactory.createArtifact();
-            artifact.setURI(artifactURI);
-            artifact.setLocation(artifactURL.toString());
-            artifacts.add(artifact);
-            modelResolver.addModel(artifact);
-            
-            // Read each artifact
-            Object model = artifactProcessor.read(contributionURL, URI.create(artifactURI), artifactURL);
-            if (model != null) {
-                artifact.setModel(model);
-
-                // Add the loaded model to the model resolver
-                modelResolver.addModel(model);
-
-                // Merge contribution metadata into the contribution model
-                if (model instanceof ContributionMetadata) {
-                    contributionMetadata = true;
-                    ContributionMetadata c = (ContributionMetadata)model;
-                    contribution.getImports().addAll(c.getImports());
-                    contribution.getExports().addAll(c.getExports());
-                    contribution.getDeployables().addAll(c.getDeployables());
-                }
+        for (String path: new String[]{
+                                       Contribution.SCA_CONTRIBUTION_GENERATED_META,
+                                       Contribution.SCA_CONTRIBUTION_META}) {
+            URL url = scanner.getArtifactURL(contributionURL, path);
+            try {
+                // Check if the file actually exists before trying to read it
+                URLConnection connection = url.openConnection();
+                connection.setUseCaches(false);
+                InputStream is = connection.getInputStream();
+                is.close();
+            } catch (IOException e) {
+                continue;
             }
+            contributionMetadata = true;
+            
+            // Read the sca-contribution.xml file
+            ContributionMetadata c = (ContributionMetadata)artifactProcessor.read(contributionURL, URI.create(path), url);
+            contribution.getImports().addAll(c.getImports());
+            contribution.getExports().addAll(c.getExports());
+            contribution.getDeployables().addAll(c.getDeployables());
         }
         
-        // If no sca-contribution.xml file was provided then just consider
-        // all composites in the contribution as deployables
+        // If no sca-contribution.xml file was provided then consider
+        // all composites in the contribution as deployables, and also
+        // read any files that are explicitly asssigned artifact processors
+        // as they are likely to provide relevant metadata info
         if (!contributionMetadata) {
-            for (Artifact artifact: artifacts) {
-                if (artifact.getModel() instanceof Composite) {
-                    contribution.getDeployables().add((Composite)artifact.getModel());
+            List<String> artifactURIs;
+            try {
+                artifactURIs = scanner.getArtifacts(contributionURL);
+            } catch (ContributionReadException e) {
+                artifactURIs = null;
+            }
+            if (artifactURIs != null) {
+                for (String artifactURI: artifactURIs) {
+                    boolean read = false;
+                    if (artifactURI.endsWith(".composite")) {
+                        read = true;
+                    } else {
+                        int s= artifactURI.lastIndexOf("/");
+                        String fileName = artifactURI.substring(s + 1);
+                        if (artifactProcessors.getProcessor(fileName) != null) {
+                            read = true;
+                        }
+                    }
+                    if (read) {
+                        URL artifactURL = scanner.getArtifactURL(contributionURL, artifactURI);
+        
+                        // Read each artifact
+                        Object model = artifactProcessor.read(contributionURL, URI.create(artifactURI), artifactURL);
+                        if (model instanceof Composite) {
+                            contribution.getDeployables().add((Composite)model);
+                        }
+                    }
                 }
             }
         }
@@ -153,7 +172,7 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
     
     public void resolve(Contribution contribution, ModelResolver resolver) throws ContributionResolveException {
         
-        // Resolve the contribution model itself
+        // Mark the contribution model resolved
         ModelResolver contributionResolver = contribution.getModelResolver();
         contribution.setUnresolved(false);
         contributionResolver.addModel(contribution);
@@ -166,27 +185,6 @@ public class ContributionContentProcessor implements URLArtifactProcessor<Contri
             extensionProcessor.resolve(import_, contributionResolver);
         }
         
-        // Resolve all artifact models
-        for (Artifact artifact : contribution.getArtifacts()) {
-            Object model = artifact.getModel();
-            if (model != null) {
-                try {
-                   artifactProcessor.resolve(model, contributionResolver);
-                } catch (Exception e) {
-                    //FIXME this shouldn't happen
-                }
-            }
-        }
-        
-        // Resolve deployable composites
-        List<Composite> deployables = contribution.getDeployables();
-        for (int i = 0, n = deployables.size(); i < n; i++) {
-            Composite deployable = deployables.get(i);
-            Composite resolved = (Composite)contributionResolver.resolveModel(Composite.class, deployable);
-            if (resolved != deployable) {
-                deployables.set(i, resolved);
-            }
-        }
     }
 
     /**
