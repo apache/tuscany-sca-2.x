@@ -151,22 +151,36 @@ public final class DomainManagerUtil {
      * @return
      */
     static String compositeAlternateLink(String contributionLocation, String deployableURI) {
-        URI uri = URI.create(contributionLocation);
-        if ("file".equals(uri.getScheme())) {
-            String path = uri.toString().substring(5);
+        if (deployableURI == null) {
+            return null;
+        }
+        URI u = URI.create(contributionLocation);
+        String uri;
+        if ("file".equals(u.getScheme())) {
+            String path = u.toString().substring(5);
             File file = new File(path);
             if (file.isDirectory()) {
                 if (contributionLocation.endsWith("/")) {
-                    return contributionLocation + deployableURI;
+                    uri = contributionLocation + deployableURI;
                 } else {
-                    return contributionLocation + "/" + deployableURI;
+                    uri = contributionLocation + "/" + deployableURI;
                 }
             } else {
-                return contributionLocation + "!/" + deployableURI; 
+                uri = contributionLocation + "!/" + deployableURI; 
             }
         } else {
-            return contributionLocation + "!/" + deployableURI;
+            uri = contributionLocation + "!/" + deployableURI;
         }
+        int e = uri.indexOf("!/"); 
+        if (e != -1) {
+            int s = uri.lastIndexOf('/', e - 2) +1;
+            if (uri.substring(s, e).contains(".")) {
+                uri = "jar:" + uri;
+            } else {
+                uri = uri.substring(0, e) + uri.substring(e + 1);
+            }
+        }
+        return uri;
     }
 
     /**

@@ -57,12 +57,10 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
-import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
@@ -115,7 +113,6 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     private ContributionFactory contributionFactory;
     private WorkspaceFactory workspaceFactory;
     private StAXArtifactProcessor<Object> staxProcessor;
-    private URLArtifactProcessor<Object> urlProcessor;
     private URLArtifactProcessor<Contribution> contributionProcessor;
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
@@ -141,19 +138,15 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class);
         
-        // Create model resolvers
-        ModelResolverExtensionPoint modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-
         // Create artifact processors
         inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
 
         URLArtifactProcessorExtensionPoint urlProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        urlProcessor = new ExtensibleURLArtifactProcessor(urlProcessors);
         
         // Create contribution info processor
-        contributionProcessor = urlProcessors.getProcessor(Contribution.class);
+        contributionProcessor = urlProcessors.getProcessor(".contribution/info");
 
         // Create a document builder (used to pretty print XML)
         documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -384,7 +377,10 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         }
         
         // List the dependency problems
-        if (problems.size() > 1) {
+        if (contribution.isUnresolved()) {
+            problems.add("Contribution not found");
+        }
+        if (problems.size() > 0) {
             sb.append("<span id=\"problems\" style=\"color: red\">");
             for (int i = 0, n = problems.size(); i < n ; i++) {
                 sb.append("Problem: "+ problems.get(i) + "<br>");
@@ -505,8 +501,15 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
                 URL url = locationURL(c.getLocation());
                 try {
                     Contribution contribution = (Contribution)contributionProcessor.read(null, uri, url);
+                    contribution.setUnresolved(false);
                     dependencyWorkspace.getContributions().add(contribution);
-                } catch (ContributionReadException e) {}
+                } catch (ContributionReadException e) {
+                    Contribution contribution = contributionFactory.createContribution();
+                    contribution.setURI(c.getURI());
+                    contribution.setLocation(c.getLocation());
+                    contribution.setUnresolved(true);
+                    dependencyWorkspace.getContributions().add(contribution);
+                }
             }
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
