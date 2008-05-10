@@ -196,4 +196,18 @@ public class ReferenceAnnotationTestCase {
         Assert.assertEquals("BService", a.getB15Name(1));
         Assert.assertEquals(2, a.getB15Size());
     }
+    
+    /**
+     * Lines 1415 <br>
+     * required (optional) - whether injection of service or services is
+     * required. Defaults to true.
+     * <p>
+     * b16 and b17 is defined as "@Reference(required=false)" and
+     * AComponent does not define reference for them
+     */
+    @Test
+    public void atReference7() throws Exception {
+        Assert.assertTrue(a.isB16Null());
+        Assert.assertTrue(a.isB17Null());
+    }
 }
