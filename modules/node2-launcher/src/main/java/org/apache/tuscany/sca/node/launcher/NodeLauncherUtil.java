@@ -219,8 +219,8 @@ final class NodeLauncherUtil {
                 return false;
             }
             
-            // Filter out the Jetty and Webapp hosts
-            if (name.startsWith("tuscany-host-jetty") ||
+            // Filter out the Tomcat and Webapp hosts
+            if (name.startsWith("tuscany-host-tomcat") ||
                 name.startsWith("tuscany-host-webapp")) {
                 //FIXME This is temporary
                 return false;
@@ -253,8 +253,8 @@ final class NodeLauncherUtil {
                 return false;
             }
             
-            // Filter out the Tomcat host
-            if (name.startsWith("tuscany-host-tomcat")) {
+            // Exclude the Tomcat and Jetty hosts 
+            if (name.startsWith("tuscany-host-tomcat") || name.startsWith("tuscany-host-jetty")) {
                 //FIXME This is temporary
                 return false;
             }
