@@ -118,4 +118,12 @@ public class AnotherAServiceImpl implements AService {
     public int getB15Size() {
         return 0;
     }
+    
+    public boolean isB16Null() {
+        return true;
+    }
+
+    public boolean isB17Null() {
+        return true;
+    }
 }

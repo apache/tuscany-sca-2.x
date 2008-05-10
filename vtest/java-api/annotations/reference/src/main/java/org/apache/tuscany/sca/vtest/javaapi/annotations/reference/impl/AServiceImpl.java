@@ -66,6 +66,12 @@ public class AServiceImpl implements AService {
     @Reference(name="b15", required=true)
     protected BService[] b15s; // multiplicity="1..n" and required=true
 
+	@Reference(required=false)
+    protected BService b16;
+
+	@Reference(required=false)
+    public BService b17;
+	
     protected boolean b7SetterCalled;
 
     public AServiceImpl(@Reference(name = "b2")
@@ -185,6 +191,14 @@ public class AServiceImpl implements AService {
     
     public boolean isB7SetterCalled() {
         return b7SetterCalled;
+    }
+    
+    public boolean isB16Null() {
+        return b16 == null;
+    }
+
+    public boolean isB17Null() {
+        return b17 == null;
     }
 
 }

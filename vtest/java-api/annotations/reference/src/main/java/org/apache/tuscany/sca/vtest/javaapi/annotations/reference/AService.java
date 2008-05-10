@@ -46,5 +46,6 @@ public interface AService {
     public int getB15Size();
     
     public boolean isB7SetterCalled();
-    
+    public boolean isB16Null();
+    public boolean isB17Null();
 }
