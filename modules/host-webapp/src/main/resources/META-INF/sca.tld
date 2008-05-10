@@ -24,7 +24,7 @@
 
   <tlib-version>1.0</tlib-version>
   <short-name>SCA-JSP</short-name>
-  <uri>http://www.osog.org/sca/sca.tld</uri>
+  <uri>http://www.osoa.org/sca/sca_jsp.tld</uri>
   <description>A tag library for integrating sca components with jsp</description>
 
   <tag>
