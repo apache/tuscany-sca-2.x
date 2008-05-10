@@ -18,17 +18,23 @@
 	* under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-	targetNamespace="http://java-api-tests" name="Conversation-callback-id">
+	targetNamespace="http://java-api-tests" name="Conversation-callback-custom">
 
 	<component name="AComponent">
 		<implementation.java
-			class="org.apache.tuscany.sca.vtest.javaapi.conversation.callback.id.impl.AServiceImpl" />
+			class="org.apache.tuscany.sca.vtest.javaapi.conversation.callback.custom.impl.AServiceImpl" />
 		<reference name="b" target="BComponent" />
+		<reference name="customCallback" target="CComponent/CustomCallback" />
 	</component>
 
 	<component name="BComponent">
 		<implementation.java
-			class="org.apache.tuscany.sca.vtest.javaapi.conversation.callback.id.impl.BServiceImpl" />
+			class="org.apache.tuscany.sca.vtest.javaapi.conversation.callback.custom.impl.BServiceImpl" />
+	</component>
+	
+	<component name="CComponent">
+		<implementation.java
+			class="org.apache.tuscany.sca.vtest.javaapi.conversation.callback.custom.impl.CustomCallbackImpl" />
 	</component>
 
 </composite>

@@ -17,14 +17,11 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.id.impl;
+package org.apache.tuscany.sca.vtest.javaapi.conversation.callback.custom.impl;
 
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.id.AServiceCallback;
-import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.id.BService;
-import org.osoa.sca.CallableReference;
-import org.osoa.sca.ComponentContext;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.custom.AServiceCallback;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.callback.custom.BService;
 import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
@@ -35,10 +32,7 @@ public class BServiceImpl implements BService {
     String someState;
 
     @Callback
-    protected CallableReference<AServiceCallback> callback;
-    
-    @Context
-    protected ComponentContext componentContext;
+    protected AServiceCallback callback;
 
     public void setState(String someState) {
         this.someState = someState;
@@ -49,11 +43,6 @@ public class BServiceImpl implements BService {
     }
 
     public void testCallBack(String someState) {
-        callback.getService().callBack(someState);
-    }
-
-    public void testCallBack2(String someState) {
-        AServiceCallback callback = componentContext.getRequestContext().getCallback();
         callback.callBack(someState);
     }
 
