@@ -129,5 +129,11 @@
     <wsdl:port name="AServiceSOAP11port_http" binding="ns0:AServiceSOAP11Binding">
       <soap:address location="http://localhost:8080/AService/soap11port"/>
     </wsdl:port>
+    <wsdl:port name="AServiceSOAP12port_http_null" binding="ns0:AServiceSOAP12Binding">
+      <soap12:address location=""/>
+    </wsdl:port>
+    <wsdl:port name="AServiceSOAP12port_http_wsdl" binding="ns0:AServiceSOAP12Binding">
+      <soap12:address location="inWsdl"/>
+    </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>
