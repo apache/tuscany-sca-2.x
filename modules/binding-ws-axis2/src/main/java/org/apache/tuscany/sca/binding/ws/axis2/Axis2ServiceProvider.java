@@ -348,7 +348,7 @@ public class Axis2ServiceProvider {
         if (wsBinding.getEndPointReference() != null) {
             epr = getEPR(); 
             if (epr.getAddress() != null) {
-                return epr.getAddress();
+                eprURI = URI.create(epr.getAddress());
             }
         }
 
