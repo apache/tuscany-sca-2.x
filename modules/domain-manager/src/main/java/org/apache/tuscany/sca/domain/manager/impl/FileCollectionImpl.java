@@ -50,7 +50,7 @@ public class FileCollectionImpl implements ItemCollection {
     public String directoryName;
 
     @Reference
-    public LauncherConfiguration launcherConfiguration;
+    public DomainManagerConfiguration domainManagerConfiguration;
     
     /**
      * Initialize the component.
@@ -62,7 +62,7 @@ public class FileCollectionImpl implements ItemCollection {
     public Entry<String, Item>[] getAll() {
         logger.fine("getAll");
         
-        String rootDirectory = launcherConfiguration.getRootDirectory();
+        String rootDirectory = domainManagerConfiguration.getRootDirectory();
         
         // Return all the files
         List<Entry<String, Item>> entries = new ArrayList<Entry<String, Item>>();
@@ -94,7 +94,7 @@ public class FileCollectionImpl implements ItemCollection {
     public void delete(String key) throws NotFoundException {
         logger.fine("delete " + key);
 
-        String rootDirectory = launcherConfiguration.getRootDirectory();
+        String rootDirectory = domainManagerConfiguration.getRootDirectory();
         File directory = new File(rootDirectory + "/" + directoryName);
         File file = new File(directory, key);
         if (file.exists()) {

@@ -29,11 +29,9 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Binding;
 import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.core.assembly.ActivationException;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
 import org.apache.tuscany.sca.core.invocation.ProxyFactory;
-import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -241,20 +239,4 @@ public final class DomainManagerUtil {
         }
     }
 
-    /**
-     * Temporary instantiation of a dummy Tuscany runtime.
-     * FIXME We need a better way to bootstrap without having to create
-     * a runtime instance at all.
-     * 
-     * @return
-     */
-    static ReallySmallRuntime newRuntime() {
-        try {
-            ReallySmallRuntime runtime = new ReallySmallRuntime(Thread.currentThread().getContextClassLoader());
-            runtime.start();
-            return runtime;
-        } catch (ActivationException e) {
-            throw new ServiceRuntimeException(e);
-        }
-    }
 }

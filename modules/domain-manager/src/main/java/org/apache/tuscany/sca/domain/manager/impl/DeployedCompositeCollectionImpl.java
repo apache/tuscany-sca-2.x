@@ -61,18 +61,15 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtensionPoint;
-import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
-import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.osoa.sca.ServiceRuntimeException;
@@ -108,9 +105,8 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
     public LocalItemCollection processCollection;
 
     @Reference
-    public LauncherConfiguration launcherConfiguration;
+    public DomainManagerConfiguration domainManagerConfiguration;
     
-    private ExtensionPointRegistry extensionPoints;
     private ModelFactoryExtensionPoint modelFactories;
     private AssemblyFactory assemblyFactory;
     private StAXArtifactProcessor<Composite> compositeProcessor;
@@ -124,15 +120,13 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
     public void initialize() throws ParserConfigurationException {
         
         // Create factories
-        extensionPoints = new DefaultExtensionPointRegistry();
+        ExtensionPointRegistry extensionPoints = domainManagerConfiguration.getExtensionPoints();
         modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
         outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
         
         // Create composite processor
-        ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-        PolicyFactory policyFactory = modelFactories.getFactory(PolicyFactory.class);
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         compositeProcessor = staxProcessors.getProcessor(Composite.class);
 
@@ -250,7 +244,7 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
         // under the deployment composites directory, if that directory is
         // configured on this component
         if (deploymentContributionDirectory != null && item.getContents() != null) {
-            String rootDirectory = launcherConfiguration.getRootDirectory();
+            String rootDirectory = domainManagerConfiguration.getRootDirectory();
             
             File directory = new File(rootDirectory + "/" + deploymentContributionDirectory);
             if (!directory.exists()) {
@@ -329,7 +323,7 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
 
         // Delete the file too if it is in the deployment contribution directory
         if (deploymentContributionDirectory != null && contributionURI.equals(DEPLOYMENT_CONTRIBUTION_URI)) {
-            String rootDirectory = launcherConfiguration.getRootDirectory();
+            String rootDirectory = domainManagerConfiguration.getRootDirectory();
             
             File file = new File(rootDirectory + "/" + deploymentContributionDirectory, qname.getLocalPart() + ".composite");
             if (file.exists()) {
@@ -353,7 +347,7 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
      * @throws ServiceRuntimeException
      */
     private Composite readCompositeCollection() throws ServiceRuntimeException {
-        String rootDirectory = launcherConfiguration.getRootDirectory();
+        String rootDirectory = domainManagerConfiguration.getRootDirectory();
         
         Composite compositeCollection;
         File file = new File(rootDirectory + "/" + compositeFile);
@@ -387,7 +381,7 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
      */
     private void writeCompositeCollection(Composite compositeCollection) {
         try {
-            String rootDirectory = launcherConfiguration.getRootDirectory();
+            String rootDirectory = domainManagerConfiguration.getRootDirectory();
             
             // First write to a byte stream
             ByteArrayOutputStream bos = new ByteArrayOutputStream();

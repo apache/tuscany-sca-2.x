@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.domain.manager.impl;
 
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeQName;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.dynamicReference;
-import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.newRuntime;
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.nodeURI;
 
 import java.net.URI;
@@ -32,18 +30,15 @@ import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
-import org.apache.tuscany.sca.binding.atom.AtomBinding;
 import org.apache.tuscany.sca.binding.atom.AtomBindingFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
-import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
-import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
@@ -64,6 +59,12 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
     @Reference
     public LocalItemCollection cloudCollection;
     
+    @Reference
+    public ItemCollection processCollection;
+    
+    @Reference
+    public DomainManagerConfiguration domainManagerConfiguration;
+    
     private AssemblyFactory assemblyFactory;
     private AtomBindingFactory atomBindingFactory;
     private CompositeActivator compositeActivator;
@@ -74,14 +75,12 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
     @Init
     public void initialize() {
 
-        // Get a runtime
-        ReallySmallRuntime runtime = newRuntime();
-        
         // Get its composite activator
-        compositeActivator = runtime.getCompositeActivator();
+        //FIXME
+        //compositeActivator = runtime.getCompositeActivator();
 
         // Get the model factories
-        ExtensionPointRegistry extensionPoints = runtime.getExtensionPointRegistry();
+        ExtensionPointRegistry extensionPoints = domainManagerConfiguration.getExtensionPoints();
         ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         atomBindingFactory = modelFactories.getFactory(AtomBindingFactory.class);
@@ -240,10 +239,13 @@ public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalIte
      * @return
      */
     private ItemCollection processCollection(String host) {
-        AtomBinding binding = atomBindingFactory.createAtomBinding();
-        binding.setURI("http://" + host + ":9990/node/processes");
-        ServiceReference<ItemCollection> reference = dynamicReference(ItemCollection.class, binding, assemblyFactory, compositeActivator);
-        return reference.getService();
+        return processCollection;
+        
+//FIXME        
+//        AtomBinding binding = atomBindingFactory.createAtomBinding();
+//        binding.setURI("http://" + host + ":9990/node/processes");
+//        ServiceReference<ItemCollection> reference = dynamicReference(ItemCollection.class, binding, assemblyFactory, compositeActivator);
+//        return reference.getService();
     }
         
 }
