@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
  * 
  * @version $Rev$ $Date$
  */
-public abstract class WebServiceBindingFactoryImpl implements WebServiceBindingFactory {
+public class WebServiceBindingFactoryImpl implements WebServiceBindingFactory {
 
     public WebServiceBinding createWebServiceBinding() {
         return new WebServiceBindingImpl();
