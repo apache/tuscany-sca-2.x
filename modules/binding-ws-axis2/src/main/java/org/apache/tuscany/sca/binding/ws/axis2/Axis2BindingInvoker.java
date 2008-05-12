@@ -129,6 +129,7 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
                 }
             });
         } catch (PrivilegedActionException e) {
+            operationClient.complete(requestMC);
             throw (AxisFault)e.getException();
         }
 
