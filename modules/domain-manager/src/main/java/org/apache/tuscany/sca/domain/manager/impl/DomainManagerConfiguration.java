@@ -19,25 +19,35 @@
 
 package org.apache.tuscany.sca.domain.manager.impl;
 
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
+import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
- * Implementation of a domain manager configuration component.
+ * Domain manager configuration service interface.
  *
  * @version $Rev$ $Date$
  */
-@Scope("COMPOSITE")
-@Service(LauncherConfiguration.class)
-public class LauncherConfigurationImpl implements LauncherConfiguration {
+public interface DomainManagerConfiguration {
+    
+    /**
+     * Sets the domain manager root directory.
+     * 
+     * @param rootDirectory
+     */
+    void setRootDirectory(String rootDirectory);
+    
+    /**
+     * Returns the domain manager root directory.
+     * 
+     * @return the domain manager root directory
+     */
+    String getRootDirectory();
+    
+    /**
+     * Returns the extension point registry used in the
+     * domain manager.
+     * 
+     * @return
+     */
+    ExtensionPointRegistry getExtensionPoints();
 
-    private String rootDirectory = ".";
-    
-    public String getRootDirectory() {
-        return rootDirectory;
-    }
-    
-    public void setRootDirectory(String rootDirectory) {
-        this.rootDirectory = rootDirectory;
-    }
 }

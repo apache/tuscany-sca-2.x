@@ -62,7 +62,6 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessorExtens
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
-import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
@@ -93,9 +92,8 @@ import org.w3c.dom.Document;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-@Service(interfaces={ItemCollection.class, LocalItemCollection.class, Servlet.class})
-public class ContributionCollectionImpl extends HttpServlet implements ItemCollection, LocalItemCollection {
-    private static final long serialVersionUID = -4759297945439322773L;
+@Service(interfaces={ItemCollection.class, LocalItemCollection.class})
+public class ContributionCollectionImpl implements ItemCollection, LocalItemCollection {
 
     private final static Logger logger = Logger.getLogger(ContributionCollectionImpl.class.getName());    
 
@@ -106,9 +104,8 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     public String deploymentContributionDirectory;
     
     @Reference
-    public LauncherConfiguration launcherConfiguration;
+    public DomainManagerConfiguration domainManagerConfiguration;
     
-    private ExtensionPointRegistry extensionPoints;
     private Monitor monitor;
     private ContributionFactory contributionFactory;
     private WorkspaceFactory workspaceFactory;
@@ -124,7 +121,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
     @Init
     public void initialize() throws ParserConfigurationException {
         
-        extensionPoints = new DefaultExtensionPointRegistry();
+        ExtensionPointRegistry extensionPoints = domainManagerConfiguration.getExtensionPoints();
         
         // Create a validation monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
@@ -181,29 +178,6 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
         throw new NotFoundException(key);
     }
     
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        // Get the request path
-        String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
-
-        // The key is the contribution URI
-        String key = path.startsWith("/")? path.substring(1) : path;
-        logger.fine("get " + key);
-        
-        // Get the item describing the composite
-        Item item;
-        try {
-            item = get(key);
-        } catch (NotFoundException e) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, key);
-            return;
-        }
-
-        // Redirect to the actual contribution location
-        response.sendRedirect("/files/" + item.getAlternate());
-    }
-
     public String post(String key, Item item) {
         logger.fine("post " + key);
         
@@ -420,7 +394,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
      * @return
      */
     private Workspace readWorkspace() {
-        String rootDirectory = launcherConfiguration.getRootDirectory();
+        String rootDirectory = domainManagerConfiguration.getRootDirectory();
         
         Workspace workspace;
         File file = new File(rootDirectory + "/" + workspaceFile);
@@ -463,7 +437,7 @@ public class ContributionCollectionImpl extends HttpServlet implements ItemColle
      */
     private void writeWorkspace(Workspace workspace) {
         try {
-            String rootDirectory = launcherConfiguration.getRootDirectory();
+            String rootDirectory = domainManagerConfiguration.getRootDirectory();
             
             // First write to a byte stream
             ByteArrayOutputStream bos = new ByteArrayOutputStream();

@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.domain.manager.launcher;
 
-import org.apache.tuscany.sca.domain.manager.impl.LauncherConfiguration;
+import org.apache.tuscany.sca.domain.manager.impl.DomainManagerConfiguration;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.node.SCANode2;
 
@@ -53,8 +53,8 @@ public class DomainManagerLauncherBootstrap {
                 domainManager = SCADomain.newInstance("DomainManager.composite");
 
                 // Set the domain manager's root directory
-                LauncherConfiguration launcherConfiguration = domainManager.getService(LauncherConfiguration.class, "LauncherConfigurationComponent");
-                launcherConfiguration.setRootDirectory(rootDirectory);
+                DomainManagerConfiguration domainManagerConfiguration = domainManager.getService(DomainManagerConfiguration.class, "DomainManagerConfigurationComponent");
+                domainManagerConfiguration.setRootDirectory(rootDirectory);
                 
                 started = true;
             } finally {

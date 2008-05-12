@@ -61,7 +61,7 @@ public class FileServiceImpl extends HttpServlet {
     public String directoryName;
     
     @Reference
-    public LauncherConfiguration launcherConfiguration;
+    public DomainManagerConfiguration domainManagerConfiguration;
     
     private ServletFileUpload upload;
     
@@ -77,7 +77,7 @@ public class FileServiceImpl extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         // Upload files
-        String rootDirectory = launcherConfiguration.getRootDirectory();
+        String rootDirectory = domainManagerConfiguration.getRootDirectory();
         try {
             for (FileItem item: (List<FileItem>)upload.parseRequest(request)) {
                 if (!item.isFormField()) {
@@ -118,7 +118,7 @@ public class FileServiceImpl extends HttpServlet {
 
                 // If no scheme is specified then the path identifies file
                 // inside our directory
-                String rootDirectory = launcherConfiguration.getRootDirectory();
+                String rootDirectory = domainManagerConfiguration.getRootDirectory();
                 uri = new File(rootDirectory + "/" + directoryName, path).toURI();
                 
             } else if (!scheme.equals("file")) {

@@ -23,17 +23,10 @@ import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compo
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeTitle;
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.contributionURI;
 
-import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
@@ -47,14 +40,13 @@ import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
 /**
- * Implementation of a composite configuration collection service. 
+ * Implementation of a component that returns composite configuration collections. 
  *
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-@Service(interfaces={ItemCollection.class, LocalItemCollection.class, Servlet.class})
-public class CompositeConfigurationCollectionImpl extends HttpServlet implements ItemCollection, LocalItemCollection, Servlet {
-    private static final long serialVersionUID = 1L;
+@Service(interfaces={ItemCollection.class, LocalItemCollection.class})
+public class CompositeConfigurationCollectionImpl implements ItemCollection, LocalItemCollection {
 
     private final static Logger logger = Logger.getLogger(CompositeConfigurationCollectionImpl.class.getName());    
 
@@ -132,40 +124,4 @@ public class CompositeConfigurationCollectionImpl extends HttpServlet implements
         }
     }
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
-        // Get the request path
-        String path = URLDecoder.decode(request.getRequestURI().substring(request.getServletPath().length()), "UTF-8");
-        String key = path.startsWith("/")? path.substring(1) : path;
-        logger.fine("get " + key);
-        
-        // The key contains a node name, redirect 
-        // to the corresponding composite config
-            
-        // Get the collection of cloud composites
-        Entry<String, Item>[] cloudEntries = cloudCollection.getAll();
-
-        // Find the specified node
-        for (Entry<String, Item> cloudEntry: cloudEntries) {
-            QName qname = compositeQName(cloudEntry.getKey());
-            if (qname.getLocalPart().equals(key)) {
-                
-                // Found the specified node
-                String related = cloudEntry.getData().getRelated();
-                int i = related.indexOf("composite:");
-                if (i != -1) {
-                    
-                    // Redirect to its composite config
-                    String compositeConfiguration = "/composite-config/?composite=" + related.substring(i);
-                    response.sendRedirect(compositeConfiguration);
-                    return;
-                }
-            }
-        }
-        
-        // Node not found
-        response.sendError(HttpServletResponse.SC_NOT_FOUND, key);
-        return;
-    }
 }

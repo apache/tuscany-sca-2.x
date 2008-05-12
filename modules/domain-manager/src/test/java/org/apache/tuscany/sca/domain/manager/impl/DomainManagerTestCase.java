@@ -39,10 +39,10 @@ import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
  * @version $Rev$ $Date$
  */
 public class DomainManagerTestCase extends TestCase {
-    
+
     private ContributionCollectionImpl contributionCollection;
     private DeployableCompositeCollectionImpl deployableCollection;
-    private LauncherConfigurationImpl launcherConfiguration;
+    private DomainManagerConfigurationImpl domainManagerConfiguration;
     
     private final static String WORKSPACE_XML =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -63,15 +63,19 @@ public class DomainManagerTestCase extends TestCase {
         writer.close();
         
         // Create a workspace collection component
-        launcherConfiguration = new LauncherConfigurationImpl();
+        domainManagerConfiguration = new DomainManagerConfigurationImpl();
+        domainManagerConfiguration.initialize();
         String root = url.getFile();
         root = root.substring(0, root.lastIndexOf('/'));
-        launcherConfiguration.setRootDirectory(root);
+        domainManagerConfiguration.setRootDirectory(root);
+        
         contributionCollection = new ContributionCollectionImpl();
+        contributionCollection.domainManagerConfiguration = domainManagerConfiguration;
         contributionCollection.workspaceFile = "workspace.xml";
         contributionCollection.deploymentContributionDirectory = "cloud";
-        contributionCollection.launcherConfiguration = launcherConfiguration;
+        contributionCollection.domainManagerConfiguration = domainManagerConfiguration;
         deployableCollection = new DeployableCompositeCollectionImpl();
+        deployableCollection.domainManagerConfiguration = domainManagerConfiguration;
         deployableCollection.contributionCollection = contributionCollection;
         contributionCollection.initialize();
         deployableCollection.initialize();

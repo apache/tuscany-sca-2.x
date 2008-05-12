@@ -85,10 +85,15 @@
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/workspace" title="Contributions"/>
    		</service>
+   		<reference name="domainManagerConfiguration" target="DomainManagerConfigurationComponent"/>
+    </component>
+
+    <component name="ContributionServiceComponent">
+        <implementation.java class="org.apache.tuscany.sca.domain.manager.impl.ContributionServiceImpl"/>             
    		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/contribution"/>
    		</service>
-   		<reference name="launcherConfiguration" target="LauncherConfigurationComponent"/>
+   		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalItemCollection"/>
     </component>
 
     <component name="FileCollectionComponent">
@@ -97,7 +102,7 @@
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/feed/files" title="Files"/>
    		</service>
-   		<reference name="launcherConfiguration" target="LauncherConfigurationComponent"/>
+   		<reference name="domainManagerConfiguration" target="DomainManagerConfigurationComponent"/>
     </component>
 
     <component name="FileServiceComponent">
@@ -106,20 +111,26 @@
    		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/files"/>
    		</service>
-   		<reference name="launcherConfiguration" target="LauncherConfigurationComponent"/>
+   		<reference name="domainManagerConfiguration" target="DomainManagerConfigurationComponent"/>
     </component>
 
     <component name="DomainCompositeCollectionComponent">
         <implementation.java class="org.apache.tuscany.sca.domain.manager.impl.DeployedCompositeCollectionImpl"/>
         <property name="compositeFile">domain.composite</property>
    		<service name="ItemCollection">
-   	 		<t:binding.atom uri="http://localhost:9990/composite" title="Domain Composites"/>
+   	 		<t:binding.atom uri="http://localhost:9990/composite" title="Domain Composite"/>
    		</service>
+        <reference name="deployableCollection" target="DeployableCompositeCollectionComponent/LocalItemCollection"/>
+   		<reference name="domainManagerConfiguration" target="DomainManagerConfigurationComponent"/>
+    </component>
+
+    <component name="DeployableCompositeServiceComponent">
+        <implementation.java class="org.apache.tuscany.sca.domain.manager.impl.DeployableCompositeServiceImpl"/>
    		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/composite-source"/>
    		</service>
         <reference name="deployableCollection" target="DeployableCompositeCollectionComponent/LocalItemCollection"/>
-   		<reference name="launcherConfiguration" target="LauncherConfigurationComponent"/>
+   		<reference name="domainManagerConfiguration" target="DomainManagerConfigurationComponent"/>
     </component>
 
     <component name="DeployableCompositeCollectionComponent">
@@ -127,9 +138,25 @@
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/deployable" title="Deployable Composites"/>
    		</service>
+   		<reference name="domainManagerConfiguration" target="DomainManagerConfigurationComponent"/>
+   		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalItemCollection"/>
+    </component>
+
+    <component name="CompositeGeneratorServiceComponent">
+        <implementation.java class="org.apache.tuscany.sca.domain.manager.impl.CompositeGeneratorServiceImpl"/>
+   		<service name="Servlet">
+   	 		<t:binding.http uri="http://localhost:9990/composite-generated"/>
+   		</service>
+   		<reference name="domainManagerConfiguration" target="DomainManagerConfigurationComponent"/>
+   		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalItemCollection"/>
+    </component>
+
+    <component name="CompositeConfigurationServiceComponent">
+        <implementation.java class="org.apache.tuscany.sca.domain.manager.impl.CompositeConfigurationServiceImpl"/>
    		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/composite-resolved"/>
    		</service>
+   		<reference name="domainManagerConfiguration" target="DomainManagerConfigurationComponent"/>
    		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalItemCollection"/>
    		<reference name="domainCompositeCollection" target="DomainCompositeCollectionComponent/LocalItemCollection"/>
    		<reference name="cloudCollection" target="CloudCollectionComponent/LocalItemCollection"/>
@@ -140,14 +167,20 @@
         <property name="compositeFile">cloud.composite</property>
         <property name="deploymentContributionDirectory">cloud</property>             
    		<service name="ItemCollection">
-   	 		<t:binding.atom uri="http://localhost:9990/cloud" title="Nodes"/>
+   	 		<t:binding.atom uri="http://localhost:9990/cloud" title="Cloud"/>
    		</service>
+        <reference name="deployableCollection" target="DeployableCompositeCollectionComponent/LocalItemCollection"/>
+        <reference name="processCollection" target="NodeProcessCollectionFacadeComponent/LocalItemCollection"/>
+   		<reference name="domainManagerConfiguration" target="DomainManagerConfigurationComponent"/>
+    </component>
+
+    <component name="CloudCompositeServiceComponent">
+        <implementation.java class="org.apache.tuscany.sca.domain.manager.impl.DeployableCompositeServiceImpl"/>
    		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/cloud-source"/>
    		</service>
         <reference name="deployableCollection" target="DeployableCompositeCollectionComponent/LocalItemCollection"/>
-        <reference name="processCollection" target="NodeProcessCollectionFacadeComponent/LocalItemCollection"/>
-   		<reference name="launcherConfiguration" target="LauncherConfigurationComponent"/>
+   		<reference name="domainManagerConfiguration" target="DomainManagerConfigurationComponent"/>
     </component>
 
     <component name="CompositeConfigurationCollectionComponent">
@@ -155,6 +188,12 @@
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/composite-config" title="Node Configuration"/>
    		</service>
+   		<reference name="contributionCollection" target="ContributionCollectionComponent/LocalItemCollection"/>
+   		<reference name="cloudCollection" target="CloudCollectionComponent/LocalItemCollection"/>
+    </component>
+
+    <component name="NodeConfigurationServiceComponent">
+        <implementation.java class="org.apache.tuscany.sca.domain.manager.impl.NodeConfigurationServiceImpl"/>
    		<service name="Servlet">
    	 		<t:binding.http uri="http://localhost:9990/node-config"/>
    		</service>
@@ -179,7 +218,11 @@
    		<service name="ItemCollection">
    	 		<t:binding.atom uri="http://localhost:9990/processes" title="Log"/>
    		</service>
+   		<reference name="domainManagerConfiguration" target="DomainManagerConfigurationComponent"/>
    		<reference name="cloudCollection" target="CloudCollectionComponent/LocalItemCollection"/>
+   		<reference name="processCollection" target="NodeProcessCollectionComponent/ItemCollection">
+   	 		<t:binding.atom/>
+   		</reference>
     </component>
 
     <component name="NodeProcessCollectionComponent">
@@ -196,8 +239,8 @@
    		</service>
     </component>
     
-    <component name="LauncherConfigurationComponent">
-        <implementation.java class="org.apache.tuscany.sca.domain.manager.impl.LauncherConfigurationImpl"/>
+    <component name="DomainManagerConfigurationComponent">
+        <implementation.java class="org.apache.tuscany.sca.domain.manager.impl.DomainManagerConfigurationImpl"/>
     </component>
 
 </composite>
