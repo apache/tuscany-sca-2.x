@@ -199,26 +199,28 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                             compositeService.setName(getString(reader, NAME));
 
                             String promoted = getString(reader, PROMOTE);
-                            String promotedComponentName;
-                            String promotedServiceName;
-                            int s = promoted.indexOf('/');
-                            if (s == -1) {
-                                promotedComponentName = promoted;
-                                promotedServiceName = null;
-                            } else {
-                                promotedComponentName = promoted.substring(0, s);
-                                promotedServiceName = promoted.substring(s + 1);
+                            if (promoted != null) {
+                                String promotedComponentName;
+                                String promotedServiceName;
+                                int s = promoted.indexOf('/');
+                                if (s == -1) {
+                                    promotedComponentName = promoted;
+                                    promotedServiceName = null;
+                                } else {
+                                    promotedComponentName = promoted.substring(0, s);
+                                    promotedServiceName = promoted.substring(s + 1);
+                                }
+    
+                                Component promotedComponent = assemblyFactory.createComponent();
+                                promotedComponent.setUnresolved(true);
+                                promotedComponent.setName(promotedComponentName);
+                                compositeService.setPromotedComponent(promotedComponent);
+    
+                                ComponentService promotedService = assemblyFactory.createComponentService();
+                                promotedService.setUnresolved(true);
+                                promotedService.setName(promotedServiceName);
+                                compositeService.setPromotedService(promotedService);
                             }
-
-                            Component promotedComponent = assemblyFactory.createComponent();
-                            promotedComponent.setUnresolved(true);
-                            promotedComponent.setName(promotedComponentName);
-                            compositeService.setPromotedComponent(promotedComponent);
-
-                            ComponentService promotedService = assemblyFactory.createComponentService();
-                            promotedService.setUnresolved(true);
-                            promotedService.setName(promotedServiceName);
-                            compositeService.setPromotedService(promotedService);
 
                             composite.getServices().add(compositeService);
                             policyProcessor.readPolicies(contract, reader);
