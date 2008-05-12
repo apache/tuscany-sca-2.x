@@ -140,4 +140,9 @@ public class CompositeImpl extends ImplementationImpl implements Composite, Clon
             return false;
         }
     }
+    
+    @Override
+    public String toString(){
+        return getName().toString();
+    }
 }
