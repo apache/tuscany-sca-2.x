@@ -383,7 +383,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                     if (binding instanceof IntentAttachPoint) {
                         IntentAttachPoint policiedBinding = (IntentAttachPoint)binding;
                         
-                        if ( policiedBinding.getType().isUnresolved() ) {
+                        if ( policiedBinding.getType() != null && policiedBinding.getType().isUnresolved() ) {
                             IntentAttachPointType resolved = 
                                 resolver.resolveModel(IntentAttachPointType.class, 
                                                       policiedBinding.getType());
