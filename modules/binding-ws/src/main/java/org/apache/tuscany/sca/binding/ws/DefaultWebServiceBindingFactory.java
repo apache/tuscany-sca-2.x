@@ -21,10 +21,11 @@ package org.apache.tuscany.sca.binding.ws;
 import org.apache.tuscany.sca.binding.ws.impl.WebServiceBindingFactoryImpl;
 
 /**
- * A factory for the WSDL model.
+ * A factory for the Web Service binding model.
  * 
  * @version $Rev$ $Date$
  */
+@Deprecated
 public class DefaultWebServiceBindingFactory extends WebServiceBindingFactoryImpl implements WebServiceBindingFactory {
 
 }

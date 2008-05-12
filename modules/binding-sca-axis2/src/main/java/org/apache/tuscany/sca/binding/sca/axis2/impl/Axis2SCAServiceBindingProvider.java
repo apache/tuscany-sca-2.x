@@ -67,6 +67,7 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
                                           Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames) {
      	this.nodeFactory = nodeFactory;
         this.binding = binding.getSCABinding();
+        //FIXME fix that hack, shouldn't create a new instance of the binding factory here 
         wsBinding = (new DefaultWebServiceBindingFactory()).createWebServiceBinding();
         
         // Turn the java interface contract into a WSDL interface contract
