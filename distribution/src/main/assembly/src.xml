@@ -114,7 +114,7 @@
                 <exclude>modules/host-tomcat/work/**/*</exclude>
                 <exclude>modules/node-impl/work</exclude>
                 <exclude>modules/node-impl/work/**/*</exclude>
-                <exclude>modules/implementation-bpel/derby.log</exclude>
+                <exclude>modules/implementation-bpel-ode/derby.log</exclude>
                 <exclude>modules/implementation-das</exclude>
                 <exclude>modules/implementation-das/**/*</exclude>
                 <exclude>modules/implementation-data</exclude>
