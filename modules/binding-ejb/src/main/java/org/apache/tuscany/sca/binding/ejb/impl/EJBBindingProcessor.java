@@ -51,6 +51,8 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  *  <!-- additional elements here -->
  *  
  * </binding.ejb>
+ *
+ * @version $Rev$ $Date$
  */
 public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBindingImpl> {
     private PolicyFactory policyFactory;

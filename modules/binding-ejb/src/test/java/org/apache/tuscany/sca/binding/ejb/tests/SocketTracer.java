@@ -27,6 +27,8 @@ import java.net.Socket;
 /**
  * Displays the bytes flowing across a Socket connection.
  * Used to get the read count and reply data for the MockServer
+ *
+ * @version $Rev$ $Date$
  */
 public class SocketTracer implements Runnable {
 

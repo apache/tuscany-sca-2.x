@@ -29,7 +29,8 @@ package org.apache.geronimo.samples.bank.ejb;
  * Home interface for BankManagerFacadeBean.
  * @xdoclet-generated at ${TODAY}
  * @copyright The XDoclet Team
- * @version ${version}
+ *
+ * @version $Rev$ $Date$
  */
 public interface BankManagerFacadeHome
    extends javax.ejb.EJBHome

@@ -24,6 +24,7 @@ import org.osoa.sca.annotations.Remotable;
  *
  * Compatible EJB interface
  *
+ * @version $Rev$ $Date$
  */
 @Remotable
 public interface BankManagerFacade {

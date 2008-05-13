@@ -35,6 +35,11 @@ import org.omg.CORBA.portable.RemarshalException;
 import org.omg.stub.java.rmi._Remote_Stub;
 import org.osoa.sca.ServiceRuntimeException;
 
+/**
+ * Factor class that is used to create EJB Proxies.
+ *
+ * @version $Rev$ $Date$
+ */
 public final class EJBObjectFactory {
 
     private EJBObjectFactory() {

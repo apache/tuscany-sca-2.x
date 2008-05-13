@@ -28,6 +28,8 @@ import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 
 /**
  * EJBTargetInvoker
+ *
+ * @version $Rev$ $Date$
  */
 public class EJBBindingInvoker implements Invoker, DataExchangeSemantics {
 

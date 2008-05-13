@@ -32,6 +32,8 @@ import org.apache.tuscany.sca.binding.ejb.corba.Java2IDLUtil;
 
 /**
  * The signature for a java interface
+ *
+ * @version $Rev$ $Date$
  */
 public class InterfaceInfo implements Serializable {
 

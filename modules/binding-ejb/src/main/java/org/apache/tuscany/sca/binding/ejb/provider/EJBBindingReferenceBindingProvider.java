@@ -27,6 +27,11 @@ import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
+/**
+ * Implementation of the ReferenceBindingProvider for the EJBBinding.
+ *
+ * @version $Rev$ $Date$
+ */
 public class EJBBindingReferenceBindingProvider implements ReferenceBindingProvider {
     private EJBBinding ejbBinding;
     private RuntimeComponentReference reference;

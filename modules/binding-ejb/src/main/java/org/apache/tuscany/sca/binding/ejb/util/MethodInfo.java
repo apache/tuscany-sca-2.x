@@ -25,6 +25,8 @@ import java.util.Map;
 
 /**
  * MetaData for a java method
+ *
+ * @version $Rev$ $Date$
  */
 public class MethodInfo implements Serializable {
 

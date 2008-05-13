@@ -28,7 +28,8 @@ package org.apache.geronimo.samples.bank.ejb;
  * Remote interface for BankManagerFacadeBean.
  * @xdoclet-generated at ${TODAY}
  * @copyright The XDoclet Team
- * @version ${version}
+ *
+ * @version $Rev$ $Date$
  */
 public interface BankManagerFacade
    extends javax.ejb.EJBObject

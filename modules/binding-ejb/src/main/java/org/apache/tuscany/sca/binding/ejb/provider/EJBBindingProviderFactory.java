@@ -29,6 +29,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * A factory from creating the EJB binding provider.
+ *
+ * @version $Rev$ $Date$
  */
 public class EJBBindingProviderFactory implements BindingProviderFactory<EJBBinding> {
 
