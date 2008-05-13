@@ -44,7 +44,7 @@ public class DistributedSCABindingImpl implements DistributedSCABinding {
     /**
      * Setter for the wrapped sca binding model element
      * 
-     * @param the sca binding model element
+     * @param scaBinding the sca binding model element
      */
     public void setSCABinging(SCABinding scaBinding){
         this.scaBinding = scaBinding;
