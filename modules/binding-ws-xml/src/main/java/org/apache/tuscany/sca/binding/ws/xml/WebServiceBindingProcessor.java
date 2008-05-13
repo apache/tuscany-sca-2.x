@@ -64,7 +64,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  */
 public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
 
-    private final static Logger logger = Logger.getLogger(WebServiceBindingProcessor.class.getName());    
+    private static final Logger logger = Logger.getLogger(WebServiceBindingProcessor.class.getName());    
 
     private WSDLFactory wsdlFactory;
     private WebServiceBindingFactory wsFactory;
