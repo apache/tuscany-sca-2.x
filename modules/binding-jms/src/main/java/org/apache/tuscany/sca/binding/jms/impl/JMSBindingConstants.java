@@ -26,6 +26,11 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.binding.jms.provider.XMLTextMessageProcessor;
 
+/**
+ * Constants for the JMS binding.
+ *
+ * @version $Rev$ $Date$
+ */
 public interface JMSBindingConstants {
 
     // Constants used when describing the JMS binding

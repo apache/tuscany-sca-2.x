@@ -20,6 +20,11 @@ package org.apache.tuscany.sca.binding.jms;
 
 import org.osoa.sca.annotations.Remotable;
 
+/**
+ * Interface for the HelloWorld Service.
+ *
+ * @version $Rev$ $Date$
+ */
 @Remotable
 public interface HelloWorldService {
     String sayHello(String name);

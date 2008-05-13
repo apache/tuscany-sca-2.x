@@ -26,6 +26,12 @@ import javax.jms.TextMessage;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 
+/**
+ * MessageProcessor for sending/receiving javax.jms.TextMessage with
+ * the JMSBinding.
+ *
+ * @version $Rev$ $Date$
+ */
 public class TextMessageProcessor extends AbstractMessageProcessor {
 
     public TextMessageProcessor(JMSBinding jmsBinding) {

@@ -33,6 +33,8 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 
 /**
  * Abstracts away any JMS provide specific feature from the JMS binding
+ *
+ * @version $Rev$ $Date$
  */
 public class JMSResourceFactory {
 

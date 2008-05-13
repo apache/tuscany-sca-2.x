@@ -36,6 +36,11 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingConstants;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.osoa.sca.ServiceRuntimeException;
 
+/**
+ * Base MessageProcessor for the JMSBinding.
+ *
+ * @version $Rev$ $Date$
+ */
 public abstract class AbstractMessageProcessor implements JMSMessageProcessor {
 
     protected String operationPropertyName;

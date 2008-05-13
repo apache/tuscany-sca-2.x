@@ -37,6 +37,11 @@ import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
+/**
+ * Listener for the JMSBinding.
+ *
+ * @version $Rev$ $Date$
+ */
 public class JMSBindingListener implements MessageListener {
 
     private final static Logger logger = Logger.getLogger(JMSBindingListener.class.getName());

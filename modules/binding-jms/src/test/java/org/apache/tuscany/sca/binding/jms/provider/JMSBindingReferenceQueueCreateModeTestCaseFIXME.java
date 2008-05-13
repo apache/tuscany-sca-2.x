@@ -36,6 +36,8 @@ import org.junit.Test;
  * <li>never - the JMS queue is never created. It is an error if the queue does not exist
  * </ul>
  * See the SCA JMS Binding specification for more information.
+ *
+ * @version $Rev$ $Date$
  */
 public class JMSBindingReferenceQueueCreateModeTestCaseFIXME {
 

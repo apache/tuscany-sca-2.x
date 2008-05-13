@@ -38,6 +38,8 @@ import org.junit.Test;
 /**
  * This unit test is used to ensure that a JMS Message delivered to a Component will select the correct operation based
  * on the details in section 1.5 of the JMS Binding specification.
+ *
+ * @version $Rev$ $Date$
  */
 public class OperationSelectionTestCaseFIXME {
     /**

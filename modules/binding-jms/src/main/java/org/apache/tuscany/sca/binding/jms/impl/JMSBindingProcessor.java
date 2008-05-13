@@ -102,6 +102,8 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
  *         </headers>?
  *     </operationProperties>*
  * </binding.jms>
+ *
+ * @version $Rev$ $Date$
  */
 
 public class JMSBindingProcessor implements StAXArtifactProcessor<JMSBinding> {
