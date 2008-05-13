@@ -23,6 +23,8 @@ import org.apache.tuscany.sca.test.osgi.harness.OSGiTuscanyTestHarness;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 /*
  * Test Tuscany running in an OSGi container
@@ -45,6 +47,14 @@ public class OSGiSupplyChainTestCase {
     @After
     public void tearDown() throws Exception {
 
+        BundleContext bundleContext = testHarness.getBundleContext();
+        if (bundleContext != null) {
+            Bundle[] bundles = bundleContext.getBundles();
+            for (Bundle bundle : bundles) {
+                if (bundle.getSymbolicName() != null && bundle.getSymbolicName().startsWith("supplychain"))
+                    bundle.uninstall();
+            }
+        }
         if (testHarness != null) {
             testHarness.tearDown();
         }

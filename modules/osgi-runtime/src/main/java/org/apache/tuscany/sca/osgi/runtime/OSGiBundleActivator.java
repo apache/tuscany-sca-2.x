@@ -131,7 +131,9 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
                     }
                 }
 		    }
-		}
+		} else {
+            threadContextClassLoader.addBundle(bundle); 
+        }
 	}
 
 

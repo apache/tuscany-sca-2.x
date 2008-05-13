@@ -37,9 +37,11 @@
         <module>tuscany-runtime</module>
         <module>tuscany-extensions</module>
         <module>tuscany-3rdparty</module>
--->
+
 
         <module>tuscany-3rdparty-manifest</module>
+-->
+
         <module>tuscany-manifest</module>
 
 
