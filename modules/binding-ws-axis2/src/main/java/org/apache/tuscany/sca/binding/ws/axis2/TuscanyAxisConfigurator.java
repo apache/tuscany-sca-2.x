@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
@@ -43,7 +42,6 @@ import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.AxisConfigurator;
 import org.apache.axis2.i18n.Messages;
 import org.apache.axis2.util.Loader;
-import org.apache.ws.commons.schema.XmlSchemaCollection;
 
 /**
  * Helps configure Axis2 from a resource in binding.ws.axis2 instead of Axis2.xml 
