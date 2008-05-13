@@ -35,6 +35,8 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
  * Implementation of an HTTP binding provider.
+ *
+ * @version $Rev$ $Date$
  */
 public class HTTPServiceBindingProvider implements ServiceBindingProvider {
     

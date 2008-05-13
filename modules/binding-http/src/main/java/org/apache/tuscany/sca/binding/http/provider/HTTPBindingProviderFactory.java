@@ -35,6 +35,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * Factory for HTTP binding providers. 
+ *
+ * @version $Rev$ $Date$
  */
 public class HTTPBindingProviderFactory implements BindingProviderFactory<HTTPBinding> {
 
