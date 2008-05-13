@@ -33,6 +33,11 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
+/**
+ * DWR Service.
+ *
+ * @version $Rev$ $Date$
+ */
 public class DWRService implements ComponentLifecycle {
 
     private RuntimeComponent rc;

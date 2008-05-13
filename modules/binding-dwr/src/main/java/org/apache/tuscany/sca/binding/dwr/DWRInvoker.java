@@ -30,6 +30,11 @@ import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.proxy.dwr.Util;
 
+/**
+ * The invoker for a DWR Binding.
+ *
+ * @version $Rev$ $Date$
+ */
 public class DWRInvoker implements Invoker {
 
     private String referenceFunction;

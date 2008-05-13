@@ -30,6 +30,11 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
+/**
+ * InvokerFactory for the DWRBinding.
+ *
+ * @version $Rev$ $Date$
+ */
 public class DWRInvokerFactory implements InvokerFactory, ComponentLifecycle {
 
     private Binding binding;

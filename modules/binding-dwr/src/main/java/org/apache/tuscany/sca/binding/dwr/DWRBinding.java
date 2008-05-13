@@ -19,11 +19,10 @@
 
 package org.apache.tuscany.sca.binding.dwr;
 
-
-
-
 /**
  * The runtime representation of the <binding.dwr> SCDL
+ *
+ * @version $Rev$ $Date$
  */
 public class DWRBinding {
 
