@@ -27,7 +27,8 @@ public interface Customer {
      * This method deposits the amount. method accesses external EJB to get the 
      * current balance and add the amount to existing balance.
      *
-     * @param String amount to be deposited
+     * @param accountNo The number of the account into which to deposit the money
+     * @param amount The amount to be deposited
      * @return total amount in customer account after deposit
      */
     Double depositAmount(java.lang.String accountNo, Double amount);
