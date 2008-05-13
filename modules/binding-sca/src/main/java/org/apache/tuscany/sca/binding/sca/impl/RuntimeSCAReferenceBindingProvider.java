@@ -52,7 +52,7 @@ import org.osoa.sca.ServiceUnavailableException;
  */
 public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvider {
 
-    private final static Logger logger = Logger.getLogger(RuntimeSCAReferenceBindingProvider.class.getName());
+    private static final Logger logger = Logger.getLogger(RuntimeSCAReferenceBindingProvider.class.getName());
 
     private NodeFactory nodeFactory;
     private RuntimeComponent component;
