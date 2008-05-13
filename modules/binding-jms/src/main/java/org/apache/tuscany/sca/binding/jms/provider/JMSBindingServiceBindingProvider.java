@@ -45,7 +45,7 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  * @version $Rev$ $Date$
  */
 public class JMSBindingServiceBindingProvider implements ServiceBindingProvider {
-    private final static Logger logger = Logger.getLogger(JMSBindingServiceBindingProvider.class.getName());
+    private static final Logger logger = Logger.getLogger(JMSBindingServiceBindingProvider.class.getName());
 
     private RuntimeComponentService service;
     private JMSBinding jmsBinding;
