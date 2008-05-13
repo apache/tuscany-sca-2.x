@@ -23,6 +23,8 @@ import java.net.URL;
 
 /**
  * GroovyArtifact holds the URL to the Groovy script.
+ *
+ * @version $Rev$ $Date$
  */
 public class GroovyArtifact {
 
