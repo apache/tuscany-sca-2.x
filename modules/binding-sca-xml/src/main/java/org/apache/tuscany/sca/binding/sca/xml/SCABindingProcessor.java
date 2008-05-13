@@ -43,6 +43,8 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * A processor to read the XML that describes the SCA binding.
+ *
+ * @version $Rev$ $Date$
  */
 
 public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, Constants{
