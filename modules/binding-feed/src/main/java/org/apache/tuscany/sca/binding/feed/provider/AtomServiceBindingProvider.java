@@ -31,6 +31,8 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
  * Implementation of the Atom binding provider.
+ *
+ * @version $Rev$ $Date$
  */
 class AtomServiceBindingProvider implements ServiceBindingProvider {
 

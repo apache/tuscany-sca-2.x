@@ -37,6 +37,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 /**
  * Implementation of the Atom binding provider.
+ *
+ * @version $Rev$ $Date$
  */
 class AtomReferenceBindingProvider implements ReferenceBindingProvider {
 

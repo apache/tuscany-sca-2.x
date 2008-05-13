@@ -36,6 +36,8 @@ import com.sun.syndication.io.XmlReader;
 
 /**
  * Invoker for the RSS binding.
+ *
+ * @version $Rev$ $Date$
  */
 class RSSBindingInvoker implements Invoker, DataExchangeSemantics {
     private static final Logger logger = Logger.getLogger(RSSBindingInvoker.class.getName());

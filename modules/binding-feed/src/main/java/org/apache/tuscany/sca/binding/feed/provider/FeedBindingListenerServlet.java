@@ -67,6 +67,8 @@ import com.sun.syndication.io.WireFeedOutput;
 /**
  * A resource collection binding listener, implemented as a Servlet and
  * registered in a Servlet host provided by the SCA hosting runtime.
+ *
+ * @version $Rev$ $Date$
  */
 class FeedBindingListenerServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(FeedBindingListenerServlet.class.getName());
