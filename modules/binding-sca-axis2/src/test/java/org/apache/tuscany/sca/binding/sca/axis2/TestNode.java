@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2;
 
-import java.net.URI;
 import java.net.URL;
 import java.util.logging.Logger;
 
@@ -37,15 +36,10 @@ import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.service.ContributionService;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
-import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.host.embedded.impl.ReallySmallRuntime;
-import org.apache.tuscany.sca.host.http.ServletHost;
-import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.node.NodeException;
-import org.apache.tuscany.sca.node.SCANode;
-import org.apache.tuscany.sca.node.spi.NodeFactoryImpl;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentContext;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
