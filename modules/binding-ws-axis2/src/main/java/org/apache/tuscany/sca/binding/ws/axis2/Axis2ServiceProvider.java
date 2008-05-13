@@ -113,7 +113,7 @@ import org.apache.ws.security.handler.WSHandlerResult;
 
 public class Axis2ServiceProvider {
     
-    private final static Logger logger = Logger.getLogger(Axis2ServiceProvider.class.getName());    
+    private static final Logger logger = Logger.getLogger(Axis2ServiceProvider.class.getName());    
 
     private AbstractContract contract;
     private WebServiceBinding wsBinding;
