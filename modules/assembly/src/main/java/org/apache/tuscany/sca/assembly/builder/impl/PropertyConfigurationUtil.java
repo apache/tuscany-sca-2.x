@@ -54,6 +54,8 @@ import org.xml.sax.InputSource;
 /**
  * Utility class to deal with processing of component properties that are taking values from the parent 
  * composite's properties or an external file.
+ *
+ * @version $Date$ $Revision$
  */
 abstract class PropertyConfigurationUtil {
     private static final DocumentBuilderFactory DOC_BUILDER_FACTORY = DocumentBuilderFactory.newInstance();

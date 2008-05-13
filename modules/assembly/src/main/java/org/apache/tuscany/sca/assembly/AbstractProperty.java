@@ -27,6 +27,8 @@ import org.apache.tuscany.sca.policy.IntentAttachPoint;
  * set data values. An implementation can have zero or more properties. Each
  * property has a data type, which may be either simple or complex. An
  * implementation may also define a default value for a property.
+ *
+ * @version $Date$ $Revision$
  */
 public interface AbstractProperty extends Base, Extensible, IntentAttachPoint {
 

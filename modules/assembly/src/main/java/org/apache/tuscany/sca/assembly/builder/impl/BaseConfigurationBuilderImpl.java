@@ -52,6 +52,11 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 
+/**
+ * Base class for Builder implementations that handles configuration.
+ *
+ * @version $Date$ $Revision$
+ */
 public abstract class BaseConfigurationBuilderImpl {
     private final static String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
     private final static String BINDING_SCA = "binding.sca";

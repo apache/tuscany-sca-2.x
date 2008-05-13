@@ -36,6 +36,11 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 
+/**
+ * Implementation of a DomainBuilder.
+ *
+ * @version $Date$ $Revision$
+ */
 public class DomainWireBuilderImpl implements DomainBuilder {
     
     public DomainWireBuilderImpl(AssemblyFactory assemblyFactory,

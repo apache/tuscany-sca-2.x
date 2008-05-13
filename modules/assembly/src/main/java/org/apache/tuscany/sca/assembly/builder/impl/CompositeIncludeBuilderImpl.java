@@ -31,6 +31,11 @@ import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
+/**
+ * Implementation of a CompositeBuilder.
+ *
+ * @version $Date$ $Revision$
+ */
 public class CompositeIncludeBuilderImpl implements CompositeBuilder {
     
     public static Logger logger = Logger.getLogger(CompositeIncludeBuilderImpl.class.getName());
