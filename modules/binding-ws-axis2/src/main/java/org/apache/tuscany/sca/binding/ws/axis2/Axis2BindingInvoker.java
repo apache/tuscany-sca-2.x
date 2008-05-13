@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.binding.ws.axis2;
 
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.List;
@@ -42,9 +41,9 @@ import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.interfacedef.util.FaultException;
+import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
 
