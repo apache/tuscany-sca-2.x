@@ -18,6 +18,11 @@
  */
 package calculator;
 
+/**
+ * The Add Service interface.
+ *
+ * @version $Rev$ $Date$
+ */
 public interface AddService {
 
     double add(double n1, double n2);

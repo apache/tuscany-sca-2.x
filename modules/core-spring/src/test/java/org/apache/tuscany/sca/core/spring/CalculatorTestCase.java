@@ -26,6 +26,8 @@ import calculator.CalculatorService;
 
 /**
  * This shows how to test the Calculator service component.
+ *
+ * @version $Rev$ $Date$
  */
 public class CalculatorTestCase extends TestCase {
 
