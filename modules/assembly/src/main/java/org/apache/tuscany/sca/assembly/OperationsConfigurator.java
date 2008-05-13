@@ -25,7 +25,7 @@ import java.util.List;
  * Interface to be implemented by SCA artifacts that support configuration of 'operation' child
  * elements for policies etc. 
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 
 public interface OperationsConfigurator {

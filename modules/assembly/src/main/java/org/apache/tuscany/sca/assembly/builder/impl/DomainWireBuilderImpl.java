@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 /**
  * Implementation of a DomainBuilder.
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class DomainWireBuilderImpl implements DomainBuilder {
     

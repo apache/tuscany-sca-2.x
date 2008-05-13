@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 /**
  * Test the CompositeBuilder.
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class CompositeBuilderTestCase extends TestCase {
     

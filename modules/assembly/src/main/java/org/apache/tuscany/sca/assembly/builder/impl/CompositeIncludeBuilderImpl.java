@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 /**
  * Implementation of a CompositeBuilder.
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class CompositeIncludeBuilderImpl implements CompositeBuilder {
     

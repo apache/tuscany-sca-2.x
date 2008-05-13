@@ -48,7 +48,7 @@ import org.apache.tuscany.sca.policy.util.PolicyValidationUtils;
 /**
  * This class contains policy computation methods common to computing implementation and binding policies
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 abstract class PolicyConfigurationUtil {
     

@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * need to apply certain facets such as intents and policysets only to a specific
  * operation provided by a service or reference.
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public interface ConfiguredOperation extends Base, PolicySetAttachPoint {
     /**

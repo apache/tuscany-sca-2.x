@@ -24,7 +24,7 @@ import org.apache.tuscany.sca.assembly.Component;
 /**
  * Interface for Component Pre Processors.
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public interface ComponentPreProcessor {
 
