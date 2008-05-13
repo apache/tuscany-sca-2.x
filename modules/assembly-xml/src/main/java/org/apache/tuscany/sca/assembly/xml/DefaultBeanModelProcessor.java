@@ -44,6 +44,11 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
+/**
+ * Default Model Processor for beans.
+ *
+ * @version $Date$ $Revision$
+ */
 public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor {
 
     private QName artifactType;

@@ -37,6 +37,11 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
+/**
+ * A Policy Attach Point processor.
+ *
+ * @version $Date$ $Revision$
+ */
 public class PolicyAttachPointProcessor extends BaseStAXArtifactProcessor implements Constants {
     
     private PolicyFactory policyFactory;
