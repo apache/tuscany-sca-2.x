@@ -30,7 +30,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
