@@ -34,6 +34,8 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * Implementation of the Atom Feed binding model.
+ *
+ * @version $Rev$ $Date$
  */
 class AtomBindingImpl implements AtomBinding, OptimizableBinding, PolicySetAttachPoint {
 
