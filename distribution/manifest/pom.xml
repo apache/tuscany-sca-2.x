@@ -384,6 +384,11 @@
             <groupId>${pom.groupId}</groupId>
             <artifactId>tuscany-implementation-bpel</artifactId>
             <version>${pom.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>tuscany-implementation-bpel-ode</artifactId>
+            <version>${pom.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>ant</groupId>
