@@ -62,6 +62,8 @@ import com.sun.syndication.io.SyndFeedOutput;
 /**
  * An RSS binding listener, implemented as a Servlet and
  * registered in a Servlet host provided by the SCA hosting runtime.
+ *
+ * @version $Rev$ $Date$
  */
 class RSSBindingListenerServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(RSSBindingListenerServlet.class.getName());
