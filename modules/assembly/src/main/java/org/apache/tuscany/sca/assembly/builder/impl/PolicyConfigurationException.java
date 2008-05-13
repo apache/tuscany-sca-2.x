@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.assembly.builder.impl;
 /**
  * Exception to be throw for invalid policy intents / policysets
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class PolicyConfigurationException extends Exception {
     private static final long serialVersionUID = 506979037642587755L;

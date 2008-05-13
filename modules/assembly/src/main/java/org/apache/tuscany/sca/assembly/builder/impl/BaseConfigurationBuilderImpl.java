@@ -55,7 +55,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPointType;
 /**
  * Base class for Builder implementations that handles configuration.
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public abstract class BaseConfigurationBuilderImpl {
     private final static String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";

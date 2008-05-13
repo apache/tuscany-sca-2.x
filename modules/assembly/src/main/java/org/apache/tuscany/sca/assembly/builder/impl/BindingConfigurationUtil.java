@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 /**
  * This class encapsulates utility methods to deal with binding definitions
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 abstract class BindingConfigurationUtil {
     private static boolean hasCompatiblePolicySets(Binding refBinding, Binding svcBinding) {

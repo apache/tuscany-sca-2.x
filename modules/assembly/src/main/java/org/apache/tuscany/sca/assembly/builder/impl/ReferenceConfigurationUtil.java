@@ -27,7 +27,7 @@ import org.apache.tuscany.sca.assembly.OptimizableBinding;
 /**
  * This class encapsulates utility methods to deal with reference definitions
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 abstract class ReferenceConfigurationUtil {
     static boolean isValidMultiplicityOverride(Multiplicity definedMul, Multiplicity overridenMul) {

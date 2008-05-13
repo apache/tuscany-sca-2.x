@@ -25,7 +25,7 @@ import org.apache.tuscany.sca.assembly.Service;
 /**
  * This class encapsulates utility methods to deal with service definitions.
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 abstract class ServiceConfigurationUtil {
 
