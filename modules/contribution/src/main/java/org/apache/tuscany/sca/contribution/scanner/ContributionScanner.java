@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.contribution.scanner;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
