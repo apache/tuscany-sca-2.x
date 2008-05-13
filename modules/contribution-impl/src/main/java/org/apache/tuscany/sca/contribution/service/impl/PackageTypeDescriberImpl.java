@@ -87,10 +87,11 @@ public class PackageTypeDescriberImpl implements TypeDescriber {
                 // Special case : contribution is a folder
                 contentType = PackageType.FOLDER;
             }
-            String fileName = resourceURL.toString();
-            String fileExt = fileName.substring(fileName.lastIndexOf('.')+1, fileName.length());
-            if ( fileExt.equalsIgnoreCase( "JAR" ) )
-                return PackageType.JAR;
+            
+            String type = resolveContentyTypeByExtension(resourceURL);
+            if (type != null) {
+                return type;
+            }
         } else if (urlProtocol.equals("bundle") || urlProtocol.equals("bundleresource")) {
             contentType = PackageType.BUNDLE;
         } else {
