@@ -44,7 +44,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 public class JMSBindingListener implements MessageListener {
 
-    private final static Logger logger = Logger.getLogger(JMSBindingListener.class.getName());
+    private static final Logger logger = Logger.getLogger(JMSBindingListener.class.getName());
 
     private static final String ON_MESSAGE_METHOD_NAME = "onMessage";
     private JMSBinding jmsBinding;
