@@ -19,8 +19,10 @@
 
 package org.apache.tuscany.sca.core.work;
 
-/*
+/**
  * JCA work wrapper.
+ *
+ * @version $Rev$ $Date$
  */
 public class Jsr237Work<T extends Runnable> implements commonj.work.Work {
 

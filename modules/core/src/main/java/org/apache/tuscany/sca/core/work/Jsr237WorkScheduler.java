@@ -40,6 +40,8 @@ import commonj.work.WorkManager;
  * work manager implementation that is injected in. It is the responsibility of the runtime environment to make a work
  * manager implementation available. For example, if the managed environment supports work manager the runtime can use
  * the appropriate lookup mechanism to inject the work manager implementation. </p>
+ *
+ * @version $Rev$ $Date$
  */
 public class Jsr237WorkScheduler implements WorkScheduler {
 

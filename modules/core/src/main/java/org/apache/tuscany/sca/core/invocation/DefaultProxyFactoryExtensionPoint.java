@@ -27,6 +27,11 @@ import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.CallableReference;
 
+/**
+ * Default implementation of a ProxyFactoryExtensionPoint.
+ *
+ * @version $Rev$ $Date$
+ */
 public class DefaultProxyFactoryExtensionPoint implements ProxyFactoryExtensionPoint {
     private InterfaceContractMapper interfaceContractMapper;
     private MessageFactory messageFactory;

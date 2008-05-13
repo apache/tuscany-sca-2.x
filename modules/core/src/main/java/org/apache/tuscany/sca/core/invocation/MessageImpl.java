@@ -29,7 +29,7 @@ import org.apache.tuscany.sca.runtime.EndpointReference;
 /**
  * The default implementation of a message flowed through a wire during an invocation
  *
- * @version $Rev $Date
+ * @version $Rev $Date$
  */
 public class MessageImpl implements Message { 
     private Object body;

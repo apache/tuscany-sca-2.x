@@ -34,6 +34,11 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 
+/**
+ * Implementation of a Component Reference.
+ *
+ * @version $Rev$ $Date$
+ */
 public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implements RuntimeComponentReference {
     private ArrayList<RuntimeWire> wires;
     private HashMap<Binding, ReferenceBindingProvider> bindingProviders =

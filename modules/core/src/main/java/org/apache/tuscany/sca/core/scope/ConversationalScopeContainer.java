@@ -36,7 +36,8 @@ import org.apache.tuscany.sca.store.Store;
 
 /**
  * A scope context which manages atomic component instances keyed on ConversationID
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class ConversationalScopeContainer extends AbstractScopeContainer<Object> implements ConversationListener {
     private ConversationManager conversationManager;

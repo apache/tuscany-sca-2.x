@@ -25,6 +25,8 @@ import commonj.work.WorkItem;
 
 /**
  * Default immutable implementation of the <code>WorkEvent</code> class.
+ *
+ * @version $Rev$ $Date$
  */
 class WorkEventImpl implements WorkEvent {
     
