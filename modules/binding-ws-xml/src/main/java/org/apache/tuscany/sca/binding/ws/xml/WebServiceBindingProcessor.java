@@ -57,6 +57,11 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
+/**
+ * This is the StAXArtifactProcessor for the Web Services Binding.
+ *
+ * @version $Rev$ $Date$
+ */
 public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServiceBinding>, WebServiceConstants {
 
     private final static Logger logger = Logger.getLogger(WebServiceBindingProcessor.class.getName());    

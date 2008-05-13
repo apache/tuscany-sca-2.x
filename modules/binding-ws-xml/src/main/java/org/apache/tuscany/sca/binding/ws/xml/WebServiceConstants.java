@@ -22,6 +22,11 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
 
+/**
+ * Constants for the Web Services Binding.
+ *
+ * @version $Rev$ $Date$
+ */
 public interface WebServiceConstants {
 
     String BINDING_WS = "binding.ws";
