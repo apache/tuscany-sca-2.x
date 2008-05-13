@@ -38,6 +38,8 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
  * Processor for dealing with  'operation' elements from composite definitions
+ *
+ * @version $Date$ $Revision$
  */
 public class ConfiguredOperationProcessor implements StAXArtifactProcessor<ConfiguredOperation>, Constants{
     
