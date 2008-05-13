@@ -35,9 +35,9 @@ public interface ComponentProperty extends Property {
     Property getProperty();
 
     /**
-     * Sets the property type that defines this property.
+     * Sets the property defined by this component implementation.
      * 
-     * @param type the property that defines this property
+     * @param property the property defined by this component implementation
      */
     void setProperty(Property property);
 
