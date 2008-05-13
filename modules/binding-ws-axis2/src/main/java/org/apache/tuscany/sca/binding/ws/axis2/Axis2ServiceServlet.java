@@ -49,6 +49,8 @@ import org.apache.axis2.transport.http.server.HttpUtils;
  * a single Axis2 ConfigurationContext instance shared between AxisServlet 
  * instances for each SCA service with a ws binding. 
  * TODO: need to review if thats really what we want to be doing
+ *
+ * @version $Rev$ $Date$
  */
 public class Axis2ServiceServlet extends AxisServlet {
 

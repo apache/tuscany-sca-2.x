@@ -37,6 +37,8 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * Test ?wsdl works and that the returned WSDL has the correct endpoint
+ *
+ * @version $Rev$ $Date$
  */
 public class QuestionMarkWSDLTestCase extends TestCase {
 

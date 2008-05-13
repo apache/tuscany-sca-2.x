@@ -50,6 +50,8 @@ import org.apache.tuscany.sca.runtime.ReferenceParameters;
 
 /**
  * Axis2BindingInvoker uses an Axis2 OperationClient to invoke a remote web service
+ *
+ * @version $Rev$ $Date$
  */
 public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
 

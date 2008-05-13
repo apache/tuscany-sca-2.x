@@ -32,6 +32,11 @@ import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
+/**
+ * Axis2OneWayBindingInvoker uses an Axis2 OperationClient to invoke a OneWay remote web service.
+ *
+ * @version $Rev$ $Date$
+ */
 public class Axis2OneWayBindingInvoker extends Axis2BindingInvoker {
 
     public Axis2OneWayBindingInvoker(Axis2ServiceClient serviceClient,

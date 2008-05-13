@@ -48,6 +48,8 @@ import org.apache.ws.commons.schema.XmlSchemaCollection;
 /**
  * Helps configure Axis2 from a resource in binding.ws.axis2 instead of Axis2.xml 
  * <p/> TODO: Review: should there be a single global Axis ConfigurationContext
+ *
+ * @version $Rev$ $Date$
  */
 public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements AxisConfigurator {
     

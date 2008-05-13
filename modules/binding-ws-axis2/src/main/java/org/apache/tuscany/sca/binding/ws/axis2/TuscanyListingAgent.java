@@ -63,6 +63,8 @@ import org.apache.ws.commons.schema.XmlSchema;
  * A Tuscany specific Axis2 ListingAgent as the Axis2 one does not work
  * with the Tuscany service names which include slash ('/') characters.
  * Unfortunately it ends up having  to copy a fair amount of Axis2 code to do this. 
+ *
+ * @version $Rev$ $Date$
  */
 public class TuscanyListingAgent extends ListingAgent {
 
