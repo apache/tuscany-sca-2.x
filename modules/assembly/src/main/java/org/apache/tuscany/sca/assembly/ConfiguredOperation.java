@@ -24,6 +24,8 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  * Represents an Operation. Typically Operation elements are used when there is a
  * need to apply certain facets such as intents and policysets only to a specific
  * operation provided by a service or reference.
+ *
+ * @version $Date$ $Revision$
  */
 public interface ConfiguredOperation extends Base, PolicySetAttachPoint {
     /**

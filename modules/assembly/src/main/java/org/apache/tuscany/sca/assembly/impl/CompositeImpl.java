@@ -33,6 +33,11 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
 
+/**
+ * Implementation of a Composite.
+ *
+ * @version $Date$ $Revision$
+ */
 public class CompositeImpl extends ImplementationImpl implements Composite, Cloneable {
     private List<Component> components = new ArrayList<Component>();
     private List<Composite> includes = new ArrayList<Composite>();

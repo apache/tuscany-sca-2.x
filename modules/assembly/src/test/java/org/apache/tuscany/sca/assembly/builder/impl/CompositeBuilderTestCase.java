@@ -30,6 +30,11 @@ import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.DefaultAssemblyFactory;
 
+/**
+ * Test the CompositeBuilder.
+ *
+ * @version $Date$ $Revision$
+ */
 public class CompositeBuilderTestCase extends TestCase {
     
     private AssemblyFactory assemblyFactory;
