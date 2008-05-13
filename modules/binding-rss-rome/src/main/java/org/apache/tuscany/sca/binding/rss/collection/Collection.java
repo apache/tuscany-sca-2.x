@@ -41,7 +41,7 @@ public interface Collection {
     /**
      * Get an RSS feed for a collection of resources resulting from a query.
      * 
-     * @param query the query string
+     * @param queryString the query string
      * @return the RSS feed
      */
     SyndFeed query(String queryString);
