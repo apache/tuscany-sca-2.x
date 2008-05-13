@@ -40,12 +40,10 @@ public interface ContributionService {
      * 
      * @param contributionURI The URI that is used as the contribution unique ID. 
      * @param sourceURL The location of the resource containing the artifact
-     * @param modelResolver The model resolver to use to resolve models in the
-     *             scope of this contribution
      * @param storeInRepository Flag that identifies if you want to copy the
      *            contribution to the repository
      * @return The contribution model representing the contribution 
-     * @throws DeploymentException if there was a problem with the contribution
+     * @throws ContributionException if there was a problem with the contribution
      * @throws IOException if there was a problem reading the resource
      */
     Contribution contribute(String contributionURI, URL sourceURL, boolean storeInRepository) throws ContributionException,
@@ -64,7 +62,7 @@ public interface ContributionService {
      * @param storeInRepository Flag that identifies if you want to copy the
      *            contribution to the repository
      * @return The contribution model representing the contribution 
-     * @throws DeploymentException if there was a problem with the contribution
+     * @throws ContributionException if there was a problem with the contribution
      * @throws IOException if there was a problem reading the resource
      */
     Contribution contribute(String contributionURI, URL sourceURL, ModelResolver modelResolver, boolean storeInRepository) throws ContributionException,
@@ -77,13 +75,11 @@ public interface ContributionService {
      * @param sourceURL The location of the resource containing the artifact. 
      *            This is used to identify what name should be used when storing
      *            the contribution on the repository 
-     * @param modelResolver The model resolver to use to resolve models in the
-     *             scope of this contribution
      * @param contributionContent A stream containing the resource being
      *            contributed; the stream will not be closed but the read
      *            position after the call is undefined
      * @return The contribution model representing the contribution 
-     * @throws DeploymentException if there was a problem with the contribution
+     * @throws ContributionException if there was a problem with the contribution
      * @throws IOException if there was a problem reading the stream
      */
     Contribution contribute(String contributionURI, URL sourceURL, InputStream contributionContent)
@@ -102,7 +98,7 @@ public interface ContributionService {
      *            contributed; the stream will not be closed but the read
      *            position after the call is undefined
      * @return The contribution model representing the contribution 
-     * @throws DeploymentException if there was a problem with the contribution
+     * @throws ContributionException if there was a problem with the contribution
      * @throws IOException if there was a problem reading the stream
      */
     Contribution contribute(String contributionURI, URL sourceURL, InputStream contributionContent, ModelResolver modelResolver)
