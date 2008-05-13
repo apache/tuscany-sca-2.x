@@ -34,7 +34,8 @@ import org.apache.tuscany.sca.osgi.runtime.OSGiRuntime;
 
 /**
  * OSGi bundle processor
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class OSGiBundleProcessor {
 
