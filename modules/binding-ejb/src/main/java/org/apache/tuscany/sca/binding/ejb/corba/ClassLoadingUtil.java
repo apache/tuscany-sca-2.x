@@ -42,7 +42,7 @@ import java.util.Set;
  * The classes are loaded using the provided class loader.  For the basic types, the primitive
  * reflection types are returned.
  *
- * @version $Rev$
+ * @version $Rev$ $Date$
  */
 public class ClassLoadingUtil {
 

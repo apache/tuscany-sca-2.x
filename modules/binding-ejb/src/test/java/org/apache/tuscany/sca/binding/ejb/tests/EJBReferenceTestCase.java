@@ -26,6 +26,8 @@ import account.Customer;
 
 /**
  * Invokes the component which calls the reference using the EJB binding 
+ *
+ * @version $Rev$ $Date$
  */
 public class EJBReferenceTestCase extends TestCase {
     private static final int MOCK_PORT = 8085;

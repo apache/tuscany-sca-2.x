@@ -22,6 +22,8 @@ import org.apache.tuscany.sca.binding.ejb.EJBBinding;
 
 /**
  * An implementation of EJBBinding.
+ *
+ * @version $Rev$ $Date$
  */
 public class EJBBindingImpl implements EJBBinding {
 

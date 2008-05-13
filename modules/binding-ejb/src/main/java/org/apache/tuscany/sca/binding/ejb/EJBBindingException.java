@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.binding.ejb;
 
 /**
  * Exception for the EJB Binding
+ *
+ * @version $Rev$ $Date$
  */
 public class EJBBindingException extends RuntimeException {
     private static final long serialVersionUID = 1L;

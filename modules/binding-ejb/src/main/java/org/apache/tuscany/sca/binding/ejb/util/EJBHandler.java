@@ -40,6 +40,8 @@ import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * EJBMessageHandler
+ *
+ * @version $Rev$ $Date$
  */
 public class EJBHandler {
     private static final Map<String, Class> PRIMITIVE_TYPES = new HashMap<String, Class>();

@@ -35,6 +35,8 @@ import org.omg.CosNaming.NamingContextExt;
 
 /**
  * CosNaming utility
+ *
+ * @version $Rev$ $Date$
  */
 public class EJBLocator {
 

@@ -21,6 +21,12 @@ package org.apache.tuscany.sca.binding.ejb.impl;
 import org.apache.tuscany.sca.binding.ejb.EJBBinding;
 import org.apache.tuscany.sca.binding.ejb.EJBBindingFactory;
 
+/**
+ * Factory class for building EJBBindings.
+ *
+ * @version $Rev$ $Date$
+ *
+ */
 public class EJBBindingFactoryImpl implements EJBBindingFactory {
 
     public EJBBinding createEJBBinding() {

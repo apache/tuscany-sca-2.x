@@ -33,6 +33,8 @@ import org.osoa.sca.ServiceRuntimeException;
 /**
  * An adapter for java classes, indexes the methods by name and provides an
  * invoke method that takes a method name.
+ *
+ * @version $Rev$ $Date$
  */
 public final class JavaReflectionAdapter {
 

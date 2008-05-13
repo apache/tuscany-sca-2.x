@@ -26,6 +26,8 @@ import org.apache.tuscany.sca.assembly.xml.Constants;
 
 /**
  * An implementation of EJBBinding.
+ *
+ * @version $Rev$ $Date$
  */
 public interface EJBBinding extends Binding, Base {
     // Constants used when describing the EJB binding
