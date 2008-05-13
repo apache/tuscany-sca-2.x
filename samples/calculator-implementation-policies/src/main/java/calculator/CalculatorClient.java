@@ -31,13 +31,9 @@ public class CalculatorClient {
     public static void main(String[] args) throws Exception {
         try {
             Configuration secConf = Configuration.getConfiguration();
-        } catch ( java.lang.SecurityException e ) {
-            if ( e.getMessage().equals("Unable to locate a login configuration") ) {
-                System.setProperty("java.security.auth.login.config", 
-                       CalculatorClient.class.getClassLoader().getResource("CalculatorJass.config").toString());
-            } else {
-                throw e;
-            }
+        } catch (java.lang.SecurityException e) {
+            System.setProperty("java.security.auth.login.config", CalculatorClient.class.getClassLoader()
+                .getResource("CalculatorJass.config").toString());
         }
 
         SCADomain scaDomain = SCADomain.newInstance("Calculator.composite");
