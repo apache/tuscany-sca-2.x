@@ -54,7 +54,7 @@ import org.osoa.sca.ServiceRuntimeException;
  */
 public class TestNode  {
     
-    private final static Logger logger = Logger.getLogger(TestNode.class.getName());    
+    private static final Logger logger = Logger.getLogger(TestNode.class.getName());    
     
     private String nodeName;
     private ReallySmallRuntime nodeRuntime;
