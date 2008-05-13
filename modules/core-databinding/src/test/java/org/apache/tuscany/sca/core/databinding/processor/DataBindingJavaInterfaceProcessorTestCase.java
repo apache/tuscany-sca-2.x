@@ -35,7 +35,8 @@ import org.osoa.sca.annotations.Remotable;
 import org.w3c.dom.Node;
 
 /**
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class DataBindingJavaInterfaceProcessorTestCase extends TestCase {
 
