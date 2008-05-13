@@ -29,6 +29,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 /**
  * Implementation of the RSS binding provider.
+ *
+ * @version $Rev$ $Date$
  */
 class RSSReferenceBindingProvider implements ReferenceBindingProvider {
 

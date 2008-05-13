@@ -31,6 +31,8 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 
 /**
  * Implementation of the RSS binding provider.
+ *
+ * @version $Rev$ $Date$
  */
 class RSSServiceBindingProvider implements ServiceBindingProvider {
 

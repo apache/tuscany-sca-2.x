@@ -30,6 +30,8 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * Implementation of the RSS Feed binding model.
+ *
+ * @version $Rev$ $Date$
  */
 class RSSBindingImpl implements RSSBinding, PolicySetAttachPoint {
 

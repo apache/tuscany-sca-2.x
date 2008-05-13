@@ -23,6 +23,8 @@ import org.apache.tuscany.sca.assembly.Binding;
 
 /**
  * Atom binding model.
+ *
+ * @version $Rev$ $Date$
  */
 public interface AtomBinding extends Binding {
 }
