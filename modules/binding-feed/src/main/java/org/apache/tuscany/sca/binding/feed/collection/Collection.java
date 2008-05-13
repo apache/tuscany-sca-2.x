@@ -33,7 +33,6 @@ public interface Collection {
     /**
      * Get an RSS or Atom feed for a collection of resources.
      * 
-     * @param uri the URI of the feed
      * @return the RSS or Atom feed
      */
     com.sun.syndication.feed.atom.Feed getFeed();
