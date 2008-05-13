@@ -44,7 +44,7 @@ public class NonBlockingInterceptor implements Interceptor {
     /**
      * The JDK logger that will be used to log messages.
      */
-    private final static Logger LOGGER = Logger.getLogger(NonBlockingInterceptor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(NonBlockingInterceptor.class.getName());
 
     private WorkScheduler workScheduler;
     private Invoker next;

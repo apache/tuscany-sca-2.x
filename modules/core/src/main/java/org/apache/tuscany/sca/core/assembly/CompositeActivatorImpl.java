@@ -73,7 +73,7 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  * @version $Rev$ $Date$
  */
 public class CompositeActivatorImpl implements CompositeActivator {
-    private final static Logger logger = Logger.getLogger(CompositeActivatorImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(CompositeActivatorImpl.class.getName());
 
     private final AssemblyFactory assemblyFactory;
     private final MessageFactory messageFactory;
