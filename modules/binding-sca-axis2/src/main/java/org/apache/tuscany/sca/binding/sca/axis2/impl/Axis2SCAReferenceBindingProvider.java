@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.binding.sca.axis2.impl;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.axiom.om.OMElement;
@@ -33,7 +32,6 @@ import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ReferenceBindingProvider;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
-import org.apache.tuscany.sca.domain.spi.SCADomainEventService;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
