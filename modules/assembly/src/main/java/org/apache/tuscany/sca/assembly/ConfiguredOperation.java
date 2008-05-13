@@ -53,7 +53,7 @@ public interface ConfiguredOperation extends Base, PolicySetAttachPoint {
     /**
      * Sets the name of the service or reference to which this operation belongs.
      * 
-     * @param the name of the contract to which this operation belongs
+     * @param contractName the name of the contract to which this operation belongs
      */
     void setContractName(String contractName);
 }
