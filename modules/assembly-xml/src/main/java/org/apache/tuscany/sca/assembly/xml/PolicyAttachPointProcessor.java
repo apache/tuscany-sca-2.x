@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 /**
  * A Policy Attach Point processor.
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class PolicyAttachPointProcessor extends BaseStAXArtifactProcessor implements Constants {
     

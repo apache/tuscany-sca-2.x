@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.assembly.Wire;
 /**
  * Implementation of a Composite.
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class CompositeImpl extends ImplementationImpl implements Composite, Cloneable {
     private List<Component> components = new ArrayList<Component>();

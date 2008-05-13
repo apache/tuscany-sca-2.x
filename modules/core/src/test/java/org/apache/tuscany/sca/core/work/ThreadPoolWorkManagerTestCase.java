@@ -26,7 +26,7 @@ import org.junit.Test;
 /**
  * This test case will test the ThreadPoolWorkManager
  * 
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class ThreadPoolWorkManagerTestCase {
 

@@ -26,7 +26,7 @@ import org.junit.Test;
 /**
  * Test case for Jsr237WorkScheduler
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class Jsr237WorkSchedulerTestCase {
 

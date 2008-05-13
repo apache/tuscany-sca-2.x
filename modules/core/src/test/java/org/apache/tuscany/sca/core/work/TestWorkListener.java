@@ -32,7 +32,7 @@ import commonj.work.WorkListener;
 /**
  * A simple WorkListener that tracks invocations to it.
  * 
- * @version $Date $Revision$
+ * @version $Rev$ $Date$
  */
 public class TestWorkListener implements WorkListener {
 

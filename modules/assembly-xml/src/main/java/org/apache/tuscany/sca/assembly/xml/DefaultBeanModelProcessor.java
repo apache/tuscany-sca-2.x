@@ -47,7 +47,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 /**
  * Default Model Processor for beans.
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class DefaultBeanModelProcessor extends BaseAssemblyProcessor implements StAXArtifactProcessor {
 
