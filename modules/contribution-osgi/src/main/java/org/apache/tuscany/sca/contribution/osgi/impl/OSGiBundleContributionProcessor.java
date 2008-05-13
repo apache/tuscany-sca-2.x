@@ -40,8 +40,8 @@ import org.osgi.framework.Bundle;
 
 /**
  * Bundle Contribution package processor.
- * 
- * @version $Rev:  $ $Date:  $
+ *
+ * @version $Rev$ $Date$
  */
 public class OSGiBundleContributionProcessor implements PackageProcessor {
 

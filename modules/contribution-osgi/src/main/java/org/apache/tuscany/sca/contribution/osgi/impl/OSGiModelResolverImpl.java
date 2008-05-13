@@ -32,6 +32,7 @@ import org.osgi.framework.Bundle;
 /**
  * An implementation of an artifact resolver for OSGi bundles.
  *
+ * @version $Rev$ $Date$
  */
 public class OSGiModelResolverImpl implements ModelResolver {
     private static final long serialVersionUID = -7826976465762296634L;
