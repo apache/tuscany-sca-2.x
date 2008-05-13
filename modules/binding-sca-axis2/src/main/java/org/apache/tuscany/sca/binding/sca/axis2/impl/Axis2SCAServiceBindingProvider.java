@@ -48,7 +48,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  */
 public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
     
-    private final static Logger logger = Logger.getLogger(Axis2SCAServiceBindingProvider.class.getName());
+    private static final Logger logger = Logger.getLogger(Axis2SCAServiceBindingProvider.class.getName());
 
     private NodeFactory nodeFactory;
     private SCABinding binding;

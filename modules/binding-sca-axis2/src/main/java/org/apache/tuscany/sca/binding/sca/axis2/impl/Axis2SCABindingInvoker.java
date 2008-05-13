@@ -35,7 +35,7 @@ import org.osoa.sca.ServiceUnavailableException;
  */
 public class Axis2SCABindingInvoker implements Interceptor {
     
-    private final static Logger logger = Logger.getLogger(Axis2SCABindingInvoker.class.getName());    
+    private static final Logger logger = Logger.getLogger(Axis2SCABindingInvoker.class.getName());    
     
     private Invoker axis2Invoker;
     private Axis2SCAReferenceBindingProvider provider;

@@ -55,7 +55,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
  */
 public class Axis2SCAReferenceBindingProvider implements ReferenceBindingProvider {
 
-    private final static Logger logger = Logger.getLogger(Axis2SCAReferenceBindingProvider.class.getName());
+    private static final Logger logger = Logger.getLogger(Axis2SCAReferenceBindingProvider.class.getName());
     
     private NodeFactory nodeFactory;
     private RuntimeComponent component;
