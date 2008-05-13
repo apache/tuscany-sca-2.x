@@ -65,7 +65,7 @@ public interface RuntimeComponent extends Component {
 
     /**
      * Sets the RuntimeComponent started state
-     * @param the state to set
+     * @param started the state to set
      */
     void setStarted(boolean started);
     
