@@ -23,6 +23,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.SessionBean;
 import javax.ejb.SessionContext;
@@ -42,6 +43,9 @@ public class VegetablesCatalogEJBSessionBean implements SessionBean {
         Vegetable[] catalogArray = new Vegetable[catalog.size()];
         catalog.toArray(catalogArray);
         return catalogArray;
+    }
+    
+    public void ejbCreate() throws CreateException {
     }
     
     public void ejbActivate() throws EJBException, RemoteException {
