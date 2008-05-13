@@ -40,7 +40,7 @@ public class InvocationChainImpl implements InvocationChain {
     private List<Node> nodes = new ArrayList<Node>();
 
     // FIXME: Not a good practice to use static reference
-    private final static PhaseManager phaseManager = new PhaseManager();
+    private static final PhaseManager phaseManager = new PhaseManager();
     private boolean forReference;
     private boolean allowsPassByReference;
 

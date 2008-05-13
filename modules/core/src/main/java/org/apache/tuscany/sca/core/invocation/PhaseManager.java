@@ -44,13 +44,13 @@ public class PhaseManager {
     public static final String STAGE_REFERENCE = "reference";
     public static final String STAGE_SERVICE = "service";
     public static final String STAGE_IMPLEMENTATION = "implementation";
-    private final static String[] SYSTEM_REFERENCE_PHASES =
+    private static final String[] SYSTEM_REFERENCE_PHASES =
         {Phase.REFERENCE, Phase.REFERENCE_INTERFACE, Phase.REFERENCE_POLICY, Phase.REFERENCE_BINDING};
 
-    private final static String[] SYSTEM_SERVICE_PHASES =
+    private static final String[] SYSTEM_SERVICE_PHASES =
         {Phase.SERVICE_BINDING, Phase.SERVICE_POLICY, Phase.SERVICE_INTERFACE, Phase.SERVICE};
 
-    private final static String[] SYSTEM_IMPLEMENTATION_PHASES = {Phase.IMPLEMENTATION_POLICY, Phase.IMPLEMENTATION};
+    private static final String[] SYSTEM_IMPLEMENTATION_PHASES = {Phase.IMPLEMENTATION_POLICY, Phase.IMPLEMENTATION};
 
     private String pattern = Phase.class.getName();
     private Map<String, Stage> stages;

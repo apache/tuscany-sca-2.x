@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.runtime.ReferenceParameters;
  * @version $Rev$ $Date$
  */
 public class ReferenceParameterProcessor implements StAXArtifactProcessor<ReferenceParameters> {
-    private final static QName REFERENCE_PARAMETERS =
+    private static final QName REFERENCE_PARAMETERS =
         new QName("http://tuscany.apache.org/xmlns/sca/1.0", "referenceParameters", "tuscany");
 
     /**
