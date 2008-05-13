@@ -59,6 +59,8 @@ public class TuscanyLoader {
     
     private static final HashSet<String> ignoreTuscanyModules = new HashSet<String>();
     
+    private static String manifestClassPath = null;
+    
     static {
         for (String ignoreModule : tuscanyModulesToIgnore) {
             ignoreTuscanyModules.add(ignoreModule);
@@ -119,6 +121,8 @@ public class TuscanyLoader {
         String tuscanyManifestBundleName = new File(tuscanyManifestDir + "/target/" + tuscanyManifestJar).toURI().toURL().toString();
         Bundle tuscanyManifestBundle = bundleContext.installBundle(tuscanyManifestBundleName);        
         tuscanyManifestBundle.start();
+        
+        manifestClassPath = (String)tuscanyManifestBundle.getHeaders().get("Class-Path");
     }
     
     
@@ -145,6 +149,8 @@ public class TuscanyLoader {
             if (files != null && files.length > 0) {
                 for (File file : files) {
                     if (ignoreTuscanyModules.contains(file.getName()))
+                        continue;
+                    if (manifestClassPath != null && manifestClassPath.indexOf(file.getName()) < 0)
                         continue;
                     String bundleURL = findBundle(file.toString(), "tuscany");
                     if (bundleURL != null) {

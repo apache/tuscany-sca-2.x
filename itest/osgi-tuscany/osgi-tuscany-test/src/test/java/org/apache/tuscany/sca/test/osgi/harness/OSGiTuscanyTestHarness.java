@@ -81,6 +81,9 @@ public class OSGiTuscanyTestHarness {
         OSGiRuntimeLoader.shutdownOSGiRuntime();
     }
     
+    public BundleContext getBundleContext() {
+        return bundleContext;
+    }
    
     public void runTest(String... testDirs) throws Exception {
         
