@@ -23,6 +23,8 @@ import org.apache.tuscany.sca.core.spring.context.SCADomainContext;
 /**
  * This client program shows how to create an SCA runtime, start it, locate the
  * Calculator service and invoke it.
+ *
+ * @version $Rev$ $Date$
  */
 public class CalculatorClient {
     public static void main(String[] args) throws Exception {
