@@ -27,17 +27,39 @@ package org.apache.tuscany.sca.contribution.osgi;
  * @version $Rev$ $Date$
  */
 public class BundleReference {
-    
+
+    /**
+     * The bundle.
+     */
     private Object bundle;
+
+    /**
+     * The bundle name.
+     */
     private String bundleName;
+
+    /**
+     * The bundle version.
+     */
     private String bundleVersion;
+
+    /**
+     * The bundle name and version.
+     */
     private String bundleUniqueName;
+
+    /**
+     * The bundle relative path.
+     */
     private String bundleRelativePath;
 
     /**
      * Constructs a new BundleReference.
      * 
      * @param bundle The bundle reference
+     * @param bundleName The bundle name
+     * @param bundleVersion The bundle version
+     * @param bundleRelativePath The relative path for the bundle
      */
     public BundleReference(Object bundle, String bundleName, String bundleVersion, String bundleRelativePath) {
         this.bundle = bundle;
@@ -50,7 +72,8 @@ public class BundleReference {
     /**
      * Constructs a new BundleReference.
      * 
-     * @param className The class name
+     * @param bundleName The bundle name
+     * @param bundleVersion The bundle version
      */
     public BundleReference(String bundleName, String bundleVersion) {
         this.bundleName = bundleName;
@@ -95,7 +118,7 @@ public class BundleReference {
     }
     
     /**
-     * Get the relative location of the bundle inside its contribution
+     * Get the relative location of the bundle inside its contribution.
      * 
      * @return The bundle path
      */
