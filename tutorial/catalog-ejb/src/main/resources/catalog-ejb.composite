@@ -24,6 +24,7 @@
     <component name="VegetablesCatalogEJB">
         <implementation.ejb ejb-link="tutorial-catalog-ejb.jar#VegetablesCatalogEJB"/>
         <service name="CatalogEJB">
+            <!-- <binding.ejb uri="corbaname:iiop:1.2@localhost:2809/NameServiceServerRoot#VegetablesCatalogEJB"/> -->
             <binding.ejb uri="corbaname:iiop:1.2@localhost:1050#VegetablesCatalogEJB"/>
         </service>
     </component>
