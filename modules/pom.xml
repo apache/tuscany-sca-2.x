@@ -112,6 +112,7 @@
                 <module>interface-wsdl-java2wsdl</module>
                 <module>interface-wsdl-xml</module>
                 <module>implementation-bpel</module>
+                <module>implementation-bpel-ode</module>
                 <module>implementation-das</module>
                 <module>implementation-data-api</module>
                 <module>implementation-data-xml</module>
