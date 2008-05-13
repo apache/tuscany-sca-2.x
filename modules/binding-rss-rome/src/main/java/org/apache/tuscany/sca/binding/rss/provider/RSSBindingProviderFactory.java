@@ -38,6 +38,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * Implementation of the RSS binding provider factory.
+ *
+ * @version $Rev$ $Date$
  */
 public class RSSBindingProviderFactory implements BindingProviderFactory<RSSBinding> {
 
