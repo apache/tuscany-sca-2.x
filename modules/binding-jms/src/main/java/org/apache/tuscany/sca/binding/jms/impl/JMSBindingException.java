@@ -18,6 +18,11 @@
  */
 package org.apache.tuscany.sca.binding.jms.impl;
 
+/**
+ * Base exception for the JMSBinding.
+ *
+ * @version $Rev$ $Date$
+ */
 public class JMSBindingException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 

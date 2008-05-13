@@ -29,6 +29,8 @@ import org.apache.tuscany.sca.binding.jms.provider.JMSMessageProcessor;
 
 /**
  * Models a binding to a JMS resource.
+ *
+ * @version $Rev$ $Date$
  */
 
 public class JMSBinding implements Binding {

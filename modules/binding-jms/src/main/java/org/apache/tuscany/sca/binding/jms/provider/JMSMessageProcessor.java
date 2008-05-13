@@ -23,6 +23,8 @@ import javax.jms.Session;
 
 /**
  * Interface for a component that does operation selection and message payload processing
+ *
+ * @version $Rev$ $Date$
  */
 public interface JMSMessageProcessor {
 

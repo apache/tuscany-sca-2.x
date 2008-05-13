@@ -33,6 +33,12 @@ import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 
+/**
+ * MessageProcessor for sending/receiving XML javax.jms.TextMessage with
+ * the JMSBinding.
+ *
+ * @version $Rev$ $Date$
+ */
 public class XMLTextMessageProcessor extends AbstractMessageProcessor {
 
     public XMLTextMessageProcessor(JMSBinding jmsBinding) {

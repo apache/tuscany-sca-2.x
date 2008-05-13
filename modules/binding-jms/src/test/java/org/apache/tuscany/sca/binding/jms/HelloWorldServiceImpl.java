@@ -18,6 +18,11 @@
  */
 package org.apache.tuscany.sca.binding.jms;
 
+/**
+ * Implementation of the HelloWorldService.
+ *
+ * @version $Rev$ $Date$
+ */
 public class HelloWorldServiceImpl implements HelloWorldService {
 
     public String sayHello(String name) {

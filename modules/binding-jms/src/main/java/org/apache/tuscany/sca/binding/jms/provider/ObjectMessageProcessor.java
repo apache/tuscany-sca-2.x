@@ -28,6 +28,12 @@ import javax.jms.Session;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBinding;
 import org.apache.tuscany.sca.binding.jms.impl.JMSBindingException;
 
+/**
+ * MessageProcessor for sending/receiving Serializable objects with
+ * the JMSBinding.
+ *
+ * @version $Rev$ $Date$
+ */
 public class ObjectMessageProcessor extends AbstractMessageProcessor {
 
     public ObjectMessageProcessor(JMSBinding jmsBinding) {
