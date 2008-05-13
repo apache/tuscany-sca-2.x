@@ -38,6 +38,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * Implementation of a Binding provider factory for the Atom binding.
+ *
+ * @version $Rev$ $Date$
  */
 public class AtomBindingProviderFactory implements BindingProviderFactory<AtomBinding> {
 
