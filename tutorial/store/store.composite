@@ -27,27 +27,27 @@
         <service name="Widget">
         	<t:binding.http uri="/ui"/>
         </service>
-		<reference name="catalog" target="Catalog">
+		<reference name="catalog" target="StoreCatalog">
 		 	<t:binding.jsonrpc/>
 		 </reference>
-		 <reference name="shoppingCart" target="ShoppingCart/Cart">
+		 <reference name="shoppingCart" target="StoreShoppingCart/Cart">
 		 	<t:binding.atom/>
 		 </reference>
-		 <reference name="shoppingTotal" target="ShoppingCart/Total">
+		 <reference name="shoppingTotal" target="StoreShoppingCart/Total">
 		 	<t:binding.jsonrpc/>
 		 </reference>
     </component>
     
-	<component name="Catalog">
+	<component name="StoreCatalog">
 		<implementation.java class="services.FruitsCatalogImpl"/> 
 		<property name="currencyCode">USD</property>
 		<service name="Catalog">
 			<t:binding.jsonrpc/>
    		</service>
-		<reference name="currencyConverter" target="CurrencyConverter"/>	
+		<reference name="currencyConverter" target="StoreCurrencyConverter"/>	
 	</component> 
  	
-	<component name="ShoppingCart">
+	<component name="StoreShoppingCart">
 		<implementation.java class="services.ShoppingCartImpl"/>
 		<service name="Cart">
 			<t:binding.atom uri="/ShoppingCart/Cart"/>
@@ -57,7 +57,7 @@
 		</service>    	
 	</component>
     
-	<component name="CurrencyConverter">
+	<component name="StoreCurrencyConverter">
 		<implementation.java class="services.CurrencyConverterImpl"/>
 	</component>     
 
