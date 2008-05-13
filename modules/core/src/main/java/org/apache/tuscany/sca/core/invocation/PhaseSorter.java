@@ -28,6 +28,8 @@ import java.util.Map;
  * 
  * @param <V> The type of vertex object
  * @param <E> The type of edge object
+ *
+ * @version $Rev$ $Date$
  */
 public class PhaseSorter<V> implements Cloneable {
     private final Map<V, Vertex> vertices = new HashMap<V, Vertex>();

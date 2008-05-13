@@ -43,6 +43,8 @@ import commonj.work.WorkManager;
  * This implementation supports only local work.
  * <p/>
  * TODO Elaborate the implementation. </p>
+ *
+ * @version $Rev$ $Date$
  */
 public class ThreadPoolWorkManager implements WorkManager {
 

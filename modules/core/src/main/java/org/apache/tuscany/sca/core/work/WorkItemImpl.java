@@ -26,6 +26,7 @@ import commonj.work.WorkItem;
  * An identity based immutable implementation of the <code>WorkItem</code>
  * interface.
  *
+ * @version $Rev$ $Date$
  */
 class WorkItemImpl implements WorkItem {
     
