@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.context;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
