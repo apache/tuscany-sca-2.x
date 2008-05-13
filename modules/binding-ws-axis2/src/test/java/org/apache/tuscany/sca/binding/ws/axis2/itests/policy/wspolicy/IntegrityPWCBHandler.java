@@ -28,6 +28,8 @@ import org.apache.ws.security.WSPasswordCallback;
 
 /**
  * Sample userid passwd generation class
+ *
+ * @version $Rev$ $Date$
  */
 public class IntegrityPWCBHandler implements CallbackHandler {
 

@@ -37,6 +37,8 @@ import org.apache.commons.logging.LogFactory;
 /**
  * A Tuscany specific Axis2 Dispatcher that enables using services
  * exposed at the SCA defined service URI instead of /services/<serviceName> 
+ *
+ * @version $Rev$ $Date$
  */
 public class TuscanyDispatcher extends RequestURIBasedDispatcher {
 
