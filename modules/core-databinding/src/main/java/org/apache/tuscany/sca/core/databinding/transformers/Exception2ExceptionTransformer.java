@@ -30,6 +30,8 @@ import org.apache.tuscany.sca.interfacedef.FaultExceptionMapper;
 /**
  * This is a special transformer to transform the exception from one IDL to the
  * other one
+ *
+ * @version $Rev$ $Date$
  */
 public class Exception2ExceptionTransformer extends BaseTransformer<Object[], Object[]> implements
     PullTransformer<Throwable, Throwable> {

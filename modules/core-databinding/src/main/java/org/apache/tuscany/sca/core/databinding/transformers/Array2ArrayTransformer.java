@@ -31,6 +31,8 @@ import org.osoa.sca.annotations.Reference;
 /**
  * This is a special transformer to transform the output from one IDL to the
  * other one
+ *
+ * @version $Rev$ $Date$
  */
 public class Array2ArrayTransformer extends BaseTransformer<Object, Object> implements PullTransformer<Object, Object> {
 

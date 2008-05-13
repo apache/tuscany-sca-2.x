@@ -39,6 +39,8 @@ import org.osoa.sca.annotations.Reference;
 /**
  * This is a special transformer to transform the input from one IDL to the
  * other one
+ *
+ * @version $Rev$ $Date$
  */
 public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> implements
     PullTransformer<Object[], Object[]> {
