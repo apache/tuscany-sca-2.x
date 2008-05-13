@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.work.NotificationListener;
 /**
  * Simple NotificationListener that is used for testing Jsr237WorkScheduler
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class JSR237MyRunnerListener implements NotificationListener<JSR237MyRunnable> {
 

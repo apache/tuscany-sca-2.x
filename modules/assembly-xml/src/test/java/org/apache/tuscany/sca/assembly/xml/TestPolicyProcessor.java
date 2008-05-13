@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.policy.Policy;
 /**
  * A Policy Processor used for testing.
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class TestPolicyProcessor implements StAXArtifactProcessor<Policy> {
 

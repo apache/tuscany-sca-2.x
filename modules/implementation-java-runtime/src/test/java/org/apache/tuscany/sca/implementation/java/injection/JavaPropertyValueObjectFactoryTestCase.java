@@ -46,7 +46,7 @@ import org.w3c.dom.NodeList;
 /**
  * This test case will test the JavaPropertyValueObjectFactory.
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class JavaPropertyValueObjectFactoryTestCase {
 

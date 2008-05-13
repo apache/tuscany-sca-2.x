@@ -24,7 +24,7 @@ import org.junit.Test;
 /**
  * Test case for TrueFilter
  *
- * @version $Date$ $Version$
+ * @version $Rev$ $Date$
  */
 public class TrueFilterTestCase {
 

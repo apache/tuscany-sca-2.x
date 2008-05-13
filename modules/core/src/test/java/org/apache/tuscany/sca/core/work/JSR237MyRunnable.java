@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Simple Runnable that is used for testing Jsr237WorkScheduler
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class JSR237MyRunnable implements Runnable {
 

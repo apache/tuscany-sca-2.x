@@ -23,7 +23,7 @@ import commonj.work.Work;
 /**
  * Simple Work item that will throw an exception
  * 
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class FailingWork implements Work {
 

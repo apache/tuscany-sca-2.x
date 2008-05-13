@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.core.work;
 /**
  * Simple Runnable that throws an IllegalArgumentException
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class JSR237MyFailingRunnable extends JSR237MyRunnable {
 

@@ -39,7 +39,7 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 /**
  * Processor for dealing with  'operation' elements from composite definitions
  *
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class ConfiguredOperationProcessor implements StAXArtifactProcessor<ConfiguredOperation>, Constants{
     

@@ -26,7 +26,7 @@ import commonj.work.Work;
  * Simple Work item that will sleep in the run() method for the specified 
  * period of time
  * 
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
 public class TimeDelayWork implements Work {
 
