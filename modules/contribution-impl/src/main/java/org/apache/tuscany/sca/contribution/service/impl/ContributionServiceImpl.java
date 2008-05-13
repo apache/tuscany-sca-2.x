@@ -64,9 +64,6 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * 
  * @version $Rev$ $Date$
  */
-/**
- * 
- */
 public class ContributionServiceImpl implements ContributionService {
 
     /**
