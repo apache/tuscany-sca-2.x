@@ -23,6 +23,8 @@ import org.osoa.sca.annotations.Service;
 
 /**
  * This class implements the HelloWorld service.
+ *
+ * @version $Rev$ $Date$
  */
 @Service(HelloWorldService.class)
 public class HelloWorldImpl implements HelloWorldService {

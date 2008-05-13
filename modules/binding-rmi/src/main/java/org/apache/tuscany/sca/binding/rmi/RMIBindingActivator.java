@@ -30,6 +30,11 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
+/**
+ * Binding Activator for the RMI Binding.
+ *
+ * @version $Rev$ $Date$
+ */
 public class RMIBindingActivator implements BindingActivator<RMIBinding> {
 
     private RMIHost rmiHost;

@@ -26,6 +26,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * Tests for the RMIBinding.
+ *
+ * @version $Rev$ $Date$
+ */
 public class BindingTestCase {
     private static HelloWorldRmiService helloWorldRmiService;
     private static SCADomain domain;

@@ -20,6 +20,8 @@ package helloworld;
 
 /**
  * This is the business interface of the HelloWorld greetings service.
+ *
+ * @version $Rev$ $Date$
  */
 public interface HelloWorldRmiService {
 
