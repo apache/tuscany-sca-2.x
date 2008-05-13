@@ -24,6 +24,8 @@ import java.util.List;
 /**
  * An extension point for SCA Definitions Providers.  SCA Definition providers, load SCA Definitions
  * items that are being specifically contributed by the module that hosts the provider in question.
+ *
+ * @version $Rev$ $Date$
  */
 public interface SCADefinitionsProviderExtensionPoint {
     

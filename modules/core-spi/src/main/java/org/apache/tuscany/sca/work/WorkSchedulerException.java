@@ -24,6 +24,7 @@ package org.apache.tuscany.sca.work;
  *
  * @version $Rev$ $Date$
  *
+ * @version $Rev$ $Date$
  */
 public class WorkSchedulerException extends RuntimeException {
     private static final long serialVersionUID = 1L;

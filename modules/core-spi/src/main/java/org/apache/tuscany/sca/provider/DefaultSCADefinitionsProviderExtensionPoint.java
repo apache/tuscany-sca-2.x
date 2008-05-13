@@ -30,6 +30,8 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
  * Concrete Implementation for the SCADefinitionsProviderExtensionPoint
+ *
+ * @version $Rev$ $Date$
  */
 public class DefaultSCADefinitionsProviderExtensionPoint implements
     SCADefinitionsProviderExtensionPoint {

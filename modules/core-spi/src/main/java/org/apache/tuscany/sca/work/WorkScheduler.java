@@ -29,6 +29,7 @@ package org.apache.tuscany.sca.work;
  * error details.
  * </p>
  *
+ * @version $Rev$ $Date$
  */
 public interface WorkScheduler {
     
