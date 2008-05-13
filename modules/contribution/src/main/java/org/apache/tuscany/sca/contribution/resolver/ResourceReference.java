@@ -26,6 +26,8 @@ import java.net.URL;
  * with an ArtifactResolver and resolve these resources later.
  * 
  * FIXME Don't use as its deprecated, use Artifact instead.
+ *
+ * @version $Rev$ $Date$
  */
 @Deprecated
 public class ResourceReference {
