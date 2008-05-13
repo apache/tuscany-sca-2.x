@@ -28,6 +28,11 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
+/**
+ * The Binding Activator for the DWR Binding.
+ *
+ * @version $Rev$ $Date$
+ */
 public class DWRBindingActivator implements BindingActivator<DWRBinding>{
 
     private ServletHost servletHost;

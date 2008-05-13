@@ -53,6 +53,8 @@ import org.directwebremoting.servlet.UrlProcessor;
  * 
  * Handles requests for SCA services and references that use <binding.dwr>,
  * and also the HTTP GET for the Tuscany DWR system script "scaDomain.js"  
+ *
+ * @version $Rev$ $Date$
  */
 public class DWRServlet extends DwrServlet {
     private static final long serialVersionUID = 1L;
