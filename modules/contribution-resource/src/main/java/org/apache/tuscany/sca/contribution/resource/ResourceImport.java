@@ -52,7 +52,7 @@ public interface ResourceImport extends Import {
     /**
      * Set URI that identifies the resource import
      * 
-     * @param namespace The resource URI
+     * @param uri The resource URI
      */
     void setURI(String uri);
     

@@ -30,17 +30,17 @@ import org.apache.tuscany.sca.contribution.Export;
 public interface ResourceExport extends Export {
 
     /**
-     * Get Resource that identifies the export
+     * Get Resource URI that identifies the export.
      * 
      * @return The exported resource URI
      */
     String getURI();
 
     /**
-     * Set Resource that identifies the export
+     * Set Resource URI that identifies the export.
      * 
-     * @param resource URI The exported namespace
+     * @param uri The exported resource URI
      */
-    void setURI(String URI);
+    void setURI(String uri);
     
 }
