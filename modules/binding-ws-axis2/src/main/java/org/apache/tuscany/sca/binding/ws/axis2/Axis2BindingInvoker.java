@@ -83,7 +83,7 @@ public class Axis2BindingInvoker implements Invoker, DataExchangeSemantics {
         this.policyHandlerList = policyHandlerList;
     }
 
-    private final static QName EXCEPTION = new QName("", "Exception");
+    private static final QName EXCEPTION = new QName("", "Exception");
     
     public Message invoke(Message msg) {
         try {
