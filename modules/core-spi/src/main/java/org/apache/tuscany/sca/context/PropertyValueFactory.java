@@ -22,6 +22,8 @@ import org.apache.tuscany.sca.assembly.ComponentProperty;
 
 /**
  * Interface implemented by the provider of the property values
+ *
+ * @version $Rev$ $Date$
  */
 public interface PropertyValueFactory {
 

@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.work;
  * A callback interface that can be optionally used for registering 
  * interest in status of asynchronously scheduled unit of work.
  *
+ * @version $Rev$ $Date$
  */
 public interface NotificationListener<T extends Runnable> {
     

@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.runtime.EndpointReference;
 /**
  * Represents a request, response, or exception flowing through a wire
  *
- * @version $Rev $Date
+ * @version $Rev $Date$
  */
 public interface Message {
     String QOS_CTX_SECURITY_PRINCIPAL = "PRINCIPAL";

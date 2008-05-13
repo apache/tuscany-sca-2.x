@@ -22,7 +22,7 @@ package org.apache.tuscany.sca.invocation;
 /**
  * A factory for messages
  *
- * @version $Rev $Date
+ * @version $Rev $Date$
  */
 public interface MessageFactory {
 
