@@ -31,6 +31,12 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.osoa.sca.ServiceRuntimeException;
 
+/**
+ * InvokerFactory that creates RMIReferenceInvoker instances for the
+ * RMIBinding.
+ *
+ * @version $Rev$ $Date$
+ */
 public class RMIReferenceInvokerFactory implements InvokerFactory {
 
     RuntimeComponentReference reference;

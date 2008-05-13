@@ -43,6 +43,11 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.osoa.sca.ServiceRuntimeException;
 
+/**
+ * Implementation of a Service for the RMIBinding.
+ *
+ * @version $Rev$ $Date$
+ */
 public class RMIService implements ComponentLifecycle {
 
     private RuntimeComponent component;

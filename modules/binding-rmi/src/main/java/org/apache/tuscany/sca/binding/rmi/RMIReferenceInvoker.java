@@ -27,6 +27,11 @@ import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.DataExchangeSemantics;
 
+/**
+ * Invoker for RMI References.
+ *
+ * @version $Rev$ $Date$
+ */
 public class RMIReferenceInvoker implements Invoker, DataExchangeSemantics {
 
     private RMIHost rmiHost;
