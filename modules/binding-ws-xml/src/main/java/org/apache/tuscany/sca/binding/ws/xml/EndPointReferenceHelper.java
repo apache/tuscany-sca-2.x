@@ -45,6 +45,8 @@ import org.w3c.dom.Node;
  * Helper methods to read and write a wsa:endpointReference
  * TODO: almost direct copy of code for Assembly properties
  *       must be able to move to a common utility
+ *
+ * @version $Rev$ $Date$
  */
 public class EndPointReferenceHelper {
     
