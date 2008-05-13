@@ -28,6 +28,8 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 /**
  * A ModelResolver that compiles Groovy scripts into the contribution 
  * class loader so they can be used just like a regular java class.
+ *
+ * @version $Rev$ $Date$
  */
 public class GroovyModelResolver implements ModelResolver {
 

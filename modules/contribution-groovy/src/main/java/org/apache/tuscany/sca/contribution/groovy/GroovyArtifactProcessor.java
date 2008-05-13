@@ -30,6 +30,8 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 
 /**
  * A URLArtifactProcessor for Groovy scripts
+ *
+ * @version $Rev$ $Date$
  */
 public class GroovyArtifactProcessor implements URLArtifactProcessor<GroovyArtifact> {
 

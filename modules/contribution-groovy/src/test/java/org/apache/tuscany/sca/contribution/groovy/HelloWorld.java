@@ -19,6 +19,11 @@
 
 package org.apache.tuscany.sca.contribution.groovy;
 
+/**
+ * HelloWorld Service interface used for testing.
+ *
+ * @version $Rev$ $Date$
+ */
 public interface HelloWorld {
 
     String sayHello(String s);
