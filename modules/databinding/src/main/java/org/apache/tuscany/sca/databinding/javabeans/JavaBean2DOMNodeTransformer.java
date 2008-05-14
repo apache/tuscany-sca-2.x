@@ -28,6 +28,8 @@ import org.w3c.dom.Node;
 
 /**
  * Transformer to convert data from a JavaBean object to DOM Node
+ *
+ * @version $Rev$ $Date$
  */
 public class JavaBean2DOMNodeTransformer extends JavaBean2XMLTransformer<Node> {
 

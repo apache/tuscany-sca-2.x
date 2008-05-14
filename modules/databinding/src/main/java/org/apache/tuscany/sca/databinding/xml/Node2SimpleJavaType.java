@@ -23,7 +23,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
- * Transformer to convert data from a simple java bject to OMElement
+ * Transformer to convert data from a simple java Object to OMElement.
+ *
+ * @version $Rev$ $Date$
  */
 public class Node2SimpleJavaType extends SimpleType2JavaTransformer<Node> {
 

@@ -32,6 +32,8 @@ import javax.xml.stream.XMLStreamReader;
  * org.apache.axis2.util.StreamWrapper</a>. It's used wrap a XMLStreamReader to
  * create a XMLStreamReader representing a document and it will produce
  * START_DOCUMENT, END_DOCUMENT events.
+ *
+ * @version $Rev$ $Date$
  */
 public class XMLDocumentStreamReader implements XMLStreamReader {
     private static final int STATE_COMPLETE_AT_NEXT = 2; // The wrapper

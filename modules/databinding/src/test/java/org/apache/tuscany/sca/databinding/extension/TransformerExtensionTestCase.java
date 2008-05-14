@@ -31,6 +31,8 @@ import org.w3c.dom.Node;
 
 /**
  * Test case for TransformerExtension
+ *
+ * @version $Rev$ $Date$
  */
 public class TransformerExtensionTestCase extends TestCase {
 

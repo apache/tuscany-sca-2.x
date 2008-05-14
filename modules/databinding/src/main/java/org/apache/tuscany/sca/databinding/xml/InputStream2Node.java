@@ -33,6 +33,8 @@ import org.xml.sax.InputSource;
 
 /**
  * Push DOM InputSource to Node
+ *
+ * @version $Rev$ $Date$
  */
 public class InputStream2Node extends BaseTransformer<InputStream, Node> implements
     PullTransformer<InputStream, Node> {

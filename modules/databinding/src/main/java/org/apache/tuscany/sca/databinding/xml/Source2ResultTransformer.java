@@ -29,6 +29,8 @@ import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 
 /**
  * Transform TrAX Source to Result
+ *
+ * @version $Rev$ $Date$
  */
 public class Source2ResultTransformer extends BaseTransformer<Source, Result> implements
     PushTransformer<Source, Result> {

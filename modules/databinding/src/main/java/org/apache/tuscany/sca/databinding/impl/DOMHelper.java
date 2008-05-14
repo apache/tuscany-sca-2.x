@@ -34,6 +34,8 @@ import org.w3c.dom.Node;
 
 /**
  * Helper for DOM
+ *
+ * @version $Rev$ $Date$
  */
 public final class DOMHelper {
     private static DocumentBuilderFactory FACTORY;

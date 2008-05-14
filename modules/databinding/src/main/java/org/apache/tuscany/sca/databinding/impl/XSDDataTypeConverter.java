@@ -39,6 +39,8 @@ import javax.xml.namespace.QName;
 
 /**
  * Utility class for XSD data type conversions
+ *
+ * @version $Rev$ $Date$
  */
 public class XSDDataTypeConverter {
     public static final class Base64Binary {

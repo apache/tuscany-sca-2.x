@@ -27,6 +27,11 @@ import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.databinding.xml.BeanXMLStreamReaderImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
+/**
+ * Transformer to convert data from a JavaBean object to XMLStreamReader.
+ *
+ * @version $Rev$ $Date$
+ */
 public class JavaBean2XMLStreamReaderTransformer extends BaseTransformer<Object, XMLStreamReader> implements
     PullTransformer<Object, XMLStreamReader> {
 

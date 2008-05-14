@@ -29,6 +29,10 @@ import junit.framework.TestCase;
 
 import org.custommonkey.xmlunit.Diff;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class BeanXMLStreamReaderTestCase extends TestCase {
     private final static String XML_RESULT =
         "<?xml version='1.0' encoding='UTF-8'?>" + "<MyBean xmlns=\"http://xml.databinding.sca.tuscany.apache.org/\">"

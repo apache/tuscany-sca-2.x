@@ -25,6 +25,8 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 
 /**
  * DataBinding represents a data representation, for example, SDO, JAXB and AXIOM
+ *
+ * @version $Rev$ $Date$
  */
 public interface DataBinding {
     /**

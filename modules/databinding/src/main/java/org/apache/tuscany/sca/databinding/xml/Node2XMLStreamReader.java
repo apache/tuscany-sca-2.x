@@ -28,6 +28,8 @@ import org.w3c.dom.Node;
 
 /**
  * Transform DOM Node to XML XMLStreamReader
+ *
+ * @version $Rev$ $Date$
  */
 public class Node2XMLStreamReader extends BaseTransformer<Node, XMLStreamReader> implements
     PullTransformer<Node, XMLStreamReader> {

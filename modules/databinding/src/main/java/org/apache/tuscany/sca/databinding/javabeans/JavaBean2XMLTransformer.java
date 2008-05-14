@@ -38,6 +38,8 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * Transformer to convert data from a JavaBean object to xml
+ *
+ * @version $Rev$ $Date$
  */
 public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object, T> implements
     PullTransformer<Object, T> {

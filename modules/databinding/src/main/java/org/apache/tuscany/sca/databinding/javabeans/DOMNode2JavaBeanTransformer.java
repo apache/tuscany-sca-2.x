@@ -29,6 +29,8 @@ import org.w3c.dom.NodeList;
 
 /**
  * Transformer to convert data from DOM Node to JavaBean
+ *
+ * @version $Rev$ $Date$
  */
 public class DOMNode2JavaBeanTransformer extends XML2JavaBeanTransformer<Node> {
 

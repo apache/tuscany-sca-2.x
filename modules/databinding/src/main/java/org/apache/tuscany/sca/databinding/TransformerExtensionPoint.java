@@ -22,6 +22,8 @@ import java.util.List;
 
 /**
  * An extension point for data transformer extensions.
+ *
+ * @version $Rev$ $Date$
  */
 public interface TransformerExtensionPoint {
 

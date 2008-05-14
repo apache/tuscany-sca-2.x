@@ -25,6 +25,10 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.databinding.annotation.DataBinding;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class DataBindingTestCase extends TestCase {
     @SuppressWarnings("unused")
     public void testDataType() throws Exception {

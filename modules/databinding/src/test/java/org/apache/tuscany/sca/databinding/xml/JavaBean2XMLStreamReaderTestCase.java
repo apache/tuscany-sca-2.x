@@ -25,6 +25,10 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBean2XMLStreamReaderTransformer;
 import org.custommonkey.xmlunit.XMLAssert;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class JavaBean2XMLStreamReaderTestCase extends TestCase {
     private final static String XML_RESULT =
         "<?xml version='1.0' encoding='UTF-8'?>" 

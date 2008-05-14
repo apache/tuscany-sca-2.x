@@ -21,6 +21,11 @@ package org.apache.tuscany.sca.databinding.externalizable;
 
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 
+/**
+ * DataNinding for Externalizable objects.
+ *
+ * @version $Rev$ $Date$
+ */
 public class ExternalizableDataBinding extends BaseDataBinding {
     
     public static final String NAME = java.io.Externalizable.class.getName();

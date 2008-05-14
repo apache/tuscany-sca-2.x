@@ -24,6 +24,8 @@ import javax.xml.namespace.QName;
 /**
  * This exception is used to encapsulate and rethrow exceptions that arise out
  * of converting JavaBean objects to XML
+ *
+ * @version $Rev$ $Date$
  */
 public class Java2XMLMapperException extends RuntimeException {
     private static final long serialVersionUID = 6811924384399578686L;

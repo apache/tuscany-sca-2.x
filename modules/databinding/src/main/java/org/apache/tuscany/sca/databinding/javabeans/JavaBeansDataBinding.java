@@ -33,6 +33,8 @@ import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 
 /**
  * DataBinding for JavaBeans
+ *
+ * @version $Rev$ $Date$
  */
 public class JavaBeansDataBinding extends BaseDataBinding {
     /**

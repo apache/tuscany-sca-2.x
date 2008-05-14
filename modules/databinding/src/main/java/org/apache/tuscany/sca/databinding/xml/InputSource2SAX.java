@@ -29,6 +29,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Push InputSource to SAX
+ *
+ * @version $Rev$ $Date$
  */
 public class InputSource2SAX extends BaseTransformer<InputSource, ContentHandler> implements
     PushTransformer<InputSource, ContentHandler> {

@@ -23,6 +23,8 @@ import javax.xml.namespace.QName;
 
 /**
  * Type Mapper between XML schema simple data types and java objects
+ *
+ * @version $Rev$ $Date$
  */
 public interface SimpleTypeMapper {
     /**

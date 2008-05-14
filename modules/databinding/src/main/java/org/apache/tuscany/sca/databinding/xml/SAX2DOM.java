@@ -37,6 +37,8 @@ import org.xml.sax.ext.LexicalHandler;
 
 /**
  * SAX2DOM adapter
+ *
+ * @version $Rev$ $Date$
  */
 public class SAX2DOM implements ContentHandler, LexicalHandler {
     public static final String EMPTYSTRING = "";

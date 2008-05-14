@@ -30,6 +30,8 @@ import org.xml.sax.ContentHandler;
 
 /**
  * Transform DOM Node to XML XMLStreamReader
+ *
+ * @version $Rev$ $Date$
  */
 public class XMLStreamReader2Node extends BaseTransformer<XMLStreamReader, Node> implements
     PullTransformer<XMLStreamReader, Node> {

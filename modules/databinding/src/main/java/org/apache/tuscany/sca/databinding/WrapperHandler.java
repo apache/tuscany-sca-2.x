@@ -26,6 +26,8 @@ import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 
 /**
  * A contract for transformers to deal with wrapping/unwrapping for WSDL wrapper style operations
+ *
+ * @version $Rev$ $Date$
  */
 public interface WrapperHandler<T> {
     /**

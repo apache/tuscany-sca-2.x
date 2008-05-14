@@ -28,6 +28,8 @@ import org.w3c.dom.Node;
 
 /**
  * Transform DOM Node to XML String
+ *
+ * @version $Rev$ $Date$
  */
 public class Node2String extends BaseTransformer<Node, String> implements PullTransformer<Node, String> {
     private static final Node2Writer TRANSFORMER = new Node2Writer();

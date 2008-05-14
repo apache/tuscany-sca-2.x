@@ -31,6 +31,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Push InputStream to SAX
+ *
+ * @version $Rev$ $Date$
  */
 public class InputStream2SAX extends BaseTransformer<InputStream, ContentHandler> implements
     PushTransformer<InputStream, ContentHandler> {

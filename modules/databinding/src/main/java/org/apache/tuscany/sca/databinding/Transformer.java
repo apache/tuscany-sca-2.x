@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.databinding;
 /**
  * A transformer provides the data transformation from source type to target type. The cost of the transformation is
  * modelled as weight.
+ *
+ * @version $Rev$ $Date$
  */
 public interface Transformer {
     /**

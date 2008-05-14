@@ -38,6 +38,8 @@ import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 
 /**
  * Default Mediator implementation
+ *
+ * @version $Rev$ $Date$
  */
 public class MediatorImpl implements Mediator {
 

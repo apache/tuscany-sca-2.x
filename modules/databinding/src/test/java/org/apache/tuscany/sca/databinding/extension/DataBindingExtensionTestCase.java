@@ -30,7 +30,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class DataBindingExtensionTestCase extends TestCase {
 
