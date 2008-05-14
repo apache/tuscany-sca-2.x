@@ -356,8 +356,6 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
      * @param impl
      */
     private void mergeComponentType(ModelResolver resolver, BPELImplementation impl) {
-        // FIXME: Need to clarify how to merge
-    	
     	// Load the component type from a component type file, if any
         ComponentType componentType = getComponentType(resolver, impl);
         if (componentType != null && !componentType.isUnresolved()) {
@@ -400,6 +398,12 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     }
 
 
+    /**
+     * Find the componentType side file based on the BPEL implementation artifact
+     * @param resolver
+     * @param impl
+     * @return
+     */
     private ComponentType getComponentType(ModelResolver resolver, BPELImplementation impl) {
         String bpelProcessURI = impl.getProcessDefinition().getURI().toString();
         
@@ -415,7 +419,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         return null;
     } // end getComponentType
 
-    /*
+    /**
      * Returns a QName of a BPEL process as from its string representation in the process
      * attribute in the process XML
      * 
