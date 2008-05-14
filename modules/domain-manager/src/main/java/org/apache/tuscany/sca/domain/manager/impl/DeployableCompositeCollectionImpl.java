@@ -82,7 +82,7 @@ import org.osoa.sca.annotations.Service;
 @Service(interfaces={ItemCollection.class, LocalItemCollection.class})
 public class DeployableCompositeCollectionImpl implements ItemCollection, LocalItemCollection {
 
-    private final static Logger logger = Logger.getLogger(DeployableCompositeCollectionImpl.class.getName());    
+    private static final Logger logger = Logger.getLogger(DeployableCompositeCollectionImpl.class.getName());
 
     @Reference
     public LocalItemCollection contributionCollection;

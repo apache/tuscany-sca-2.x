@@ -49,7 +49,7 @@ import org.osoa.sca.annotations.Service;
 public class NodeConfigurationServiceImpl extends HttpServlet implements Servlet {
     private static final long serialVersionUID = 6913769467386954463L;
 
-    private final static Logger logger = Logger.getLogger(NodeConfigurationServiceImpl.class.getName());    
+    private static final Logger logger = Logger.getLogger(NodeConfigurationServiceImpl.class.getName());
 
     @Reference
     public LocalItemCollection contributionCollection;

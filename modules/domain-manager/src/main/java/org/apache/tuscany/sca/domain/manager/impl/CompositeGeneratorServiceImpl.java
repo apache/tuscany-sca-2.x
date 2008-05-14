@@ -76,7 +76,7 @@ import org.osoa.sca.annotations.Service;
 public class CompositeGeneratorServiceImpl extends HttpServlet implements Servlet {
     private static final long serialVersionUID = -6531448326726908269L;
 
-    private final static Logger logger = Logger.getLogger(CompositeGeneratorServiceImpl.class.getName());    
+    private static final Logger logger = Logger.getLogger(CompositeGeneratorServiceImpl.class.getName());
 
     @Reference
     public LocalItemCollection contributionCollection;

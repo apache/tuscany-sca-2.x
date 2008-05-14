@@ -88,7 +88,7 @@ import org.w3c.dom.Document;
 @Service(interfaces={ItemCollection.class, LocalItemCollection.class})
 public class ContributionCollectionImpl implements ItemCollection, LocalItemCollection {
 
-    private final static Logger logger = Logger.getLogger(ContributionCollectionImpl.class.getName());    
+    private static final Logger logger = Logger.getLogger(ContributionCollectionImpl.class.getName());
 
     @Property
     public String workspaceFile;

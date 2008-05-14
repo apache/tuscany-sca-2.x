@@ -60,7 +60,7 @@ import org.osoa.sca.annotations.Service;
 public class QuickStartServiceImpl extends HttpServlet {
     private static final long serialVersionUID = -3477992129462720901L;
 
-    private final static Logger logger = Logger.getLogger(QuickStartServiceImpl.class.getName());    
+    private static final Logger logger = Logger.getLogger(QuickStartServiceImpl.class.getName());
 
     @Reference
     public LocalItemCollection contributionCollection;

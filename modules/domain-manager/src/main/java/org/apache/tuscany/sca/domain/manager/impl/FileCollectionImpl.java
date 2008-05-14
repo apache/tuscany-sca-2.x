@@ -44,7 +44,7 @@ import org.osoa.sca.annotations.Service;
 @Service(ItemCollection.class)
 public class FileCollectionImpl implements ItemCollection {
     
-    private final static Logger logger = Logger.getLogger(FileCollectionImpl.class.getName());    
+    private static final Logger logger = Logger.getLogger(FileCollectionImpl.class.getName());
 
     @Property
     public String directoryName;
