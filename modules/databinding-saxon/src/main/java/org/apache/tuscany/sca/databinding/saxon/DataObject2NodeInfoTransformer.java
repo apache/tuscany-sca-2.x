@@ -33,12 +33,14 @@ import commonj.sdo.helper.XMLDocument;
 import commonj.sdo.helper.XMLHelper;
 
 /**
- * Transforms SDO DataObject-s to NodeInfo objects needed by Saxon parser
- * @version $Rev$ $Date$
+ * Transforms SDO DataObject-s to NodeInfo objects needed by Saxon parser.
+ *
  * For root element when Serializing the DataObject the name of its 
  * implemented interface is used with its first letter made lowercase.
  * Also any namespaces that are defined are deleted, because otherwise
  * the SaxonB parser does not work
+ *
+ * @version $Rev$ $Date$
  */
 public class DataObject2NodeInfoTransformer extends BaseTransformer<DataObject, NodeInfo> implements
     PullTransformer<DataObject, NodeInfo> {

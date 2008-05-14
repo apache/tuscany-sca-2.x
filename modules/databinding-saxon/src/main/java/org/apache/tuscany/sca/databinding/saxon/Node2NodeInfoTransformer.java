@@ -32,10 +32,12 @@ import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.w3c.dom.Node;
 
 /**
- * Transforms DOM Node-s to NodeInfo objects needed by Saxon parser
- * @version $Rev$ $Date$
+ * Transforms DOM Node-s to NodeInfo objects needed by Saxon parser.
+ *
  * Any namespaces that are defined are deleted, because otherwise
  * the SaxonB parser does not work
+ *
+ * @version $Rev$ $Date$
  */
 public class Node2NodeInfoTransformer extends BaseTransformer<Node, NodeInfo> implements
     PullTransformer<Node, NodeInfo> {

@@ -33,7 +33,8 @@ import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.w3c.dom.Node;
 
 /**
- * Transforms NodeInfo objects to SDO DataObject-s
+ * Transforms NodeInfo objects to SDO DataObjects.
+ *
  * @version $Rev$ $Date$
  */
 public class NodeInfo2NodeTransformer extends BaseTransformer<NodeInfo, Node> implements
