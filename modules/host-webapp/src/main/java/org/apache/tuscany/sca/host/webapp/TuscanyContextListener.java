@@ -32,6 +32,8 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 /**
  * A ServletContextListener to create and close the SCADomain
  * when the webapp is initialized or destroyed.
+ *
+ * @version $Rev$ $Date$
  */
 public class TuscanyContextListener implements ServletContextListener {
 
