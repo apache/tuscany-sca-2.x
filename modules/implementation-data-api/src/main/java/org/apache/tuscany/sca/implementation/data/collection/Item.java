@@ -114,8 +114,9 @@ public class Item {
     }
 
     /**
-     * Sets the item link to a related web resource
-     * @param link the item link to a related web resource
+     * Sets the item link to a related web resource.
+     *
+     * @param related the item link to a related web resource
      */
     public void setRelated(String related) {
         this.related = related;
@@ -130,8 +131,9 @@ public class Item {
     }
 
     /**
-     * Sets the item link to a related web resource
-     * @param link the item link to a related web resource
+     * Sets the item link to an alternate web resource.
+     *
+     * @param alternate the item link to an alternate web resource
      */
     public void setAlternate(String alternate) {
         this.alternate = alternate;
