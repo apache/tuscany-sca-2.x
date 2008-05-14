@@ -44,6 +44,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * A Tuscany ModuleActivator which activates all the ImplementationActivators
+ *
+ * @version $Rev$ $Date$
  */
 public class ImplementationsActivator implements ModuleActivator {
 

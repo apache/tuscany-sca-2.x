@@ -27,6 +27,8 @@ import java.net.URL;
 
 /**
  * TODO: Shouldn't this be using the contribution service?
+ *
+ * @version $Rev$ $Date$
  */
 public class ResourceHelper {
 

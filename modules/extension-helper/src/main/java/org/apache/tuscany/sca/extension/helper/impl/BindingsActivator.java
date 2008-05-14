@@ -50,6 +50,10 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class BindingsActivator implements ModuleActivator {
 
     protected List<BindingActivator> bindingActivators;

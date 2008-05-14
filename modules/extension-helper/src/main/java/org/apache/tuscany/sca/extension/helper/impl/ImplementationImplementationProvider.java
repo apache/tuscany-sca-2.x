@@ -38,6 +38,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  * that Invoker's can't initialize things like the services, references and  properties
  * until start is called. This class tries to get around that by using an Invoker
  * proxy that delays creating the real Invoker till start is called.
+ *
+ * @version $Rev$ $Date$
  */
 public class ImplementationImplementationProvider implements ImplementationProvider {
 

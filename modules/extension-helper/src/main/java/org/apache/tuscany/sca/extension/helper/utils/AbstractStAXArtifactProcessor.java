@@ -40,6 +40,8 @@ import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 /**
  * TODO: couldn't something like this class be provided by the runtime?
  * Each impl shouldn't have to have their own .componentType merging code
+ *
+ * @version $Rev$ $Date$
  */
 public abstract class AbstractStAXArtifactProcessor<I extends Implementation> implements StAXArtifactProcessor<I> {
 

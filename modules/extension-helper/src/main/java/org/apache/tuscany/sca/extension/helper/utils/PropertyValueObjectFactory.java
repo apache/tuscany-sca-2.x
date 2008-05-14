@@ -22,6 +22,10 @@ package org.apache.tuscany.sca.extension.helper.utils;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.core.factory.ObjectFactory;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public interface PropertyValueObjectFactory {
 
     ObjectFactory createValueFactory(Property property);

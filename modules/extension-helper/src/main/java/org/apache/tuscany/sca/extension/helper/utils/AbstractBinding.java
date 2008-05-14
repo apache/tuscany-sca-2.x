@@ -26,6 +26,8 @@ import org.apache.tuscany.sca.assembly.Binding;
 /**
  * Helper for implementing Bindings, implements all the
  * standard getters and setters on the binding interface.
+ *
+ * @version $Rev$ $Date$
  */
 public class AbstractBinding implements Binding {
 

@@ -35,6 +35,8 @@ import org.apache.tuscany.sca.policy.PolicySet;
 /**
  * Helper for implementing Implementations, implements all the
  * standard getters and setters on the Implementation interface.
+ *
+ * @version $Rev$ $Date$
  */
 public abstract class AbstractImplementation implements Implementation {
 

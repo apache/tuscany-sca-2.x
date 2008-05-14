@@ -47,6 +47,8 @@ import org.apache.tuscany.sca.extension.helper.utils.AbstractBinding;
  * to define the SCDL attributes.
  * 
  * TODO: merge this with SCDLProcessor
+ *
+ * @version $Rev$ $Date$
  */
 public class BindingSCDLProcessor implements StAXArtifactProcessor {
 
