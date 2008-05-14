@@ -39,7 +39,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
 public class JavaBean2JSONObject extends BaseTransformer<Object, Object> implements PullTransformer<Object, Object> {
-    private final static Comparator<PropertyDescriptor> COMPARATOR = new Comparator<PropertyDescriptor>() {
+    private static final Comparator<PropertyDescriptor> COMPARATOR = new Comparator<PropertyDescriptor>() {
         public int compare(PropertyDescriptor o1, PropertyDescriptor o2) {
             return o1.getName().compareTo(o2.getName());
         }
