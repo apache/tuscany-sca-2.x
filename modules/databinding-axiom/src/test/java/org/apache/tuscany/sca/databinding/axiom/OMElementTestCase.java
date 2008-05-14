@@ -111,7 +111,7 @@ public class OMElementTestCase extends TestCase {
         assertEquals(new QName("http://www.example.com/IPO", "purchaseOrder"), copy.getQName());
     }
 
-    private final static QName XSI_NIL = new QName("http://www.w3.org/2001/XMLSchema-instance", "nil", "xsi");
+    private static final QName XSI_NIL = new QName("http://www.w3.org/2001/XMLSchema-instance", "nil", "xsi");
 
     public final void testNil() {
         Object2OMElement t1 = new Object2OMElement();
