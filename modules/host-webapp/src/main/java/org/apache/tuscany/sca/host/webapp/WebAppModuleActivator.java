@@ -28,6 +28,8 @@ import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 
 /**
  * Activates the webapp host by registering the webapp ServletHost impl
+ *
+ * @version $Rev$ $Date$
  */
 public class WebAppModuleActivator implements ModuleActivator {
 

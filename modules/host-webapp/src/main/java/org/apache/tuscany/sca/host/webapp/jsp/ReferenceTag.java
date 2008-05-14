@@ -31,6 +31,8 @@ import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
 /**
  * Tag to handle SCA references
  * <sca:reference name="service" type="test.MyService" scope="1" />
+ *
+ * @version $Rev$ $Date$
  */
 public class ReferenceTag extends TagSupport {
     private static final long serialVersionUID = 1L;

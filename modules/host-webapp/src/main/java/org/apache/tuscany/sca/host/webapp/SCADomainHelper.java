@@ -29,7 +29,8 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 /**
  * Utility class to initialize the SCADomian associated with a webapp
- * 
+ *
+ * @version $Rev$ $Date$
  * @deprecated Not necessary anymore with TuscanyServletFilter 
  */
 @Deprecated

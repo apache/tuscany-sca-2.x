@@ -33,6 +33,8 @@ import javax.servlet.http.HttpServletRequestWrapper;
 /**
  * A Servlet request dispatcher that can be used to delegate requests to a
  * Servlet registered with the Webapp Servlet host.
+ *
+ * @version $Rev$ $Date$
  */
 class WebAppRequestDispatcher implements RequestDispatcher {
     private String servletPath;

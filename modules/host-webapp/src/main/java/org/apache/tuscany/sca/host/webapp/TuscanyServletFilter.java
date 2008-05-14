@@ -35,6 +35,8 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * A Servlet filter that forwards service requests to the Servlets registered with
  * the Tuscany ServletHost.
+ *
+ * @version $Rev$ $Date$
  */
 public class TuscanyServletFilter implements Filter {
     private static final long serialVersionUID = 1L;

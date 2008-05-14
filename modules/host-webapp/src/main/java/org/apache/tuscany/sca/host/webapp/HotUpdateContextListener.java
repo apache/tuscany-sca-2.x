@@ -32,6 +32,8 @@ import org.apache.tuscany.sca.host.embedded.impl.HotUpdatableSCADomain;
  * directory named "sca-contributions" will be contributed to the SCA 
  * domain. Any changes to the contributions in the repository will be 
  * automatically detected and the SCADomain updated accordingly.
+ *
+ * @version $Rev$ $Date$
  */
 public class HotUpdateContextListener extends TuscanyContextListener {
 

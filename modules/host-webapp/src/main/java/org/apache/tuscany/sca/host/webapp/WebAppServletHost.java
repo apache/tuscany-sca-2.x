@@ -47,6 +47,8 @@ import org.apache.tuscany.sca.host.http.ServletMappingException;
  * 
  * FIXME: using a static singleton seems a big hack but how should it be shared?
  * Need some way for TuscanyServlet to pull it out.
+ *
+ * @version $Rev$ $Date$
  */
 public class WebAppServletHost implements ServletHost {
     private static final Logger logger = Logger.getLogger(WebAppServletHost.class.getName());
