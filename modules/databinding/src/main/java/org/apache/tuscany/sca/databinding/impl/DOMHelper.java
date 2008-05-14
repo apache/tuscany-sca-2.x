@@ -55,7 +55,7 @@ public final class DOMHelper {
     /**
      * 
      */
-    private synchronized static void init() {
+    private static synchronized void init() {
         if (FACTORY == null) {
             FACTORY = DocumentBuilderFactory.newInstance();
             FACTORY.setNamespaceAware(true);

@@ -31,10 +31,10 @@ import javax.xml.namespace.QName;
  * @version $Rev$ $Date$
  */
 public class SimpleXmlNodeImpl implements XmlNode {
-    private final static String XSI_PREFIX = "xsi";
-    private final static String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
-    private final static QName XSI_NIL = new QName(XSI_NS, "nil", XSI_PREFIX);
-    private final static Map<String, String> NS_MAP = new HashMap<String, String>();
+    private static final String XSI_PREFIX = "xsi";
+    private static final String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
+    private static final QName XSI_NIL = new QName(XSI_NS, "nil", XSI_PREFIX);
+    private static final Map<String, String> NS_MAP = new HashMap<String, String>();
     static {
         NS_MAP.put(XSI_PREFIX, XSI_NS);
     }

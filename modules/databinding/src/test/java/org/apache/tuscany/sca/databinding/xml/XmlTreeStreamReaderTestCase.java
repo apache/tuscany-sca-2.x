@@ -71,7 +71,7 @@ public class XmlTreeStreamReaderTestCase {
             + "  </items>"
             + "</ipo:purchaseOrder>";
 
-    private final static String XML_RESULT =
+    private static final String XML_RESULT =
         "<?xml version='1.0' encoding='UTF-8'?>" + "<p1:e1 xmlns:p1=\"http://ns\">"
             + "<p2:e11 xmlns:p2=\"http://ns1\">MyText</p2:e11>"
             + "<p1:e12><p1:e121 /></p1:e12>"

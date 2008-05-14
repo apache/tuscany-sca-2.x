@@ -30,7 +30,7 @@ import org.custommonkey.xmlunit.XMLAssert;
  * @version $Rev$ $Date$
  */
 public class JavaBean2XMLStreamReaderTestCase extends TestCase {
-    private final static String XML_RESULT =
+    private static final String XML_RESULT =
         "<?xml version='1.0' encoding='UTF-8'?>" 
             + "<MyBean xmlns=\"http://xml.databinding.sca.tuscany.apache.org/\">"
             + "<arr>1</arr><arr>2</arr><arr>3</arr><bean><name>Name</name></bean><i>1</i><str>ABC</str>"
