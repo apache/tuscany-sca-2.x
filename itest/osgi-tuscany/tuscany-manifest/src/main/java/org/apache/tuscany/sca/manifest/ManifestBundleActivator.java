@@ -14,6 +14,8 @@ import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 
 import org.osgi.framework.Bundle;
@@ -229,6 +231,7 @@ public class ManifestBundleActivator implements BundleActivator {
         attributes.putValue("Bundle-ClassPath", bundleName);
         
         String packages = getPackagesInJar(bundleName, jar);
+        String version = getJarVersion(bundleName);
 
         attributes.remove(new Attributes.Name("Require-Bundle"));
         attributes.remove(new Attributes.Name("Import-Package"));
@@ -236,7 +239,7 @@ public class ManifestBundleActivator implements BundleActivator {
         if (attributes.getValue("Bundle-SymbolicName") == null)
             attributes.putValue("Bundle-SymbolicName", bundleName);
         if (attributes.getValue("Bundle-Version") == null)
-            attributes.putValue("Bundle-Version", "1.0.0");
+            attributes.putValue("Bundle-Version", version);
         // Existing export statements in bundles may contain versions, so they should be used as is
         // SDO exports are not sufficient, and should be changed
         if (attributes.getValue("Export-Package") == null || bundleName.startsWith("tuscany-sdo-impl")) {
@@ -282,6 +285,20 @@ public class ManifestBundleActivator implements BundleActivator {
             pkgBuf.append(pkg);
         }
         return pkgBuf.toString();
+    }
+    
+    private String getJarVersion(String bundleName) {
+        Pattern pattern = Pattern.compile("-([0-9.]+)");
+        Matcher matcher = pattern.matcher(bundleName);
+        String version = "1.0.0";
+        if (matcher.find()) {
+            version = matcher.group();
+            if (version.endsWith("."))
+                version = version.substring(1, version.length()-1);
+            else
+                version = version.substring(1);
+        }
+        return version;
     }
 	
 }
