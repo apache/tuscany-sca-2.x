@@ -26,7 +26,7 @@
         <implementation.bpel process="hns:HelloWorld"/>
         <service name="helloPartnerLink">
         	<interface.wsdl interface="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl#wsdl.interface(HelloPortType)" />
-        	<binding.ws uri="http://localhost:8085/HelloPartnerLink"/>
+        	<binding.ws uri="http://localhost:8085/HelloPartnerLink" wsdlElement="http://tuscany.apache.org/implementation/bpel/example/helloworld.wsdl#wsdl.service(HelloService)"/>
         </service>
     </component>
 </composite>
