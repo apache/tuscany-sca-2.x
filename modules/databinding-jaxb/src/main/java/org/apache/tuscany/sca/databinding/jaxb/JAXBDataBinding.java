@@ -35,6 +35,8 @@ import org.w3c.dom.Document;
 
 /**
  * JAXB DataBinding
+ *
+ * @version $Rev$ $Date$
  */
 public class JAXBDataBinding extends BaseDataBinding {
     public static final String NAME = JAXBElement.class.getName();

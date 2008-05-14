@@ -41,6 +41,10 @@ import org.w3c.dom.Node;
 import com.example.ipo.jaxb.ObjectFactory;
 import com.example.ipo.jaxb.PurchaseOrderType;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class JAXBTestCase extends TestCase {
     private static final String IPO_XML =
         "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"

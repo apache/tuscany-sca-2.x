@@ -32,6 +32,8 @@ import com.example.ipo.jaxb.PurchaseOrderType;
 
 /**
  * Test case for JAXBExceptionHandler
+ *
+ * @version $Rev$ $Date$
  */
 public class JAXBWrapperHandlerTestCase extends TestCase {
     // private static final QName ELEMENT = new QName("http://www.example.com/IPO", "purchaseOrder");

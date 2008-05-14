@@ -40,6 +40,10 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.w3c.dom.Node;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class JAXBContextHelper {
     // TODO: Do we need to set them for source and target?
     public static final String JAXB_CLASSES = "jaxb.classes";

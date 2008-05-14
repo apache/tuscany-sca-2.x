@@ -30,6 +30,10 @@ import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class JAXB2Node extends BaseTransformer<Object, Node> implements PullTransformer<Object, Node> {
 
     public Node transform(Object source, TransformationContext tContext) {
