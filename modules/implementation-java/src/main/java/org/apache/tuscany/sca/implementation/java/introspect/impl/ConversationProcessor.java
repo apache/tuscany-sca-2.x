@@ -45,7 +45,6 @@ public class ConversationProcessor extends BaseJavaClassVisitor {
     @Override
     public <T> void visitClass(Class<T> clazz, JavaImplementation type) throws IntrospectionException {
 
-    	
         ConversationAttributes conversation = clazz.getAnnotation(ConversationAttributes.class);
         if (conversation == null) {
             return;

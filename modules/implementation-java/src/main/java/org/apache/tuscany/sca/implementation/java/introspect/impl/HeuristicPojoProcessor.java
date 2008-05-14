@@ -497,10 +497,9 @@ public class HeuristicPojoProcessor extends BaseJavaClassVisitor {
     }
 
     /**
-     * Creates a mapped property
+     * Creates a mapped property.
      * 
      * @param name the property name
-     * @param member the injection site the reference maps to
      * @param paramType the property type
      */
     private org.apache.tuscany.sca.assembly.Property createProperty(String name, Class<?> paramType) {
