@@ -44,7 +44,8 @@ import org.apache.tuscany.sca.policy.QualifiedIntent;
 
 /**
  * Processor for SCA Definitions
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<SCADefinitions> {
     

@@ -30,6 +30,11 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.policy.Policy;
 
+/**
+ * A PolicyProcessor used for testing.
+ *
+ * @version $Rev$ $Date$
+ */
 public class TestPolicyProcessor implements StAXArtifactProcessor<Policy> {
 
     public QName getArtifactType() {
