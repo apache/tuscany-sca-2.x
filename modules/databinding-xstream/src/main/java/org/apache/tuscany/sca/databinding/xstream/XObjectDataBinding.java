@@ -23,6 +23,8 @@ import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 
 /**
  * DataBinding for Jobs
+ *
+ * @version $Rev$ $Date$
  */
 public class XObjectDataBinding extends BaseDataBinding {
 

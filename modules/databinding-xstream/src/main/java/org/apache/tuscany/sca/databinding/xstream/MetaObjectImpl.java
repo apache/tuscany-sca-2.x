@@ -21,6 +21,11 @@ package org.apache.tuscany.sca.databinding.xstream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+/**
+ * Implementation of a wrapper for XObject.
+ *
+ * @version $Rev$ $Date$
+ */
 public class MetaObjectImpl implements MetaObject {
     private String obID;
     private String name;
