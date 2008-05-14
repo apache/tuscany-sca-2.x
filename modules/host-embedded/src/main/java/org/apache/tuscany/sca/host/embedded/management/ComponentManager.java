@@ -24,6 +24,11 @@ import java.util.Set;
 import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.core.assembly.ActivationException;
 
+/**
+ * Component Manager interface.
+ *
+ * @version $Rev$ $Date$
+ */
 public interface ComponentManager {
 
     Set<String> getComponentNames();

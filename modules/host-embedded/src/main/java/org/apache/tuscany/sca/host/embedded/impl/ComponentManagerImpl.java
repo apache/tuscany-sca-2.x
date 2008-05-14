@@ -31,6 +31,11 @@ import org.apache.tuscany.sca.core.assembly.RuntimeComponentImpl;
 import org.apache.tuscany.sca.host.embedded.management.ComponentListener;
 import org.apache.tuscany.sca.host.embedded.management.ComponentManager;
 
+/**
+ * Implementation of the ComponentManager.
+ *
+ * @version $Rev$ $Date$
+ */
 public class ComponentManagerImpl implements ComponentManager {
 
     protected List<ComponentListener> listeners = new CopyOnWriteArrayList<ComponentListener>();
