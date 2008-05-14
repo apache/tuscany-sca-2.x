@@ -26,6 +26,11 @@ import org.apache.xmlbeans.XmlObject;
 import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Node;
 
+/**
+ * Transforms an XML Object to a DOM Node.
+ *
+ * @version $Rev$ $Date$
+ */
 @Service(Transformer.class)
 public class XmlObject2Node extends BaseTransformer<XmlObject, Node> implements
     PullTransformer<XmlObject, Node> {

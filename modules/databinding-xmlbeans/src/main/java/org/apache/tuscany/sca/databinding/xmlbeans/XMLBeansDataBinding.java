@@ -24,6 +24,8 @@ import org.apache.xmlbeans.XmlObject;
 
 /**
  * XMLBeans DataBinding
+ *
+ * @version $Rev$ $Date$
  */
 public class XMLBeansDataBinding extends BaseDataBinding {
     public static final String NAME = XmlObject.class.getName();

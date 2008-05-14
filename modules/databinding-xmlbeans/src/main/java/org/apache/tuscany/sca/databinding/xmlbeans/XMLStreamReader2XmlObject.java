@@ -26,6 +26,11 @@ import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.xmlbeans.XmlObject;
 
+/**
+ * Transforms an XMLStreamReader to an XML Object. 
+ *
+ * @version $Rev$ $Date$
+ */
 public class XMLStreamReader2XmlObject extends BaseTransformer<XMLStreamReader, XmlObject> implements PullTransformer<XMLStreamReader, XmlObject> {
     // private XmlOptions options;
 
