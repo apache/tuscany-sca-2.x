@@ -68,7 +68,7 @@ public class DefaultExtensionPointRegistry implements ExtensionPointRegistry {
     
     private Constructor<?> getConstructor(Constructor<?>[] constructors, Class<?>[] paramTypes) {
         for (Constructor<?> c : constructors) {
-            Class<?> types[] = c.getParameterTypes();
+            Class<?>[] types = c.getParameterTypes();
             if (c.getParameterTypes().length == paramTypes.length) {
                 boolean found = true;
                 for (int i = 0; i < types.length; i++) {
