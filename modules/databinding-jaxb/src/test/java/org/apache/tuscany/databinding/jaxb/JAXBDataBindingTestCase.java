@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.databinding.jaxb;
 
-import java.lang.annotation.Annotation;
-
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
@@ -54,7 +52,7 @@ public class JAXBDataBindingTestCase extends TestCase {
 
     /**
      * Test method for
-     * {@link org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding#introspect(java.lang.Class, Annotation)}.
+     * {@link org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding#introspect(java.lang.Class, java.lang.annotation.Annotation)}.
      */
     public final void testIntrospect() {
         DataType dataType = new DataTypeImpl<Class>(JAXBElement.class, null);
