@@ -71,12 +71,12 @@ public class ReadTestCase extends TestCase {
     public void testReadComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestEJB.composite");
         XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-        Composite composite = (Composite)staxProcessor.read(reader);
+        Composite composite = (Composite) staxProcessor.read(reader);
         assertNotNull(composite);
 
         compositeBuilder.build(composite);
         
-        assertTrue(((EJBImplementation)composite.getComponents().get(0).getImplementation()).getEJBLink().equals("module.jar#TestEJB"));
+        assertTrue(((EJBImplementation) composite.getComponents().get(0).getImplementation()).getEJBLink().equals("module.jar#TestEJB"));
     }
 
 }

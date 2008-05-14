@@ -56,7 +56,7 @@ public class WriteTestCase extends TestCase {
 
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("TestEJB.composite");
-        Composite composite = (Composite)staxProcessor.read(inputFactory.createXMLStreamReader(is));
+        Composite composite = (Composite) staxProcessor.read(inputFactory.createXMLStreamReader(is));
         assertNotNull(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
