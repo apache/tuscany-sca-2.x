@@ -34,6 +34,10 @@ import org.apache.tuscany.sca.databinding.xml.Node2OutputStream;
 import org.apache.tuscany.sca.databinding.xml.Node2String;
 import org.w3c.dom.Node;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class FastInfosetTransformerTestCase extends TestCase {
     private static final String IPO_XML =
         "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
