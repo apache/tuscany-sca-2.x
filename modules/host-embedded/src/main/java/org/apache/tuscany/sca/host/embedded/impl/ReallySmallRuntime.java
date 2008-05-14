@@ -78,7 +78,7 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  * @version $Rev$ $Date$
  */
 public class ReallySmallRuntime {
-	private final static Logger logger = Logger.getLogger(ReallySmallRuntime.class.getName());
+	private static final Logger logger = Logger.getLogger(ReallySmallRuntime.class.getName());
     private List<ModuleActivator> modules;
     private ExtensionPointRegistry registry;
 
