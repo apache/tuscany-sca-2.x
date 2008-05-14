@@ -36,8 +36,8 @@ import org.osoa.sca.annotations.Remotable;
 public interface SCADomainEventService {
     
     // constants
-    public static final String SERVICE_NOT_KNOWN = "SERVICE_NOT_KNOWN";
-    public static final String SERVICE_NOT_REGISTERED = "SERVICE_NOT_REGISTERED";
+    String SERVICE_NOT_KNOWN = "SERVICE_NOT_KNOWN";
+    String SERVICE_NOT_REGISTERED = "SERVICE_NOT_REGISTERED";
 
     /**
      * Add information about a node in the domain
@@ -46,7 +46,7 @@ public interface SCADomainEventService {
      * @param nodeURL
      * @return
      */
-    public void registerNode(String nodeURI, String nodeURL, Externalizable nodeManageReference) throws DomainException;
+    void registerNode(String nodeURI, String nodeURL, Externalizable nodeManageReference) throws DomainException;
         
     /**
      * Remove information about a node in a domain
@@ -55,7 +55,7 @@ public interface SCADomainEventService {
      * @param nodeURL
      * @return
      */
-    public void unregisterNode(String nodeURI) throws DomainException;
+    void unregisterNode(String nodeURI) throws DomainException;
     
     /**
      * Tell the domain that a node has been started through the local API
@@ -63,7 +63,7 @@ public interface SCADomainEventService {
      * @param nodeURI the URI of the node being started
      * @throws DomainException
      */
-    public void registerNodeStart(String nodeURI) throws DomainException;
+    void registerNodeStart(String nodeURI) throws DomainException;
     
     /**
      * Tell the domain that a node has been stopped through the local API
@@ -71,7 +71,7 @@ public interface SCADomainEventService {
      * @param nodeURI
      * @throws DomainException
      */
-    public void registerNodeStop(String nodeURI) throws DomainException;
+    void registerNodeStop(String nodeURI) throws DomainException;
 
     /**
      * In the case where a contribution is added at a node this method is used to 
@@ -80,10 +80,10 @@ public interface SCADomainEventService {
      * 
      * @param nodeURI the string URI for the node
      * @param contributionURI the string URI for the contribution
-     * @param nodeURL the location of the contribution
+     * @param contributionURL the location of the contribution
      * @return
      */
-    public void registerContribution(String nodeURI, String contributionURI, String contributionURL) throws DomainException;
+    void registerContribution(String nodeURI, String contributionURI, String contributionURL) throws DomainException;
     
 
     /** 
@@ -94,7 +94,7 @@ public interface SCADomainEventService {
      * @param contributionURI the string URI for the contribution
      * @return
      */
-    public void unregisterContribution(String nodeURI, String contributionURI) throws DomainException;     
+    void unregisterContribution(String nodeURI, String contributionURI) throws DomainException;     
 
     /**
      * In the case where a composite is added to the domain level composite at a node this 
@@ -104,7 +104,7 @@ public interface SCADomainEventService {
      * @param compositeQNameString the string QName of the composite
      * @throws DomainException
      */
-    public void registerDomainLevelComposite(String nodeURI, String compositeQNameString) throws DomainException;
+    void registerDomainLevelComposite(String nodeURI, String compositeQNameString) throws DomainException;
     
     /**
      * Accepts information about a service endpoint and holds onto it
@@ -116,7 +116,7 @@ public interface SCADomainEventService {
      * @param url the endpoint URL
      * @return TBD - information about the registration
      */
-    public void registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String URL) throws DomainException;
+    void registerServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName, String url) throws DomainException;
     
     /**
      * Removes information about a service endpoint
@@ -126,7 +126,7 @@ public interface SCADomainEventService {
      * @param serviceName the name of the service that is exposed and the provided endpoint
      * @param bindingName the remote binding that is providing the endpoint
      */    
-    public void unregisterServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName) throws DomainException;
+    void unregisterServiceEndpoint(String domainUri, String nodeUri, String serviceName, String bindingName) throws DomainException;
      
     /**
      * Locates information about a service endpoint 
@@ -136,7 +136,7 @@ public interface SCADomainEventService {
      * @param bindingName the remote binding that we want to find an endpoint for
      * @return url the endpoint URL or SERVICE_NOT_REGISTERED
      */
-    public String findServiceEndpoint(String domainUri, String serviceName, String bindingName) throws DomainException;
+    String findServiceEndpoint(String domainUri, String serviceName, String bindingName) throws DomainException;
     
     /**
      * Determines node that a service is available on
@@ -146,6 +146,6 @@ public interface SCADomainEventService {
      * @return name of node running service or SERVICE_NOT_KNOWN (it's not been contributed) or SERVICE_NOT_REGISTERED (it's been contributed but isn;t running)
      * @throws DomainException
      */
-    public String findServiceNode(String domainURI, String serviceName, String bindingName) throws DomainException;
+    String findServiceNode(String domainURI, String serviceName, String bindingName) throws DomainException;
      
 }
