@@ -23,6 +23,8 @@ import java.rmi.Remote;
 /**
  * RMI Service hosting interface to be implemented by host environments that allows SCA Components
  * to register RMI Services to handle inbound service requests over RMI to SCA Components
+ *
+ * @version $Rev$ $Date$
  */
 public interface RMIHost {
     int RMI_DEFAULT_PORT = 1099;
