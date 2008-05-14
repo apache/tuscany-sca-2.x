@@ -20,6 +20,8 @@ package calculator;
 
 /**
  * An implementation of the Add service
+ *
+ * @version $Rev$ $Date$
  */
 public class AddServiceImpl implements AddService {
 

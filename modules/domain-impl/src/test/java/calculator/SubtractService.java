@@ -22,6 +22,8 @@ import org.osoa.sca.annotations.Remotable;
 
 /**
  * The interface for the multiply service
+ *
+ * @version $Rev$ $Date$
  */
 @Remotable
 public interface SubtractService {

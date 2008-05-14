@@ -21,6 +21,8 @@ package calculator;
 
 /**
  * The Calculator service interface.
+ *
+ * @version $Rev$ $Date$
  */
 public interface CalculatorService {
 
