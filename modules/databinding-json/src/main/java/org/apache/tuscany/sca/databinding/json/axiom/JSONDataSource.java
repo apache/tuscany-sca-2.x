@@ -39,6 +39,8 @@ import org.codehaus.jettison.mapped.MappedXMLInputFactory;
  * JSONDataSource keeps the JSON String inside and consumes it when needed. This is to be kept in the
  * OMSourcedElementImpl and can be used either to expand the tree or get the JSON String directly without expanding.
  * This uses the "Mapped" JSON convention.
+ *
+ * @version $Rev$ $Date$
  */
 
 public class JSONDataSource implements OMDataSource {
