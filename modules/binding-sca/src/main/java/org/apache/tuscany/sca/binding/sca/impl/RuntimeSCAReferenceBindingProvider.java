@@ -143,7 +143,7 @@ public class RuntimeSCAReferenceBindingProvider implements ReferenceBindingProvi
 
                 // create the remote provider
                 DistributedSCABinding distributedBinding = new DistributedSCABindingImpl();
-                distributedBinding.setSCABinging(binding);
+                distributedBinding.setSCABinding(binding);
 
                 distributedProvider =
                     distributedProviderFactory.createReferenceBindingProvider(component, reference, distributedBinding);

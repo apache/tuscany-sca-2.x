@@ -84,7 +84,7 @@ public class RuntimeSCAServiceBindingProvider implements ServiceBindingProvider 
                     
                     //  create a nested provider to handle the remote case
                     distributedBinding = new DistributedSCABindingImpl();
-                    distributedBinding.setSCABinging(binding);
+                    distributedBinding.setSCABinding(binding);
                     
                     distributedProvider = 
                         distributedProviderFactory.createServiceBindingProvider(component, service, distributedBinding);
