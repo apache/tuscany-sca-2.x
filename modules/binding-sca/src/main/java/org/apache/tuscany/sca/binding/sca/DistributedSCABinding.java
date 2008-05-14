@@ -32,6 +32,6 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 public interface DistributedSCABinding extends Binding {
     
     SCABinding getSCABinding();
-    void setSCABinging(SCABinding scaBinding);
+    void setSCABinding(SCABinding scaBinding);
 
 }
