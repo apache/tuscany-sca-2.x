@@ -30,6 +30,8 @@ import org.codehaus.jettison.json.JSONObject;
 
 /**
  * JAXB DataBinding
+ *
+ * @version $Rev$ $Date$
  */
 public class JSONDataBinding extends BaseDataBinding {
     public static final String NAME = "JSON";
