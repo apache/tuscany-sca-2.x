@@ -43,6 +43,8 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * OMElement wrapper handler implementation
+ *
+ * @version $Rev$ $Date$
  */
 public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
 

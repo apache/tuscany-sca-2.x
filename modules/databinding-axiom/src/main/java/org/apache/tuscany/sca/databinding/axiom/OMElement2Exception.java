@@ -30,6 +30,8 @@ import org.apache.tuscany.sca.databinding.javabeans.XML2JavaMapperException;
 
 /**
  * Transformer to convert data from an OMElement to a Java Exception
+ *
+ * @version $Rev$ $Date$
  */
 public class OMElement2Exception extends XML2JavaBeanTransformer<OMElement> {
 

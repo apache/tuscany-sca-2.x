@@ -25,6 +25,8 @@ import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 
 /**
  * DataBinding for AXIOM
+ *
+ * @version $Rev$ $Date$
  */
 public class AxiomDataBinding extends BaseDataBinding {
     
