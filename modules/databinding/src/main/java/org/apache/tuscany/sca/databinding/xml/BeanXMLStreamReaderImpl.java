@@ -44,7 +44,7 @@ import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
  * @version $Rev$ $Date$
  */
 public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
-    private final static Comparator<Accessor> COMPARATOR = new Comparator<Accessor>() {
+    private static final Comparator<Accessor> COMPARATOR = new Comparator<Accessor>() {
         public int compare(Accessor o1, Accessor o2) {
             return o1.getName().compareTo(o2.getName());
         }

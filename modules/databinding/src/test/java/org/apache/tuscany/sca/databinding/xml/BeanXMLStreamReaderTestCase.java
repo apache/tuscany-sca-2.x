@@ -34,7 +34,7 @@ import org.custommonkey.xmlunit.Diff;
  * @version $Rev$ $Date$
  */
 public class BeanXMLStreamReaderTestCase extends TestCase {
-    private final static String XML_RESULT =
+    private static final String XML_RESULT =
         "<?xml version='1.0' encoding='UTF-8'?>" + "<MyBean xmlns=\"http://xml.databinding.sca.tuscany.apache.org/\">"
             + "<arr>1</arr><arr>2</arr><arr>3</arr><bean><name>Name</name></bean><i>1</i>"
             + "<list>Item1</list><list>Item2</list>"
@@ -44,7 +44,7 @@ public class BeanXMLStreamReaderTestCase extends TestCase {
             + "<str>ABC</str></MyBean>";
 
     // The map entries can come in a different order
-    private final static String XML_RESULT1 =
+    private static final String XML_RESULT1 =
         "<?xml version='1.0' encoding='UTF-8'?>" + "<MyBean xmlns=\"http://xml.databinding.sca.tuscany.apache.org/\">"
             + "<arr>1</arr><arr>2</arr><arr>3</arr><bean><name>Name</name></bean><i>1</i>"
             + "<list>Item1</list><list>Item2</list>"

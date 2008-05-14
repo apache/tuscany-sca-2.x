@@ -32,8 +32,8 @@ import javax.xml.namespace.NamespaceContext;
  * @version $Rev$ $Date$
  */
 public class XmlNodeIterator implements Iterator<XmlNode> {
-    public final static int START = 0;
-    public final static int END = 1;
+    public static final int START = 0;
+    public static final int END = 1;
 
     protected FastStack<ElementHolder> stack;
     protected int state;
