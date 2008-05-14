@@ -21,6 +21,10 @@ package org.apache.tuscany.sca.extension.helper.impl;
 
 import org.apache.tuscany.sca.extension.helper.utils.AbstractBinding;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class PojoBinding extends AbstractBinding {
 
     Object userBinding;

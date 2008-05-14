@@ -26,6 +26,10 @@ import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.builder.ComponentPreProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class DynamicImplementation extends AbstractImplementation implements ComponentPreProcessor {
     
     public void preProcess(Component component) {

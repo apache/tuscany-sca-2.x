@@ -19,7 +19,11 @@
 
 package org.apache.tuscany.sca.extension.helper;
 
-
+/**
+ * Interface that defines the Component Lifecycle methods.
+ *
+ * @version $Rev$ $Date$
+ */
 public interface ComponentLifecycle {
     
     void start();

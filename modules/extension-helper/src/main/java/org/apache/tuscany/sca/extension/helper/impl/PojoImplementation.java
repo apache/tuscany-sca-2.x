@@ -28,6 +28,8 @@ import org.apache.tuscany.sca.extension.helper.utils.DynamicImplementation;
  * Enables Implementation extensions to use a simple POJO
  * for the implementation object instead of requiring
  * implementing the Implementation interface. 
+ *
+ * @version $Rev$ $Date$
  */
 public class PojoImplementation<Implementation> extends DynamicImplementation {
     

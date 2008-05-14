@@ -33,6 +33,8 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 /**
  * Discovers Activators in the classpath using the J2SE
  * jar file extensions for Service Provider discovery
+ *
+ * @version $Rev$ $Date$
  */
 public class DiscoveryUtils {
 

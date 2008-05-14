@@ -55,6 +55,8 @@ import org.osoa.sca.ServiceRuntimeException;
 /**
  * An SCDL ArtifactProcessor which uses the Implementation class getters/setters
  * to define the SCDL attributes.
+ *
+ * @version $Rev$ $Date$
  */
 public class SCDLProcessor extends AbstractStAXArtifactProcessor<Implementation> {
 

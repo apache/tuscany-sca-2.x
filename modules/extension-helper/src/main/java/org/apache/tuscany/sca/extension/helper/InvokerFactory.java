@@ -22,6 +22,11 @@ package org.apache.tuscany.sca.extension.helper;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 
+/**
+ * Interface that defines the methods for an Invoker Factory.
+ *
+ * @version $Rev$ $Date$
+ */
 public interface InvokerFactory {
 
     Invoker createInvoker(Operation operation);

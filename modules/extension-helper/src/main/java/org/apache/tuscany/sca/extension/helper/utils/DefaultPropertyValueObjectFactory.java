@@ -36,6 +36,8 @@ import org.w3c.dom.Node;
 
 /**
  * TODO: Shouldn't this class be provided by the runtime?
+ *
+ * @version $Rev$ $Date$
  */
 public class DefaultPropertyValueObjectFactory implements PropertyValueObjectFactory {
     // protected DataBindingRegistry dbRegistry = new DataBindingRegistryImpl();

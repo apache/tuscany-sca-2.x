@@ -53,6 +53,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
  * that means is packaging the new binding type in a jar which contains a  
  * file META-INF/services/org.apache.tuscany.sca.extension.helper.ImplementationActivator and
  * that file lists the ImplementationActivator implementation class name.
+ *
+ * @version $Rev$ $Date$
  */
 public interface ImplementationActivator<T> {
 
