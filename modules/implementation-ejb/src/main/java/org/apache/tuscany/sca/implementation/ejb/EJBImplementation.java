@@ -24,6 +24,8 @@ import org.apache.tuscany.sca.assembly.Implementation;
 
 /**
  * The model representing an EJB implementation in an SCA assembly model.
+ *
+ * @version $Rev$ $Date$
  */
 public interface EJBImplementation extends Implementation {
     
