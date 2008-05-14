@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.policy.QualifiedIntent;
 /**
  * Provides a concrete implementation for a SCADefinitionsBuilder
  *
+ * @version $Rev$ $Date$
  */
 public class SCADefinitionsBuilderImpl implements SCADefinitionsBuilder {
 

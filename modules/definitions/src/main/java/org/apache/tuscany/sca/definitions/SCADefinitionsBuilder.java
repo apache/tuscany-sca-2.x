@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.definitions;
 /**
  * Interface to abstract building of SCA Definitions for a Domain
  *
+ * @version $Rev$ $Date$
  */
 public interface SCADefinitionsBuilder {
     /**
