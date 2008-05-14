@@ -30,6 +30,8 @@ import org.apache.tuscany.sca.implementation.ejb.EJBImplementation;
 
 /**
  * The model representing an EJB implementation in an SCA assembly model.
+ *
+ * @version $Rev$ $Date$
  */
 class EJBImplementationImpl implements EJBImplementation {
 
