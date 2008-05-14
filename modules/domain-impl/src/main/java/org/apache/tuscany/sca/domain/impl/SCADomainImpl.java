@@ -91,8 +91,8 @@ import org.osoa.sca.ServiceRuntimeException;
  * @version $Rev: 552343 $ $Date: 2007-09-09 23:54:46 +0100 (Sun, 09 Sep 2007) $
  */
 public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomainSPI  {
-	
-    private final static Logger logger = Logger.getLogger(SCADomainImpl.class.getName());
+
+    private static final Logger logger = Logger.getLogger(SCADomainImpl.class.getName());
        
     // class loader used to get the runtime going
     protected ClassLoader domainClassLoader;
@@ -126,7 +126,7 @@ public class SCADomainImpl implements SCADomain, SCADomainEventService, SCADomai
     /** 
      * Create a domain giving the URI for the domain. 
      * 
-     * @param domainUri - identifies what host and port the domain service is running on, e.g. http://localhost:8081
+     * @param domainURI - identifies what host and port the domain service is running on, e.g. http://localhost:8081
      * @throws ActivationException
      */
     public SCADomainImpl(String domainURI) throws DomainException {
