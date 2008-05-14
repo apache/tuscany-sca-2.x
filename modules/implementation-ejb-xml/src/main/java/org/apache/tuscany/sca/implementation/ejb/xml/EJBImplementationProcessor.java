@@ -41,6 +41,8 @@ import org.apache.tuscany.sca.implementation.ejb.EJBImplementationFactory;
 
 /**
  * Implements a StAX artifact processor for EJB implementations.
+ *
+ * @version $Rev$ $Date$
  */
 public class EJBImplementationProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<EJBImplementation> {
     private static final QName IMPLEMENTATION_EJB = new QName(Constants.SCA10_NS, "implementation.ejb");
