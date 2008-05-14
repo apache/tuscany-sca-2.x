@@ -24,6 +24,8 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 
 /**
  * An extension point for data binding extensions.
+ *
+ * @version $Rev$ $Date$
  */
 public interface DataBindingExtensionPoint {
 

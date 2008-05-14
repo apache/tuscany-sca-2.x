@@ -27,6 +27,8 @@ import org.apache.tuscany.sca.interfacedef.DataType;
 /**
  * This is a special transformer to transform the output from one IDL to the
  * other one
+ *
+ * @version $Rev$ $Date$
  */
 public class Group2GroupTransformer extends BaseTransformer<Object, Object> implements
     PullTransformer<Object, Object> {

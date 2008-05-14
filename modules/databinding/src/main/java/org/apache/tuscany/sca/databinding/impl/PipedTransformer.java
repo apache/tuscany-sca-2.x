@@ -31,6 +31,8 @@ import org.apache.tuscany.sca.databinding.TransformationContext;
  * @param <S> Source type
  * @param <I> Intermediate type
  * @param <R> Result type
+ *
+ * @version $Rev$ $Date$
  */
 public class PipedTransformer<S, I, R> implements PullTransformer<S, R> {
     private PushTransformer<S, I> pusher;

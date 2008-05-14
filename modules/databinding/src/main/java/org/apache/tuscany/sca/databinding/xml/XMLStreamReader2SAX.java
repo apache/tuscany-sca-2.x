@@ -28,6 +28,8 @@ import org.xml.sax.ContentHandler;
 
 /**
  * XMLStreamReader to SAX events
+ *
+ * @version $Rev$ $Date$
  */
 public class XMLStreamReader2SAX extends BaseTransformer<XMLStreamReader, ContentHandler> implements
     PushTransformer<XMLStreamReader, ContentHandler> {

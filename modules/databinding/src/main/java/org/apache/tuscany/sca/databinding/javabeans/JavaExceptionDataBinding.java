@@ -22,6 +22,8 @@ package org.apache.tuscany.sca.databinding.javabeans;
 
 /**
  * DataBinding for Java Exceptions
+ *
+ * @version $Rev$ $Date$
  */
 public class JavaExceptionDataBinding extends JavaBeansDataBinding {
 

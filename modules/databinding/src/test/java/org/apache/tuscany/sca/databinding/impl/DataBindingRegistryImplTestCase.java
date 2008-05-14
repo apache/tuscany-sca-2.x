@@ -37,7 +37,8 @@ import org.easymock.EasyMock;
 import org.xml.sax.ContentHandler;
 
 /**
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class DataBindingRegistryImplTestCase extends TestCase {
     private DataBindingExtensionPoint registry;

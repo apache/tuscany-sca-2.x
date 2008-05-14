@@ -28,7 +28,8 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter;
 
 /**
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class XSDDataTypeConverterTestCase extends TestCase {
 

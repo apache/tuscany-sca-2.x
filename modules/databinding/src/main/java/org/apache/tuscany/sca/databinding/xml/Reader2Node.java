@@ -32,6 +32,8 @@ import org.w3c.dom.Node;
 
 /**
  * Push DOM Reader to Node
+ *
+ * @version $Rev$ $Date$
  */
 public class Reader2Node extends BaseTransformer<Reader, Node> implements PullTransformer<Reader, Node> {
     private static final Source2ResultTransformer TRANSFORMER = new Source2ResultTransformer();

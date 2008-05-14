@@ -34,6 +34,11 @@ import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 
+/**
+ * Simple type mapper that maps from XSD types to Java Classes and Java Classes to XSD types.
+ *
+ * @version $Rev$ $Date$
+ */
 public class SimpleTypeMapperImpl extends XSDDataTypeConverter implements SimpleTypeMapper {
 
     public static final Map<Class, String> JAVA2XML = new HashMap<Class, String>();

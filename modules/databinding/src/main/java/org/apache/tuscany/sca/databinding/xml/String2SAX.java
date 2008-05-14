@@ -29,6 +29,8 @@ import org.xml.sax.InputSource;
 
 /**
  * Transform XML string to SAX
+ *
+ * @version $Rev$ $Date$
  */
 public class String2SAX extends BaseTransformer<String, ContentHandler> implements
     PushTransformer<String, ContentHandler> {

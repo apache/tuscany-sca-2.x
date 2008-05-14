@@ -23,6 +23,8 @@ package org.apache.tuscany.sca.databinding;
  * 
  * @param <S> The data binding type of the sink
  * @param <R> The data binding type of the result
+ *
+ * @version $Rev$ $Date$
  */
 public interface DataPipe<S, R> {
 

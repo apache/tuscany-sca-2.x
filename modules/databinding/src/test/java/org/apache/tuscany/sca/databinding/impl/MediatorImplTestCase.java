@@ -41,6 +41,8 @@ import org.w3c.dom.Node;
 
 /**
  * Test case for MediatorImpl
+ *
+ * @version $Rev$ $Date$
  */
 public class MediatorImplTestCase extends TestCase {
     private static final String IPO_XML =

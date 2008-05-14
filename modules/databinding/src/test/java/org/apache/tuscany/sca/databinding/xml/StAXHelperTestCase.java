@@ -27,6 +27,8 @@ import org.custommonkey.xmlunit.XMLAssert;
 
 /**
  * Test Case for StAXHelper
+ *
+ * @version $Rev$ $Date$
  */
 public class StAXHelperTestCase extends TestCase {
     private static final String XML =

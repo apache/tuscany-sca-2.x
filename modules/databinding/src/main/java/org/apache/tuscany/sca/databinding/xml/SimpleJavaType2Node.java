@@ -31,6 +31,8 @@ import org.w3c.dom.Node;
 
 /**
  * Transformer to convert data from an simple OMElement to Java Object
+ *
+ * @version $Rev$ $Date$
  */
 public class SimpleJavaType2Node extends Java2SimpleTypeTransformer<Node> {
 

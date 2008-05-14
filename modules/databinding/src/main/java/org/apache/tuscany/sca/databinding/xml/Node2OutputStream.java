@@ -33,6 +33,8 @@ import org.w3c.dom.Node;
 
 /**
  * Push DOM Node to OutputStream
+ *
+ * @version $Rev$ $Date$
  */
 public class Node2OutputStream extends BaseTransformer<Node, OutputStream> implements
     PushTransformer<Node, OutputStream> {

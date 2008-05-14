@@ -33,6 +33,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  * @param <V> The type of vertex object
  * @param <E> The type of edge object
+ *
+ * @version $Rev$ $Date$
  */
 public class DirectedGraph<V, E> implements Cloneable {
     private final Map<V, Vertex> vertices = new HashMap<V, Vertex>();

@@ -37,7 +37,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class TraxTransformerTestCase extends TestCase {
     private URL url;

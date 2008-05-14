@@ -31,6 +31,8 @@ import org.xml.sax.InputSource;
 
 /**
  * Push DOM InputSource to Node
+ *
+ * @version $Rev$ $Date$
  */
 public class InputSource2Node extends BaseTransformer<InputSource, Node> implements
     PullTransformer<InputSource, Node> {

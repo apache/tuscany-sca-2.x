@@ -33,7 +33,8 @@ import org.apache.tuscany.sca.databinding.Transformer;
 import org.apache.tuscany.sca.databinding.TransformerExtensionPoint;
 
 /**
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class TransformerRegistryImplTestCase extends TestCase {
     private TransformerExtensionPoint registry;

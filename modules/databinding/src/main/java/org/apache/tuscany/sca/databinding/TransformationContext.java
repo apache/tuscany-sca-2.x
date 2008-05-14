@@ -25,7 +25,8 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 
 /**
  * Context for data transformation
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public interface TransformationContext {
     

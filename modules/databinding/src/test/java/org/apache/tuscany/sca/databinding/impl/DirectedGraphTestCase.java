@@ -27,6 +27,10 @@ import junit.framework.TestCase;
 import org.apache.tuscany.sca.databinding.impl.DirectedGraph.Edge;
 import org.apache.tuscany.sca.databinding.impl.DirectedGraph.Vertex;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class DirectedGraphTestCase extends TestCase {
     private DirectedGraph<String, Object> graph;
 

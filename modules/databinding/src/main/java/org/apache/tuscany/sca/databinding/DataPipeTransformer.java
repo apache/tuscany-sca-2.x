@@ -20,7 +20,8 @@ package org.apache.tuscany.sca.databinding;
 
 /**
  * Data pipe allows a data source pushes data into its sink and pipe the data into its result
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public interface DataPipeTransformer<S, R> extends Transformer {
 

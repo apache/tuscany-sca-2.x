@@ -24,6 +24,10 @@ import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class Node2StringTestCase extends TestCase {
     public void testTransformation() throws Exception {
         Document document = DOMHelper.newDocument();
