@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
  * Interface that will abstract various types of policy specifications
  * and attachments for example WS-Policy
  *
+ * @version $Rev$ $Date$
  */
 public interface Policy {
     QName getSchemaName();

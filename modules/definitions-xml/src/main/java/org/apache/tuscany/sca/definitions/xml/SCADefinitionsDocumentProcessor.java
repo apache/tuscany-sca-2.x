@@ -46,7 +46,8 @@ import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
 
 /**
  * A SCA Definitions Document processor.
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SCADefinitions> {
     private StAXArtifactProcessor<Object> extensionProcessor;
