@@ -45,7 +45,7 @@ public interface ModuleActivatorExtensionPoint {
 
     /**
      * Remove a module activator
-     * @param service The module activator to remove
+     * @param activator The module activator to remove
      *
      * @throws IllegalArgumentException if activator is null
      */
