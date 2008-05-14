@@ -40,6 +40,11 @@ import org.apache.naming.resources.FileDirContext;
 import org.apache.naming.resources.ProxyDirContext;
 import org.apache.naming.resources.Resource;
 
+/**
+ * DefaultServlet implementation for Tomcat.
+ *
+ * @version $Rev$ $Date$
+ */
 public class TomcatDefaultServlet extends DefaultServlet {
     private static final long serialVersionUID = -7503581551326796573L;
     
