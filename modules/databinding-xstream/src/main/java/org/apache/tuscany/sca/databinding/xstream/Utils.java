@@ -23,6 +23,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
+/**
+ * Utility methods.
+ *
+ * @version $Rev$ $Date$
+ */
 public class Utils {
     public static String toBase64(byte[] array) {
         String code = null;
