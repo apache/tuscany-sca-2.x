@@ -26,7 +26,7 @@ import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.implementation.data.DATACollection;
 
-public class DATACollectionTestCase extends TestCase {
+public class DATACollectionTestCaseFIXME extends TestCase {
 
     private SCADomain scaDomain;
     private DATACollection dataService;
