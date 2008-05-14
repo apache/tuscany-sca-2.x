@@ -51,7 +51,7 @@ import org.osoa.sca.annotations.Service;
 @Service(interfaces = {SCADomainEventService.class, SCADomainManagerInitService.class, SCADomainManagerService.class, SCADomainAPIService.class})
 public class SCADomainManagerServiceImpl implements SCADomainEventService, SCADomainManagerInitService, SCADomainManagerService, SCADomainAPIService {
     
-    private final static Logger logger = Logger.getLogger(SCADomainManagerServiceImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(SCADomainManagerServiceImpl.class.getName());
     
     private SCADomain domain;
     private SCADomainSPI domainSPI;
