@@ -53,9 +53,9 @@ public interface DataBindingExtensionPoint {
     DataBinding removeDataBinding(String id);
 
     /**
-     * Introspect the java class to figure out what DataType supports it
+     * Introspect the java class to figure out what DataType supports it.
      * 
-     * @param DataType The initial data type
+     * @param dataType The initial data type
      * @param annotations The java annotations
      * @return A DataType representing the java type or null if no databinding
      *         recognizes the java type
@@ -63,11 +63,11 @@ public interface DataBindingExtensionPoint {
     boolean introspectType(DataType dataType, Annotation[] annotations);
 
     /**
-     * Introspect the java class to figure out what DataType supports it
+     * Introspect the java class to figure out what DataType supports it.
      * 
-     * @param DataType The initial data type
+     * @param dataType The initial data type
      * @param annotations The java annotations
-     * @param boolean Should be set to true if DataType parameter represents an Exception
+     * @param isFaultType Should be set to true if DataType parameter represents an Exception
      * @return A DataType representing the java type or null if no databinding
      *         recognizes the java type
      */
