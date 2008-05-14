@@ -94,7 +94,7 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  */
 public class ReallySmallRuntimeBuilder {
     
-    private final static Logger logger = Logger.getLogger(ReallySmallRuntimeBuilder.class.getName());
+    private static final Logger logger = Logger.getLogger(ReallySmallRuntimeBuilder.class.getName());
 	
     public static ProxyFactory createProxyFactory(ExtensionPointRegistry registry,
                                                   InterfaceContractMapper mapper,

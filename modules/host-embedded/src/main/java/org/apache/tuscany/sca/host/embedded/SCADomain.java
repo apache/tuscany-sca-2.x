@@ -41,7 +41,7 @@ import org.osoa.sca.ServiceRuntimeException;
  */
 public abstract class SCADomain {
     
-    final static String LOCAL_DOMAIN_URI = "http://localhost";
+    static final String LOCAL_DOMAIN_URI = "http://localhost";
 
     /**
      * Static variable to hold the most recent instance of SCADomain
@@ -155,7 +155,7 @@ public abstract class SCADomain {
      * @param <B> the Java type of the business interface for the service
      * @return a ServiceReference for the designated service
      */
-    public abstract <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName);
+    public abstract <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String serviceName);
 
     /**
      * Read the service name from a configuration file
