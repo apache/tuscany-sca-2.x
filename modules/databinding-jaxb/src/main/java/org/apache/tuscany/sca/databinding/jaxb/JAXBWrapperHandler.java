@@ -39,6 +39,8 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * JAXB WrapperHandler implementation
+ *
+ * @version $Rev$ $Date$
  */
 public class JAXBWrapperHandler implements WrapperHandler<JAXBElement<?>> {
 

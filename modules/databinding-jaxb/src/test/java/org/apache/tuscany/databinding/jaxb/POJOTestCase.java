@@ -45,6 +45,10 @@ import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfoSet;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationsException;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class POJOTestCase extends TestCase {
     public void testPOJO() throws Exception {
         JAXBContext context = JAXBContext.newInstance(MyBean.class, MyInterfaceImpl.class);

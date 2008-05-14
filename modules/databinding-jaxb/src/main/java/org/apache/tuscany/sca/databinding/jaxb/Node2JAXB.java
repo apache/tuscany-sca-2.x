@@ -27,6 +27,10 @@ import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.w3c.dom.Node;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class Node2JAXB extends BaseTransformer<Node, Object> implements PullTransformer<Node, Object> {
 
     public Node2JAXB() {

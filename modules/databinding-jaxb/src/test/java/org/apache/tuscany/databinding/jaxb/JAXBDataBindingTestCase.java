@@ -37,7 +37,8 @@ import com.example.ipo.jaxb.USAddress;
 import com.example.ipo.jaxb.USState;
 
 /**
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class JAXBDataBindingTestCase extends TestCase {
     private JAXBDataBinding binding;

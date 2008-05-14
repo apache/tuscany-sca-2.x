@@ -31,6 +31,10 @@ import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.databinding.xml.XMLStringDataBinding;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class JAXB2String extends BaseTransformer<Object, String> implements PullTransformer<Object, String> {
 
     public String transform(Object source, TransformationContext tContext) {
