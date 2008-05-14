@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.sca.implementation.java.impl;
 
-/**
- * A factory for the Java model.
- */
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +26,11 @@ import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.implementation.java.JavaImplementationFactory;
 import org.apache.tuscany.sca.implementation.java.introspect.JavaClassVisitor;
 
+/**
+ * A factory for the Java model.
+ *
+ * @version $Rev$ $Date$
+ */
 public abstract class JavaImplementationFactoryImpl implements JavaImplementationFactory {
     
     private List<JavaClassVisitor> visitors = new ArrayList<JavaClassVisitor>();

@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.implementation.java;
 
 /**
  * A factory for the Java model.
+ *
+ * @version $Rev$ $Date$
  */
 import org.apache.tuscany.sca.implementation.java.impl.JavaImplementationFactoryImpl;
 
