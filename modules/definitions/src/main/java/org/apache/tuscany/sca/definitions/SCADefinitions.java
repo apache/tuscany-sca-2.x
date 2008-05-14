@@ -38,9 +38,9 @@ public interface SCADefinitions {
     String getTargetNamespace();
     
     /**
-     * Sets the target names for this SCA Definition
+     * Sets the target names for this SCA Definition.
      * 
-     * @param the target namespace for this SCA Definition
+     * @param ns the target namespace for this SCA Definition
      */
     void setTargetNamespace(String ns);
 
