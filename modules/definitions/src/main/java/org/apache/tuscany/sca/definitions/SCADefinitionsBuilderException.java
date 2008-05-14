@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.definitions;
 /**
  * Builder Exception
  *
+ * @version $Rev$ $Date$
  */
 public class SCADefinitionsBuilderException extends Exception {
     private static final long serialVersionUID = 2513219325230252783L;

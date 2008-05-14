@@ -27,7 +27,8 @@ import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Represents SCA Definitions.
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public interface SCADefinitions {
     /**

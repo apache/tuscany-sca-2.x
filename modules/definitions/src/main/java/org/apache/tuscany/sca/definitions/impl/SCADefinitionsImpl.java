@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.policy.PolicySet;
 /**
  * Provides a concrete implementation for SCADefinitions
  *
+ * @version $Rev$ $Date$
  */
 public class SCADefinitionsImpl implements SCADefinitions {
     private String targetNamespace = null;

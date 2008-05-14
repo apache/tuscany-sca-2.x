@@ -32,6 +32,8 @@ import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Some utility functions to deal with SCADefinitions
+ *
+ * @version $Rev$ $Date$
  */
 public class SCADefinitionsUtil {
     
