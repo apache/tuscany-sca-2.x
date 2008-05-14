@@ -68,7 +68,7 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  */
 @SuppressWarnings("deprecation")
 public class TomcatServer implements ServletHost {
-    private final static Logger logger = Logger.getLogger(TomcatServer.class.getName());
+    private static final Logger logger = Logger.getLogger(TomcatServer.class.getName());
 
     private int defaultPortNumber = 8080;
 
