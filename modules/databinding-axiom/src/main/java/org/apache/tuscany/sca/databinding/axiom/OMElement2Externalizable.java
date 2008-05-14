@@ -33,6 +33,8 @@ import java.io.Externalizable;
 
 /**
  * Transformer to convert data from an OMElement to XML String
+ *
+ * @version $Rev$ $Date$
  */
 @SuppressWarnings("unchecked")
 public class OMElement2Externalizable extends BaseTransformer<OMElement, Externalizable> implements PullTransformer<OMElement, Externalizable> {

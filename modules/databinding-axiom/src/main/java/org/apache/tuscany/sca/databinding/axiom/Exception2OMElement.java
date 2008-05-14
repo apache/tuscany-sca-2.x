@@ -29,6 +29,10 @@ import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.javabeans.Java2XMLMapperException;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBean2XMLTransformer;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class Exception2OMElement extends JavaBean2XMLTransformer<OMElement> {
 
     public static final String GETCAUSE = "getCause";

@@ -27,6 +27,10 @@ import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class String2OMElement extends BaseTransformer<String, OMElement> implements
     PullTransformer<String, OMElement> {
 

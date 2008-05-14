@@ -34,6 +34,10 @@ import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter.Base64Binary;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 @SuppressWarnings("unchecked")
 public class Externalizable2OMElement extends BaseTransformer<Externalizable, OMElement> implements
     PullTransformer<Externalizable, OMElement> {

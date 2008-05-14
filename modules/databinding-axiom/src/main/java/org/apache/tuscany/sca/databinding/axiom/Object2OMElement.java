@@ -30,6 +30,8 @@ import org.apache.tuscany.sca.databinding.impl.Java2SimpleTypeTransformer;
 
 /**
  * Transformer to convert data from an simple OMElement to Java Object
+ *
+ * @version $Rev$ $Date$
  */
 public class Object2OMElement extends Java2SimpleTypeTransformer<OMElement> {
 
