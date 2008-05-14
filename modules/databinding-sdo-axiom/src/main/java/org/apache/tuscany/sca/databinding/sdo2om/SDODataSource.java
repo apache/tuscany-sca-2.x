@@ -39,6 +39,10 @@ import commonj.sdo.DataObject;
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLDocument;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class SDODataSource implements OMDataSource {
     private HelperContext helperContext;
     private XMLDocument sourceDocument;

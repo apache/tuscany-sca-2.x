@@ -35,7 +35,8 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import commonj.sdo.DataObject;
 
 /**
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class DataObject2OMElementTestCase extends SDOTransformerTestCaseBase {
 

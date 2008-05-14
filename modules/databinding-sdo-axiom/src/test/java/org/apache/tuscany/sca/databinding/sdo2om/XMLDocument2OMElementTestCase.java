@@ -33,7 +33,8 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import commonj.sdo.helper.XMLDocument;
 
 /**
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class XMLDocument2OMElementTestCase extends SDOTransformerTestCaseBase {
 
