@@ -32,9 +32,7 @@ public class SCADomainFactoryImpl extends SCADomainFactory {
     
         
     /**
-     * Returns a new SCA domain finder instance.
-     *  
-     * @return a new SCA domain finder
+     * Constructs a new SCA domain finder instance.
      */
     public SCADomainFactoryImpl() {
 
