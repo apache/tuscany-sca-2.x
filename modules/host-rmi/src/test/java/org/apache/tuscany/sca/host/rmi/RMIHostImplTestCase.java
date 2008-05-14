@@ -23,6 +23,11 @@ import java.rmi.Remote;
 
 import junit.framework.TestCase;
 
+/**
+ * Test cases for the RMI Host.
+ *
+ * @version $Rev$ $Date$
+ */
 public class RMIHostImplTestCase extends TestCase {
 
     public void testInit() {

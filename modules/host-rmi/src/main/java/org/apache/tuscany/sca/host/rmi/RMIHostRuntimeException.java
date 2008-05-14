@@ -23,6 +23,7 @@ package org.apache.tuscany.sca.host.rmi;
  * This exception relates to cases where there is a problem with the
  * Host runtime
  *
+ * @version $Rev$ $Date$
  */
 public class RMIHostRuntimeException extends RuntimeException {
    
