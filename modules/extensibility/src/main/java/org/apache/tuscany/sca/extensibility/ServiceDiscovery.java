@@ -48,7 +48,7 @@ import java.util.logging.Logger;
  * @version $Rev$ $Date$
  */
 public class ServiceDiscovery {
-    private final static Logger logger = Logger.getLogger(ServiceDiscovery.class.getName());
+    private static final Logger logger = Logger.getLogger(ServiceDiscovery.class.getName());
 
     private static ServiceDiscovery instance;
 
