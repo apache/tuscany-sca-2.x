@@ -32,6 +32,8 @@ import org.osoa.sca.annotations.ConversationID;
  * Processes {@link @ConversationID} annotations on a component implementation and adds
  * a {@link JavaMappedProperty} to the component type which will be used to
  * inject the appropriate conversationId
+ *
+ * @version $Rev$ $Date$
  */
 public class ConversationIDProcessor extends BaseJavaClassVisitor {
     

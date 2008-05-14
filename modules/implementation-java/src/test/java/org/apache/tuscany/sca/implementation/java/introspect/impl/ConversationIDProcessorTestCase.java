@@ -31,6 +31,8 @@ import org.osoa.sca.annotations.ConversationID;
 
 /**
  * Test the ConversationIDProcessor
+ *
+ * @version $Rev$ $Date$
  */
 public class ConversationIDProcessorTestCase extends TestCase {
     private ConversationIDProcessor processor;
