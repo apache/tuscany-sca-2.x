@@ -26,10 +26,12 @@ import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 
 /**
- * Represents data binding for parameters of type NodeInfo
- * @version $Rev$ $Date$
+ * Represents data binding for parameters of type NodeInfo.
+ *
  * The NodeInfo type is the type accepted by the Saxon XQuery processor for
  * all XML - based content (i.e. not strings and simple types)
+ *
+ * @version $Rev$ $Date$
  */
 public class SaxonNodeDataBinding extends BaseDataBinding {
 

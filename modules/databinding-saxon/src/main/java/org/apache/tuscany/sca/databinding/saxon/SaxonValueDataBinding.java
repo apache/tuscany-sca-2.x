@@ -26,10 +26,12 @@ import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 
 /**
- * Represents data binding for parameters of type Value
- * @version $Rev$ $Date$
+ * Represents data binding for parameters of type Value.
+ *
  * The Value type is the type accepted by the Saxon XQuery processor for
  * all simple types and strings
+ *
+ * @version $Rev$ $Date$
  */
 public class SaxonValueDataBinding extends BaseDataBinding {
     public static final String NAME = Value.class.getName();

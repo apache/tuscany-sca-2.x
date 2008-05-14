@@ -28,7 +28,8 @@ import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 
 /**
- * Transforms generic java objects to Value objects needed by Saxon parser
+ * Transforms generic java objects to Value objects needed by Saxon parser.
+ *
  * @version $Rev$ $Date$
  */
 public class Object2ValueTransformer extends BaseTransformer<Object, Value> implements PullTransformer<Object, Value> {

@@ -34,13 +34,15 @@ import commonj.sdo.DataObject;
 import commonj.sdo.helper.XMLHelper;
 
 /**
- * Transforms NodeInfo objects to SDO DataObject-s
- * @version $Rev$ $Date$
+ * Transforms NodeInfo objects to SDO DataObjects.
+ *
  * Before constructing the data object, resulting XML is populated
  * with correct namespaces (which are taken from the logical target data type)
  * These namespaces are crucial for constructing the right instance of
  * the DataObject (i.e. if there is a SDO factory, an instance from this factory will
  * be used, not the generic any data object)
+ *
+ * @version $Rev$ $Date$
  */
 public class NodeInfo2DataObjectTransformer extends BaseTransformer<NodeInfo, DataObject> implements
     PullTransformer<NodeInfo, DataObject> {
