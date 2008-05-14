@@ -59,7 +59,7 @@ import org.mortbay.thread.ThreadPool;
  * @version $Rev$ $Date$
  */
 public class JettyServer implements ServletHost {
-    private final static Logger logger = Logger.getLogger(JettyServer.class.getName());
+    private static final Logger logger = Logger.getLogger(JettyServer.class.getName());
 
     private final Object joinLock = new Object();
     private String keystore;

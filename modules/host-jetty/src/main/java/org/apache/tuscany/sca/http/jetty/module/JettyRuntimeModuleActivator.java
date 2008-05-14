@@ -34,7 +34,7 @@ import org.apache.tuscany.sca.work.WorkScheduler;
  * @version $Rev$ $Date$
  */
 public class JettyRuntimeModuleActivator implements ModuleActivator {
-    private final static Logger logger = Logger.getLogger(JettyRuntimeModuleActivator.class.getName());
+    private static final Logger logger = Logger.getLogger(JettyRuntimeModuleActivator.class.getName());
 
     private JettyServer server;
 
