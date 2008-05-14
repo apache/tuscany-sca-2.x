@@ -36,7 +36,8 @@ import commonj.sdo.helper.XMLDocument;
 import commonj.sdo.impl.HelperProvider;
 
 /**
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class SDODataBindingTestCase extends TestCase {
     protected static final QName ORDER_QNAME = new QName("http://www.example.com/IPO", "purchaseOrder");

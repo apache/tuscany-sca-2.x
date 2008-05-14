@@ -31,7 +31,8 @@ import com.example.ipo.sdo.PurchaseOrderType;
 import commonj.sdo.DataObject;
 
 /**
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class DataObject2NodeTestCase extends SDOTransformerTestCaseBase {
     @Override

@@ -40,6 +40,8 @@ import commonj.sdo.impl.HelperProvider;
 
 /**
  * Helper class to get TypeHelper from the context
+ *
+ * @version $Rev$ $Date$
  */
 public final class SDOContextHelper {
     private SDOContextHelper() {
