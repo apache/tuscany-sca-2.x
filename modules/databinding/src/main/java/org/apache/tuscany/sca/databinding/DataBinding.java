@@ -79,8 +79,9 @@ public interface DataBinding {
     WrapperHandler getWrapperHandler();
 
     /**
-     * Make a copy of the object for "pass-by-value" semantics
-     * @param source object to copy 
+     * Make a copy of the object for "pass-by-value" semantics.
+     *
+     * @param object source object to copy 
      * @return copy of the object passed in as argument
      */
     Object copy(Object object);
