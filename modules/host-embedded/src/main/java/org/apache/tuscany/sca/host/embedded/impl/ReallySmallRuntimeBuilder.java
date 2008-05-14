@@ -88,6 +88,10 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
 import org.apache.tuscany.sca.runtime.RuntimeWireProcessorExtensionPoint;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class ReallySmallRuntimeBuilder {
     
     private final static Logger logger = Logger.getLogger(ReallySmallRuntimeBuilder.class.getName());

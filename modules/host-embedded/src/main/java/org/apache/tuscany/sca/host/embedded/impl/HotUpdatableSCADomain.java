@@ -60,6 +60,8 @@ import org.osoa.sca.ServiceRuntimeException;
  *  TODO: hot update requires copying contribution jars to a temp location
  *        to avoid the classpath lock preventing updating the contribution
  *        jars, would be nice to find a way to avoid that
+ *
+ * @version $Rev$ $Date$
  */
 public class HotUpdatableSCADomain extends SCADomain {
     private static final Logger logger = Logger.getLogger(HotUpdatableSCADomain.class.getName());

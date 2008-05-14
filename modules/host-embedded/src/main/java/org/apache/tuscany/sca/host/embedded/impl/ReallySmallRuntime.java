@@ -73,6 +73,10 @@ import org.apache.tuscany.sca.provider.SCADefinitionsProvider;
 import org.apache.tuscany.sca.provider.SCADefinitionsProviderExtensionPoint;
 import org.apache.tuscany.sca.work.WorkScheduler;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class ReallySmallRuntime {
 	private final static Logger logger = Logger.getLogger(ReallySmallRuntime.class.getName());
     private List<ModuleActivator> modules;

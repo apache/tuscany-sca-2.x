@@ -21,6 +21,11 @@ package org.apache.tuscany.sca.host.embedded.management;
 
 import java.util.EventListener;
 
+/**
+ * Component Listener interface.
+ *
+ * @version $Rev$ $Date$
+ */
 public interface ComponentListener extends EventListener {
     
     void componentStarted(String componentName);
