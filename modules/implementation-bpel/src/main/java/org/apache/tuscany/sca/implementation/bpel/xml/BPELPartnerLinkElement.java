@@ -25,15 +25,16 @@ import javax.wsdl.PortType;
 /**
  * Represents a <partnerLink.../> element in a BPEL process
  * - this has attributes:
- * 		name
- * 		partnerLinkType
- * 		myRole
- * 		partnerRole
+ *      name
+ *      partnerLinkType
+ *      myRole
+ *      partnerRole
  * - plus zero or more property elements as children
  * 
  * The partnerlink may also be given an SCA Type - either of service or of reference - this must
  * generally be calculated and set on the partnerLink by inspecting the BPEL process
  *
+ * @version $Rev$ $Date$
  */
 public class BPELPartnerLinkElement {
 
