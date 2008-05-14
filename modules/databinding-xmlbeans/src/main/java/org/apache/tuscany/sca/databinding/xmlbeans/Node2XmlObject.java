@@ -26,6 +26,11 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.w3c.dom.Node;
 
+/**
+ * Transforms a DOM Node to an XML Object.
+ *
+ * @version $Rev$ $Date$
+ */
 public class Node2XmlObject extends BaseTransformer<Node, XmlObject> implements
     PullTransformer<Node, XmlObject> {
     // private XmlOptions options;

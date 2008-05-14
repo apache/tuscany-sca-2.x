@@ -30,6 +30,11 @@ import org.w3c.dom.Node;
 
 import com.example.ipo.xmlbeans.PurchaseOrderDocument;
 
+/**
+ * Test cases for testing XML Object transformations.
+ *
+ * @version $Rev$ $Date$
+ */
 public class XmlObjectTestCase extends TestCase {
     private static final String IPO_XML = "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
     + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "  xmlns:ipo=\"http://www.example.com/IPO\""
