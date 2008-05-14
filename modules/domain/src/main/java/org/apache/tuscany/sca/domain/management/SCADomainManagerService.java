@@ -35,13 +35,13 @@ public interface SCADomainManagerService {
      * Return description of the domain
      * 
      */
-    public DomainInfo getDomainDescription();
+    DomainInfo getDomainDescription();
     
     /**
      * Return description of the node
      * 
      * @param nodeURI
      */
-    public NodeInfo getNodeDescription(String nodeURI); 
+    NodeInfo getNodeDescription(String nodeURI); 
     
 }
