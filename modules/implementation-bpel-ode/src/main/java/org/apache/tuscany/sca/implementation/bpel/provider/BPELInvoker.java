@@ -130,6 +130,13 @@ public class BPELInvoker implements Invoker {
             mex = odeServer.getBpelServer().getEngine().createMessageExchange(new GUID().toString(),
                                                                               bpelServiceName,
                                                                               bpelOperationName);
+            /*
+            if(__log.isDebugEnabled()) {
+                Element invocationRequest = mex.getRequest().getMessage();
+                __log.debug(">>>Request:\n" + DOMUtils.domToString(invocationRequest));
+                
+            }*/
+            
             onhold = mex.invoke(createInvocationMessage(mex, args));
             
             txMgr.commit();
@@ -159,15 +166,15 @@ public class BPELInvoker implements Invoker {
             // be sure we have the "freshest" one.
             mex = (MyRoleMessageExchange)odeServer.getBpelServer().getEngine().getMessageExchange(mex.getMessageExchangeId());
 
-            Status status = mex.getStatus();
-            Element invocationResponse = mex.getResponse().getMessage();
-        
             if(__log.isDebugEnabled()) {
-                __log.debug("Invocation status:" + status.name());
-                __log.debug("Response:\n" + DOMUtils.domToString(invocationResponse));
+                Status status = mex.getStatus();
+                Element invocationResponse = mex.getResponse().getMessage();
+
+                __log.debug(">>>Invocation status:" + status.name());
+                __log.debug(">>>Response:\n" + DOMUtils.domToString(invocationResponse));
             }
             //process the method invocation result
-            response = processResponse(invocationResponse);
+            response = processResponse(mex.getResponse().getMessage());
             
             txMgr.commit();
             // end of transaction two
@@ -201,15 +208,22 @@ public class BPELInvoker implements Invoker {
         
         Element contentMessage = dom.createElement("message");
         Element contentPart = dom.createElement(bpelOperationInputPart.getName());
-        Element contentInvocation = (Element) args[0];
+        Element payload = null;
         
-        contentPart.appendChild(dom.importNode(contentInvocation, true));
+        //TUSCANY-2321 - Properly handling Document or Element types
+        if(args[0] instanceof Document) {
+            payload = (Element) ((Document) args[0]).getFirstChild();
+        } else {
+            payload = (Element) args[0];
+        }
+        
+        contentPart.appendChild(dom.importNode(payload, true));
         contentMessage.appendChild(contentPart);
         dom.appendChild(contentMessage);
         
         if(__log.isDebugEnabled()) {
             __log.debug("Creating invocation message:");
-            __log.debug(">> args.....: " + DOMUtils.domToString((Element) args[0]));
+            __log.debug(">> args.....: " + DOMUtils.domToString(payload));
             __log.debug(">> message..:" + DOMUtils.domToString(dom.getDocumentElement()));
         }
 
