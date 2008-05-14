@@ -185,12 +185,12 @@ public interface JavaImplementation extends BaseJavaImplementation {
     void setMaxIdleTime(long maxIdleTime);
 
     /**
-     * @return the map of a policy handler classnames
+     * @return the map of a policy handler class names
      */
     Map<ClassLoader, List<PolicyHandlerTuple>> getPolicyHandlerClassNames();
 
     /**
-     * @param map of policyhandler classnames
+     * @param policyHandlerClassNames Map of policyhandler class names
      */
     void setPolicyHandlerClassNames(Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassNames);
 
