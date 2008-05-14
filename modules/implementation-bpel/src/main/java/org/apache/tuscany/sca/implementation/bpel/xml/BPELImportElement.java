@@ -21,11 +21,13 @@ package org.apache.tuscany.sca.implementation.bpel.xml;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 
 /**
- * Represents an <impotr.../> element in a BPEL process
+ * Represents an <import.../> element in a BPEL process
  * - this has attributes:
- * 		location
- * 		importType
- * 		namespace
+ *      location
+ *      importType
+ *      namespace
+ *
+ * @version $Rev$ $Date$
  */
 public class BPELImportElement {
 	

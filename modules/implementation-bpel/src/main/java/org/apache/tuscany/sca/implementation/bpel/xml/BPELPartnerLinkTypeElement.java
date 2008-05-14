@@ -22,20 +22,21 @@
  import javax.wsdl.extensions.ExtensibilityElement;
  import javax.wsdl.PortType;
  
- /**
-  * Represents a <partnerLinkType.../> element related to a BPEL process
-  * - this has attributes:
-  * 		name
-  * 		Role1 name
-  * 		Role1 portType
-  * 		Role2 name
-  *         Role2 portType
-  *         
-  * - in the XML the 2 roles are child elements of the partnerLinkType element, but there
-  * seems little point in reflecting this back into this model - it is simpler to include
-  * both roles within the representation of the partnerLinkType itself
-  * 
-  */
+/**
+ * Represents a <partnerLinkType.../> element related to a BPEL process
+ * - this has attributes:
+ *      name
+ *      Role1 name
+ *      Role1 portType
+ *      Role2 name
+ *         Role2 portType
+ *
+ * - in the XML the 2 roles are child elements of the partnerLinkType element, but there
+ * seems little point in reflecting this back into this model - it is simpler to include
+ * both roles within the representation of the partnerLinkType itself
+ *
+ * @version $Rev$ $Date$
+ */
 public class BPELPartnerLinkTypeElement implements ExtensibilityElement {
 	
 	private QName name;
