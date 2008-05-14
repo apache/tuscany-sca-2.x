@@ -54,7 +54,7 @@ import org.osoa.sca.annotations.Service;
 @Service(interfaces={ItemCollection.class, LocalItemCollection.class})
 public class NodeProcessCollectionFacadeImpl implements ItemCollection, LocalItemCollection {
 
-    private final static Logger logger = Logger.getLogger(NodeProcessCollectionFacadeImpl.class.getName());    
+    private static final Logger logger = Logger.getLogger(NodeProcessCollectionFacadeImpl.class.getName());
 
     @Reference
     public LocalItemCollection cloudCollection;

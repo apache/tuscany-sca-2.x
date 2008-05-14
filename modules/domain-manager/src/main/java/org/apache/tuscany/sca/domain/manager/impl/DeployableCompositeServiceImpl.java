@@ -54,7 +54,7 @@ import org.osoa.sca.annotations.Service;
 public class DeployableCompositeServiceImpl extends HttpServlet implements Servlet {
     private static final long serialVersionUID = -3477992129462720902L;
 
-    private final static Logger logger = Logger.getLogger(DeployableCompositeServiceImpl.class.getName());    
+    private static final Logger logger = Logger.getLogger(DeployableCompositeServiceImpl.class.getName());
 
     @Reference
     public DomainManagerConfiguration domainManagerConfiguration;

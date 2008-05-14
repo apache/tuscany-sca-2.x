@@ -46,7 +46,7 @@ import org.osoa.sca.annotations.Service;
 public class ContributionServiceImpl extends HttpServlet implements Servlet {
     private static final long serialVersionUID = -4759297945439322773L;
 
-    private final static Logger logger = Logger.getLogger(ContributionServiceImpl.class.getName());    
+    private static final Logger logger = Logger.getLogger(ContributionServiceImpl.class.getName());
 
     @Reference
     public LocalItemCollection contributionCollection;

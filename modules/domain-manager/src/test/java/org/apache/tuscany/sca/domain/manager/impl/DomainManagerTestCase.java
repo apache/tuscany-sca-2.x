@@ -44,7 +44,7 @@ public class DomainManagerTestCase extends TestCase {
     private DeployableCompositeCollectionImpl deployableCollection;
     private DomainManagerConfigurationImpl domainManagerConfiguration;
     
-    private final static String WORKSPACE_XML =
+    private static final String WORKSPACE_XML =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
         "<workspace xmlns=\"http://tuscany.apache.org/xmlns/sca/1.0\" " +
         "xmlns:ns1=\"http://tuscany.apache.org/xmlns/sca/1.0\">\n" +

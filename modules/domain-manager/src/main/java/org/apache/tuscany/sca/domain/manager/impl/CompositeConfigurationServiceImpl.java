@@ -99,7 +99,7 @@ import org.osoa.sca.annotations.Service;
 public class CompositeConfigurationServiceImpl extends HttpServlet implements Servlet {
     private static final long serialVersionUID = -8809641932774129152L;
     
-    private final static Logger logger = Logger.getLogger(CompositeConfigurationServiceImpl.class.getName());    
+    private static final Logger logger = Logger.getLogger(CompositeConfigurationServiceImpl.class.getName());
 
     @Reference
     public LocalItemCollection contributionCollection;

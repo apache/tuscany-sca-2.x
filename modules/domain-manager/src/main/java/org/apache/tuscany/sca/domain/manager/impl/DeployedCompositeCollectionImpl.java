@@ -90,7 +90,7 @@ import org.w3c.dom.Document;
 public class DeployedCompositeCollectionImpl extends HttpServlet implements ItemCollection, LocalItemCollection {
     private static final long serialVersionUID = -3477992129462720901L;
 
-    private final static Logger logger = Logger.getLogger(DeployedCompositeCollectionImpl.class.getName());    
+    private static final Logger logger = Logger.getLogger(DeployedCompositeCollectionImpl.class.getName());
 
     @Property
     public String compositeFile;
