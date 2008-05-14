@@ -27,6 +27,8 @@ import java.util.Map;
  * Service declaration using J2SE Jar service provider spec Classes specified
  * inside this declaration are loaded using the ClassLoader used to read the
  * configuration file corresponding to this declaration.
+ *
+ * @version $Rev$ $Date$
  */
 public class ServiceDeclaration {
 

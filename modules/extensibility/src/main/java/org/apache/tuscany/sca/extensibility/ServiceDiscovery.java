@@ -44,6 +44,8 @@ import java.util.logging.Logger;
  * Service description specifies a class name followed by optional properties.
  * Multi-ClassLoader environments are supported through a ClassLoader
  * registration API
+ *
+ * @version $Rev$ $Date$
  */
 public class ServiceDiscovery {
     private final static Logger logger = Logger.getLogger(ServiceDiscovery.class.getName());
