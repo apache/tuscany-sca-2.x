@@ -55,14 +55,14 @@ import org.jvnet.jaxb.reflection.runtime.JAXBContextImpl;
  * @version $Rev$ $Date$
  */
 public class BeanXMLStreamReaderImpl extends XmlTreeStreamReaderImpl {
-    private final static Comparator<Accessor> COMPARATOR = new Comparator<Accessor>() {
+    private static final Comparator<Accessor> COMPARATOR = new Comparator<Accessor>() {
         public int compare(Accessor o1, Accessor o2) {
             return o1.getName().compareTo(o2.getName());
         }
     };
 
-    private final static String XSI_PREFIX = "xsi";
-    private final static String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
+    private static final String XSI_PREFIX = "xsi";
+    private static final String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
 
     private static XmlNode getXSIType(QName realType) {
         QName xsiType = new QName(XSI_NS, "type", XSI_PREFIX);
