@@ -23,6 +23,8 @@ import org.osoa.sca.annotations.Reference;
 
 /**
  * An implementation of the Calculator service.
+ *
+ * @version $Rev$ $Date$
  */
 public class CalculatorServiceImpl implements CalculatorService {
 

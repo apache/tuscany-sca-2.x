@@ -24,6 +24,11 @@ import java.io.IOException;
 import org.apache.tuscany.sca.domain.SCADomain;
 import org.apache.tuscany.sca.domain.SCADomainFactory;
 
+/**
+ * Launcher for the Tuscany Domain Controller. 
+ *
+ * @version $Rev$ $Date$
+ */
 public class SCADomainControllerLauncher {
 
     /**

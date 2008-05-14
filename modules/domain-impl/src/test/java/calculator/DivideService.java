@@ -20,6 +20,8 @@ package calculator;
 
 /**
  * The divide service interface
+ *
+ * @version $Rev$ $Date$
  */
 public interface DivideService {
 

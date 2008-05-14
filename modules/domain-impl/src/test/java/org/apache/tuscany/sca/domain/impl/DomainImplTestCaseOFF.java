@@ -36,6 +36,8 @@ import org.osoa.sca.CallableReference;
  * This server program that loads a composite to provide simple registry function.
  * This server can be replaced with any registry that is appropriate but the components
  * in each node that talk to the registry should be replaced also. 
+ *
+ * @version $Rev$ $Date$
  */
 public class DomainImplTestCaseOFF {
 
