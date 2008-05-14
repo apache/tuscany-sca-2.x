@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.implementation.das.annotations;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public @interface Command {
     enum TYPE {SELECT, INSERT, DELETE, UPDATE}
     

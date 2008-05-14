@@ -27,6 +27,8 @@ import commonj.sdo.DataObject;
 
 /**
  * Tests the DAS service
+ *
+ * @version $Rev$ $Date$
  */
 public class CompanyServiceTestCase extends TestCase {
 
