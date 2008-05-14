@@ -44,6 +44,8 @@ import commonj.sdo.helper.XSDHelper;
 
 /**
  * SDO Wrapper Handler
+ *
+ * @version $Rev$ $Date$
  */
 public class SDOWrapperHandler implements WrapperHandler<Object> {
 

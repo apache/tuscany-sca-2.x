@@ -34,7 +34,8 @@ import commonj.sdo.DataObject;
 import commonj.sdo.helper.EqualityHelper;
 
 /**
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class DataObject2XMLStreamReaderTestCase extends SDOTransformerTestCaseBase {
 

@@ -32,7 +32,8 @@ import com.example.ipo.sdo.PurchaseOrderType;
 import commonj.sdo.helper.XMLDocument;
 
 /**
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class XMLDocument2XMLStreamReaderTestCase extends SDOTransformerTestCaseBase {
 

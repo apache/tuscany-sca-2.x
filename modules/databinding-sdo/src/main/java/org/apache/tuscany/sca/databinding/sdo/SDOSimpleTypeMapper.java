@@ -31,6 +31,8 @@ import commonj.sdo.helper.TypeHelper;
 
 /**
  * SDO Java/XML mapping for simple XSD types
+ *
+ * @version $Rev$ $Date$
  */
 public class SDOSimpleTypeMapper implements SimpleTypeMapper {
     public static final String URI_2001_SCHEMA_XSD = "http://www.w3.org/2001/XMLSchema";
