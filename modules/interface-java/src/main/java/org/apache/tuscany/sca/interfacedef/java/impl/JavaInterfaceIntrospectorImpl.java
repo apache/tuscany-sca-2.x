@@ -172,6 +172,19 @@ public class JavaInterfaceIntrospectorImpl {
                 getActualTypes(method.getGenericExceptionTypes(), method.getExceptionTypes(), typeBindings);
 
             boolean nonBlocking = method.isAnnotationPresent(OneWay.class);
+            if (nonBlocking) {
+                if (!(returnType == void.class)) {
+                        throw new InvalidOperationException(
+                             "Method should return 'void' when declared with an@OneWay annotation.",
+                             method);
+                }
+                if (!(faultTypes.length == 0)) {
+                        throw new InvalidOperationException(
+                             "Method should not declare exceptions with an @OneWay annotation.",
+                             method);
+                }
+             }
+
             ConversationSequence conversationSequence = ConversationSequence.CONVERSATION_NONE;
             if (method.isAnnotationPresent(EndsConversation.class)) {
                 if (!conversational) {
