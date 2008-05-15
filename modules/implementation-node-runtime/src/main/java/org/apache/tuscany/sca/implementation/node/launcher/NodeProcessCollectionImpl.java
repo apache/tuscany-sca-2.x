@@ -47,7 +47,7 @@ import org.osoa.sca.annotations.Service;
 @Service(interfaces={ItemCollection.class, LocalItemCollection.class})
 public class NodeProcessCollectionImpl implements ItemCollection, LocalItemCollection {
 
-    private final static Logger logger = Logger.getLogger(NodeProcessCollectionImpl.class.getName());    
+    private static final Logger logger = Logger.getLogger(NodeProcessCollectionImpl.class.getName());    
 
     private List<SCANodeVM> nodeVMs = new ArrayList<SCANodeVM>();
 

@@ -43,7 +43,7 @@ import org.osoa.sca.annotations.Service;
 public class PingServiceImpl extends HttpServlet {
     private static final long serialVersionUID = -3477992129462720901L;
 
-    private final static Logger logger = Logger.getLogger(PingServiceImpl.class.getName());    
+    private static final Logger logger = Logger.getLogger(PingServiceImpl.class.getName());    
 
     /**
      * Initialize the component.
