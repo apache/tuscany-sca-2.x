@@ -85,7 +85,7 @@ public abstract class SCANodeFactory {
     /**
      * Creates a new SCA node.
      * 
-     * @param nodeURI the URI of the node, this URI is used to provide the default 
+     * @param physicalNodeURI the URI of the node, this URI is used to provide the default 
      *        host and port information for the runtime for situations when bindings
      *        do provide this information
      * @param domainURI the URI of the domain that the node belongs to. This URI is 
