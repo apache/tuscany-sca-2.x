@@ -36,6 +36,8 @@ import org.apache.tuscany.sca.policy.PolicySet;
 /**
  * Policy handler to handle PolicySet related to Logging with the QName
  * {http://tuscany.apache.org/xmlns/sca/1.0/impl/java}LoggingPolicy
+ *
+ * @version $Rev$ $Date$
  */
 public class JDKLoggingPolicyInterceptor implements Interceptor {
     public static final String loggingPolicy = "JDKLoggingPolicy";

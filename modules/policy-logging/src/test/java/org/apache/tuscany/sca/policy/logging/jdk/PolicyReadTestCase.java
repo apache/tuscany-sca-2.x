@@ -33,8 +33,9 @@ import javax.xml.stream.XMLStreamWriter;
 import junit.framework.TestCase;
 
 /**
- * 
  * Test the reading of ws config params policy.
+ *
+ * @version $Rev$ $Date$
  */
 public class PolicyReadTestCase extends TestCase {
 
