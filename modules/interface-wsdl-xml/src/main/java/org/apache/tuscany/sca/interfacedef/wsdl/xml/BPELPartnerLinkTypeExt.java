@@ -7,6 +7,7 @@ import javax.xml.namespace.QName;
  * A class to serve as the extensibility element for BPEL partnerLinkType elements
  * @author Mike Edwards
  *
+ * @version $Rev$ $Date$
  */
 public class BPELPartnerLinkTypeExt implements ExtensibilityElement {
 	

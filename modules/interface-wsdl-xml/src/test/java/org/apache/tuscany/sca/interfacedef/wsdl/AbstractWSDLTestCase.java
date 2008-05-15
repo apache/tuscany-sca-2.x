@@ -34,7 +34,9 @@ import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 
 /**
- * Test case for WSDLOperation
+ * Test case for WSDLOperation.
+ *
+ * @version $Rev$ $Date$
  */
 public abstract class AbstractWSDLTestCase extends TestCase {
     protected URLArtifactProcessor<Object> documentProcessor;

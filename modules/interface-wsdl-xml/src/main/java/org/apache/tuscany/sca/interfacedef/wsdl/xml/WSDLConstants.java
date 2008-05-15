@@ -22,6 +22,11 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
 
+/**
+ * Constants for WSDL.
+ *
+ * @version $Rev$ $Date$
+ */
 public interface WSDLConstants {
 
     String INTERFACE_WSDL = "interface.wsdl";
