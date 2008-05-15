@@ -33,7 +33,6 @@ import org.apache.tuscany.sca.contribution.namespace.impl.NamespaceImportExportF
 import org.apache.tuscany.sca.workspace.DefaultWorkspaceFactory;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
-import org.apache.tuscany.sca.workspace.builder.impl.ContributionDependencyBuilderImpl;
 
 /**
  * Test the contribution dependency analyzer.
