@@ -29,6 +29,10 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class JavaIntrospectionHelperTestCase extends TestCase {
 
     private List testNoGenericsList;

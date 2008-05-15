@@ -22,6 +22,10 @@ import java.util.List;
 
 import junit.framework.AssertionFailedError;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class Bean2 {
 
     private List methodList;
