@@ -33,7 +33,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  * @version $Rev$ $Date$
  */
 public class DefaultLoggingMonitorImpl implements Monitor {
-    private final static Logger logger = Logger.getLogger(DefaultLoggingMonitorImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(DefaultLoggingMonitorImpl.class.getName());
 
     // remembers the last logged problem for testing purposes
     private Problem lastProblem = null;
