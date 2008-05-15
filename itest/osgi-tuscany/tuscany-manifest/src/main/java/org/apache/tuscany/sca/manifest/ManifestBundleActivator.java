@@ -32,6 +32,10 @@ public class ManifestBundleActivator implements BundleActivator {
     private static final String TUSCANY_OSGI_MANIFEST_DIR = "org/apache/tuscany/sca/manifest";
     
     private ArrayList<Bundle> virtualBundles = new ArrayList<Bundle>();
+    
+    private static final String[] immutableJars = {
+        "bcprov"
+    };
 
 	public void start(BundleContext bundleContext) throws Exception {
 		
@@ -52,6 +56,13 @@ public class ManifestBundleActivator implements BundleActivator {
     private void install3rdPartyJarsIntoOSGi(BundleContext bundleContext) {
     
         try {
+            Bundle[] installedBundles = bundleContext.getBundles();
+            HashSet<String> installedBundleSet = new HashSet<String>();
+            for (Bundle bundle : installedBundles) {
+                if (bundle.getSymbolicName() != null)
+                    installedBundleSet.add(bundle.getSymbolicName());
+            }
+            
             // FIXME: SDO bundles dont have the correct dependencies
             System.setProperty("commonj.sdo.impl.HelperProvider", "org.apache.tuscany.sdo.helper.HelperProviderImpl");
             
@@ -87,8 +98,13 @@ public class ManifestBundleActivator implements BundleActivator {
                 if (bundleName.startsWith("org.apache.felix"))
                     continue;
                 
+                String bundleSymbolicName = "org.apache.tuscany.sca.3rdparty." + bundleName;
+                if (bundleSymbolicName.endsWith(".jar")) bundleSymbolicName = bundleSymbolicName.substring(0, bundleSymbolicName.length()-4);
+                if (installedBundleSet.contains(bundleSymbolicName))
+                    continue;
+                
                 String bundleLocation = tuscanyInstallDir.toURI().toURL().toString() + "/" + bundleName;
-                InputStream bundleManifestStream = createBundleManifest(tuscanyInstallDir, bundleName);
+                InputStream bundleManifestStream = createBundleManifest(tuscanyInstallDir, bundleName, bundleSymbolicName);
                 HashSet<String> jarSet = new HashSet<String>();
                 jarSet.add(bundleName);
                 
@@ -173,7 +189,8 @@ public class ManifestBundleActivator implements BundleActivator {
             bundleClassPath.append(jar);           
         }
         
-        manifest.getMainAttributes().putValue("Bundle-ClassPath", bundleClassPath.toString());
+        if (thirdPartyJars.size() > 1)
+            manifest.getMainAttributes().putValue("Bundle-ClassPath", bundleClassPath.toString());
 
         JarOutputStream jarOut = new JarOutputStream(out, manifest);
         
@@ -185,8 +202,15 @@ public class ManifestBundleActivator implements BundleActivator {
             
         });
         
-        for (File jar : jars) {
-            addFileToJar(jar, jarOut);
+
+        String classpath = manifest.getMainAttributes().getValue("Bundle-ClassPath");
+        boolean embed = classpath != null && !classpath.trim().equals(".");
+        for (File jarFile : jars) {
+            if (embed)
+                addFileToJar(jarFile, jarOut);
+            else {
+                copyJar(jarFile, jarOut);
+            }
         }
 
         jarOut.close();
@@ -198,10 +222,6 @@ public class ManifestBundleActivator implements BundleActivator {
     }
     
     private void addFileToJar(File file, JarOutputStream jarOut) throws Exception {
-        
-        if (file.isDirectory()) {
-            return;
-        }
         
         ZipEntry ze = new ZipEntry(file.getName());
 
@@ -216,7 +236,30 @@ public class ManifestBundleActivator implements BundleActivator {
         }
     }
     
-    private InputStream createBundleManifest(File tuscanyDir, String bundleName) throws Exception {
+
+    private void copyJar(File file, JarOutputStream jarOut) throws Exception {
+        
+        try {
+            JarInputStream jarIn = new JarInputStream(new FileInputStream(file));
+            ZipEntry ze;
+            byte[] readBuf = new byte[1000];
+            int bytesRead;
+            while ((ze = jarIn.getNextEntry()) != null) {
+                if (ze.getName().equals("META-INF/MANIFEST.MF"))
+                    continue;
+                jarOut.putNextEntry(ze);
+                while ((bytesRead = jarIn.read(readBuf)) > 0) {
+                    jarOut.write(readBuf, 0, bytesRead);
+                }
+            }
+            jarIn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private InputStream createBundleManifest(File tuscanyDir, String bundleName, String bundleSymbolicName) throws Exception {
+        
         File jarFile = new File(tuscanyDir.getPath() + File.separator + bundleName);
         if (!jarFile.exists())
             return null;
@@ -224,11 +267,20 @@ public class ManifestBundleActivator implements BundleActivator {
         Manifest manifest = jar.getManifest();
         if (manifest == null)
             manifest = new Manifest();
+        
+        boolean isImmutableJar = false;
+        for (String immutableJar : immutableJars) {
+            if (bundleName.startsWith(immutableJar)) {
+                isImmutableJar = true;
+                break;
+            }
+        }
         Attributes attributes = manifest.getMainAttributes();
         if (attributes.getValue("Manifest-Version") == null) {
             attributes.putValue("Manifest-Version", "1.0");
         }
-        attributes.putValue("Bundle-ClassPath", bundleName);
+        if (isImmutableJar)
+            attributes.putValue("Bundle-ClassPath", bundleName);
         
         String packages = getPackagesInJar(bundleName, jar);
         String version = getJarVersion(bundleName);
@@ -237,7 +289,7 @@ public class ManifestBundleActivator implements BundleActivator {
         attributes.remove(new Attributes.Name("Import-Package"));
         
         if (attributes.getValue("Bundle-SymbolicName") == null)
-            attributes.putValue("Bundle-SymbolicName", bundleName);
+            attributes.putValue("Bundle-SymbolicName", bundleSymbolicName);
         if (attributes.getValue("Bundle-Version") == null)
             attributes.putValue("Bundle-Version", version);
         // Existing export statements in bundles may contain versions, so they should be used as is

@@ -31,6 +31,15 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>osgi</artifactId>
+            <version>3.3.2.R33x_v20080105</version>
+        </dependency>
+
+
+<!--  Uncomment this section and comment out the Equinox dependency above to run tests using Felix.
+
+        <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.main</artifactId>
             <version>1.1.0-SNAPSHOT</version>
@@ -46,7 +55,6 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.configadmin</artifactId>
             <version>1.0.0</version>
-            <!-- Exclude the javax.servlet to avoid conflict -->
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.felix</groupId>
@@ -60,6 +68,8 @@
             <artifactId>org.apache.felix.scr</artifactId>
             <version>1.0.0</version>
         </dependency>
+
+End Felix dependencies -->
 
         <dependency>
             <groupId>junit</groupId>
@@ -81,5 +91,15 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>ops4j-repository</id>
+            <url>http://repository.ops4j.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>

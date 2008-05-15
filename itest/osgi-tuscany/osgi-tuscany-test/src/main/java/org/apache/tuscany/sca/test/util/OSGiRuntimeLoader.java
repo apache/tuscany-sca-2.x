@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.sca.test.util;
 
-import org.apache.felix.main.Main;
 import org.apache.tuscany.sca.test.osgi.runtime.impl.OSGiTestRuntime;
 
 
@@ -60,14 +59,15 @@ public  class OSGiRuntimeLoader  {
         
         
         try {
-            String felixDir = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            Class<?> felixMainClass = OSGiRuntimeLoader.class.getClassLoader().loadClass("org.apache.felix.main.Main");
+            String felixDir = felixMainClass.getProtectionDomain().getCodeSource().getLocation().getPath();
             int index = 0;
             if ((index = felixDir.indexOf("/org.apache.felix.main")) >= 0) {
                 felixDir = felixDir.substring(0, index);
                 System.setProperty("FELIX_DIR", felixDir);
             }
             
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // Ignore
         }
         

@@ -62,8 +62,12 @@ public abstract class OSGiTestRuntime {
             }
         }
 
-        instance = FelixTestRuntime.getInstance();
-        // instance = EquinoxTestRuntime.getInstance();
+        try {
+            instance = EquinoxTestRuntime.getInstance();
+        } catch (Throwable e) {
+            instance = FelixTestRuntime.getInstance();
+        }
+        
         return instance;
  
     }
