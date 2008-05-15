@@ -38,7 +38,7 @@ public interface IntentAttachPointType {
     
     /**
      * Sets the name of the extension type
-     * @param the name of the extension type
+     * @param type the name of the extension type
      */
     void setName(QName type);
     
