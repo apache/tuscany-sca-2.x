@@ -39,8 +39,8 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
 /**
- * @author administrator
  *
+ * @version $Rev$ $Date$
  */
 public class Axis2ConfigParamPolicyProcessor implements StAXArtifactProcessor<Axis2ConfigParamPolicy> {
     public static final QName AXIS2_CONFIG_PARAM_POLICY_QNAME = Axis2ConfigParamPolicy.NAME;

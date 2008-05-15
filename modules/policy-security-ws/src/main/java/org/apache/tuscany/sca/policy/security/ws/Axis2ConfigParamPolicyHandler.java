@@ -28,6 +28,8 @@ import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
 /**
  * Policy handler to handle PolicySet that contain Axis2ConfigParamPolicy instances
+ *
+ * @version $Rev$ $Date$
  */
 public class Axis2ConfigParamPolicyHandler implements PolicyHandler {
     private PolicySet applicablePolicySet = null;

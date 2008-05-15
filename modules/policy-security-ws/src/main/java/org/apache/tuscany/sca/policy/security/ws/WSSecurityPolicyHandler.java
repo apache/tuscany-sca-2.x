@@ -26,6 +26,8 @@ import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
 /**
  * Policy handler to handle PolicySet containing Policy (WS-Security-Policy) instances
+ *
+ * @version $Rev$ $Date$
  */
 public class WSSecurityPolicyHandler implements PolicyHandler {
     private PolicySet applicablePolicySet = null;
