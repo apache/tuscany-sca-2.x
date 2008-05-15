@@ -30,7 +30,8 @@ import org.apache.tuscany.sca.interfacedef.java.DefaultJavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 
 /**
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class JAXWSJavaInterfaceProcessorTestCase extends TestCase {
     private JAXWSJavaInterfaceProcessor interfaceProcessor;

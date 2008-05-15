@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class MyException extends Exception {
     private String error;
 
