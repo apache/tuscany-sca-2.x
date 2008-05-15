@@ -26,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -206,25 +207,21 @@ public class WebAppServletHost implements ServletHost {
     }
 
     public void init(ServletConfig config) throws ServletException {
+
         ServletContext servletContext = config.getServletContext();
-
-        init(servletContext);
-
-        // Initialize the registered Servlets
-        for (Servlet servlet : servlets.values()) {
-            servlet.init(config);
-        }
-    }
-
-    public void init(ServletContext servletContext) throws ServletException {
         if (servletContext.getAttribute(SCA_DOMAIN_ATTRIBUTE) == null) {
-            initContextPath(servletContext);
+            initContextPath(config);
             String domainURI = "http://localhost/" + contextPath;
             contributionRoot = getContributionRoot(servletContext);
             // logger.info("Contribution: " + contributionRoot);
             System.setProperty(SCADomain.class.getName(), WebSCADomain.class.getName());
             this.scaDomain = SCADomain.newInstance(domainURI, contributionRoot);
             servletContext.setAttribute(SCA_DOMAIN_ATTRIBUTE, scaDomain);
+        }
+
+        // Initialize the registered Servlets
+        for (Servlet servlet : servlets.values()) {
+            servlet.init(config);
         }
     }
 
@@ -271,19 +268,20 @@ public class WebAppServletHost implements ServletHost {
      * containers use an init parameter.
      */
     @SuppressWarnings("unchecked")
-    public void initContextPath(ServletContext context) {
-        // The getContextPath() is introduced since Servlet 2.5
-        Method m;
-        try {
-            // Try to get the method anyway since some ServletContext impl has this method even before 2.5
-            m = context.getClass().getMethod("getContextPath", new Class[] {});
-            contextPath = (String)m.invoke(context, new Object[] {});
-        } catch (Exception e) {
-            contextPath = context.getInitParameter("contextPath");
-            if (contextPath == null) {
+    public void initContextPath(ServletConfig config) {
+        
+        if (Collections.list(config.getInitParameterNames()).contains("contextPath")) {
+            contextPath = config.getInitParameter("contextPath");
+        } else {
+            // The getContextPath() is introduced since Servlet 2.5
+            ServletContext context = config.getServletContext();
+            try {
+                // Try to get the method anyway since some ServletContext impl has this method even before 2.5
+                Method m = context.getClass().getMethod("getContextPath", new Class[] {});
+                contextPath = (String)m.invoke(context, new Object[] {});
+            } catch (Exception e) {
                 logger.warning("Servlet level is: " + context.getMajorVersion() + "." + context.getMinorVersion());
-                throw new IllegalStateException(
-                                                "'contextPath' init parameter must be set for pre-2.5 servlet container");
+                throw new IllegalStateException("'contextPath' init parameter must be set for pre-2.5 servlet container");
             }
         }
 

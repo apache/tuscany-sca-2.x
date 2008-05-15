@@ -47,13 +47,13 @@ public class ReferenceTag extends TagSupport {
 
     public int doEndTag() throws JspException {
 
-        ServletContext servletContext = pageContext.getServletContext();
         try {
-            WebAppServletHost.getInstance().init(servletContext);
+            WebAppServletHost.getInstance().init(pageContext.getServletConfig());
         } catch (ServletException e) {
             throw new JspException("Exception initializing Tuscany webapp: " + e, e);
         }
  
+        ServletContext servletContext = pageContext.getServletContext();
         SCADomain scaDomain = (SCADomain)servletContext.getAttribute(WebAppServletHost.SCA_DOMAIN_ATTRIBUTE);
         if (scaDomain == null) {
             throw new JspException("SCADomain is null. Check Tuscany configuration in web.xml");
