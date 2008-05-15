@@ -43,7 +43,7 @@ import org.apache.tuscany.sca.workspace.builder.ContributionDependencyBuilder;
  * @version $Rev$ $Date$
  */
 public class ContributionDependencyBuilderImpl implements ContributionDependencyBuilder {
-    private final static Logger logger = Logger.getLogger(ContributionDependencyBuilderImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(ContributionDependencyBuilderImpl.class.getName());
     
     private Monitor monitor;
     
