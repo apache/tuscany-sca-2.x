@@ -33,6 +33,7 @@ import java.util.zip.ZipEntry;
  * 
  * Utility class to create OSGi bundles
  *
+ * @version $Rev$ $Date$
  */
 public class OSGiTestBundles {
     

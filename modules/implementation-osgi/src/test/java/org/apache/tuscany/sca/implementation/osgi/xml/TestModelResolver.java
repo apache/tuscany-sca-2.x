@@ -33,6 +33,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 /**
  * A default implementation of an artifact resolver, based on a map.
  *
+ * @version $Rev$ $Date$
  */
 public class TestModelResolver implements ModelResolver {
     private static final long serialVersionUID = -7826976465762296634L;

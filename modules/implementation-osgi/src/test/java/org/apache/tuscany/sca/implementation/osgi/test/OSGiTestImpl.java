@@ -28,6 +28,7 @@ import org.osgi.framework.BundleContext;
  * 
  * Test class - Implementation of an OSGi service
  *
+ * @version $Rev$ $Date$
  */
 public class OSGiTestImpl implements OSGiTestInterface, BundleActivator {
     

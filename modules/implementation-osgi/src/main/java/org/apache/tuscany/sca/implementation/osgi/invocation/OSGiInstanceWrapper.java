@@ -53,7 +53,8 @@ import org.osoa.sca.annotations.Init;
  * service since one OSGi SCA component can associate different objects with 
  * different services (this is different from Java SCA components which always associate 
  * a single component instance with multiple services).
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class OSGiInstanceWrapper<T> implements InstanceWrapper<T> {
     

@@ -32,6 +32,8 @@ import org.apache.tuscany.sca.implementation.osgi.OSGiImplementationInterface;
  * OSGi implementation 
  *    All attributes from <implementation.osgi> have getters in this class
  * This class implements OSGiImplementationInterface which is associated with OSGiImplementationProvider.
+ *
+ * @version $Rev$ $Date$
  */
 public class OSGiImplementation extends ImplementationImpl implements OSGiImplementationInterface {
     

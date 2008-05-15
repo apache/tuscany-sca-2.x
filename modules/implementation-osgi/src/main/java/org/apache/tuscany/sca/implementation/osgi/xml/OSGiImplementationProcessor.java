@@ -68,8 +68,8 @@ import org.w3c.dom.Node;
  * Process an <implementation.osgi/> element in a component definition. An instance of
  * OSGiImplementation is created.
  * Also associates the component type file with the implementation.
- * 
  *
+ * @version $Rev$ $Date$
  */
 public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiImplementation> {
     

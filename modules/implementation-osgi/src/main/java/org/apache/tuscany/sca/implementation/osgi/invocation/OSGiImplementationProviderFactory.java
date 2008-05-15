@@ -38,7 +38,8 @@ import org.osgi.framework.BundleException;
 
 /**
  * Builds a OSGi-based implementation provider from a component definition
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class OSGiImplementationProviderFactory implements ImplementationProviderFactory<OSGiImplementationInterface> {
     

@@ -29,6 +29,7 @@ import org.osoa.sca.annotations.Property;
  * 
  * Test class - Implementation of an OSGi service
  *
+ * @version $Rev$ $Date$
  */
 public class OSGiTestWithPropertyImpl implements OSGiTestInterface, BundleActivator {
     

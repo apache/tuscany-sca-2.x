@@ -62,6 +62,8 @@ import org.osoa.sca.annotations.ConversationID;
 
 /**
  * OSGi property injection support
+ *
+ * @version $Rev$ $Date$
  */
 public class OSGiPropertyInjector {
     
