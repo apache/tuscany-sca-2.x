@@ -43,8 +43,8 @@ public interface SCANodeManagerService {
     /**
      * Add an SCA contribution into the node.
      *
-     * @param uri the URI of the contribution
-     * @param url the URL of the contribution
+     * @param contributionURI the URI of the contribution
+     * @param contributionURL the URL of the contribution
      */
     void addContribution(String contributionURI, String contributionURL) throws NodeException;
 
@@ -58,7 +58,7 @@ public interface SCANodeManagerService {
     /**
      * Add the named deployable composite to the domain level composite
      *
-     * @param compositeQName the name of the composite
+     * @param compositeName the name of the composite
      */
     void addToDomainLevelComposite(String compositeName) throws NodeException;
 
