@@ -42,7 +42,7 @@ public interface WSDLInterface extends Interface, Base {
     /**
      * Sets the name of the WSDL interface.
      *
-     * @param className the name of the WSDL interface
+     * @param interfaceName the name of the WSDL interface
      */
     void setName(QName interfaceName);
 
