@@ -44,6 +44,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class JavaPropertyValueObjectFactory implements PropertyValueFactory {
     private Mediator mediator = null;
     private boolean isSimpleType;

@@ -29,6 +29,8 @@ import org.apache.tuscany.sca.policy.util.PolicyHandler;
 /**
  * An interceptor to invoke policy handlers before and after the invocation of operations on 
  * an implementation.
+ *
+ * @version $Rev$ $Date$
  */
 public class PolicyHandlingInterceptor implements Interceptor {
     private Invoker next;
