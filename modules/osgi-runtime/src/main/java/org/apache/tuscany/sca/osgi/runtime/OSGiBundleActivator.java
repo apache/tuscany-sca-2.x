@@ -17,6 +17,7 @@ import org.osgi.framework.BundleListener;
 /**
  * OSGi bundle activator, which is run when Tuscany is run inside an OSGi runtime.
  *
+ * @version $Rev$ $Date$
  */
 public class OSGiBundleActivator implements BundleActivator, BundleListener {
 	

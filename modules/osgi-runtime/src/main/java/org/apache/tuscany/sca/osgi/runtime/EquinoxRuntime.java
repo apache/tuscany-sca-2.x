@@ -23,6 +23,11 @@ import java.lang.reflect.Method;
 
 import org.osgi.framework.BundleContext;
 
+/**
+ * Implementation of an OSGi Runtime using Equinox.
+ *
+ * @version $Rev$ $Date$
+ */
 public class EquinoxRuntime extends OSGiRuntime  {
     
     
