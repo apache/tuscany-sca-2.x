@@ -56,7 +56,7 @@ public class JDKLoggingPolicyInterceptor implements Interceptor {
         init();
     }
 
-    private final void init() {
+    private void init() {
         if (policySet != null) {
             JDKLoggingPolicy policy = (JDKLoggingPolicy)policySet.getPolicies().get(0);
             logger = Logger.getLogger(policy.getLoggerName());
