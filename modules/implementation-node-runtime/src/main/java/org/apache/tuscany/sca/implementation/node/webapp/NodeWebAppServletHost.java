@@ -78,7 +78,7 @@ public class NodeWebAppServletHost implements ServletHost, Filter {
      * 
      * @return
      */
-    static public NodeWebAppServletHost servletHost() {
+    public static NodeWebAppServletHost servletHost() {
         return servletHost;
     }
 
