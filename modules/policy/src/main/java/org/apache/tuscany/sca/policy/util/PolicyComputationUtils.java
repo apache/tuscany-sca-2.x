@@ -50,7 +50,6 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
-import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.ProfileIntent;
 import org.w3c.dom.Document;
