@@ -1,19 +1,3 @@
-package org.apache.tuscany.sca.policy.logging.jdk;
-
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.xml.namespace.QName;
-
-import org.apache.tuscany.sca.assembly.xml.Constants;
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Interceptor;
-import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.invocation.Message;
-import org.apache.tuscany.sca.policy.PolicySet;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -32,6 +16,21 @@ import org.apache.tuscany.sca.policy.PolicySet;
  * specific language governing permissions and limitations
  * under the License.    
  */
+package org.apache.tuscany.sca.policy.logging.jdk;
+
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.assembly.xml.Constants;
+import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.invocation.Interceptor;
+import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.invocation.Message;
+import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Policy handler to handle PolicySet related to Logging with the QName
