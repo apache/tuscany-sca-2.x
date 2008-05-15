@@ -23,6 +23,8 @@ import java.util.List;
 /**
  * Base interface for all assembly model objects that can be have policy intents
  * attached to them.
+ *
+ * @version $Rev$ $Date$
  */
 public interface IntentAttachPoint {
 

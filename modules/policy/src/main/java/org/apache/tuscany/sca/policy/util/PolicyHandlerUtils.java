@@ -27,6 +27,8 @@ import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Utility methods to deal with PolicyHandlers
+ *
+ * @version $Rev$ $Date$
  */
 public class PolicyHandlerUtils {
     public static PolicyHandler findPolicyHandler(PolicySet policySet, 

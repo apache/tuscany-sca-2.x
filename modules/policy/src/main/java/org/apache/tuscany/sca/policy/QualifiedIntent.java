@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.policy;
 /**
  * Abstracts a qualified policy intent
  *
+ * @version $Rev$ $Date$
  */
 public interface QualifiedIntent extends Intent {
 

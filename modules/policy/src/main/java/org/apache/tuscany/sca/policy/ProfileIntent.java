@@ -23,6 +23,7 @@ import java.util.List;
 /**
  * Interface that abstracts a profile intent
  *
+ * @version $Rev$ $Date$
  */
 public interface ProfileIntent extends Intent {
     /**

@@ -29,7 +29,8 @@ import org.apache.tuscany.sca.policy.PolicyContext;
 import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class PolicyContextImpl implements PolicyContext {
     private Map<Object, List<Intent>> intents = new Hashtable<Object , List<Intent>>();

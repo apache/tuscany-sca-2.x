@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.policy.ProfileIntent;
 /**
  * Concrete implementation for Profile Intent
  *
+ * @version $Rev$ $Date$
  */
 public class ProfileIntentImpl extends IntentImpl implements ProfileIntent {
     private List<Intent> requiredIntents = new ArrayList<Intent>();

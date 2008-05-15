@@ -23,6 +23,8 @@ import java.util.List;
 /**
  * Represents a policy intent map. See the Policy Framework specification for a
  * description of this element.
+ *
+ * @version $Rev$ $Date$
  */
 public interface IntentMap {
 

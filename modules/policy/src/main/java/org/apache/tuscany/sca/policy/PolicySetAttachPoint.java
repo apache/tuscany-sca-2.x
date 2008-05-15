@@ -23,6 +23,8 @@ import java.util.List;
 /**
  * Base interface for all assembly model objects that can have policy sets
  * attached to them.
+ *
+ * @version $Rev$ $Date$
  */
 public interface PolicySetAttachPoint extends IntentAttachPoint {
 

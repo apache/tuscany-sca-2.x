@@ -20,7 +20,8 @@ package org.apache.tuscany.sca.policy;
 
 /**
  * Factory interface for creating extension types meta data
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public interface IntentAttachPointTypeFactory {
 

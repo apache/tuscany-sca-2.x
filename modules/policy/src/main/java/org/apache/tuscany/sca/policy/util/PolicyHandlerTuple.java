@@ -23,6 +23,8 @@ import javax.xml.namespace.QName;
 
 /**
  * PolicyHanlder tuples stored in policy handler services files
+ *
+ * @version $Rev$ $Date$
  */
 public class PolicyHandlerTuple {
     private String policyHandlerClassName;

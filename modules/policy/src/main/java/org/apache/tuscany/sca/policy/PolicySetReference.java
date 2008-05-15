@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 /**
  * Interface that abstracts a PolicySet Reference
  *
+ * @version $Rev$ $Date$
  */
 public interface PolicySetReference {
     

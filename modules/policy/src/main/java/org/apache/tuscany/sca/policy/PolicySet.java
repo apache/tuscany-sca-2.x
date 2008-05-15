@@ -27,6 +27,8 @@ import javax.xml.xpath.XPathExpression;
 /**
  * Represents a policy set. See the Policy Framework specification for a
  * description of this element.
+ *
+ * @version $Rev$ $Date$
  */
 public interface PolicySet {
 

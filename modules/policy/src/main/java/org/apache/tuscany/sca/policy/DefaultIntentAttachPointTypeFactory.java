@@ -22,6 +22,8 @@ import org.apache.tuscany.sca.policy.impl.IntentAttachPointTypeFactoryImpl;
 
 /**
  * Default implementation for IntentAttachPointTypeFactory
+ *
+ * @version $Rev$ $Date$
  */
 public class DefaultIntentAttachPointTypeFactory extends IntentAttachPointTypeFactoryImpl implements IntentAttachPointTypeFactory{
 }
