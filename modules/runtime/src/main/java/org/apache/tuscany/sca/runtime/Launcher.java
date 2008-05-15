@@ -40,6 +40,8 @@ import org.apache.tuscany.sca.node.SCANodeFactory;
 
 /**
  * A Launcher using a multiple nodes part as part of a domain
+ *
+ * @version $Rev$ $Date$
  */
 public class Launcher {
     private final static Logger logger = Logger.getLogger(Launcher.class.getName());
