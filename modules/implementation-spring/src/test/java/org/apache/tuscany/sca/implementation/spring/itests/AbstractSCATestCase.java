@@ -38,7 +38,7 @@ public abstract class AbstractSCATestCase<T> extends TestCase {
         service = (T)domain.getService(getServiceClass(), "ClientComponent");
     }
 
-    abstract protected Class getServiceClass();
+    protected abstract Class getServiceClass();
 
     @Override
     protected void tearDown() throws Exception {
