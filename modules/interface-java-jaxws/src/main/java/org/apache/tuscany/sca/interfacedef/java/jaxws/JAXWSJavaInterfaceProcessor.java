@@ -49,7 +49,6 @@ import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
-import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
