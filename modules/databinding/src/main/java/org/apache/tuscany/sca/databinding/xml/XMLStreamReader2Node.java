@@ -25,6 +25,8 @@ import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
+import org.apache.tuscany.sca.databinding.impl.DOMHelper;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 
@@ -44,7 +46,12 @@ public class XMLStreamReader2Node extends BaseTransformer<XMLStreamReader, Node>
             stax2sax.transform(source, pipe.getSink(), context);
             Node node = pipe.getResult();
             source.close();
-            return node;
+            if (node instanceof Document) {
+                Document doc = (Document)node;
+                return DOMHelper.adjustElementName(context, doc.getDocumentElement());
+            } else {
+                return node;
+            }
         } catch (Exception e) {
             throw new TransformationException(e);
         }
