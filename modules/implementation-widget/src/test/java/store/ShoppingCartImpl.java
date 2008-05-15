@@ -30,6 +30,11 @@ import org.apache.abdera.model.Feed;
 import org.apache.tuscany.sca.binding.atom.collection.Collection;
 import org.apache.tuscany.sca.binding.atom.collection.NotFoundException;
 
+/**
+ * Implementation of a Shopping Cart.
+ *
+ * @version $Rev$ $Date$
+ */
 public class ShoppingCartImpl implements Collection {
 
     private static Map<String, Entry> cart = new HashMap<String, Entry>();

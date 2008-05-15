@@ -27,7 +27,10 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 
-
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 class WidgetImplementationIntrospector {
     private static final String WEB_REFERENCE_ANNOTATION = "//@Reference";
     private static final String WEB_PROPERTY_ANNOTATION = "//@Property";

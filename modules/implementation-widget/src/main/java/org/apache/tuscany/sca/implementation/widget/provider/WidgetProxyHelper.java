@@ -22,6 +22,10 @@ package org.apache.tuscany.sca.implementation.widget.provider;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 class WidgetProxyHelper {
     private static Map<String, String> proxyFileRegistry = new HashMap<String, String>();
     private static Map<String, String> proxyClient = new HashMap<String, String>();

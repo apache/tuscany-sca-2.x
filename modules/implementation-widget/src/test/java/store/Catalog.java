@@ -21,6 +21,11 @@ package store;
 
 import org.osoa.sca.annotations.Remotable;
 
+/**
+ * Interface for the Catalog Service.
+ *
+ * @version $Rev$ $Date$
+ */
 @Remotable
 public interface Catalog {
     String[] get();

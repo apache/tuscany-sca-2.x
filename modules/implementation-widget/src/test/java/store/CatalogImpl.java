@@ -24,6 +24,11 @@ import java.util.List;
 
 import org.osoa.sca.annotations.Init;
 
+/**
+ * Implementation of the Catalog Service.
+ *
+ * @version $Rev$ $Date$
+ */
 public class CatalogImpl implements Catalog {
     private List<String> catalog = new ArrayList<String>();
 
