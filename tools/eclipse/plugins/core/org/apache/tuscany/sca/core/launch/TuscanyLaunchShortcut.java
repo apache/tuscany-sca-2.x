@@ -131,7 +131,7 @@ public class TuscanyLaunchShortcut implements ILaunchShortcut {
         } catch (Exception e) {
             Platform.getLog(
                 Platform.getBundle("org.apache.tuscany.sca.core")).log(
-                new Status(IStatus.ERROR, "org.apache.tuscany.sca.core", "Could not launch SCA composite", e));
+                new Status(IStatus.ERROR, "org.apache.tuscany.sca.core", IStatus.OK, "Could not launch SCA composite", e));
         }
     }
 

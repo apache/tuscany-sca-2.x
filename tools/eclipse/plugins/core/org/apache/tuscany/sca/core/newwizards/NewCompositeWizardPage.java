@@ -46,65 +46,64 @@ import org.eclipse.ui.ide.IDE;
  * @version $Rev$ $Date$
  */
 public class NewCompositeWizardPage extends WizardNewFileCreationPage {
-	
-	private IWorkbench workbench;
+        
+        private IWorkbench workbench;
 
-	public NewCompositeWizardPage(IWorkbench workbench, IStructuredSelection selection)  {
-		super("New SCA Composite Page", selection);
-		
-		this.workbench = workbench;
-		
-		setTitle("SCA Composite");
-		setDescription("Create a new SCA Composite.");
-		
-		try {
-			String location = FileLocator.toFileURL(Platform.getBundle("org.apache.tuscany.sca.core").getEntry("/")).getFile().toString();
-			setImageDescriptor(ImageDescriptor.createFromImageData((new ImageLoader()).load(location + "/icons/tuscany.gif")[0]));
-		} catch (Exception e) {
-	            Platform.getLog(
-	                            Platform.getBundle("org.apache.tuscany.sca.core")).log(
-	                            new Status(IStatus.ERROR, "org.apache.tuscany.sca.core", "Could not create wizard", e));
-		}
-		
-		setFileExtension("composite");
-		setFileName("sample.composite");
-		
-	}
-	
-	public boolean finish() {
-		try {
-			IFile file = createNewFile();
-			
-            IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
-	        IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
-	        IDE.openEditor(workbenchPage, file, true);
-		} catch (Exception e) {
+        public NewCompositeWizardPage(IWorkbench workbench, IStructuredSelection selection)  {
+                super("New SCA Composite Page", selection);
+                
+                this.workbench = workbench;
+                
+                setTitle("SCA Composite");
+                setDescription("Create a new SCA Composite.");
+                
+                try {
+                        String location = FileLocator.toFileURL(Platform.getBundle("org.apache.tuscany.sca.core").getEntry("/")).getFile().toString();
+                        setImageDescriptor(ImageDescriptor.createFromImageData((new ImageLoader()).load(location + "/icons/tuscany.gif")[0]));
+                } catch (Exception e) {
                     Platform.getLog(
                                     Platform.getBundle("org.apache.tuscany.sca.core")).log(
-                                    new Status(IStatus.ERROR, "org.apache.tuscany.sca.core", "Could not open editor", e));
-			return false;
-		}
-		return true;
-	}
+                                    new Status(IStatus.ERROR, "org.apache.tuscany.sca.core", IStatus.OK, "Could not create wizard", e));
+                }
+                
+                setFileName("sample.composite");
+                
+        }
+        
+        public boolean finish() {
+                try {
+                        IFile file = createNewFile();
+                        
+            IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
+                IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
+                IDE.openEditor(workbenchPage, file, true);
+                } catch (Exception e) {
+                    Platform.getLog(
+                                    Platform.getBundle("org.apache.tuscany.sca.core")).log(
+                                    new Status(IStatus.ERROR, "org.apache.tuscany.sca.core", IStatus.OK, "Could not open editor", e));
+                        return false;
+                }
+                return true;
+        }
 
-	@Override
-	protected InputStream getInitialContents() {
+        @Override
+        protected InputStream getInitialContents() {
 
-	        IPath path = new Path(getFileName());
-	        String name = path.removeFileExtension().toString();
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		PrintWriter printWriter = new PrintWriter(outputStream);
-		printWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");		
-		printWriter.println("<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\"");
-		printWriter.println("    xmlns:t=\"http://tuscany.apache.org/xmlns/sca/1.0\"");
-		printWriter.println("    xmlns:c=\"http://" + name + "\"");	
+                IPath path = new Path(getFileName());
+                String name = path.removeFileExtension().toString();
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                PrintWriter printWriter = new PrintWriter(outputStream);
+                printWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");              
+                printWriter.println("<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\"");
+                printWriter.println("    xmlns:t=\"http://tuscany.apache.org/xmlns/sca/1.0\"");
+                printWriter.println("    xmlns:c=\"http://" + name + "\"");     
                 printWriter.println("    targetNamespace=\"http://" + name + "\"");      
-		printWriter.println("    name=\"" + name + "\">");
-		printWriter.println();
+                printWriter.println("    name=\"" + name + "\">");
                 printWriter.println();
-		printWriter.println("</composite>");
-		printWriter.close();
-		
-		return new ByteArrayInputStream(outputStream.toByteArray());
-	}
+                printWriter.println();
+                printWriter.println("</composite>");
+                printWriter.close();
+                
+                return new ByteArrayInputStream(outputStream.toByteArray());
+        }
 }
