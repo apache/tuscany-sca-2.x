@@ -20,9 +20,6 @@
 package org.apache.tuscany.sca.monitor;
 
 import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
-import org.apache.tuscany.sca.monitor.Monitor;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.monitor.impl.MonitorFactoryImpl;
 import org.junit.AfterClass;
