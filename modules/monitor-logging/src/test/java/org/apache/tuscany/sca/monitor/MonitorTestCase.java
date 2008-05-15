@@ -36,7 +36,7 @@ import org.junit.Test;
  */
 public class MonitorTestCase {
     
-    static private MonitorFactory monitorFactory;
+    private static MonitorFactory monitorFactory;
     
     @BeforeClass
     public static void init() throws Exception {
