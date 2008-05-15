@@ -19,13 +19,13 @@
 package org.apache.tuscany.sca.test.osgi.runtime.impl;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
-import org.apache.felix.framework.Felix;
-import org.apache.felix.main.AutoActivator;
-import org.apache.felix.main.Main;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -36,7 +36,7 @@ public class FelixTestRuntime extends OSGiTestRuntime implements BundleActivator
     
     private static FelixTestRuntime instance;
     
-    private static Felix felix;
+    private static Bundle felix;
     
     
     public static OSGiTestRuntime getInstance() throws Exception {
@@ -77,7 +77,11 @@ public class FelixTestRuntime extends OSGiTestRuntime implements BundleActivator
         if (bundleContext != null)
             return bundleContext;
         
-        Properties props = Main.loadConfigProperties();
+        ClassLoader cl = this.getClass().getClassLoader();
+        Class<?> felixMainClass = cl.loadClass("org.apache.felix.main.Main");
+        Class<?> felixClass = cl.loadClass("org.apache.felix.framework.Felix");
+        Method propsMethod = felixMainClass.getMethod("loadConfigProperties");
+        Properties props = (Properties)propsMethod.invoke(null);
         
         //deleteProfile();
         // Create profile directory
@@ -127,13 +131,17 @@ public class FelixTestRuntime extends OSGiTestRuntime implements BundleActivator
         
         
         props.put("org.osgi.framework.system.packages", systemPackages);
-
+        
+        Constructor felixConstructor = felixClass.getConstructor(Map.class, List.class);
         List<BundleActivator> activators = new ArrayList<BundleActivator>();
-        AutoActivator autoActivator = new AutoActivator(props);
+
+        Class<?> autoActivatorClass = cl.loadClass("org.apache.felix.main.AutoActivator");
+        Constructor autoActivatorConstructor = autoActivatorClass.getConstructor(Map.class);
+        BundleActivator autoActivator = (BundleActivator)autoActivatorConstructor.newInstance(props);            
         activators.add(autoActivator);
-        felix = new Felix(props, activators);
-        ((Bundle)felix).start();
-        bundleContext = ((Bundle)felix).getBundleContext();
+        felix = (Bundle)felixConstructor.newInstance(props, activators);
+        felix.start();
+        bundleContext = felix.getBundleContext();
                    
         return bundleContext;
         

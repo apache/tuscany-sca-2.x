@@ -56,7 +56,7 @@ public class OSGiTuscanyTestHarness {
     
 
     private OSGiTestRuntime osgiRuntime;
-    private Bundle tuscanyRuntime;
+    protected Bundle tuscanyRuntime;
     private BundleContext bundleContext;
     private Bundle testBundle;
 
@@ -213,109 +213,110 @@ public class OSGiTuscanyTestHarness {
             className = className.substring(1, className.length()-6); // remove leading / and trailing .class
             className = className.replaceAll("/", ".");
             Class testClass = bundle.loadClass(className);
-            boolean isJunitTest = TestCase.class.isAssignableFrom(testClass);
-            if (testClass.getName().endsWith("TestCase") &&
-                    !testClass.getPackage().getName().startsWith("org.apache.tuscany.sca.test.osgi")) {
-                Object test = (Object)testClass.newInstance();
-
-                System.out.println("Running test " + test + " ");
-                int ran = 0;
-                int failed = 0;
-                ArrayList<Method> testMethods = new ArrayList<Method>();
-                Method setupMethod = null;
-                Method tearDownMethod = null;
-                Method setupClassMethod = null;
-                Method tearDownClassMethod = null;
-                Method[] methods = testClass.getDeclaredMethods();
-                for (final Method method : methods) {
-                    if ((isJunitTest && method.getName().startsWith("test"))
-                                || method.getAnnotation(Test.class) != null) {
-                        testMethods.add(method);
-                        
-                    }    
-                    else if ((isJunitTest && method.getName().equals("setUp"))
-                        || method.getAnnotation(Before.class) != null) {
-                        
-                        setupMethod = method;
-                        AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                            public Object run() {
-                                method.setAccessible(true);
-                                return null;
-                            }
-                        });
-                        
-                    }
-                    else if ((isJunitTest && method.getName().equals("tearDown"))
-                            || method.getAnnotation(After.class) != null) {
-                            
-                        tearDownMethod = method;
-                        AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                            public Object run() {
-                                method.setAccessible(true);
-                                return null;
-                            }
-                        });
-                        
-                    }
-                    else if (method.getAnnotation(BeforeClass.class) != null) {
-                            
-                            setupClassMethod = method;
-                            AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                                public Object run() {
-                                    method.setAccessible(true);
-                                    return null;
-                                }
-                            });
-                            
-                        }
-                        else if (method.getAnnotation(AfterClass.class) != null) {
-                                
-                            tearDownClassMethod = method;
-                            AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                                public Object run() {
-                                    method.setAccessible(true);
-                                    return null;
-                                }
-                            });
-                            
-                        }
-                }
-                try {
-                    if (setupClassMethod != null)
-                        setupClassMethod.invoke(null);
-                    for (Method testMethod : testMethods) {
-                        
-                        ran++;
-                        failed++;
-                        try {
-                            if (setupMethod != null)
-                                setupMethod.invoke(test);
-                            
-                            testMethod.invoke(test);
-                            failed--;
-                        
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            throw e;
-                        } finally {
-                            if (tearDownMethod != null)
-                                tearDownMethod.invoke(test);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    throw e;
-                } finally {
-                    
-                    System.out.println("Ran: " + ran + ", Passed: " + (ran-failed) + ", Failed: " + failed);
-                    if (tearDownClassMethod != null)
-                        tearDownClassMethod.invoke(null);
-                }
-            }    
-
+            runTestCase(testClass, testResult);
         }    
         
         Assert.assertEquals(0, testResult.errorCount());
 
+    }
+    
+
+    public void runTestCase(Class testClass, TestResult testResult) throws Exception {
+        
+        boolean isJunitTest = TestCase.class.isAssignableFrom(testClass);
+        if (testClass.getName().endsWith("TestCase") &&
+                    !testClass.getPackage().getName().startsWith("org.apache.tuscany.sca.test.osgi")) {
+            Object test = (Object)testClass.newInstance();
+
+            System.out.println("Running test " + test + " ");
+            int ran = 0;
+            int failed = 0;
+            ArrayList<Method> testMethods = new ArrayList<Method>();
+            Method setupMethod = null;
+            Method tearDownMethod = null;
+            Method setupClassMethod = null;
+            Method tearDownClassMethod = null;
+            Method[] methods = testClass.getDeclaredMethods();
+            for (final Method method : methods) {
+                if ((isJunitTest && method.getName().startsWith("test"))
+                        || method.getAnnotation(Test.class) != null) {
+                    testMethods.add(method);
+
+                } else if ((isJunitTest && method.getName().equals("setUp"))
+                        || method.getAnnotation(Before.class) != null) {
+
+                    setupMethod = method;
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        public Object run() {
+                            method.setAccessible(true);
+                            return null;
+                        }
+                    });
+
+                } else if ((isJunitTest && method.getName().equals("tearDown"))
+                        || method.getAnnotation(After.class) != null) {
+
+                    tearDownMethod = method;
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        public Object run() {
+                            method.setAccessible(true);
+                            return null;
+                        }
+                    });
+
+                } else if (method.getAnnotation(BeforeClass.class) != null) {
+
+                    setupClassMethod = method;
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        public Object run() {
+                            method.setAccessible(true);
+                            return null;
+                        }
+                    });
+
+                } else if (method.getAnnotation(AfterClass.class) != null) {
+
+                    tearDownClassMethod = method;
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        public Object run() {
+                            method.setAccessible(true);
+                            return null;
+                        }
+                    });
+
+                }
+            }
+            try {
+                if (setupClassMethod != null)
+                    setupClassMethod.invoke(null);
+                for (Method testMethod : testMethods) {
+
+                    ran++;
+                    failed++;
+                    try {
+                        if (setupMethod != null)
+                            setupMethod.invoke(test);
+
+                        testMethod.invoke(test);
+                        failed--;
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
+                    } finally {
+                        if (tearDownMethod != null)
+                            tearDownMethod.invoke(test);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw e;
+            } finally {
+
+                System.out.println("Ran: " + ran + ", Passed: " + (ran - failed) + ", Failed: " + failed);
+                if (tearDownClassMethod != null)
+                    tearDownClassMethod.invoke(null);
+            }
+        }    
     }
 }

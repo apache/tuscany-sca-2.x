@@ -24,7 +24,6 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
 	private static final String TUSCANY_SCA_BUNDLE_PREFIX = "org.apache.tuscany.sca";
 	private static final String TUSCANY_3RD_PARTY_BUNDLE_PREFIX = "org.apache.tuscany.sca.3rdparty";
 	private OSGiRuntime runtime;
-    private ClassLoader serviceDiscoveryClassLoaderParent;
     private ConcurrentHashMap<Bundle, ClassLoader> serviceDiscoveryClassLoaders = new ConcurrentHashMap<Bundle, ClassLoader>();
 	private BundleClassLoader threadContextClassLoader;
 	private ClassLoader origTCCL;
@@ -42,10 +41,11 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
-		runtime.shutdown();
 		
+        // runtime.shutdown();
+
         if (Thread.currentThread().getContextClassLoader() == threadContextClassLoader)
-            Thread.currentThread().setContextClassLoader(origTCCL);
+            Thread.currentThread().setContextClassLoader(origTCCL);       
 	}
 	
 	/**
@@ -61,20 +61,11 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
 
 		origTCCL = Thread.currentThread().getContextClassLoader();
         
-        serviceDiscoveryClassLoaderParent = origTCCL;
-        try {
-            serviceDiscoveryClassLoaderParent.loadClass(this.getClass().getName());
-            if (serviceDiscoveryClassLoaderParent.getParent() != null)
-                serviceDiscoveryClassLoaderParent = serviceDiscoveryClassLoaderParent.getParent();
-        } catch (ClassNotFoundException e) {
-            // Expected exception - ignore
-        }
-		
 		threadContextClassLoader = new BundleClassLoader(thisBundle, origTCCL);
 		
 		Thread.currentThread().setContextClassLoader(threadContextClassLoader);
 		
-        ClassLoader cl = new BundleClassLoader(thisBundle, serviceDiscoveryClassLoaderParent);
+        ClassLoader cl = new BundleClassLoader(thisBundle, null);
         ServiceDiscovery.getInstance().registerClassLoader(cl);
         serviceDiscoveryClassLoaders.put(thisBundle, cl);
 
@@ -109,13 +100,8 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
 
 			// This may be the third party bundle.
 		    if (bundle.getSymbolicName().startsWith(TUSCANY_3RD_PARTY_BUNDLE_PREFIX)) {
-					
-                String thisBundleVersion = (String)thisBundle.getHeaders().get("Bundle-Version");
-                String bundleVersion = (String)bundle.getHeaders().get("Bundle-Version");
-                
-                if (thisBundleVersion == null || bundleVersion == null || thisBundleVersion.equals(bundleVersion)) {							
-                    threadContextClassLoader.addBundle(bundle);					
-				}
+											
+                threadContextClassLoader.addBundle(bundle);	
 			} 
 		    else {
 			
@@ -125,7 +111,7 @@ public class OSGiBundleActivator implements BundleActivator, BundleListener {
                 if (thisBundleVersion == null || bundleVersion == null || thisBundleVersion.equals(bundleVersion)) {
 					
                     if (!threadContextClassLoader.bundles.contains(bundle)) {
-                        ClassLoader cl = new BundleClassLoader(bundle, serviceDiscoveryClassLoaderParent);
+                        ClassLoader cl = new BundleClassLoader(bundle, null);
                         ServiceDiscovery.getInstance().registerClassLoader(cl);
                         serviceDiscoveryClassLoaders.put(bundle, cl);
 				        threadContextClassLoader.addBundle(bundle);

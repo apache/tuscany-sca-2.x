@@ -14,4 +14,3 @@ Import-Package: org.osgi.framework,
   org.apache.tuscany.sca.domain,
   org.apache.tuscany.sca.node
 DynamicImport-Package: *
-Bundle-Activator: org.apache.tuscany.sca.test.osgi.harness.TestBundleActivator
