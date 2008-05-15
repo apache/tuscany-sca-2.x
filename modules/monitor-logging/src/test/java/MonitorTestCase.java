@@ -17,13 +17,6 @@
  * under the License.    
  */
 
-import java.io.InputStream;
-import java.util.logging.LogManager;
-
-import javax.xml.namespace.QName;
-
-import junit.framework.Assert;
-
 import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;

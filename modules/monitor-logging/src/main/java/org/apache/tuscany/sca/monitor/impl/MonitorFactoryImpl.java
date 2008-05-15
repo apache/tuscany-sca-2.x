@@ -19,13 +19,8 @@
 
 package org.apache.tuscany.sca.monitor.impl;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
-import org.apache.tuscany.sca.monitor.Problem;
-import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 
 /**
