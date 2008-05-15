@@ -22,6 +22,11 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
 
+/**
+ * Interface Java XML Constants.
+ *
+ * @version $Rev$ $Date$
+ */
 public interface JavaConstants {
 
     String INTERFACE_JAVA = "interface.java";
