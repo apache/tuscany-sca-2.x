@@ -150,7 +150,7 @@ public class XMLDocumentHelper {
         return inputSource;
     }
 
-    private final static XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+    private static final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
     public static String readTargetNamespace(URL doc, QName element, boolean rootOnly, String attribute)
         throws IOException, XMLStreamException {
