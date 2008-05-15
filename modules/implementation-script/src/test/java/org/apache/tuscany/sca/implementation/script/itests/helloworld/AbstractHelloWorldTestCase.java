@@ -21,6 +21,10 @@ package org.apache.tuscany.sca.implementation.script.itests.helloworld;
 
 import org.apache.tuscany.sca.implementation.script.itests.AbstractSCATestCase;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public abstract class AbstractHelloWorldTestCase extends AbstractSCATestCase<HelloWorld> {
 
     public void testCalculator() throws Exception {

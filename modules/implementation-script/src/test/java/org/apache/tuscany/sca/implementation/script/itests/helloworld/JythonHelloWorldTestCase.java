@@ -20,6 +20,10 @@
 package org.apache.tuscany.sca.implementation.script.itests.helloworld;
 
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class JythonHelloWorldTestCase extends AbstractHelloWorldTestCase {
     // super class does it all getting composite based on this class name
 }

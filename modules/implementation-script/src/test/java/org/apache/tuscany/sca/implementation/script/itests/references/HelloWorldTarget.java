@@ -21,6 +21,10 @@ package org.apache.tuscany.sca.implementation.script.itests.references;
 
 import org.apache.tuscany.sca.implementation.script.itests.helloworld.HelloWorld;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class HelloWorldTarget implements HelloWorld {
 
     public String sayHello(String s) {
