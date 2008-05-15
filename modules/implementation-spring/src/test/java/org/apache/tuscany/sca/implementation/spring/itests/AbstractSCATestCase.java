@@ -23,6 +23,10 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public abstract class AbstractSCATestCase<T> extends TestCase {
 
     protected SCADomain domain;

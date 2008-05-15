@@ -24,6 +24,7 @@ package org.apache.tuscany.sca.implementation.spring.itests.mock;
  * external configuration to give the correct response message, otherwise an (incorrect)
  * default message is generated
  *
+ * @version $Rev$ $Date$
  */
 
 import org.apache.tuscany.sca.implementation.spring.itests.helloworld.HelloWorld;

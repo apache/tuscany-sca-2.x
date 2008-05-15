@@ -25,6 +25,7 @@ package org.apache.tuscany.sca.implementation.spring.itests.helloworld;
  * 2) The composite has a component with a Java POJO implementation which uses the
  * Spring implementation to satisfy a reference
  *
+ * @version $Rev$ $Date$
  */
 public class SpringHelloWorldTestCase extends AbstractHelloWorldTestCase {
     // super class does it all getting composite based on this class name
