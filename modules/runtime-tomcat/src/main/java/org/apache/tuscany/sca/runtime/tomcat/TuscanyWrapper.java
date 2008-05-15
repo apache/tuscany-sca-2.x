@@ -26,6 +26,8 @@ import org.apache.catalina.core.StandardWrapper;
 /**
  * Override the StandardWrapper so that Servlets are not instantiated from the 
  * class name but just the instance Tuscany passes in the constructor is always used.  
+ *
+ * @version $Rev$ $Date$
  */
 public class TuscanyWrapper extends StandardWrapper {
     private static final long serialVersionUID = 1L;

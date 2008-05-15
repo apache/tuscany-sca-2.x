@@ -37,6 +37,8 @@ import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
  * 
  * TODO: Copy of host-webapp TuscanyServlet. Can be removed once host-webapp TuscanyServlet
  *       moved over to latest SCADomain API.
+ *
+ * @version $Rev$ $Date$
  */
 public class TuscanyServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
