@@ -22,6 +22,11 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.xml.Constants;
 
+/**
+ * Constants for the Java Implementation.
+ *
+ * @version $Rev$ $Date$
+ */
 public interface JavaImplementationConstants {
 
     String IMPLEMENTATION_JAVA = "implementation.java";

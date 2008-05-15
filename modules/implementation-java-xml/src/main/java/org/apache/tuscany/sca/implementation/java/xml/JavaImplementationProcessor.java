@@ -60,6 +60,10 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaImplementation>,
     JavaImplementationConstants {
 
