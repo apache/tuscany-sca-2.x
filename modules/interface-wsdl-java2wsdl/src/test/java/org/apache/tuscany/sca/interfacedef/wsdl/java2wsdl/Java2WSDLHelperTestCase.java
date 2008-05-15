@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.interfacedef.wsdl.java2wsdl;
 import java.util.List;
 import java.util.Map;
 
-import javax.jws.WebService;
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
 import javax.wsdl.PortType;
@@ -39,7 +38,6 @@ import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcesso
 import org.apache.tuscany.sca.interfacedef.wsdl.TestJavaInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
-
 import org.osoa.sca.annotations.Remotable;
 
 /**
