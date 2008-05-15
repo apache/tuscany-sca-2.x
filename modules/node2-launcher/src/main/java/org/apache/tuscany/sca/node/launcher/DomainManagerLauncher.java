@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  */
 public class DomainManagerLauncher {
     
-    private final static Logger logger = Logger.getLogger(DomainManagerLauncher.class.getName());    
+    private static final Logger logger = Logger.getLogger(DomainManagerLauncher.class.getName());    
 
     /**
      * Constructs a new DomainManagerLauncher.
