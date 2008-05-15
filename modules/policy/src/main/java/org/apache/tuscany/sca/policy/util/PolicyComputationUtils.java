@@ -64,12 +64,12 @@ import org.w3c.dom.NodeList;
  * @version $Rev$ $Date$
  */
 public class PolicyComputationUtils {
-    private static String POLICYSET_PREFIX = "tp_";
-    private static String APPLICABLE_POLICYSET_ATTR_NS = "http://tuscany.apache.org/xmlns/sca/1.0"; 
-    private static String APPLICABLE_POLICYSET_ATTR = "applicablePolicySets"; 
-    private static String POLICY_SETS_ATTR = "policySets"; 
-    private static String APPLICABLE_POLICYSET_ATTR_PREFIX = "tuscany";
-    private static String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    private static final String POLICYSET_PREFIX = "tp_";
+    private static final String APPLICABLE_POLICYSET_ATTR_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
+    private static final String APPLICABLE_POLICYSET_ATTR = "applicablePolicySets";
+    private static final String POLICY_SETS_ATTR = "policySets"; 
+    private static final String APPLICABLE_POLICYSET_ATTR_PREFIX = "tuscany";
+    private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
 
     /**
      * This method unconditionally adds intents from the source list to the target list.
