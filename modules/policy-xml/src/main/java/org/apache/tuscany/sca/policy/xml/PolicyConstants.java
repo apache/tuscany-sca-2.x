@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 /**
  * constants related to policy framework
  *
+ * @version $Rev$ $Date$
  */
 public interface PolicyConstants {
     String WHITE_SPACE = " ";
