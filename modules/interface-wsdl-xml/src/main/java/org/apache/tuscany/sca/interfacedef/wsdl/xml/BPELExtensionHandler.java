@@ -5,14 +5,13 @@ import java.io.PrintWriter;
 import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensibilityElement;
+import javax.wsdl.extensions.ExtensionDeserializer;
 import javax.wsdl.extensions.ExtensionRegistry;
 import javax.wsdl.extensions.ExtensionSerializer;
-import javax.wsdl.extensions.ExtensionDeserializer;
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
 
 /**
  * A WSDL extension processor for extension elements introduced by BPEL - in particular
