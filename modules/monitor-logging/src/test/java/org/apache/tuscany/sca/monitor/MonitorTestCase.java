@@ -30,7 +30,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Loads a monitor and adds some problems to it
+ * Loads a monitor and adds some problems to it.
+ *
+ * @version $Rev$ $Date$
  */
 public class MonitorTestCase {
     
