@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class Bean1 {
     private String p1;
     private int p2;

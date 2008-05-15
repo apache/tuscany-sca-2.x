@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public interface Bean<T> {
     T getP1();
 }
