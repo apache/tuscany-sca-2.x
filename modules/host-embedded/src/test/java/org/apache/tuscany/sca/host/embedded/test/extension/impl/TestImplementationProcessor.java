@@ -36,7 +36,7 @@ import org.apache.tuscany.sca.host.embedded.test.extension.TestImplementationFac
 
 
 /**
- * Implements a STAX artifact processor for test implementations.
+ * Implements a StAX artifact processor for test implementations.
  *
  * @version $Rev$ $Date$
  */
