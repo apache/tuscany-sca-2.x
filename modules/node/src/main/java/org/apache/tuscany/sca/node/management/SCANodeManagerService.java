@@ -77,7 +77,7 @@ public interface SCANodeManagerService {
      * as the WSDL processing struggles with methods called destroy
      */
     @OneWay
-    void destroyNode() throws NodeException;     
+    void destroyNode();
 
     /**
      * Pass in an updated version of a composite in base64 encoded XML form. The node will compare

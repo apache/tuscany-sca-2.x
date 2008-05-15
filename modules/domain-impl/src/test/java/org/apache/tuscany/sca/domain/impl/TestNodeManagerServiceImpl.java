@@ -58,7 +58,7 @@ public class TestNodeManagerServiceImpl implements SCANodeManagerService {
         System.out.println("stop");
     }
     
-    public void destroyNode() throws NodeException {
+    public void destroyNode() {
         System.out.println("destroy");
     } 
     
