@@ -64,7 +64,7 @@ import org.apache.ws.commons.schema.XmlSchemaType;
  */
 public class WSDLOperationIntrospectorImpl {
     private static final Logger logger = Logger.getLogger(WSDLOperationIntrospectorImpl.class.getName());
-    private final static QName ANY = new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "any");
+    private static final QName ANY = new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "any");
 
     private WSDLFactory wsdlFactory;
     private ModelResolver resolver;
@@ -77,9 +77,11 @@ public class WSDLOperationIntrospectorImpl {
     private String dataBinding;
 
     /**
+     * @param wsdlFactory The WSDLFactory to use
      * @param operation The WSDL4J operation
+     * @param wsdlDefinition The WSDL Definition
      * @param dataBinding The default databinding
-     * @param schemaRegistry The XML Schema registry
+     * @param resolver The ModelResolver to use
      */
     public WSDLOperationIntrospectorImpl(WSDLFactory wsdlFactory,
                                          javax.wsdl.Operation operation,
