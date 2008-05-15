@@ -43,7 +43,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
  * @version $Rev$ $Date$
  */
 public class JavaCallbackRuntimeWireProcessor implements RuntimeWireProcessor {
-    private final static Logger logger = Logger.getLogger(JavaCallbackRuntimeWireProcessor.class.getName());
+    private static final Logger logger = Logger.getLogger(JavaCallbackRuntimeWireProcessor.class.getName());
     private InterfaceContractMapper interfaceContractMapper;
     private JavaInterfaceFactory javaInterfaceFactory;
 
