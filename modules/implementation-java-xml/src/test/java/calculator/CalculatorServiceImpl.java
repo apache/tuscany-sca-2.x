@@ -23,6 +23,8 @@ import org.osoa.sca.annotations.Scope;
 
 /**
  * An implementation of the Calculator service.
+ *
+ * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
 public class CalculatorServiceImpl implements CalculatorService {

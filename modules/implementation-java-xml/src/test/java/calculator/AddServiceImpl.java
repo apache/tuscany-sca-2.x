@@ -22,7 +22,9 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Scope;
 
 /**
- * An implementation of the Add service
+ * An implementation of the Add service.
+ *
+ * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
 @EagerInit

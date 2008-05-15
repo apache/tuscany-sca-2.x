@@ -18,6 +18,11 @@
  */
 package calculator;
 
+/**
+ * Interface for the Multiply Service.
+ *
+ * @version $Rev$ $Date$
+ */
 public interface MultiplyService {
 
     double multiply(double n1, double n2);

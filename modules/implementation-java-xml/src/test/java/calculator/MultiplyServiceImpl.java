@@ -22,6 +22,8 @@ import org.osoa.sca.annotations.Scope;
 
 /**
  * An implementation of the Multiply service.
+ *
+ * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
 public class MultiplyServiceImpl implements MultiplyService {
