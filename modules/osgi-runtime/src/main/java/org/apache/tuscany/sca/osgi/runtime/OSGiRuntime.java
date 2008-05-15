@@ -62,7 +62,7 @@ public abstract class OSGiRuntime {
      * 
      * @throws BundleException
      */
-    public synchronized static OSGiRuntime findRuntime() throws Exception {
+    public static synchronized OSGiRuntime findRuntime() throws Exception {
 
         if (instance != null) {
         	
@@ -120,11 +120,11 @@ public abstract class OSGiRuntime {
     }
 
 
-    public synchronized static OSGiRuntime getRuntime() throws Exception {
+    public static synchronized OSGiRuntime getRuntime() throws Exception {
     	return getRuntime(false);
     }
 
-    public synchronized static OSGiRuntime getRuntime(boolean tuscanyRunningInOSGiContainer) throws Exception {
+    public static synchronized OSGiRuntime getRuntime(boolean tuscanyRunningInOSGiContainer) throws Exception {
     	
     	instance = findRuntime();
     	
@@ -192,7 +192,7 @@ public abstract class OSGiRuntime {
         return null;
     }
     
-    public synchronized static Bundle findInstalledBundle(String bundleLocation) {
+    public static synchronized Bundle findInstalledBundle(String bundleLocation) {
     	if (instance != null) {
             if (bundleLocation.startsWith("bundle:")||bundleLocation.startsWith("bundleresource:")) {
                 try {
@@ -207,7 +207,7 @@ public abstract class OSGiRuntime {
     	return null;
     }
     
-    public synchronized static Bundle findInstalledBundle(URL bundleURL) {
+    public static synchronized Bundle findInstalledBundle(URL bundleURL) {
         if (instance != null) {
             if (instance.bundleContext != null) {
                 Bundle[] installedBundles = instance.bundleContext.getBundles();
@@ -261,9 +261,11 @@ public abstract class OSGiRuntime {
     }
 
     /**
-     * @return the instance
+     * Stops the OSGi instance.
+     *
+     * @throws Exception Failed to shutdown the OSGi instance.
      */
-    public synchronized static void stop() throws Exception {
+    public static synchronized void stop() throws Exception {
         if (instance != null && !instance.tuscanyRunningInOSGiContainer) {
             instance.shutdown();
             instance = null;
