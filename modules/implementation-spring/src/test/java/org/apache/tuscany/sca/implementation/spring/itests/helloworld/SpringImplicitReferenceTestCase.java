@@ -33,6 +33,7 @@ package org.apache.tuscany.sca.implementation.spring.itests.helloworld;
  * does not use an explicit sca:reference element to identify the reference made by the
  * Spring application, but relies on an unsatisfied Bean property with a ref attribute.
  *
+ * @version $Rev$ $Date$
  */
 public class SpringImplicitReferenceTestCase extends AbstractHelloWorldTestCase {
     // super class does it all getting composite based on this class name

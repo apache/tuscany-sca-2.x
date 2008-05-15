@@ -31,6 +31,7 @@ package org.apache.tuscany.sca.implementation.spring.itests.helloworld;
  * uses an explicit sca:property element which is used to compute the response to an invocation
  * of the service of the implementation
  *
+ * @version $Rev$ $Date$
  */
 public class SpringSCAPropertyTestCase extends AbstractHelloWorldTestCase {
     // super class does it all getting composite based on this class name

@@ -27,6 +27,7 @@ package org.apache.tuscany.sca.implementation.spring.itests.helloworld;
  * 3) The <implementation.spring.../> element references an application context that
  * uses an explicit sca: element to identify the service offered by the Spring application
  *
+ * @version $Rev$ $Date$
  */
 public class SpringExplicitHelloWorldTestCase extends AbstractHelloWorldTestCase {
     // super class does it all getting composite based on this class name

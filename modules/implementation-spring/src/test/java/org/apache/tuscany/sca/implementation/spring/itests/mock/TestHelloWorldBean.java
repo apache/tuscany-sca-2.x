@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.implementation.spring.itests.mock;
 /**
  * A simple test Spring bean which provides the HelloWorld service
  *
+ * @version $Rev$ $Date$
  */
 
 import org.apache.tuscany.sca.implementation.spring.itests.helloworld.HelloWorld;

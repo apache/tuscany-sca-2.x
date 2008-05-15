@@ -24,6 +24,7 @@ import org.apache.tuscany.sca.implementation.spring.itests.AbstractSCATestCase;
 /**
  * Basic "hello world" style test case for testing Spring component implementation
  *
+ * @version $Rev$ $Date$
  */
 public abstract class AbstractHelloWorldTestCase extends AbstractSCATestCase<HelloWorld> {
 
