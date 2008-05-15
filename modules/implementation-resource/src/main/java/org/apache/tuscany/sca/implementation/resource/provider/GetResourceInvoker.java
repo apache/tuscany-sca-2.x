@@ -30,6 +30,8 @@ import org.apache.tuscany.sca.invocation.Message;
 
 /**
  * An invoker for a get resource operation.
+ *
+ * @version $Rev$ $Date$
  */
 class GetResourceInvoker implements Invoker {
     private String locationURL;

@@ -28,6 +28,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * The model representing a resource implementation in an SCA assembly model.
+ *
+ * @version $Rev$ $Date$
  */
 class ResourceImplementationProvider implements ImplementationProvider {
     
