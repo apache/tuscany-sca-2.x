@@ -21,6 +21,10 @@ package org.apache.tuscany.sca.implementation.script.itests.helloworld;
 
 import org.osoa.sca.annotations.Reference;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class HelloWorldProxy implements HelloWorld {
 
     @Reference

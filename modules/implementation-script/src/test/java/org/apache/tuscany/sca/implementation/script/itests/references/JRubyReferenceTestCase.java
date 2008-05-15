@@ -20,6 +20,10 @@ package org.apache.tuscany.sca.implementation.script.itests.references;
 
 import org.apache.tuscany.sca.implementation.script.itests.helloworld.AbstractHelloWorldTestCase;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class JRubyReferenceTestCase extends AbstractHelloWorldTestCase {
     // super class does it all getting composite based on this class name
 }

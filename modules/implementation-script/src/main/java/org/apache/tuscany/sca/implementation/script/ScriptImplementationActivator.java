@@ -25,6 +25,10 @@ import org.apache.tuscany.sca.extension.helper.InvokerFactory;
 import org.apache.tuscany.sca.extension.helper.utils.PropertyValueObjectFactory;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class ScriptImplementationActivator implements ImplementationActivator<ScriptImplementation> {
 
     // TODO: seems wrong to need PropertyValueObjectFactory, could it be on Property somehow? 

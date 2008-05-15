@@ -21,6 +21,10 @@ package org.apache.tuscany.sca.implementation.script.itests.dynamic;
 
 import org.apache.tuscany.sca.implementation.script.itests.AbstractSCATestCase;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public abstract class AbstractHelloWorldTestCase extends AbstractSCATestCase<HelloWorld> {
 
     public void testHello() throws Exception {

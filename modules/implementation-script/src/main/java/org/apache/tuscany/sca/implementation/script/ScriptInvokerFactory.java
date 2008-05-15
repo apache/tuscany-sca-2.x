@@ -45,6 +45,10 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class ScriptInvokerFactory implements InvokerFactory {
 
     protected ScriptEngine scriptEngine;

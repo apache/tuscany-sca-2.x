@@ -31,6 +31,8 @@ import org.apache.tuscany.sca.invocation.Message;
 
 /**
  * Perform the actual script invocation
+ *
+ * @version $Rev$ $Date$
  */
 public class ScriptInvoker implements Invoker {
 

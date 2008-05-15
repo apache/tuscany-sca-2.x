@@ -29,6 +29,8 @@ import org.apache.tuscany.sca.extension.helper.utils.ResourceHelper;
 
 /**
  * Represents a Script implementation.
+ *
+ * @version $Rev$ $Date$
  */
 public class ScriptImplementation {
 
