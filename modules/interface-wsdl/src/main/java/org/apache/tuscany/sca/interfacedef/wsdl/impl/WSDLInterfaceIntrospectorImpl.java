@@ -32,6 +32,8 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 
 /**
  * Introspector for creating WSDLInterface definitions from WSDL PortTypes.
+ *
+ * @version $Rev$ $Date$
  */
 public class WSDLInterfaceIntrospectorImpl {
     
