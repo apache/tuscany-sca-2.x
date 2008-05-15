@@ -53,7 +53,7 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
     public static final QName WSDL11_IMPORT = new QName("http://schemas.xmlsoap.org/wsdl/", "import");
     public static final QName XSD = new QName("http://www.w3.org/2001/XMLSchema", "schema");
 
-    private final static XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+    private static final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
     private WSDLFactory factory;
 
