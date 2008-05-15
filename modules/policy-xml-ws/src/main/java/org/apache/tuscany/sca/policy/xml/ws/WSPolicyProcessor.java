@@ -43,8 +43,10 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.policy.xml.PolicyConstants;
 
 
-/* 
+/**
  * Processor for handling xml models of PolicySet definitions
+ *
+ * @version $Rev$ $Date$
  */
 public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<org.apache.neethi.Policy>, PolicyConstants {
 	public final static String WS_POLICY_NS = "http://schemas.xmlsoap.org/ws/2004/09/policy";
