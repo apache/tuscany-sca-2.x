@@ -66,6 +66,6 @@ public interface SCAClient {
      * @param <B> the Java type of the business interface for the service
      * @return a ServiceReference for the designated service
      */
-    <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String referenceName);
+    <B> ServiceReference<B> getServiceReference(Class<B> businessInterface, String serviceName);
 
 }
