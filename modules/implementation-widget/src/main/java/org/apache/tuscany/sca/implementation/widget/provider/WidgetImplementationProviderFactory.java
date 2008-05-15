@@ -26,6 +26,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * The model representing a resource implementation in an SCA assembly model.
+ *
+ * @version $Rev$ $Date$
  */
 public class WidgetImplementationProviderFactory implements ImplementationProviderFactory<WidgetImplementation> {
 

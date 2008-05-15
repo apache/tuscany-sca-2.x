@@ -41,6 +41,8 @@ import org.w3c.dom.Element;
 
 /**
  * Implements an invoker for resource component implementations.
+ *
+ * @version $Rev$ $Date$
  */
 class WidgetImplementationInvoker implements Invoker {
     private RuntimeComponent component;
