@@ -31,8 +31,10 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.impl.BindingTypeImpl;
 
 
-/** 
+/**
  * Processor for handling XML models of BindingType meta data definitions
+ *
+ * @version $Rev$ $Date$
  */
 public class BindingTypeProcessor extends IntentAttachPointTypeProcessor {
 

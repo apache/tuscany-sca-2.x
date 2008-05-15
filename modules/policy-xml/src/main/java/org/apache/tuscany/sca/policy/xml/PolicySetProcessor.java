@@ -50,6 +50,8 @@ import org.apache.tuscany.sca.policy.PolicySet;
 
 /**
  * Processor for handling XML models of PolicySet definitions
+ *
+ * @version $Rev$ $Date$
  */
 public class PolicySetProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<PolicySet>, PolicyConstants {
 

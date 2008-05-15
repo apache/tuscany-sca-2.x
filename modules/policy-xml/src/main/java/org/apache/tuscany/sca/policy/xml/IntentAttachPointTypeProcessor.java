@@ -44,6 +44,8 @@ import org.apache.tuscany.sca.policy.impl.ImplementationTypeImpl;
 
 /**
  * Processor for handling XML models of ExtensionType meta data definitions
+ *
+ * @version $Rev$ $Date$
  */
 abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<IntentAttachPointType>, PolicyConstants {
 

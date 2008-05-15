@@ -23,8 +23,10 @@ import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
-/* 
+/**
  * Processor for handling XML models of PolicyIntent definitions
+ *
+ * @version $Rev$ $Date$
  */
 public class SimpleIntentProcessor extends PolicyIntentProcessor<Intent> {
 

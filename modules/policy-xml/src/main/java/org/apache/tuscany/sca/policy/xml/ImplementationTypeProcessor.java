@@ -31,8 +31,10 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.impl.ImplementationTypeImpl;
 
 
-/** 
+/**
  * Processor for handling XML models of ImplementationType meta data definitions
+ *
+ * @version $Rev$ $Date$
  */
 public class ImplementationTypeProcessor extends IntentAttachPointTypeProcessor {
 
