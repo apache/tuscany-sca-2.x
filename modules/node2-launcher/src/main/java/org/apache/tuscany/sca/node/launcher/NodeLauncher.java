@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  */
 public class NodeLauncher {
 
-    final static Logger logger = Logger.getLogger(NodeLauncher.class.getName());
+    static final Logger logger = Logger.getLogger(NodeLauncher.class.getName());
 
     /**
      * Constructs a new node launcher.
@@ -63,7 +63,7 @@ public class NodeLauncher {
     /**
      * Represents an SCA contribution uri + location.
      */
-    public final static class Contribution {
+    public static final class Contribution {
         private String uri;
         private String location;
         

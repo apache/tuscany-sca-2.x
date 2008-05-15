@@ -43,7 +43,7 @@ import java.util.logging.Logger;
  */
 final class NodeLauncherUtil {
 
-    private final static Logger logger = Logger.getLogger(NodeLauncherUtil.class.getName());
+    private static final Logger logger = Logger.getLogger(NodeLauncherUtil.class.getName());
     
     private static final String TUSCANY_HOME = "TUSCANY_HOME";
 
@@ -80,7 +80,7 @@ final class NodeLauncherUtil {
      * 
      * @return
      */
-    static private ClassLoader runtimeClassLoader(ClassLoader parentClassLoader, FilenameFilter filter) throws FileNotFoundException, URISyntaxException, MalformedURLException {
+    private static ClassLoader runtimeClassLoader(ClassLoader parentClassLoader, FilenameFilter filter) throws FileNotFoundException, URISyntaxException, MalformedURLException {
         
         // Build list of runtime JARs
         List<URL> jarURLs = new ArrayList<URL>();
@@ -412,7 +412,7 @@ final class NodeLauncherUtil {
      * Simple URL class loader for the runtime JARs
      */
     private static class RuntimeClassLoader extends URLClassLoader {
-        private final static ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+        private static final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
         private ClassLoader parent;
         
         /**

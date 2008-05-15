@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  */
 public class NodeDaemonLauncher {
 
-    private final static Logger logger = Logger.getLogger(NodeDaemonLauncher.class.getName());
+    private static final Logger logger = Logger.getLogger(NodeDaemonLauncher.class.getName());
     
     /**
      * Constructs a new node daemon launcher.
