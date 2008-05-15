@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.osgi.runtime.OSGiRuntime;
  * 
  * Test the execution of an OSGi implementation type
  *
+ * @version $Rev$ $Date$
  */
 public class OSGiTestCase extends TestCase {
     

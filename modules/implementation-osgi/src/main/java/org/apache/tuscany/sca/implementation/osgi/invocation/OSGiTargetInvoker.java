@@ -45,6 +45,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  *       1) target reference properties are specified  OR
  *       2) there are one or more non-blocking methods in the target interface OR
  *       3) scope is not COMPOSITE
+ *
+ * @version $Rev$ $Date$
  */
 public class OSGiTargetInvoker<T> implements Invoker {
 

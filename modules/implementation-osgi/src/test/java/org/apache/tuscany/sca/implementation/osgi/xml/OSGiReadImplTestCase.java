@@ -50,6 +50,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 /**
  * Test reading OSGi implementations.
  *
+ * @version $Rev$ $Date$
  */
 public class OSGiReadImplTestCase extends TestCase {
 

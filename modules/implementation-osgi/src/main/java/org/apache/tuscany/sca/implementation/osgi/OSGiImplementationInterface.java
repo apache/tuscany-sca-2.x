@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.assembly.Implementation;
  *
  * The model representing an OSGi implementation in an SCA assembly model.
  *
+ * @version $Rev$ $Date$
  */
 public interface OSGiImplementationInterface extends Implementation, Extensible {
 

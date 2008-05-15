@@ -35,7 +35,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * An interceptor to enforce pass-by-value semantics for remotable interfaces
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class OSGiRemotableInvoker extends OSGiTargetInvoker implements DataExchangeSemantics {
     

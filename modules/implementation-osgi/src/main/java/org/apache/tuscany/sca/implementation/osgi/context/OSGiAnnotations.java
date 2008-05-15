@@ -68,6 +68,8 @@ import org.osgi.framework.Bundle;
  * instances are associated with services, and a bundle can register multiple services.
  * Hence annotations from classes need to be stored separately so that the right ones
  * can be associated with the service instance.
+ *
+ * @version $Rev$ $Date$
  */
 public class OSGiAnnotations  {
     

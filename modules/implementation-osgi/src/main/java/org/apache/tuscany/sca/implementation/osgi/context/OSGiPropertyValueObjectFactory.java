@@ -44,6 +44,7 @@ import org.w3c.dom.Node;
  * 
  * This code has been copied from the Java implementation to avoid dependencies on the Java implementation.
  *
+ * @version $Rev$ $Date$
  */
 public class OSGiPropertyValueObjectFactory {
     protected SimpleTypeMapper simpleTypeMapper = new SimpleTypeMapperImpl();

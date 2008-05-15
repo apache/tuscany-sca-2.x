@@ -84,7 +84,8 @@ import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
  * The runtime instantiation of OSGi component implementations
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class OSGiImplementationProvider  implements ScopedImplementationProvider, 
                                                     FrameworkListener,

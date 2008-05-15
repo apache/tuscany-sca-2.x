@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.implementation.osgi.test.OSGiTestWithPropertyImpl;
  * 
  * Test the execution of an OSGi implementation type
  *
+ * @version $Rev$ $Date$
  */
 public class OSGiPropertyTestCase extends OSGiTestCase {
     
