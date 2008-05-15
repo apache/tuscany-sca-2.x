@@ -26,6 +26,10 @@ import org.apache.tuscany.sca.node.SCANode;
 import org.apache.tuscany.sca.node.SCANodeFactory;
 import org.apache.tuscany.sca.node.util.SCAContributionUtil;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class SCANodeLauncher {
 
     /**

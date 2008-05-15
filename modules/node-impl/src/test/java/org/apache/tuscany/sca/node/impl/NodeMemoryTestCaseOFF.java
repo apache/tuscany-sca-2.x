@@ -36,6 +36,8 @@ import calculator.SubtractService;
  * implementation of the distributed domain. The test repeatedly
  * creates and destroys the node to see if memory is being leaked.
  * Looking for leaked memory is a manual task.
+ *
+ * @version $Rev$ $Date$
  */
 public class NodeMemoryTestCaseOFF {
     

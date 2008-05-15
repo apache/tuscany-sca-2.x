@@ -38,6 +38,8 @@ import calculator.CalculatorService;
 /**
  * Runs a distributed domain in a single VM by using and in memory 
  * implementation of the distributed domain
+ *
+ * @version $Rev$ $Date$
  */
 public class DomainDrivenTestCaseOFF {
     

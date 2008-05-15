@@ -23,6 +23,10 @@ import java.io.Serializable;
 
 import org.apache.tuscany.sca.node.spi.ComponentInfo;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class ComponentInfoImpl implements ComponentInfo, Serializable {
     
     private String name;
