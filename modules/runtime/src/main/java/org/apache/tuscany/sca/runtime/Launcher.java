@@ -44,7 +44,7 @@ import org.apache.tuscany.sca.node.SCANodeFactory;
  * @version $Rev$ $Date$
  */
 public class Launcher {
-    private final static Logger logger = Logger.getLogger(Launcher.class.getName());
+    private static final Logger logger = Logger.getLogger(Launcher.class.getName());
 
     protected SCANodeFactory scaNodeFactory;
     protected List<SCANode> scaNodes;
