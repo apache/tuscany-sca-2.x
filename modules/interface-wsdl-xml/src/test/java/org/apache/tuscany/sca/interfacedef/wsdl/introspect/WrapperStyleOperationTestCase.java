@@ -33,7 +33,9 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLOperationIntrospectorImpl;
 
 /**
- * Test case for WSDLOperation
+ * Test case for WSDLOperation.
+ *
+ * @version $Rev$ $Date$
  */
 public class WrapperStyleOperationTestCase extends AbstractWSDLTestCase {
     private static final QName PORTTYPE_NAME = new QName("http://example.com/stockquote.wsdl", "StockQuotePortType");

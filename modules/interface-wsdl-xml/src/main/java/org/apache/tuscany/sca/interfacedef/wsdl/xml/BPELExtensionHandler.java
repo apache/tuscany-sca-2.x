@@ -19,6 +19,7 @@ import org.w3c.dom.Node;
  * the <partnerLinkType.../> elements
  * @author Mike Edwards
  *
+ * @version $Rev$ $Date$
  */
 public class BPELExtensionHandler implements ExtensionSerializer, ExtensionDeserializer {
 	
