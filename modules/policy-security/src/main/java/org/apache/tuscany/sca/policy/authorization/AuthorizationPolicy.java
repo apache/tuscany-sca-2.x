@@ -28,7 +28,7 @@ import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.policy.Policy;
 
 /**
- * Models the SCA Implementatatoin Security Policy Assertion for Authorization
+ * Models the SCA Implementation Security Policy Assertion for Authorization.
  * 
  * @version $Rev$ $Date$
  */
