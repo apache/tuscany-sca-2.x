@@ -44,60 +44,59 @@ import org.eclipse.ui.ide.IDE;
  * @version $Rev$ $Date$
  */
 public class NewComponentTypeWizardPage extends WizardNewFileCreationPage {
-	
-	private IWorkbench workbench;
+        
+        private IWorkbench workbench;
 
-	public NewComponentTypeWizardPage(IWorkbench workbench, IStructuredSelection selection)  {
-		super("New SCA ComponentType Page", selection);
-		
-		this.workbench = workbench;
-		
-		setTitle("SCA ComponentType");
-		setDescription("Create a new SCA ComponentType.");
-		
-		try {
-			String location = FileLocator.toFileURL(Platform.getBundle("org.apache.tuscany.sca.core").getEntry("/")).getFile().toString();
-			setImageDescriptor(ImageDescriptor.createFromImageData((new ImageLoader()).load(location + "/icons/tuscany.gif")[0]));
-		} catch (Exception e) {
+        public NewComponentTypeWizardPage(IWorkbench workbench, IStructuredSelection selection)  {
+                super("New SCA ComponentType Page", selection);
+                
+                this.workbench = workbench;
+                
+                setTitle("SCA ComponentType");
+                setDescription("Create a new SCA ComponentType.");
+                
+                try {
+                        String location = FileLocator.toFileURL(Platform.getBundle("org.apache.tuscany.sca.core").getEntry("/")).getFile().toString();
+                        setImageDescriptor(ImageDescriptor.createFromImageData((new ImageLoader()).load(location + "/icons/tuscany.gif")[0]));
+                } catch (Exception e) {
                     Platform.getLog(
                                     Platform.getBundle("org.apache.tuscany.sca.core")).log(
-                                    new Status(IStatus.ERROR, "org.apache.tuscany.sca.core", "Could not create wizard", e));
-		}
-		
-		setFileExtension("componentType");
-		setFileName("sample.componentType");
-		
-	}
-	
-	public boolean finish() {
-		try {
-			IFile file = createNewFile();
-			
+                                    new Status(IStatus.ERROR, "org.apache.tuscany.sca.core", IStatus.OK, "Could not create wizard", e));
+                }
+                
+                setFileName("sample.componentType");
+                
+        }
+        
+        public boolean finish() {
+                try {
+                        IFile file = createNewFile();
+                        
             IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
-	        IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
-	        IDE.openEditor(workbenchPage, file, true);
-		} catch (Exception e) {
+                IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
+                IDE.openEditor(workbenchPage, file, true);
+                } catch (Exception e) {
                     Platform.getLog(
                                     Platform.getBundle("org.apache.tuscany.sca.core")).log(
-                                    new Status(IStatus.ERROR, "org.apache.tuscany.sca.core", "Could not open editor", e));
-			return false;
-		}
-		return true;
-	}
+                                    new Status(IStatus.ERROR, "org.apache.tuscany.sca.core", IStatus.OK, "Could not open editor", e));
+                        return false;
+                }
+                return true;
+        }
 
-	@Override
-	protected InputStream getInitialContents() {
-		
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		PrintWriter printWriter = new PrintWriter(outputStream);
-		printWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		printWriter.println("<componentType xmlns=\"http://www.osoa.org/xmlns/sca/1.0\"");
-		printWriter.println("    xmlns:t=\"http://tuscany.apache.org/xmlns/sca/1.0\">");	
-		printWriter.println();
-		printWriter.println();
-		printWriter.println("</componentType>");
-		printWriter.close();
-		
-		return new ByteArrayInputStream(outputStream.toByteArray());
-	}
+        @Override
+        protected InputStream getInitialContents() {
+                
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                PrintWriter printWriter = new PrintWriter(outputStream);
+                printWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                printWriter.println("<componentType xmlns=\"http://www.osoa.org/xmlns/sca/1.0\"");
+                printWriter.println("    xmlns:t=\"http://tuscany.apache.org/xmlns/sca/1.0\">");        
+                printWriter.println();
+                printWriter.println();
+                printWriter.println("</componentType>");
+                printWriter.close();
+                
+                return new ByteArrayInputStream(outputStream.toByteArray());
+        }
 }
