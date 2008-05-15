@@ -35,6 +35,10 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class AuthorizationPolicyProcessor implements StAXArtifactProcessor<AuthorizationPolicy> {
     private static final String ROLES = "roles";
 

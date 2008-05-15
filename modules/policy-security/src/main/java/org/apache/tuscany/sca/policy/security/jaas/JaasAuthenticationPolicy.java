@@ -24,6 +24,10 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.policy.Policy;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class JaasAuthenticationPolicy implements Policy {
     public static final QName NAME = new QName(Constants.SCA10_TUSCANY_NS, "jaasAuthentication");
 

@@ -34,6 +34,8 @@ import org.apache.tuscany.sca.provider.SCADefinitionsProviderException;
 
 /**
  * Provider for Policy Intents and PolicySet definitions related to security
+ *
+ * @version $Rev$ $Date$
  */
 public class SecurityPolicyDefinitionsProvider implements SCADefinitionsProvider {
     private final static String tuscanyDefinitionsFile = "org/apache/tuscany/sca/policy/security/tuscany_definitions.xml";
