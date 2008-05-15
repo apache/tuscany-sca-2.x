@@ -56,7 +56,7 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 
 /**
- * Implements a STAX artifact processor for BPEL implementations.
+ * Implements a StAX artifact processor for BPEL implementations.
  * 
  * The artifact processor is responsible for processing <implementation.bpel>
  * elements in SCA assembly XML composite files and populating the BPEL
