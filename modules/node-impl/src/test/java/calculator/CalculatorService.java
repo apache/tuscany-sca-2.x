@@ -23,6 +23,8 @@ import org.osoa.sca.annotations.Remotable;
 
 /**
  * The Calculator service interface.
+ *
+ * @version $Rev$ $Date$
  */
 @Remotable
 public interface CalculatorService {

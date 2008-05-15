@@ -20,6 +20,8 @@ package calculator;
 
 /**
  * The interface for the multiply service
+ *
+ * @version $Rev$ $Date$
  */
 public interface MultiplyService {
 

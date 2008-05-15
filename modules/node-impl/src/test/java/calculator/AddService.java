@@ -22,6 +22,8 @@ import org.osoa.sca.annotations.Remotable;
 
 /**
  * The Add service interface
+ *
+ * @version $Rev$ $Date$
  */
 @Remotable
 public interface AddService {

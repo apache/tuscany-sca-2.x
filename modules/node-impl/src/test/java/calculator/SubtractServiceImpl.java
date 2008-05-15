@@ -20,6 +20,8 @@ package calculator;
 
 /**
  * An implementation of the subtract service.
+ *
+ * @version $Rev$ $Date$
  */
 public class SubtractServiceImpl implements SubtractService {
 
