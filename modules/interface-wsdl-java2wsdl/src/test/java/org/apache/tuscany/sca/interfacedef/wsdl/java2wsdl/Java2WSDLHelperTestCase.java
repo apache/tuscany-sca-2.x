@@ -42,6 +42,10 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 
 import org.osoa.sca.annotations.Remotable;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class Java2WSDLHelperTestCase extends TestCase {
 
     public void testCreateDefinition() {

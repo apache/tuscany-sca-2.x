@@ -83,7 +83,9 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 /**
- * Utility methods to create WSDL objects from Java interfaces
+ * Utility methods to create WSDL objects from Java interfaces.
+ *
+ * @version $Rev$ $Date$
  */
 public class Java2WSDLHelper {
     // the following 3 switches are temporary for debugging

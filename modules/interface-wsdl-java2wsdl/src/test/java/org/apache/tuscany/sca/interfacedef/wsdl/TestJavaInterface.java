@@ -25,6 +25,10 @@ import javax.jws.WebService;
 import org.osoa.sca.annotations.OneWay;
 import org.osoa.sca.annotations.Remotable;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 @Remotable
 @WebService
 public interface TestJavaInterface {
