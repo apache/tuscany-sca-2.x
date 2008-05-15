@@ -36,6 +36,10 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class JDKLoggingPolicyProcessor implements StAXArtifactProcessor<JDKLoggingPolicy> {
     private static final QName JDK_LOGGING_POLICY_QNAME = new QName(Constants.SCA10_TUSCANY_NS, "jdkLogger");
     private static final String LOG_LEVEL = "logLevel";
