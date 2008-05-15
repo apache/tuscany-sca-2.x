@@ -28,6 +28,7 @@ import org.apache.tuscany.sca.policy.QualifiedIntent;
 /**
  * Models a concrete implementation of a Qualified Intent
  *
+ * @version $Rev$ $Date$
  */
 public class QualifiedIntentImpl extends IntentImpl implements QualifiedIntent {
     private Intent qualifiableIntent = null;

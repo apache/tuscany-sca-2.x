@@ -28,7 +28,8 @@ import org.apache.tuscany.sca.policy.IntentAttachPointType;
 
 /**
  * Concrete implementation for a BindingType
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class BindingTypeImpl implements IntentAttachPointType {
 

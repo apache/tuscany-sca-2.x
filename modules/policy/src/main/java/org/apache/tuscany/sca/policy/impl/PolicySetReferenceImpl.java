@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.policy.PolicySetReference;
 /**
  * Concrete implementation for a PolicySetReference
  *
+ * @version $Rev$ $Date$
  */
 public class PolicySetReferenceImpl implements PolicySetReference {
 

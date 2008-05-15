@@ -33,6 +33,8 @@ import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 
 /**
  * Utility class for loading policy handler definitions from META-INF/services directories
+ *
+ * @version $Rev$ $Date$
  */
 public class PolicyHandlerDefinitionsLoader {
     

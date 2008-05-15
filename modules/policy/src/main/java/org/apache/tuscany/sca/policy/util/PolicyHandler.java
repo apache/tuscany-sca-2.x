@@ -24,7 +24,8 @@ import org.apache.tuscany.sca.policy.PolicySet;
 /**
  * @deprecated This interface is replaced by PolicyProviderFactory/PolicyProvider SPIs
  * Handler interface for handling policies defined in policysets
- * 
+ *
+ * @version $Rev$ $Date$
  */
 @Deprecated
 public interface PolicyHandler {

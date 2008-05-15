@@ -60,6 +60,8 @@ import org.w3c.dom.NodeList;
 
 /**
  * Utility methods used during computation of PolicyIntents and PolicySets sets
+ *
+ * @version $Rev$ $Date$
  */
 public class PolicyComputationUtils {
     private static String POLICYSET_PREFIX = "tp_";

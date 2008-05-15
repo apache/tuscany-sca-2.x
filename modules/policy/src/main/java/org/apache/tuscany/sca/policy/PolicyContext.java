@@ -23,6 +23,8 @@ import java.util.List;
 
 /**
  * A context container for policies.  
+ *
+ * @version $Rev$ $Date$
  */
 public interface PolicyContext {
     List<Intent> getIntents(Object key);

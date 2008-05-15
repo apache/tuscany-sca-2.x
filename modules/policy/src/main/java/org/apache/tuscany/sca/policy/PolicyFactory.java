@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.policy;
 
 /**
  * A factory for the policy model.
+ *
+ * @version $Rev$ $Date$
  */
 public interface PolicyFactory {
 

@@ -28,7 +28,8 @@ import org.apache.tuscany.sca.policy.IntentAttachPointType;
 
 /**
  * Concrete implementation for a Implementation Type
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class ImplementationTypeImpl implements IntentAttachPointType {
     private List<Intent> alwaysProvides = new ArrayList<Intent>();

@@ -25,6 +25,8 @@ import javax.xml.namespace.QName;
 /**
  * Represents a policy intent. See the Policy Framework specification for a
  * description of this element.
+ *
+ * @version $Rev$ $Date$
  */
 public interface Intent {
 

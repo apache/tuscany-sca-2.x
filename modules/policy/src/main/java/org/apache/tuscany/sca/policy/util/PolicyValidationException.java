@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.policy.util;
 
 /**
  * Exception to be throw for invalid policy intents / policysets
+ *
+ * @version $Rev$ $Date$
  */
 public class PolicyValidationException extends Exception {
     private static final long serialVersionUID = 506979037642587755L;

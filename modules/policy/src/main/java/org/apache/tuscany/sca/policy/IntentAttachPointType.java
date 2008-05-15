@@ -25,6 +25,8 @@ import javax.xml.namespace.QName;
 /**
  * Base interface for representing the model type of assembly model objects that can be have policy intents
  * attached to them.
+ *
+ * @version $Rev$ $Date$
  */
 public interface IntentAttachPointType {
 
