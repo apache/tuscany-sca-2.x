@@ -36,8 +36,8 @@ import org.osoa.sca.annotations.Requires;
 
 /**
  * Processes an {@link org.osoa.sca.annotations.Requires} annotation
- * 
- * @version $Rev:
+ *
+ * @version $Rev$ $Date$
  */
 public class PolicyJavaInterfaceVisitor implements JavaInterfaceVisitor {
     private PolicyFactory policyFactory;

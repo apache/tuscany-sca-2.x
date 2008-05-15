@@ -32,6 +32,8 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
  * A factory for the Java interface model.
+ *
+ * @version $Rev$ $Date$
  */
 public class DefaultJavaInterfaceFactory extends JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
     private ModelFactoryExtensionPoint modelFactoryExtensionPoint;
