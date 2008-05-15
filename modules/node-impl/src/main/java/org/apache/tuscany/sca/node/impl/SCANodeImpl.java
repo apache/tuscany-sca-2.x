@@ -72,7 +72,7 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
  */
 public class SCANodeImpl implements SCANode, SCANodeSPI {
 	
-    private final static Logger logger = Logger.getLogger(SCANodeImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(SCANodeImpl.class.getName());
 	     
     // class loader used to get application resources
     private ClassLoader nodeClassLoader;    

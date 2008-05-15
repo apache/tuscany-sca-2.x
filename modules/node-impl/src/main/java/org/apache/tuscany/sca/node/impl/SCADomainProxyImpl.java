@@ -69,7 +69,7 @@ import org.osoa.sca.ServiceReference;
  */
 public class SCADomainProxyImpl extends SCADomainImpl {
 	
-    private final static Logger logger = Logger.getLogger(SCADomainProxyImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(SCADomainProxyImpl.class.getName());
 	    
     // management services
     private SCADomainAPIService domainAPIService; 

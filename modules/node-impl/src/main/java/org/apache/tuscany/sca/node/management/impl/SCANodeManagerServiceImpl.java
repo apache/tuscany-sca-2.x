@@ -49,7 +49,7 @@ import org.osoa.sca.annotations.Service;
 @Service(interfaces = {SCANodeManagerService.class, SCANodeManagerInitService.class, ComponentManagerService.class})
 public class SCANodeManagerServiceImpl implements SCANodeManagerService, SCANodeManagerInitService, ComponentManagerService {
     
-    private final static Logger logger = Logger.getLogger(SCANodeManagerServiceImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(SCANodeManagerServiceImpl.class.getName());
 
     private SCANodeImpl node;
 
