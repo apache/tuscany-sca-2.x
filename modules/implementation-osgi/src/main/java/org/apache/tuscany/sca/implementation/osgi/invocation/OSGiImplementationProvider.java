@@ -434,7 +434,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     }
     
     
-    // This method is called by OSGiInstanceWrapper.getInstance to obtain the OSGI service reference
+    // This method is called by OSGiInstanceWrapper.getInstance to obtain the OSGi service reference
     // corresponding to the specified service. The properties used to filter the service should
     // be chosen based on whether this is a normal service or a callback.
     protected org.osgi.framework.ServiceReference getOSGiServiceReference(ComponentService service) 
