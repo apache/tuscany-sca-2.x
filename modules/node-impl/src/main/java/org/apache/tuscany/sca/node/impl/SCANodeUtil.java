@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  * @version $Rev: 556897 $ $Date: 2007-09-07 12:41:52 +0100 (Fri, 07 Sep 2007) $
  */
 public class SCANodeUtil {
-	private final static Logger logger = Logger.getLogger(SCANodeUtil.class.getName());
+	private static final Logger logger = Logger.getLogger(SCANodeUtil.class.getName());
 	
     /**
      * Given a contribution path an array of composite names or neither this method finds 

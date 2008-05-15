@@ -39,7 +39,7 @@ import org.osoa.sca.annotations.Scope;
 @Scope("COMPOSITE")
 public class SCADomainEventServiceProxyImpl implements SCADomainEventService{
     
-    private final static Logger logger = Logger.getLogger(SCADomainEventServiceProxyImpl.class.getName());    
+    private static final Logger logger = Logger.getLogger(SCADomainEventServiceProxyImpl.class.getName());    
     
     @Property
     protected int retryCount = 100;

@@ -35,7 +35,7 @@ import org.osoa.sca.annotations.Scope;
 @Scope("COMPOSITE")
 public class SCADomainAPIServiceProxyImpl implements SCADomainAPIService{
     
-    private final static Logger logger = Logger.getLogger(SCADomainAPIServiceProxyImpl.class.getName());    
+    private static final Logger logger = Logger.getLogger(SCADomainAPIServiceProxyImpl.class.getName());    
     
     @Reference
     protected SCADomainAPIService domainManager;
