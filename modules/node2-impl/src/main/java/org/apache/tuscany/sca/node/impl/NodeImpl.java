@@ -86,6 +86,39 @@ public class NodeImpl implements SCANode2, SCAClient {
     /** 
      * Constructs a new SCA node.
      *  
+     * @param configuration the the node configuration information.
+     */
+    NodeImpl(ConfiguredNodeImplementation configuration) {
+        configurationName = configuration.getURI();
+        logger.log(Level.INFO, "Creating node: " + configuration.getURI());               
+
+        try {
+            // Initialize the runtime
+            initRuntime();
+            
+            URL configurationURL = new URL(configuration.getURI());
+
+            // Resolve contribution URLs
+            for (Contribution contribution: configuration.getContributions()) {
+                URL contributionURL = new URL(configurationURL, contribution.getLocation());
+                contribution.setLocation(contributionURL.toString());
+            }
+            
+            // Resolve composite URL
+            URL compositeURL = new URL(configurationURL, configuration.getComposite().getURI());
+            configuration.getComposite().setURI(compositeURL.toString());
+
+            // Configure the node
+            configureNode(configuration);
+
+        } catch (Exception e) {
+            throw new ServiceRuntimeException(e);
+        }        
+    }
+
+    /** 
+     * Constructs a new SCA node.
+     *  
      * @param configurationURI the URI of the node configuration information.
      */
     NodeImpl(String configurationURI) {

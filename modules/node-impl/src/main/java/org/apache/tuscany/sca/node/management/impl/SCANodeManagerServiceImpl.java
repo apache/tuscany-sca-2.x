@@ -90,7 +90,7 @@ public class SCANodeManagerServiceImpl implements SCANodeManagerService, SCANode
         node.stopFromDomain();
     }
     
-    public void destroyNode() throws NodeException {
+    public void destroyNode() {
         // do nothing - the domain can't destroy nodes
     }    
     

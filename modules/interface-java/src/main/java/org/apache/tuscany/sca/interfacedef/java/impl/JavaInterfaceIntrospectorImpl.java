@@ -175,12 +175,12 @@ public class JavaInterfaceIntrospectorImpl {
             if (nonBlocking) {
                 if (!(returnType == void.class)) {
                         throw new InvalidOperationException(
-                             "Method should return 'void' when declared with an@OneWay annotation.",
+                             "Method should return 'void' when declared with an @OneWay annotation. "+method,
                              method);
                 }
                 if (!(faultTypes.length == 0)) {
                         throw new InvalidOperationException(
-                             "Method should not declare exceptions with an @OneWay annotation.",
+                             "Method should not declare exceptions with an @OneWay annotation. "+method,
                              method);
                 }
              }
