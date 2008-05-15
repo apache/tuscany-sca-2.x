@@ -119,11 +119,10 @@ public class SpringXMLComponentTypeLoader {
 
     /**
      * Method which fills out the component type for a Spring implementation by reading the 
-     * Spring application-context.xml file
-     * @param componentType - the component type to complete
-     * @param location - a string containing the relative location of the application-context.xml
-     * @return a Spring Resource for the application-context
-     * file
+     * Spring application-context.xml file.
+     * 
+     * @param implementation SpringImplementation into which to load the component type information
+     * @throws ContributionReadException Failed to read the contribution
      */
     private void loadFromXML(SpringImplementation implementation) throws ContributionReadException {
         XMLStreamReader reader;

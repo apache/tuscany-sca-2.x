@@ -77,9 +77,10 @@ class SCAParentApplicationContext implements ApplicationContext {
     }
 
     /**
-     * Get a Bean for a reference or for a property..
+     * Get a Bean for a reference or for a property.
+     *
      * @param name - the name of the Bean required
-     * @param requiredtype - the required type of the Bean (either a Java class or a Java interface)
+     * @param requiredType - the required type of the Bean (either a Java class or a Java interface)
      * @return Object - a Bean which matches the requested bean
      */
     public Object getBean(String name, Class requiredType) throws BeansException {

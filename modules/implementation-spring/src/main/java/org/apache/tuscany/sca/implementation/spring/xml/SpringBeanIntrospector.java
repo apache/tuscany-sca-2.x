@@ -59,11 +59,12 @@ public class SpringBeanIntrospector {
     private JavaImplementationFactory javaImplementationFactory;
 
     /**
-     * The constructor sets up the various visitor elements that will be used to inrospect
-     * the Spring bean and extract SCA information
-     * @param assemblyFactory - an AssemblyFactory
-     * @param interfaceIntrospector - an Java InterfaceIntrospector
-     * @param javaFactory - a Java Interface Factory
+     * The constructor sets up the various visitor elements that will be used to introspect
+     * the Spring bean and extract SCA information.
+     *
+     * @param assemblyFactory The Assembly Factory to use
+     * @param javaFactory The Java Interface Factory to use
+     * @param policyFactory The Policy Factory to use.
      */
     public SpringBeanIntrospector(AssemblyFactory assemblyFactory,
                                   JavaInterfaceFactory javaFactory,
