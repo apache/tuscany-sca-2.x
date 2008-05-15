@@ -19,6 +19,11 @@
 
 package org.apache.tuscany.sca.interfacedef;
 
+/**
+ * Enum of the Conversation Sequence values.
+ *
+ * @version $Rev$ $Date$
+ */
 public enum ConversationSequence {
     CONVERSATION_NONE, CONVERSATION_START, CONVERSATION_CONTINUE, CONVERSATION_END 
 }

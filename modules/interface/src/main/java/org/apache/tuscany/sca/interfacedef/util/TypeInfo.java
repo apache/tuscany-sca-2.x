@@ -23,6 +23,8 @@ import javax.xml.namespace.QName;
 
 /**
  * An abstraction of XML schema types
+ *
+ * @version $Rev$ $Date$
  */
 public class TypeInfo {
     private QName name;
