@@ -68,7 +68,7 @@ import org.osoa.sca.ServiceRuntimeException;
  */
 public class NodeImpl implements SCANode2, SCAClient {
 	
-    private final static Logger logger = Logger.getLogger(NodeImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(NodeImpl.class.getName());
 	     
     // The node configuration name, used for logging
     private String configurationName;
