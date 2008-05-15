@@ -36,8 +36,8 @@ import org.apache.tuscany.sca.provider.SCADefinitionsProviderException;
  * @version $Rev$ $Date$
  */
 public class TransactionPolicyDefinitionsProvider implements SCADefinitionsProvider {
-    private final static String scaDefinitionsFile = "definitions.xml";
-    private final static String tuscanyDefinitionsFile = "tuscany_definitions.xml";
+    private static final String scaDefinitionsFile = "definitions.xml";
+    private static final String tuscanyDefinitionsFile = "tuscany_definitions.xml";
     private URLArtifactProcessor urlArtifactProcessor;
 
     public TransactionPolicyDefinitionsProvider(ExtensionPointRegistry registry) {
