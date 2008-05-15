@@ -30,6 +30,8 @@ import org.apache.tuscany.sca.policy.Policy;
 /**
  * Implementation for policies that could be injected as parameter
  * into the axis2config.
+ *
+ * @version $Rev$ $Date$
  */
 public class Axis2ConfigParamPolicy implements Policy {
     public static final QName NAME = new QName(Constants.SCA10_TUSCANY_NS, "wsConfigParam");
