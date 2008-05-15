@@ -30,6 +30,11 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+/**
+ * Implementation of an OSGi Runtime using Felix.
+ *
+ * @version $Rev$ $Date$
+ */
 public class FelixRuntime extends OSGiRuntime implements BundleActivator {
     
     private static BundleContext bundleContext;

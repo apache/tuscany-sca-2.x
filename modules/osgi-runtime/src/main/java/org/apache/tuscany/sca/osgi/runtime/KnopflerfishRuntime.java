@@ -29,6 +29,11 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 
+/**
+ * Implementation of an OSGi Runtime using Knopflerfish.
+ *
+ * @version $Rev$ $Date$
+ */
 public class KnopflerfishRuntime extends OSGiRuntime  {
     
     private static BundleContext bundleContext;

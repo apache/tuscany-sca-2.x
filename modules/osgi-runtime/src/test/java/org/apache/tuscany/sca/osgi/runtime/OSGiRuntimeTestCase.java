@@ -25,7 +25,8 @@ import org.osgi.framework.BundleContext;
 
 /**
  * Test OSGi runtime.
- * 
+ *
+ * @version $Rev$ $Date$
  */
 public class OSGiRuntimeTestCase extends TestCase {
     private OSGiRuntime runtime;

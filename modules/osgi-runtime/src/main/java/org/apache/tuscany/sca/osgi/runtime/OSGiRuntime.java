@@ -30,6 +30,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.service.packageadmin.PackageAdmin;
 
+/**
+ * Base OSGiRuntime implementation.
+ * 
+ * @version $Rev$ $Date$
+ */
 public abstract class OSGiRuntime {
     private static final Logger logger = Logger.getLogger(OSGiRuntime.class.getName());
 
