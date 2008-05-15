@@ -25,7 +25,6 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
