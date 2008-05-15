@@ -21,6 +21,10 @@ package org.apache.tuscany.sca.interfacedef.wsdl;
 
 import javax.xml.ws.WebFault;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 @WebFault(faultBean="org.apache.tuscany.sca.interfacedef.wsdl.TestFaultBean")
 public class TestFault extends Exception {
 

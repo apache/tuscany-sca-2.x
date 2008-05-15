@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class TestFaultBean {
     private String lastName;
     private String firstName;
