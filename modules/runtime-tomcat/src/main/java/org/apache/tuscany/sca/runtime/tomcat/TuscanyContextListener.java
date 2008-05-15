@@ -29,6 +29,8 @@ import org.apache.catalina.core.StandardContext;
 import org.apache.tuscany.sca.runtime.Launcher;
 
 /**
+ *
+ * @version $Rev$ $Date$
  */
 public class TuscanyContextListener implements LifecycleListener {
 

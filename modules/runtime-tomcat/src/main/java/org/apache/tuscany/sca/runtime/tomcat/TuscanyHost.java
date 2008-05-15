@@ -44,6 +44,8 @@ import org.apache.catalina.deploy.FilterMap;
  *       unpackWARs="true" autoDeploy="true"
  *       xmlValidation="false" xmlNamespaceAware="false">
  *       
+ *
+ * @version $Rev$ $Date$
  */
 public class TuscanyHost extends StandardHost {
     private static final long serialVersionUID = 1L;

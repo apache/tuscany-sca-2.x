@@ -36,6 +36,10 @@ import javax.naming.directory.SearchResult;
 
 import org.apache.catalina.core.StandardContext;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class TuscanyContext extends StandardContext {
     private static final long serialVersionUID = 1L;
 
