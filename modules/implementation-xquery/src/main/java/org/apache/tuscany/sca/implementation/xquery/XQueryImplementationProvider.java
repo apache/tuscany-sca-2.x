@@ -45,7 +45,6 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
 
 /**
  * Provides the runtime configuration of XQuery-typed component.
- * @version $Rev$ $Date$
  * 
  * Generally the following is done:
  * 1. During construction all services and references are provided
@@ -57,6 +56,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponentService;
  *      map, which is used later by the invoker to configure the Saxon parser;
  *    - each property value is read and put into the properties map. This is
  *      again used by the invoker to configure the Saxon parser
+ *
+ * @version $Rev$ $Date$
  */
 public class XQueryImplementationProvider implements ImplementationProvider {
 
