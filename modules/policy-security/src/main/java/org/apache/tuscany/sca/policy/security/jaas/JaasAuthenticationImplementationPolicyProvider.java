@@ -34,6 +34,8 @@ import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
 /**
  * Policy handler to handle PolicySet containing JaasAuthenticationPolicy instances
+ *
+ * @version $Rev$ $Date$
  */
 public class JaasAuthenticationImplementationPolicyProvider implements PolicyProvider {
     private RuntimeComponent component;

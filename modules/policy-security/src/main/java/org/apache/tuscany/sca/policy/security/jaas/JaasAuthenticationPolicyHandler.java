@@ -29,6 +29,8 @@ import org.apache.tuscany.sca.policy.util.PolicyHandler;
 
 /**
  * Policy handler to handle PolicySet containing JaasAuthenticationPolicy instances
+ *
+ * @version $Rev$ $Date$
  */
 public class JaasAuthenticationPolicyHandler implements PolicyHandler {
     private static final String jaasPolicy = "JaasPolicy";
