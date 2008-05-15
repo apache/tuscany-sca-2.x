@@ -17,6 +17,8 @@
  * under the License.    
  */
 
+package org.apache.tuscany.sca.monitor;
+
 import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
