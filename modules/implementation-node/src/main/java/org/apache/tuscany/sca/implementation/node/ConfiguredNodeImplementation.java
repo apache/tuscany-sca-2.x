@@ -28,6 +28,8 @@ import org.apache.tuscany.sca.contribution.Contribution;
 
 /**
  * The model representing a resource implementation in an SCA assembly model.
+ *
+ * @version $Rev$ $Date$
  */
 public interface ConfiguredNodeImplementation extends Implementation {
     

@@ -31,6 +31,8 @@ import org.apache.tuscany.sca.implementation.node.NodeImplementation;
 
 /**
  * The model representing a node implementation in an SCA assembly model.
+ *
+ * @version $Rev$ $Date$
  */
 class NodeImplementationImpl implements NodeImplementation {
 

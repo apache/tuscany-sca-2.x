@@ -45,6 +45,10 @@ import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public class CalculateBindingURITestCase extends TestCase {
     private final static Logger logger = Logger.getLogger(CalculateBindingURITestCase.class.getName());
     private AssemblyFactory assemblyFactory;
