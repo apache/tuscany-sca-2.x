@@ -28,6 +28,8 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 
 /**
  * Represents an operation on a service interface.
+ *
+ * @version $Rev$ $Date$
  */
 public interface Operation extends Cloneable, PolicySetAttachPoint {
     /**

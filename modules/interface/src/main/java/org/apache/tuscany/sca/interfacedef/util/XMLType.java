@@ -22,7 +22,9 @@ package org.apache.tuscany.sca.interfacedef.util;
 import javax.xml.namespace.QName;
 
 /**
- * The metadata for an XML element or type
+ * The metadata for an XML element or type.
+ *
+ * @version $Rev$ $Date$
  */
 public class XMLType {
     public static final XMLType UNKNOWN = new XMLType(null, null);

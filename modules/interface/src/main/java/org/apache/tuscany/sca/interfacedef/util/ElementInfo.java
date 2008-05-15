@@ -22,7 +22,9 @@ package org.apache.tuscany.sca.interfacedef.util;
 import javax.xml.namespace.QName;
 
 /**
- * An abstraction of XML schema elements
+ * An abstraction of XML schema elements.
+ *
+ * @version $Rev$ $Date$
  */
 public class ElementInfo {
     private final QName name;
