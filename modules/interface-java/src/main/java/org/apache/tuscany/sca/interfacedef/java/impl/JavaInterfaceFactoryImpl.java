@@ -29,6 +29,8 @@ import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 
 /**
  * A factory for the Java model.
+ *
+ * @version $Rev$ $Date$
  */
 public abstract class JavaInterfaceFactoryImpl implements JavaInterfaceFactory {
     
