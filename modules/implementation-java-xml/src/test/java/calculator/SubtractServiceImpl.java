@@ -22,6 +22,8 @@ import org.osoa.sca.annotations.Scope;
 
 /**
  * An implementation of the subtract service.
+ *
+ * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
 public class SubtractServiceImpl implements SubtractService {

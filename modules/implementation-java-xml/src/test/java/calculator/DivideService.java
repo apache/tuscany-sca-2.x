@@ -18,6 +18,11 @@
  */
 package calculator;
 
+/**
+ * Interface for the Divide Service.
+ *
+ * @version $Rev$ $Date$
+ */
 public interface DivideService {
 
     double divide(double n1, double n2);

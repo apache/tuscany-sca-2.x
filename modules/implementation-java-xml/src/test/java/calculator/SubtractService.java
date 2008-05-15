@@ -18,6 +18,11 @@
  */
 package calculator;
 
+/**
+ * Interface for the Subtract Service.
+ *
+ * @version $Rev$ $Date$
+ */
 public interface SubtractService {
 
     double subtract(double n1, double n2);
