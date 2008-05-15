@@ -32,6 +32,8 @@ import org.apache.tuscany.sca.provider.SCADefinitionsProviderException;
 
 /**
  * Provider for Policy Intents and PolicySet definitions related to transaction
+ *
+ * @version $Rev$ $Date$
  */
 public class TransactionPolicyDefinitionsProvider implements SCADefinitionsProvider {
     private final static String scaDefinitionsFile = "definitions.xml";

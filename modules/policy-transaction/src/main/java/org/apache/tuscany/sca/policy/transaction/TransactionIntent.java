@@ -19,6 +19,10 @@
 
 package org.apache.tuscany.sca.policy.transaction;
 
+/**
+ *
+ * @version $Rev$ $Date$
+ */
 public enum TransactionIntent {
     managedTransactionLocal, managedTransactionGlobal, noManagedTransaction, propagatesTransacton, suspendsTransaction, transactedOneWay, immediateOneWay
 }
