@@ -43,7 +43,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWireProcessor;
  * @version $Rev$ $Date$
  */
 public class JavaPolicyHandlingRuntimeWireProcessor implements RuntimeWireProcessor {
-    private final static Logger logger = Logger.getLogger(JavaPolicyHandlingRuntimeWireProcessor.class.getName());
+    private static final Logger logger = Logger.getLogger(JavaPolicyHandlingRuntimeWireProcessor.class.getName());
 
     public JavaPolicyHandlingRuntimeWireProcessor() {
         super();
