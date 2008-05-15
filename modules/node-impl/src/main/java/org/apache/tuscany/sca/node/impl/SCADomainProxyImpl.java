@@ -85,8 +85,9 @@ public class SCADomainProxyImpl extends SCADomainImpl {
     /** 
      * Creates a domain proxy connected to a wider domain.  
      * 
-     * @param domainUri - identifies what host and port the domain service is running on, e.g. http://localhost:8081
+     * @param domainURI - identifies what host and port the domain service is running on, e.g. http://localhost:8081
      * @throws ActivationException
+     * @throws DomainException
      */
     public SCADomainProxyImpl(String domainURI) throws DomainException {
         super(domainURI);
@@ -95,8 +96,10 @@ public class SCADomainProxyImpl extends SCADomainImpl {
     /** 
      * Creates a domain proxy connected to a wider domain.  
      * 
-     * @param domainUri - identifies what host and port the domain service is running on, e.g. http://localhost:8081
+     * @param domainURI - identifies what host and port the domain service is running on, e.g. http://localhost:8081
+     * @param cl The ClassLoader to use as the Domain ClassLoader
      * @throws ActivationException
+     * @throws DomainException
      */
     public SCADomainProxyImpl(String domainURI, ClassLoader cl) throws DomainException {
         super(domainURI);

@@ -37,9 +37,7 @@ public class SCADomainFinderImpl extends SCADomainFinder {
     private static HashMap<String, SCADomain> domains = new HashMap<String, SCADomain>();
         
     /**
-     * Returns a new SCA domain finder instance.
-     *  
-     * @return a new SCA domain finder
+     * Constructs a new SCA domain finder instance.
      */
     public SCADomainFinderImpl() {
 
