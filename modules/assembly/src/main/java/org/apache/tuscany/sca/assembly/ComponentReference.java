@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.assembly;
 
+import java.util.List;
+
 
 
 /**
@@ -70,5 +72,12 @@ public interface ComponentReference extends Reference {
      * @param callbackService the callback service
      */
     void setCallbackService(ComponentService callbackService);
+    
+    /**
+     * Returns the endpoints implied by this reference.
+     * 
+     * @return the endpoints implied by this reference
+     */
+    List<Endpoint> getEndpoints();    
     
 }

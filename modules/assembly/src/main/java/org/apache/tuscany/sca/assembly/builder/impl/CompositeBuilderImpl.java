@@ -23,6 +23,8 @@ import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.DefaultEndpointFactory;
+import org.apache.tuscany.sca.assembly.EndpointFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
@@ -62,7 +64,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                                 IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
                                 InterfaceContractMapper interfaceContractMapper,
                                 Monitor monitor) {
-        this(assemblyFactory, scaBindingFactory, intentAttachPointTypeFactory, interfaceContractMapper, null, monitor);
+        this(assemblyFactory, null, scaBindingFactory,  intentAttachPointTypeFactory, interfaceContractMapper, null, monitor);
     }
     
     /**
@@ -70,17 +72,24 @@ public class CompositeBuilderImpl implements CompositeBuilder {
      * 
      * @param assemblyFactory
      * @param scaBindingFactory
+     * @param endpointFactory
      * @param intentAttachPointTypeFactory
      * @param interfaceContractMapper
      * @param policyDefinitions
      * @param monitor
      */
     public CompositeBuilderImpl(AssemblyFactory assemblyFactory,
+                                EndpointFactory endpointFactory,
                                 SCABindingFactory scaBindingFactory,
                                 IntentAttachPointTypeFactory  intentAttachPointTypeFactory,
                                 InterfaceContractMapper interfaceContractMapper,
                                 SCADefinitions policyDefinitions,
                                 Monitor monitor) {
+        
+        // TODO - why does this builder have two constructors
+        if (endpointFactory == null){
+            endpointFactory = new DefaultEndpointFactory();
+        }
         
         if (monitor == null){
             monitor = new Monitor () {
@@ -107,9 +116,10 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             };
         }
         
+        
         compositeIncludeBuilder = new CompositeIncludeBuilderImpl(monitor); 
-        componentWireBuilder = new ComponentReferenceWireBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
-        compositeReferenceWireBuilder = new CompositeReferenceWireBuilderImpl(assemblyFactory, interfaceContractMapper, monitor);
+        componentWireBuilder = new ComponentReferenceWireBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
+        compositeReferenceWireBuilder = new CompositeReferenceWireBuilderImpl(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
         compositeCloneBuilder = new CompositeCloneBuilderImpl(monitor);
         componentConfigurationBuilder = new ComponentConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);
         compositeServiceConfigurationBuilder = new CompositeServiceConfigurationBuilderImpl(assemblyFactory, scaBindingFactory, interfaceContractMapper, policyDefinitions, monitor);

@@ -36,6 +36,8 @@ import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeReference;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
+import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.EndpointFactory;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
@@ -44,6 +46,8 @@ import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.assembly.Service;
 import org.apache.tuscany.sca.assembly.Wire;
+import org.apache.tuscany.sca.assembly.builder.DefaultEndpointBuilder;
+import org.apache.tuscany.sca.assembly.builder.EndpointBuilder;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
@@ -61,31 +65,17 @@ class BaseWireBuilderImpl {
 
     private Monitor monitor;
     private AssemblyFactory assemblyFactory;
+    private EndpointFactory endpointFactory;
     private InterfaceContractMapper interfaceContractMapper;
+    private EndpointBuilder endpointBuilder;
     
-    //Represents a target component and service
-    private class Target {
-        Component component;
-        ComponentService service;
-        
-        Target(Component component, ComponentService service) {
-            this.component = component;
-            this.service = service;
-        }
-        
-        Component getComponent() {
-            return component;
-        }
-        
-        ComponentService getService() {
-            return service;
-        }
-    };
     
-    protected BaseWireBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper, Monitor monitor) {
+    protected BaseWireBuilderImpl(AssemblyFactory assemblyFactory, EndpointFactory endpointFactory, InterfaceContractMapper interfaceContractMapper, Monitor monitor) {
         this.assemblyFactory = assemblyFactory;
+        this.endpointFactory = endpointFactory;
         this.interfaceContractMapper = interfaceContractMapper;
         this.monitor = monitor;
+        this.endpointBuilder = new DefaultEndpointBuilder(monitor);
         
     }
     
@@ -353,11 +343,12 @@ class BaseWireBuilderImpl {
         }
     }
     
-    private List<Target> createComponentReferenceTargets(Composite composite,
-                                                         Map<String, Component> components,
-                                                         Map<String, ComponentService> componentServices,
-                                                         ComponentReference componentReference) {
-        List<Target> targets = new ArrayList<Target>();
+    private List<Endpoint> createComponentReferenceTargets(Composite composite,
+                                                           Map<String, Component> components,
+                                                           Map<String, ComponentService> componentServices,
+                                                          ComponentReference componentReference) {
+
+        List<Endpoint> endpoints = new ArrayList<Endpoint>();
         
         if (componentReference.getAutowire() == Boolean.TRUE) {
 
@@ -368,8 +359,16 @@ class BaseWireBuilderImpl {
                 for (ComponentService targetComponentService : targetComponent.getServices()) {
                     if (componentReference.getInterfaceContract() == null ||
                         interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(), targetComponentService.getInterfaceContract())) {
-                        Target target = new Target(targetComponent, targetComponentService);
-                        targets.add(target);
+                        
+                        Endpoint endpoint = endpointFactory.createEndpoint();
+                        endpoint.setTargetName(targetComponent.getName());
+                        endpoint.setSourceComponent(null); // TODO - fixed up at start
+                        endpoint.setSourceComponentReference(componentReference);
+                        endpoint.setTargetComponent(targetComponent);
+                        endpoint.setTargetComponentService(targetComponentService);
+                        endpoint.getCandidateBindings().addAll(componentReference.getBindings());
+                        endpoints.add(endpoint);
+                        
                         if (multiplicity == Multiplicity.ZERO_ONE || multiplicity == Multiplicity.ONE_ONE) {
                             break;
                         }
@@ -378,7 +377,7 @@ class BaseWireBuilderImpl {
             }
             
             if (multiplicity == Multiplicity.ONE_N || multiplicity == Multiplicity.ONE_ONE) {
-                if (targets.size() == 0) {
+                if (endpoints.size() == 0) {
                     warning("No target services found for the component reference to be autowired: " + componentReference
                                 .getName(),
                             componentReference);
@@ -408,8 +407,14 @@ class BaseWireBuilderImpl {
                     if (componentReference.getInterfaceContract() == null ||
                         interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(), targetComponentService.getInterfaceContract())) {
 
-                        Target target = new Target(targetComponent, targetComponentService);
-                        targets.add(target);
+                        Endpoint endpoint = endpointFactory.createEndpoint();
+                        endpoint.setTargetName(targetComponent.getName());
+                        endpoint.setSourceComponent(null); // TODO - fixed up at start
+                        endpoint.setSourceComponentReference(componentReference);                        
+                        endpoint.setTargetComponent(targetComponent);
+                        endpoint.setTargetComponentService(targetComponentService);
+                        endpoint.getCandidateBindings().addAll(componentReference.getBindings());
+                        endpoints.add(endpoint);
 
                         // mark the reference target as resolved. Used later when we are looking to 
                         // see if an sca binding is associated with a resolved target or not
@@ -421,6 +426,13 @@ class BaseWireBuilderImpl {
                     // add all the reference bindings into the target so that they
                     // can be used for comparison when the target is resolved at runtime
                     componentService.getBindings().addAll(componentReference.getBindings());
+                    
+                    Endpoint endpoint = endpointFactory.createEndpoint();
+                    endpoint.setTargetName(name);
+                    endpoint.setSourceComponent(null); // TODO - fixed up at start
+                    endpoint.setSourceComponentReference(componentReference);                    
+                    endpoint.getCandidateBindings().addAll(componentReference.getBindings());
+                    endpoints.add(endpoint);
                     
                     // The bindings will be cloned back into the reference when the 
                     // target is finally resolved. 
@@ -452,8 +464,14 @@ class BaseWireBuilderImpl {
                     if (componentReference.getInterfaceContract() == null ||
                         interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(), targetComponentService.getInterfaceContract())) {
 
-                        Target target = new Target(targetComponent, targetComponentService);
-                        targets.add(target);
+                        Endpoint endpoint = endpointFactory.createEndpoint();
+                        endpoint.setTargetName(targetComponent.getName());
+                        endpoint.setSourceComponent(null); // TODO - fixed up at start
+                        endpoint.setSourceComponentReference(componentReference);                        
+                        endpoint.setTargetComponent(targetComponent);
+                        endpoint.setTargetComponentService(targetComponentService);
+                        endpoint.getCandidateBindings().addAll(componentReference.getBindings());
+                        endpoints.add(endpoint);
                         
                         // mark the reference target as resolved. Used later when we are looking to 
                         // see if an sca binding is associated with a resolved target or not
@@ -473,11 +491,93 @@ class BaseWireBuilderImpl {
                     // The bindings will be cloned back into the reference when the 
                     // target is finally resolved. 
                     
+                    Endpoint endpoint = endpointFactory.createEndpoint();
+                    endpoint.setTargetName(name);
+                    endpoint.setSourceComponent(null); // TODO - fixed up at start
+                    endpoint.setSourceComponentReference(componentReference);                    
+                    endpoint.getCandidateBindings().addAll(componentReference.getBindings());
+                    endpoints.add(endpoint);                    
+                    
                     warning("Component reference target from component type not found, it might be a remote service: " + componentService.getName(), composite);
                 }
             }
+        } 
+            
+                
+        // if no endpoints have found so far retrieve any target names that are in binding URIs
+        if (endpoints.isEmpty()){
+            for (Binding binding : componentReference.getBindings()) {
+
+                String uri = binding.getURI();
+                
+                // user hasn't put a uri on the binding so it's not a target name
+                if (uri == null) {
+                    continue;
+                }
+                
+                // user might have put a local target name in the uri so get
+                // the path part and see if it refers to a target we know about
+                // - if it does the reference binding will be matched with a service binding
+                // - if it doesn't it is assumed to be an external reference 
+                uri = URI.create(uri).getPath();
+                
+                if (uri.startsWith("/")) {
+                    uri = uri.substring(1);
+                }
+                                               
+                // Resolve the target component and service
+                ComponentService targetComponentService = componentServices.get(uri);
+                Component targetComponent;
+                
+                int s = uri.indexOf('/');
+                if (s == -1) {
+                    targetComponent = components.get(uri);
+                } else {
+                    targetComponent = components.get(uri.substring(0, s));
+                }
+
+                // if the path of the binding URI matches a component in the 
+                // composite then configure an endpoint with this component as the target
+                // if not then the binding URI will be assumed to reference an external service
+                if (targetComponentService != null) {
+
+                    // Check that the target component service provides
+                    // a superset of the component reference interface
+                    if (componentReference.getInterfaceContract() == null ||
+                        interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(), targetComponentService.getInterfaceContract())) {
+
+                        Endpoint endpoint = endpointFactory.createEndpoint();
+                        endpoint.setTargetName(targetComponent.getName());
+                        endpoint.setSourceComponent(null); // TODO - fixed up at start
+                        endpoint.setSourceComponentReference(componentReference);                        
+                        endpoint.setTargetComponent(targetComponent);
+                        endpoint.setTargetComponentService(targetComponentService);
+                        endpoint.getCandidateBindings().add(binding);
+                        endpoints.add(endpoint);                        
+                    } else {
+                        warning("ReferenceIncompatibleInterface",
+                                composite,
+                                composite.getName().toString(),
+                                componentReference.getName(),
+                                uri);
+                    }
+                } else {
+                    
+                    /* TODO - don't enable this yet as we have tests that 
+                              use relative URIs in bindings that don't refer to 
+                              targets 
+                    Endpoint endpoint = endpointFactory.createEndpoint();
+                    endpoint.setTargetName(uri);
+                    endpoint.setSourceComponent(null); // TODO - fixed up at start
+                    endpoint.setSourceComponentReference(componentReference);                        
+                    endpoint.getCandidateBindings().add(binding);
+                    endpoints.add(endpoint); 
+                    */
+                }
+            }
         }
-        return targets;
+
+        return endpoints;
     }
 
 
@@ -492,23 +592,61 @@ class BaseWireBuilderImpl {
     private void connectComponentReferences(Composite composite,
                                             Map<String, Component> components,
                                             Map<String, ComponentService> componentServices,
-                                            Map<String, ComponentReference> componentReferences) {
+                                            Map<String, ComponentReference> componentReferences){
+               
         for (ComponentReference componentReference : componentReferences.values()) {
             
-            List<Target> targets = createComponentReferenceTargets(composite, 
-                                                                   components, 
-                                                                   componentServices, 
-                                                                   componentReference);
+            List<Endpoint> endpoints = createComponentReferenceTargets(composite, 
+                                                                       components, 
+                                                                       componentServices, 
+                                                                       componentReference);
 
+            componentReference.getEndpoints().addAll(endpoints);
+            
+            // build each endpoint 
+            if (!endpoints.isEmpty()) { 
+
+                for(Endpoint endpoint : endpoints){
+                    endpointBuilder.build(endpoint);
+                }
+                
+                // TODO - The following step ensures that the reference binding list remains 
+                //        as the record of resolved targets for now. This needs fixing so 
+                //        that the endpoint takes on this responsibility. 
+                componentReference.getBindings().clear();
+                
+                if (componentReference.getCallback() != null){
+                    componentReference.getCallback().getBindings().clear();
+                }
+                
+                for(Endpoint endpoint : endpoints){
+                    if (endpoint.isUnresolved() == false){
+                        componentReference.getBindings().add(endpoint.getSourceBinding());
+                        
+                        if (componentReference.getCallback() != null){
+                            componentReference.getCallback().getBindings().add(endpoint.getSourceCallbackBinding());
+                        }
+                    } 
+                }                
+                
+            } else {
+                // do nothing as no targets have been specified so the bindings
+                // in the reference binding list are assumed to be manually configured
+            }
+                
+            
+/*            
             // Select the reference bindings matching the target service bindings 
             List<Binding> selectedBindings = new ArrayList<Binding>();
+            List<Binding> selectedCallbackBindings = null;
     
             // Handle callback
             boolean bidirectional = false;
+            
             if (componentReference.getInterfaceContract() != null && componentReference.getInterfaceContract().getCallbackInterface() != null) {
                 bidirectional = true;
+                selectedCallbackBindings = new ArrayList<Binding>();
             }
-            List<Binding> selectedCallbackBindings = bidirectional ? new ArrayList<Binding>() : null;
     
             for (Target target : targets) {
                 
@@ -530,7 +668,7 @@ class BaseWireBuilderImpl {
                 // Match the binding against the bindings of the target service
                 Binding selected = BindingConfigurationUtil.resolveBindings(componentReference, targetComponent, targetComponentService);
                 if (selected == null) {
-                    warning("Component reference doesn't have a matching binding", componentReference);
+                    warning("NoMatchingBinding", componentReference, componentReference.getName(), targetComponentService.getName());
                 } else {
                     selectedBindings.add(selected);
                 }
@@ -541,7 +679,7 @@ class BaseWireBuilderImpl {
                     }
                 }
             }
-                       
+*/                       
             
             // Need to tidy up the reference binding list and add in the bindings that 
             // have been selected above. The situation so far...
@@ -553,7 +691,8 @@ class BaseWireBuilderImpl {
             //    Unwired reference (0 targets)
             //       Binding.uri = null  - Either a callback reference or the reference is yet to be wired
             //                             by the implementation so leave the binding where it is
-            //       Binding.uri != null - from the composite file so leave it             
+            //       Binding.uri != null - from the composite file so leave it  
+/*            
             if ((componentReference.getTargets().size() > 0) ||
                 (!targets.isEmpty())) {
 
@@ -602,9 +741,11 @@ class BaseWireBuilderImpl {
                     }
                 }
             }
-            
+
+*/            
             // Connect the optimizable bindings to their target component and
             // service
+/*            
             for (Binding binding : componentReference.getBindings()) {
                 if (!(binding instanceof OptimizableBinding)) {
                     continue;
@@ -651,6 +792,7 @@ class BaseWireBuilderImpl {
                     optimizableBinding.setTargetBinding(targetComponentService.getBinding(optimizableBinding.getClass()));
                 }
             }
+*/             
         }
     }
 

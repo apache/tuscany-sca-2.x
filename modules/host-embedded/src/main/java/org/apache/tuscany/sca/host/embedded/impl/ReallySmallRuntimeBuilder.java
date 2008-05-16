@@ -31,6 +31,7 @@ import javax.xml.stream.XMLOutputFactory;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.EndpointFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.DomainBuilder;
@@ -151,12 +152,14 @@ public class ReallySmallRuntimeBuilder {
     public static CompositeBuilder createCompositeBuilder(Monitor monitor,
                                                           AssemblyFactory assemblyFactory,
                                                           SCABindingFactory scaBindingFactory,
+                                                          EndpointFactory endpointFactory,
                                                           IntentAttachPointTypeFactory intentAttachPointTypeFactory,
                                                           InterfaceContractMapper interfaceContractMapper,
                                                           SCADefinitions policyDefinitions) {
       
         
         return new CompositeBuilderImpl(assemblyFactory, 
+                                        endpointFactory,
                                         scaBindingFactory, 
                                         intentAttachPointTypeFactory, 
                                         interfaceContractMapper,

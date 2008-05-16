@@ -20,7 +20,12 @@ package org.apache.tuscany.sca.binding.sca.axis2;
 
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.assembly.Component;
+import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
+import org.apache.tuscany.sca.runtime.RuntimeComponent;
+import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -62,19 +67,19 @@ public class SimpleTestCase {
         Assert.assertEquals(helloWorldClientA.getGreetings("fred"), "Hello fred");
         
     }
-    
+        
     @Test
-    public void testHelloWorldRemote() throws Exception {  
+    public void testHelloWorldRemote() throws Exception { 
+        
         HelloWorldClient helloWorldClientA;
         helloWorldClientA = nodeA.getService(HelloWorldClient.class, "AHelloWorldClientRemote");
+        
         try {
             helloWorldClientA.getGreetings("fred");
         } catch (ServiceUnavailableException ex){
-            return;
+            Assert.fail(); 
         }
-        Assert.fail();
-        
-    }    
+    }     
     
     @Test
     public void testHelloWorldLocalAndRemote() throws Exception {

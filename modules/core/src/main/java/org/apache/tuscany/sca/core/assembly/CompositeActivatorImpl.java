@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.assembly.ComponentReference;
 import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Composite;
 import org.apache.tuscany.sca.assembly.CompositeService;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.Implementation;
 import org.apache.tuscany.sca.assembly.OptimizableBinding;
 import org.apache.tuscany.sca.assembly.Reference;
@@ -53,6 +54,8 @@ import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.provider.BindingProviderFactory;
+import org.apache.tuscany.sca.provider.EndpointProvider;
+import org.apache.tuscany.sca.provider.EndpointProviderFactory;
 import org.apache.tuscany.sca.provider.ImplementationProvider;
 import org.apache.tuscany.sca.provider.ImplementationProviderFactory;
 import org.apache.tuscany.sca.provider.PolicyProvider;
@@ -138,6 +141,14 @@ public class CompositeActivatorImpl implements CompositeActivator {
         for (Binding binding : ref.getBindings()) {
             addReferenceBindingProvider(component, ref, binding);
         }
+        
+        for (Endpoint endpoint : ref.getEndpoints()){
+            // TODO - source component should be set in the builder but the 
+            //        way the builder is written it's difficult to get at it
+            endpoint.setSourceComponent(component);
+            
+            addEndpointProvider(component, ref, endpoint);
+        }
     }
 
     public void start(RuntimeComponent component, RuntimeComponentReference ref) {
@@ -153,12 +164,18 @@ public class CompositeActivatorImpl implements CompositeActivator {
                 }
                 addReferenceWire(component, ref, binding);
             }
+            
+            // targets now have an endpoint representation. We can use this to 
+            // look for unresolved endpoints using dummy wires for late resolution
+            for (Endpoint endpoint : ref.getEndpoints()){
+                addReferenceEndpointWire(component, ref, endpoint);
+            }
         }
     }
 
     public void stop(Component component, ComponentReference reference) {
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("Starting component reference: " + component.getURI() + "#" + reference.getName());
+            logger.fine("Stopping component reference: " + component.getURI() + "#" + reference.getName());
         }
         RuntimeComponentReference runtimeRef = ((RuntimeComponentReference)reference);
         for (Binding binding : reference.getBindings()) {
@@ -178,6 +195,56 @@ public class CompositeActivatorImpl implements CompositeActivator {
             removeReferenceBindingProvider(component, ref, binding);
         }
 
+    }
+
+    /**
+     * @param component
+     * @param reference
+     * @param binding
+     */
+    private EndpointProvider addEndpointProvider(RuntimeComponent component,
+                                                 RuntimeComponentReference reference,
+                                                 Endpoint endpoint){
+        
+        // only create provides for unresolved endpoint currently
+        // this will also prevent a wire from being created later
+        if (!endpoint.isUnresolved()){
+            return null;
+        }
+        
+        EndpointProviderFactory providerFactory =
+            (EndpointProviderFactory)providerFactories.getProviderFactory(endpoint.getClass());
+        
+        if (providerFactory != null) {
+            @SuppressWarnings("unchecked")
+            EndpointProvider endpointProvider =
+                providerFactory.createEndpointProvider(endpoint);
+            if (endpointProvider != null) {
+                ((RuntimeComponentReference)reference).setEndpointProvider(endpoint, endpointProvider);
+            }
+            
+            /* TODO - should this get done here for endpoints or in the endpoint itself?
+            for (PolicyProviderFactory f : providerFactories.getPolicyProviderFactories()) {
+                PolicyProvider policyProvider = f.createReferencePolicyProvider(component, reference, binding);
+                if (policyProvider != null) {
+                    reference.addPolicyProvider(binding, policyProvider);
+                }
+            }
+            */
+
+            return endpointProvider;
+        } else {
+            // TODO - for the time being allow the lack of an endpoint provider to be the 
+            //        switch to turn off endpoint processing
+            return null;
+            //throw new IllegalStateException("Endpoint provider factory not found for class: " + endpoint.getClass().getName());
+        }
+    }
+    
+    public void addReferenceBindingProviderForEndpoint(Endpoint endpoint){
+        addReferenceBindingProvider((RuntimeComponent)endpoint.getSourceComponent(),
+                                    (RuntimeComponentReference)endpoint.getSourceComponentReference(),
+                                    endpoint.getSourceBinding());
     }
 
     /**
@@ -219,6 +286,32 @@ public class CompositeActivatorImpl implements CompositeActivator {
         // The code that used to be here to resolved unresolved targets is now 
         // at the bottom of BaseWireBuilder.connectComponentReferences()
     }
+    
+    /**
+     * Create the runtime wires for a reference endpoint. Currently this method
+     * only deals with the late binding case and creates a dummy wire that 
+     * will use the Endpoint to resolve the target at the point when the 
+     * wire chains are created.
+     * 
+     * @param component
+     * @param reference
+     * @param binding
+     */
+    private void addReferenceEndpointWire(Component component, ComponentReference reference, Endpoint endpoint) {
+        // only deal with unresolved endpoints as, to prevent breaking changes, targets that are resolved
+        // at build time are still represented as bindings in the binding list
+        if (((RuntimeComponentReference)reference).getEndpointProvider(endpoint) == null){ 
+            // no endpoint provider has previously been created so don't create the 
+            // wire
+            return;
+        }
+        
+        RuntimeWire wire = new EndpointWireImpl(endpoint, this);
+        
+        RuntimeComponentReference runtimeRef = (RuntimeComponentReference)reference;
+        runtimeRef.getRuntimeWires().add(wire);
+    }
+    
 
     /**
      * Create the runtime wires for a reference binding
@@ -231,11 +324,12 @@ public class CompositeActivatorImpl implements CompositeActivator {
         if (!(reference instanceof RuntimeComponentReference)) {
             return;
         }
-
+        
         // create wire if binding has an endpoint
         Component targetComponent = null;
         ComponentService targetComponentService = null;
         Binding targetBinding = null;
+    
         if (binding instanceof OptimizableBinding) {
             OptimizableBinding endpoint = (OptimizableBinding)binding;
             targetComponent = endpoint.getTargetComponent();
@@ -289,6 +383,14 @@ public class CompositeActivatorImpl implements CompositeActivator {
         */
     }
 
+    public void addReferenceWireForEndpoint(Endpoint endpoint){
+        addReferenceWire(endpoint.getSourceComponent(),
+                         endpoint.getSourceComponentReference(),
+                         endpoint.getSourceBinding(),
+                         endpoint.getTargetComponent(),
+                         endpoint.getTargetComponentService(),
+                         endpoint.getTargetBinding());
+    }
     /**
      * Create a reference wire for a forward call or a callback
      * @param reference
@@ -483,6 +585,21 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     });                       
                 }
             }
+            for (Endpoint endpoint : reference.getEndpoints()) {
+                final EndpointProvider endpointProvider = runtimeRef.getEndpointProvider(endpoint);
+                if (endpointProvider != null) {
+                    // Allow endpoints to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy.
+                    // TODO - do we need to allow this for endpoints. Leave as is for now
+                    //        doesn't seem to be done this way if a provider is started
+                    //        at wire creation time?
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        public Object run() {
+                            endpointProvider.start();
+                            return null;
+                          }
+                    });                       
+                }
+            }
         }
 
         for (ComponentService service : component.getServices()) {
@@ -579,6 +696,21 @@ public class CompositeActivatorImpl implements CompositeActivator {
                     });                       
                 }
             }
+            for (Endpoint endpoint : reference.getEndpoints()) {
+                final EndpointProvider endpointProvider = runtimeRef.getEndpointProvider(endpoint);
+                if (endpointProvider != null) {
+                    // Allow endpoints to add shutdown hooks. Requires RuntimePermission shutdownHooks in policy.
+                    // TODO - do we need to allow this for endpoints. Leave as is for now
+                    //        doesn't seem to be done this way if a provider is started
+                    //        at wire creation time?
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        public Object run() {
+                            endpointProvider.stop();
+                            return null;
+                          }
+                    });                       
+                }
+            }            
         }
         Implementation implementation = component.getImplementation();
         if (implementation instanceof Composite) {
