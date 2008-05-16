@@ -27,7 +27,7 @@
         <!-- reference name="addService" target="AddServiceComponent" /-->
         <reference name="addService">
             <interface.java interface="calculator.AddService" />
-            <binding.ws uri="http://localhost:8085/AddServiceComponent" />
+            <binding.ws uri="http://localhost:8085/AddServiceComponentWS" />
         </reference>
         <reference name="subtractService" target="SubtractServiceComponent" />
         <reference name="multiplyService" target="MultiplyServiceComponent" />
@@ -38,7 +38,7 @@
         <implementation.java class="calculator.AddServiceImpl" requires="ip:TestIntent_3" />
         <service name="AddService">
             <interface.java interface="calculator.AddService" />
-            <binding.ws uri="http://localhost:8085/AddServiceComponent" />
+            <binding.ws uri="http://localhost:8085/AddServiceComponentWS" />
             <binding.sca/>
         </service>
     </component>
