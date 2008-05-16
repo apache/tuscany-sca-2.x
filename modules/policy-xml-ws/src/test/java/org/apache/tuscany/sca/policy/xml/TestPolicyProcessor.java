@@ -31,8 +31,8 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.policy.Policy;
 
 /**
- * @author administrator
  *
+ * @version $Rev$ $Date$
  */
 public class TestPolicyProcessor implements StAXArtifactProcessor<Policy> {
 
