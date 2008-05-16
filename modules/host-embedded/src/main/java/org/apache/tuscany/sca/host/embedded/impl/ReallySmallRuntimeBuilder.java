@@ -24,6 +24,8 @@ import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.stream.XMLInputFactory;
@@ -43,6 +45,7 @@ import org.apache.tuscany.sca.context.RequestContextFactory;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultValidatingXMLInputFactory;
+import org.apache.tuscany.sca.contribution.processor.DefaultValidationSchemaExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.ExtensiblePackageProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.ExtensibleURLArtifactProcessor;
@@ -78,6 +81,8 @@ import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
 import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
+import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
+import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -203,19 +208,8 @@ public class ReallySmallRuntimeBuilder {
         modelFactories.addFactory(inputFactory);
         
         // Create a validation XML schema extension point
-        ValidationSchemaExtensionPoint schemas = registry.getExtensionPoint(ValidationSchemaExtensionPoint.class);
-        
-        // Allow privileged access to load resource. Requires RuntimePermssion in security policy.
-        URL schemaURL = AccessController.doPrivileged(new PrivilegedAction<URL>() {
-            public URL run() {
-                // ClassLoader of this class may not be the same as that of ReallySmallRuntimeBuilder
-                // ClassLoader xsdClassLoader = ReallySmallRuntimeBuilder.class.getClassLoader();
-                ClassLoader xsdClassLoader = Thread.currentThread().getContextClassLoader();
-                return xsdClassLoader.getResource("tuscany-sca.xsd");
-            }
-        });           
-        schemas.addSchema(schemaURL.toString());
-       
+        ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
+               
         // Create a validating XML input factory
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, monitor);
         modelFactories.addFactory(validatingInputFactory);
