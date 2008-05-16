@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.core.assembly.CompositeActivator;
 import org.apache.tuscany.sca.core.assembly.CompositeActivatorImpl;
 import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
+import org.apache.tuscany.sca.core.assembly.EndpointWireImpl;
 import org.apache.tuscany.sca.core.assembly.ReferenceParametersImpl;
 import org.apache.tuscany.sca.core.conversation.ConversationManager;
 import org.apache.tuscany.sca.core.conversation.ConversationState;
@@ -83,6 +84,8 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
     private transient RuntimeComponentReference clonedRef;
     private transient ReferenceParameters refParams;
     private transient XMLStreamReader xmlReader;
+    
+    private transient RuntimeWire endpointWire;
 
     /*
      * Public constructor for Externalizable serialization/deserialization
@@ -123,7 +126,7 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
         // sca:component1/component11/component112/service1?
         this.compositeActivator = compositeActivator;
         this.conversationManager = this.compositeActivator.getConversationManager();
-        RuntimeWire wire = this.reference.getRuntimeWire(this.binding);
+        //RuntimeWire wire = this.reference.getRuntimeWire(this.binding);
         // init(wire);
         initCallbackID();
     }
@@ -137,7 +140,9 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
     public RuntimeWire getRuntimeWire() {
         try {
             resolve();
-            if (reference != null) {
+            if (endpointWire != null){
+                return endpointWire;
+            } else if (reference != null) {
                 return reference.getRuntimeWire(binding);
             } else {
                 return null;
@@ -149,6 +154,10 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
 
     protected void bind(RuntimeWire wire) {
         if (wire != null) {
+            
+            if (wire instanceof EndpointWireImpl){
+                endpointWire = wire;
+            }
             this.component = wire.getSource().getComponent();
             this.reference = (RuntimeComponentReference)wire.getSource().getContract();
             this.binding = wire.getSource().getBinding();

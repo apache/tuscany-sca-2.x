@@ -95,6 +95,7 @@
                 <module>domain-api</module>
                 <module>domain-impl</module>
                 <module>domain-manager</module>
+                <module>endpoint</module>
                 <module>extensibility</module>
                 <module>extension-helper</module>
                 <module>host-embedded</module>

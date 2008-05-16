@@ -29,6 +29,8 @@ import java.util.logging.Logger;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.DefaultEndpointFactory;
+import org.apache.tuscany.sca.assembly.EndpointFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
@@ -217,8 +219,8 @@ public class ReallySmallRuntime {
         ModelFactoryExtensionPoint factories = registry.getExtensionPoint(ModelFactoryExtensionPoint.class);
         SCABindingFactory scaBindingFactory = factories.getFactory(SCABindingFactory.class);
         IntentAttachPointTypeFactory intentAttachPointTypeFactory = factories.getFactory(IntentAttachPointTypeFactory.class);
+        EndpointFactory endpointFactory = factories.getFactory(EndpointFactory.class);        
         InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
-        
         
         //Create a composite builder
         SCADefinitions aggregatedDefinitions = new SCADefinitionsImpl();
@@ -228,6 +230,7 @@ public class ReallySmallRuntime {
         compositeBuilder = ReallySmallRuntimeBuilder.createCompositeBuilder(monitor,
                                                                             assemblyFactory,
                                                                             scaBindingFactory,
+                                                                            endpointFactory,
                                                                             intentAttachPointTypeFactory,
                                                                             mapper, 
                                                                             aggregatedDefinitions);

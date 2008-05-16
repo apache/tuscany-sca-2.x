@@ -34,23 +34,23 @@ import org.apache.tuscany.sca.node.SCANode2;
 import org.apache.tuscany.sca.node.SCANode2Factory;
 import org.apache.tuscany.sca.node.SCANode2Factory.SCAContribution;
 import org.apache.tuscany.sca.node.impl.NodeImpl;
-import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * This shows how to test the Calculator service component.
  */
-public class XSDValidationTestCase extends TestCase {
+public class NoMatchingBindingTestCase extends TestCase {
 
     private CalculatorService calculatorService;
     private SCANode2 node;
 
     @Override
     protected void setUp() throws Exception {
-        SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
         try {
-            node = nodeFactory.createSCANode(new File("src/main/resources/XsdValidation/Calculator.composite").toURL().toString(),
+            SCANode2Factory nodeFactory = SCANode2Factory.newInstance();
+            node = nodeFactory.createSCANode(new File("src/main/resources/NoMatchingBinding/Calculator.composite").toURL().toString(),
             		                 new SCAContribution("TestContribution", 
-            		                                     new File("src/main/resources/XsdValidation").toURL().toString()));
+            		                                     new File("src/main/resources/NoMatchingBinding").toURL().toString()));
+    
             node.start();
             calculatorService = ((SCAClient)node).getService(CalculatorService.class, "CalculatorServiceComponent");
         } catch (Exception ex){
@@ -62,11 +62,8 @@ public class XSDValidationTestCase extends TestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        if (node != null){
-            node.stop();
-        }
+        node.stop();
     }
-
 
     public void testCalculator() throws Exception {
         /*
@@ -75,10 +72,10 @@ public class XSDValidationTestCase extends TestCase {
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         Monitor monitor = monitorFactory.createMonitor();
         Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
-
+        
         assertNotNull(problem);
-        assertEquals("SchemaError", problem.getMessageId());
+        assertEquals("NoMatchingBinding", problem.getMessageId());
         */
-    }
  
+    }
 }

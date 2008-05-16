@@ -24,10 +24,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.impl.ComponentReferenceImpl;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.InvocationChain;
 import org.apache.tuscany.sca.invocation.Invoker;
+import org.apache.tuscany.sca.provider.EndpointProvider;
 import org.apache.tuscany.sca.provider.PolicyProvider;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
@@ -43,6 +45,8 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
     private ArrayList<RuntimeWire> wires;
     private HashMap<Binding, ReferenceBindingProvider> bindingProviders =
         new HashMap<Binding, ReferenceBindingProvider>();
+    private HashMap<Endpoint, EndpointProvider> endpointProviders =
+        new HashMap<Endpoint, EndpointProvider>();    
     private HashMap<Binding, List<PolicyProvider>> policyProviders = new HashMap<Binding, List<PolicyProvider>>();
 
     private RuntimeComponent component;
@@ -74,6 +78,14 @@ public class RuntimeComponentReferenceImpl extends ComponentReferenceImpl implem
 
     public void setBindingProvider(Binding binding, ReferenceBindingProvider bindingProvider) {
         bindingProviders.put(binding, bindingProvider);
+    }
+    
+    public EndpointProvider getEndpointProvider(Endpoint endpoint){
+        return endpointProviders.get(endpoint);
+    }
+    
+    public void setEndpointProvider(Endpoint endpoint, EndpointProvider endpointProvider){
+        endpointProviders.put(endpoint, endpointProvider);
     }
 
     public Invoker getInvoker(Binding binding, Operation operation) {

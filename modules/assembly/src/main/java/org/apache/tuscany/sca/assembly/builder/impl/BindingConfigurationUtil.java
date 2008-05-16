@@ -58,7 +58,7 @@ abstract class BindingConfigurationUtil {
     }
     
     
-    static Binding matchBinding(Component component, ComponentService service, List<Binding> source, List<Binding> target) {
+    static Binding matchBinding(Component targetComponent, ComponentService targetComponentService, List<Binding> source, List<Binding> target) {
         List<Binding> matched = new ArrayList<Binding>();
         // Find the corresponding bindings from the service side
         for (Binding binding : source) {
@@ -71,8 +71,8 @@ abstract class BindingConfigurationUtil {
                         
                         //Customise the binding name to make it unique 
                         // regardless of how many bindings or targets there are
-                        if ( component != null){
-                            cloned.setName(binding.getName() + "#" + component.getName() + "/" + serviceBinding.getName());
+                        if ( targetComponent != null){
+                            cloned.setName(binding.getName() + "#" + targetComponent.getName() + "/" + serviceBinding.getName());
                         } else {
                             cloned.setName(binding.getName() + "#" + serviceBinding.getName());
                         }
@@ -85,8 +85,8 @@ abstract class BindingConfigurationUtil {
                         
                         if (binding instanceof OptimizableBinding) {
                             OptimizableBinding endpoint = ((OptimizableBinding)cloned);
-                            endpoint.setTargetComponent(component);
-                            endpoint.setTargetComponentService(service);
+                            endpoint.setTargetComponent(targetComponent);
+                            endpoint.setTargetComponentService(targetComponentService);
                             endpoint.setTargetBinding(serviceBinding);
                         } 
                            
@@ -141,4 +141,6 @@ abstract class BindingConfigurationUtil {
     
         return matchBinding(component, service, source, target);
     }
+    
+  
 }

@@ -235,7 +235,7 @@ public class DefaultSCADomain extends SCADomain {
         for (Composite composite : domainComposite.getIncludes()) {
             try {
                 compositeActivator.activate(composite);
-            } catch (ActivationException e) {
+            } catch (Exception e) {
                 throw new ServiceRuntimeException(e);
             }
         }
@@ -244,7 +244,7 @@ public class DefaultSCADomain extends SCADomain {
                 for (Component component : composite.getComponents()) {
                     compositeActivator.start(component);
                 }
-            } catch (ActivationException e) {
+            } catch (Exception e) {
                 throw new ServiceRuntimeException(e);
             }
         }

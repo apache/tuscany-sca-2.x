@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.assembly.builder.impl;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.EndpointFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilderException;
 import org.apache.tuscany.sca.interfacedef.IncompatibleInterfaceContractException;
@@ -34,8 +35,8 @@ import org.apache.tuscany.sca.monitor.Monitor;
  */
 public class ComponentReferenceWireBuilderImpl extends BaseWireBuilderImpl implements CompositeBuilder {
 
-    public ComponentReferenceWireBuilderImpl(AssemblyFactory assemblyFactory, InterfaceContractMapper interfaceContractMapper, Monitor monitor) {
-        super(assemblyFactory, interfaceContractMapper, monitor);
+    public ComponentReferenceWireBuilderImpl(AssemblyFactory assemblyFactory, EndpointFactory endpointFactory, InterfaceContractMapper interfaceContractMapper, Monitor monitor) {
+        super(assemblyFactory, endpointFactory, interfaceContractMapper, monitor);
     }
 
     public void build(Composite composite) throws CompositeBuilderException {
