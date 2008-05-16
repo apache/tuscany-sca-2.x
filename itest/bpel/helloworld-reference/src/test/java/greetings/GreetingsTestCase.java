@@ -52,10 +52,7 @@ public class GreetingsTestCase extends TestCase {
     protected void tearDown() throws Exception {
         scaDomain.close();
     }
-    
-    public void testPing() throws IOException {
-        new Socket("127.0.0.1", 8085);
-    }
+
     public void testInvoke() {
         String response = greetingsService.getGreetings("Luciano");
         assertEquals("Hello Luciano", response);

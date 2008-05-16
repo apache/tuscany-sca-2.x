@@ -22,10 +22,6 @@
     xmlns:hns="http://helloworld"
     name="helloworld">
     
-    <!-- component name="BPELHelloWorldServiceComponent">
-        <implementation.bpel process="hns:HelloWorld"/>
-    </component -->
-    
     <component name="HelloWorldService">
     	<implementation.bpel process="hns:HelloWorld"/>
     	<reference name="greetingsPartnerLink" target="GreetingsServiceComponent"/>
@@ -37,14 +33,4 @@
 	    	<interface.wsdl interface="http://greetings#wsdl.interface(Greetings)" />
 	    </service>
     </component>
-        
-    <!-- Simple ws-reference -->
-    <!--   
-    <component name="HelloWorldService">
-    	<implementation.java class="helloworld.HelloWorldServiceImpl"/>
-    	<reference name="greetingsService">
-    		<binding.ws uri="http://localhost:8085/GreetingsService"/>
-    	</reference>
-    </component>
-    -->
 </composite>
