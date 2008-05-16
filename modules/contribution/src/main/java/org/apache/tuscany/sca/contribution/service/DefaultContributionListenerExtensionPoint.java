@@ -75,7 +75,7 @@ public class DefaultContributionListenerExtensionPoint implements ContributionLi
      * Dynamically load listeners declared under META-INF/services
      */
     @SuppressWarnings("unchecked")
-    private void loadListeners() {
+    private synchronized void loadListeners() {
         if (loadedListeners)
             return;
 
