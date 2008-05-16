@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.itest.references;
 
+import org.osoa.sca.annotations.Remotable;
+
 public interface DComponent {
 
     String dFoo();
