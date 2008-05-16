@@ -19,11 +19,9 @@
 
 package helloworld;
 
-import greetings.GreetingsTestServer;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.host.embedded.SCATestCaseRunner;
 
 /**
  * Tests the BPEL Helloworld Service
@@ -33,17 +31,12 @@ import org.apache.tuscany.sca.host.embedded.SCATestCaseRunner;
 public class HelloWorldTestCase extends TestCase {
     private SCADomain scaDomain;
     
-    //private SCATestCaseRunner server;
-    
     /**
      * @throws java.lang.Exception
      */
     @Override
     protected void setUp() throws Exception {
         scaDomain = SCADomain.newInstance("helloworld/helloworld.composite");
-        
-        //server =  new SCATestCaseRunner(GreetingsTestServer.class);
-        //server.before();
     }
 
     /**
@@ -51,7 +44,6 @@ public class HelloWorldTestCase extends TestCase {
      */
     @Override
     protected void tearDown() throws Exception {
-        //server.after();
         scaDomain.close();
     }
     
