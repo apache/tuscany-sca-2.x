@@ -27,6 +27,8 @@
 		<t:implementation.node uri="catalog-ejb" composite="c:catalog-ejb"/>
 		<service name="Node">
 			<t:binding.http uri="http://localhost:8080"/>
+			<!-- <binding.ejb uri="corbaname:iiop:1.2@localhost:2809/NameServiceServerRoot#"/> -->
+			<binding.ejb uri="corbaname:iiop:1.2@localhost:1050#"/>
 		</service>
 	</component> 
 
