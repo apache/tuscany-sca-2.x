@@ -19,16 +19,17 @@
 <deploy xmlns="http://www.apache.org/ode/schemas/dd/2007/03"
 	xmlns:tns="http://helloworld"
 	xmlns:helloworld="http://helloworld"
-	xmlns:greetings="http://greetings">
+	xmlns:greetings="http://greetings"
+	xmlns:tus="http://tuscany.apache.org">
 
 
 	<process name="tns:HelloWorld">
 		<active>true</active>
 		<provide partnerLink="helloPartnerLink">
-			<service name="helloworld:HelloWorldService" port="HelloWorld"/>
+			<service name="tus:helloPartnerLink" port="HelloWorld"/>
 		</provide>
 		<invoke partnerLink="greetingsPartnerLink">
-			<service name="greetings:GreetingsService" port="Greetings"/>
+			<service name="tus:greetingsPartnerLink" port="Greetings"/>
 		</invoke>
 	</process>
 </deploy>
