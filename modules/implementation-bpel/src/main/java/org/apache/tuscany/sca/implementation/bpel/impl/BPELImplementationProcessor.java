@@ -352,6 +352,10 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     
     /**
      * Merge the componentType from introspection and from external file
+     * 
+     * Note the setting of the DataBinding for both Services and References to DOM, since this is
+     * the data format expected by the ODE BPEL implementation code.
+     * 
      * @param resolver
      * @param impl
      */
@@ -360,37 +364,53 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         ComponentType componentType = getComponentType(resolver, impl);
         if (componentType != null && !componentType.isUnresolved()) {
             
+        	// References...
             Map<String, Reference> refMap = new HashMap<String, Reference>();
-            for (Reference ref : impl.getReferences()) {
-                refMap.put(ref.getName(), ref);
-            }
             for (Reference reference : componentType.getReferences()) {
-            	//set default dataBinding to DOM to help on reference invocation
             	reference.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
                 refMap.put(reference.getName(), reference);
-            }
+            } // end for
+
+            // For the present, overwrite anything arising from the component type sidefile if
+            // equivalent services are defined in the implementation.
+            // TODO - a more careful merge must be done, using the implementation introspection data
+            // as the master but adding any additional and non-conflicting information from the
+            // sidefile
+            for (Reference ref : impl.getReferences()) {
+            	ref.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
+                refMap.put(ref.getName(), ref);
+            } // end for 
+
             impl.getReferences().clear();
             impl.getReferences().addAll(refMap.values());
 
+            // Services.....
             Map<String, Service> serviceMap = new HashMap<String, Service>();
             for (Service service : componentType.getServices()) {
-                //set default dataBinding to DOM
-                service.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
-                
+                service.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);               
                 serviceMap.put(service.getName(), service);
-            }
+            } // end for
+            
             // For the present, overwrite anything arising from the component type sidefile if
-            // equivalent services are defined in the implementation
+            // equivalent services are defined in the implementation.
+            // TODO - a more careful merge must be done, using the implementation introspection data
+            // as the master but adding any additional and non-conflicting information from the
+            // sidefile
             for (Service svc : impl.getServices()) {
-                if(svc != null) {
-                    serviceMap.put(svc.getName(), svc);    
-                }
-            }
+                svc.getInterfaceContract().getInterface().resetDataBinding(DOMDataBinding.NAME);
+                serviceMap.put(svc.getName(), svc);    
+            } // end for
 
             impl.getServices().clear();
             impl.getServices().addAll(serviceMap.values());
 
+            // Properties
             Map<String, Property> propMap = new HashMap<String, Property>();
+            for (Property property : componentType.getProperties()) {
+            	propMap.put(property.getName(), property);
+            } // end for
+
+            // A simple overwrite of any equivalent properties from the component type sidefile
             for (Property prop : impl.getProperties()) {
                 propMap.put(prop.getName(), prop);
             }
