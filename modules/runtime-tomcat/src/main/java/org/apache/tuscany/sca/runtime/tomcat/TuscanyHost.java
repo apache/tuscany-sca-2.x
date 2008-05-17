@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.runtime.tomcat;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,6 +52,9 @@ import org.apache.catalina.deploy.FilterMap;
 public class TuscanyHost extends StandardHost {
     private static final long serialVersionUID = 1L;
     private final static Logger logger = Logger.getLogger(TuscanyHost.class.getName());
+    
+    // TODO static for expedience, find a better way to share when/if this is working properly
+    protected static List<StandardContext> scaApps = new ArrayList<StandardContext>();
 
     public synchronized void start() throws LifecycleException {
         try {
@@ -142,6 +147,8 @@ public class TuscanyHost extends StandardHost {
         filterMap.setFilterName(filterDef.getFilterName());
         filterMap.addURLPattern("/*");
         scaApp.addFilterMap(filterMap);
+
+        scaApps.add(scaApp);
     }
 
 }
