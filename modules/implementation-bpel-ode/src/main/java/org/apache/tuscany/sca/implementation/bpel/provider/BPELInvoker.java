@@ -91,8 +91,13 @@ public class BPELInvoker implements Invoker {
             WSDLInterface wsdlInterface = null;
             wsdlInterface = (WSDLInterface) interfaze;
             
-            Service serviceDefinition = (Service) wsdlInterface.getWsdlDefinition().getDefinition().getAllServices().values().iterator().next(); 
-            bpelServiceName = serviceDefinition.getQName();
+            // The following commented out code is bogus and is replaced by what follows - Mike Edwards
+            // Service serviceDefinition = (Service) wsdlInterface.getWsdlDefinition().getDefinition().getAllServices().values().iterator().next(); 
+            // bpelServiceName = serviceDefinition.getQName();
+            //
+            // Fetch the service name from the service object
+            bpelServiceName = new QName( "http://tuscany.apache.org", service.getName() );
+            //System.out.println("Actual service QName: " + bpelServiceName );
                 
             bpelOperationInputPart = (Part) wsdlInterface.getPortType().getOperation(bpelOperationName,null,null).getInput().getMessage().getParts().values().iterator().next();
             bpelOperationOutputPart = (Part) wsdlInterface.getPortType().getOperation(bpelOperationName,null,null).getOutput().getMessage().getParts().values().iterator().next();

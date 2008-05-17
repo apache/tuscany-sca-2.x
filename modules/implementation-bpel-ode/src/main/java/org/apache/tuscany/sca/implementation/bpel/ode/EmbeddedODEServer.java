@@ -49,6 +49,10 @@ import org.apache.ode.store.ProcessStoreImpl;
 import org.apache.ode.utils.GUID;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
+//-------------- Added by Mike Edwards 16/05/2008
+import org.apache.ode.bpel.iapi.Endpoint;
+//-------------- End of Mike Edwards additions
+
 /**
  * Embedded ODE process server
  * 
@@ -171,6 +175,19 @@ public class EmbeddedODEServer {
                     // Test processes always run with in-mem DAOs
                     // conf.setTransient(true);  //FIXME: what should we use for ProcessConfImpl
                     _bpelServer.register(conf);
+                    
+                    //--------------- Added by Mike Edwards for test purposes 16/05/2008
+                    // Get the lists of endpoints...
+                    //System.out.println( "Process: " + conf.getProcessId().toString() );
+                    //Map<String, Endpoint> provideEndpoints = conf.getProvideEndpoints();
+                    //for( Endpoint endpoint : provideEndpoints.values() ) {
+                    //	System.out.println("Provide endpoints: " + endpoint.toString() );
+                    //} // end for
+                    //Map<String, Endpoint> invokeEndpoints = conf.getInvokeEndpoints();
+                    //for( Endpoint endpoint : invokeEndpoints.values() ) {
+                    //	System.out.println("Invoke endpoints: " + endpoint.toString() );
+                    //} // end for
+                    //--------------- End of additions by Mike Edwards
                 }
             }
         });
