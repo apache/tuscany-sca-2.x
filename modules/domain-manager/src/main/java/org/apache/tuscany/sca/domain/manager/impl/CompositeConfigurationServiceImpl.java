@@ -292,13 +292,15 @@ public class CompositeConfigurationServiceImpl extends HttpServlet implements Se
             // find the node that will run this composite and the default
             // bindings that it configures
             Component nodeComponent = null;
+            QName nodeCompositeName = null;
             for (Composite cloudComposite : cloudsComposite.getIncludes()) {
                 for (Component nc : cloudComposite.getComponents()) {
                     NodeImplementation nodeImplementation = (NodeImplementation)nc.getImplementation();
                     if (nodeImplementation.getComposite().getName().equals(compositeName) &&
                         nodeImplementation.getComposite().getURI().equals(contributionURI)) {
-                        nodeComponent = nc;
                         nodeImplementation.setComposite(composite);
+                        nodeComponent = nc;
+                        nodeCompositeName = cloudComposite.getName();
                         break;
                     }
                 }
@@ -307,6 +309,7 @@ public class CompositeConfigurationServiceImpl extends HttpServlet implements Se
             if (nodeComponent != null) {
                 try {
                     Composite nodeComposite = assemblyFactory.createComposite();
+                    nodeComposite.setName(nodeCompositeName);
                     nodeComposite.getComponents().add(nodeComponent);
                     nodeConfigurationBuilder.build(nodeComposite);
                 } catch (CompositeBuilderException e) {
