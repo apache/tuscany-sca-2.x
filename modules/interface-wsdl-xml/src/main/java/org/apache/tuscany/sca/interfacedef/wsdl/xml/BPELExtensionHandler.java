@@ -47,6 +47,7 @@ public class BPELExtensionHandler implements ExtensionSerializer, ExtensionDeser
 	 * Marshals the BPEL partner link type extension element to XML
 	 * See (@link javax.wsdl.extensions.ExtensionSerializer)
 	 */
+	@SuppressWarnings("unchecked")
 	public void marshall(Class parentType, QName elementType, ExtensibilityElement theElement,
 			PrintWriter writer, Definition def, ExtensionRegistry extReg)
 			throws WSDLException {
@@ -62,7 +63,7 @@ public class BPELExtensionHandler implements ExtensionSerializer, ExtensionDeser
 				       " name=\"" + thePLinkType.getName() + "\">");
 		for( int i = 0; i < 2; i++ ) {
 			if( thePLinkType.getRoleName( i ) != null ) {
-				writer.println( "<{" + theType.getNamespaceURI() + "}role" 
+				writer.println( "<" + theType.getPrefix() + ":role" 
 						       + " name=\"" + thePLinkType.getRoleName(i) + "\" portType=\"" 
 						       + thePLinkType.getRolePortType(i) + "\">");
 			} // end if
@@ -73,7 +74,15 @@ public class BPELExtensionHandler implements ExtensionSerializer, ExtensionDeser
 	/**
 	 * Unmarshals the BPEL partner link type element from XML
 	 * See (@link javax.wsdl.extensions.ExtensionDeserializer)
+	 * The format of the Partner Link Type in XML is as follows:
+	 *   <foo:partnerLinkType name="bar">
+	 *       <foo:role name="somename" portType="xyz:portTypeName"/>
+	 *       <foo:role name="othername" portType="xyz:portTypeName2"/>
+	 *   <foo:partnerLinkType>
+	 *   
+	 *   One role is mandatory, the second is optional.
 	 */
+	@SuppressWarnings("unchecked")
 	public ExtensibilityElement unmarshall(Class theClass, QName elementType,
 			Element theElement, Definition def, ExtensionRegistry extReg)
 			throws WSDLException {
