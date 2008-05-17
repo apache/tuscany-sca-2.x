@@ -1169,7 +1169,7 @@ public abstract class BaseConfigurationBuilderImpl {
       * @param defaultBindings the list of default binding configurations
       */
     private void constructBindingURI(Component component, Service service, Binding binding, List<Binding> defaultBindings)
-    throws CompositeBuilderException{
+        throws CompositeBuilderException{
         boolean includeBindingName = component.getServices().size() != 1;
         constructBindingURI(component.getURI(), service, binding, includeBindingName, defaultBindings);
     }
@@ -1185,7 +1185,7 @@ public abstract class BaseConfigurationBuilderImpl {
      * @throws CompositeBuilderException
      */
     private void constructBindingURI(String componentURIString, Service service, Binding binding, boolean includeBindingName, List<Binding> defaultBindings) 
-      throws CompositeBuilderException{
+        throws CompositeBuilderException{
         
         try {
             // calculate the service binding URI
@@ -1277,8 +1277,8 @@ public abstract class BaseConfigurationBuilderImpl {
      * @param path the path string to which the "/" is to be added
      * @return the resulting path with a "/" added if it not already there
      */
-    private String addSlashToPath(String path){
-        if (path.endsWith("/")){
+    private static String addSlashToPath(String path){
+        if (path.endsWith("/") || path.endsWith("#")){
             return path;
         } else {
             return path + "/";
@@ -1295,7 +1295,7 @@ public abstract class BaseConfigurationBuilderImpl {
      * @param bindingName the binding name
      * @return the resulting URI as a string
      */
-    private String constructBindingURI(URI baseURI, URI componentURI, URI bindingURI, boolean includeBindingName, URI bindingName){        
+    private static String constructBindingURI(URI baseURI, URI componentURI, URI bindingURI, boolean includeBindingName, URI bindingName){        
         String uriString;
         
         if (baseURI == null) {
@@ -1317,24 +1317,24 @@ public abstract class BaseConfigurationBuilderImpl {
                 }
             }
         } else {
-            if (componentURI == null){
+            if (componentURI == null) {
                 if (bindingURI != null ) {
-                    uriString = baseURI.resolve(bindingURI).toString();
+                    uriString = basedURI(baseURI, bindingURI).toString();
                 } else {
                     if (includeBindingName) {
-                        uriString = baseURI.resolve(bindingName).toString();
+                        uriString = basedURI(baseURI, bindingName).toString();
                     } else {
                         uriString = baseURI.toString();
                     }
                 }
             } else {
                 if (bindingURI != null ) {
-                    uriString = baseURI.resolve(componentURI).resolve(bindingURI).toString();
+                    uriString = basedURI(baseURI, componentURI.resolve(bindingURI)).toString();
                 } else {
                     if (includeBindingName) {
-                        uriString = baseURI.resolve(componentURI).resolve(bindingName).toString();
+                        uriString = basedURI(baseURI, componentURI.resolve(bindingName)).toString();
                     } else {
-                        uriString = baseURI.resolve(componentURI).toString();
+                        uriString = basedURI(baseURI, componentURI).toString();
                     }
                 }
             }
@@ -1350,6 +1350,24 @@ public abstract class BaseConfigurationBuilderImpl {
             uri = URI.create("/").resolve(uri);
         }
         return uri.toString();
+    }
+
+    /**
+     * Combine a URI with a base URI.
+     * 
+     * @param baseURI
+     * @param uri
+     * @return
+     */
+    private static URI basedURI(URI baseURI, URI uri) {
+        if (uri.getScheme() != null) {
+            return uri;
+        }
+        String str = uri.toString();
+        if (str.startsWith("/")) {
+            str = str.substring(1);
+        }
+        return URI.create(baseURI.toString() + str).normalize();
     }
 
 }
