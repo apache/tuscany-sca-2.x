@@ -21,8 +21,16 @@ package org.apache.tuscany.sca.runtime.tomcat;
 
 import java.util.logging.Logger;
 
+import org.apache.catalina.core.StandardContext;
+import org.apache.tuscany.sca.assembly.Component;
 import org.apache.tuscany.sca.assembly.Endpoint;
+import org.apache.tuscany.sca.assembly.builder.DefaultEndpointBuilder;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.host.embedded.impl.DefaultSCADomain;
+import org.apache.tuscany.sca.host.webapp.WebAppServletHost;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.provider.EndpointProvider;
 
 /** 
@@ -43,10 +51,43 @@ public class EndpointProviderImpl implements EndpointProvider {
 
     public void start() {
         if (endpoint.isUnresolved()){
-            // Resolve the endpoint binding here
-            
             logger.info("resolving endpoint: " + endpoint.getTargetName());
+
+            Component target = findTarget();
+            if (target != null) {
+                logger.info("endpoint target found: " + endpoint.getTargetName() + " component " + target);
+                resolveEndpoint(target);
+            } else {
+                logger.info("endpoint target not found: " + endpoint.getTargetName());
+            }
+            
         }
+    }
+
+    protected void resolveEndpoint(Component targetComponent) {
+        
+        endpoint.setTargetComponent(targetComponent);
+        endpoint.setTargetComponentService(targetComponent.getServices().get(0)); // TODO real service
+
+        DefaultEndpointBuilder ebi = new DefaultEndpointBuilder(new Monitor() {
+            public void problem(Problem problem) {
+                logger.warning(problem.toString());
+            }});
+
+        ebi.build(endpoint);
+    }
+
+    protected Component findTarget() {
+        for (StandardContext sc : TuscanyHost.scaApps) {
+            SCADomain scaDomain = (SCADomain)sc.getServletContext().getAttribute(WebAppServletHost.SCA_DOMAIN_ATTRIBUTE);
+            if (scaDomain != null) {
+                Component component = ((DefaultSCADomain)scaDomain).getComponent(endpoint.getTargetName());
+                if ( component != null) {
+                    return component;
+                }
+            }
+        }
+        return null;
     }
 
     public void stop() {
