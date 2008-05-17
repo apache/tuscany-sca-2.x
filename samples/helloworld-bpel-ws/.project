@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>sample-helloworld-bpel-ws</name>
+	<comment>Parent POM defining settings that can be used across Tuscany</comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>ODEDB</name>
+			<type>2</type>
+			<location>C:/Temp/ODEDB</location>
+		</link>
+	</linkedResources>
+</projectDescription>
