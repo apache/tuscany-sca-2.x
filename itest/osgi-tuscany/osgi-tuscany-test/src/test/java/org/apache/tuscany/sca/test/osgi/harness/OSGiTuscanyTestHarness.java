@@ -118,8 +118,6 @@ public class OSGiTuscanyTestHarness {
                  );
     
         
-        TuscanyLoader.startTuscany(tuscanyRuntime);
-        
 
         long endTime = System.currentTimeMillis();
         

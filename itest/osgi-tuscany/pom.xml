@@ -30,22 +30,8 @@
     <name>Apache Tuscany OSGi-based Tuscany Runtime Integration Tests</name>
 
     <modules>
-
-<!--
-        <module>sca-api</module>
-        <module>tuscany-spi</module>
-        <module>tuscany-runtime</module>
-        <module>tuscany-extensions</module>
-        <module>tuscany-3rdparty</module>
-
-
-        <module>tuscany-3rdparty-manifest</module>
--->
-
-        <module>tuscany-manifest</module>
-
-
         <module>test-bundles</module>
+        <module>tuscany-osgi-installer</module>
         <module>osgi-tuscany-test</module>
     </modules>
     

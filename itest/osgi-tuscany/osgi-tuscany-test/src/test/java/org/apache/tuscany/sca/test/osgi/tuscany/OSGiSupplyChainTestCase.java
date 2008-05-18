@@ -51,7 +51,7 @@ public class OSGiSupplyChainTestCase {
         if (bundleContext != null) {
             Bundle[] bundles = bundleContext.getBundles();
             for (Bundle bundle : bundles) {
-                if (bundle.getSymbolicName() != null && bundle.getSymbolicName().startsWith("supplychain"))
+                if (bundle.getSymbolicName() != null && bundle.getSymbolicName().contains("supplychain"))
                     bundle.uninstall();
             }
         }
