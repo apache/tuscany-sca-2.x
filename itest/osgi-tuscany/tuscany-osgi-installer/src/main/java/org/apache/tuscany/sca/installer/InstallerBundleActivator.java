@@ -1,12 +1,12 @@
-package org.apache.tuscany.sca.manifest;
+package org.apache.tuscany.sca.installer;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,37 +23,60 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * OSGi bundle activator, which is run when Tuscany is run inside an OSGi runtime.
+ * Bundle activator which installs Tuscany modules and 3rd party jars into an OSGi runtime.
  *
  */
-public class ManifestBundleActivator implements BundleActivator {
+public class InstallerBundleActivator implements BundleActivator {
     
-    private static final String TUSCANY_MANIFEST = "tuscany-sca-manifest.jar";
+    private static final String TUSCANY_INSTALLER_JAR = "tuscany-sca-osgi-installer.jar";
+    private static final String TUSCANY_CLASSPATH = "org/apache/tuscany/sca/installer/.classpath";
+
     private static final String TUSCANY_OSGI_MANIFEST_DIR = "org/apache/tuscany/sca/manifest";
     
-    private ArrayList<Bundle> virtualBundles = new ArrayList<Bundle>();
+    private ArrayList<Bundle> tuscanyBundles = new ArrayList<Bundle>();
     
     private static final String[] immutableJars = {
         "bcprov"
     };
-
+    
+    private static final String[] tuscanyModulesToIgnore = {
+        "node2-api",
+        "node2-impl",
+        "node2-launcher",
+        "node2-launcher-webapp",
+        "implementation-node-runtime", // uses node2
+        "saxon",
+        "runtime",
+        "runtime-webapp",
+        "runtime-tomcat",
+        "runtime-war",
+        "host-webapp",
+        "host-tomcat",
+        "policy-transaction",
+        "implementation-bpel",
+        "binding-ejb",
+        "implementation-ejb",
+        "implementation-ejb-xml",
+        
+    };
+    
 	public void start(BundleContext bundleContext) throws Exception {
 		
-        install3rdPartyJarsIntoOSGi(bundleContext);
+        installTuscanyIntoOSGi(bundleContext);
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
         
-        for (Bundle virtualBundle : virtualBundles) {
+        for (Bundle bundle : tuscanyBundles) {
             try {
-                virtualBundle.uninstall();
+                bundle.stop();
             } catch (Exception e) {
                 // Ignore error
             }
         }
 	}
 	
-    private void install3rdPartyJarsIntoOSGi(BundleContext bundleContext) {
+    private void installTuscanyIntoOSGi(BundleContext bundleContext) {
     
         try {
             Bundle[] installedBundles = bundleContext.getBundles();
@@ -66,35 +89,27 @@ public class ManifestBundleActivator implements BundleActivator {
             // FIXME: SDO bundles dont have the correct dependencies
             System.setProperty("commonj.sdo.impl.HelperProvider", "org.apache.tuscany.sdo.helper.HelperProviderImpl");
             
-            HashMap<String, InputStream> thirdPartyJarsWithManifests = new HashMap<String, InputStream>();
-            HashSet<String> thirdPartyJars = new HashSet<String>();
+            HashSet<File> tuscanyJars = new HashSet<File>();
+            HashMap<File, InputStream> thirdPartyJarsWithManifests = new HashMap<File, InputStream>();
+            HashSet<File> thirdPartyJars = new HashSet<File>();
             
-            File tuscanyInstallDir = find3rdPartyJars(bundleContext, thirdPartyJars, thirdPartyJarsWithManifests);
+            findJars(bundleContext, tuscanyJars, thirdPartyJars, thirdPartyJarsWithManifests);
             
-//            Install 3rd party libs as a single virtual bundle            
-//            String thirdPartyBundleLocation = tuscanyInstallDir.toURI().toURL().toString() + "/tuscany-3rdparty.jar";
-//            
-//            InputStream manifestStream = this.getClass().getClassLoader().getResourceAsStream(TUSCANY_OSGI_MANIFEST_DIR + "/MANIFEST.MF");
-//            
-//            if (manifestStream != null) {
-//            
-//                createAndInstallBundle(bundleContext, thirdPartyBundleLocation, manifestStream, tuscanyInstallDir, thirdPartyJars);
-//            }
-            
-            for (String bundleName : thirdPartyJarsWithManifests.keySet()) {
+            for (File bundleFile : thirdPartyJarsWithManifests.keySet()) {
                                 
-                String bundleLocation = tuscanyInstallDir.toURI().toURL().toString() + "/" + bundleName;
-                InputStream bundleManifestStream = thirdPartyJarsWithManifests.get(bundleName);
-                HashSet<String> jarSet = new HashSet<String>();
-                jarSet.add(bundleName);
+                String bundleLocation = bundleFile.toURI().toURL().toString();
+                InputStream bundleManifestStream = thirdPartyJarsWithManifests.get(bundleFile);
+                HashSet<File> jarSet = new HashSet<File>();
+                jarSet.add(bundleFile);
                 
-                createAndInstallBundle(bundleContext, bundleLocation, bundleManifestStream, tuscanyInstallDir, jarSet);
+                createAndInstallBundle(bundleContext, bundleLocation, bundleManifestStream, jarSet);
                 bundleManifestStream.close();
                 
             }
             
-            for (String bundleName : thirdPartyJars) {
+            for (File bundleFile : thirdPartyJars) {
                 
+                String bundleName = bundleFile.getName();
                 if (bundleName.startsWith("org.apache.felix"))
                     continue;
                 
@@ -103,33 +118,92 @@ public class ManifestBundleActivator implements BundleActivator {
                 if (installedBundleSet.contains(bundleSymbolicName))
                     continue;
                 
-                String bundleLocation = tuscanyInstallDir.toURI().toURL().toString() + "/" + bundleName;
-                InputStream bundleManifestStream = createBundleManifest(tuscanyInstallDir, bundleName, bundleSymbolicName);
-                HashSet<String> jarSet = new HashSet<String>();
-                jarSet.add(bundleName);
+                String bundleLocation = bundleFile.toURI().toURL().toString();
+                InputStream bundleManifestStream = createBundleManifest(bundleFile, bundleSymbolicName);
+                HashSet<File> jarSet = new HashSet<File>();
+                jarSet.add(bundleFile);
                 
-                createAndInstallBundle(bundleContext, bundleLocation, bundleManifestStream, tuscanyInstallDir, jarSet);
+                createAndInstallBundle(bundleContext, bundleLocation, bundleManifestStream, jarSet);
                 bundleManifestStream.close();
                 
             }
+            
+            Bundle osgiRuntimeBundle = null;
+            for (File bundleFile : tuscanyJars) {
+                Bundle bundle = bundleContext.installBundle(bundleFile.toURI().toURL().toString());
+                if ("org.apache.tuscany.sca.osgi.runtime".equals(bundle.getSymbolicName())) 
+                    osgiRuntimeBundle = bundle;
+            }
+            if (osgiRuntimeBundle != null)
+                osgiRuntimeBundle.start();
             
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
         
-    private File find3rdPartyJars(BundleContext bundleContext, 
-            HashSet<String> thirdPartyJars, 
-            HashMap<String, InputStream> thirdPartyBundleManifests) 
+    private void findJars(BundleContext bundleContext, 
+            HashSet<File> tuscanyJars, 
+            HashSet<File> thirdPartyJars, 
+            HashMap<File, InputStream> thirdPartyBundleManifests) 
     throws IOException
     {
         
-        Bundle manifestBundle = bundleContext.getBundle();
+        Bundle installerBundle = bundleContext.getBundle();   
+        File tuscanyInstallDir = findTuscanyInstallDir(installerBundle);
+        
+        URL classPathURL = installerBundle.getResource(TUSCANY_CLASSPATH);
+        InputStream stream = classPathURL.openStream();
+        byte[] classPathBytes = new byte[stream.available()];
+        stream.read(classPathBytes);
+        String classPath = new String(classPathBytes);
+        
+        // Path separator overrides are not supported by older versions of maven
+        String pathSeparator = ":";
+        if (classPath.indexOf(";") > 0) pathSeparator = ";";
+        
+        String[] classPathEntries = classPath.split(pathSeparator);
+        for (String classPathEntry : classPathEntries) {
+            classPathEntry = classPathEntry.trim();
+            File jar = new File(classPathEntry);
+            if (!jar.isAbsolute()&&!jar.exists()) {
+                jar = new File(tuscanyInstallDir, jar.getName());
+            }
+
+            String jarName = jar.getName();
+            if (!jarName.startsWith("tuscany") || jarName.startsWith("tuscany-sdo") || jarName.startsWith("tuscany-das")) {
+                if (jarName.endsWith(".jar")) {
+                    String manifestName = TUSCANY_OSGI_MANIFEST_DIR + "/" + jarName.substring(0, jarName.length()-4) + ".mf";
+                    InputStream manifestStream;
+                    if ((manifestStream = this.getClass().getClassLoader().getResourceAsStream(manifestName)) != null)
+                        thirdPartyBundleManifests.put(jar, manifestStream);
+                    else
+                        thirdPartyJars.add(jar);
+                }
+            } else {
+                boolean installTuscanyJar = true;
+                for (String name : tuscanyModulesToIgnore) {
+                    if (jarName.startsWith("tuscany-" + name)) {
+                        installTuscanyJar = false;
+                        break;
+                    }
+                }
+                if (installTuscanyJar)
+                    tuscanyJars.add(jar);
+            }
+        }
+        
+        
+    }
+    
+    private File findTuscanyInstallDir(Bundle installerBundle) 
+    throws IOException
+    {
+        
+        File tuscanyInstallDir = null;
+        String location = installerBundle.getLocation();
         
         String tuscanyDirName;
-        File tuscanyInstallDir = null;
-        String location = manifestBundle.getLocation();
-        
         if ((tuscanyDirName = System.getenv("TUSCANY_HOME")) != null) {
             tuscanyInstallDir = new File(tuscanyDirName);
             if (!tuscanyInstallDir.exists() || !tuscanyInstallDir.isDirectory())
@@ -141,42 +215,19 @@ public class ManifestBundleActivator implements BundleActivator {
                 tuscanyInstallDir = null;
         }
             
-        if (tuscanyInstallDir == null && location != null && location.startsWith("file:") && location.endsWith(TUSCANY_MANIFEST)) {
-            tuscanyDirName = location.substring(5, location.length()-TUSCANY_MANIFEST.length()); // strip "file:" and manifest jar name
+        if (tuscanyInstallDir == null && location != null && location.startsWith("file:") && location.endsWith(TUSCANY_INSTALLER_JAR)) {
+            tuscanyDirName = location.substring(5, location.length()-TUSCANY_INSTALLER_JAR.length()); // strip "file:" and installer jar name
             tuscanyInstallDir = new File(tuscanyDirName);
             if (!tuscanyInstallDir.exists() || !tuscanyInstallDir.isDirectory())
                 tuscanyInstallDir = null;
         }
-        if (tuscanyInstallDir == null) {
-            System.out.println("TUSCANY_HOME not set, could not locate Tuscany install directory");
-            return null;
-        }
-            
-        String classPath = (String)manifestBundle.getHeaders().get("Class-Path");
-        String[] classPathEntries = classPath.split(" ");
-        for (String classPathEntry : classPathEntries) {
-            classPathEntry = classPathEntry.trim();
-            if (!classPathEntry.startsWith("tuscany") || classPathEntry.startsWith("tuscany-sdo") || classPathEntry.startsWith("tuscany-das")) {
-                if (classPathEntry.endsWith(".jar")) {
-                    String manifestName = TUSCANY_OSGI_MANIFEST_DIR + "/" + classPathEntry.substring(0, classPathEntry.length()-4) + ".mf";
-                    InputStream manifestStream;
-                    if ((manifestStream = this.getClass().getClassLoader().getResourceAsStream(manifestName)) != null)
-                        thirdPartyBundleManifests.put(classPathEntry, manifestStream);
-                    else
-                        thirdPartyJars.add(classPathEntry);
-                }
-            }
-        }
-        
         return tuscanyInstallDir;
-        
     }
     
     public Bundle createAndInstallBundle(BundleContext bundleContext, 
             String bundleLocation, 
             InputStream manifestStream,
-            File tuscanyDir,
-            final HashSet<String> thirdPartyJars) throws Exception {
+            final HashSet<File> thirdPartyJars) throws Exception {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -184,9 +235,9 @@ public class ManifestBundleActivator implements BundleActivator {
         manifest.read(manifestStream);
         
         StringBuilder bundleClassPath = new StringBuilder(".");
-        for (String jar : thirdPartyJars) {
+        for (File jar : thirdPartyJars) {
             bundleClassPath.append(',');
-            bundleClassPath.append(jar);           
+            bundleClassPath.append(jar.getName());           
         }
         
         if (thirdPartyJars.size() > 1)
@@ -194,18 +245,9 @@ public class ManifestBundleActivator implements BundleActivator {
 
         JarOutputStream jarOut = new JarOutputStream(out, manifest);
         
-        File[] jars = tuscanyDir.listFiles(new FilenameFilter() {
-
-            public boolean accept(File dir, String name) {
-                return thirdPartyJars.contains(name);
-            }
-            
-        });
-        
-
         String classpath = manifest.getMainAttributes().getValue("Bundle-ClassPath");
         boolean embed = classpath != null && !classpath.trim().equals(".");
-        for (File jarFile : jars) {
+        for (File jarFile : thirdPartyJars) {
             if (embed)
                 addFileToJar(jarFile, jarOut);
             else {
@@ -258,9 +300,8 @@ public class ManifestBundleActivator implements BundleActivator {
         }
     }
     
-    private InputStream createBundleManifest(File tuscanyDir, String bundleName, String bundleSymbolicName) throws Exception {
+    private InputStream createBundleManifest(File jarFile, String bundleSymbolicName) throws Exception {
         
-        File jarFile = new File(tuscanyDir.getPath() + File.separator + bundleName);
         if (!jarFile.exists())
             return null;
         JarInputStream jar = new JarInputStream(new FileInputStream(jarFile));
@@ -268,6 +309,7 @@ public class ManifestBundleActivator implements BundleActivator {
         if (manifest == null)
             manifest = new Manifest();
         
+        String bundleName = jarFile.getName();
         boolean isImmutableJar = false;
         for (String immutableJar : immutableJars) {
             if (bundleName.startsWith(immutableJar)) {
@@ -326,10 +368,12 @@ public class ManifestBundleActivator implements BundleActivator {
         // FIXME: Split package
         if (bundleName.startsWith("axis2-adb"))
             packages.remove("org.apache.axis2.util");
-        if (bundleName.startsWith("axis2-codegen")) {
+        else if (bundleName.startsWith("axis2-codegen")) {
             packages.remove("org.apache.axis2.wsdl");
             packages.remove("org.apache.axis2.wsdl.util");
         }
+        else if (bundleName.startsWith("bsf-all"))
+            packages.remove("org.mozilla.javascript");
         
         StringBuilder pkgBuf = new StringBuilder();
         for (String pkg : packages) {

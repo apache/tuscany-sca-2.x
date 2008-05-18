@@ -65,9 +65,6 @@ public class OSGiTuscanyNonOSGiTestHarness extends OSGiTuscanyTestHarness {
         
 
         tuscanyRuntime = TuscanyLoader.loadTuscanyIntoOSGi(getBundleContext());
-        TuscanyLoader.startTuscany(tuscanyRuntime);
-        
-
         long endTime = System.currentTimeMillis();
         
         System.out.println("Loaded Tuscany, time taken = " + (endTime-startTime) + " ms" );
