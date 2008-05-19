@@ -88,7 +88,7 @@
                 <executions>
                     <execution>
                         <id>generate-xmlbeans</id>
-                        <phase>generate-test-sources</phase>
+                        <phase>generate-sources</phase>
                         <configuration>
                             <tasks>
                                 <taskdef name="xmlbean" classname="org.apache.xmlbeans.impl.tool.XMLBean"
