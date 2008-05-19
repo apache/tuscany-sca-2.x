@@ -44,11 +44,14 @@ import org.w3c.dom.Node;
  *
  * @version $Rev$ $Date$
  */
+// FIXME: [rfeng] We probably should turn this into a pluggable system service
 public class JAXBContextHelper {
     // TODO: Do we need to set them for source and target?
     public static final String JAXB_CLASSES = "jaxb.classes";
 
     public static final String JAXB_CONTEXT_PATH = "jaxb.contextPath";
+    
+    private static final JAXBContextCache cache = new JAXBContextCache();
 
     private JAXBContextHelper() {
     }
@@ -65,7 +68,7 @@ public class JAXBContextHelper {
         JAXBContext context = null;
         Class<?> cls = getJavaType(dataType);
 
-        context = JAXBContext.newInstance(cls);
+        context = cache.getJAXBContext(cls);
 
         if (context == null) {
             throw new TransformationException("JAXB context is not set for the transformation.");
