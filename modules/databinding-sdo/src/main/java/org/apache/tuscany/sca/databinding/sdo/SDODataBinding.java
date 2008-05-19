@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.databinding.sdo;
 
 import java.lang.annotation.Annotation;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.xml.namespace.QName;
 
@@ -58,7 +60,13 @@ public class SDODataBinding extends BaseDataBinding {
     @Override
     public boolean introspect(DataType dataType, Annotation[] annotations) {
         Class javaType = dataType.getPhysical();
-        HelperContext context = HelperProvider.getDefaultContext();
+        // Allow privileged access to read system properties. Requires PropertyPermission
+        // java.specification.version read in security policy.
+        HelperContext context = AccessController.doPrivileged(new PrivilegedAction<HelperContext>() {
+            public HelperContext run() {
+                return HelperProvider.getDefaultContext();
+            }
+        });
         // FIXME: Need a better to test dynamic SDO
         if (DataObject.class.isAssignableFrom(javaType)) {
             // Dynamic SDO

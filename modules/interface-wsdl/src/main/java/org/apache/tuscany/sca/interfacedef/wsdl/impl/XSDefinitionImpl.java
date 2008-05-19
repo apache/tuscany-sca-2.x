@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
 import java.net.URI;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Iterator;
 
 import javax.xml.namespace.QName;
@@ -40,7 +42,16 @@ import org.w3c.dom.Document;
  * @version $Rev$ $Date$
  */
 public class XSDefinitionImpl implements XSDefinition {
-    private XmlSchemaCollection schemaCollection = new XmlSchemaCollection();
+    // private XmlSchemaCollection schemaCollection = new XmlSchemaCollection();
+    // Allow privileged access to read system property. Requires PropertyPermission in security
+    // policy.
+    private XmlSchemaCollection schemaCollection =
+        AccessController.doPrivileged(new PrivilegedAction<XmlSchemaCollection>() {
+            public XmlSchemaCollection run() {
+                return new XmlSchemaCollection();
+            }
+        });
+
     private XmlSchema schema;
     private String namespace;
     private URI location;

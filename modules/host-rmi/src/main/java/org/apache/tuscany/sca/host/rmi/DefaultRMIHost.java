@@ -107,6 +107,8 @@ public class DefaultRMIHost implements RMIHost {
         int portNumber = (port == null || port.length() <= 0) ? RMI_DEFAULT_PORT : Integer.decode(port);
 
         try {
+            // Requires permission java.net.SocketPermission "host:port", "connect,accept,resolve"
+            // in security policy.
             registry = LocateRegistry.getRegistry(host, portNumber);
 
             if (registry != null) {

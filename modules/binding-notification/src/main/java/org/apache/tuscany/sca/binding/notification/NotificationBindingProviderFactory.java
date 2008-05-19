@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.binding.notification;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -249,7 +251,13 @@ public class NotificationBindingProviderFactory implements BindingProviderFactor
 
     private String getBaseURI() {
         if (httpUrl == null) {
-            String httpPort = System.getProperty("notification.httpPort");
+            // Allow priviledged access to read system property. Requires PropertyPermision in security policy.
+            String httpPort = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                public String run() {
+                    return System.getProperty("notification.httpPort");
+                }
+            });
+            
             if (httpPort == null) {
                 httpPort = DEFAULT_PORT;
             }

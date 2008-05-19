@@ -282,15 +282,23 @@ public class DefaultSCADomain extends SCADomain {
         //        }
     }
 
-    protected void addContribution(ContributionService contributionService, URL contributionURL) throws IOException {
+    protected void addContribution(final ContributionService contributionService, final URL contributionURL) throws IOException {
+        String contributionURI = FileHelper.getName(contributionURL.getPath());
+        if (contributionURI == null || contributionURI.length() == 0) {
+            contributionURI = contributionURL.toString();
+        }
+        // Allow privileged access to load resources. Requires RuntimePermission in security
+        // policy.
+        final String finalContributionURI = contributionURI;
         try {
-            String contributionURI = FileHelper.getName(contributionURL.getPath());
-            if (contributionURI == null || contributionURI.length() == 0) {
-                contributionURI = contributionURL.toString();
-            }
-            contributions.add(contributionService.contribute(contributionURI, contributionURL, false));
-        } catch (ContributionException e) {
-            throw new ServiceRuntimeException(e);
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                public Object run() throws ContributionException, IOException {
+                    contributions.add(contributionService.contribute(finalContributionURI, contributionURL, false));
+                    return null;
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (ServiceRuntimeException)e.getException();
         }
     }
 

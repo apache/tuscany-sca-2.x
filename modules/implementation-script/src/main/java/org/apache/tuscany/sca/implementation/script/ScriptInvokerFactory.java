@@ -20,6 +20,8 @@
 package org.apache.tuscany.sca.implementation.script;
 
 import java.io.StringReader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -141,13 +143,20 @@ public class ScriptInvokerFactory implements InvokerFactory {
      * Hack for now to work around a problem with the JRuby script engine
      */
     protected ScriptEngine getScriptEngineByExtension(String scriptExtn) {
-        ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
         if ("rb".equals(scriptExtn)) {
             return new TuscanyJRubyScriptEngine();
         } else {
             if ("py".equals(scriptExtn)) {
                 pythonCachedir();
             }
+            // Allow privileged access to run access classes. Requires RuntimePermission
+            // for accessClassInPackage.sun.misc.
+            ScriptEngineManager scriptEngineManager =
+                AccessController.doPrivileged(new PrivilegedAction<ScriptEngineManager>() {
+                    public ScriptEngineManager run() {
+                        return new ScriptEngineManager();
+                    }
+                });
             return scriptEngineManager.getEngineByExtension(scriptExtn);
         }
     }

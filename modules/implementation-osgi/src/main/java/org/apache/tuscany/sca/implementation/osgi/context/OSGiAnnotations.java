@@ -20,6 +20,8 @@ package org.apache.tuscany.sca.implementation.osgi.context;
 
 
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -207,14 +209,19 @@ public class OSGiAnnotations  {
      * Get the annotation corresponding to an instance
      * 
      */
-    private JavaImplementation getAnnotationInfo(Object instance) {
+    private JavaImplementation getAnnotationInfo(final Object instance) {
     	
     	// The simplest case where the implementation class was listed under the
     	// classes attribute of <implementation.osgi/>, or this is the second call
     	// to this method for the implementation class.
-    	JavaImplementation javaImpl = javaAnnotationInfo.get(instance.getClass());
-    	if (javaImpl != null)
-    		return javaImpl;
+        // Allow privileged access to get classloader. Requires getClassLoader in security policy.
+        JavaImplementation javaImpl = AccessController.doPrivileged(new PrivilegedAction<JavaImplementation>() {
+            public JavaImplementation run() {
+                return javaAnnotationInfo.get(instance.getClass());
+            }
+        });
+        if (javaImpl != null)
+            return javaImpl;
     	
         // Process annotations from the instance class.
         try {

@@ -152,15 +152,24 @@ public class Axis2ServiceProvider {
         this.messageFactory = messageFactory;
         this.policyHandlerClassnames = policyHandlerClassnames;
 
-        
         try {
-            TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
+            // TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
+            // Allow privileged access to read properties. Requires PropertyPermission read in
+            // security policy.
+            TuscanyAxisConfigurator tuscanyAxisConfigurator =
+                AccessController.doPrivileged(new PrivilegedExceptionAction<TuscanyAxisConfigurator>() {
+                    public TuscanyAxisConfigurator run() throws AxisFault {
+                        return new TuscanyAxisConfigurator();
+                    }
+                });
             configContext = tuscanyAxisConfigurator.getConfigurationContext();
-            //deployRampartModule();
-            //configureSecurity();
+            // deployRampartModule();
+            // configureSecurity();
+        } catch (PrivilegedActionException e) {
+            throw new RuntimeException(e);
         } catch (AxisFault e) {
             throw new RuntimeException(e); // TODO: better exception
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
