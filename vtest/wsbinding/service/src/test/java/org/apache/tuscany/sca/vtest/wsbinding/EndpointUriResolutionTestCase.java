@@ -20,25 +20,24 @@ package org.apache.tuscany.sca.vtest.wsbinding;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests "Endpoint URI resolution" for service binding.ws as per Web Services Binding Specification v1.00 - Sec 2.1.1
- * - Lines 70 to 85.
+ * Tests "Endpoint URI resolution" for service binding.ws as per Web Services
+ * Binding Specification v1.00 - Sec 2.1.1 - Lines 70 to 85.
  */
 public class EndpointUriResolutionTestCase {
 
-    protected static SCADomain domain;
     protected static String compositeName = "endpoint-uri-resolution.composite";
 
     @BeforeClass
     public static void init() throws Exception {
         try {
             System.out.println("Setting up");
-            domain = SCADomain.newInstance(compositeName);
+            ServiceFinder.init(compositeName);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -47,163 +46,162 @@ public class EndpointUriResolutionTestCase {
     /**
      * Lines 71-78
      * <p>
-     * The rules for resolving the URI at which an SCA service is hosted, or SCA reference targets,
-     * when used with binding.ws (in precedence order) are:
-     * 1. The URIs in the endpoint(s) of the referenced WSDL
-     * or
-     * The URI specified by the wsa:Address element of the wsa:EndpointReference,
-     * 2. The explicitly stated URI in the "uri" attribute of the binding.ws element, which may be
-     * relative,
-     * 3. The implicit URI as defined by the Assembly specification
+     * The rules for resolving the URI at which an SCA service is hosted, or SCA
+     * reference targets, when used with binding.ws (in precedence order) are:
+     * 1. The URIs in the endpoint(s) of the referenced WSDL or The URI
+     * specified by the wsa:Address element of the wsa:EndpointReference, 2. The
+     * explicitly stated URI in the "uri" attribute of the binding.ws element,
+     * which may be relative, 3. The implicit URI as defined by the Assembly
+     * specification
      * <p>
      * This method tests that URI in the endpoint takes precedence.
      */
     @Test
     public void testUriInEndpoint() throws Exception {
-        AClientService aClient = domain.getService(AClientService.class, "AClientComponent1");
+        AClientService aClient = ServiceFinder.getService(AClientService.class, "AClientComponent1");
         Assert.assertEquals("Hello Pandu", aClient.getGreetingsForward("Pandu"));
     }
-    
+
     /**
      * Lines 71-78
      * <p>
-     * The rules for resolving the URI at which an SCA service is hosted, or SCA reference targets,
-     * when used with binding.ws (in precedence order) are:
-     * 1. The URIs in the endpoint(s) of the referenced WSDL
-     * or
-     * The URI specified by the wsa:Address element of the wsa:EndpointReference,
-     * 2. The explicitly stated URI in the "uri" attribute of the binding.ws element, which may be
-     * relative,
-     * 3. The implicit URI as defined by the Assembly specification
+     * The rules for resolving the URI at which an SCA service is hosted, or SCA
+     * reference targets, when used with binding.ws (in precedence order) are:
+     * 1. The URIs in the endpoint(s) of the referenced WSDL or The URI
+     * specified by the wsa:Address element of the wsa:EndpointReference, 2. The
+     * explicitly stated URI in the "uri" attribute of the binding.ws element,
+     * which may be relative, 3. The implicit URI as defined by the Assembly
+     * specification
      * <p>
      * This method tests that URI in the EndpointReference takes precedence.
      */
     @Test
     public void testUriInEndpointReference() throws Exception {
-        AClientService aClient = domain.getService(AClientService.class, "AClientComponent2");
+        AClientService aClient = ServiceFinder.getService(AClientService.class, "AClientComponent2");
         Assert.assertEquals("Hello Pandu", aClient.getGreetingsForward("Pandu"));
     }
-    
+
     /**
      * Lines 71-78
      * <p>
-     * The rules for resolving the URI at which an SCA service is hosted, or SCA reference targets,
-     * when used with binding.ws (in precedence order) are:
-     * 1. The URIs in the endpoint(s) of the referenced WSDL
-     * or
-     * The URI specified by the wsa:Address element of the wsa:EndpointReference,
-     * 2. The explicitly stated URI in the "uri" attribute of the binding.ws element, which may be
-     * relative,
-     * 3. The implicit URI as defined by the Assembly specification
+     * The rules for resolving the URI at which an SCA service is hosted, or SCA
+     * reference targets, when used with binding.ws (in precedence order) are:
+     * 1. The URIs in the endpoint(s) of the referenced WSDL or The URI
+     * specified by the wsa:Address element of the wsa:EndpointReference, 2. The
+     * explicitly stated URI in the "uri" attribute of the binding.ws element,
+     * which may be relative, 3. The implicit URI as defined by the Assembly
+     * specification
      * <p>
-     * This method tests that explicitly stated URI in the "uri" attribute of binding.ws takes precedence.
+     * This method tests that explicitly stated URI in the "uri" attribute of
+     * binding.ws takes precedence.
      */
     @Test
     public void testUriInBindingWs() throws Exception {
-        AClientService aClient = domain.getService(AClientService.class, "AClientComponent3");
+        AClientService aClient = ServiceFinder.getService(AClientService.class, "AClientComponent3");
         Assert.assertEquals("Hello Pandu", aClient.getGreetingsForward("Pandu"));
     }
-    
+
     /**
      * Lines 71-78
      * <p>
-     * The rules for resolving the URI at which an SCA service is hosted, or SCA reference targets,
-     * when used with binding.ws (in precedence order) are:
-     * 1. The URIs in the endpoint(s) of the referenced WSDL
-     * or
-     * The URI specified by the wsa:Address element of the wsa:EndpointReference,
-     * 2. The explicitly stated URI in the "uri" attribute of the binding.ws element, which may be
-     * relative,
-     * 3. The implicit URI as defined by the Assembly specification
+     * The rules for resolving the URI at which an SCA service is hosted, or SCA
+     * reference targets, when used with binding.ws (in precedence order) are:
+     * 1. The URIs in the endpoint(s) of the referenced WSDL or The URI
+     * specified by the wsa:Address element of the wsa:EndpointReference, 2. The
+     * explicitly stated URI in the "uri" attribute of the binding.ws element,
+     * which may be relative, 3. The implicit URI as defined by the Assembly
+     * specification
      * <p>
      * This method tests that implicit URI is used.
      */
     @Test
     public void testImplicitUri() throws Exception {
-        AClientService aClient = domain.getService(AClientService.class, "AClientComponent4");
+        AClientService aClient = ServiceFinder.getService(AClientService.class, "AClientComponent4");
         Assert.assertEquals("Hello Pandu", aClient.getGreetingsForward("Pandu"));
     }
-    
+
     /**
      * Lines 71-78
      * <p>
-     * The rules for resolving the URI at which an SCA service is hosted, or SCA reference targets,
-     * when used with binding.ws (in precedence order) are:
-     * 1. The URIs in the endpoint(s) of the referenced WSDL
-     * or
-     * The URI specified by the wsa:Address element of the wsa:EndpointReference,
-     * 2. The explicitly stated URI in the "uri" attribute of the binding.ws element, which may be
-     * relative,
-     * 3. The implicit URI as defined by the Assembly specification
+     * The rules for resolving the URI at which an SCA service is hosted, or SCA
+     * reference targets, when used with binding.ws (in precedence order) are:
+     * 1. The URIs in the endpoint(s) of the referenced WSDL or The URI
+     * specified by the wsa:Address element of the wsa:EndpointReference, 2. The
+     * explicitly stated URI in the "uri" attribute of the binding.ws element,
+     * which may be relative, 3. The implicit URI as defined by the Assembly
+     * specification
      * <p>
-     * This method tests that explicitly stated URI in the "uri" attribute of the binding.ws is used
-     * in the absence of a wsdlElement.
+     * This method tests that explicitly stated URI in the "uri" attribute of
+     * the binding.ws is used in the absence of a wsdlElement.
      */
     @Test
     public void testNoWsdlElement() throws Exception {
-        AClientService aClient = domain.getService(AClientService.class, "AClientComponent5");
+        AClientService aClient = ServiceFinder.getService(AClientService.class, "AClientComponent5");
         Assert.assertEquals("Hello Pandu", aClient.getGreetingsForward("Pandu"));
     }
-    
+
     /**
      * Lines 79-83
      * <p>
-     * The URI in the WSDL endpoint or in the wsa:Address of an EPR may be a relative URI, in which
-     * case it is relative to the URI defined in (2) or (3). The wsa:Address element can be the empty
-     * relative URI, in which case it uses the URI defined in (2) or (3) directly. This allows the EPR
-     * writer to specify reference parameters, metadata and other EPR contents while allowing the URI
-     * to be chosen by the deployer.
+     * The URI in the WSDL endpoint or in the wsa:Address of an EPR may be a
+     * relative URI, in which case it is relative to the URI defined in (2) or
+     * (3). The wsa:Address element can be the empty relative URI, in which case
+     * it uses the URI defined in (2) or (3) directly. This allows the EPR
+     * writer to specify reference parameters, metadata and other EPR contents
+     * while allowing the URI to be chosen by the deployer.
      * <p>
-     * This method tests that the relative URI specified in WSDL endpoint is used along with the explicit
-     * URI specified in the "uri" attribute of binding.ws element.
+     * This method tests that the relative URI specified in WSDL endpoint is
+     * used along with the explicit URI specified in the "uri" attribute of
+     * binding.ws element.
      */
     @Test
     public void testRelativeUriInWsdl() throws Exception {
-        AClientService aClient = domain.getService(AClientService.class, "AClientComponent6");
+        AClientService aClient = ServiceFinder.getService(AClientService.class, "AClientComponent6");
         Assert.assertEquals("Hello Pandu", aClient.getGreetingsForward("Pandu"));
     }
 
     /**
      * Lines 79-83
      * <p>
-     * The URI in the WSDL endpoint or in the wsa:Address of an EPR may be a relative URI, in which
-     * case it is relative to the URI defined in (2) or (3). The wsa:Address element can be the empty
-     * relative URI, in which case it uses the URI defined in (2) or (3) directly. This allows the EPR
-     * writer to specify reference parameters, metadata and other EPR contents while allowing the URI
-     * to be chosen by the deployer.
+     * The URI in the WSDL endpoint or in the wsa:Address of an EPR may be a
+     * relative URI, in which case it is relative to the URI defined in (2) or
+     * (3). The wsa:Address element can be the empty relative URI, in which case
+     * it uses the URI defined in (2) or (3) directly. This allows the EPR
+     * writer to specify reference parameters, metadata and other EPR contents
+     * while allowing the URI to be chosen by the deployer.
      * <p>
-     * This method tests that the relative URI specified in wsa:Address is used along with the explicit
-     * URI specified in the "uri" attribute of binding.ws element.
+     * This method tests that the relative URI specified in wsa:Address is used
+     * along with the explicit URI specified in the "uri" attribute of
+     * binding.ws element.
      */
     @Test
     public void testRelativeUriInAddress() throws Exception {
-        AClientService aClient = domain.getService(AClientService.class, "AClientComponent7");
+        AClientService aClient = ServiceFinder.getService(AClientService.class, "AClientComponent7");
         Assert.assertEquals("Hello Pandu", aClient.getGreetingsForward("Pandu"));
     }
 
     /**
      * Lines 79-83
      * <p>
-     * The URI in the WSDL endpoint or in the wsa:Address of an EPR may be a relative URI, in which
-     * case it is relative to the URI defined in (2) or (3). The wsa:Address element can be the empty
-     * relative URI, in which case it uses the URI defined in (2) or (3) directly. This allows the EPR
-     * writer to specify reference parameters, metadata and other EPR contents while allowing the URI
-     * to be chosen by the deployer.
+     * The URI in the WSDL endpoint or in the wsa:Address of an EPR may be a
+     * relative URI, in which case it is relative to the URI defined in (2) or
+     * (3). The wsa:Address element can be the empty relative URI, in which case
+     * it uses the URI defined in (2) or (3) directly. This allows the EPR
+     * writer to specify reference parameters, metadata and other EPR contents
+     * while allowing the URI to be chosen by the deployer.
      * <p>
-     * This method tests that when wsa:Address is empty, the explicit
-     * URI specified in the "uri" attribute of binding.ws element is used.
+     * This method tests that when wsa:Address is empty, the explicit URI
+     * specified in the "uri" attribute of binding.ws element is used.
      */
     @Test
     public void testEmptyAddressElement() throws Exception {
-        AClientService aClient = domain.getService(AClientService.class, "AClientComponent8");
+        AClientService aClient = ServiceFinder.getService(AClientService.class, "AClientComponent8");
         Assert.assertEquals("Hello Pandu", aClient.getGreetingsForward("Pandu"));
     }
 
     @AfterClass
     public static void destroy() throws Exception {
         System.out.println("Cleaning up");
-        if (domain != null) {
-            domain.close();
-        }
+        ServiceFinder.cleanup();
     }
 }

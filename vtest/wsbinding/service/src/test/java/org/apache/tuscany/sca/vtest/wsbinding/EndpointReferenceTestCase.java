@@ -20,25 +20,24 @@ package org.apache.tuscany.sca.vtest.wsbinding;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests EndpointReference element specified in service binding.ws as per Web Services Binding Specification v1.00 - Sec 2.1
- * - Lines 61 to 65.
+ * Tests EndpointReference element specified in service binding.ws as per Web
+ * Services Binding Specification v1.00 - Sec 2.1 - Lines 61 to 65.
  */
 public class EndpointReferenceTestCase {
 
-    protected static SCADomain domain;
     protected static String compositeName = "endpointreference.composite";
 
     @BeforeClass
     public static void init() throws Exception {
         try {
             System.out.println("Setting up");
-            domain = SCADomain.newInstance(compositeName);
+            ServiceFinder.init(compositeName);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -47,23 +46,22 @@ public class EndpointReferenceTestCase {
     /**
      * Lines 61-65
      * <p>
-     * /binding.ws/wsa:EndpointReference – optional WS-Addressing [6] EndpointReference
-     * that specifies the endpoint for the service or reference. When this element is present along
-     * with the wsdlElement attribute on the parent element, the wsdlElement attribute value MUST
-     * be of the ‘Binding’ form as specified above, i.e. <WSDL-namespace-
+     * /binding.ws/wsa:EndpointReference – optional WS-Addressing [6]
+     * EndpointReference that specifies the endpoint for the service or
+     * reference. When this element is present along with the wsdlElement
+     * attribute on the parent element, the wsdlElement attribute value MUST be
+     * of the ‘Binding’ form as specified above, i.e. <WSDL-namespace-
      * URI>#wsdl.binding(<binding-name>).
      */
     @Test
     public void testWsdlBinding() throws Exception {
-        AClientService aClient = domain.getService(AClientService.class, "AClientComponent");
+        AClientService aClient = ServiceFinder.getService(AClientService.class, "AClientComponent");
         Assert.assertEquals("Hello Pandu", aClient.getGreetingsForward("Pandu"));
     }
-    
+
     @AfterClass
     public static void destroy() throws Exception {
         System.out.println("Cleaning up");
-        if (domain != null) {
-            domain.close();
-        }
+        ServiceFinder.cleanup();
     }
 }

@@ -20,7 +20,7 @@ package org.apache.tuscany.sca.vtest.wsbinding;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,14 +31,13 @@ import org.junit.Test;
  */
 public class WsdlBindingTestCase {
 
-    protected static SCADomain domain;
     protected static String compositeName = "wsdlbinding.composite";
 
     @BeforeClass
     public static void init() throws Exception {
         try {
             System.out.println("Setting up");
-            domain = SCADomain.newInstance(compositeName);
+            ServiceFinder.init(compositeName);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -55,17 +54,15 @@ public class WsdlBindingTestCase {
      */
     @Test
     public void testWsdlBinding() throws Exception {
-        AClientService aClientBnd11 = domain.getService(AClientService.class, "AClientBnd11Component");
+        AClientService aClientBnd11 = ServiceFinder.getService(AClientService.class, "AClientBnd11Component");
         Assert.assertEquals("Hello Pandu", aClientBnd11.getGreetingsForward("Pandu"));
-        AClientService aClientBnd12 = domain.getService(AClientService.class, "AClientBnd12Component");
+        AClientService aClientBnd12 = ServiceFinder.getService(AClientService.class, "AClientBnd12Component");
         Assert.assertEquals("Hello Pandu", aClientBnd12.getGreetingsForward("Pandu"));
     }
     
     @AfterClass
     public static void destroy() throws Exception {
         System.out.println("Cleaning up");
-        if (domain != null) {
-            domain.close();
-        }
+        ServiceFinder.cleanup();
     }
 }

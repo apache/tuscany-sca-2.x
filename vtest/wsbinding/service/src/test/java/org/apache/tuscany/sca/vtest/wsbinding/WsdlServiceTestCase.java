@@ -20,26 +20,25 @@ package org.apache.tuscany.sca.vtest.wsbinding;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Tests wsdlElement specified on service binding.ws as per Web Services Binding Specification v1.00 - Sec 2.1
- * - Lines 35 to 54.
+ * Tests wsdlElement specified on service binding.ws as per Web Services Binding
+ * Specification v1.00 - Sec 2.1 - Lines 35 to 54.
  */
 public class WsdlServiceTestCase {
 
-    protected static SCADomain domain;
     protected static String compositeName = "wsdlservice.composite";
 
     @BeforeClass
     public static void init() throws Exception {
         try {
             System.out.println("Setting up");
-            domain = SCADomain.newInstance(compositeName);
+            ServiceFinder.init(compositeName);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -48,25 +47,23 @@ public class WsdlServiceTestCase {
     /**
      * Lines 38-41
      * <p>
-     * Service:
-     * <WSDL-namespace-URI>#wsdl.service(<service-name>)
-     * In this case, all the endpoints in the WSDL Service that have equivalent PortTypes with
-     * the SCA service or reference must be available to the SCA service or reference.
+     * Service: <WSDL-namespace-URI>#wsdl.service(<service-name>) In this case,
+     * all the endpoints in the WSDL Service that have equivalent PortTypes with
+     * the SCA service or reference must be available to the SCA service or
+     * reference.
      */
     @Test
     @Ignore("TUSCANY-2298")
     public void testWsdlService() throws Exception {
-        AClientService aClientS11 = domain.getService(AClientService.class, "AClientS11Component");
+        AClientService aClientS11 = ServiceFinder.getService(AClientService.class, "AClientS11Component");
         Assert.assertEquals("Hello Pandu", aClientS11.getGreetingsForward("Pandu"));
-        AClientService aClientS12 = domain.getService(AClientService.class, "AClientS12Component");
+        AClientService aClientS12 = ServiceFinder.getService(AClientService.class, "AClientS12Component");
         Assert.assertEquals("Hello Pandu", aClientS12.getGreetingsForward("Pandu"));
     }
 
     @AfterClass
     public static void destroy() throws Exception {
         System.out.println("Cleaning up");
-        if (domain != null) {
-            domain.close();
-        }
+        ServiceFinder.cleanup();
     }
 }
