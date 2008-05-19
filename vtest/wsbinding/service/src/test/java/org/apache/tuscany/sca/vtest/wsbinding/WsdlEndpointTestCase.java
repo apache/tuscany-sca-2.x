@@ -20,26 +20,25 @@ package org.apache.tuscany.sca.vtest.wsbinding;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Tests wsdlElement specified on service binding.ws as per Web Services Binding Specification v1.00 - Sec 2.1
- * - Lines 35 to 54.
+ * Tests wsdlElement specified on service binding.ws as per Web Services Binding
+ * Specification v1.00 - Sec 2.1 - Lines 35 to 54.
  */
 public class WsdlEndpointTestCase {
 
-    protected static SCADomain domain;
     protected static String compositeName = "wsdlendpoint.composite";
 
     @BeforeClass
     public static void init() throws Exception {
         try {
             System.out.println("Setting up");
-            domain = SCADomain.newInstance(compositeName);
+            ServiceFinder.init(compositeName);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -48,23 +47,20 @@ public class WsdlEndpointTestCase {
     /**
      * Lines 46-49
      * <p>
-     * Endpoint (WSDL 2.0):
-     * <WSDL-namespace-URI>#wsdl.endpoint(<service-name>/<endpoint-name>)
-     * In this case, the identified endpoint in the WSDL 2.0 Service must have an equivalent
-     * PortType with the SCA service or reference.
+     * Endpoint (WSDL 2.0): <WSDL-namespace-URI>#wsdl.endpoint(<service-name>/<endpoint-name>)
+     * In this case, the identified endpoint in the WSDL 2.0 Service must have
+     * an equivalent PortType with the SCA service or reference.
      */
     @Test
     @Ignore("WSDL2.0 Support")
     public void testWsdlEndpoint() throws Exception {
-        AClientService aClient = domain.getService(AClientService.class, "AClientComponent");
+        AClientService aClient = ServiceFinder.getService(AClientService.class, "AClientComponent");
         Assert.assertEquals("Hello Pandu", aClient.getGreetingsForward("Pandu"));
     }
-    
+
     @AfterClass
     public static void destroy() throws Exception {
         System.out.println("Cleaning up");
-        if (domain != null) {
-            domain.close();
-        }
+        ServiceFinder.cleanup();
     }
 }
