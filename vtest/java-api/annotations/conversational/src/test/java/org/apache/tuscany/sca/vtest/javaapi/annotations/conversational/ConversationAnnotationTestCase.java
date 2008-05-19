@@ -21,8 +21,7 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.conversational;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.vtest.javaapi.annotations.conversational.AService;
+import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,7 +32,6 @@ import org.junit.Test;
  */
 public class ConversationAnnotationTestCase {
 
-    protected static SCADomain domain;
     protected static String compositeName = "conversation.composite";
     protected static AService aService = null;
 
@@ -41,8 +39,8 @@ public class ConversationAnnotationTestCase {
     public static void init() throws Exception {
         try {
             System.out.println("Setting up");
-            domain = SCADomain.newInstance(compositeName);
-            aService = domain.getService(AService.class, "AComponent");
+            ServiceFinder.init(compositeName);
+            aService = ServiceFinder.getService(AService.class, "AComponent");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -52,8 +50,7 @@ public class ConversationAnnotationTestCase {
     public static void destroy() throws Exception {
 
         System.out.println("Cleaning up");
-        if (domain != null)
-            domain.close();
+        ServiceFinder.cleanup();
 
     }
 

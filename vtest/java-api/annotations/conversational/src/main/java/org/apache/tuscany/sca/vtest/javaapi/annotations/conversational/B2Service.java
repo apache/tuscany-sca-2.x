@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.vtest.javaapi.annotations.conversational;
 
 import org.osoa.sca.annotations.Conversational;
-import org.osoa.sca.annotations.Scope;
 
 /**
  * Simple Local Service
