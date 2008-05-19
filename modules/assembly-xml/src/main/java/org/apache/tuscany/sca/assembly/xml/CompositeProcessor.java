@@ -93,7 +93,9 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
      * @param extensionPoints
      * @param extensionProcessor
      */
-    public CompositeProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor extensionProcessor) {
+    public CompositeProcessor(ExtensionPointRegistry extensionPoints, 
+    						  StAXArtifactProcessor extensionProcessor,
+    						  Monitor monitor) {
         this(modelFactories(extensionPoints), extensionProcessor, monitor(extensionPoints));
     }
     
@@ -289,7 +291,9 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                 try {
                                     componentProperty.setSourceXPathExpression(xpath.compile(source));
                                 } catch (XPathExpressionException e) {
-                                    throw new ContributionReadException(e);
+                                	ContributionReadException ce = new ContributionReadException(e);
+                                	error("ContributionReadException", xpath, ce);
+                                    throw ce;
                                 }
                             }
                             componentProperty.setFile(getString(reader, FILE));
@@ -406,8 +410,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                     contract.setInterfaceContract((InterfaceContract)extension);
                                 } else {
                                     if (name.getNamespaceURI().equals(SCA10_NS)) {
-                                        throw new ContributionReadException(
-                                                                            "Unexpected <interface> element found. It should appear inside a <service> or <reference> element");
+                                    	error("UnexpectedInterfaceElement", extension);
+                                        throw new ContributionReadException("Unexpected <interface> element found. It should appear inside a <service> or <reference> element");
                                     } else {
                                         composite.getExtensions().add(extension);
                                     }
@@ -428,8 +432,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                         contract.getBindings().add((Binding)extension);
                                     } else {
                                         if (name.getNamespaceURI().equals(SCA10_NS)) {
-                                            throw new ContributionReadException(
-                                                                                "Unexpected <binding> element found. It should appear inside a <service> or <reference> element");
+                                        	error("UnexpectedBindingElement", extension);
+                                            throw new ContributionReadException("Unexpected <binding> element found. It should appear inside a <service> or <reference> element");
                                         } else {
                                             composite.getExtensions().add(extension);
                                         }
@@ -448,8 +452,8 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                     component.setImplementation((Implementation)extension);
                                 } else {
                                     if (name.getNamespaceURI().equals(SCA10_NS)) {
-                                        throw new ContributionReadException(
-                                                                            "Unexpected <implementation> element found. It should appear inside a <component> element");
+                                    	error("UnexpectedImplementationElement", extension);
+                                        throw new ContributionReadException("Unexpected <implementation> element found. It should appear inside a <component> element");
                                     } else {
                                         composite.getExtensions().add(extension);
                                     }
@@ -908,6 +912,7 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                     
                     component.setImplementation(implementation);
                 } catch ( PolicyValidationException e ) {
+                	error("PolicyImplValidationException", resolver, component.getName(), e.getMessage());
                     throw new ContributionResolveException("PolicyValidation exception when processing implementation of component '" 
                                                            + component.getName() + "' due to " + e.getMessage(), e);
                 }

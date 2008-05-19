@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.java.JavaExport;
 import org.apache.tuscany.sca.contribution.java.JavaImportExportFactory;
@@ -35,6 +36,9 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * Artifact processor for Java Export
@@ -49,11 +53,27 @@ public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
     private static final String PACKAGE = "package";
     
     private final JavaImportExportFactory factory;
+    private final Monitor monitor;
     
-    public JavaExportProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public JavaExportProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         super();
         this.factory = modelFactories.getFactory(JavaImportExportFactory.class);
+        this.monitor = monitor;
     }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+     private void error(String message, Object model, Object... messageParameters) {
+    	 if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-java-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+	        monitor.problem(problem);
+    	 }
+     }
 
     public QName getArtifactType() {
         return EXPORT_JAVA;
@@ -80,6 +100,7 @@ public class JavaExportProcessor implements StAXArtifactProcessor<JavaExport> {
                     if (EXPORT_JAVA.equals(element)) {
                         String packageName = reader.getAttributeValue(null, PACKAGE);
                         if (packageName == null) {
+                        	error("AttributePackageMissing", reader);
                             throw new ContributionReadException("Attribute 'package' is missing");
                         }
                         

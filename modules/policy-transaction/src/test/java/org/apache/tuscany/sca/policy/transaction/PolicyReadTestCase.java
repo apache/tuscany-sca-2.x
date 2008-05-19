@@ -39,7 +39,7 @@ public class PolicyReadTestCase extends TestCase {
 
     public void testPolicyReading() throws Exception {
 
-        TransactionPolicyProcessor processor = new TransactionPolicyProcessor(null);
+        TransactionPolicyProcessor processor = new TransactionPolicyProcessor(null, null);
 
         URL url = getClass().getResource("/org/apache/tuscany/sca/policy/transaction/tuscany_definitions.xml");
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();

@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.node.ConfiguredNodeImplementation;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 
 /**
@@ -62,10 +63,10 @@ public class ConfiguredNodeImplementationProcessor extends BaseStAXArtifactProce
     private AssemblyFactory assemblyFactory;
     private NodeImplementationFactory implementationFactory;
     
-    public ConfiguredNodeImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
-        contributionFactory = modelFactories.getFactory(ContributionFactory.class);
-        assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-        implementationFactory = modelFactories.getFactory(NodeImplementationFactory.class);
+    public ConfiguredNodeImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+        this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        this.implementationFactory = modelFactories.getFactory(NodeImplementationFactory.class);
     }
 
     public QName getArtifactType() {

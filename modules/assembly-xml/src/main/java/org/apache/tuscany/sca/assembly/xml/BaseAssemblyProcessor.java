@@ -126,11 +126,13 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
     @SuppressWarnings("unchecked")
     public BaseAssemblyProcessor(AssemblyFactory factory,
                                  PolicyFactory policyFactory,
-                                 StAXArtifactProcessor extensionProcessor) {
+                                 StAXArtifactProcessor extensionProcessor,
+                                 Monitor monitor) {
         this.assemblyFactory = factory;
         this.policyFactory = policyFactory;
         this.extensionProcessor = (StAXArtifactProcessor<Object>)extensionProcessor;
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
+        this.monitor = monitor;
         
         //TODO - this constructor should take a monitor too. 
     }
@@ -147,7 +149,35 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
             Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-xml-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
-    }    
+    }
+    
+    /**
+     * Marshals errors into the monitor
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    protected void error(String message, Object model, Object... messageParameters) {
+    	if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-xml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+	        monitor.problem(problem);
+    	}
+    }
+    
+    /**
+     * Marshals exceptions into the monitor
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    protected void error(String message, Object model, Exception ex) {
+    	if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-xml-validation-messages", Severity.ERROR, model, message, ex);
+	        monitor.problem(problem);
+    	}
+    }
 
     /**
      * Start an element.
@@ -477,6 +507,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
                     }
                 }
             } catch ( PolicyValidationException e ) {
+            	error("PolicyServiceValidationException", contract, contract.getName(), parentName);
                 throw new ContributionResolveException("PolicyValidation exceptions when processing service/reference '" 
                                                        + contract.getName() + "' in '" + parentName + "'");
             }
@@ -534,7 +565,9 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
             }
             document = documentBuilderFactory.newDocumentBuilder().newDocument();
         } catch (ParserConfigurationException e) {
-            throw new ContributionReadException(e);
+        	ContributionReadException ce = new ContributionReadException(e);
+        	error("ContributionReadException", documentBuilderFactory, ce);
+            throw ce;
         }
 
         // root element has no namespace and local name "value"

@@ -28,12 +28,16 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  *
@@ -41,13 +45,29 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
  */
 public class AuthorizationPolicyProcessor implements StAXArtifactProcessor<AuthorizationPolicy> {
     private static final String ROLES = "roles";
+    private Monitor monitor;
 
     public QName getArtifactType() {
         return AuthorizationPolicy.NAME;
     }
 
-    public AuthorizationPolicyProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public AuthorizationPolicyProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+        this.monitor = monitor;
     }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem = new ProblemImpl(this.getClass().getName(), "policy-security-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+                                              monitor.problem(problem);
+        }        
+    }    
 
     public AuthorizationPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         AuthorizationPolicy policy = new AuthorizationPolicy();
@@ -61,6 +81,7 @@ public class AuthorizationPolicyProcessor implements StAXArtifactProcessor<Autho
                         policy.setAccessControl(AuthorizationPolicy.AcessControl.allow);
                         String roleNames = reader.getAttributeValue(null, ROLES);
                         if (roleNames == null) {
+                        	error("RequiredAttributeRolesMissing", reader);
                             throw new IllegalArgumentException("Required attribute 'roles' is missing.");
                         }
                         StringTokenizer st = new StringTokenizer(roleNames);

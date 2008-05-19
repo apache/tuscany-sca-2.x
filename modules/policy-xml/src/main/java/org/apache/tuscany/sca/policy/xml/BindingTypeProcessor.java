@@ -25,6 +25,7 @@ import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -38,13 +39,16 @@ import org.apache.tuscany.sca.policy.impl.BindingTypeImpl;
  */
 public class BindingTypeProcessor extends IntentAttachPointTypeProcessor {
 
-    public BindingTypeProcessor(PolicyFactory policyFactory, IntentAttachPointTypeFactory intentAttachPointTypeFactory, StAXArtifactProcessor<Object> extensionProcessor) {
-        super(policyFactory, intentAttachPointTypeFactory, extensionProcessor);
+    public BindingTypeProcessor(PolicyFactory policyFactory, IntentAttachPointTypeFactory intentAttachPointTypeFactory, 
+    		                    StAXArtifactProcessor<Object> extensionProcessor, Monitor monitor) {
+        super(policyFactory, intentAttachPointTypeFactory, extensionProcessor, monitor);
     }
 
-    public BindingTypeProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor<Object> extensionProcessor) {
+    public BindingTypeProcessor(ModelFactoryExtensionPoint modelFactories, 
+    		                    StAXArtifactProcessor<Object> extensionProcessor,
+    		                    Monitor monitor) {
         super(modelFactories.getFactory(PolicyFactory.class),
-              modelFactories.getFactory(IntentAttachPointTypeFactory.class), extensionProcessor);
+              modelFactories.getFactory(IntentAttachPointTypeFactory.class), extensionProcessor, monitor);
     }
 
     public QName getArtifactType() {

@@ -62,7 +62,7 @@ public class SCABindingTestCase {
         inputFactory = XMLInputFactory.newInstance();
 
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
         
         resolver = new CompositeModelResolver(null, null);
         

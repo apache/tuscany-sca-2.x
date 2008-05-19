@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * Processor for dealing with  'operation' elements from composite definitions
@@ -46,11 +47,13 @@ public class ConfiguredOperationProcessor implements StAXArtifactProcessor<Confi
     private AssemblyFactory assemblyFactory;
     private PolicyAttachPointProcessor policyProcessor;
     private PolicyFactory policyFactory;
+    private Monitor monitor;
     
-    public ConfiguredOperationProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public ConfiguredOperationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
+        this.monitor = monitor;
     }
     
     public ConfiguredOperation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {

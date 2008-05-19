@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.assembly.Multiplicity;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
@@ -54,6 +55,9 @@ import org.apache.tuscany.sca.implementation.bpel.xml.BPELPartnerLinkElement;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * Implements a StAX artifact processor for BPEL implementations.
@@ -73,13 +77,29 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     private AssemblyFactory assemblyFactory;
     private BPELFactory bpelFactory;
     private WSDLFactory wsdlFactory;
+    private Monitor monitor;
     
-    public BPELImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public BPELImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         this.bpelFactory = new DefaultBPELFactory(modelFactories);
+        this.monitor = monitor;
     }
 
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+    	 if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "impl-bpel-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+	        monitor.problem(problem);
+    	 }
+    }
+     
     public QName getArtifactType() {
         // Returns the QName of the XML element processed by this processor
         return IMPLEMENTATION_BPEL_QNAME;
@@ -118,6 +138,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         if( impl != null && impl.isUnresolved()) {
             BPELProcessDefinition processDefinition = resolveBPELProcessDefinition(impl, resolver);
             if(processDefinition.isUnresolved()) {
+            	error("BPELProcessNotFound", impl, processDefinition.getName());
                 throw new ContributionResolveException("Can't find BPEL Process : " + processDefinition.getName());
             }
             
@@ -242,6 +263,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         } // end if
         // No interfaces mean an error - throw an exception
         if( callPT == null && callbackPT == null ) {
+        	error("MyRolePartnerRoleNull", theInterfaces);
         	throw new ContributionResolveException("Error: myRole and partnerRole port types are both null");
         } // end if 
         
@@ -258,6 +280,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         } // end for
         // Throw an exception if no interface is found
         if( callInterface == null ) {
+        	error("NoInterfaceForPortType", theInterfaces, callPT.getQName().toString());
         	throw new ContributionResolveException("Interface not found for port type " +
         			callPT.getQName().toString() );
         } // end if 
@@ -272,6 +295,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             } // end for
             // Throw an exception if no interface is found
             if( callbackInterface == null ) {
+            	error("NoInterfaceForPortType", theInterfaces, callbackPT.getQName().toString());
             	throw new ContributionResolveException("Interface not found for port type " +
             			callbackPT.getQName().toString() );
             } // end if 
@@ -314,6 +338,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         } // end if
         // No interfaces mean an error - throw an exception
         if( callPT == null && callbackPT == null ) {
+        	error("MyRolePartnerRoleNull", theInterfaces);
         	throw new ContributionResolveException("Error: myRole and partnerRole port types are both null");
         } // end if 
 
@@ -325,6 +350,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         } // end for
         // Throw an exception if no interface is found
         if( callInterface == null ) {
+        	error("NoInterfaceForPortType", theInterfaces, callPT.getQName().toString());
         	throw new ContributionResolveException("Interface not found for port type " +
         			callPT.getQName().toString() );
         } // end if 
@@ -340,6 +366,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
             } // end for
             // Throw an exception if no interface is found
             if( callbackInterface == null ) {
+            	error("NoInterfaceForPortType", theInterfaces, callbackPT.getQName().toString());
             	throw new ContributionResolveException("Interface not found for port type " +
             			callbackPT.getQName().toString() );
             } // end if 
@@ -470,6 +497,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         	} catch ( IllegalArgumentException e ) {
         		// This exception happens if the attribute begins with '{' but doesn't conform
         		// to the XML Namespaces recommendation format
+        		error("AttributeWithoutNamespace", reader, attribute, fullValue);
         		throw new BPELProcessException("Attribute " + attribute + " with value " + fullValue +
                 " in your composite should be of the form {namespaceURI}localname");
         	}
@@ -482,9 +510,11 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         String prefix = fullValue.substring(0, fullValue.indexOf(":"));
         String name = fullValue.substring(fullValue.indexOf(":") + 1);
         String nsUri = reader.getNamespaceContext().getNamespaceURI(prefix);
-        if (nsUri == null)
+        if (nsUri == null) {
+        	error("AttributeUnrecognizedNamespace", reader, attribute, fullValue);
             throw new BPELProcessException("Attribute " + attribute + " with value " + fullValue +
                     " in your composite has un unrecognized namespace prefix.");
+        }
         return new QName(nsUri, name, prefix);
     }
 

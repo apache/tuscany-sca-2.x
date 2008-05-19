@@ -26,12 +26,16 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  *
@@ -39,13 +43,29 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
  */
 public class SecurityIdentityPolicyProcessor implements StAXArtifactProcessor<SecurityIdentityPolicy> {
     private static final String ROLE = "role";
+    private Monitor monitor;
 
     public QName getArtifactType() {
         return SecurityIdentityPolicy.NAME;
     }
 
-    public SecurityIdentityPolicyProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public SecurityIdentityPolicyProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+        this.monitor = monitor;
     }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem = new ProblemImpl(this.getClass().getName(), "policy-security-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+                                              monitor.problem(problem);
+        }        
+    }    
 
     public SecurityIdentityPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         SecurityIdentityPolicy policy = new SecurityIdentityPolicy();
@@ -58,6 +78,7 @@ public class SecurityIdentityPolicyProcessor implements StAXArtifactProcessor<Se
                     if ("runAs".equals(ac)) {
                         String roleName = reader.getAttributeValue(null, ROLE);
                         if (roleName == null) {
+                        	error("RequiredAttributeRolesMissing", reader);
                             throw new IllegalArgumentException("Required attribute 'roles' is missing.");
                         }
                         policy.setRunAsRole(roleName);

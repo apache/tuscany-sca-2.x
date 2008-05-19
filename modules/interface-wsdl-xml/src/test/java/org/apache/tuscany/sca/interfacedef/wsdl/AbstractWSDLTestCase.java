@@ -59,7 +59,7 @@ public abstract class AbstractWSDLTestCase extends TestCase {
         contribution.setModelResolver(resolver);
         
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
     }
 
 }

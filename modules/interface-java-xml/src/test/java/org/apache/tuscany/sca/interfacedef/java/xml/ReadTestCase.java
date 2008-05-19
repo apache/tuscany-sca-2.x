@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.interfacedef.java.xml;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
@@ -51,6 +52,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 public class ReadTestCase extends TestCase {
 
     private XMLInputFactory inputFactory;
+    private XMLOutputFactory outputFactory;
     private StAXArtifactProcessor<Object> staxProcessor;
     private CompositeBuilder compositeBuilder;
 
@@ -58,8 +60,9 @@ public class ReadTestCase extends TestCase {
     public void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         inputFactory = XMLInputFactory.newInstance();
+        outputFactory = XMLOutputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, null);
         
         ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);

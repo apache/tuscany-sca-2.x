@@ -25,6 +25,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -34,6 +35,9 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.data.engine.config.ConnectionInfo;
 import org.apache.tuscany.sca.data.engine.config.ConnectionProperties;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * Implements a StAX artifact processor for ConnectionInfo.
@@ -49,13 +53,28 @@ public class ConnectionInfoArtifactProcessor implements StAXArtifactProcessor<Co
     public static final QName CONNECTION_INFO = new QName(Constants.SCA10_TUSCANY_NS, "connectionInfo");
     private static final QName CONNECTION_PROPERTIES = new QName(Constants.SCA10_TUSCANY_NS, "connectionProperties");
     
-    public ConnectionInfoArtifactProcessor(ModelFactoryExtensionPoint modelFactories) {
-
+    private Monitor monitor;
+    public ConnectionInfoArtifactProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    	this.monitor = monitor;
     }
 
     public QName getArtifactType() {
         // Returns the QName of the XML element processed by this processor
         return CONNECTION_INFO;
+    }
+    
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Exception ex) {
+    	 if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "dataengine-helper-validation-messages", Severity.ERROR, model, message, ex);
+	        monitor.problem(problem);
+    	 }
     }
 
     public Class<ConnectionInfo> getModelType() {
@@ -96,7 +115,9 @@ public class ConnectionInfoArtifactProcessor implements StAXArtifactProcessor<Co
                     event = reader.next();
                 }
             } catch (XMLStreamException e) {
-                throw new ContributionReadException(e);
+            	ContributionReadException ce = new ContributionReadException(e);
+            	error("ContributionReadException", reader, ce);
+                throw ce;
             }
 
             QName element = reader.getName();

@@ -48,6 +48,7 @@ import org.apache.tuscany.sca.interfacedef.impl.OperationImpl;
 import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.w3c.dom.Document;
 
 /**
@@ -63,8 +64,9 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
      * @param policyFactory
      * @param registry
      */
-    public ComponentTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, StAXArtifactProcessor extensionProcessor) {
-        super(factory, policyFactory, extensionProcessor);
+    public ComponentTypeProcessor(AssemblyFactory factory, PolicyFactory policyFactory, 
+    							  StAXArtifactProcessor extensionProcessor, Monitor monitor) {
+        super(factory, policyFactory, extensionProcessor, monitor);
     }
 
     /**
@@ -73,9 +75,11 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
      * @param modelFactories
      * @param extensionProcessor
      */
-    public ComponentTypeProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor extensionProcessor) {
+    public ComponentTypeProcessor(ModelFactoryExtensionPoint modelFactories, 
+    							  StAXArtifactProcessor extensionProcessor,
+    							  Monitor monitor) {
         super(modelFactories.getFactory(AssemblyFactory.class),
-              modelFactories.getFactory(PolicyFactory.class), extensionProcessor);
+              modelFactories.getFactory(PolicyFactory.class), extensionProcessor, monitor);
     }
     
     public ComponentType read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {

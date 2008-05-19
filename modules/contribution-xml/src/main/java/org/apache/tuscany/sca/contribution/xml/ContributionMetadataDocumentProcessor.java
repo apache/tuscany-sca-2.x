@@ -28,6 +28,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -35,6 +36,9 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * URLArtifactProcessor that handles sca-contribution.xml files.
@@ -44,15 +48,36 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 public class ContributionMetadataDocumentProcessor implements URLArtifactProcessor<ContributionMetadata>{
     private final StAXArtifactProcessor staxProcessor;
     private final XMLInputFactory inputFactory;
+    private final Monitor monitor;
 
-    public ContributionMetadataDocumentProcessor(XMLInputFactory inputFactory, StAXArtifactProcessor staxProcessor) {
+    public ContributionMetadataDocumentProcessor(XMLInputFactory inputFactory, 
+    											 StAXArtifactProcessor staxProcessor,
+    											 Monitor monitor) {
         this.inputFactory = inputFactory;
-        this.staxProcessor = staxProcessor; 
+        this.staxProcessor = staxProcessor;
+        this.monitor = monitor;
     }
     
-    public ContributionMetadataDocumentProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor staxProcessor) {
+    public ContributionMetadataDocumentProcessor(ModelFactoryExtensionPoint modelFactories, 
+    											 StAXArtifactProcessor staxProcessor,
+    											 Monitor monitor) {
         this.inputFactory = modelFactories.getFactory(XMLInputFactory.class);
-        this.staxProcessor = staxProcessor; 
+        this.staxProcessor = staxProcessor;
+        this.monitor = monitor;
+    }
+    
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Exception ex) {
+    	if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-xml-validation-messages", Severity.ERROR, model, message, ex);
+	        monitor.problem(problem);
+    	}
     }
     
     public String getArtifactType() {
@@ -80,9 +105,13 @@ public class ContributionMetadataDocumentProcessor implements URLArtifactProcess
             return contribution;
             
         } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
+        	ContributionReadException ex = new ContributionReadException(e);
+        	error("XMLStreamException", inputFactory, ex);
+        	throw ex;
         } catch (IOException e) {
-            throw new ContributionReadException(e);
+        	ContributionReadException ex = new ContributionReadException(e);
+        	error("IOException", inputFactory, ex);
+            throw ex;
         } finally {
             try {
                 if (urlStream != null) {

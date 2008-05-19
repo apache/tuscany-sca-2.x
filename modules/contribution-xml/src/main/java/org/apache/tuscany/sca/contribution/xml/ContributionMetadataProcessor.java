@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ContributionMetadata;
 import org.apache.tuscany.sca.contribution.Export;
@@ -41,6 +42,9 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * Processor for contribution metadata
@@ -58,17 +62,39 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
     private final ContributionFactory contributionFactory;
     
     private final StAXArtifactProcessor<Object> extensionProcessor;
+    private Monitor monitor;
 
-    public ContributionMetadataProcessor(AssemblyFactory assemblyFactory, ContributionFactory contributionFactory, StAXArtifactProcessor<Object> extensionProcessor) {
+    public ContributionMetadataProcessor(AssemblyFactory assemblyFactory, 
+    									 ContributionFactory contributionFactory, 
+    									 StAXArtifactProcessor<Object> extensionProcessor,
+    									 Monitor monitor) {
         this.assemblyFactory = assemblyFactory;
         this.contributionFactory = contributionFactory;
         this.extensionProcessor = extensionProcessor;
+        this.monitor = monitor;
     }
     
-    public ContributionMetadataProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor<Object> extensionProcessor) {
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+     private void error(String message, Object model, Object... messageParameters) {
+    	 if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-xml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+	        monitor.problem(problem);
+    	 }
+     }
+     
+    public ContributionMetadataProcessor(ModelFactoryExtensionPoint modelFactories, 
+    									 StAXArtifactProcessor<Object> extensionProcessor,
+    									 Monitor monitor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         this.extensionProcessor = extensionProcessor;
+        this.monitor = monitor;
     }
     
     
@@ -102,6 +128,7 @@ public class ContributionMetadataProcessor extends BaseStAXArtifactProcessor imp
                         // Read <deployable>
                         QName compositeName = getQName(reader, "composite");
                         if (compositeName == null) {
+                        	error("AttributeCompositeMissing", reader);
                             throw new ContributionReadException("Attribute 'composite' is missing");
                         }
 

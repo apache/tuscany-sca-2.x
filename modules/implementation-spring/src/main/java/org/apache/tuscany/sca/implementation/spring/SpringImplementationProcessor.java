@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.ComponentType;
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -38,6 +39,9 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.spring.xml.SpringXMLComponentTypeLoader;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 /**
@@ -57,12 +61,42 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
     private JavaInterfaceFactory javaFactory;
     private PolicyFactory policyFactory;
     private PolicyAttachPointProcessor policyProcessor;
+    private Monitor monitor;
     
-    public SpringImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public SpringImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
+        this.monitor = monitor;
+    }
+    
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Exception ex) {
+    	 if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "impl-spring-validation-messages", Severity.ERROR, model, message, ex);
+	        monitor.problem(problem);
+    	 }
+    }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+    	 if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "impl-spring-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+	        monitor.problem(problem);
+    	 }
     }
 
     /*
@@ -92,6 +126,7 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
         // Read the location attribute for the spring implementation
         String springLocation = reader.getAttributeValue(null, LOCATION);
         if (springLocation == null) {
+        	error("LocationAttributeMissing", reader);
             throw new ContributionReadException(MSG_LOCATION_MISSING);
         }
         springImplementation.setLocation(springLocation);
@@ -155,7 +190,9 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
             // Load the Spring Implementation information from its application context file...
             springLoader.load(springImplementation);
         } catch (ContributionReadException e) {
-            throw new ContributionResolveException(e);
+        	ContributionResolveException ce = new ContributionResolveException(e);
+        	error("ContributionResolveException", resolver, ce);
+            throw ce;
         }
 
         ComponentType ct = springImplementation.getComponentType();
@@ -163,8 +200,8 @@ public class SpringImplementationProcessor implements StAXArtifactProcessor<Spri
             // If the introspection fails to resolve, try to find a side file...
             ComponentType componentType = resolver.resolveModel(ComponentType.class, ct);
             if (componentType.isUnresolved()) {
-                throw new ContributionResolveException(
-                                                       "SpringArtifactProcessor: unable to resolve componentType for Spring component");
+            	error("UnableToResolveComponentType", resolver);
+                throw new ContributionResolveException("SpringArtifactProcessor: unable to resolve componentType for Spring component");
             }
             springImplementation.setComponentType(componentType);
 

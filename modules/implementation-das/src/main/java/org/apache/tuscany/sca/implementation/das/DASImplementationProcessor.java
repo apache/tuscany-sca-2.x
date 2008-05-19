@@ -43,6 +43,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.data.engine.ConnectionInfoArtifactProcessor;
 import org.apache.tuscany.sca.data.engine.config.ConnectionInfo;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 
 /**
@@ -62,16 +63,15 @@ public class DASImplementationProcessor implements StAXArtifactProcessor<DASImpl
     
     private final AssemblyFactory assemblyFactory;
     private final JavaInterfaceFactory javaFactory;
-    
+    private Monitor monitor;
     private StAXArtifactProcessor<ConnectionInfo> connectionInfoProcessor;
     
-    public DASImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public DASImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
-        
-        this.dasFactory = new DefaultDASImplementationFactory(assemblyFactory, javaFactory);
-        
-        this.connectionInfoProcessor = new ConnectionInfoArtifactProcessor(modelFactories);
+        this.monitor = monitor;
+        this.dasFactory = new DefaultDASImplementationFactory(assemblyFactory, javaFactory);        
+        this.connectionInfoProcessor = new ConnectionInfoArtifactProcessor(modelFactories, this.monitor);
     }
 
     public QName getArtifactType() {

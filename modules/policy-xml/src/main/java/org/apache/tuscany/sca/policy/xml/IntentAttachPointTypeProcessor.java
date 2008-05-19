@@ -28,12 +28,16 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
@@ -50,13 +54,32 @@ import org.apache.tuscany.sca.policy.impl.ImplementationTypeImpl;
 abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<IntentAttachPointType>, PolicyConstants {
 
     private IntentAttachPointTypeFactory attachPointTypeFactory;
-    private PolicyFactory policyFactory; 
+    private PolicyFactory policyFactory;
+    private Monitor monitor;
     
     protected abstract IntentAttachPointType resolveExtensionType(IntentAttachPointType extnType, ModelResolver resolver) throws ContributionResolveException;
 
-    public IntentAttachPointTypeProcessor(PolicyFactory policyFactory, IntentAttachPointTypeFactory attachPointTypeFactory, StAXArtifactProcessor<Object> extensionProcessor) {
+    public IntentAttachPointTypeProcessor(PolicyFactory policyFactory, 
+    		                              IntentAttachPointTypeFactory attachPointTypeFactory, 
+    		                              StAXArtifactProcessor<Object> extensionProcessor,
+    		                              Monitor monitor) {
         this.policyFactory = policyFactory;
         this.attachPointTypeFactory = attachPointTypeFactory;
+        this.monitor = monitor;
+    }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+    	 if (monitor != null) {
+    		 Problem problem = new ProblemImpl(this.getClass().getName(), "policy-xml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+    	     monitor.problem(problem);
+    	 }        
     }
     
     public IntentAttachPointType read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
@@ -80,9 +103,11 @@ abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor 
                 readMayProvideIntents(implType, reader);
                 return implType;
             } else {
+            	error("UnrecognizedIntentAttachPointType", reader, type);
                 throw new ContributionReadException("Unrecognized IntentAttachPointType - " + type);
             }
-        } else { 
+        } else {
+        	error("RequiredAttributeMissing", reader, TYPE);
             throw new ContributionReadException("Required attribute '" + TYPE + 
                                                 "' missing from BindingType Definition");
         }
@@ -174,11 +199,10 @@ abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor 
                     if (!providedIntent.isUnresolved()) {
                         alwaysProvided.add(providedIntent);
                     } else {
-                        throw new ContributionResolveException(
-                                                                 "Always Provided Intent - " + providedIntent
+                    	error("AlwaysProvidedIntentNotFound", resolver, providedIntent, extensionType);
+                        throw new ContributionResolveException("Always Provided Intent - " + providedIntent
                                                                      + " not found for ExtensionType "
                                                                      + extensionType);
-
                     }
                 } else {
                     alwaysProvided.add(providedIntent);
@@ -200,11 +224,10 @@ abstract class IntentAttachPointTypeProcessor extends BaseStAXArtifactProcessor 
                     if (!providedIntent.isUnresolved()) {
                         mayProvide.add(providedIntent);
                     } else {
-                        throw new ContributionResolveException(
-                                                                 "May Provide Intent - " + providedIntent
+                    	error("MayProvideIntentNotFound", resolver, providedIntent, extensionType);
+                        throw new ContributionResolveException("May Provide Intent - " + providedIntent
                                                                      + " not found for ExtensionType "
                                                                      + extensionType);
-
                     }
                 } else {
                     mayProvide.add(providedIntent);

@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.contribution.processor.ValidatingXMLInputFactory;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A contrainingType content handler.
@@ -54,8 +55,10 @@ public class ConstrainingTypeDocumentProcessor extends BaseAssemblyProcessor imp
      * @param policyFactory
      * @param staxProcessor
      */
-    public ConstrainingTypeDocumentProcessor(StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory) {
-        super(null, null, staxProcessor);
+    public ConstrainingTypeDocumentProcessor(StAXArtifactProcessor staxProcessor, 
+    									     XMLInputFactory inputFactory,
+    									     Monitor monitor) {
+        super(null, null, staxProcessor, monitor);
         this.inputFactory = inputFactory;
     }
 
@@ -64,8 +67,10 @@ public class ConstrainingTypeDocumentProcessor extends BaseAssemblyProcessor imp
      * @param modelFactories
      * @param staxProcessor
      */
-    public ConstrainingTypeDocumentProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor staxProcessor) {
-        super(null, null, staxProcessor);
+    public ConstrainingTypeDocumentProcessor(ModelFactoryExtensionPoint modelFactories, 
+    										 StAXArtifactProcessor staxProcessor,
+    										 Monitor monitor) {
+        super(null, null, staxProcessor, monitor);
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
     }
     
@@ -104,9 +109,13 @@ public class ConstrainingTypeDocumentProcessor extends BaseAssemblyProcessor imp
             return constrainingType;
             
         } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
+        	ContributionReadException ce = new ContributionReadException(e);
+        	error("ContributionReadException", inputFactory, ce);
+            throw ce;
         } catch (IOException e) {
-            throw new ContributionReadException(e);
+        	ContributionReadException ce = new ContributionReadException(e);
+        	error("ContributionReadException", inputFactory, ce);
+            throw ce;
         } finally {
             try {
                 if (urlStream != null) {

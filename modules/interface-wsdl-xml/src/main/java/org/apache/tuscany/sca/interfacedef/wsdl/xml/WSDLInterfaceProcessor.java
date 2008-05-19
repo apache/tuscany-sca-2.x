@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -40,6 +41,9 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  *
@@ -48,9 +52,39 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
 public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfaceContract>, WSDLConstants {
 
     private WSDLFactory wsdlFactory;
+    private Monitor monitor;
 
-    public WSDLInterfaceProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public WSDLInterfaceProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
+        this.monitor = monitor;
+    }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem = new ProblemImpl(this.getClass().getName(), "interface-wsdlxml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+                                              monitor.problem(problem);
+        }
+     }
+   
+   /**
+    * Report a exception.
+    * 
+    * @param problems
+    * @param message
+    * @param model
+    */
+    private void error(String message, Object model, Exception ex) {
+        if (monitor != null) {
+            Problem problem = new ProblemImpl(this.getClass().getName(), "interface-wsdlxml-validation-messages", Severity.ERROR, model, message, ex);
+                                              monitor.problem(problem);
+        }        
     }
     
     /**
@@ -67,6 +101,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
         // namespace#wsdl.interface(name)
         int index = uri.indexOf('#');
         if (index == -1) {
+        	error("InvalidWSDLInterfaceAttr", wsdlFactory, uri);
             throw new ContributionReadException("Invalid WSDL interface attribute: " + uri);
         }
         String namespace = uri.substring(0, index);
@@ -162,7 +197,9 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                             wsdlInterface = wsdlFactory.createWSDLInterface(portType.getElement(), wsdlDefinition, resolver);
                             wsdlInterface.setWsdlDefinition(wsdlDefinition);
                         } catch (InvalidInterfaceException e) {
-                            throw new ContributionResolveException(e);
+                        	ContributionResolveException ce = new ContributionResolveException(e);
+                        	error("ContributionResolveException", wsdlFactory, ce);
+                            throw ce;
                         }
                         resolver.addModel(wsdlInterface);
                     }

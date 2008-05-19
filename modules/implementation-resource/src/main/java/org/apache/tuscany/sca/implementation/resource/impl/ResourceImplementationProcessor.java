@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -39,6 +40,9 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.resource.ResourceImplementation;
 import org.apache.tuscany.sca.implementation.resource.ResourceImplementationFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 
 /**
@@ -51,10 +55,26 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
     
     private ContributionFactory contributionFactory;
     private ResourceImplementationFactory implementationFactory;
+    private Monitor monitor;
     
-    public ResourceImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public ResourceImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         implementationFactory = modelFactories.getFactory(ResourceImplementationFactory.class);
+        this.monitor = monitor;
+    }
+    
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Exception ex) {
+    	 if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "impl-resource-validation-messages", Severity.ERROR, model, message, ex);
+	        monitor.problem(problem);
+    	 }
     }
 
     public QName getArtifactType() {
@@ -101,7 +121,9 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
                 implementation.setLocationURL(new URL(resolved.getLocation()));
                 implementation.setUnresolved(false);
             } catch (IOException e) {
-                throw new ContributionResolveException(e);
+            	ContributionResolveException ce = new ContributionResolveException(e);
+            	error("ContributionResolveException", resolver, ce);
+                throw ce;
             }
         }
     }

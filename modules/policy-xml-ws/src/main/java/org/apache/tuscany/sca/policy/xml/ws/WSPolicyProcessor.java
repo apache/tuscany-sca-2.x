@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.xml.PolicyConstants;
 
 
@@ -58,7 +59,7 @@ public class WSPolicyProcessor extends BaseStAXArtifactProcessor implements StAX
     	System.out.println(">>>Initializing WSPolicyProcessor");
     }
     
-    public WSPolicyProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public WSPolicyProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
     	System.out.println(">>>Initializing WSPolicyProcessor");
     }
     

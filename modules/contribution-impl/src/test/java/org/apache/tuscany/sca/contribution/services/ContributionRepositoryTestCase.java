@@ -36,7 +36,7 @@ public class ContributionRepositoryTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         // create repository (this should re-create the root directory)
-        this.repository = new ContributionRepositoryImpl("target/repository/", XMLInputFactory.newInstance());
+        this.repository = new ContributionRepositoryImpl("target/repository/", XMLInputFactory.newInstance(), null);
         repository.init();
     }
 

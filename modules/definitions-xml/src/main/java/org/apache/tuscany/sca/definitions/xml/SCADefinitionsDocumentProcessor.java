@@ -34,6 +34,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -43,6 +44,9 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.definitions.impl.SCADefinitionsImpl;
 import org.apache.tuscany.sca.definitions.util.SCADefinitionsUtil;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * A SCA Definitions Document processor.
@@ -55,6 +59,7 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
     private static final String TUSCANY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
     private static final String DEFINITIONS = "definitions";
     private static final QName DEFINITIONS_QNAME = new QName(TUSCANY_NS, DEFINITIONS);
+    private Monitor monitor;
 
     /**
      * Construct a new SCADefinitions processor
@@ -63,9 +68,11 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
      * @param staxProcessor
      */
     public SCADefinitionsDocumentProcessor(StAXArtifactProcessor<Object> staxProcessor,
-                                           XMLInputFactory inputFactory) {
+                                           XMLInputFactory inputFactory,
+                                           Monitor monitor) {
         this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
         this.inputFactory = inputFactory;
+        this.monitor = monitor;
     }
 
     /**
@@ -74,10 +81,41 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
      * @param modelFactories
      * @param staxProcessor
      */
-    public SCADefinitionsDocumentProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor<Object> staxProcessor) {
+    public SCADefinitionsDocumentProcessor(ModelFactoryExtensionPoint modelFactories, 
+    									   StAXArtifactProcessor<Object> staxProcessor,
+    									   Monitor monitor) {
         this.extensionProcessor = (StAXArtifactProcessor<Object>)staxProcessor;
         this.inputFactory = modelFactories.getFactory(XMLInputFactory.class);
+        this.monitor = monitor;
     }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+     private void error(String message, Object model, Object... messageParameters) {
+    	 if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "definitions-xml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+	        monitor.problem(problem);
+    	 }
+     }
+    
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+     private void error(String message, Object model, Exception ex) {
+    	 if (monitor != null) {
+    		 Problem problem = new ProblemImpl(this.getClass().getName(), "definitions-xml-validation-messages", Severity.ERROR, model, message, ex);
+    	     monitor.problem(problem);
+    	 }        
+     }
     
 
     public SCADefinitions read(URL contributionURL, final URI uri, final URL url) throws ContributionReadException {
@@ -94,6 +132,7 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
                     }
                 });
             } catch (PrivilegedActionException e) {
+            	error("PrivilegedActionException", url, (IOException)e.getException());
                 throw (IOException)e.getException();
             }
             
@@ -122,9 +161,13 @@ public class SCADefinitionsDocumentProcessor  implements URLArtifactProcessor<SC
             
             return definitions;
         } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
+        	ContributionReadException ce = new ContributionReadException(e);
+        	error("ContributionReadException", inputFactory, ce);
+            throw ce;
         } catch (IOException e) {
-            throw new ContributionReadException(e);
+        	ContributionReadException ce = new ContributionReadException(e);
+        	error("ContributionReadException", inputFactory, ce);
+            throw ce;
         } finally {
         
             try {

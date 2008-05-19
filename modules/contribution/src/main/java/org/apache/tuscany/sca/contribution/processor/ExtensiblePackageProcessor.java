@@ -26,9 +26,13 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.service.ContributionException;
 import org.apache.tuscany.sca.contribution.service.TypeDescriber;
 import org.apache.tuscany.sca.contribution.service.UnsupportedPackageTypeException;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * Implementation of an extensible package processor.
@@ -42,21 +46,41 @@ public class ExtensiblePackageProcessor implements PackageProcessor {
 
     private PackageProcessorExtensionPoint processors;
     private TypeDescriber packageTypeDescriber;
+    private Monitor monitor;
 
-    public ExtensiblePackageProcessor(PackageProcessorExtensionPoint processors, TypeDescriber packageTypeDescriber) {
+    public ExtensiblePackageProcessor(PackageProcessorExtensionPoint processors, 
+    								  TypeDescriber packageTypeDescriber,
+    								  Monitor monitor) {
         this.processors = processors; 
         this.packageTypeDescriber = packageTypeDescriber;
+        this.monitor = monitor;
+    }
+    
+    /**
+     * Marshals errors into the monitor
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    protected void error(String message, Object model, Object... messageParameters) {
+    	if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+	        monitor.problem(problem);
+    	}
     }
 
     public List<URI> getArtifacts(URL packageSourceURL, InputStream inputStream) 
         throws ContributionException, IOException {
         String packageType = this.packageTypeDescriber.getType(packageSourceURL, null);
         if (packageType == null) {
+        	error("UnsupportedPackageTypeException", packageTypeDescriber, packageSourceURL.toString());
             throw new UnsupportedPackageTypeException("Unsupported contribution package type: " + packageSourceURL.toString());
         }
 
         PackageProcessor packageProcessor = this.processors.getPackageProcessor(packageType);
         if (packageProcessor == null) {
+        	error("UnsupportedPackageTypeException", packageTypeDescriber, packageType);
             throw new UnsupportedPackageTypeException("Unsupported contribution package type: " + packageType);
         }
 

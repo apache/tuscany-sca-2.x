@@ -37,6 +37,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -58,6 +59,9 @@ import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * Service interface that manages artifacts contributed to a Tuscany runtime.
@@ -125,6 +129,8 @@ public class ContributionServiceImpl implements ContributionService {
 
     private List policyDefinitions; 
     
+    private Monitor monitor;
+    
     private String COMPOSITE_FILE_EXTN = ".composite";    
 
     public ContributionServiceImpl(ContributionRepository repository,
@@ -138,7 +144,8 @@ public class ContributionServiceImpl implements ContributionService {
                                    AssemblyFactory assemblyFactory,
                                    ContributionFactory contributionFactory,
                                    XMLInputFactory xmlFactory,
-                                   List<SCADefinitions> policyDefinitions) {
+                                   List<SCADefinitions> policyDefinitions,
+                                   Monitor monitor) {
         super();
         this.contributionRepository = repository;
         this.packageProcessor = packageProcessor;
@@ -152,14 +159,29 @@ public class ContributionServiceImpl implements ContributionService {
         this.contributionFactory = contributionFactory;
         this.policyDefinitionsResolver = policyDefinitionsResolver;
         this.policyDefinitions = policyDefinitions;
+        this.monitor = monitor;
+    }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-impl-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+        monitor.problem(problem);
     }
 
     public Contribution contribute(String contributionURI, URL sourceURL, boolean storeInRepository)
         throws ContributionException, IOException {
         if (contributionURI == null) {
+        	error("ContributionURINull", contributionURI);
             throw new IllegalArgumentException("URI for the contribution is null");
         }
         if (sourceURL == null) {
+        	error("SourceURLNull", sourceURL);
             throw new IllegalArgumentException("Source URL for the contribution is null");
         }
         return addContribution(contributionURI, sourceURL, null, null, storeInRepository);
@@ -170,9 +192,11 @@ public class ContributionServiceImpl implements ContributionService {
                                    ModelResolver modelResolver,
                                    boolean storeInRepository) throws ContributionException, IOException {
         if (contributionURI == null) {
+        	error("ContributionURINull", contributionURI);
             throw new IllegalArgumentException("URI for the contribution is null");
         }
         if (sourceURL == null) {
+        	error("SourceURLNull", sourceURL);
             throw new IllegalArgumentException("Source URL for the contribution is null");
         }
 
@@ -233,7 +257,7 @@ public class ContributionServiceImpl implements ContributionService {
         Contribution contributionMetadata = contributionFactory.createContribution();
 
         ContributionMetadataDocumentProcessor metadataDocumentProcessor =
-            new ContributionMetadataDocumentProcessor(modelFactories, staxProcessor);
+            new ContributionMetadataDocumentProcessor(modelFactories, staxProcessor, monitor);
         
         final URL[] urls = {sourceURL};
         // Allow access to create classloader. Requires RuntimePermission in security policy.
@@ -294,6 +318,7 @@ public class ContributionServiceImpl implements ContributionService {
                                          boolean storeInRepository) throws IOException, ContributionException {
 
         if (contributionStream == null && sourceURL == null) {
+        	error("ContributionContentNull", contributionStream);
             throw new IllegalArgumentException("The content of the contribution is null.");
         }
 

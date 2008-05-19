@@ -69,7 +69,7 @@ public class ImportSDOProcessorTestCase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        loader = new ImportSDOProcessor(new DefaultModelFactoryExtensionPoint());
+        loader = new ImportSDOProcessor(new DefaultModelFactoryExtensionPoint(), null);
         xmlFactory = XMLInputFactory.newInstance();
     }
 

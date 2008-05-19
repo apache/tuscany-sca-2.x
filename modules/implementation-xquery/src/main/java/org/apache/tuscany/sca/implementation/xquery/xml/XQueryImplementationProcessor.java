@@ -26,6 +26,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -38,6 +39,9 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.xquery.XQueryImplementation;
 import org.apache.tuscany.sca.implementation.xquery.XQueryImplementationFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * Processor for the XQuery implementation type artifact
@@ -54,11 +58,27 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
     private AssemblyFactory assemblyFactory;
     private JavaInterfaceFactory javaFactory;
     private ContributionFactory contributionFactory;
+    private Monitor monitor;
 
-    public XQueryImplementationProcessor(ModelFactoryExtensionPoint modelFactoryExtensionPoint) {
+    public XQueryImplementationProcessor(ModelFactoryExtensionPoint modelFactoryExtensionPoint, Monitor monitor) {
         assemblyFactory = modelFactoryExtensionPoint.getFactory(AssemblyFactory.class);
         javaFactory = modelFactoryExtensionPoint.getFactory(JavaInterfaceFactory.class);
         contributionFactory = modelFactoryExtensionPoint.getFactory(ContributionFactory.class);
+        this.monitor = monitor;
+    }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+    	 if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "impl-xquery-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+	        monitor.problem(problem);
+    	 }
     }
 
     public QName getArtifactType() {
@@ -74,6 +94,7 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
         /* Read the location attribute for the XQuery implementation  */
         String xqueryLocation = reader.getAttributeValue(null, LOCATION);
         if (xqueryLocation == null) {
+        	error("LocationAttributeMissing", reader);
             throw new ContributionReadException(MSG_LOCATION_MISSING);
         }
         /* Create the XQuery implementation and set the location into it */
@@ -119,6 +140,7 @@ public class XQueryImplementationProcessor implements StAXArtifactProcessor<XQue
         artifact.setURI(xqueryImplementation.getLocation());
     	artifact = resolver.resolveModel(Artifact.class, artifact);
     	if (artifact.getLocation() == null) {
+    		error("CouldNotLocateFile", resolver, xqueryImplementation.getLocation());
             throw new ContributionResolveException("Could not locate file: " + xqueryImplementation.getLocation());
         }
     	xqueryImplementation.setLocationURL(artifact.getLocation());

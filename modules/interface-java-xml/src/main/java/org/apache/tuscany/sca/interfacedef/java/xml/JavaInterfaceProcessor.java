@@ -38,6 +38,9 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  *
@@ -46,9 +49,11 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfaceContract>, JavaConstants {
 
     private JavaInterfaceFactory javaFactory;
+    private Monitor monitor;
 
-    public JavaInterfaceProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public JavaInterfaceProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+        this.monitor = monitor;
     }
     
     private JavaInterface createJavaInterface(String interfaceName) {

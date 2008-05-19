@@ -37,9 +37,11 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.ConfiguredOperation;
 import org.apache.tuscany.sca.assembly.OperationsConfigurator;
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.ConfiguredOperationProcessor;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
+import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -54,6 +56,9 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
@@ -72,14 +77,44 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
     private PolicyAttachPointProcessor policyProcessor;
     private IntentAttachPointTypeFactory intentAttachPointTypeFactory;
     private ConfiguredOperationProcessor configuredOperationProcessor;
-
-    public WebServiceBindingProcessor(ModelFactoryExtensionPoint modelFactories) {
+    private Monitor monitor;
+    
+    public WebServiceBindingProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
-        this.wsFactory = modelFactories.getFactory(WebServiceBindingFactory.class);
+        this.wsFactory = new DefaultWebServiceBindingFactory();
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
         this.intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
-        this.configuredOperationProcessor = new ConfiguredOperationProcessor(modelFactories);
+        this.monitor = monitor;
+        this.configuredOperationProcessor = new ConfiguredOperationProcessor(modelFactories, this.monitor);
+    }
+    
+    /**
+     * Report a warning.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void warning(String message, Object model, Object... messageParameters) {
+       if (monitor != null) {
+           Problem problem = new ProblemImpl(this.getClass().getName(), "binding-wsxml-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+                                             monitor.problem(problem);
+       }
+    }
+         
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem = new ProblemImpl(this.getClass().getName(), "binding-wsxml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+                                              monitor.problem(problem);
+        }        
     }
 
     public WebServiceBinding read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
@@ -114,6 +149,7 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
         if (wsdlElement != null) {
             int index = wsdlElement.indexOf('#');
             if (index == -1) {
+            	error("InvalidWsdlElementAttr", reader, wsdlElement);
                 throw new ContributionReadException("Invalid WebService binding wsdlElement attribute: " + wsdlElement);
             }
             String namespace = wsdlElement.substring(0, index);
@@ -131,8 +167,8 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
                 localName = localName.substring("wsdl.port(".length(), localName.length() - 1);
                 int s = localName.indexOf('/');
                 if (s == -1) {
-                    throw new ContributionReadException(
-                                                        "Invalid WebService binding wsdlElement attribute: " + wsdlElement);
+                	error("InvalidWsdlElementAttr", reader, wsdlElement);
+                    throw new ContributionReadException("Invalid WebService binding wsdlElement attribute: " + wsdlElement);
                 }
                 wsBinding.setServiceName(new QName(namespace, localName.substring(0, s)));
                 wsBinding.setPortName(localName.substring(s + 1));
@@ -143,8 +179,8 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
                 localName = localName.substring("wsdl.endpoint(".length(), localName.length() - 1);
                 int s = localName.indexOf('/');
                 if (s == -1) {
-                    throw new ContributionReadException(
-                                                        "Invalid WebService binding wsdlElement attribute: " + wsdlElement);
+                	error("InvalidWsdlElementAttr", reader, wsdlElement);
+                    throw new ContributionReadException("Invalid WebService binding wsdlElement attribute: " + wsdlElement);
                 }
                 wsBinding.setServiceName(new QName(namespace, localName.substring(0, s)));
                 wsBinding.setEndpointName(localName.substring(s + 1));
@@ -158,6 +194,7 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
                 wsdlElementIsBinding = true;
 
             } else {
+            	error("InvalidWsdlElementAttr", reader, wsdlElement);
                 throw new ContributionReadException("Invalid WebService binding wsdlElement attribute: " + wsdlElement);
             }
         }
@@ -173,8 +210,8 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
                 case START_ELEMENT: {
                     if (END_POINT_REFERENCE.equals(reader.getName().getLocalPart())) {
                         if (wsdlElement != null && (wsdlElementIsBinding == null || !wsdlElementIsBinding)) {
-                            throw new ContributionReadException(
-                                                                wsdlElement + " must use wsdl.binding when using wsa:EndpointReference");
+                        	error("MustUseWsdlBinding", reader, wsdlElement);
+                            throw new ContributionReadException(wsdlElement + " must use wsdl.binding when using wsa:EndpointReference");
                         }
                         wsBinding.setEndPointReference(EndPointReferenceHelper.readEndPointReference(reader));
                     } else if (Constants.OPERATION_QNAME.equals(reader.getName())) {
@@ -309,6 +346,7 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
                 try {
                     wsdlInterface = wsdlFactory.createWSDLInterface(portType, wsdlDefinition, resolver);
                 } catch (InvalidInterfaceException e) {
+                	warning("InvalidInterfaceException", wsdlFactory, model.getName());
                     logger.log(Level.WARNING, "Exception creating interface from WSDL for binding: " + model.getName(), e); 
                 }
                 interfaceContract.setInterface(wsdlInterface);

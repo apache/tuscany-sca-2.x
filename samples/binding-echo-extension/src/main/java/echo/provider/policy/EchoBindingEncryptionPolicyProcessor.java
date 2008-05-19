@@ -19,6 +19,7 @@
 package echo.provider.policy;
 
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 
 /**
@@ -26,7 +27,7 @@ import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
  */
 public class EchoBindingEncryptionPolicyProcessor extends EchoBindingPolicyProcessor<EchoBindingEncryptionPolicy> {
 
-    public EchoBindingEncryptionPolicyProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public EchoBindingEncryptionPolicyProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
     }
     
     public Class<EchoBindingEncryptionPolicy> getModelType() {

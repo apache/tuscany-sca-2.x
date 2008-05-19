@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -35,6 +36,9 @@ import org.apache.tuscany.sca.contribution.resource.ResourceImportExportFactory;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * Artifact processor for Resource export
@@ -48,10 +52,26 @@ public class ResourceExportProcessor implements StAXArtifactProcessor<ResourceEx
     private static final String URI = "uri";
     
     private final ResourceImportExportFactory factory;
+    private final Monitor monitor;
     
-    public ResourceExportProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public ResourceExportProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.factory = modelFactories.getFactory(ResourceImportExportFactory.class);
+        this.monitor = monitor;
     }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+     private void error(String message, Object model, Object... messageParameters) {
+    	 if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-resource-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+	        monitor.problem(problem);
+    	 }
+     }
 
     public QName getArtifactType() {
         return EXPORT_RESOURCE;
@@ -78,6 +98,7 @@ public class ResourceExportProcessor implements StAXArtifactProcessor<ResourceEx
                     if (EXPORT_RESOURCE.equals(element)) {
                         String uri = reader.getAttributeValue(null, URI);
                         if (uri == null) {
+                        	error("AttributeURIMissing", reader);
                             throw new ContributionReadException("Attribute 'uri' is missing");
                         }
                         resourceExport.setURI(uri);

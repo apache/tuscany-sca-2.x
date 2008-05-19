@@ -48,7 +48,7 @@ public class PolicyReadTestCase extends TestCase {
     }
 
     public void testPolicyReading() throws Exception { 
-        JDKLoggingPolicyProcessor processor = new JDKLoggingPolicyProcessor(null);
+        JDKLoggingPolicyProcessor processor = new JDKLoggingPolicyProcessor(null, null);
         
         URL url = getClass().getResource("mock_policies.xml");
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -64,7 +64,7 @@ public class PolicyReadTestCase extends TestCase {
     }
     
     public void testPolicyWriting() throws Exception {
-        JDKLoggingPolicyProcessor processor = new JDKLoggingPolicyProcessor(null);
+        JDKLoggingPolicyProcessor processor = new JDKLoggingPolicyProcessor(null, null);
         
         JDKLoggingPolicy policy = new JDKLoggingPolicy();
         policy.setLoggerName("test.logger");

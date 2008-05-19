@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.implementation.bpel.impl;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -37,6 +38,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -54,6 +56,9 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.BPELPartnerLinkTypeExt;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * BPEL document processor responsible for reading a BPEL file and producing necessary model info about it
@@ -85,11 +90,56 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
     
     private final BPELFactory factory;
     private WSDLFactory WSDLfactory;
+    private Monitor monitor;
 
-    public BPELDocumentProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public BPELDocumentProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.factory     = modelFactories.getFactory(BPELFactory.class);
         this.WSDLfactory = modelFactories.getFactory(WSDLFactory.class);
+        this.monitor = monitor;
     }
+    
+    /**
+     * Report a warning.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+     private void warning(String message, Object model, Object... messageParameters) {
+         if (monitor != null) {
+             Problem problem = new ProblemImpl(this.getClass().getName(), "impl-bpel-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+                                               monitor.problem(problem);
+         }
+     }
+     
+     /**
+      * Report a error.
+      * 
+      * @param problems
+      * @param message
+      * @param model
+      */
+      private void error(String message, Object model, Object... messageParameters) {
+          if (monitor != null) {
+              Problem problem = new ProblemImpl(this.getClass().getName(), "impl-bpel-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+                                                monitor.problem(problem);
+          }
+      }
+    
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+     private void error(String message, Object model, Exception ex) {
+         if (monitor != null) {
+             Problem problem = new ProblemImpl(this.getClass().getName(), "impl-bpel-validation-messages", Severity.ERROR, model, message, ex);
+                                               monitor.problem(problem);
+         }        
+     }
+            
     
     public String getArtifactType() {
         return "*.bpel";
@@ -152,7 +202,8 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
                 if (resolved != null && !resolved.isUnresolved()) {
                     theImport.setWSDLDefinition( resolved );
                 } else {
-                	throw new ContributionResolveException("BPELDocumentProcessor:resolve -" +
+                    error("CannotResolveWSDLReference", resolver, WSDLLocation, WSDLNamespace);
+                    throw new ContributionResolveException("BPELDocumentProcessor:resolve -" +
                 			" unable to resolve WSDL referenced by BPEL import" +
                 			"WSDL location: " + WSDLLocation + " WSDLNamespace: " +
                 			WSDLNamespace );
@@ -176,8 +227,12 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
     		QName partnerLinkType = thePartnerLink.getPartnerLinkType();
     		BPELPartnerLinkTypeElement pLinkType = 
     			findPartnerLinkType( partnerLinkType, thePLinkTypes );
-    		if( pLinkType == null ) throw new ContributionResolveException( "PartnerLink " 
-    				+ thePartnerLink.getName() + " has no matching partner link type");	
+    		if( pLinkType == null ) {
+    		    error("PartnerLinkNoMatchingType", thePartnerLink, thePartnerLink.getName());
+    		    throw new ContributionResolveException( "PartnerLink " 
+    		        + thePartnerLink.getName() + " has no matching partner link type");
+    		}
+    					
     		thePartnerLink.setPartnerLinkType(pLinkType);
     	} // end for
     	
@@ -227,8 +282,12 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
     						break;
     					} // end if 
     				} // end for
-    				if( count == 0 ) throw new ContributionResolveException( "partnerLinkType "+ 
-    						                         pLinkElement.getName() +" has no Roles defined" );
+    				if( count == 0 ) {
+    				    error("PartnerLinkTypeNoRoles", theElement, pLinkElement.getName());
+    				    throw new ContributionResolveException( "partnerLinkType " +
+    				        pLinkElement.getName() +" has no Roles defined" );
+    				}
+    						                         
     				thePLinks.add( pLinkElement );
     			} // end if
     			
@@ -393,6 +452,7 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
 	    String scaReference = reader.getAttributeValue( SCA_BPEL_NS, "reference");
 	    if( (scaService != null) && (scaReference != null) ) {
 	    	// It is incorrect to set both service & reference attributes
+	        error("PartnerLinkHasBothAttr", partnerLink, reader.getAttributeValue(null, "name"));
 	    	throw new ContributionReadException( "BPEL PartnerLink " 
 	    			+ reader.getAttributeValue(null, "name") + 
 	    			" has both sca:reference and sca:service attributes set" );
@@ -420,7 +480,8 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
 										List<BPELPartnerLinkElement> partnerLinks ) {
 		BPELPartnerLinkElement partnerLink = findPartnerLinkByName( partnerLinks, partnerLinkName );
 		if( partnerLink == null ) {
-			System.out.println("BPEL TypeLoader - element references partnerLink " 
+		    warning("ReferencePartnerLinkNotInList", partnerLinkName, partnerLinkName);
+		    System.out.println("BPEL TypeLoader - element references partnerLink " 
 								+ partnerLinkName + " not in the list");
 		} else {
 			// Set the type of the partnerLink to "service" if not already set...
@@ -435,7 +496,8 @@ public class BPELDocumentProcessor extends BaseStAXArtifactProcessor implements 
 			List<BPELPartnerLinkElement> partnerLinks ) {
 		BPELPartnerLinkElement partnerLink = findPartnerLinkByName( partnerLinks, partnerLinkName );
 		if( partnerLink == null ) {
-			System.out.println("BPEL TypeLoader - element references partnerLink " 
+		    warning("ReferencePartnerLinkNotInList", partnerLinkName, partnerLinkName);
+		    System.out.println("BPEL TypeLoader - element references partnerLink " 
 								+ partnerLinkName + " not in the list");
 		} else {
 			// Set the type of the partnerLink to "service" if not already set...

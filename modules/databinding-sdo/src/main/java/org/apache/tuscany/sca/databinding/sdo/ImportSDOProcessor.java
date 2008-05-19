@@ -33,6 +33,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -42,6 +43,9 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XSDHelper;
@@ -56,9 +60,39 @@ import commonj.sdo.helper.XSDHelper;
 public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
     
     private ContributionFactory contributionFactory;
+    private Monitor monitor;
 
-    public ImportSDOProcessor(ModelFactoryExtensionPoint modelFactories) {
-        contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+    public ImportSDOProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+        this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        this.monitor = monitor;
+    }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+		 if (monitor != null) {
+		    Problem problem = new ProblemImpl(this.getClass().getName(), "databinding-sdo-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+		    monitor.problem(problem);
+		 }
+    }
+     
+     /**
+      * Report a exception.
+      * 
+      * @param problems
+      * @param message
+      * @param model
+      */
+    private void error(String message, Object model, Exception ex) {
+     	 if (monitor != null) {
+     		 Problem problem = new ProblemImpl(this.getClass().getName(), "databinding-sdo-validation-messages", Severity.ERROR, model, message, ex);
+     	     monitor.problem(problem);
+     	 }        
     }
 
     public QName getXMLType() {
@@ -95,6 +129,7 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
             ClassReference reference = new ClassReference(factoryName);
             ClassReference resolved = resolver.resolveModel(ClassReference.class, reference);
             if (resolved == null || resolved.isUnresolved()) {
+            	error("FailToResolveClass", resolver, factoryName);
                 ContributionResolveException loaderException =
                     new ContributionResolveException("Fail to resolve class: " + factoryName);
                 throw loaderException;
@@ -103,7 +138,9 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
                 Class<?> factoryClass = resolved.getJavaClass();
                 register(factoryClass, importSDO.getHelperContext());
             } catch (Exception e) {
-                throw new ContributionResolveException(e);
+            	ContributionResolveException ce = new ContributionResolveException(e);
+            	error("ContributionResolveException", resolver, ce);
+                throw ce;
             }
             importSDO.setUnresolved(false);
         }
@@ -127,6 +164,7 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
                 artifact.setURI(location);
                 artifact = resolver.resolveModel(Artifact.class, artifact);
                 if (artifact.getLocation() == null) {
+                	error("FailToResolveLocation", resolver, location);
                     ContributionResolveException loaderException =
                         new ContributionResolveException("Fail to resolve location: " + location);
                     throw loaderException;
@@ -143,7 +181,9 @@ public class ImportSDOProcessor implements StAXArtifactProcessor<ImportSDO> {
                     xsdInputStream.close();
                 }
             } catch (IOException e) {
-                throw new ContributionResolveException(e);
+            	ContributionResolveException ce = new ContributionResolveException(e);
+            	error("ContributionResolveException", resolver, ce);
+                throw ce;
             }
             importSDO.setUnresolved(false);
         }

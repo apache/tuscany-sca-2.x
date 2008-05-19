@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
 import pojo.POJOImplementation;
@@ -62,7 +63,7 @@ public class POJOImplementationProcessor implements StAXArtifactProcessor<POJOIm
     private PolicyFactory policyFactory;
     private PolicyAttachPointProcessor policyProcessor;
     
-    public POJOImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public POJOImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         
         // Get the assembly and Java interface factories as we'll need them to
         // create model objects 

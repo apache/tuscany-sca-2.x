@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.data.engine.ConnectionInfoArtifactProcessor;
 import org.apache.tuscany.sca.data.engine.config.ConnectionInfo;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 
 /**
@@ -53,16 +54,15 @@ public class DATAImplementationProcessor implements StAXArtifactProcessor<DATAIm
     protected static final QName IMPLEMENTATION_DATA_XML = new QName(Constants.SCA10_TUSCANY_NS, "implementation.data.xml");
     
     private DATAImplementationFactory dataFactory;
-    
+    private Monitor monitor;
     private StAXArtifactProcessor<ConnectionInfo> connectionInfoProcessor;
     
-    public DATAImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public DATAImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         JavaInterfaceFactory javaFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
-        
-        this.dataFactory = new DATAImplementationFactory(assemblyFactory, javaFactory);
-        
-        this.connectionInfoProcessor = new ConnectionInfoArtifactProcessor(modelFactories);
+        this.monitor = monitor;
+        this.dataFactory = new DATAImplementationFactory(assemblyFactory, javaFactory);        
+        this.connectionInfoProcessor = new ConnectionInfoArtifactProcessor(modelFactories, this.monitor);        
     }
 
     public QName getArtifactType() {

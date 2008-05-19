@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImport;
 import org.apache.tuscany.sca.contribution.namespace.NamespaceImportExportFactory;
@@ -35,6 +36,9 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * Artifact processor for Namespace import
@@ -50,10 +54,26 @@ public class NamespaceImportProcessor  implements StAXArtifactProcessor<Namespac
     private static final String LOCATION = "location";
     
     private final NamespaceImportExportFactory factory;
+    private final Monitor monitor;
     
-    public NamespaceImportProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public NamespaceImportProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.factory = modelFactories.getFactory(NamespaceImportExportFactory.class);
+        this.monitor = monitor;
     }
+    
+    /**
+     * Report a warning.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+     private void error(String message, Object model, Object... messageParameters) {
+    	 if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "contribution-namespace-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+	        monitor.problem(problem);
+    	 }
+     }
     
     public QName getArtifactType() {
         return IMPORT;
@@ -80,6 +100,7 @@ public class NamespaceImportProcessor  implements StAXArtifactProcessor<Namespac
                     if (IMPORT.equals(element)) {
                         String ns = reader.getAttributeValue(null, NAMESPACE);
                         if (ns == null) {
+                        	error("AttributeNameSpaceMissing", reader);
                             throw new ContributionReadException("Attribute 'namespace' is missing");
                         }
                         namespaceImport.setNamespace(ns);

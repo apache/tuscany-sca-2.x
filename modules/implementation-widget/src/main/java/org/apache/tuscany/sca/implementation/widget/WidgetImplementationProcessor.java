@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.tuscany.sca.assembly.AssemblyFactory;
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.Artifact;
 import org.apache.tuscany.sca.contribution.ContributionFactory;
@@ -38,6 +39,9 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 
 /**
@@ -51,11 +55,27 @@ public class WidgetImplementationProcessor implements StAXArtifactProcessor<Widg
     private AssemblyFactory assemblyFactory;
     private ContributionFactory contributionFactory;
     private WidgetImplementationFactory implementationFactory;
+    private Monitor monitor;
     
-    public WidgetImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public WidgetImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
     	assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         implementationFactory = new WidgetImplementationFactory(modelFactories); 
+        this.monitor = monitor;
+    }
+    
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Exception ex) {
+    	 if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "impl-widget-validation-messages", Severity.ERROR, model, message, ex);
+	        monitor.problem(problem);
+    	 }
     }
 
     public QName getArtifactType() {
@@ -106,7 +126,9 @@ public class WidgetImplementationProcessor implements StAXArtifactProcessor<Widg
                 widgetIntrospector.introspectImplementation();
 
             } catch (IOException e) {
-                throw new ContributionResolveException(e);
+            	ContributionResolveException ce = new ContributionResolveException(e);
+            	error("ContributionResolveException", resolver, ce);
+                throw ce;
             }
         }
     }

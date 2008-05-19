@@ -33,8 +33,12 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.core.UtilityExtensionPoint;
 import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
 import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
+
 
 /**
  * The default implementation of a URL artifact processor extension point.
@@ -48,6 +52,7 @@ public class DefaultURLArtifactProcessorExtensionPoint
     private ExtensionPointRegistry extensionPoints;
     private StAXArtifactProcessor<?> staxProcessor;
     private boolean loaded;
+    private Monitor monitor = null;
 
     /**
      * Constructs a new extension point.
@@ -57,8 +62,12 @@ public class DefaultURLArtifactProcessorExtensionPoint
         ModelFactoryExtensionPoint modelFactories = this.extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
         XMLOutputFactory outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        UtilityExtensionPoint utilities = this.extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
+        if (monitorFactory != null) 
+        	this.monitor = monitorFactory.createMonitor();
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, this.monitor);
     }
 
     public void addArtifactProcessor(URLArtifactProcessor artifactProcessor) {
@@ -113,7 +122,8 @@ public class DefaultURLArtifactProcessorExtensionPoint
             String modelTypeName = attributes.get("model");
             
             // Create a processor wrapper and register it
-            URLArtifactProcessor processor = new LazyURLArtifactProcessor(artifactType, modelTypeName, processorDeclaration, extensionPoints, staxProcessor);
+            URLArtifactProcessor processor = new LazyURLArtifactProcessor(artifactType, modelTypeName, 
+            		processorDeclaration, extensionPoints, staxProcessor, monitor);
             addArtifactProcessor(processor);
         }
         
@@ -133,17 +143,20 @@ public class DefaultURLArtifactProcessorExtensionPoint
         private URLArtifactProcessor processor;
         private Class<?> modelType;
         private StAXArtifactProcessor<?> staxProcessor;
+        private Monitor monitor;
         
         LazyURLArtifactProcessor(String artifactType, 
         		String modelTypeName, 
         		ServiceDeclaration processorDeclaration,
         		ExtensionPointRegistry extensionPoints, 
-                        StAXArtifactProcessor<?> staxProcessor) {
+                        StAXArtifactProcessor<?> staxProcessor,
+                        Monitor monitor) {
             this.artifactType = artifactType;
             this.modelTypeName = modelTypeName;
             this.processorDeclaration = processorDeclaration;
             this.extensionPoints = extensionPoints;
             this.staxProcessor = staxProcessor;
+            this.monitor = monitor;
         }
 
         public String getArtifactType() {
@@ -157,15 +170,15 @@ public class DefaultURLArtifactProcessorExtensionPoint
                     ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
                     Class<URLArtifactProcessor> processorClass = (Class<URLArtifactProcessor>)processorDeclaration.loadClass();
                     try {
-                        Constructor<URLArtifactProcessor> constructor = processorClass.getConstructor(ModelFactoryExtensionPoint.class);
-                        processor = constructor.newInstance(modelFactories);
+                        Constructor<URLArtifactProcessor> constructor = processorClass.getConstructor(ModelFactoryExtensionPoint.class, Monitor.class);
+                        processor = constructor.newInstance(modelFactories, monitor);
                     } catch (NoSuchMethodException e) {
                         try {
-                            Constructor<URLArtifactProcessor> constructor = processorClass.getConstructor(ModelFactoryExtensionPoint.class, StAXArtifactProcessor.class);
-                            processor = constructor.newInstance(modelFactories, staxProcessor);
+                            Constructor<URLArtifactProcessor> constructor = processorClass.getConstructor(ModelFactoryExtensionPoint.class, StAXArtifactProcessor.class, Monitor.class);
+                            processor = constructor.newInstance(modelFactories, staxProcessor, monitor);
                         } catch (NoSuchMethodException e2) {
-                            Constructor<URLArtifactProcessor> constructor = processorClass.getConstructor(ExtensionPointRegistry.class, StAXArtifactProcessor.class);
-                            processor = constructor.newInstance(extensionPoints, staxProcessor);
+                            Constructor<URLArtifactProcessor> constructor = processorClass.getConstructor(ExtensionPointRegistry.class, StAXArtifactProcessor.class, Monitor.class);
+                            processor = constructor.newInstance(extensionPoints, staxProcessor, monitor);
                         }
                     }
                 } catch (Exception e) {
