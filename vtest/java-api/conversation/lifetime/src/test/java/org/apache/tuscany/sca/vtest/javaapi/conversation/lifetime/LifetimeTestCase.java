@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -31,7 +31,6 @@ import org.osoa.sca.ConversationEndedException;
  */
 public class LifetimeTestCase {
 
-    protected static SCADomain domain;
     protected static String compositeName = "lifetime.composite";
     protected static AService aService = null;
 
@@ -39,8 +38,8 @@ public class LifetimeTestCase {
     public static void init() throws Exception {
         try {
             System.out.println("Setting up");
-            domain = SCADomain.newInstance(compositeName);
-            aService = domain.getService(AService.class, "AComponent");
+            ServiceFinder.init(compositeName);
+            aService = ServiceFinder.getService(AService.class, "AComponent");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -50,8 +49,7 @@ public class LifetimeTestCase {
     public static void destroy() throws Exception {
 
         System.out.println("Cleaning up");
-        if (domain != null)
-            domain.close();
+        ServiceFinder.cleanup();
 
     }
 
@@ -156,8 +154,8 @@ public class LifetimeTestCase {
     /**
      * Line 487, 491
      * <p>
-     * A conversation ends, and any state associated with the conversation
-     * is freed up, when: <br>
+     * A conversation ends, and any state associated with the conversation is
+     * freed up, when: <br>
      * ...The client calls Conversation.end()
      */
     @Test
@@ -168,8 +166,8 @@ public class LifetimeTestCase {
     /**
      * Line 487, 492
      * <p>
-     * A conversation ends, and any state associated with the conversation
-     * is freed up, when: <br>
+     * A conversation ends, and any state associated with the conversation is
+     * freed up, when: <br>
      * ...Any non-business exception is thrown by a conversational operation
      */
     @Test
@@ -194,8 +192,8 @@ public class LifetimeTestCase {
      * Line 495, 496, 497
      * <p>
      * If ServiceReference.getConversationID() is called after the
-     * "@EndsConversation" method: is called, but before the next conversation has
-     * been started, it will return null.
+     * "@EndsConversation" method: is called, but before the next conversation
+     * has been started, it will return null.
      */
     @Test
     public void lifetime13() throws Exception {
@@ -205,11 +203,11 @@ public class LifetimeTestCase {
     /**
      * Line 498, 499
      * <p>
-     * If a service reference is used after the service provider's
-     * conversation timeout has caused the conversation to be ended, then
+     * If a service reference is used after the service provider's conversation
+     * timeout has caused the conversation to be ended, then
      * ConversationEndedException will be thrown.
      */
-    @Test(expected=ConversationEndedException.class)
+    @Test(expected = ConversationEndedException.class)
     public void lifetime14() throws Exception {
         aService.testConversationEnd8();
     }
