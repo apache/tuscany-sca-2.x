@@ -61,7 +61,10 @@ public class DefaultValidationSchemaExtensionPoint implements ValidationSchemaEx
             schemaDeclarations = ServiceDiscovery.getInstance().getServiceDeclarations("org.apache.tuscany.sca.contribution.processor.ValidationSchema");
         } catch (IOException e) {
             throw new IllegalStateException(e);
-        }
+        }      
+        
+        // TODO - temp fix to ensure that the schema tuscany-sca.xsd always comes first
+        String tuscanyScaXsd = null;
         
         // Find each schema
         for (ServiceDeclaration schemaDeclaration: schemaDeclarations) {
@@ -69,7 +72,16 @@ public class DefaultValidationSchemaExtensionPoint implements ValidationSchemaEx
             if (url == null) {
                 throw new IllegalArgumentException(new FileNotFoundException(schemaDeclaration.getClassName()));
             }
-            schemas.add(url.toString());
+            
+            if (url.toString().contains("tuscany-sca.xsd")){
+                tuscanyScaXsd = url.toString();
+            } else {
+                schemas.add(url.toString());
+            }
+        }
+        
+        if (tuscanyScaXsd != null){
+            schemas.add(0, tuscanyScaXsd);
         }
         
         loaded = true;
