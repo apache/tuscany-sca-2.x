@@ -21,7 +21,7 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.conversationattributes;
 
 import javax.security.auth.login.Configuration;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +31,6 @@ import org.junit.Test;
  */
 public class SinglePricipalTestCase {
 
-    protected static SCADomain domain;
     protected static String compositeName = "singleprincipal.composite";
     protected static AService aService = null;
 
@@ -45,19 +44,17 @@ public class SinglePricipalTestCase {
                 .getResource("AJass.config").toString());
         }
         System.out.println("Setting up");
-        domain = SCADomain.newInstance(compositeName);
-        aService = domain.getService(AService.class, "AComponent");
+        ServiceFinder.init(compositeName);
+        aService = ServiceFinder.getService(AService.class, "AComponent");
     }
 
     @After
     public void destroy() throws Exception {
 
         System.out.println("Cleaning up");
-        if (domain != null)
-            domain.close();
+        ServiceFinder.cleanup();
 
     }
-
 
     /**
      * Line 1669, 1670

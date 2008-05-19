@@ -34,7 +34,7 @@ public class ServiceFinder {
 
     public static void init(String compositeFileName) {
         if (domain != null)
-            System.out.println("VTEST WARNING: domain already exists is is being overwritten!");
+            System.out.println("VTEST WARNING: domain already exists and is will be overwritten!");
         domain = SCADomain.newInstance(compositeFileName);
     } 
     

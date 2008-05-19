@@ -19,9 +19,7 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.annotations.endsconversation;
 
-import junit.framework.Assert;
-
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,7 +31,6 @@ import org.osoa.sca.ConversationEndedException;
  */
 public class EndsConversationTestCase {
 
-    protected static SCADomain domain;
     protected static String compositeName = "endsconversation.composite";
     protected static AService aService = null;
 
@@ -41,8 +38,8 @@ public class EndsConversationTestCase {
     public static void init() throws Exception {
         try {
             System.out.println("Setting up");
-            domain = SCADomain.newInstance(compositeName);
-            aService = domain.getService(AService.class, "AComponent");
+            ServiceFinder.init(compositeName);
+            aService = ServiceFinder.getService(AService.class, "AComponent");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -52,9 +49,7 @@ public class EndsConversationTestCase {
     public static void destroy() throws Exception {
 
         System.out.println("Cleaning up");
-        if (domain != null)
-            domain.close();
-
+        ServiceFinder.cleanup();
     }
 
     /**
@@ -110,7 +105,7 @@ public class EndsConversationTestCase {
      * This tests the second section of the errata. Starting with .. "If the
      * conversation ends for any other reason ..."
      */
-    @Test (expected = ConversationEndedException.class)
+    @Test(expected = ConversationEndedException.class)
     public void atEndsConversation3() throws Exception {
         aService.testTimedEnd();
     }
