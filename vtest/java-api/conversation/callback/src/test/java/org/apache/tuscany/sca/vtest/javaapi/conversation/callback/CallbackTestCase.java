@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.conversation.callback;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -31,7 +31,6 @@ import org.osoa.sca.ServiceRuntimeException;
  */
 public class CallbackTestCase {
 
-    protected static SCADomain domain;
     protected static AService aService = null;
 
     @Before
@@ -47,9 +46,7 @@ public class CallbackTestCase {
     public void destroy() throws Exception {
 
         System.out.println("Cleaning up");
-        if (domain != null)
-            domain.close();
-
+        ServiceFinder.cleanup();
     }
 
     /**
@@ -109,8 +106,8 @@ public class CallbackTestCase {
     @Test
     public void statefulCallback() throws Exception {
         System.out.println("Setting up for callback tests");
-        domain = SCADomain.newInstance("callback.composite");
-        aService = domain.getService(AService.class, "AComponent");
+        ServiceFinder.init("callback.composite");
+        aService = ServiceFinder.getService(AService.class, "AComponent");
         aService.testCallback();
     }
 
@@ -171,8 +168,8 @@ public class CallbackTestCase {
     @Test
     public void localstatefulCallback() throws Exception {
         System.out.println("Setting up for local callback tests");
-        domain = SCADomain.newInstance("callback-local.composite");
-        aService = domain.getService(AService.class, "AComponent");
+        ServiceFinder.init("callback-local.composite");
+        aService = ServiceFinder.getService(AService.class, "AComponent");
         aService.testCallback();
     }
 
@@ -190,8 +187,8 @@ public class CallbackTestCase {
     @Ignore("TUSCANY-2291")
     public void statefulMixedCallback() throws Exception {
         System.out.println("Setting up for mixed local/remote callback tests");
-        domain = SCADomain.newInstance("callback-mixed.composite");
-        aService = domain.getService(AService.class, "AComponent");
+        ServiceFinder.init("callback-mixed.composite");
+        aService = ServiceFinder.getService(AService.class, "AComponent");
         aService.testCallback();
     }
 
@@ -211,8 +208,8 @@ public class CallbackTestCase {
     @Test
     public void statelessCallback() throws Exception {
         System.out.println("Setting up for stateless callback tests");
-        domain = SCADomain.newInstance("callback-stateless.composite");
-        aService = domain.getService(AService.class, "AComponent");
+        ServiceFinder.init("callback-stateless.composite");
+        aService = ServiceFinder.getService(AService.class, "AComponent");
         aService.testCallback();
     }
 
@@ -250,8 +247,8 @@ public class CallbackTestCase {
     @Test
     public void statelessCallback2() throws Exception {
         System.out.println("Setting up for stateless callback id tests");
-        domain = SCADomain.newInstance("callback-stateless-callbackid.composite");
-        aService = domain.getService(AService.class, "AComponent");
+        ServiceFinder.init("callback-stateless-callbackid.composite");
+        aService = ServiceFinder.getService(AService.class, "AComponent");
         aService.testCallback();
 
     }
@@ -272,8 +269,8 @@ public class CallbackTestCase {
     // @Ignore("TUSCANY-2306")
     public void statelessCallback3() throws Exception {
         System.out.println("Setting up for stateless callback ref null tests");
-        domain = SCADomain.newInstance("callback-stateless-callbackfieldnull.composite");
-        aService = domain.getService(AService.class, "AComponent");
+        ServiceFinder.init("callback-stateless-callbackfieldnull.composite");
+        aService = ServiceFinder.getService(AService.class, "AComponent");
         aService.testCallback();
 
     }
@@ -298,8 +295,8 @@ public class CallbackTestCase {
     @Ignore("TUSCANY-2311")
     public void statefulMultiBidirectional() throws Exception {
         System.out.println("Setting up for multi-bidirectional interfaces tests");
-        domain = SCADomain.newInstance("callback-multi.composite");
-        aService = domain.getService(AService.class, "AComponent");
+        ServiceFinder.init("callback-multi.composite");
+        aService = ServiceFinder.getService(AService.class, "AComponent");
         aService.testCallback();
         aService.testCallback2(); // Includes test for 670,671
 
@@ -328,8 +325,8 @@ public class CallbackTestCase {
     @Test
     public void accessingCallbacks() throws Exception {
         System.out.println("Setting up for callback accessing tests");
-        domain = SCADomain.newInstance("callback-accessing.composite");
-        aService = domain.getService(AService.class, "AComponent");
+        ServiceFinder.init("callback-accessing.composite");
+        aService = ServiceFinder.getService(AService.class, "AComponent");
         aService.testCallback();
         aService.testCallback2(); // Lines 695-696
 
@@ -352,8 +349,8 @@ public class CallbackTestCase {
     @Test
     public void callbackId() throws Exception {
         System.out.println("Setting up for callback id tests");
-        domain = SCADomain.newInstance("callback-id.composite");
-        aService = domain.getService(AService.class, "AComponent");
+        ServiceFinder.init("callback-id.composite");
+        aService = ServiceFinder.getService(AService.class, "AComponent");
         aService.testCallback();
 
     }
@@ -367,15 +364,16 @@ public class CallbackTestCase {
      * method. The object passed as the callback should implement the interface
      * defined for the callback, including any additional SCA semantics on that
      * interface such as its scope and whether or not it is remotable.
+     * <p>
      * TODO - Need to complete testing of 1.6.7.5 after resolution of t-2312
      */
     @Test
-    @Ignore("TUSCANY-2312") 
+    @Ignore("TUSCANY-2312")
     public void customCallback() throws Exception {
         System.out.println("Setting up for custom callback tests; create domain instance");
-        domain = SCADomain.newInstance("callback-custom.composite");
-        System.out.println("Setting up for custom callback tests; get AService handle");  
-        aService = domain.getService(AService.class, "AComponent");
+        ServiceFinder.init("callback-custom.composite");
+        System.out.println("Setting up for custom callback tests; get AService handle");
+        aService = ServiceFinder.getService(AService.class, "AComponent");
         aService.testCallback();
 
     }

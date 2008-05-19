@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.apis.requestcontext;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -27,11 +27,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * This test class tests the RequestContext interface described in 1.7.2 of the SCA Java Annotations & APIs Specification 1.0.
+ * This test class tests the RequestContext interface described in 1.7.2 of the
+ * SCA Java Annotations & APIs Specification 1.0.
  */
 public class RequestContextTestCase {
 
-    protected static SCADomain domain;
     protected static String compositeName = "requestcontext.composite";
     protected static AComponent a;
     protected static BComponent b;
@@ -40,9 +40,9 @@ public class RequestContextTestCase {
     public static void init() throws Exception {
         try {
             System.out.println("Setting up");
-            domain = SCADomain.newInstance(compositeName);
-            a = domain.getService(AComponent.class, "AComponent");
-            b = domain.getService(BComponent.class, "BComponent");
+            ServiceFinder.init(compositeName);
+            a = ServiceFinder.getService(AComponent.class, "AComponent");
+            b = ServiceFinder.getService(BComponent.class, "BComponent");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -51,9 +51,7 @@ public class RequestContextTestCase {
     @AfterClass
     public static void destroy() throws Exception {
         System.out.println("Cleaning up");
-        if (domain != null) {
-            domain.close();
-        }
+        ServiceFinder.cleanup();
     }
 
     /**
@@ -69,7 +67,8 @@ public class RequestContextTestCase {
 
     /**
      * L860 <br>
-     * getServiceName() – Returns the name of the service on the Java implementation the request came in on.
+     * getServiceName() – Returns the name of the service on the Java
+     * implementation the request came in on.
      * 
      * @throws Exception
      */
@@ -80,8 +79,9 @@ public class RequestContextTestCase {
 
     /**
      * L861, L862 <br>
-     * getCallbackReference() – Returns a callable reference to the callback as specified by the caller.
-     * getCallback() – Returns a proxy for the callback as specified by the caller.
+     * getCallbackReference() – Returns a callable reference to the callback as
+     * specified by the caller. getCallback() – Returns a proxy for the callback
+     * as specified by the caller.
      * 
      * @throws Exception
      */
@@ -92,9 +92,10 @@ public class RequestContextTestCase {
 
     /**
      * L863 <br>
-     * getServiceReference() – When invoked during the execution of a service operation,
-     * this API MUST return a CallableReference that represents the service.  When invoked during the execution of a callback operation,
-     * this API MUST return a CallableReference that represents the callback service.
+     * getServiceReference() – When invoked during the execution of a service
+     * operation, this API MUST return a CallableReference that represents the
+     * service. When invoked during the execution of a callback operation, this
+     * API MUST return a CallableReference that represents the callback service.
      * 
      * @throws Exception
      */
