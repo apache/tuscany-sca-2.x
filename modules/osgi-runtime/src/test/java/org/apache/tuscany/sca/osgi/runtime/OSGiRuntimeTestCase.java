@@ -36,7 +36,12 @@ public class OSGiRuntimeTestCase extends TestCase {
      */
     @Override
     protected void setUp() throws Exception {
+        try {
         this.runtime = OSGiRuntime.getRuntime();
+        } catch ( Throwable e ) {
+            System.out.println( "DOB: OSGiRuntimeTestCase.setUp error=" + e );
+            e.printStackTrace();
+        }
     }
 
     /**

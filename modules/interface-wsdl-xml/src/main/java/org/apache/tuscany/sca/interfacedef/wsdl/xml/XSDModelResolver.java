@@ -21,6 +21,8 @@ package org.apache.tuscany.sca.interfacedef.wsdl.xml;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +57,15 @@ public class XSDModelResolver implements ModelResolver {
 
     public XSDModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
-        this.schemaCollection = new XmlSchemaCollection();
+        // Allow privileged access to read system property. Requires PropertyPermission in security
+        // policy.
+        this.schemaCollection =
+            AccessController.doPrivileged(new PrivilegedAction<XmlSchemaCollection>() {
+                public XmlSchemaCollection run() {
+                    return new XmlSchemaCollection();
+                }
+            });
+        
         schemaCollection.setSchemaResolver(new URIResolverImpl(contribution));
         this.factory = new DefaultWSDLFactory();
     }

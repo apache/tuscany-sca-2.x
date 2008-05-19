@@ -22,6 +22,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashSet;
@@ -412,9 +415,15 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                 
                     while (retry++ < 10) {
                         try {
-                            osgiBundle.start();
+                            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                                public Object run() throws BundleException {
+                                    osgiBundle.start();
+                                   return null;
+                               }
+                            });
                             break;
-                       } catch (BundleException e) {
+                        // } catch ( BundleException e) {
+                        } catch ( PrivilegedActionException e) {
                             // It is possible that the thread "Refresh Packages" is in the process of
                             // changing the state of this bundle. 
                             Thread.yield();
@@ -715,7 +724,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     
    
     
-    private  void resolveWireCreateDummyBundles(Class interfaceClass) throws Exception {
+    private  void resolveWireCreateDummyBundles(final Class interfaceClass) throws Exception {
         
         
         try {
@@ -726,8 +735,13 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
                         
             // The interface used by the proxy is not in the source bundle
             // A dummy bundle needs to be installed to create the proxy
-                     
-            Bundle dummyBundle = installDummyBundle(interfaceClass);
+            // Allow privileged access to file system. Requires FileSystem permission in security
+            // policy.
+            Bundle dummyBundle = AccessController.doPrivileged(new PrivilegedExceptionAction<Bundle>() {
+                public Bundle run() throws Exception {
+                    return installDummyBundle(interfaceClass);
+                }
+            });
                                 
             if (packageAdmin != null) {
                                     
@@ -826,7 +840,7 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
     
     
     // Register proxy service 
-    private void resolveWireRegisterProxyService(Bundle bundle, Class interfaceClass, RuntimeWire wire) throws Exception {
+    private void resolveWireRegisterProxyService(final Bundle bundle, final Class interfaceClass, RuntimeWire wire) throws Exception {
           
         ComponentReference scaRef = componentReferenceWires.get(wire);
         Hashtable<String, Object> targetProperties = new Hashtable<String, Object>();
@@ -841,14 +855,23 @@ public class OSGiImplementationProvider  implements ScopedImplementationProvider
         
            
         JDKProxyFactory proxyService = new JDKProxyFactory();
-              
-        Class<?> proxyInterface = bundle.loadClass(interfaceClass.getName());
-                
 
-        Object proxy = proxyService.createProxy(proxyInterface, wire);
-       
-            
-        bundleContext.registerService(proxyInterface.getName(), proxy, targetProperties);
+        // Allow privileged access to load classes. Requires getClassLoader permission in security
+        // policy.
+        final Class<?> proxyInterface = AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
+            public Class<?> run() throws Exception {
+                return bundle.loadClass(interfaceClass.getName());
+            }
+        });
+
+        final Object proxy = proxyService.createProxy(proxyInterface, wire);
+        final Hashtable<String, Object> finalTargetProperties = targetProperties;
+        AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+            public Object run() throws Exception {
+                bundleContext.registerService(proxyInterface.getName(), proxy, finalTargetProperties);
+                return null;
+            }
+        });
             
         
     }

@@ -39,6 +39,8 @@ import java.io.Reader;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,6 +71,7 @@ import org.jruby.javasupport.JavaUtil;
 import org.jruby.runtime.Block;
 import org.jruby.runtime.IAccessor;
 import org.jruby.runtime.builtin.IRubyObject;
+import org.jruby.runtime.load.LoadService;
 
 import com.sun.script.jruby.JRubyScriptEngineFactory;
 
@@ -88,7 +91,14 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
     private Ruby runtime;
    
     public TuscanyJRubyScriptEngine() {
-        init(System.getProperty("com.sun.script.jruby.loadpath"));
+        // Allow privileged access to ready properties. Requires PropertyPermission in security
+        // policy.
+        String rubyPath = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
+                return System.getProperty("com.sun.script.jruby.loadpath");
+            }
+        });
+        init(rubyPath);
     }
 
     public TuscanyJRubyScriptEngine(String loadPath) {
@@ -420,10 +430,23 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
         }
     }
 
-    private void init(String loadPath) {        
-        runtime = Ruby.getDefaultInstance();
+    private void init(String loadPath) {    
+        // Allow privileged access to ready properties. Requires PropertyPermission in security
+        // policy.
+        //runtime = Ruby.getDefaultInstance();
+        runtime = AccessController.doPrivileged(new PrivilegedAction<Ruby>() {
+            public Ruby run() {
+                return Ruby.getDefaultInstance();
+            }
+        });
         if (loadPath == null) {
-            loadPath = System.getProperty("java.class.path");
+            // Allow privileged access to ready properties. Requires PropertyPermission in security
+            // policy.
+            loadPath = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                public String run() {
+                    return System.getProperty("java.class.path");
+                }
+            });
         }
         List list = new ArrayList(Arrays.asList(loadPath.split(File.pathSeparator)));
         list.add("META-INF/jruby.home/lib/ruby/site_ruby/1.8");
@@ -432,9 +455,18 @@ public class TuscanyJRubyScriptEngine extends AbstractScriptEngine
         list.add("META-INF/jruby.home/lib/ruby/1.8");
         list.add("META-INF/jruby.home/lib/ruby/1.8/java");
         list.add("lib/ruby/1.8");
-        runtime.getLoadService().init(list);
-        runtime.getLoadService().require("java");
-        
+        final List finalList = list;
+        // runtime.getLoadService().init(list);
+        // Allow privileged access to ready properties. Requires PropertyPermission in security
+        // policy.
+        final LoadService loadService = runtime.getLoadService();
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            public Ruby run() {
+                loadService.init(finalList);
+                // loadService.require("java");
+                return null;
+            }
+        });        
     }
 
     private Object invokeImpl(final Object obj, String method, 

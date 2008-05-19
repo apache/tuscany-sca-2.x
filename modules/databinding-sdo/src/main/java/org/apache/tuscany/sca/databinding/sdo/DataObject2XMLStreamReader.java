@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.databinding.sdo;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -37,17 +40,23 @@ import commonj.sdo.helper.XMLHelper;
 public class DataObject2XMLStreamReader extends BaseTransformer<DataObject, XMLStreamReader> implements
         PullTransformer<DataObject, XMLStreamReader> {
 
-    public XMLStreamReader transform(DataObject source, TransformationContext context) {
+    public XMLStreamReader transform(final DataObject source, TransformationContext context) {
         if (source == null) {
             return null;
         }            
         try {
             HelperContext helperContext = SDOContextHelper.getHelperContext(context);
             XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(helperContext);
-            QName elementName = SDOContextHelper.getElement(context);
-            XMLHelper xmlHelper = helperContext.getXMLHelper();
-            XMLDocument document =
-                    xmlHelper.createDocument(source, elementName.getNamespaceURI(), elementName.getLocalPart());
+            final QName elementName = SDOContextHelper.getElement(context);
+            final XMLHelper xmlHelper = helperContext.getXMLHelper();
+            // Allow privileged access to read properties. REquires java.util.PropertyPermission
+            // XML.load.form.lax read in security policy.
+            XMLDocument document = AccessController.doPrivileged(new PrivilegedAction<XMLDocument>() {
+                public XMLDocument run() {
+                    return xmlHelper.createDocument(source, elementName.getNamespaceURI(), elementName.getLocalPart());
+                }
+            });
+                    
             return streamHelper.createXMLStreamReader(document);
         } catch (XMLStreamException e) {
             // TODO: Add context to the exception
