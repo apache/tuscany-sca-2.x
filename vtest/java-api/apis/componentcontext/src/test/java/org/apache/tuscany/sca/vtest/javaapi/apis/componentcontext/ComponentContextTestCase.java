@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.apis.componentcontext;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -27,12 +27,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * This test class tests the ComponentContext interface described in 1.7.1 of the SCA Java Annotations & APIs Specification 1.0.
- * Relevant sections of 1.4 will also be covered here.
+ * This test class tests the ComponentContext interface described in 1.7.1 of
+ * the SCA Java Annotations & APIs Specification 1.0. Relevant sections of 1.4
+ * will also be covered here.
  */
 public class ComponentContextTestCase {
 
-    protected static SCADomain domain;
     protected static String compositeName = "ab.composite";
     protected static AComponent a;
     protected static BService b;
@@ -41,9 +41,9 @@ public class ComponentContextTestCase {
     public static void init() throws Exception {
         try {
             System.out.println("Setting up");
-            domain = SCADomain.newInstance(compositeName);
-            a = domain.getService(AComponent.class, "AComponent");
-            b = domain.getService(BService.class, "BComponent/BService");
+            ServiceFinder.init(compositeName);
+            a = ServiceFinder.getService(AComponent.class, "AComponent");
+            b = ServiceFinder.getService(BService.class, "BComponent/BService");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -52,14 +52,13 @@ public class ComponentContextTestCase {
     @AfterClass
     public static void destroy() throws Exception {
         System.out.println("Cleaning up");
-        if (domain != null) {
-            domain.close();
-        }
+        ServiceFinder.cleanup();
     }
 
     /**
      * L776 <br>
-     * getURI() - Returns the absolute URI of the component within the SCA domain.
+     * getURI() - Returns the absolute URI of the component within the SCA
+     * domain.
      * 
      * @throws Exception
      */
@@ -70,7 +69,8 @@ public class ComponentContextTestCase {
 
     /**
      * L778 <br>
-     * getService(Class&lt;B&gt; businessInterface, String referenceName) ? Returns a proxy for the reference defined by the current component.
+     * getService(Class&lt;B&gt; businessInterface, String referenceName) ?
+     * Returns a proxy for the reference defined by the current component.
      * 
      * @throws Exception
      */
@@ -81,7 +81,9 @@ public class ComponentContextTestCase {
 
     /**
      * L780 <br>
-     * getServiceReference(Class&lt;B&gt; businessInterface, String referenceName) ? Returns a ServiceReference defined by the current component.
+     * getServiceReference(Class&lt;B&gt; businessInterface, String
+     * referenceName) ? Returns a ServiceReference defined by the current
+     * component.
      * 
      * @throws Exception
      */
@@ -92,8 +94,9 @@ public class ComponentContextTestCase {
 
     /**
      * L783 <br>
-     * createSelfReference(Class&lt;B&gt; businessInterface) ?
-     * Returns a ServiceReference that can be used to invoke this component over the designated service.
+     * createSelfReference(Class&lt;B&gt; businessInterface) ? Returns a
+     * ServiceReference that can be used to invoke this component over the
+     * designated service.
      * 
      * @throws Exception
      */
@@ -105,8 +108,9 @@ public class ComponentContextTestCase {
     /**
      * L785 <br>
      * getSelfReference(Class&lt;B&gt; businessInterface, String serviceName) -
-     * Returns a ServiceReference that can be used to invoke this component over the designated service.
-     * Service name explicitly declares the service name to invoke.
+     * Returns a ServiceReference that can be used to invoke this component over
+     * the designated service. Service name explicitly declares the service name
+     * to invoke.
      * 
      * @throws Exception
      */
@@ -117,7 +121,8 @@ public class ComponentContextTestCase {
 
     /**
      * L788 <br>
-     * getProperty (Class&lt;B&gt; type, String propertyName) - Returns the value of an SCA property defined by this component.
+     * getProperty (Class&lt;B&gt; type, String propertyName) - Returns the
+     * value of an SCA property defined by this component.
      * 
      * @throws Exception
      */
@@ -128,12 +133,12 @@ public class ComponentContextTestCase {
 
     /**
      * L793 <br>
-     * getRequestContext() -
-     * Returns the context for the current SCA service request, or null if there is no current request or if the context is unavailable.
+     * getRequestContext() - Returns the context for the current SCA service
+     * request, or null if there is no current request or if the context is
+     * unavailable.
      * 
-     * @throws Exception
-     * 
-     * TODO: fails for me so I've added @Ignore
+     * @throws Exception TODO: fails for me so I've added
+     * @Ignore
      */
     @Test
     @Ignore
@@ -164,8 +169,9 @@ public class ComponentContextTestCase {
 
     /**
      * L342-344 <br>
-     * When a component implementation needs access to a service where the reference to the service is not known at compile time,
-     * the reference can be located using the component?s ComponentContext.
+     * When a component implementation needs access to a service where the
+     * reference to the service is not known at compile time, the reference can
+     * be located using the component?s ComponentContext.
      * 
      * @throws Exception
      */

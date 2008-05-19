@@ -23,18 +23,17 @@ import static org.junit.Assert.fail;
 import junit.framework.Assert;
 
 import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * This test class tests the "@Reference" annotation described in section
- * 1.8.14
+ * This test class tests the "@Reference" annotation described in section 1.8.14
  */
 public class ReferenceAnnotationTestCase {
 
-    protected static SCADomain domain;
     protected static String compositeName = "ab.composite";
     protected static AService a;
 
@@ -42,9 +41,9 @@ public class ReferenceAnnotationTestCase {
     public static void init() throws Exception {
         try {
             System.out.println("Setting up");
-            domain = SCADomain.newInstance(compositeName);
-            a = domain.getService(AService.class, "AComponent");
-            
+            ServiceFinder.init(compositeName);
+            a = ServiceFinder.getService(AService.class, "AComponent");
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -54,9 +53,7 @@ public class ReferenceAnnotationTestCase {
     public static void destroy() throws Exception {
 
         System.out.println("Cleaning up");
-        if (domain != null)
-            domain.close();
-
+        ServiceFinder.cleanup();
     }
 
     /**
@@ -115,7 +112,7 @@ public class ReferenceAnnotationTestCase {
      */
     @Test
     public void atReference2() throws Exception {
-        AService anotherA = domain.getService(AService.class, "AnotherAComponent");
+        AService anotherA = ServiceFinder.getService(AService.class, "AnotherAComponent");
         Assert.assertEquals("BService", anotherA.getB4Name());
         try {
             anotherA.getB5Name();
@@ -159,14 +156,14 @@ public class ReferenceAnnotationTestCase {
     /**
      * Lines 1457 to 1459<br>
      * If the reference is not an array or collection, then the implied
-     * component type has a reference with a multiplicity of either 0..1 or
-     * 1..1 depending on the value of the @Reference required attribute –
-     * 1..1 applies if required=true.<br>
-     * <p>
-     * B10 is field injected, required=false, and multiplicity="0..1"<br>
-     * B11 is field injected, required=false, and multiplicity="1..1"<br>
-     * B12 is setter injected, required=true, and multiplicity="1..1"
-
+     * component type has a reference with a multiplicity of either 0..1 or 1..1
+     * depending on the value of the
+     * 
+     * @Reference required attribute – 1..1 applies if required=true.<br>
+     *            <p>
+     *            B10 is field injected, required=false, and multiplicity="0..1"<br>
+     *            B11 is field injected, required=false, and multiplicity="1..1"<br>
+     *            B12 is setter injected, required=true, and multiplicity="1..1"
      */
     @Test
     public void atReference5() throws Exception {
@@ -183,9 +180,12 @@ public class ReferenceAnnotationTestCase {
      * "@Reference" annotation is set to true or false – 1..n applies if
      * required=true.<br>
      * <p>
-     * B13 is a java.util.List, field injected, required=false, multiplicity="0..n", and no target<br>
-     * B14 is a java.util.List, setter injected, required=true, multiplicity="1..n", and one target<br>
-     * B15 is an array, field injected, required=true, multiplicity="1..n", and two targets
+     * B13 is a java.util.List, field injected, required=false,
+     * multiplicity="0..n", and no target<br>
+     * B14 is a java.util.List, setter injected, required=true,
+     * multiplicity="1..n", and one target<br>
+     * B15 is an array, field injected, required=true, multiplicity="1..n", and
+     * two targets
      */
     @Test
     public void atReference6() throws Exception {
@@ -196,14 +196,14 @@ public class ReferenceAnnotationTestCase {
         Assert.assertEquals("BService", a.getB15Name(1));
         Assert.assertEquals(2, a.getB15Size());
     }
-    
+
     /**
      * Lines 1415 <br>
      * required (optional) - whether injection of service or services is
      * required. Defaults to true.
      * <p>
-     * b16 and b17 is defined as "@Reference(required=false)" and
-     * AComponent does not define reference for them
+     * b16 and b17 is defined as "@Reference(required=false)" and AComponent
+     * does not define reference for them
      */
     @Test
     public void atReference7() throws Exception {

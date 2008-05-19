@@ -22,15 +22,8 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.scope;
 import java.util.ArrayList;
 
 import junit.framework.Assert;
-import org.apache.tuscany.sca.host.embedded.SCADomain;
-import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.BService;
-import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.CService;
-import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.DService;
-import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.FService;
-import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.GService;
-import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.HService;
-import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.JService;
-import org.apache.tuscany.sca.vtest.javaapi.annotations.scope.MService;
+
+import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -49,7 +42,6 @@ import org.junit.Test;
  */
 public class ScopeAnnotationTestCase {
 
-    protected static SCADomain domain;
     protected static String compositeName = "scope.composite";
 
     protected static int numDThread = 5;
@@ -60,7 +52,7 @@ public class ScopeAnnotationTestCase {
     public static void init() throws Exception {
         try {
             System.out.println("Setting up");
-            domain = SCADomain.newInstance(compositeName);
+            ServiceFinder.init(compositeName);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -70,9 +62,7 @@ public class ScopeAnnotationTestCase {
     public static void destroy() throws Exception {
 
         System.out.println("Cleaning up");
-        if (domain != null)
-            domain.close();
-
+        ServiceFinder.cleanup();
     }
     
     /**
@@ -163,7 +153,7 @@ public class ScopeAnnotationTestCase {
     @Test
     public void atScope3() throws Exception {
         System.out.println("atScope3");
-        FService fService = domain.getService(FService.class, "FComponent");
+        FService fService = ServiceFinder.getService(FService.class, "FComponent");
         String serviceName = fService.getName();
         boolean isInitReady   = fService.isInitReady();
 
@@ -206,7 +196,7 @@ public class ScopeAnnotationTestCase {
     public void atScope4() throws Exception {
         System.out.println("atScope4");
 
-        GService gService = domain.getService(GService.class, "GComponent");
+        GService gService = ServiceFinder.getService(GService.class, "GComponent");
         int initCalledCounter    = gService.getInitCalledCounter();
         int destroyCalledCounter = gService.getDestroyCalledCounter();
         
@@ -245,7 +235,7 @@ public class ScopeAnnotationTestCase {
         for (int i = 0; i < numHThread; i++)
         	g.get(i).join();
         
-        HService hService = domain.getService(HService.class, "HComponent");
+        HService hService = ServiceFinder.getService(HService.class, "HComponent");
         String failedReason = hService.testCounters(numHThread);
         System.out.println("");
 
@@ -275,7 +265,7 @@ public class ScopeAnnotationTestCase {
     public void atScope6() throws Exception {
         System.out.println("atScope6");
 
-        JService jService = domain.getService(JService.class, "JComponent");
+        JService jService = ServiceFinder.getService(JService.class, "JComponent");
 		jService.getName();
 		Thread.sleep(2000);
 		String failedReason = jService.getFailedReason();
@@ -293,7 +283,7 @@ public class ScopeAnnotationTestCase {
     public void atScope7() throws Exception {
         System.out.println("atScope7");
 
-        MService mService = domain.getService(MService.class, "MComponent");
+        MService mService = ServiceFinder.getService(MService.class, "MComponent");
         mService.getName();
 		Thread.sleep(6000);
 		String failedReason = mService.getFailedReason();
@@ -314,7 +304,7 @@ public class ScopeAnnotationTestCase {
     	
     	@Override
     	public void run() {
-    		BService bService = domain.getService(BService.class, "BComponent");
+    		BService bService = ServiceFinder.getService(BService.class, "BComponent");
     		bService.setCurrentState(name + "-state-1");
     		System.out.println(name + "->" + bService.getName());
     		if (!bService.isInitReady()) {
@@ -356,7 +346,7 @@ public class ScopeAnnotationTestCase {
     	
     	@Override
     	public void run() {
-    		CService cService = domain.getService(CService.class, "CComponent");
+    		CService cService = ServiceFinder.getService(CService.class, "CComponent");
     		cService.setCurrentState(name + "-state-1");
     		System.out.println(name + "->" + cService.getName());
     		if (!cService.isInitReady()) {
@@ -399,7 +389,7 @@ public class ScopeAnnotationTestCase {
     	
     	@Override
     	public void run() {
-    		DService dService = domain.getService(DService.class, "DComponent");
+    		DService dService = ServiceFinder.getService(DService.class, "DComponent");
     		String serviceName = dService.getName();
     		System.out.println(name + "->" + serviceName);
     		
@@ -455,7 +445,7 @@ public class ScopeAnnotationTestCase {
     	
     	@Override
     	public void run() {
-    		FService fService = domain.getService(FService.class, "FComponent");
+    		FService fService = ServiceFinder.getService(FService.class, "FComponent");
     		serviceName = fService.getName();
     		System.out.println(name + "->" + serviceName);
 
@@ -478,7 +468,7 @@ public class ScopeAnnotationTestCase {
     	
     	@Override
     	public void run() {
-    		HService hService = domain.getService(HService.class, "HComponent");
+    		HService hService = ServiceFinder.getService(HService.class, "HComponent");
     		failedReason = hService.test();
         }
     }
