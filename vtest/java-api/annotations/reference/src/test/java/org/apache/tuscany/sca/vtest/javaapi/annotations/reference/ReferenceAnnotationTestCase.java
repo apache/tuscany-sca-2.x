@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.vtest.javaapi.annotations.reference;
 import static org.junit.Assert.fail;
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -63,16 +62,15 @@ public class ReferenceAnnotationTestCase {
     @Ignore
     // JIRA T-2145
     public void bogusComponentName() throws Exception {
-        SCADomain tempDomain = SCADomain.newInstance(compositeName);
+        ServiceFinder.init(compositeName);
         try {
-            AService a = tempDomain.getService(AService.class, "AReallyBogusComponentName");
+            AService a = ServiceFinder.getService(AService.class, "AReallyBogusComponentName");
             if (a == null)
                 fail("Should have thrown an exception rather than return null");
             else
                 fail("Should have thrown an exception rather than return a proxy");
         } finally {
-            if (tempDomain != null)
-                tempDomain.close();
+            ServiceFinder.cleanup();
         }
 
     }
