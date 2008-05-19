@@ -31,6 +31,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.BaseStAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -38,6 +39,9 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.ProfileIntent;
@@ -51,13 +55,30 @@ import org.apache.tuscany.sca.policy.QualifiedIntent;
 abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<T>, PolicyConstants {
 
     private PolicyFactory policyFactory;
+    private Monitor monitor;
 
-    public PolicyIntentProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public PolicyIntentProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
+        this.monitor = monitor;
     }
     
-    public PolicyIntentProcessor(PolicyFactory policyFactory) {
+    public PolicyIntentProcessor(PolicyFactory policyFactory, Monitor monitor) {
         this.policyFactory = policyFactory;
+        this.monitor = monitor;
+    }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+    	 if (monitor != null) {
+    		 Problem problem = new ProblemImpl(this.getClass().getName(), "policy-xml-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+    	     monitor.problem(problem);
+    	 }        
     }
 
     public T read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
@@ -154,6 +175,7 @@ abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactP
                 }
                 writer.writeAttribute(CONSTRAINS, sb.toString());
             } else {
+            	error("ContrainsAttributeMissing", policyIntent, policyIntent.getName());
                 throw new ContributionWriteException("Contrains attribute missing from " +
                                 "Policy Intent Definition" + policyIntent.getName());
             }
@@ -228,11 +250,10 @@ abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactP
                     if (resolvedRequiredIntent != null) {
                         requiredIntents.add(resolvedRequiredIntent);
                     } else {
-                        throw new ContributionResolveException(
-                                                                 "Required Intent - " + requiredIntent
+                    	error("RequiredIntentNotFound", resolver, requiredIntent, policyIntent);
+                        throw new ContributionResolveException("Required Intent - " + requiredIntent
                                                                      + " not found for ProfileIntent "
                                                                      + policyIntent);
-
                     }
                 } else {
                     requiredIntents.add(requiredIntent);
@@ -254,6 +275,7 @@ abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactP
                 if (resolvedQualifiableIntent != null) {
                     policyIntent.setQualifiableIntent(resolvedQualifiableIntent);
                 } else {
+                	error("QualifiableIntentNotFound", resolver, qualifiableIntent, policyIntent);
                     throw new ContributionResolveException("Qualifiable Intent - " + qualifiableIntent
                         + " not found for QualifiedIntent "
                         + policyIntent);
@@ -291,6 +313,7 @@ abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactP
     private void readConstrainedArtifacts(Intent policyIntent, XMLStreamReader reader) throws ContributionReadException {
         String value = reader.getAttributeValue(null, CONSTRAINS);
         if ( policyIntent instanceof QualifiedIntent && value != null) {
+        	error("ErrorInPolicyIntentDefinition", policyIntent, policyIntent.getName(), QUALIFIED_INTENT_CONSTRAINS_ERROR);
             String errorMsg = 
                 "Error in PolicyIntent Definition - " + policyIntent.getName() + QUALIFIED_INTENT_CONSTRAINS_ERROR;
             throw new ContributionReadException(errorMsg);
@@ -344,6 +367,7 @@ abstract class PolicyIntentProcessor<T extends Intent> extends BaseStAXArtifactP
                     if (resolvedExcludedIntent != null) {
                         excludedIntents.add(resolvedExcludedIntent);
                     } else {
+                    	error("ExcludedIntentNotFound", resolver, excludedIntent, policyIntent);
                         throw new ContributionResolveException(
                                     "Excluded Intent " + excludedIntent
                                   + " not found for intent " + policyIntent);

@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * @version $Rev$ $Date$
@@ -39,12 +40,12 @@ import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 public class TransactionPolicyProcessor implements StAXArtifactProcessor<TransactionPolicy> {
     public static final String TIMEOUT = "transactionTimeout";
     public static final String ACTION = "action";
-
+    
     public QName getArtifactType() {
         return TransactionPolicy.NAME;
     }
 
-    public TransactionPolicyProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public TransactionPolicyProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
     }
 
     public TransactionPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {

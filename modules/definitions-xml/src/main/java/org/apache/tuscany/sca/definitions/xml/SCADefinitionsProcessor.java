@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * Processor for SCA Definitions
@@ -50,6 +51,7 @@ import org.apache.tuscany.sca.policy.QualifiedIntent;
 public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implements StAXArtifactProcessor<SCADefinitions> {
     
     private StAXArtifactProcessor<Object> extensionProcessor;
+    private Monitor monitor;
     
     public static final String BINDING = "binding";
     public static final String IMPLEMENTATION = "implementation";
@@ -65,12 +67,16 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
      * @param modelResolver 
      */
     public SCADefinitionsProcessor(StAXArtifactProcessor<Object> extensionProcessor,
-                              ModelResolver modelResolver) {
+                              ModelResolver modelResolver, Monitor monitor) {
         this.extensionProcessor = extensionProcessor;
+        this.monitor = monitor;
     }
     
-    public SCADefinitionsProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor) {
+    public SCADefinitionsProcessor(ExtensionPointRegistry extensionPoints, 
+    		                       StAXArtifactProcessor<Object> extensionProcessor,
+    		                       Monitor monitor) {
         this.extensionProcessor = extensionProcessor;
+        this.monitor = monitor;
     }
 
     public SCADefinitions read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {

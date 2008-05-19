@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.policy.xml;
 
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 import org.apache.tuscany.sca.policy.QualifiedIntent;
 
@@ -29,13 +30,13 @@ import org.apache.tuscany.sca.policy.QualifiedIntent;
  * @version $Rev$ $Date$
  */
 public class QualifiedIntentProcessor extends PolicyIntentProcessor<QualifiedIntent> {
-
-    public QualifiedIntentProcessor(ModelFactoryExtensionPoint modelFactories) {
-        super(modelFactories);
+	
+    public QualifiedIntentProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+        super(modelFactories, monitor);
     }
     
-    public QualifiedIntentProcessor(PolicyFactory policyFactory) {
-        super(policyFactory);
+    public QualifiedIntentProcessor(PolicyFactory policyFactory, Monitor monitor) {
+        super(policyFactory, monitor);
     }
 
     public Class<QualifiedIntent> getModelType() {

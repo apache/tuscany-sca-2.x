@@ -53,7 +53,7 @@ public class ResolvePolicyTestCase extends TestCase {
         resolver = new DefaultModelResolver();
         
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
         policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);
         
         // Create StAX processors

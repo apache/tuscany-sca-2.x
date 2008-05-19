@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A URLArtifactProcessor for Groovy scripts
@@ -35,7 +36,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
  */
 public class GroovyArtifactProcessor implements URLArtifactProcessor<GroovyArtifact> {
 
-    public GroovyArtifactProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public GroovyArtifactProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
     }
 
     public GroovyArtifact read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {

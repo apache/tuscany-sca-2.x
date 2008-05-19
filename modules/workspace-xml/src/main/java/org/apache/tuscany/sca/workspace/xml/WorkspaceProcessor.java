@@ -38,6 +38,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.workspace.Workspace;
 import org.apache.tuscany.sca.workspace.WorkspaceFactory;
 
@@ -74,7 +75,7 @@ public class WorkspaceProcessor extends BaseStAXArtifactProcessor implements StA
      * @param modelFactories
      * @param extensionProcessor
      */
-    public WorkspaceProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor<Object> extensionProcessor) {
+    public WorkspaceProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor<Object> extensionProcessor, Monitor monitor) {
         this.workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class);
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
     }

@@ -64,11 +64,11 @@ public class ReadDocumentTestCase extends TestCase {
     public void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors); 
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null); 
         
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         inputFactory = XMLInputFactory.newInstance();
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
         
         resolver = new DefaultModelResolver();
     }
@@ -124,7 +124,7 @@ public class ReadDocumentTestCase extends TestCase {
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
         schemas.addSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd").toString());
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, null);
-        CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(staxProcessor, validatingInputFactory, null);
+        CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(staxProcessor, validatingInputFactory, null, null);
         
         URL url = getClass().getResource("JavaScriptReference.composite");
         URI uri = URI.create("JavaScriptReference.composite");
@@ -160,7 +160,7 @@ public class ReadDocumentTestCase extends TestCase {
         ValidationSchemaExtensionPoint schemas = new DefaultValidationSchemaExtensionPoint();
         schemas.addSchema(getClass().getClassLoader().getResource("tuscany-sca.xsd").toString());
         XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, null);
-        CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(staxProcessor, validatingInputFactory, null);
+        CompositeDocumentProcessor compositeDocumentProcessor = new CompositeDocumentProcessor(staxProcessor, validatingInputFactory, null, null);
         
         URL url = getClass().getResource("RMIBindingTest.composite");
         URI uri = URI.create("RMIBindingTest.composite");

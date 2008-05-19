@@ -24,6 +24,7 @@ import java.net.URL;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -31,6 +32,9 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * An ArtifactProcessor for XSD documents.
@@ -40,16 +44,34 @@ import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> {
 
     private WSDLFactory factory;
+    private Monitor monitor;
 
-    public XSDDocumentProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public XSDDocumentProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.factory = modelFactories.getFactory(WSDLFactory.class);
+        this.monitor = monitor;
     }
+    
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+     private void error(String message, Object model, Exception ex) {
+    	 if (monitor != null) {
+    		 Problem problem = new ProblemImpl(this.getClass().getName(), "interface-wsdlxml-validation-messages", Severity.ERROR, model, message, ex);
+    	     monitor.problem(problem);
+    	 }        
+     }
 
     public XSDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
         try {
             return indexRead(artifactURL);
         } catch (Exception e) {
-            throw new ContributionReadException(e);
+        	ContributionReadException ce = new ContributionReadException(e);
+        	error("ContributionReadException", artifactURL, ce);
+            throw ce;
         }
     }
 

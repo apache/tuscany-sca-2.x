@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.implementation.ejb.EJBImplementation;
 import org.apache.tuscany.sca.implementation.ejb.EJBImplementationFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 
 /**
@@ -49,10 +50,12 @@ public class EJBImplementationProcessor extends BaseStAXArtifactProcessor implem
     
     private AssemblyFactory assemblyFactory;
     private EJBImplementationFactory implementationFactory;
+    private Monitor monitor;
     
-    public EJBImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
-        assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
-        implementationFactory = modelFactories.getFactory(EJBImplementationFactory.class);
+    public EJBImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+        this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
+        this.implementationFactory = modelFactories.getFactory(EJBImplementationFactory.class);
+        this.monitor = monitor;
     }
 
     public QName getArtifactType() {

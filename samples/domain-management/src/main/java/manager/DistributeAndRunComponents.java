@@ -112,6 +112,11 @@ public class DistributeAndRunComponents {
         // Create extension point registry 
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         
+        // Create a monitor
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
+        Monitor monitor = monitorFactory.createMonitor();        
+        
         // Initialize the Tuscany module activators
         ModuleActivatorExtensionPoint moduleActivators = extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
         for (ModuleActivator activator: moduleActivators.getModuleActivators()) {
@@ -131,7 +136,7 @@ public class DistributeAndRunComponents {
         
         // Create XML artifact processors
         StAXArtifactProcessorExtensionPoint xmlProcessorExtensions = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        xmlProcessor = new ExtensibleStAXArtifactProcessor(xmlProcessorExtensions, inputFactory, outputFactory);
+        xmlProcessor = new ExtensibleStAXArtifactProcessor(xmlProcessorExtensions, inputFactory, outputFactory, monitor);
         
         // Create contribution content processor
         URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
@@ -139,11 +144,6 @@ public class DistributeAndRunComponents {
         
         // Get the model resolvers
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
-        
-        // Create a monitor
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        Monitor monitor = monitorFactory.createMonitor();
         
         // Create a contribution dependency builder
         contributionDependencyBuilder = new ContributionDependencyBuilderImpl(monitor);

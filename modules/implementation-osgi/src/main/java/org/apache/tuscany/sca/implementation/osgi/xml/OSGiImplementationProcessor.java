@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.assembly.ComponentType;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.osgi.BundleReference;
@@ -57,6 +58,9 @@ import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.osgi.framework.Bundle;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -86,18 +90,46 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
     private JavaInterfaceFactory javaInterfaceFactory;
     private AssemblyFactory assemblyFactory;
     private ModelFactoryExtensionPoint modelFactories;
-    
+    private Monitor monitor;
     
     private static final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
     static {
         domFactory.setNamespaceAware(true);
     }
 
-    public OSGiImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
-        
+    public OSGiImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
+    	this.monitor = monitor;
         this.modelFactories = modelFactories;
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.javaInterfaceFactory = modelFactories.getFactory(JavaInterfaceFactory.class);
+    }
+    
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Exception ex) {
+    	 if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "impl-osgi-validation-messages", Severity.ERROR, model, message, ex);
+	        monitor.problem(problem);
+    	 }
+    }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+    	 if (monitor != null) {
+	        Problem problem = new ProblemImpl(this.getClass().getName(), "impl-osgi-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+	        monitor.problem(problem);
+    	 }
     }
     
     public QName getArtifactType() {
@@ -171,8 +203,10 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
                     refCallbackProperties.put(refCallbackName, props);
                 else if (serviceCallbackName != null)
                     serviceCallbackProperties.put(serviceCallbackName, props);
-                else
-                    throw new ContributionReadException("Properties in implementation.osgi should specify service or reference");                
+                else {
+                	error("PropertyShouldSpecifySR", reader);
+                    throw new ContributionReadException("Properties in implementation.osgi should specify service or reference");
+                }
             }
 
         }
@@ -208,9 +242,11 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             Bundle bundle = (Bundle)resolvedBundle.getBundle();
             if (bundle != null)
                 impl.setOSGiBundle(bundle);
-            else
+            else {
+            	error("CouldNotLocateOSGiBundle", impl, impl.getBundleSymbolicName());
                 throw new ContributionResolveException("Could not locate OSGi bundle " + 
                         impl.getBundleSymbolicName());
+            }
             
             String bundleName = resolvedBundle.getBundleRelativePath();
             String ctURI = bundleName.endsWith(".jar") || bundleName.endsWith(".JAR")? 
@@ -223,7 +259,7 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             componentType.setUnresolved(true);
             componentType = resolver.resolveModel(ComponentType.class, componentType);
             if (componentType.isUnresolved()) {
-
+            	error("MissingComponentTypeFile", impl, ctURI);
                 throw new ContributionResolveException("missing .componentType side file " + ctURI);
             }
             
@@ -478,7 +514,9 @@ public class OSGiImplementationProcessor implements StAXArtifactProcessor<OSGiIm
             Document value = readPropertyValue(reader, prop.getXSDType());
             prop.setValue(value);
         } catch (ParserConfigurationException e) {
-            throw new ContributionReadException(e);
+        	ContributionReadException ce = new ContributionReadException(e);
+        	error("ContributionReadException", reader, ce);
+            throw ce;
         }
     }
     

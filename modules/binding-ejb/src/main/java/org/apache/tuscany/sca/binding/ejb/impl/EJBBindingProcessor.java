@@ -23,6 +23,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
 import org.apache.tuscany.sca.binding.ejb.EJBBinding;
@@ -33,6 +34,9 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.policy.PolicyFactory;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * A processor to read the XML that describes the EJB binding...
@@ -57,11 +61,27 @@ import org.apache.tuscany.sca.policy.PolicyFactory;
 public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBindingImpl> {
     private PolicyFactory policyFactory;
     private PolicyAttachPointProcessor policyProcessor;
+    private Monitor monitor;
 
-    public EJBBindingProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public EJBBindingProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
+        this.monitor = monitor;
     }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+     private void error(String message, Object model, Object... messageParameters) {
+    	 if (monitor != null) {
+    		 Problem problem = new ProblemImpl(this.getClass().getName(), "binding-ejb-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+    	     monitor.problem(problem);
+    	 }        
+     }
 
     /**
      * {@inheritDoc}
@@ -108,6 +128,7 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBindingImpl
             } else if (sessionType.equals("stateful")) {
                 ejbBinding.setSessionType(EJBBinding.SessionType.STATEFUL);
             } else {
+            	error("UnknownEJBSessionType", reader, sessionType, name);            	
                 throw new ContributionReadException("Unknown EJB Session Type of " + sessionType + " for " + name);
             }
         }
@@ -119,6 +140,7 @@ public class EJBBindingProcessor implements StAXArtifactProcessor<EJBBindingImpl
             } else if (ejbVersion.equals("EJB3")) {
                 ejbBinding.setEjbVersion(EJBBinding.EJBVersion.EJB3);
             } else {
+            	error("UnknownEJBVersion", reader, sessionType, name);
                 throw new ContributionReadException("Unknown EJB Version of " + sessionType + " for " + name);
             }
         }

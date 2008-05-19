@@ -45,7 +45,7 @@ public class PolicyReadTestCase extends TestCase {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-        StAXArtifactProcessor<Object> staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
+        StAXArtifactProcessor<Object> staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
         
         URL url = getClass().getResource("mock_policies.xml");
         

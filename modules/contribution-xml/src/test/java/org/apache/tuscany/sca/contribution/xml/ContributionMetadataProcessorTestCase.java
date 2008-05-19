@@ -72,7 +72,7 @@ public class ContributionMetadataProcessorTestCase extends TestCase {
         outputFactory = XMLOutputFactory.newInstance();
         
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, null);
     }
 
     public void testRead() throws Exception {

@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  *
@@ -46,12 +47,12 @@ public class JDKLoggingPolicyProcessor implements StAXArtifactProcessor<JDKLoggi
     private static final String RESOURCE_BUNDLE = "resourceBundle";
     private static final String USE_PARENT_HANDLERS = "useParentHandlers";
     private static final String TUSACNY_NS = "http://tuscany.apache.org/xmlns/sca/1.0";
-    
+        
     public QName getArtifactType() {
         return JDK_LOGGING_POLICY_QNAME;
     }
     
-    public JDKLoggingPolicyProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public JDKLoggingPolicyProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
     }
 
     

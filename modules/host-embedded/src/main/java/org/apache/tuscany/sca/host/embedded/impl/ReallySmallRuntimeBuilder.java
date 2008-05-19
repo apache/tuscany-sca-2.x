@@ -20,12 +20,9 @@
 package org.apache.tuscany.sca.host.embedded.impl;
 
 import java.io.IOException;
-import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.stream.XMLInputFactory;
@@ -81,8 +78,6 @@ import org.apache.tuscany.sca.core.scope.ScopeRegistry;
 import org.apache.tuscany.sca.core.scope.ScopeRegistryImpl;
 import org.apache.tuscany.sca.core.scope.StatelessScopeContainerFactory;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
-import org.apache.tuscany.sca.extensibility.ServiceDeclaration;
-import org.apache.tuscany.sca.extensibility.ServiceDiscovery;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -226,7 +221,7 @@ public class ReallySmallRuntimeBuilder {
             }
         });           
         ExtensibleStAXArtifactProcessor staxProcessor =
-            new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory);
+            new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, monitor);
 
         // Create URL artifact processor extension point
         URLArtifactProcessorExtensionPoint documentProcessors =
@@ -234,7 +229,7 @@ public class ReallySmallRuntimeBuilder {
 
         // Create and register document processors for SCA assembly XML
         documentProcessors.getProcessor(Composite.class);
-        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, validatingInputFactory, policyDefinitions));
+        documentProcessors.addArtifactProcessor(new CompositeDocumentProcessor(staxProcessor, validatingInputFactory, policyDefinitions, monitor));
 
         // Create Model Resolver extension point
         ModelResolverExtensionPoint modelResolvers = registry.getExtensionPoint(ModelResolverExtensionPoint.class);
@@ -242,7 +237,7 @@ public class ReallySmallRuntimeBuilder {
         // Create contribution package processor extension point
         TypeDescriber describer = new PackageTypeDescriberImpl();
         PackageProcessor packageProcessor =
-            new ExtensiblePackageProcessor(registry.getExtensionPoint(PackageProcessorExtensionPoint.class), describer);
+            new ExtensiblePackageProcessor(registry.getExtensionPoint(PackageProcessorExtensionPoint.class), describer, monitor);
 
         // Create contribution listener
         ExtensibleContributionListener contributionListener =
@@ -251,18 +246,18 @@ public class ReallySmallRuntimeBuilder {
         // Create a contribution repository
         ContributionRepository repository;
         try {
-            repository = new ContributionRepositoryImpl("target", inputFactory);
+            repository = new ContributionRepositoryImpl("target", inputFactory, monitor);
         } catch (IOException e) {
             throw new ActivationException(e);
         }
 
-        ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
+        ExtensibleURLArtifactProcessor documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, monitor);
 
         // Create the contribution service
         ContributionService contributionService =
             new ContributionServiceImpl(repository, packageProcessor, documentProcessor, staxProcessor,
                                         contributionListener, policyDefinitionResolver, modelResolvers, modelFactories,
-                                        assemblyFactory, contributionFactory, inputFactory, policyDefinitions);
+                                        assemblyFactory, contributionFactory, inputFactory, policyDefinitions, monitor);
         return contributionService;
     }
 

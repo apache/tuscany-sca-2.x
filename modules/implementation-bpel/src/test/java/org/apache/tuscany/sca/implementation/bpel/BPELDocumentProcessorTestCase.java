@@ -44,7 +44,7 @@ public class BPELDocumentProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
     }
 
     public void testLoadBPELProcessDefinition() throws Exception {

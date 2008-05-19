@@ -37,6 +37,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  *
@@ -49,7 +50,7 @@ public class Axis2ConfigParamPolicyProcessor implements StAXArtifactProcessor<Ax
         return AXIS2_CONFIG_PARAM_POLICY_QNAME;
     }
     
-    public Axis2ConfigParamPolicyProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public Axis2ConfigParamPolicyProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
     }
 
     public Axis2ConfigParamPolicy read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {

@@ -72,7 +72,7 @@ public class BuildPolicyTestCase extends TestCase {
         resolver = new DefaultModelResolver();
         compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, new InterfaceContractMapperImpl(), null);
         URLArtifactProcessorExtensionPoint documentProcessors = new DefaultURLArtifactProcessorExtensionPoint(extensionPoints);
-        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
         policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);
         
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);

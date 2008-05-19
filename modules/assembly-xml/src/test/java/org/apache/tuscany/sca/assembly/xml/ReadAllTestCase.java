@@ -56,7 +56,7 @@ public class ReadAllTestCase extends TestCase {
         DefaultExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
         inputFactory = XMLInputFactory.newInstance();
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
     }
 
     public void testReadComposite() throws Exception {

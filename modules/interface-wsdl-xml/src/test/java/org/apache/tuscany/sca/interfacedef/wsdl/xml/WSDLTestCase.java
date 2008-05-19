@@ -47,7 +47,7 @@ public class WSDLTestCase extends TestCase {
     public void setUp() throws Exception {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
-        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors);
+        documentProcessor = new ExtensibleURLArtifactProcessor(documentProcessors, null);
 
         ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         wsdlResolver = new WSDLModelResolver(null, modelFactories);

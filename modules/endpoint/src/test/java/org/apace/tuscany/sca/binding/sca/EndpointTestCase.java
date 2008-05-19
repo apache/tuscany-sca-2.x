@@ -86,6 +86,11 @@ public class EndpointTestCase {
         // Create extension point registry 
         extensionPoints = new DefaultExtensionPointRegistry();
         
+        // Create a monitor
+        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
+        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
+        Monitor monitor = monitorFactory.createMonitor();        
+        
         modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
                 
         // Initialize the Tuscany module activators
@@ -105,7 +110,7 @@ public class EndpointTestCase {
         
         // Create XML artifact processors
         StAXArtifactProcessorExtensionPoint xmlProcessorExtensions = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        xmlProcessor = new ExtensibleStAXArtifactProcessor(xmlProcessorExtensions, inputFactory, outputFactory);
+        xmlProcessor = new ExtensibleStAXArtifactProcessor(xmlProcessorExtensions, inputFactory, outputFactory, monitor);
         
         // Create contribution content processor
         URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
@@ -114,11 +119,6 @@ public class EndpointTestCase {
         // Get the model resolvers
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
         modelResolver = new ExtensibleModelResolver(null, modelResolvers, modelFactories);
-        
-        // Create a monitor
-        UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
-        MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
-        Monitor monitor = monitorFactory.createMonitor();
                
         // Create a composite builder
         SCABindingFactory scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);

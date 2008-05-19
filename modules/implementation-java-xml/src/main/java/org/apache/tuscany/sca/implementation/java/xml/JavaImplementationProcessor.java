@@ -40,6 +40,7 @@ import org.apache.tuscany.sca.assembly.OperationsConfigurator;
 import org.apache.tuscany.sca.assembly.Property;
 import org.apache.tuscany.sca.assembly.Reference;
 import org.apache.tuscany.sca.assembly.Service;
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.ConfiguredOperationProcessor;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.assembly.xml.PolicyAttachPointProcessor;
@@ -57,6 +58,9 @@ import org.apache.tuscany.sca.implementation.java.impl.JavaElementImpl;
 import org.apache.tuscany.sca.implementation.java.introspect.impl.JavaIntrospectionHelper;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
 
@@ -73,15 +77,45 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
     private PolicyAttachPointProcessor policyProcessor;
     private IntentAttachPointTypeFactory  intentAttachPointTypeFactory;
     private ConfiguredOperationProcessor configuredOperationProcessor;
+    private Monitor monitor;
 
-    public JavaImplementationProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public JavaImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.javaFactory = modelFactories.getFactory(JavaImplementationFactory.class);
         this.policyProcessor = new PolicyAttachPointProcessor(policyFactory);
         this.intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
-        this.configuredOperationProcessor = new ConfiguredOperationProcessor(modelFactories);
+        this.monitor = monitor;
+        this.configuredOperationProcessor = new ConfiguredOperationProcessor(modelFactories, this.monitor);
     }
+    
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+     private void error(String message, Object model, Object... messageParameters) {
+    	 if (monitor != null) {
+    		 Problem problem = new ProblemImpl(this.getClass().getName(), "impl-javaxml-validation-messages", Severity.ERROR, model, message,(Object[])messageParameters);
+    	     monitor.problem(problem);
+    	 }        
+     }
+     
+     /**
+      * Report a exception.
+      * 
+      * @param problems
+      * @param message
+      * @param model
+      */
+      private void error(String message, Object model, Exception ex) {
+     	 if (monitor != null) {
+     		 Problem problem = new ProblemImpl(this.getClass().getName(), "impl-javaxml-validation-messages", Severity.ERROR, model, message, ex);
+     	     monitor.problem(problem);
+     	 }        
+      }
 
     public JavaImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
 
@@ -147,6 +181,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         classReference = resolver.resolveModel(ClassReference.class, classReference);
         Class javaClass = classReference.getJavaClass();
         if (javaClass == null) {
+        	error("ClassNotFoundException", resolver, javaImplementation.getName());
             throw new ContributionResolveException(new ClassNotFoundException(javaImplementation.getName()));
         }
         javaImplementation.setJavaClass(javaClass);
@@ -155,7 +190,9 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
         try {
             javaFactory.createJavaImplementation(javaImplementation, javaImplementation.getJavaClass());
         } catch (IntrospectionException e) {
-            throw new ContributionResolveException(e);
+        	ContributionResolveException ce = new ContributionResolveException(e);
+        	error("ContributionResolveException", javaFactory, ce);
+            throw ce;
         }
 
         mergeComponentType(resolver, javaImplementation);
@@ -180,7 +217,7 @@ public class JavaImplementationProcessor implements StAXArtifactProcessor<JavaIm
                 field = impl.getJavaClass().getDeclaredField(name);
                 int mod = field.getModifiers();
                 if ((Modifier.isPublic(mod) || Modifier.isProtected(mod)) && (!Modifier.isStatic(mod))) {
-                    return new JavaElementImpl(field);
+                	return new JavaElementImpl(field);
                 }
             } catch (NoSuchFieldException e1) {
                 // Ignore

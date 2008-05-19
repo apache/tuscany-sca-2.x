@@ -33,6 +33,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
@@ -41,6 +42,9 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  * An ArtifactProcessor for WSDL documents.
@@ -56,16 +60,34 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
     private static final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
     private WSDLFactory factory;
+    private Monitor monitor;
 
-    public WSDLDocumentProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public WSDLDocumentProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.factory = modelFactories.getFactory(WSDLFactory.class);
+        this.monitor = monitor;
     }
+    
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+     private void error(String message, Object model, Exception ex) {
+    	 if (monitor != null) {
+    		 Problem problem = new ProblemImpl(this.getClass().getName(), "interface-wsdlxml-validation-messages", Severity.ERROR, model, message, ex);
+    	     monitor.problem(problem);
+    	 }        
+     }
 
     public WSDLDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
         try {
             return indexRead(artifactURL);
         } catch (Exception e) {
-            throw new ContributionReadException(e);
+        	ContributionReadException ce = new ContributionReadException(e);
+        	error("ContributionReadException", artifactURL, ce);
+            throw ce;
         }
     }
 
@@ -98,7 +120,9 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
                                 resolved = read(null, uri, uri.toURL());
                                 imp.setDefinition(resolved.getDefinition());
                             } catch (Exception e) {
-                                throw new ContributionResolveException(e);
+                            	ContributionResolveException ce = new ContributionResolveException(e);
+                            	error("ContributionResolveException", resolver, ce);
+                                throw ce;
                             }
                         } else {
                             if (location.startsWith("/")) {
@@ -114,7 +138,9 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
                                     resolved = read(null, locationURI, locationURI.toURL());
                                     imp.setDefinition(resolved.getDefinition());
                                 } catch (Exception e) {
-                                    throw new ContributionResolveException(e);
+                                	ContributionResolveException ce = new ContributionResolveException(e);
+                                	error("ContributionResolveException", resolver, ce);
+                                    throw ce;
                                 }
                             }
                         }

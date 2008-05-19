@@ -45,6 +45,7 @@ import org.apache.tuscany.sca.contribution.scanner.ContributionScanner;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.workspace.scanner.impl.DirectoryContributionScanner;
 import org.apache.tuscany.sca.workspace.scanner.impl.JarContributionScanner;
 
@@ -62,13 +63,13 @@ public class ContributionInfoProcessor implements URLArtifactProcessor<Contribut
     private URLArtifactProcessor<Object> artifactProcessor;
     private StAXArtifactProcessor<Object> extensionProcessor;
 
-    public ContributionInfoProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor) {
+    public ContributionInfoProcessor(ExtensionPointRegistry extensionPoints, StAXArtifactProcessor<Object> extensionProcessor, Monitor monitor) {
         this.modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         this.modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
         hackResolvers(modelResolvers);
         URLArtifactProcessorExtensionPoint artifactProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         this.artifactProcessors = artifactProcessors;
-        this.artifactProcessor = new ExtensibleURLArtifactProcessor(artifactProcessors);
+        this.artifactProcessor = new ExtensibleURLArtifactProcessor(artifactProcessors, monitor);
         this.extensionProcessor = extensionProcessor;
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
     }

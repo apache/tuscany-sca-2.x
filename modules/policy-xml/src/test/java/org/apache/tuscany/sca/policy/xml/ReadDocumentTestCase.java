@@ -83,7 +83,7 @@ public class ReadDocumentTestCase extends TestCase {
         resolver = new DefaultModelResolver();
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         StAXArtifactProcessorExtensionPoint staxProcessors = extensionPoints.getExtensionPoint(StAXArtifactProcessorExtensionPoint.class);
-        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null);
+        staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
         staxProcessors.addArtifactProcessor(new TestPolicyProcessor());
         
         URL url = getClass().getResource("test_definitions.xml");

@@ -36,6 +36,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.assembly.Composite;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
@@ -64,8 +65,9 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
      * @param policyFactory
      * @param staxProcessor
      */
-    public CompositeDocumentProcessor(StAXArtifactProcessor staxProcessor, XMLInputFactory inputFactory, List scaDefnsSink) {
-        super(null, null, staxProcessor);
+    public CompositeDocumentProcessor(StAXArtifactProcessor staxProcessor, 
+    								  XMLInputFactory inputFactory, List scaDefnsSink, Monitor monitor) {
+        super(null, null, staxProcessor, monitor);
         this.inputFactory = inputFactory;
         this.scaDefnSink = scaDefnsSink;
     }
@@ -75,8 +77,9 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
      * @param modelFactories
      * @param staxProcessor
      */
-    public CompositeDocumentProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor staxProcessor) {
-        super(null, null, staxProcessor);
+    public CompositeDocumentProcessor(ModelFactoryExtensionPoint modelFactories, 
+    								  StAXArtifactProcessor staxProcessor, Monitor monitor) {
+        super(null, null, staxProcessor, monitor);
         this.inputFactory = modelFactories.getFactory(ValidatingXMLInputFactory.class);
     }
     
@@ -100,7 +103,9 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
                     scdlStream = connection.getInputStream();
                 }
             } catch ( Exception e ) {
-                throw new ContributionReadException(e);
+            	ContributionReadException ce = new ContributionReadException(e);
+            	error("ContributionReadException", scdlStream, ce);
+                throw ce;
             }
             
             XMLStreamReader reader = inputFactory.createXMLStreamReader(scdlStream);
@@ -134,7 +139,9 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             return composite;
             
         } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
+        	ContributionReadException ce = new ContributionReadException(e);
+        	error("ContributionReadException", inputFactory, ce);
+            throw ce;
         } finally {
             try {
                 if (scdlStream != null) {

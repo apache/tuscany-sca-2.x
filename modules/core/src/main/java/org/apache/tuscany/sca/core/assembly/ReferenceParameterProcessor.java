@@ -31,6 +31,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.runtime.ReferenceParameters;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * Artifact processor for reference parameters.
@@ -40,13 +41,13 @@ import org.apache.tuscany.sca.runtime.ReferenceParameters;
 public class ReferenceParameterProcessor implements StAXArtifactProcessor<ReferenceParameters> {
     private static final QName REFERENCE_PARAMETERS =
         new QName("http://tuscany.apache.org/xmlns/sca/1.0", "referenceParameters", "tuscany");
-
+    
     /**
      * Constructs a new processor.
      * 
      * @param modelFactories
      */
-    public ReferenceParameterProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public ReferenceParameterProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
     }
 
     /**

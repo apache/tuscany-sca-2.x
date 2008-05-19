@@ -29,11 +29,15 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 import org.apache.tuscany.sca.workspace.Workspace;
 
 /**
@@ -44,6 +48,7 @@ import org.apache.tuscany.sca.workspace.Workspace;
 public class WorkspaceDocumentProcessor implements URLArtifactProcessor<Workspace> {
     private XMLInputFactory inputFactory;
     private StAXArtifactProcessor<Object> staxProcessor;
+    private Monitor monitor;
     
     /**
      * Constructs a new componentType processor.
@@ -51,10 +56,27 @@ public class WorkspaceDocumentProcessor implements URLArtifactProcessor<Workspac
      * @param policyFactory
      * @param registry
      */
-    public WorkspaceDocumentProcessor(StAXArtifactProcessor<Object> staxProcessor, XMLInputFactory inputFactory) {
+    public WorkspaceDocumentProcessor(StAXArtifactProcessor<Object> staxProcessor, 
+    		                          XMLInputFactory inputFactory,
+    		                          Monitor monitor) {
         this.staxProcessor = staxProcessor;
         this.inputFactory = inputFactory;
+        this.monitor = monitor;
     }
+    
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+     private void error(String message, Object model, Exception ex) {
+    	 if (monitor != null) {
+    		 Problem problem = new ProblemImpl(this.getClass().getName(), "workspace-xml-validation-messages", Severity.ERROR, model, message, ex);
+    	     monitor.problem(problem);
+    	 }        
+     }
     
     public Workspace read(URL contributionURL, URI uri, URL url) throws ContributionReadException {
         InputStream urlStream = null;
@@ -76,9 +98,13 @@ public class WorkspaceDocumentProcessor implements URLArtifactProcessor<Workspac
             return workspace;
             
         } catch (XMLStreamException e) {
-            throw new ContributionReadException(e);
+        	ContributionReadException ce = new ContributionReadException(e);
+        	error("ContributionReadException", inputFactory, ce);
+            throw ce;
         } catch (IOException e) {
-            throw new ContributionReadException(e);
+        	ContributionReadException ce = new ContributionReadException(e);
+        	error("ContributionReadException", staxProcessor, ce);
+            throw ce;
         } finally {
             try {
                 if (urlStream != null) {

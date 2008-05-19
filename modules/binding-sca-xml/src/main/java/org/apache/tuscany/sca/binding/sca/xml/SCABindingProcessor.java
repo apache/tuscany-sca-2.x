@@ -36,6 +36,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
+import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.policy.IntentAttachPointType;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.PolicyFactory;
@@ -53,15 +54,17 @@ public class SCABindingProcessor implements StAXArtifactProcessor<SCABinding>, C
     private SCABindingFactory scaBindingFactory;
     private PolicyAttachPointProcessor policyProcessor;
     private IntentAttachPointTypeFactory  intentAttachPointTypeFactory;
+    private Monitor monitor;
 
     protected static final String BINDING_SCA = "binding.sca";
     protected static final QName BINDING_SCA_QNAME = new QName(Constants.SCA10_NS, BINDING_SCA);
 
-    public SCABindingProcessor(ModelFactoryExtensionPoint modelFactories) {
+    public SCABindingProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.policyFactory = modelFactories.getFactory(PolicyFactory.class);
         this.scaBindingFactory = modelFactories.getFactory(SCABindingFactory.class);
         policyProcessor = new PolicyAttachPointProcessor(policyFactory);
         this.intentAttachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
+        this.monitor = monitor;
     }
 
     public QName getArtifactType() {

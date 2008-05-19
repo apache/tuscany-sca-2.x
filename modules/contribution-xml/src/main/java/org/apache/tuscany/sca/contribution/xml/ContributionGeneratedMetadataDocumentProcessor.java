@@ -22,6 +22,7 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
+import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * URLArtifactProcessor that handles sca-contribution-generated.xml files.
@@ -30,12 +31,16 @@ import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
  */
 public class ContributionGeneratedMetadataDocumentProcessor extends ContributionMetadataDocumentProcessor {
 
-    public ContributionGeneratedMetadataDocumentProcessor(XMLInputFactory inputFactory, StAXArtifactProcessor staxProcessor) {
-        super(inputFactory, staxProcessor);
+    public ContributionGeneratedMetadataDocumentProcessor(XMLInputFactory inputFactory, 
+    													  StAXArtifactProcessor staxProcessor,
+    													  Monitor monitor) {
+        super(inputFactory, staxProcessor, monitor);
     }
     
-    public ContributionGeneratedMetadataDocumentProcessor(ModelFactoryExtensionPoint modelFactories, StAXArtifactProcessor staxProcessor) {
-        super(modelFactories, staxProcessor);
+    public ContributionGeneratedMetadataDocumentProcessor(ModelFactoryExtensionPoint modelFactories, 
+    													  StAXArtifactProcessor staxProcessor,
+    													  Monitor monitor) {
+        super(modelFactories, staxProcessor, monitor);
     }
     
     public String getArtifactType() {
