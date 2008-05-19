@@ -19,18 +19,18 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.apis.callablereference;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * This test class tests the CallableReference interface described in 1.7.3 of the SCA Java Annotations & APIs Specification 1.0.
+ * This test class tests the CallableReference interface described in 1.7.3 of
+ * the SCA Java Annotations & APIs Specification 1.0.
  */
 public class CallableReferenceTestCase {
 
-    protected static SCADomain domain;
     protected static String compositeName = "callablereference.composite";
     protected static AComponent a;
     protected static BComponent b;
@@ -39,9 +39,9 @@ public class CallableReferenceTestCase {
     public static void init() throws Exception {
         try {
             System.out.println("Setting up");
-            domain = SCADomain.newInstance(compositeName);
-            a = domain.getService(AComponent.class, "AComponent");
-            b = domain.getService(BComponent.class, "BComponent");
+            ServiceFinder.init(compositeName);
+            a = ServiceFinder.getService(AComponent.class, "AComponent");
+            b = ServiceFinder.getService(BComponent.class, "BComponent");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -50,16 +50,15 @@ public class CallableReferenceTestCase {
     @AfterClass
     public static void destroy() throws Exception {
         System.out.println("Cleaning up");
-        if (domain != null) {
-            domain.close();
-        }
+        ServiceFinder.cleanup();
     }
 
     /**
      * L884 <br>
-     * getService() - Returns a type-safe reference to the target of this reference.
-     * The instance returned is guaranteed to implement the business interface for this reference.
-     * The value returned is a proxy to the target that implements the business interface associated with this reference.
+     * getService() - Returns a type-safe reference to the target of this
+     * reference. The instance returned is guaranteed to implement the business
+     * interface for this reference. The value returned is a proxy to the target
+     * that implements the business interface associated with this reference.
      * 
      * @throws Exception
      */
@@ -70,7 +69,8 @@ public class CallableReferenceTestCase {
 
     /**
      * L885 <br>
-     * getBusinessInterface() – Returns the Java class for the business interface associated with this reference.
+     * getBusinessInterface() – Returns the Java class for the business
+     * interface associated with this reference.
      * 
      * @throws Exception
      */
@@ -92,7 +92,8 @@ public class CallableReferenceTestCase {
 
     /**
      * L887 <br>
-     * getConversation() – Returns the conversation associated with this reference. Returns null if no conversation is currently active.
+     * getConversation() – Returns the conversation associated with this
+     * reference. Returns null if no conversation is currently active.
      * 
      * @throws Exception
      */
@@ -110,7 +111,7 @@ public class CallableReferenceTestCase {
      */
     @Test
     public void testGetCallbackID() throws Exception {
-        // Actual test is in BComponentImpl.  Below is an extra test.
+        // Actual test is in BComponentImpl. Below is an extra test.
         Assert.assertEquals("CallBackFromB", a.getCallbackResult());
     }
 

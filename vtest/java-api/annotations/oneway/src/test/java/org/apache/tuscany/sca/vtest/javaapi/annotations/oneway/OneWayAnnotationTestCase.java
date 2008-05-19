@@ -19,10 +19,6 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.annotations.oneway;
 
-import static org.junit.Assert.fail;
-import junit.framework.Assert;
-
-import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
