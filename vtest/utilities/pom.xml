@@ -18,6 +18,7 @@
     * under the License.    
 -->
 <project>
+
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
@@ -25,46 +26,17 @@
         <version>2.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>vtest-java-api</artifactId>
-    <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Java APIs and Annotations Verification Tests</name>
+    <artifactId>vtest-utilities</artifactId>
+    <name>Apache Tuscany SCA Verification Tests - Utilities</name>
 
     <dependencies>
+
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-host-embedded</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-java-runtime</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>vtest-utilities</artifactId>
-            <version>2.0-incubating-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-
     </dependencies>
-
-
-    <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>annotations</module>
-                <module>apis</module>
-                <module>conversation</module>
-           </modules>
-        </profile>
-    </profiles>
 
 </project>

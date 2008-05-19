@@ -19,9 +19,7 @@
 
 package org.apache.tuscany.sca.vtest.javaapi.conversation.parameters;
 
-import junit.framework.Assert;
-
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,7 +30,7 @@ import org.junit.Test;
  */
 public class ConversationParametersTestCase {
 
-    protected static SCADomain domain;
+    protected static ServiceFinder serviceFinder;
     protected static String compositeName = "parameters.composite";
     protected static AService aService = null;
 
@@ -40,8 +38,8 @@ public class ConversationParametersTestCase {
     public static void init() throws Exception {
         try {
             System.out.println("Setting up");
-            domain = SCADomain.newInstance(compositeName);
-            aService = domain.getService(AService.class, "AComponent");
+            ServiceFinder.init(compositeName);
+            aService = ServiceFinder.getService(AService.class, "AComponent");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -51,8 +49,7 @@ public class ConversationParametersTestCase {
     public static void destroy() throws Exception {
 
         System.out.println("Cleaning up");
-        if (domain != null)
-            domain.close();
+        ServiceFinder.cleanup();
 
     }
 
@@ -68,6 +65,5 @@ public class ConversationParametersTestCase {
     public void passParameter1() throws Exception {
         aService.setBStateThenGetCState();
     }
-
 
 }
