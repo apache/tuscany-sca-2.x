@@ -131,7 +131,7 @@ public class ConstrainingTypeProcessor extends BaseAssemblyProcessor implements 
                         constrainingType.getProperties().add(abstractProperty);
                         policyProcessor.readPolicies(abstractProperty, reader);
                         
-                    } else if (OPERATION.equals(name)) {
+                    } else if (OPERATION_QNAME.equals(name)) {
 
                         // Read an <operation>
                         Operation operation = new OperationImpl();
