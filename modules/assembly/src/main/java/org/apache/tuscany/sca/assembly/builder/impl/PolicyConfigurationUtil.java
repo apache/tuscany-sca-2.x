@@ -508,7 +508,7 @@ abstract class PolicyConfigurationUtil {
                                                             policiedBinding.getType());
     
                         if (confOp.getRequiredIntents().size() > 0) {
-                            new PolicyConfigurationException("The following are unfulfilled intents for operations configured in "
+                            throw new PolicyConfigurationException("The following are unfulfilled intents for operations configured in "
                                     + "binding - " + aBinding.getName() + "\nUnfulfilled Intents = " +
                                     confOp.getRequiredIntents());
                         }
@@ -711,7 +711,7 @@ abstract class PolicyConfigurationUtil {
                                                         policiedImplementation.getType());
     
                     if (confOp.getRequiredIntents().size() > 0) {
-                        new PolicyConfigurationException("The following are unfulfilled intents for operations configured in "
+                        throw new PolicyConfigurationException("The following are unfulfilled intents for operations configured in "
                                 + "component implementation - " + component.getName() + "\nUnfulfilled Intents = " +
                                 confOp.getRequiredIntents());
                     }
