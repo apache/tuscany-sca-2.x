@@ -28,7 +28,6 @@ import java.net.URLConnection;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.validation.Schema;
 
 import org.apache.tuscany.sca.assembly.ConstrainingType;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
@@ -47,7 +46,6 @@ import org.apache.tuscany.sca.monitor.Monitor;
  */
 public class ConstrainingTypeDocumentProcessor extends BaseAssemblyProcessor implements URLArtifactProcessor<ConstrainingType> {
     private XMLInputFactory inputFactory;
-    private Schema schema;
 
     /**
      * Construct a new constrainingType processor.
