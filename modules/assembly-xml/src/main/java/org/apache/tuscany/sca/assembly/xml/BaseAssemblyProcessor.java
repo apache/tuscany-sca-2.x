@@ -375,7 +375,7 @@ abstract class BaseAssemblyProcessor extends BaseStAXArtifactProcessor implement
         throws ContributionResolveException {
         
         String parentName = (parent instanceof Composite) ? ((Composite)parent).getName().toString() :
-            (parent instanceof Component) ? ((Component)parent).getName().toString() : "UNKNOWN";
+            (parent instanceof Component) ? ((Component)parent).getName() : "UNKNOWN";
         
         for (Contract contract : contracts) {
             try {
