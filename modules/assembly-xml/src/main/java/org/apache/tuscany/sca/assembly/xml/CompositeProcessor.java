@@ -832,19 +832,13 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
         List<Intent> compositeIntents = null;
         List<PolicySet> compositePolicySets = null;
         List<PolicySet> compositeApplicablePolicySets = null;
-        if (composite instanceof PolicySetAttachPoint) { 
-            resolveIntents(((PolicySetAttachPoint)composite).getRequiredIntents(), resolver);
-            resolvePolicySets(((PolicySetAttachPoint)composite).getPolicySets(), resolver);
-            resolvePolicySets(((PolicySetAttachPoint)composite).getApplicablePolicySets(), resolver);
-            compositeIntents = ((PolicySetAttachPoint)composite).getRequiredIntents();
-            compositePolicySets = ((PolicySetAttachPoint)composite).getPolicySets();
-            compositeApplicablePolicySets = ((PolicySetAttachPoint)composite).getApplicablePolicySets();
-        } else {
-            compositeIntents = new ArrayList<Intent>();
-            compositePolicySets = new ArrayList<PolicySet>();
-            compositeApplicablePolicySets = new ArrayList<PolicySet>();
-        }
-        
+        resolveIntents(composite.getRequiredIntents(), resolver);
+        resolvePolicySets(composite.getPolicySets(), resolver);
+        resolvePolicySets(composite.getApplicablePolicySets(), resolver);
+        compositeIntents = composite.getRequiredIntents();
+        compositePolicySets = composite.getPolicySets();
+        compositeApplicablePolicySets = composite.getApplicablePolicySets();
+
         //Resolve composite services and references
         resolveContracts(composite, composite.getServices(), resolver);
         resolveContracts(composite, composite.getReferences(), resolver);
