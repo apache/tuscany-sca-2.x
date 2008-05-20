@@ -91,10 +91,8 @@ public class CompositeIncludeBuilderImpl implements CompositeBuilder {
             composite.getReferences().addAll(clone.getReferences());
             composite.getProperties().addAll(clone.getProperties());
             composite.getWires().addAll(clone.getWires());
-            if ( composite instanceof PolicySetAttachPoint ) {
-                ((PolicySetAttachPoint)composite).getPolicySets().addAll(((PolicySetAttachPoint)clone).getPolicySets());
-                ((PolicySetAttachPoint)composite).getRequiredIntents().addAll(((PolicySetAttachPoint)clone).getRequiredIntents());
-            }
+            composite.getPolicySets().addAll(clone.getPolicySets());
+            composite.getRequiredIntents().addAll(clone.getRequiredIntents());
         }
     
         // Clear the list of includes
