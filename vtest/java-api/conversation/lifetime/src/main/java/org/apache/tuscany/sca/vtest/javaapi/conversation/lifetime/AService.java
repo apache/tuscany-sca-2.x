@@ -52,4 +52,5 @@ public interface AService {
 
     public void testConversationEnd8();
     
+    public void testConversationEnd9();    
 }

@@ -171,9 +171,10 @@ public class LifetimeTestCase {
      * ...Any non-business exception is thrown by a conversational operation
      */
     @Test
-    @Ignore("TUSCANY-2283")
+    //@Ignore("TUSCANY-2283")
     public void lifetime11() throws Exception {
         aService.testConversationEnd5();
+        aService.testConversationEnd9();
     }
 
     /**

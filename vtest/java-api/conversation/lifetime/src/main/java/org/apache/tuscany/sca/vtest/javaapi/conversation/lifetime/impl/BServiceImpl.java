@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.impl;
 
 import org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.AServiceCallback;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.BService;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.BServiceBusinessException;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.ConversationAttributes;
 import org.osoa.sca.annotations.Scope;
@@ -53,9 +54,11 @@ public class BServiceImpl implements BService {
     }
 
     public void throwNonBusinessException() {
-       
         throw new Error();
-        
+    }
+    
+    public void throwBusinessException() throws BServiceBusinessException {
+        throw new BServiceBusinessException("Business Exception");
     }
 
 }
