@@ -91,7 +91,7 @@ public class CompositeDocumentProcessor extends BaseAssemblyProcessor implements
             }
 
             
-            byte[] transformedArtifactContent = null;
+            byte[] transformedArtifactContent;
             try {
                 if ( domainPolicySets != null ) {
                     transformedArtifactContent =
