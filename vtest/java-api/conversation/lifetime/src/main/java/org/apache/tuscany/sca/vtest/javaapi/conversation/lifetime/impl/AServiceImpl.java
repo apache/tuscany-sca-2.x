@@ -26,6 +26,7 @@ import java.io.ObjectOutputStream;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.AService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.AServiceCallback;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.BService;
+import org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.BServiceBusinessException;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.CService;
 import org.apache.tuscany.sca.vtest.javaapi.conversation.lifetime.DService;
 import org.junit.Assert;
@@ -181,5 +182,16 @@ public class AServiceImpl implements AService, AServiceCallback {
         delayForSeconds(2);
         b.getService().getState();
     }
+    
+    public void testConversationEnd9() {
+        String someState = "Some state";
+        b.getService().setState(someState);
+        try {
+            b.getService().throwBusinessException();
+        } catch (BServiceBusinessException e) {
+            // Expected
+        }
+        Assert.assertSame(someState, b.getService().getState());
+    }    
 
 }

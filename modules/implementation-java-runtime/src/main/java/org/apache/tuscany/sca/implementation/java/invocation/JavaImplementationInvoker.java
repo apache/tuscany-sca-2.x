@@ -27,6 +27,7 @@ import org.apache.tuscany.sca.core.scope.ScopeContainer;
 import org.apache.tuscany.sca.core.scope.ScopedRuntimeComponent;
 import org.apache.tuscany.sca.implementation.java.JavaImplementation;
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
+import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.Message;
@@ -120,8 +121,32 @@ public class JavaImplementationInvoker implements Invoker, DataExchangeSemantics
             msg.setBody(ret);
         } catch (InvocationTargetException e) {
             msg.setFaultBody(e.getCause());
+            
+            if (sequence != ConversationSequence.CONVERSATION_NONE ){
+                try {
+                    // If the exception is not a business exception then end the conversation
+                    boolean businessException = false;
+                    
+                    for (DataType dataType : operation.getFaultTypes()){
+                        if ((dataType.getPhysical() == e.getCause().getClass()) &&
+                            (contextId != null) ){
+                            businessException = true;
+                            break;
+                        }
+                    }
+                    
+                    if (businessException == false){
+                        scopeContainer.remove(contextId);
+                        parameters.setConversationID(null);
+                    }
+                } catch (Exception ex){
+                    // TODO - sure what the best course of action is here. We have
+                    //        a system exception in the middle of a business exception 
+                }
+            }
+                
         } catch (Exception e) {
-            msg.setFaultBody(e);
+            msg.setFaultBody(e);           
         }
         return msg;
     }

@@ -286,6 +286,26 @@ public class JDKInvocationHandler implements InvocationHandler, Serializable {
             Message resp = headInvoker.invoke(msg);
             Object body = resp.getBody();
             if (resp.isFault()) {
+                // mark the conversation as ended if the exception is not a business exception
+                if (currentConversationID != null ){
+                    try {
+                        boolean businessException = false;
+                        
+                        for (DataType dataType : operation.getFaultTypes()){
+                            if (dataType.getPhysical() == ((Throwable)body).getClass()){
+                                businessException = true;
+                                break;
+                            }
+                        }
+                        
+                        if (businessException == false){
+                            operation.setConversationSequence(ConversationSequence.CONVERSATION_END);
+                        }
+                    } catch (Exception ex){
+                        // TODO - sure what the best course of action is here. We have
+                        //        a system exception in the middle of a business exception 
+                    }
+                }
                 throw (Throwable)body;
             }
             return body;
