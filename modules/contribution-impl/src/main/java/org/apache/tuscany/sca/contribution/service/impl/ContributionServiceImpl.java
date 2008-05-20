@@ -343,7 +343,7 @@ public class ContributionServiceImpl implements ContributionService {
         }
 
         //set contribution initial information
-        contribution.setURI(contributionURI.toString());
+        contribution.setURI(contributionURI);
         contribution.setLocation(locationURL.toString());
         contribution.setModelResolver(modelResolver);
         
