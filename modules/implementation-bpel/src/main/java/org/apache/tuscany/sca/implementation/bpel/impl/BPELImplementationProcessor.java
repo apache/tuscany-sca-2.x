@@ -253,8 +253,9 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         PortType callbackPT = null;
         if( myRolePT != null ) {
         	callPT = myRolePT;
+        	// If the 2 port types are not the same one, there is a callback...
         	if( partnerRolePT != null ) {
-        		if( !myRolePT.equals(partnerRolePT) ){
+        		if( !myRolePT.getQName().equals(partnerRolePT.getQName()) ){
         			callbackPT = partnerRolePT;
         		} // end if
         	} // end if
@@ -276,7 +277,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         // Set the call interface and, if present, the callback interface
         WSDLInterface callInterface = null;
         for( WSDLInterface anInterface : theInterfaces ) {
-        	if( anInterface.getPortType().equals(callPT)) callInterface = anInterface;
+        	if( anInterface.getPortType().getQName().equals(callPT.getQName())) callInterface = anInterface;
         } // end for
         // Throw an exception if no interface is found
         if( callInterface == null ) {
@@ -291,7 +292,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         if ( callbackPT != null ) {
             WSDLInterface callbackInterface = null;
             for( WSDLInterface anInterface : theInterfaces ) {
-            	if( anInterface.getPortType().equals(callbackPT)) callbackInterface = anInterface;
+            	if( anInterface.getPortType().getQName().equals(callbackPT.getQName())) callbackInterface = anInterface;
             } // end for
             // Throw an exception if no interface is found
             if( callbackInterface == null ) {
@@ -328,8 +329,9 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         PortType callbackPT = null;
         if( myRolePT != null ) {
         	callPT = myRolePT;
+        	// If the 2 port types are not the same one, there is a callback...
         	if( partnerRolePT != null ) {
-        		if( !myRolePT.equals(partnerRolePT) ){
+        		if( !myRolePT.getQName().equals(partnerRolePT.getQName()) ){
         			callbackPT = partnerRolePT;
         		} // end if
         	} // end if
@@ -346,7 +348,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         // Set the call interface and, if present, the callback interface
         WSDLInterface callInterface = null;
         for( WSDLInterface anInterface : theInterfaces ) {
-        	if( anInterface.getPortType().equals(callPT)) callInterface = anInterface;
+        	if( anInterface.getPortType().getQName().equals(callPT.getQName())) callInterface = anInterface;
         } // end for
         // Throw an exception if no interface is found
         if( callInterface == null ) {
@@ -362,7 +364,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         if ( callbackPT != null ) {
             WSDLInterface callbackInterface = null;
             for( WSDLInterface anInterface : theInterfaces ) {
-            	if( anInterface.getPortType().equals(callbackPT)) callbackInterface = anInterface;
+            	if( anInterface.getPortType().getQName().equals(callbackPT.getQName())) callbackInterface = anInterface;
             } // end for
             // Throw an exception if no interface is found
             if( callbackInterface == null ) {
@@ -467,10 +469,10 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
     } // end getComponentType
 
     /**
-     * Returns a QName of a BPEL process as from its string representation in the process
-     * attribute in the process XML
+     * Returns a QName from its string representation in a named attribute of an XML element
+     * supplied in an XMLStreamReader
      * 
-     * The process attribute of a BPEL process is a QName - this may be presented in one of
+     * QName attributes of an XML element (such as  BPEL process) is presented in one of
      * two alternative formats:
      * 1) In the form of a local name with a prefix, with the prefix referencing a namespace
      * URI declaration elsewhere in the composite (typically on the composite element)
@@ -485,7 +487,7 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
      *  ie:  {http://example.com/somenamespace}SomeName
      */
     private QName getAttributeValueNS(XMLStreamReader reader, String attribute) {
-        String fullValue = reader.getAttributeValue(null, "process");
+        String fullValue = reader.getAttributeValue(null, attribute);
         
         // Deal with the attribute in the XML Namespaces recommendation format
         // - trim off any leading/trailing spaces and check that the first character is '{'
@@ -513,8 +515,8 @@ public class BPELImplementationProcessor extends BaseStAXArtifactProcessor imple
         if (nsUri == null) {
         	error("AttributeUnrecognizedNamespace", reader, attribute, fullValue);
             throw new BPELProcessException("Attribute " + attribute + " with value " + fullValue +
-                    " in your composite has un unrecognized namespace prefix.");
-        }
+                    " in your composite has an unrecognized namespace prefix.");
+        } 
         return new QName(nsUri, name, prefix);
     }
 
