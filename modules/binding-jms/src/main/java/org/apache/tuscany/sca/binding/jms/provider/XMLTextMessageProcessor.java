@@ -50,7 +50,7 @@ public class XMLTextMessageProcessor extends AbstractMessageProcessor {
         try {
 
             String xml = ((TextMessage)msg).getText();
-            Object[] os = null;
+            Object[] os;
             if (xml != null) {
                 XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(xml));
                 StAXOMBuilder builder = new StAXOMBuilder(reader);
