@@ -321,7 +321,7 @@ public abstract class BaseConfigurationBuilderImpl {
             if (property != null) {
                 componentProperty.setProperty(property);
             } else {
-                warning("PropertyNotFound", component, component.getName().toString(), componentProperty.getName());
+                warning("PropertyNotFound", component, component.getName(), componentProperty.getName());
             }
         }
 
@@ -348,7 +348,7 @@ public abstract class BaseConfigurationBuilderImpl {
                 // Check that a component property does not override the
                 // mustSupply attribute
                 if (!property.isMustSupply() && componentProperty.isMustSupply()) {
-                    warning("PropertyMustSupplyIncompatible", component, component.getName().toString(), componentProperty.getName());
+                    warning("PropertyMustSupplyIncompatible", component, component.getName(), componentProperty.getName());
                 }
 
                 // Default to the mustSupply attribute specified on the property
@@ -367,14 +367,14 @@ public abstract class BaseConfigurationBuilderImpl {
 
                 // Check that a value is supplied
                 if (componentProperty.getValue() == null && property.isMustSupply()) {
-                    warning("PropertyMustSupplyNull", component, component.getName().toString(), componentProperty.getName());
+                    warning("PropertyMustSupplyNull", component, component.getName(), componentProperty.getName());
                 }
 
                 // Check that a a component property does not override the
                 // many attribute
                 if (!property.isMany() && componentProperty.isMany()) {
 
-                    warning("PropertyOverrideManyAttribute", component, component.getName().toString(), componentProperty.getName());
+                    warning("PropertyOverrideManyAttribute", component, component.getName(), componentProperty.getName());
                 }
 
                 // Default to the many attribute defined on the property
@@ -421,7 +421,7 @@ public abstract class BaseConfigurationBuilderImpl {
                 componentReference.setReference(reference);
             } else {
                 if (!componentReference.getName().startsWith("$self$.")) {
-                    warning("ReferenceNotFound", component, component.getName().toString(), componentReference.getName());
+                    warning("ReferenceNotFound", component, component.getName(), componentReference.getName());
                 }
             }
         }
@@ -449,7 +449,7 @@ public abstract class BaseConfigurationBuilderImpl {
                     if (!ReferenceConfigurationUtil.isValidMultiplicityOverride(reference.getMultiplicity(),
                                                                    componentReference
                                                                        .getMultiplicity())) {
-                        warning("ReferenceIncompatibleMultiplicity", component, component.getName().toString(), componentReference.getName());
+                        warning("ReferenceIncompatibleMultiplicity", component, component.getName(), componentReference.getName());
                     }
                 } else {
                     componentReference.setMultiplicity(reference.getMultiplicity());
@@ -462,7 +462,7 @@ public abstract class BaseConfigurationBuilderImpl {
                         .getInterfaceContract())) {
                         if (!interfaceContractMapper.isCompatible(componentReference.getInterfaceContract(),
                                                                   interfaceContract)) {
-                            warning("ReferenceIncompatibleComponentInterface", component, component.getName().toString(), componentReference.getName());
+                            warning("ReferenceIncompatibleComponentInterface", component, component.getName(), componentReference.getName());
                         }
                     }
                 } else {
@@ -522,7 +522,7 @@ public abstract class BaseConfigurationBuilderImpl {
             if (service != null) {
                 componentService.setService(service);
             } else {
-                warning("ServiceNotFoundForComponentService", component, component.getName().toString(), componentService.getName());
+                warning("ServiceNotFoundForComponentService", component, component.getName(), componentService.getName());
             }
         }
 
@@ -588,21 +588,21 @@ public abstract class BaseConfigurationBuilderImpl {
                                                                Map<String, ComponentProperty> componentProperties) {
         for (ComponentService componentService : component.getServices()) {
             if (componentServices.containsKey(componentService.getName())) {
-                warning("DuplicateComponentServiceName", component, component.getName().toString(), componentService.getName());
+                warning("DuplicateComponentServiceName", component, component.getName(), componentService.getName());
             } else {
                 componentServices.put(componentService.getName(), componentService);
             }
         }
         for (ComponentReference componentReference : component.getReferences()) {
             if (componentReferences.containsKey(componentReference.getName())) {
-                warning("DuplicateComponentReferenceName", component, component.getName().toString(), componentReference.getName());
+                warning("DuplicateComponentReferenceName", component, component.getName(), componentReference.getName());
             } else {
                 componentReferences.put(componentReference.getName(), componentReference);
             }
         }
         for (ComponentProperty componentProperty : component.getProperties()) {
             if (componentProperties.containsKey(componentProperty.getName())) {
-                warning("DuplicateComponentPropertyName", component, component.getName().toString(), componentProperty.getName());
+                warning("DuplicateComponentPropertyName", component, component.getName(), componentProperty.getName());
             } else {
                 componentProperties.put(componentProperty.getName(), componentProperty);
             }
@@ -618,12 +618,12 @@ public abstract class BaseConfigurationBuilderImpl {
         Implementation implementation = component.getImplementation();
         if (implementation == null) {
             // A component must have an implementation
-            warning("NoComponentImplementation", component, component.getName().toString());
+            warning("NoComponentImplementation", component, component.getName());
 
         } else if (implementation.isUnresolved()) {
 
             // The implementation must be fully resolved
-            warning("UnresolvedComponentImplementation", component, component.getName().toString(), implementation.getURI());
+            warning("UnresolvedComponentImplementation", component, component.getName(), implementation.getURI());
 
         } else {
 
@@ -631,7 +631,7 @@ public abstract class BaseConfigurationBuilderImpl {
             // duplicates
             for (Property property : implementation.getProperties()) {
                 if (properties.containsKey(property.getName())) {
-                    warning("DuplicateImplementationPropertyName", component, component.getName().toString(), property.getName());
+                    warning("DuplicateImplementationPropertyName", component, component.getName(), property.getName());
                 } else {
                     properties.put(property.getName(), property);
                 }
@@ -647,7 +647,7 @@ public abstract class BaseConfigurationBuilderImpl {
             }
             for (Reference reference : implementation.getReferences()) {
                 if (references.containsKey(reference.getName())) {
-                    warning("DuplicateImplementationReferenceName", component, component.getName().toString(), reference.getName());
+                    warning("DuplicateImplementationReferenceName", component, component.getName(), reference.getName());
                 } else {
                     references.put(reference.getName(), reference);
                 }
