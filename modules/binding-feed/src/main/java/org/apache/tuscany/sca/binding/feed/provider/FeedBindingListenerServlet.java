@@ -513,7 +513,7 @@ class FeedBindingListenerServlet extends HttpServlet {
 
             // Create a new Atom entry
             String contentType = request.getContentType();
-            if (contentType.startsWith("application/atom+xml")) {
+            if (contentType != null && contentType.startsWith("application/atom+xml")) {
 
                 // Read the entry from the request
                 Entry feedEntry;
@@ -623,7 +623,7 @@ class FeedBindingListenerServlet extends HttpServlet {
 
             // Update an Atom entry
             String contentType = request.getContentType();
-            if (contentType.startsWith("application/atom+xml")) {
+            if (contentType != null && contentType.startsWith("application/atom+xml")) {
 
                 // Read the entry from the request
                 Entry feedEntry;
