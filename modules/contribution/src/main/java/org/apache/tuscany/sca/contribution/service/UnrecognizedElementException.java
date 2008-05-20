@@ -34,7 +34,7 @@ public class UnrecognizedElementException extends ContributionReadException {
      * @param element the element that could not be handled
      */
     public UnrecognizedElementException(QName element) {
-        super("Unrecognized element: " + element.toString());
+        super("Unrecognized element: " + element);
         this.element = element;
     }
 
