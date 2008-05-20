@@ -38,7 +38,7 @@ import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
  */
 public class CompositeIncludeBuilderImpl implements CompositeBuilder {
     
-    public static Logger logger = Logger.getLogger(CompositeIncludeBuilderImpl.class.getName());
+    public static final Logger logger = Logger.getLogger(CompositeIncludeBuilderImpl.class.getName());
 	
     public CompositeIncludeBuilderImpl(Monitor monitor) {
     }
