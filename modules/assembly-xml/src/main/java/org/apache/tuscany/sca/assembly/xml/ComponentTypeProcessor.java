@@ -150,7 +150,7 @@ public class ComponentTypeProcessor extends BaseAssemblyProcessor implements StA
                         contract.setCallback(callback);
                         policyProcessor.readPolicies(callback, reader);
 
-                    } else if (OPERATION.equals(name)) {
+                    } else if (OPERATION_QNAME.equals(name)) {
 
                         // Read an <operation>
                         Operation operation = new OperationImpl();
