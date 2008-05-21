@@ -25,7 +25,6 @@ import java.util.concurrent.Future;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 import javax.wsdl.Part;
-import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
