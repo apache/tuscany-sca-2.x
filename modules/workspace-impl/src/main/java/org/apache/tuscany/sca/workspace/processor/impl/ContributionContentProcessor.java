@@ -44,7 +44,6 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
-import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.workspace.scanner.impl.DirectoryContributionScanner;
 import org.apache.tuscany.sca.workspace.scanner.impl.JarContributionScanner;
