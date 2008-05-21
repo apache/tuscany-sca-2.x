@@ -71,7 +71,7 @@ public class InterfaceInfo implements Serializable {
         }
     }
 
-    public static synchronized final InterfaceInfo getInstance(final Class iface) {
+    public static final synchronized InterfaceInfo getInstance(final Class iface) {
         InterfaceInfo info = (InterfaceInfo)INTERFACES.get(iface);
         if (info == null) {
             info = new InterfaceInfo(iface);
