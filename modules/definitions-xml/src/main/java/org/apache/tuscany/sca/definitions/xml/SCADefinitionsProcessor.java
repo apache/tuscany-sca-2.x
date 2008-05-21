@@ -148,7 +148,7 @@ public class SCADefinitionsProcessor extends BaseStAXArtifactProcessor implement
     public void write(SCADefinitions definitions, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
 
         writeStartDocument(writer, SCA10_NS, SCA_DEFINITIONS, 
-                               new XAttr(TARGET_NAMESPACE, definitions.getTargetNamespace().toString()));
+                               new XAttr(TARGET_NAMESPACE, definitions.getTargetNamespace()));
     
         for (Intent policyIntent : definitions.getPolicyIntents()) {
             extensionProcessor.write(policyIntent, writer);
