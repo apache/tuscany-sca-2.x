@@ -23,7 +23,7 @@
            name="Calculator">
 
     <component name="CalculatorServiceComponent">
-		<implementation.java class="calculator.CalculatorServiceImpl"/>
+		<implementation.java class="calculator.warning.CalculatorServiceImpl"/>
         <reference name="addService" target="AddServiceComponent" />
         <reference name="subtractService" target="SubtractServiceComponent" />
         <reference name="multiplyService" target="MultiplyServiceComponent" />
@@ -35,19 +35,19 @@
 		<binding.sca name="addBinding"/>
 		<binding.sca name="addBinding"/>
 	  </service>
-        <implementation.java class="calculator.AddServiceImplWithServiceName"/>
+        <implementation.java class="calculator.warning.AddServiceImplWithServiceName"/>
     </component>  
 
     <component name="SubtractServiceComponent">
-        <implementation.java class="calculator.SubtractServiceImplWithServiceName"/>
+        <implementation.java class="calculator.warning.SubtractServiceImplWithServiceName"/>
     </component>
 
     <component name="MultiplyServiceComponent">
-        <implementation.java class="calculator.MultiplyServiceImpl"/>
+        <implementation.java class="calculator.warning.MultiplyServiceImpl"/>
     </component>
 
     <component name="DivideServiceComponent">
-        <implementation.java class="calculator.DivideServiceImpl"/>
+        <implementation.java class="calculator.warning.DivideServiceImpl"/>
     </component>
 
 </composite>

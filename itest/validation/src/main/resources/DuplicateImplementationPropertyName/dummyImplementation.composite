@@ -25,7 +25,7 @@
     <property name="serviceName" type="xsd:anyURI">addService</property>
     <property name="serviceName" type="xsd:anyURI">addService</property>
     <component name="AddServiceComponent">
-        <implementation.java class="calculator.AddServiceImpl"/>
+        <implementation.java class="calculator.warning.AddServiceImpl"/>
     </component>  
 
 </composite>
