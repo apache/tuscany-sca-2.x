@@ -52,7 +52,7 @@ import org.apache.tuscany.sca.policy.util.PolicyValidationUtils;
  */
 abstract class PolicyConfigurationUtil {
     
-    static private List<Intent> computeInheritableIntents(IntentAttachPointType attachPointType, 
+    private static List<Intent> computeInheritableIntents(IntentAttachPointType attachPointType, 
                                                    List<Intent> inheritableIntents) throws PolicyValidationException {
         List<Intent> validInheritableIntents = new ArrayList<Intent>();
         
@@ -77,7 +77,7 @@ abstract class PolicyConfigurationUtil {
         return validInheritableIntents;
     }
     
-    static private void normalizeIntents(IntentAttachPoint intentAttachPoint) {
+    private static void normalizeIntents(IntentAttachPoint intentAttachPoint) {
         //expand profile intents specified in the attachpoint (binding / implementation)
         PolicyComputationUtils.expandProfileIntents(intentAttachPoint.getRequiredIntents());
 
@@ -86,7 +86,7 @@ abstract class PolicyConfigurationUtil {
         filterDuplicatesAndQualifiableIntents(intentAttachPoint);
     }
     
-    static private void trimInherentlyProvidedIntents(IntentAttachPointType attachPointType, List<Intent>intents) {
+    private static void trimInherentlyProvidedIntents(IntentAttachPointType attachPointType, List<Intent>intents) {
         //exclude intents that are inherently supported by the 
         //attachpoint-type (binding-type  / implementation-type)
         List<Intent> requiredIntents = new ArrayList<Intent>(intents);
@@ -106,7 +106,7 @@ abstract class PolicyConfigurationUtil {
         }
     }
     
-    static private void computeIntentsForOperations(OperationsConfigurator opConfigurator, 
+    private static void computeIntentsForOperations(OperationsConfigurator opConfigurator, 
                                                IntentAttachPoint intentAttachPoint, 
                                                List<Intent> parentIntents) throws PolicyValidationException {
         IntentAttachPointType attachPointType = intentAttachPoint.getType();
@@ -170,7 +170,7 @@ abstract class PolicyConfigurationUtil {
         }
     }
     
-    static private List<PolicySet> computeInheritablePolicySets(List<PolicySet> inheritablePolicySets,
+    private static List<PolicySet> computeInheritablePolicySets(List<PolicySet> inheritablePolicySets,
                                                            List<PolicySet> applicablePolicySets) 
                                                                throws PolicyValidationException {
         List<PolicySet> validInheritablePolicySets = new ArrayList<PolicySet>();
@@ -188,7 +188,7 @@ abstract class PolicyConfigurationUtil {
         return validInheritablePolicySets;
     }
     
-    static private void normalizePolicySets(PolicySetAttachPoint policySetAttachPoint ) {
+    private static void normalizePolicySets(PolicySetAttachPoint policySetAttachPoint ) {
         //get rid of duplicate entries
         HashMap<QName, PolicySet> policySetTable = new HashMap<QName, PolicySet>();
         for ( PolicySet policySet : policySetAttachPoint.getPolicySets() ) {
@@ -204,7 +204,7 @@ abstract class PolicyConfigurationUtil {
         }
     }
     
-    static private void computePolicySetsForOperations(List<PolicySet> applicablePolicySets,
+    private static void computePolicySetsForOperations(List<PolicySet> applicablePolicySets,
                                                   PolicySetAttachPoint policySetAttachPoint) 
                                                                         throws PolicyValidationException {
         if ( policySetAttachPoint instanceof OperationsConfigurator ) {
@@ -215,7 +215,7 @@ abstract class PolicyConfigurationUtil {
         
     }
     
-    static private void computePolicySetsForOperations(List<PolicySet> applicablePolicySets, 
+    private static void computePolicySetsForOperations(List<PolicySet> applicablePolicySets, 
                                                   OperationsConfigurator opConfigurator,
                                                   PolicySetAttachPoint policySetAttachPoint) 
                                                                         throws PolicyValidationException {
@@ -262,13 +262,13 @@ abstract class PolicyConfigurationUtil {
     }
     
         
-    static private void trimProvidedIntents(List<Intent> requiredIntents, List<PolicySet> policySets) {
+    private static void trimProvidedIntents(List<Intent> requiredIntents, List<PolicySet> policySets) {
         for ( PolicySet policySet : policySets ) {
             trimProvidedIntents(requiredIntents, policySet);
         }
     }
     
-    static private void determineApplicableDomainPolicySets(List<PolicySet> applicablePolicySets,
+    private static void determineApplicableDomainPolicySets(List<PolicySet> applicablePolicySets,
                                                      PolicySetAttachPoint policySetAttachPoint,
                                                      IntentAttachPointType intentAttachPointType) {
 
@@ -543,7 +543,7 @@ abstract class PolicyConfigurationUtil {
         }
     }
 
-    static private void determineApplicableDomainPolicySets(Contract contract, 
+    private static void determineApplicableDomainPolicySets(Contract contract, 
                                                      PolicySetAttachPoint policiedBinding) 
                                                             throws PolicyConfigurationException {
         //if ( domainPolicySets != null) {
@@ -689,7 +689,7 @@ abstract class PolicyConfigurationUtil {
         }
     }
 
-    static private void determineApplicableImplementationPolicySets(Component component) throws PolicyConfigurationException {
+    private static void determineApplicableImplementationPolicySets(Component component) throws PolicyConfigurationException {
         List<Intent> intentsCopy = null;
         if ( component.getImplementation() instanceof PolicySetAttachPoint ) {
             PolicySetAttachPoint policiedImplementation = (PolicySetAttachPoint)component.getImplementation();

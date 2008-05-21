@@ -58,9 +58,9 @@ import org.apache.tuscany.sca.policy.IntentAttachPointType;
  * @version $Rev$ $Date$
  */
 public abstract class BaseConfigurationBuilderImpl {
-    private final static String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
-    private final static String BINDING_SCA = "binding.sca";
-    private final static QName BINDING_SCA_QNAME = new QName(SCA10_NS, BINDING_SCA);
+    private static final String SCA10_NS = "http://www.osoa.org/xmlns/sca/1.0";
+    private static final String BINDING_SCA = "binding.sca";
+    private static final QName BINDING_SCA_QNAME = new QName(SCA10_NS, BINDING_SCA);
 
     private AssemblyFactory assemblyFactory;
     private SCABindingFactory scaBindingFactory;

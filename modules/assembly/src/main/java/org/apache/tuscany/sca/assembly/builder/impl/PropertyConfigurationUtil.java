@@ -61,7 +61,7 @@ abstract class PropertyConfigurationUtil {
     private static final DocumentBuilderFactory DOC_BUILDER_FACTORY = DocumentBuilderFactory.newInstance();
     private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
     
-    static private Document evaluate(Document node, XPathExpression expression)
+    private static Document evaluate(Document node, XPathExpression expression)
         throws XPathExpressionException, ParserConfigurationException {
 
         Node value = node.getDocumentElement();
@@ -82,7 +82,7 @@ abstract class PropertyConfigurationUtil {
         }
     }
     
-    static private Document loadFromFile(String file) throws MalformedURLException, IOException,
+    private static Document loadFromFile(String file) throws MalformedURLException, IOException,
         TransformerException, ParserConfigurationException {
         URI uri = URI.create(file);
         // URI resolution for relative URIs is done when the composite is resolved.
