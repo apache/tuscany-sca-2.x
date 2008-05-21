@@ -51,7 +51,7 @@ import org.apache.catalina.deploy.FilterMap;
  */
 public class TuscanyHost extends StandardHost {
     private static final long serialVersionUID = 1L;
-    private final static Logger logger = Logger.getLogger(TuscanyHost.class.getName());
+    private static final Logger logger = Logger.getLogger(TuscanyHost.class.getName());
     
     // TODO static for expedience, find a better way to share when/if this is working properly
     protected static List<StandardContext> scaApps = new ArrayList<StandardContext>();

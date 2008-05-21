@@ -40,7 +40,7 @@ import org.apache.tuscany.sca.provider.EndpointProvider;
  */
 public class EndpointProviderImpl implements EndpointProvider {
 
-    private final static Logger logger = Logger.getLogger(EndpointProviderImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(EndpointProviderImpl.class.getName());
 
     private Endpoint endpoint;
 
