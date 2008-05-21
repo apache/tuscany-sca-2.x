@@ -35,10 +35,10 @@ package org.apache.geronimo.samples.bank.ejb;
 public interface BankManagerFacadeHome
    extends javax.ejb.EJBHome
 {
-   public static final String COMP_NAME="java:comp/env/ejb/BankManagerFacadeBean";
-   public static final String JNDI_NAME="org.apache.geronimo.samples.bank.ejb.BankManagerFacadeBean";
+   String COMP_NAME="java:comp/env/ejb/BankManagerFacadeBean";
+   String JNDI_NAME="org.apache.geronimo.samples.bank.ejb.BankManagerFacadeBean";
 
-   public org.apache.geronimo.samples.bank.ejb.BankManagerFacade create()
+   org.apache.geronimo.samples.bank.ejb.BankManagerFacade create()
       throws javax.ejb.CreateException,java.rmi.RemoteException;
 
 }

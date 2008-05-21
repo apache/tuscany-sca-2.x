@@ -35,10 +35,10 @@ public interface BankManagerFacade
    extends javax.ejb.EJBObject
 {
 
-   public void changeAccountBalance( java.lang.String accountNo,java.lang.Double balance )
+   void changeAccountBalance( java.lang.String accountNo,java.lang.Double balance )
       throws java.rmi.RemoteException;
 
-   public java.lang.Double getAccountBalance( java.lang.String accountNo )
+   java.lang.Double getAccountBalance( java.lang.String accountNo )
       throws java.rmi.RemoteException;
 
 }
