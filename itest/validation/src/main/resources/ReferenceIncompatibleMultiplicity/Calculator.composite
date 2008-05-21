@@ -23,7 +23,7 @@
            name="Calculator">
 
     <component name="CalculatorServiceComponent">
-		<implementation.java class="calculator.CalculatorServiceImpl"/>
+		<implementation.java class="calculator.warning.CalculatorServiceImpl"/>
         <reference name="addService" multiplicity="1..n" target="AddServiceComponent" />
         <reference name="subtractService" target="SubtractServiceComponent" />
         <reference name="multiplyService" target="MultiplyServiceComponent" />
@@ -31,19 +31,19 @@
     </component>
 
     <component name="AddServiceComponent">
-        <implementation.java class="calculator.AddServiceImpl"/>
+        <implementation.java class="calculator.warning.AddServiceImpl"/>
     </component>   
 
     <component name="SubtractServiceComponent">
-        <implementation.java class="calculator.SubtractServiceImpl"/>
+        <implementation.java class="calculator.warning.SubtractServiceImpl"/>
     </component>
 
     <component name="MultiplyServiceComponent">
-        <implementation.java class="calculator.MultiplyServiceImpl"/>
+        <implementation.java class="calculator.warning.MultiplyServiceImpl"/>
     </component>
 
     <component name="DivideServiceComponent">
-        <implementation.java class="calculator.DivideServiceImpl"/>
+        <implementation.java class="calculator.warning.DivideServiceImpl"/>
     </component>
 
 </composite>

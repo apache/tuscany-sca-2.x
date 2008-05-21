@@ -26,6 +26,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.tuscany.sca.assembly.builder.impl.ProblemImpl;
 import org.apache.tuscany.sca.assembly.xml.Constants;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
@@ -39,6 +40,8 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.Problem;
+import org.apache.tuscany.sca.monitor.Problem.Severity;
 
 /**
  *
@@ -117,6 +120,8 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
                 classReference = resolver.resolveModel(ClassReference.class, classReference);
                 Class javaClass = classReference.getJavaClass();
                 if (javaClass == null) {
+                    Problem problem = new ProblemImpl(this.getClass().getName(), "interface-javaxml-validation-messages", Severity.ERROR, javaInterface, "ClassNotFoundException", javaInterface.getName());
+                    monitor.problem(problem);
                     throw new ContributionResolveException(new ClassNotFoundException(javaInterface.getName()));
                 }
                 try {
