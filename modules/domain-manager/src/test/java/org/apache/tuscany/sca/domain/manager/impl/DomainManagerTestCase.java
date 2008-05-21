@@ -27,8 +27,6 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.sca.domain.manager.impl.ContributionCollectionImpl;
-import org.apache.tuscany.sca.domain.manager.impl.DeployableCompositeCollectionImpl;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
