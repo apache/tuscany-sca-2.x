@@ -57,6 +57,7 @@ import org.osoa.sca.annotations.Init;
  * @version $Rev$ $Date$
  */
 public class OSGiInstanceWrapper<T> implements InstanceWrapper<T> {
+    private static final Random RANDOM_NUMBER_GENERATOR = new Random();
     
     private OSGiAnnotations annotationProcessor;
     private OSGiImplementationProvider provider;
@@ -223,7 +224,7 @@ public class OSGiInstanceWrapper<T> implements InstanceWrapper<T> {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
         String EOL = System.getProperty("line.separator");
-        String bundleName = "dummy.sca." + new Random().nextInt();
+        String bundleName = "dummy.sca." + RANDOM_NUMBER_GENERATOR.nextInt();
         
         
         String manifestStr = "Manifest-Version: 1.0" + EOL +
