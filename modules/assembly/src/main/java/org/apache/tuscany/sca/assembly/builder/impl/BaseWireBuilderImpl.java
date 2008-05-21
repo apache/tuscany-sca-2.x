@@ -518,22 +518,23 @@ class BaseWireBuilderImpl {
                 // user might have put a local target name in the uri so get
                 // the path part and see if it refers to a target we know about
                 // - if it does the reference binding will be matched with a service binding
-                // - if it doesn't it is assumed to be an external reference 
-                uri = URI.create(uri).getPath();
-                
-                if (uri.startsWith("/")) {
-                    uri = uri.substring(1);
-                }
-                                               
-                // Resolve the target component and service
-                ComponentService targetComponentService = componentServices.get(uri);
-                Component targetComponent;
-                
-                int s = uri.indexOf('/');
-                if (s == -1) {
-                    targetComponent = components.get(uri);
-                } else {
-                    targetComponent = components.get(uri.substring(0, s));
+                // - if it doesn't it is assumed to be an external reference
+                Component targetComponent = null;
+                ComponentService targetComponentService = null;
+                String path = URI.create(uri).getPath();
+                if (path != null) {
+                    if (path.startsWith("/")) {
+                        path = path.substring(1);
+                    }
+                                                   
+                    // Resolve the target component and service
+                    targetComponentService = componentServices.get(path);
+                    int s = path.indexOf('/');
+                    if (s == -1) {
+                        targetComponent = components.get(path);
+                    } else {
+                        targetComponent = components.get(path.substring(0, s));
+                    }
                 }
 
                 // if the path of the binding URI matches a component in the 

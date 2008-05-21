@@ -20,6 +20,7 @@
 package org.apache.tuscany.sca.assembly.builder.impl;
 
 import org.apache.tuscany.sca.assembly.Binding;
+import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.CompositeService;
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.builder.EndpointBuilder;
@@ -69,7 +70,10 @@ public abstract class EndpointBuilderImpl implements EndpointBuilder {
         if (endpoint.getTargetComponentService().getService() instanceof CompositeService) {
             CompositeService compositeService = (CompositeService) endpoint.getTargetComponentService().getService();
             // Find the promoted component service
-            endpoint.setTargetComponentService(ServiceConfigurationUtil.getPromotedComponentService(compositeService));
+            ComponentService promotedComponentService = ServiceConfigurationUtil.getPromotedComponentService(compositeService);
+            if (promotedComponentService != null && !promotedComponentService.isUnresolved()) {
+                endpoint.setTargetComponentService(promotedComponentService);
+            }
         }
         
         try  {
