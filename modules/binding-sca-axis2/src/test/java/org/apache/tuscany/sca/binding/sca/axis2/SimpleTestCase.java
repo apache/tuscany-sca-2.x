@@ -20,12 +20,7 @@ package org.apache.tuscany.sca.binding.sca.axis2;
 
 import junit.framework.Assert;
 
-import org.apache.tuscany.sca.assembly.Component;
-import org.apache.tuscany.sca.assembly.Composite;
-import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.binding.sca.axis2.helloworld.HelloWorldClient;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -19,41 +19,11 @@
 
 package org.apache.tuscany.sca.binding.sca.axis2;
 
-import java.net.URI;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.tuscany.sca.assembly.Binding;
-import org.apache.tuscany.sca.assembly.ComponentReference;
-import org.apache.tuscany.sca.assembly.ComponentService;
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.assembly.OptimizableBinding;
-import org.apache.tuscany.sca.assembly.Reference;
-import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
-import org.apache.tuscany.sca.core.assembly.CompositeActivatorImpl;
-import org.apache.tuscany.sca.core.assembly.EndpointReferenceImpl;
-import org.apache.tuscany.sca.core.assembly.RuntimeWireImpl;
-import org.apache.tuscany.sca.core.context.ComponentContextImpl;
 import org.apache.tuscany.sca.endpoint.impl.EndpointProviderImpl;
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.InvocationChain;
-import org.apache.tuscany.sca.invocation.Invoker;
-import org.apache.tuscany.sca.provider.BindingProviderFactory;
-import org.apache.tuscany.sca.provider.EndpointProvider;
-import org.apache.tuscany.sca.provider.PolicyProvider;
-import org.apache.tuscany.sca.provider.PolicyProviderFactory;
-import org.apache.tuscany.sca.provider.ProviderFactoryExtensionPoint;
-import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
-import org.apache.tuscany.sca.runtime.EndpointReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
-import org.apache.tuscany.sca.runtime.RuntimeComponentService;
-import org.apache.tuscany.sca.runtime.RuntimeWire;
-import org.osoa.sca.ServiceUnavailableException;
 
 /** 
  * The endpoint binding provider allows unresolved endpoints to be plumbed into
@@ -64,7 +34,7 @@ import org.osoa.sca.ServiceUnavailableException;
  */
 public class TestEndpointProviderImpl extends EndpointProviderImpl {
 
-    private final static Logger logger = Logger.getLogger(TestEndpointProviderImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(TestEndpointProviderImpl.class.getName());
 
     private Endpoint endpoint;
     private int startedCount = 0;
