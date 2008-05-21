@@ -20,8 +20,6 @@
 package org.apache.tuscany.sca.provider;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
-import org.apache.tuscany.sca.runtime.RuntimeComponent;
-import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 
 /**
  * A factory for creating the runtime artifacts that represent endpoints.
