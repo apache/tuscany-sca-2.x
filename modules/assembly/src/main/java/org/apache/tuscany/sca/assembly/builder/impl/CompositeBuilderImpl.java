@@ -42,7 +42,7 @@ import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
  * @version $Rev$ $Date$
  */
 public class CompositeBuilderImpl implements CompositeBuilder {
-    private final static Logger logger = Logger.getLogger(CompositeBuilderImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(CompositeBuilderImpl.class.getName());
     private CompositeBuilder compositeIncludeBuilder;
     private CompositeBuilder componentWireBuilder;
     private CompositeBuilder compositeReferenceWireBuilder;
