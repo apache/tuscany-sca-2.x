@@ -22,9 +22,6 @@ package org.apache.tuscany.sca.assembly.impl;
 
 import org.apache.tuscany.sca.assembly.Endpoint;
 import org.apache.tuscany.sca.assembly.EndpointFactory;
-import org.apache.tuscany.sca.assembly.builder.DefaultEndpointBuilder;
-import org.apache.tuscany.sca.assembly.builder.EndpointBuilder;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 /**
  * A factory for the Endpoint model.

@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.sca.assembly;
 
-import org.apache.tuscany.sca.assembly.builder.EndpointBuilder;
-import org.apache.tuscany.sca.monitor.Monitor;
 
 
 /**
