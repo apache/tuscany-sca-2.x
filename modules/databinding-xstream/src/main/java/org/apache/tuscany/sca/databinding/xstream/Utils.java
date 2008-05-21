@@ -53,7 +53,7 @@ public class Utils {
             SecureRandom prng = SecureRandom.getInstance("SHA1PRNG");
 
             //generate a random number
-            String randomNum = new Integer(prng.nextInt()).toString();
+            String randomNum = Integer.toString(prng.nextInt());
 
             //get its digest
             MessageDigest sha = MessageDigest.getInstance("SHA-1");
