@@ -34,7 +34,7 @@ public class OMElement2XMLStreamReader extends BaseTransformer<OMElement, XMLStr
     PullTransformer<OMElement, XMLStreamReader> {
     // private XmlOptions options;
 
-    public static QName QNAME_NIL = new QName("http://www.w3.org/2001/XMLSchema-instance", "nil");
+    public static final QName QNAME_NIL = new QName("http://www.w3.org/2001/XMLSchema-instance", "nil");
 
     public XMLStreamReader transform(OMElement source, TransformationContext context) {
         if (source == null) {
