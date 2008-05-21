@@ -88,7 +88,7 @@ public class XQueryImplementationImpl extends ImplementationImpl implements XQue
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (getClass() != obj.getClass())
+        if (obj == null || getClass() != obj.getClass())
             return false;
         final XQueryImplementationImpl other = (XQueryImplementationImpl)obj;
         if (location == null) {
