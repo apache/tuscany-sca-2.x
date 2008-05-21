@@ -49,10 +49,6 @@ import org.apache.ode.store.ProcessStoreImpl;
 import org.apache.ode.utils.GUID;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
-//-------------- Added by Mike Edwards 16/05/2008
-import org.apache.ode.bpel.iapi.Endpoint;
-//-------------- End of Mike Edwards additions
-
 /**
  * Embedded ODE process server
  * 
