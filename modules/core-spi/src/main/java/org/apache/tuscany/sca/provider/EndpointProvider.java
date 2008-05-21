@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.sca.provider;
 
-import org.apache.tuscany.sca.interfacedef.InterfaceContract;
-import org.apache.tuscany.sca.interfacedef.Operation;
-import org.apache.tuscany.sca.invocation.Invoker;
 
 /**
  * A reference binding implementation can options implement this
