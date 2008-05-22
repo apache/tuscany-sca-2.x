@@ -63,7 +63,7 @@ public class Group2GroupTransformer extends BaseTransformer<Object, Object> impl
      * @see org.apache.tuscany.sca.databinding.impl.BaseTransformer#getSourceType()
      */
     @Override
-    protected Class getSourceType() {
+    protected Class<Object> getSourceType() {
         return Object.class;
     }
 
@@ -71,7 +71,7 @@ public class Group2GroupTransformer extends BaseTransformer<Object, Object> impl
      * @see org.apache.tuscany.sca.databinding.impl.BaseTransformer#getTargetType()
      */
     @Override
-    protected Class getTargetType() {
+    protected Class<Object> getTargetType() {
         return Object.class;
     }
 
