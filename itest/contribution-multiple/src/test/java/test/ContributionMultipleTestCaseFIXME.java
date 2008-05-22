@@ -32,23 +32,23 @@ import junit.framework.TestCase;
 
 /**
  * Test multiple contribution scenario
- * Contributed by TUSCANY-1756
+ * Contributed by TUSCANY-1718
  */
-public class ContributionTestCase extends TestCase {
+public class ContributionMultipleTestCaseFIXME extends TestCase {
 
     private String helloContribution_dir = "target/test-classes/contribution-export";
-    //private String helloWorldContribution_one_dir = "target/test-classes/contribution-import-one";
+    private String helloWorldContribution_one_dir = "target/test-classes/contribution-import-one";
     private String helloWorldContribution_two_dir = "target/test-classes/contribution-import-two";
 
     private ClassLoader cl;
     private EmbeddedSCADomain domain;
     private Contribution helloContribution;
-    //private Contribution helloWorldContribution_one;
+    private Contribution helloWorldContribution_one;
     private Contribution helloWorldContribution_two;
 
     protected void setUp() throws Exception {
         URL helloContribution_URL = new java.io.File(helloContribution_dir).toURI().toURL();
-        //URL helloWorldContribution_one_URL = new java.io.File(helloWorldContribution_one_dir).toURI().toURL();
+        URL helloWorldContribution_one_URL = new java.io.File(helloWorldContribution_one_dir).toURI().toURL();
         URL helloWorldContribution_two_URL = new java.io.File(helloWorldContribution_two_dir).toURI().toURL();
 
         // Create a test embedded SCA domain
@@ -64,8 +64,8 @@ public class ContributionTestCase extends TestCase {
         helloContribution =
             contributionService.contribute("http://contribution-multiple/helloworld", helloContribution_URL, false);
 
-        //helloWorldContribution_one =
-         //   contributionService.contribute("http://contribution-multiple/helloworld_one", helloWorldContribution_one_URL, false);
+        helloWorldContribution_one =
+            contributionService.contribute("http://contribution-multiple/helloworld_one", helloWorldContribution_one_URL, false);
 
         helloWorldContribution_two =
             contributionService.contribute("http://contribution-multiple/helloworld_two", helloWorldContribution_two_URL, false);
@@ -74,11 +74,11 @@ public class ContributionTestCase extends TestCase {
             domain.getDomainComposite().getIncludes().add(deployable);
             domain.buildComposite(deployable);
         }
-
-        //for (Composite deployable : helloWorldContribution_one.getDeployables()) {
-        //    domain.getDomainComposite().getIncludes().add(deployable);
-        //    domain.buildComposite(deployable);
-        //}
+                
+        for (Composite deployable : helloWorldContribution_one.getDeployables()) {
+            domain.getDomainComposite().getIncludes().add(deployable);
+            domain.buildComposite(deployable);
+        }
 
         for (Composite deployable : helloWorldContribution_two.getDeployables()) {
             domain.getDomainComposite().getIncludes().add(deployable);
@@ -89,12 +89,12 @@ public class ContributionTestCase extends TestCase {
             domain.getCompositeActivator().activate(deployable);
             domain.getCompositeActivator().start(deployable);
         }
-
-        //for (Composite deployable : helloWorldContribution_one.getDeployables()) {
-        //    domain.getCompositeActivator().activate(deployable);
-        //    domain.getCompositeActivator().start(deployable);
-        //}
-
+        
+        for (Composite deployable : helloWorldContribution_one.getDeployables()) {
+            domain.getCompositeActivator().activate(deployable);
+            domain.getCompositeActivator().start(deployable);
+        }
+        
         for (Composite deployable : helloWorldContribution_two.getDeployables()) {
             domain.getCompositeActivator().activate(deployable);
             domain.getCompositeActivator().start(deployable);
@@ -103,11 +103,11 @@ public class ContributionTestCase extends TestCase {
     }
 
     public void testServiceCall() throws IOException {
-        //HelloWorldService helloWorldService_one =
-            //domain.getService(HelloWorldService.class, "HelloWorldServiceComponent_one/HelloWorldService");
-        //assertNotNull(helloWorldService_one);
+        HelloWorldService helloWorldService_one =
+            domain.getService(HelloWorldService.class, "HelloWorldServiceComponent_one/HelloWorldService");
+        assertNotNull(helloWorldService_one);
 
-        //assertEquals("Hello Smith", helloWorldService_one.getGreetings("Smith"));
+        assertEquals("Hello Smith", helloWorldService_one.getGreetings("Smith"));
 
         HelloWorldService helloWorldService_two =
             domain.getService(HelloWorldService.class, "HelloWorldServiceComponent_two/HelloWorldService");
@@ -122,7 +122,7 @@ public class ContributionTestCase extends TestCase {
 
         // Remove the contribution from the in-memory repository
         contributionService.remove("http://contribution-multiple/helloworld");
-        //contributionService.remove("http://contribution-multiple/helloworld_one");
+        contributionService.remove("http://contribution-multiple/helloworld_one");
         contributionService.remove("http://contribution-multiple/helloworld_two");
 
         // Stop Components from my composite
@@ -130,10 +130,10 @@ public class ContributionTestCase extends TestCase {
             domain.getCompositeActivator().stop(deployable);
             domain.getCompositeActivator().deactivate(deployable);
         }        
-        //for (Composite deployable : helloWorldContribution_one.getDeployables()) {
-        //    domain.getCompositeActivator().stop(deployable);
-        //    domain.getCompositeActivator().deactivate(deployable);
-        //}
+        for (Composite deployable : helloWorldContribution_one.getDeployables()) {
+            domain.getCompositeActivator().stop(deployable);
+            domain.getCompositeActivator().deactivate(deployable);
+        }
         for (Composite deployable : helloContribution.getDeployables()) {
             domain.getCompositeActivator().stop(deployable);
             domain.getCompositeActivator().deactivate(deployable);
