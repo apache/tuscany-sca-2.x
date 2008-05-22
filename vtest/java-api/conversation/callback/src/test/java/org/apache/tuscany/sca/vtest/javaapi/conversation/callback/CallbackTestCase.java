@@ -292,7 +292,6 @@ public class CallbackTestCase {
      * callback fields, then all of them will be set.
      */
     @Test
-    @Ignore("TUSCANY-2311")
     public void statefulMultiBidirectional() throws Exception {
         System.out.println("Setting up for multi-bidirectional interfaces tests");
         ServiceFinder.init("callback-multi.composite");

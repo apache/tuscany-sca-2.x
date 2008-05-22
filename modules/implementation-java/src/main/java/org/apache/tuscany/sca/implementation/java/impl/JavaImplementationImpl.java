@@ -22,6 +22,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class JavaImplementationImpl extends BaseJavaImplementationImpl implement
     private final Map<String, JavaResourceImpl> resources = new HashMap<String, JavaResourceImpl>();
     private final Map<String, JavaElementImpl> propertyMembers = new HashMap<String, JavaElementImpl>();
     private final Map<String, JavaElementImpl> referenceMembers = new HashMap<String, JavaElementImpl>();
-    private final Map<String, JavaElementImpl> callbackMembers = new HashMap<String, JavaElementImpl>();
+    private final Map<String, Collection<JavaElementImpl>> callbackMembers = new HashMap<String, Collection<JavaElementImpl>>();
     private List<Member> conversationIDMember = new ArrayList<Member>();
     private boolean eagerInit;
     private boolean allowsPassByReference;
@@ -120,7 +121,7 @@ public class JavaImplementationImpl extends BaseJavaImplementationImpl implement
         this.eagerInit = eagerInit;
     }
 
-    public Map<String, JavaElementImpl> getCallbackMembers() {
+    public Map<String, Collection<JavaElementImpl>> getCallbackMembers() {
         return callbackMembers;
     }
 

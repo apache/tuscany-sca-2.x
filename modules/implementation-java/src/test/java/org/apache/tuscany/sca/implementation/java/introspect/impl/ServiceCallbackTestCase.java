@@ -56,7 +56,7 @@ public class ServiceCallbackTestCase extends TestCase {
         assertNotNull(service);
         Method method = FooImpl.class.getMethod("setCallback", FooCallback.class);
         processor.visitMethod(method, type);
-        assertEquals(method, type.getCallbackMembers().get(FooCallback.class.getName()).getAnchor());
+        assertEquals(method, type.getCallbackMembers().get(FooCallback.class.getName()).iterator().next().getAnchor());
     }
 
     public void testFieldCallbackInterface() throws Exception {
@@ -66,7 +66,7 @@ public class ServiceCallbackTestCase extends TestCase {
         assertNotNull(service);
         Field field = FooImpl.class.getDeclaredField("callback");
         processor.visitField(field, type);
-        assertEquals(field, type.getCallbackMembers().get(FooCallback.class.getName()).getAnchor());
+        assertEquals(field, type.getCallbackMembers().get(FooCallback.class.getName()).iterator().next().getAnchor());
     }
 
     public void testFieldCallbackInterface1() throws Exception {
@@ -76,7 +76,7 @@ public class ServiceCallbackTestCase extends TestCase {
         assertNotNull(service);
         Field field1 = FooImpl1.class.getDeclaredField("callbackRef");
         processor.visitField(field1, type);
-        assertEquals(field1, type.getCallbackMembers().get(FooCallback.class.getName()).getAnchor());
+        assertEquals(field1, type.getCallbackMembers().get(FooCallback.class.getName()).iterator().next().getAnchor());
         
     }
     

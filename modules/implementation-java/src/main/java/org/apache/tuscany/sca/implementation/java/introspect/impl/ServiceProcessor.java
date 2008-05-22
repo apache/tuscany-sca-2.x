@@ -24,6 +24,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -152,7 +153,10 @@ public class ServiceProcessor extends BaseJavaClassVisitor {
         if (callbackService == null) {
             throw new IllegalCallbackReferenceException("Callback type does not match a service callback interface: " + type.getName() );
         }
-        type.getCallbackMembers().put(baseType.getName(), element);
+        if(type.getCallbackMembers().get(baseType.getName()) == null) {
+            type.getCallbackMembers().put(baseType.getName(), new ArrayList<JavaElementImpl>());
+        }
+        type.getCallbackMembers().get(baseType.getName()).add(element);
     }
 
     public Service createService(Class<?> interfaze) throws InvalidInterfaceException {
