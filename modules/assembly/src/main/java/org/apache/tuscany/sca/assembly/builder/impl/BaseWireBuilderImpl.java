@@ -330,9 +330,9 @@ class BaseWireBuilderImpl {
                             compositeReference.setInterfaceContract(componentReferenceInterfaceContract);
                         } else if (componentReferenceInterfaceContract != null) {
                         	// Check the compositeInterfaceContract and componentInterfaceContract
-                        	boolean isCompatible = interfaceContractMapper.isCompatible(componentReferenceInterfaceContract,compositeReferenceInterfaceContract);
+                        	boolean isCompatible = interfaceContractMapper.isCompatible(compositeReferenceInterfaceContract, componentReferenceInterfaceContract);
                         	if(!isCompatible){
-                        		throw new IncompatibleInterfaceContractException("Interface of composite reference "+componentReferenceName +" must be superset of the interface declared by promoted component reference.", componentReferenceInterfaceContract, compositeReferenceInterfaceContract);
+                        		throw new IncompatibleInterfaceContractException("Interface of composite reference "+componentReferenceName +" must be compatible with the interface declared by promoted component reference.", componentReferenceInterfaceContract, compositeReferenceInterfaceContract);
                         	}
                         }
                     } else {
