@@ -21,9 +21,10 @@ package org.apache.tuscany.sca.core.databinding.transformers;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.lang.reflect.Constructor;
+
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.sca.core.context.CallableReferenceImpl;
 import org.apache.tuscany.sca.core.context.ServiceReferenceImpl;
@@ -31,7 +32,6 @@ import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
-
 import org.osoa.sca.CallableReference;
 
 @SuppressWarnings("unchecked")
@@ -83,12 +83,12 @@ public class XMLStreamReader2CallableReference extends BaseTransformer<XMLStream
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<XMLStreamReader> getSourceType() {
         return XMLStreamReader.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<CallableReference> getTargetType() {
         return CallableReference.class;
     }
 
