@@ -74,7 +74,7 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
      * @see org.apache.tuscany.sca.databinding.impl.BaseTransformer#getSourceType()
      */
     @Override
-    protected Class getSourceType() {
+    protected Class<Object[]> getSourceType() {
         return Object[].class;
     }
 
@@ -82,7 +82,7 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
      * @see org.apache.tuscany.sca.databinding.impl.BaseTransformer#getTargetType()
      */
     @Override
-    protected Class getTargetType() {
+    protected Class<Object[]> getTargetType() {
         return Object[].class;
     }
 

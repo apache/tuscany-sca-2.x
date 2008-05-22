@@ -26,20 +26,18 @@ import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.databinding.xml.StAXHelper;
-
 import org.osoa.sca.CallableReference;
 
-@SuppressWarnings("unchecked")
 public class CallableReference2XMLStreamReader extends BaseTransformer<CallableReference, XMLStreamReader> implements
     PullTransformer<CallableReference, XMLStreamReader> {
 
     @Override
-    protected Class getSourceType() {
+    protected Class<CallableReference> getSourceType() {
         return CallableReference.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<XMLStreamReader> getTargetType() {
         return XMLStreamReader.class;
     }
 
