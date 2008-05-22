@@ -29,10 +29,10 @@
     <name>Apache Tuscany SCA HelloWorld BPEL as Webservice Sample</name>
 
     <repositories>
-       <repository>
-          <id>apache.incubator</id>
-          <url>http://people.apache.org/repo/m2-incubating-repository</url>
-       </repository>
+        <repository>
+            <id>apache.incubator</id>
+            <url>http://people.apache.org/repo/m2-incubating-repository</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -51,23 +51,37 @@
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>tuscany-implementation-bpel</artifactId>
+            <artifactId>tuscany-implementation-bpel-ode</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-binding-ws-axis2</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-jetty</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
             <version>1.1-incubating</version>
         </dependency>
 
-		<dependency>
-		    <groupId>xerces</groupId>
-		    <artifactId>xercesImpl</artifactId>
-		    <version>2.8.1</version>
-		</dependency>	
-		        
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.8.1</version>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -79,21 +93,21 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-wsdl2java</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
-        </dependency> 
-                
+        </dependency>
+
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
             <artifactId>tuscany-sdo-tools</artifactId>
             <version>1.1-incubating</version>
-        </dependency>  
-        
+        </dependency>
+
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
             <version>3.2.1</version>
             <scope>runtime</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
@@ -105,87 +119,87 @@
                     <artifactId>stax-api</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>        
+        </dependency>
 
     </dependencies>
-    
+
     <build>
         <finalName>${artifactId}</finalName>
-		<plugins>
-			<plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-surefire-plugin</artifactId>
-			    <!-- http://jira.codehaus.org/browse/SUREFIRE-322 -->
-			    <version>2.3.1</version>
-			    <configuration>
-			        <useFile>false</useFile>
-			        <trimStackTrace>false</trimStackTrace>
-			        <useSystemClassLoader>true</useSystemClassLoader>
-			    </configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>unpack</id>
-						<phase>test-compile</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.apache.ode</groupId>
-									<artifactId>ode-dao-jpa-ojpa-derby</artifactId>
-									<version>1.1</version>
-									<type>zip</type>
-									<overWrite>true</overWrite>
-									<outputDirectory>${project.build.directory}/test-classes/</outputDirectory>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.tuscany.sdo</groupId>
-				<artifactId>tuscany-sdo-plugin</artifactId>
-				<version>1.1-incubating</version>
-				<executions>
-					<execution>
-						<id>generate-bpel-helloworld</id>
-						<phase>generate-sources</phase>
-						<configuration>
-							<schemaFile>${basedir}/src/main/resources/helloworld.wsdl</schemaFile>
-							<targetDirectory>${basedir}/target/wsdl2java-source</targetDirectory>
-							<prefix>HelloWorld</prefix>
-							<noNotification>true</noNotification>
-							<noContainer>true</noContainer>
-							<noUnsettable>true</noUnsettable>
-						</configuration>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.tuscany.sca</groupId>
-				<artifactId>tuscany-maven-wsdl2java</artifactId>
-				<version>2.0-incubating-SNAPSHOT</version>
-				<executions>
-					<execution>
-						<configuration>
-							<wsdlFile>${basedir}/src/main/resources/helloworld.wsdl</wsdlFile>
-						</configuration>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <!-- http://jira.codehaus.org/browse/SUREFIRE-322 -->
+                <version>2.3.1</version>
+                <configuration>
+                    <useFile>false</useFile>
+                    <trimStackTrace>false</trimStackTrace>
+                    <useSystemClassLoader>true</useSystemClassLoader>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.ode</groupId>
+                                    <artifactId>ode-dao-jpa-ojpa-derby</artifactId>
+                                    <version>1.1</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/test-classes/</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tuscany.sdo</groupId>
+                <artifactId>tuscany-sdo-plugin</artifactId>
+                <version>1.1-incubating</version>
+                <executions>
+                    <execution>
+                        <id>generate-bpel-helloworld</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <schemaFile>${basedir}/src/main/resources/helloworld.wsdl</schemaFile>
+                            <targetDirectory>${basedir}/target/wsdl2java-source</targetDirectory>
+                            <prefix>HelloWorld</prefix>
+                            <noNotification>true</noNotification>
+                            <noContainer>true</noContainer>
+                            <noUnsettable>true</noUnsettable>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tuscany.sca</groupId>
+                <artifactId>tuscany-maven-wsdl2java</artifactId>
+                <version>2.0-incubating-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <wsdlFile>${basedir}/src/main/resources/helloworld.wsdl</wsdlFile>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
 </project>
