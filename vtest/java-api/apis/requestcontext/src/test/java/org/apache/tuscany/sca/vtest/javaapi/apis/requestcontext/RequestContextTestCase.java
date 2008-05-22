@@ -55,7 +55,7 @@ public class RequestContextTestCase {
     }
 
     /**
-     * L858 <br>
+     * Lines 858 <br>
      * getSecuritySubject() – Returns the JAAS Subject of the current request.
      * 
      * @throws Exception
@@ -66,7 +66,7 @@ public class RequestContextTestCase {
     }
 
     /**
-     * L860 <br>
+     * Lines 860 <br>
      * getServiceName() – Returns the name of the service on the Java
      * implementation the request came in on.
      * 
@@ -78,7 +78,7 @@ public class RequestContextTestCase {
     }
 
     /**
-     * L861, L862 <br>
+     * Lines 861, 862 <br>
      * getCallbackReference() – Returns a callable reference to the callback as
      * specified by the caller. getCallback() – Returns a proxy for the callback
      * as specified by the caller.
@@ -91,7 +91,7 @@ public class RequestContextTestCase {
     }
 
     /**
-     * L863 <br>
+     * Lines 863 <br>
      * getServiceReference() – When invoked during the execution of a service
      * operation, this API MUST return a CallableReference that represents the
      * service. When invoked during the execution of a callback operation, this

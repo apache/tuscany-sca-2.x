@@ -54,7 +54,7 @@ public class CallableReferenceTestCase {
     }
 
     /**
-     * L884 <br>
+     * Lines 884 <br>
      * getService() - Returns a type-safe reference to the target of this
      * reference. The instance returned is guaranteed to implement the business
      * interface for this reference. The value returned is a proxy to the target
@@ -68,7 +68,7 @@ public class CallableReferenceTestCase {
     }
 
     /**
-     * L885 <br>
+     * Lines 885 <br>
      * getBusinessInterface() – Returns the Java class for the business
      * interface associated with this reference.
      * 
@@ -80,7 +80,7 @@ public class CallableReferenceTestCase {
     }
 
     /**
-     * L886 <br>
+     * Lines 886 <br>
      * isConversational() – Returns true if this reference is conversational.
      * 
      * @throws Exception
@@ -91,7 +91,7 @@ public class CallableReferenceTestCase {
     }
 
     /**
-     * L887 <br>
+     * Lines 887 <br>
      * getConversation() – Returns the conversation associated with this
      * reference. Returns null if no conversation is currently active.
      * 
@@ -104,7 +104,7 @@ public class CallableReferenceTestCase {
     }
 
     /**
-     * L888 <br>
+     * Lines 888 <br>
      * getCallbackID() – Returns the callback ID.
      * 
      * @throws Exception

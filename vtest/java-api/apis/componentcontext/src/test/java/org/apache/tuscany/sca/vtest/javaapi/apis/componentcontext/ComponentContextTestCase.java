@@ -56,7 +56,7 @@ public class ComponentContextTestCase {
     }
 
     /**
-     * L776 <br>
+     * Lines 776 <br>
      * getURI() - Returns the absolute URI of the component within the SCA
      * domain.
      * 
@@ -68,7 +68,7 @@ public class ComponentContextTestCase {
     }
 
     /**
-     * L778 <br>
+     * Lines 778 <br>
      * getService(Class&lt;B&gt; businessInterface, String referenceName) ?
      * Returns a proxy for the reference defined by the current component.
      * 
@@ -80,7 +80,7 @@ public class ComponentContextTestCase {
     }
 
     /**
-     * L780 <br>
+     * Lines 780 <br>
      * getServiceReference(Class&lt;B&gt; businessInterface, String
      * referenceName) ? Returns a ServiceReference defined by the current
      * component.
@@ -93,7 +93,7 @@ public class ComponentContextTestCase {
     }
 
     /**
-     * L783 <br>
+     * Lines 783 <br>
      * createSelfReference(Class&lt;B&gt; businessInterface) ? Returns a
      * ServiceReference that can be used to invoke this component over the
      * designated service.
@@ -106,7 +106,7 @@ public class ComponentContextTestCase {
     }
 
     /**
-     * L785 <br>
+     * Lines 785 <br>
      * getSelfReference(Class&lt;B&gt; businessInterface, String serviceName) -
      * Returns a ServiceReference that can be used to invoke this component over
      * the designated service. Service name explicitly declares the service name
@@ -120,7 +120,7 @@ public class ComponentContextTestCase {
     }
 
     /**
-     * L788 <br>
+     * Lines 788 <br>
      * getProperty (Class&lt;B&gt; type, String propertyName) - Returns the
      * value of an SCA property defined by this component.
      * 
@@ -132,7 +132,7 @@ public class ComponentContextTestCase {
     }
 
     /**
-     * L793 <br>
+     * Lines 793 <br>
      * getRequestContext() - Returns the context for the current SCA service
      * request, or null if there is no current request or if the context is
      * unavailable.
@@ -148,7 +148,7 @@ public class ComponentContextTestCase {
     }
 
     /**
-     * L790, L794 <br>
+     * Lines 790,794 <br>
      * cast(B target) - Casts a type-safe reference to a CallableReference.
      * 
      * @throws Exception
@@ -168,7 +168,7 @@ public class ComponentContextTestCase {
     }
 
     /**
-     * L342-344 <br>
+     * Lines 342-344 <br>
      * When a component implementation needs access to a service where the
      * reference to the service is not known at compile time, the reference can
      * be located using the component?s ComponentContext.
