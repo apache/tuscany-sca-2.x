@@ -19,3 +19,8 @@
 org.apache.tuscany.sca.databinding.jaxb.axiom.JAXB2OMElement;source=javax.xml.bind.JAXBElement,target=org.apache.axiom.om.OMElement,weight=3000
 org.apache.tuscany.sca.databinding.jaxb.axiom.JAXB2OMElement;source=java:simpleType,target=org.apache.axiom.om.OMElement,weight=3000
 org.apache.tuscany.sca.databinding.jaxb.axiom.JAXB2OMElement;source=java:complexType,target=org.apache.axiom.om.OMElement,weight=3000
+
+org.apache.tuscany.sca.databinding.jaxb.axiom.OMElement2JAXB;source=org.apache.axiom.om.OMElement,target=javax.xml.bind.JAXBElement,weight=3000,public=false
+org.apache.tuscany.sca.databinding.jaxb.axiom.OMElement2JAXB;source=org.apache.axiom.om.OMElement,target=java:complexType,weight=90000,public=false
+org.apache.tuscany.sca.databinding.jaxb.axiom.OMElement2JAXB;source=org.apache.axiom.om.OMElement,target=java:simpleType,weight=90000,public=false
+

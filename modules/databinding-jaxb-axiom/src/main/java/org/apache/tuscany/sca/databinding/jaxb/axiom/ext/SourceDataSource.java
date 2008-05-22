@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.tuscany.sca.databinding.jaxb.axiom;
+package org.apache.tuscany.sca.databinding.jaxb.axiom.ext;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
