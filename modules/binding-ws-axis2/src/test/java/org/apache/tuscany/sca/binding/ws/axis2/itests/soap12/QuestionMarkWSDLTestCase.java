@@ -63,7 +63,7 @@ public class QuestionMarkWSDLTestCase extends TestCase {
     }
 
     /**
-     * Tests ?wsdl returns a soap 1.1 port when binding uses requires="soap11"
+     * Tests ?wsdl returns a soap 1.1 port when binding uses requires="soap.1_1"
      */
     public void testSOAP11Endpoint() throws Exception {
         WSDLReader wsdlReader = WSDLFactory.newInstance().newWSDLReader();
@@ -81,7 +81,7 @@ public class QuestionMarkWSDLTestCase extends TestCase {
     }
 
     /**
-     * Tests ?wsdl returns a soap 1.2 port when binding uses requires="soap12"
+     * Tests ?wsdl returns a soap 1.2 port when binding uses requires="soap.1_2"
      */
     public void testSOAP12Endpoint() throws Exception {
         WSDLReader wsdlReader = WSDLFactory.newInstance().newWSDLReader();

@@ -26,11 +26,11 @@
     </service>
 
     <service name="ep2" promote="HelloWorldService">
-        <binding.ws requires="soap11"  uri="http://localhost:8085/ep2"/>
+        <binding.ws requires="soap.1_1"  uri="http://localhost:8085/ep2"/>
     </service>
 
     <service name="ep3" promote="HelloWorldService">
-        <binding.ws requires="soap12"  uri="http://localhost:8085/ep3"/>
+        <binding.ws requires="soap.1_2"  uri="http://localhost:8085/ep3"/>
     </service>
 
     <component name="HelloWorldService">
