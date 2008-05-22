@@ -35,6 +35,7 @@ import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Axis2BindingProviderFactory
@@ -50,7 +51,12 @@ public class Axis2BindingProviderFactory implements BindingProviderFactory<WebSe
 
     public Axis2BindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
-        this.servletHost = servletHosts.getServletHosts().get(0);
+        List<ServletHost> hosts = servletHosts.getServletHosts();
+        if (hosts.isEmpty()) {
+            throw new ServiceRuntimeException("No Servlet host is avaible for HTTP web services");
+        } else {
+            this.servletHost = hosts.get(0);
+        }
         ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         this.messageFactory = modelFactories.getFactory(MessageFactory.class); 
         policyHandlerClassnames = PolicyHandlerDefinitionsLoader.loadPolicyHandlerClassnames();
