@@ -43,12 +43,12 @@ public class Reader2SAX extends BaseTransformer<Reader, ContentHandler> implemen
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<Reader> getSourceType() {
         return Reader.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<ContentHandler> getTargetType() {
         return ContentHandler.class;
     }
 

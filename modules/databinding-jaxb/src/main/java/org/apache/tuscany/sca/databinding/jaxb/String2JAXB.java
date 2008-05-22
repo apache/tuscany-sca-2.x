@@ -53,12 +53,12 @@ public class String2JAXB extends BaseTransformer<String, Object> implements
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<String> getSourceType() {
         return String.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<Object> getTargetType() {
         return Object.class;
     }
 

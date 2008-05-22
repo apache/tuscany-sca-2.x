@@ -47,12 +47,12 @@ public class OMElement2String extends BaseTransformer<OMElement, String> impleme
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<OMElement> getSourceType() {
         return OMElement.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<String> getTargetType() {
         return String.class;
     }
 

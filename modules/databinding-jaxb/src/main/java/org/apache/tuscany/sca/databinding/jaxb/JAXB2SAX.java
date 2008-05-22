@@ -36,12 +36,12 @@ public class JAXB2SAX extends BaseTransformer<Object, ContentHandler> implements
     PushTransformer<Object, ContentHandler> {
 
     @Override
-    protected Class getSourceType() {
+    protected Class<Object> getSourceType() {
         return Object.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<ContentHandler> getTargetType() {
         return ContentHandler.class;
     }
 

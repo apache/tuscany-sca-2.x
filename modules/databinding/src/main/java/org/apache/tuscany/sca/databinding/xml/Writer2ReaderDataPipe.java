@@ -34,7 +34,7 @@ public class Writer2ReaderDataPipe extends BaseTransformer<Writer, Reader> imple
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<Reader> getTargetType() {
         return Reader.class;
     }
 
@@ -44,7 +44,7 @@ public class Writer2ReaderDataPipe extends BaseTransformer<Writer, Reader> imple
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<Writer> getSourceType() {
         return Writer.class;
     }
 

@@ -260,8 +260,10 @@ public class JAXBContextCache {
             V value = cache.get(key);
             if (value != null) {
                 // Move the most recently used key to the front of the queue
-                keyQueue.remove(key);
-                keyQueue.add(0, key);
+                if (!key.equals(keyQueue.get(0))) {
+                    keyQueue.remove(key);
+                    keyQueue.add(0, key);
+                }
             }
             return value;
         }
@@ -269,8 +271,10 @@ public class JAXBContextCache {
         public void put(K key, V value) {
             if (cache.containsKey(key)) {
                 // Adjust the key usage
-                keyQueue.remove(key);
-                keyQueue.add(0, key);
+                if (!key.equals(keyQueue.get(0))) {
+                    keyQueue.remove(key);
+                    keyQueue.add(0, key);
+                }
             } else {
                 if (keyQueue.size() >= queueSizeThreshold) {
                     // Remove the least recently used key
@@ -286,9 +290,7 @@ public class JAXBContextCache {
 
         public V remove(K key) {
             V data = cache.remove(key);
-            if (data != null) {
-                keyQueue.remove(key);
-            }
+            keyQueue.remove(key);
             return data;
         }
 

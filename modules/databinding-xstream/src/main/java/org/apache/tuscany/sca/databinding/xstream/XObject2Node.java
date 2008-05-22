@@ -52,12 +52,12 @@ public class XObject2Node extends BaseTransformer<XObject, Node> implements Pull
     }
 
     @Override
-    public Class getSourceType() {
+    public Class<XObject> getSourceType() {
         return XObject.class;
     }
 
     @Override
-    public Class getTargetType() {
+    public Class<Node> getTargetType() {
         return Node.class;
     }
 

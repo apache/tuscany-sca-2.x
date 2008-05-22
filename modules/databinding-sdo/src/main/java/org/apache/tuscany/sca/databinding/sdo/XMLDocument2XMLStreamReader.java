@@ -52,12 +52,12 @@ public class XMLDocument2XMLStreamReader extends BaseTransformer<XMLDocument, XM
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<XMLDocument> getSourceType() {
         return XMLDocument.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<XMLStreamReader> getTargetType() {
         return XMLStreamReader.class;
     }
 

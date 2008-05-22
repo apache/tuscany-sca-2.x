@@ -34,19 +34,13 @@ import org.xml.sax.ContentHandler;
 public class XMLStreamReader2SAX extends BaseTransformer<XMLStreamReader, ContentHandler> implements
     PushTransformer<XMLStreamReader, ContentHandler> {
 
-    /**
-     * @see org.apache.tuscany.sca.databinding.PushTransformer#getSourceType()
-     */
     @Override
-    public Class getTargetType() {
+    protected Class<ContentHandler> getTargetType() {
         return ContentHandler.class;
     }
 
-    /**
-     * @see org.apache.tuscany.sca.databinding.PushTransformer#getSourceType()
-     */
     @Override
-    public Class getSourceType() {
+    protected Class<XMLStreamReader> getSourceType() {
         return XMLStreamReader.class;
     }
 

@@ -58,12 +58,12 @@ public class NodeInfo2DataObjectTransformer extends BaseTransformer<NodeInfo, Da
     }
 
     @Override
-    protected Class getSourceType() {
+    protected Class<NodeInfo> getSourceType() {
         return NodeInfo.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<DataObject> getTargetType() {
         return DataObject.class;
     }
 

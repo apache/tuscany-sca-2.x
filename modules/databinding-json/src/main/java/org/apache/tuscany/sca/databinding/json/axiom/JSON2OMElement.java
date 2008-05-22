@@ -45,12 +45,12 @@ public class JSON2OMElement extends BaseTransformer<Object, OMElement> implement
     private OMFactory factory = OMAbstractFactory.getOMFactory();
 
     @Override
-    protected Class getSourceType() {
+    protected Class<Object> getSourceType() {
         return Object.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<OMElement> getTargetType() {
         return OMElement.class;
     }
 

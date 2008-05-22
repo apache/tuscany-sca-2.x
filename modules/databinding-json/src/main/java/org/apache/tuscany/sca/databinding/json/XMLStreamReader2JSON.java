@@ -38,12 +38,12 @@ public class XMLStreamReader2JSON extends BaseTransformer<XMLStreamReader, Objec
     PullTransformer<XMLStreamReader, Object> {
     
     @Override
-    protected Class getSourceType() {
+    protected Class<XMLStreamReader> getSourceType() {
         return XMLStreamReader.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<Object> getTargetType() {
         return Object.class;
     }
 

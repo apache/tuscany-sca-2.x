@@ -35,7 +35,7 @@ public class StreamDataPipe extends BaseTransformer<OutputStream, InputStream> i
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<InputStream> getTargetType() {
         return InputStream.class;
     }
 
@@ -45,7 +45,7 @@ public class StreamDataPipe extends BaseTransformer<OutputStream, InputStream> i
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<OutputStream> getSourceType() {
         return OutputStream.class;
     }
 

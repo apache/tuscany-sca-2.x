@@ -22,7 +22,6 @@ package org.apache.tuscany.sca.databinding.json;
 import org.apache.tuscany.sca.databinding.PullTransformer;
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
-import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 
 import com.metaparadigm.jsonrpc.JSONSerializer;
@@ -31,7 +30,7 @@ import com.metaparadigm.jsonrpc.SerializerState;
 /**
  * @version $Rev$ $Date$
  */
-public class JSON2JavaBean extends BaseTransformer<Object, Object> implements PullTransformer<Object, Object> {
+public class JSON2JavaBean implements PullTransformer<Object, Object> {
     private JSONSerializer serializer;
 
     public JSON2JavaBean() {
@@ -60,23 +59,15 @@ public class JSON2JavaBean extends BaseTransformer<Object, Object> implements Pu
 
     }
 
-    @Override
-    protected Class getSourceType() {
-        return Object.class;
-    }
-
-    @Override
-    protected Class getTargetType() {
-        return Object.class;
-    }
-
-    @Override
     public String getSourceDataBinding() {
         return JSONDataBinding.NAME;
     }
 
-    @Override
     public String getTargetDataBinding() {
         return JavaBeansDataBinding.NAME;
+    }
+
+    public int getWeight() {
+        return 5000;
     }
 }

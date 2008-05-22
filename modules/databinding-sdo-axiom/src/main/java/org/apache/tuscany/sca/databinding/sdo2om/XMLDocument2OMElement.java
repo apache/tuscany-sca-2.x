@@ -48,12 +48,12 @@ public class XMLDocument2OMElement extends BaseTransformer<XMLDocument, OMElemen
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<XMLDocument> getSourceType() {
         return XMLDocument.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<OMElement> getTargetType() {
         return OMElement.class;
     }
 

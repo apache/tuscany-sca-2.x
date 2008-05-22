@@ -73,7 +73,7 @@ public class JavaBean2JSONObject extends BaseTransformer<Object, Object> impleme
     }
 
     @Override
-    protected Class getSourceType() {
+    protected Class<Object> getSourceType() {
         return Object.class;
     }
 
@@ -83,7 +83,7 @@ public class JavaBean2JSONObject extends BaseTransformer<Object, Object> impleme
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<Object> getTargetType() {
         return Object.class;
     }
 

@@ -63,12 +63,12 @@ public class TransformerExtensionTestCase extends TestCase {
     private static class MyTransformer extends BaseTransformer<Node, XMLStreamReader> {
 
         @Override
-        protected Class getSourceType() {
+        protected Class<Node> getSourceType() {
             return Node.class;
         }
 
         @Override
-        protected Class getTargetType() {
+        protected Class<XMLStreamReader> getTargetType() {
             return XMLStreamReader.class;
         }
 

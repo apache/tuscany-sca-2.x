@@ -28,23 +28,22 @@ import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.databinding.xml.XMLStreamSerializer;
-import org.xml.sax.ContentHandler;
 
 import com.sun.xml.fastinfoset.stax.StAXDocumentSerializer;
 
 /**
  * @version $Rev$ $Date$
  */
-public class XMLStreamReader2FastInfoset extends BaseTransformer<XMLStreamReader, ContentHandler> implements
+public class XMLStreamReader2FastInfoset extends BaseTransformer<XMLStreamReader, OutputStream> implements
     PushTransformer<XMLStreamReader, OutputStream> {
 
     @Override
-    protected Class getSourceType() {
+    protected Class<XMLStreamReader> getSourceType() {
         return XMLStreamReader.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<OutputStream> getTargetType() {
         return OutputStream.class;
     }
 

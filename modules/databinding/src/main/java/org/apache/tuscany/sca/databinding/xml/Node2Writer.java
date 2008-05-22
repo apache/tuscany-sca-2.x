@@ -50,12 +50,12 @@ public class Node2Writer extends BaseTransformer<Node, Writer> implements PushTr
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<Node> getSourceType() {
         return Node.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<Writer> getTargetType() {
         return Writer.class;
     }
 

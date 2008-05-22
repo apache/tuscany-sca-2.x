@@ -46,12 +46,12 @@ public class Source2ResultTransformer extends BaseTransformer<Source, Result> im
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<Source> getSourceType() {
         return Source.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<Result> getTargetType() {
         return Result.class;
     }
 

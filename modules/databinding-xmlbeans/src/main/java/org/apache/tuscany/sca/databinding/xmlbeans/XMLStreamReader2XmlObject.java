@@ -45,12 +45,12 @@ public class XMLStreamReader2XmlObject extends BaseTransformer<XMLStreamReader, 
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<XmlObject> getTargetType() {
         return XmlObject.class;
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<XMLStreamReader> getSourceType() {
         return XMLStreamReader.class;
     }
 

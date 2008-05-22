@@ -52,12 +52,12 @@ public class Reader2JAXB extends BaseTransformer<Reader, Object> implements
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<Reader> getSourceType() {
         return Reader.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<Object> getTargetType() {
         return Object.class;
     }
 

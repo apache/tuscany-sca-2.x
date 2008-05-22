@@ -36,12 +36,12 @@ public class Node2FastInfoset extends BaseTransformer<Node, OutputStream> implem
     PushTransformer<Node, OutputStream> {
 
     @Override
-    protected Class getSourceType() {
+    protected Class<Node> getSourceType() {
         return Node.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<OutputStream> getTargetType() {
         return OutputStream.class;
     }
 

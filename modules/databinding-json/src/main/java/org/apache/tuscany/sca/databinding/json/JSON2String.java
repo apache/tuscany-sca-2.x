@@ -31,12 +31,12 @@ public class JSON2String extends BaseTransformer<Object, String> implements
     PullTransformer<Object, String> {
     
     @Override
-    protected Class getSourceType() {
+    protected Class<Object> getSourceType() {
         return Object.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<String> getTargetType() {
         return String.class;
     }
 
@@ -52,6 +52,7 @@ public class JSON2String extends BaseTransformer<Object, String> implements
     public int getWeight() {
         return 500;
     }
+    
     @Override
     public String getSourceDataBinding() {
         return JSONDataBinding.NAME;

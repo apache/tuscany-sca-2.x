@@ -50,12 +50,12 @@ public class Reader2Node extends BaseTransformer<Reader, Node> implements PullTr
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<Reader> getSourceType() {
         return Reader.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<Node> getTargetType() {
         return Node.class;
     }
 

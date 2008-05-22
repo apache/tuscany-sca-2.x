@@ -59,12 +59,12 @@ public class OMElement2XObject extends BaseTransformer<OMElement, XObject> imple
     }
 
     @Override
-    public Class getSourceType() {
+    public Class<OMElement> getSourceType() {
         return OMElement.class;
     }
 
     @Override
-    public Class getTargetType() {
+    public Class<XObject> getTargetType() {
         return XObject.class;
     }
 

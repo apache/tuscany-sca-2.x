@@ -52,12 +52,12 @@ public class InputStream2Node extends BaseTransformer<InputStream, Node> impleme
     }
 
     @Override
-    public Class getSourceType() {
+    public Class<InputStream> getSourceType() {
         return InputStream.class;
     }
 
     @Override
-    public Class getTargetType() {
+    public Class<Node> getTargetType() {
         return Node.class;
     }
 
