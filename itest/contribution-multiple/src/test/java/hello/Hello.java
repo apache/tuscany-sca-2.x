@@ -18,7 +18,6 @@
  */
 package hello;
 
-
 /**
  * This is the business interface of the Hello service.
  */
