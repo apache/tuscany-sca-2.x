@@ -49,12 +49,12 @@ public class OMElement2XMLStreamReader extends BaseTransformer<OMElement, XMLStr
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<OMElement> getSourceType() {
         return OMElement.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<XMLStreamReader> getTargetType() {
         return XMLStreamReader.class;
     }
 

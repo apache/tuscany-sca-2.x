@@ -45,12 +45,12 @@ public class Node2String extends BaseTransformer<Node, String> implements PullTr
     }
 
     @Override
-    public Class getSourceType() {
+    public Class<Node> getSourceType() {
         return Node.class;
     }
 
     @Override
-    public Class getTargetType() {
+    public Class<String> getTargetType() {
         return String.class;
     }
 

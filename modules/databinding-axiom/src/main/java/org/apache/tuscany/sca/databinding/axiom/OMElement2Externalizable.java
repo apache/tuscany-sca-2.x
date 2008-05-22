@@ -19,8 +19,8 @@
 package org.apache.tuscany.sca.databinding.axiom;
 
 import java.io.ByteArrayInputStream;
+import java.io.Externalizable;
 import java.io.ObjectInputStream;
-
 
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.databinding.PullTransformer;
@@ -29,14 +29,11 @@ import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter.Base64Binary;
 
-import java.io.Externalizable;
-
 /**
  * Transformer to convert data from an OMElement to XML String
  *
  * @version $Rev$ $Date$
  */
-@SuppressWarnings("unchecked")
 public class OMElement2Externalizable extends BaseTransformer<OMElement, Externalizable> implements PullTransformer<OMElement, Externalizable> {
     // private XmlOptions options;
     
@@ -55,12 +52,12 @@ public class OMElement2Externalizable extends BaseTransformer<OMElement, Externa
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<OMElement> getSourceType() {
         return OMElement.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<Externalizable> getTargetType() {
         return Externalizable.class;
     }
 

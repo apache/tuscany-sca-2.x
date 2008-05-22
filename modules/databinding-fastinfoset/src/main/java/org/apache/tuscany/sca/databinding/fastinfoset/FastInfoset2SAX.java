@@ -36,12 +36,12 @@ public class FastInfoset2SAX extends BaseTransformer<InputStream, ContentHandler
     PushTransformer<InputStream, ContentHandler> {
 
     @Override
-    protected Class getSourceType() {
+    protected Class<InputStream> getSourceType() {
         return InputStream.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<ContentHandler> getTargetType() {
         return ContentHandler.class;
     }
 

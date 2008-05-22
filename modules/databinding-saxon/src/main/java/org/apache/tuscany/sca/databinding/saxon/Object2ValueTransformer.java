@@ -35,12 +35,12 @@ import org.apache.tuscany.sca.databinding.javabeans.JavaBeansDataBinding;
 public class Object2ValueTransformer extends BaseTransformer<Object, Value> implements PullTransformer<Object, Value> {
 
     @Override
-    protected Class getSourceType() {
+    protected Class<Object> getSourceType() {
         return Object.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<Value> getTargetType() {
         return Value.class;
     }
 

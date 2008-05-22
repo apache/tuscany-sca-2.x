@@ -65,12 +65,12 @@ public class DataObject2XMLStreamReader extends BaseTransformer<DataObject, XMLS
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<DataObject> getSourceType() {
         return DataObject.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<XMLStreamReader> getTargetType() {
         return XMLStreamReader.class;
     }
 

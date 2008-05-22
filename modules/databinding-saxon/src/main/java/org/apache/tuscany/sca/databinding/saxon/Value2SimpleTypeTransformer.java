@@ -49,12 +49,12 @@ public class Value2SimpleTypeTransformer extends BaseTransformer<Value, Object> 
     }
 
     @Override
-    protected Class getSourceType() {
+    protected Class<Value> getSourceType() {
         return Value.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<Object> getTargetType() {
         return Object.class;
     }
 

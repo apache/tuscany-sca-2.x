@@ -54,12 +54,12 @@ public class NodeInfo2NodeTransformer extends BaseTransformer<NodeInfo, Node> im
     }
 
     @Override
-    protected Class getSourceType() {
+    protected Class<NodeInfo> getSourceType() {
         return NodeInfo.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<Node> getTargetType() {
         return Node.class;
     }
 

@@ -51,12 +51,12 @@ public class Node2JAXB extends BaseTransformer<Node, Object> implements PullTran
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<Node> getSourceType() {
         return Node.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<Object> getTargetType() {
         return Object.class;
     }
 

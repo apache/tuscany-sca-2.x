@@ -51,7 +51,7 @@ public abstract class Java2SimpleTypeTransformer<T> extends BaseTransformer<Obje
     }
 
     @Override
-    public Class getSourceType() {
+    public Class<Object> getSourceType() {
         return Object.class;
     }
 

@@ -69,12 +69,12 @@ public class DataObject2OMElement extends BaseTransformer<DataObject, OMElement>
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<DataObject> getSourceType() {
         return DataObject.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<OMElement> getTargetType() {
         return OMElement.class;
     }
 

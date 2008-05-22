@@ -58,12 +58,12 @@ public class XMLStreamReader2Node extends BaseTransformer<XMLStreamReader, Node>
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<XMLStreamReader> getSourceType() {
         return XMLStreamReader.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<Node> getTargetType() {
         return Node.class;
     }
 

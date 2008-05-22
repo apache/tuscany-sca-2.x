@@ -60,7 +60,7 @@ public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object,
     public T transform(Object source, TransformationContext context) {
         QName rootElement = null;
         if (context != null) {
-            DataType type = context.getTargetDataType();
+            DataType<?> type = context.getTargetDataType();
             if (type != null) {
                 Object logical = type.getLogical();
                 if (logical instanceof XMLType) {
@@ -178,7 +178,7 @@ public abstract class JavaBean2XMLTransformer<T> extends BaseTransformer<Object,
     }
 
     @Override
-    public Class getSourceType() {
+    public Class<Object> getSourceType() {
         return Object.class;
     }
 

@@ -30,12 +30,12 @@ import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 public class String2JSON extends BaseTransformer<String, Object> implements PullTransformer<String, Object> {
 
     @Override
-    protected Class getSourceType() {
+    protected Class<String> getSourceType() {
         return String.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<Object> getTargetType() {
         return Object.class;
     }
 

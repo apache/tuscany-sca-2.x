@@ -32,9 +32,9 @@ public abstract class BaseTransformer<S, T> implements Transformer {
         super();
     }
 
-    protected abstract Class getSourceType();
+    protected abstract Class<S> getSourceType();
 
-    protected abstract Class getTargetType();
+    protected abstract Class<T> getTargetType();
 
     public String getSourceDataBinding() {
         return getSourceType().getName();

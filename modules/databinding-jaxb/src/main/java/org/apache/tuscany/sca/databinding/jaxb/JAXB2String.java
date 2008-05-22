@@ -52,12 +52,12 @@ public class JAXB2String extends BaseTransformer<Object, String> implements Pull
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<Object> getSourceType() {
         return Object.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<String> getTargetType() {
         return String.class;
     }
 

@@ -37,7 +37,6 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.axiom.om.OMDataSource;
 import org.apache.axiom.om.OMOutputFormat;
 import org.apache.axiom.om.util.StAXUtils;
-import org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper;
 
 /**
  *
@@ -55,7 +54,9 @@ public class JAXBDataSource implements OMDataSource {
 
     private Marshaller getMarshaller() throws JAXBException {
         if (marshaller == null) {
-            marshaller = JAXBContextHelper.getMarshaller(context);
+            // For thread safety, not sure we can cache the marshaller
+            // marshaller = JAXBContextHelper.getMarshaller(context); 
+            marshaller = context.createMarshaller();
         }
         return marshaller;
     }
@@ -114,6 +115,10 @@ public class JAXBDataSource implements OMDataSource {
         } catch (PrivilegedActionException e) {
             throw new XMLStreamException(e.getException());
         }
+    }
+    
+    public Object getObject() {
+        return element;
     }
 
 }

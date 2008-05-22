@@ -58,7 +58,7 @@ public abstract class SimpleType2JavaTransformer<T> extends BaseTransformer<T, O
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<Object> getTargetType() {
         return Object.class;
     }
 

@@ -43,12 +43,12 @@ public class SAX2DOMPipe extends BaseTransformer<ContentHandler, Node> implement
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<Node> getTargetType() {
         return Node.class;
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<ContentHandler> getSourceType() {
         return ContentHandler.class;
     }
 

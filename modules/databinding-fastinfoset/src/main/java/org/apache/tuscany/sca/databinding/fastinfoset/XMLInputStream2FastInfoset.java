@@ -39,12 +39,12 @@ public class XMLInputStream2FastInfoset extends BaseTransformer<InputStream, Out
     PushTransformer<InputStream, OutputStream> {
 
     @Override
-    protected Class getSourceType() {
+    protected Class<InputStream> getSourceType() {
         return InputStream.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<OutputStream> getTargetType() {
         return OutputStream.class;
     }
 

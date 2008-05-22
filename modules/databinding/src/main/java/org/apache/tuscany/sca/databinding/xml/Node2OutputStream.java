@@ -51,12 +51,12 @@ public class Node2OutputStream extends BaseTransformer<Node, OutputStream> imple
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<Node> getSourceType() {
         return Node.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<OutputStream> getTargetType() {
         return OutputStream.class;
     }
 

@@ -48,7 +48,7 @@ public class JavaBean2JSON extends BaseTransformer<Object, Object> implements Pu
     }
 
     @Override
-    protected Class getSourceType() {
+    protected Class<Object> getSourceType() {
         return Object.class;
     }
 
@@ -58,7 +58,7 @@ public class JavaBean2JSON extends BaseTransformer<Object, Object> implements Pu
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<Object> getTargetType() {
         return Object.class;
     }
 

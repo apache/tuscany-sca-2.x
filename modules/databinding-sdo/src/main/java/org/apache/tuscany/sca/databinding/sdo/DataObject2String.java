@@ -47,12 +47,12 @@ public class DataObject2String extends BaseTransformer<DataObject, String> imple
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<DataObject> getSourceType() {
         return DataObject.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<String> getTargetType() {
         return String.class;
     }
 

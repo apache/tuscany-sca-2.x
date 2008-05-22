@@ -48,12 +48,12 @@ public class XMLDocument2String extends BaseTransformer<XMLDocument, String> imp
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<XMLDocument> getSourceType() {
         return XMLDocument.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<String> getTargetType() {
         return String.class;
     }
 

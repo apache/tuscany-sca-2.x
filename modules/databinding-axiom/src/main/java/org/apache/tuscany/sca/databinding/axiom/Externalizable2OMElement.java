@@ -38,17 +38,16 @@ import org.apache.tuscany.sca.databinding.impl.XSDDataTypeConverter.Base64Binary
  *
  * @version $Rev$ $Date$
  */
-@SuppressWarnings("unchecked")
 public class Externalizable2OMElement extends BaseTransformer<Externalizable, OMElement> implements
     PullTransformer<Externalizable, OMElement> {
 
     @Override
-    protected Class getSourceType() {
+    protected Class<Externalizable> getSourceType() {
         return  Externalizable.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<OMElement> getTargetType() {
         return OMElement.class;
     }
 

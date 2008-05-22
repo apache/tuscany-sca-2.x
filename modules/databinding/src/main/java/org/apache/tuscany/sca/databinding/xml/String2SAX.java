@@ -44,12 +44,12 @@ public class String2SAX extends BaseTransformer<String, ContentHandler> implemen
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<String> getSourceType() {
         return String.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<ContentHandler> getTargetType() {
         return ContentHandler.class;
     }
 

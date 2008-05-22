@@ -38,12 +38,12 @@ public class FastInfoset2Node extends BaseTransformer<InputStream, Node> impleme
     PullTransformer<InputStream, Node> {
     
     @Override
-    protected Class getSourceType() {
+    protected Class<InputStream> getSourceType() {
         return InputStream.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<Node> getTargetType() {
         return Node.class;
     }
 

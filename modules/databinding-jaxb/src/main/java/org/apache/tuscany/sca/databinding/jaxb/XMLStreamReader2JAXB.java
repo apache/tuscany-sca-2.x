@@ -56,12 +56,12 @@ public class XMLStreamReader2JAXB extends BaseTransformer<XMLStreamReader, Objec
     }
 
     @Override
-    public Class getSourceType() {
+    public Class<XMLStreamReader> getSourceType() {
         return XMLStreamReader.class;
     }
 
     @Override
-    public Class getTargetType() {
+    public Class<Object> getTargetType() {
         return Object.class;
     }
 

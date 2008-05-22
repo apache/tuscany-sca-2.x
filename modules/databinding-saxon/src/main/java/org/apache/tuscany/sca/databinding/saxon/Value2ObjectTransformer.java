@@ -44,12 +44,12 @@ public class Value2ObjectTransformer extends BaseTransformer<Value, Object> impl
     }
 
     @Override
-    protected Class getSourceType() {
+    protected Class<Value> getSourceType() {
         return Value.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<Object> getTargetType() {
         return Object.class;
     }
     

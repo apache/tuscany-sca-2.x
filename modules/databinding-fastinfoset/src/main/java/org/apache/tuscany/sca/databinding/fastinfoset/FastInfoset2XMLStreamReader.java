@@ -37,12 +37,12 @@ public class FastInfoset2XMLStreamReader extends BaseTransformer<InputStream, XM
     PullTransformer<InputStream, XMLStreamReader> {
     
     @Override
-    protected Class getSourceType() {
+    protected Class<InputStream> getSourceType() {
         return InputStream.class;
     }
 
     @Override
-    protected Class getTargetType() {
+    protected Class<XMLStreamReader> getTargetType() {
         return XMLStreamReader.class;
     }
 

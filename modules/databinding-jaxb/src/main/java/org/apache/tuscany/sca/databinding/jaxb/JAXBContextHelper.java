@@ -24,7 +24,9 @@ import java.io.IOException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.SchemaOutputResolver;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchema;
@@ -56,6 +58,10 @@ public class JAXBContextHelper {
     private JAXBContextHelper() {
     }
 
+    public static JAXBContext createJAXBContext(Class<?> cls) throws JAXBException {
+        return cache.getJAXBContext(cls);
+    }
+    
     public static JAXBContext createJAXBContext(TransformationContext tContext, boolean source) throws JAXBException {
         if (tContext == null)
             throw new TransformationException("JAXB context is not set for the transformation.");
@@ -74,6 +80,14 @@ public class JAXBContextHelper {
             throw new TransformationException("JAXB context is not set for the transformation.");
         }
         return context;
+    }
+    
+    public static Unmarshaller getUnmarshaller(JAXBContext context) throws JAXBException {
+        return cache.getUnmarshaller(context);
+    }
+    
+    public static Marshaller getMarshaller(JAXBContext context) throws JAXBException {
+        return cache.getMarshaller(context);
     }
 
     @SuppressWarnings("unchecked")

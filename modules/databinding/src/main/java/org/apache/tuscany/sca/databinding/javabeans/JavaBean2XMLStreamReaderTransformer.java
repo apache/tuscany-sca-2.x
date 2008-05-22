@@ -51,12 +51,12 @@ public class JavaBean2XMLStreamReaderTransformer extends BaseTransformer<Object,
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<Object> getSourceType() {
         return Object.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<XMLStreamReader> getTargetType() {
         return XMLStreamReader.class;
     }
 

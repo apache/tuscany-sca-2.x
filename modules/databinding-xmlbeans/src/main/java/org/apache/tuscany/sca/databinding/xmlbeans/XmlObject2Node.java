@@ -43,12 +43,12 @@ public class XmlObject2Node extends BaseTransformer<XmlObject, Node> implements
     }
 
     @Override
-    public Class getSourceType() {
+    protected Class<XmlObject> getSourceType() {
         return XmlObject.class;
     }
 
     @Override
-    public Class getTargetType() {
+    protected Class<Node> getTargetType() {
         return Node.class;
     }
 
