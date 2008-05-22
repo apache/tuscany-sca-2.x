@@ -113,7 +113,7 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
         return true;
     }
 
-    private static final QName SOAP12_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0", "soap12");
+    private static final QName SOAP12_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0", "soap.1_2");
 
     protected static boolean requiresSOAP12(WebServiceBinding wsBinding) {
         if (wsBinding instanceof IntentAttachPoint) {

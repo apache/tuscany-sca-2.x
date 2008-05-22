@@ -92,7 +92,7 @@ public class Axis2ServiceClient {
     private WebServiceBinding wsBinding;
     private ServiceClient serviceClient;
     Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames = null;
-    private static final QName SOAP12_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0", "soap12");
+    private static final QName SOAP12_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0", "soap.1_2");
     private static final QName MTOM_INTENT =  new QName("http://www.osoa.org/xmlns/sca/1.0", "MTOM");
     private List<PolicyHandler> policyHandlerList = new ArrayList<PolicyHandler>();
 
