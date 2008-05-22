@@ -54,7 +54,7 @@ public class ServiceReferenceTestCase {
     }
 
     /**
-     * L915, L916 <br>
+     * Lines 915-916 <br>
      * getConversationID() - Returns the id supplied by the user that will be
      * associated with conversations initiated through this reference. <br>
      * setConversationID(Object conversationId) – Set the id to associate with
@@ -71,7 +71,7 @@ public class ServiceReferenceTestCase {
     }
 
     /**
-     * L917 <br>
+     * Lines 917 <br>
      * setCallbackID(Object callbackID) – Sets the callback ID.
      * 
      * @throws Exception
@@ -82,7 +82,7 @@ public class ServiceReferenceTestCase {
     }
 
     /**
-     * L918 <br>
+     * Lines 918 <br>
      * getCallback() – Returns the callback object.
      * 
      * @throws Exception
@@ -93,7 +93,7 @@ public class ServiceReferenceTestCase {
     }
 
     /**
-     * L919 <br>
+     * Lines 919 <br>
      * setCallback(Object callback) – Sets the callback object.
      * 
      * @throws Exception

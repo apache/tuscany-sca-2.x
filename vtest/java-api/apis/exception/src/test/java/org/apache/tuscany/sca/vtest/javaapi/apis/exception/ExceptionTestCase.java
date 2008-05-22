@@ -58,7 +58,7 @@ public class ExceptionTestCase {
     }
 
     /**
-     * L951 <br>
+     * Lines 951 <br>
      * NoRegisteredCallbackException.
      *  
      * @throws Exception
@@ -69,7 +69,7 @@ public class ExceptionTestCase {
     }
 
     /**
-     * L960 <br>
+     * Lines 960 <br>
      * ServiceRuntimeException - This exception signals problems in the management of SCA component execution.
      * 
      * @throws Exception
@@ -80,7 +80,7 @@ public class ExceptionTestCase {
     }
 
     /**
-     * L970 <br>
+     * Lines 970 <br>
      * ServiceUnavailableException – This exception signals problems in the interaction with remote services.
      * 
      * @throws Exception
@@ -106,7 +106,7 @@ public class ExceptionTestCase {
     }
 
     /**
-     * L983 <br>
+     * Lines 983 <br>
      * ConversationEndedException.
      * 
      * @throws Exception
@@ -117,7 +117,7 @@ public class ExceptionTestCase {
     }
 
     /**
-     * L360-361 <br>
+     * Lines 360-361 <br>
      * Business exceptions are thrown by the implementation of the called service method,
      * and are defined as checked exceptions on the interface that types the service.
      * 
