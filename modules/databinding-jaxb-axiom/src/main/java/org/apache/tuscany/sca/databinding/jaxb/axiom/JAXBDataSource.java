@@ -75,7 +75,10 @@ public class JAXBDataSource implements OMDataSource {
             AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                 public Object run() throws Exception {
                     Marshaller marshaller = getMarshaller();
+                    // Set the FRAGEMENT property to avoid duplicate XML declaration
+                    marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
                     marshaller.marshal(element, xmlWriter);
+                    marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
                     return null;
                 }
             });
