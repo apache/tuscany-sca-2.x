@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -153,7 +154,7 @@ public class JavaComponentContextProvider {
                 }
             }
 
-            for (Map.Entry<String, JavaElementImpl> entry : instanceFactoryProvider.getImplementation()
+            for (Map.Entry<String, Collection<JavaElementImpl>> entry : instanceFactoryProvider.getImplementation()
                 .getCallbackMembers().entrySet()) {
                 List<RuntimeWire> wires = callbackWires.get(entry.getKey());
                 if (wires == null) {
@@ -161,21 +162,22 @@ public class JavaComponentContextProvider {
                     // component that has a callback
                     continue;
                 }
-                JavaElementImpl element = entry.getValue();
-                Class<?> businessInterface = element.getType();
-                ObjectFactory<?> factory = null;
-                if (CallableReference.class.isAssignableFrom(element.getType())) {
-                    businessInterface =
-                        JavaIntrospectionHelper.getBusinessInterface(element.getType(), element.getGenericType());
-                    factory =
-                        new CallbackReferenceObjectFactory(businessInterface, proxyFactory, wires);
-                } else {
-                    factory = new CallbackWireObjectFactory(businessInterface, proxyFactory, wires);
+                for(JavaElementImpl element : entry.getValue()) {
+                    Class<?> businessInterface = element.getType();
+                    ObjectFactory<?> factory = null;
+                    if (CallableReference.class.isAssignableFrom(element.getType())) {
+                        businessInterface =
+                            JavaIntrospectionHelper.getBusinessInterface(element.getType(), element.getGenericType());
+                        factory =
+                            new CallbackReferenceObjectFactory(businessInterface, proxyFactory, wires);
+                    } else {
+                        factory = new CallbackWireObjectFactory(businessInterface, proxyFactory, wires);
+                    }
+                    if (!(element.getAnchor() instanceof Constructor)) {
+                        instanceFactoryProvider.getInjectionSites().add(element);
+                    }
+                    instanceFactoryProvider.setObjectFactory(element, factory);
                 }
-                if (!(element.getAnchor() instanceof Constructor)) {
-                    instanceFactoryProvider.getInjectionSites().add(element);
-                }
-                instanceFactoryProvider.setObjectFactory(element, factory);
             }
         }
         for (Reference ref : instanceFactoryProvider.getImplementation().getReferences()) {

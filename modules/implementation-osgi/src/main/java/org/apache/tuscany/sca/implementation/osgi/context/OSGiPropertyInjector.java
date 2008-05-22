@@ -25,6 +25,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -155,7 +156,7 @@ public class OSGiPropertyInjector {
                 }
             }
 
-            for (Map.Entry<String, JavaElementImpl> entry : javaImpl.getCallbackMembers()
+            for (Map.Entry<String, Collection<JavaElementImpl>> entry : javaImpl.getCallbackMembers()
                 .entrySet()) {
                 List<RuntimeWire> wires = callbackWires.get(entry.getKey());
                 if (wires == null) {
@@ -163,12 +164,13 @@ public class OSGiPropertyInjector {
                     // component that has a callback
                     continue;
                 }
-                JavaElementImpl element = entry.getValue();
-                ObjectFactory<?> factory = new CallbackWireObjectFactory(element.getType(), proxyFactory, wires);
-                if (!(element.getAnchor() instanceof Constructor)) {
-                    injectionSites.add(element);
+                for(JavaElementImpl element : entry.getValue()) {
+                    ObjectFactory<?> factory = new CallbackWireObjectFactory(element.getType(), proxyFactory, wires);
+                    if (!(element.getAnchor() instanceof Constructor)) {
+                        injectionSites.add(element);
+                    }
+                    factories.put(element, factory);
                 }
-                factories.put(element, factory);
             }
         }
         
