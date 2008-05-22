@@ -29,12 +29,27 @@ import org.apache.tuscany.sca.interfacedef.Operation;
  * @version $Rev$ $Date$
  */
 public interface TransformationContext {
-    
+
+    /**
+     * @return
+     */
     Operation getSourceOperation();
+
+    /**
+     * @param sourceOperation
+     */
     void setSourceOperation(Operation sourceOperation);
+
+    /**
+     * @return
+     */
     Operation getTargetOperation();
+
+    /**
+     * @param targetOperation
+     */
     void setTargetOperation(Operation targetOperation);
-    
+
     /**
      * Get the source data type
      * 
