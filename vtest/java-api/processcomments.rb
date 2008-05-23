@@ -1,11 +1,30 @@
+=begin
 
-# Scans files - with a java extension - recursively from the current 
-# directory processing test method comments.  Eventually, this will produce a sorted
-# list of specification line numbers and their associated test methods
-#
-# Example command line usage
-# >ruby processcomments.rb 
+Scans java test source files, recursively from the current directory,
+and produces a list of test metods sorted by specification line number
 
+Assumes a test comment convention like this:
+
+    /**
+     * Lines 410,411,412,413:
+     * <p>
+     * A method of a conversational interface may be marked with an
+     * "@EndsConversation" annotation. Once a method marked with
+     * "@EndsConversation" has been called, the conversation between client and
+     * service provider is at an end, which implies no further methods may be
+     * called on that service within the *same* conversation.
+     */
+    @Test
+    public void atEndsConversation1() throws Exception {
+
+
+Example command line usage
+>ruby processcomments.rb 
+
+Some TODO's
+Add logic to process number ranges such as "Lines 523-556" or "Lines 523 to 556"
+
+=end
 class TestMethod
   
   attr_accessor :lines_tested, :first_line_tested
@@ -21,11 +40,10 @@ class TestMethod
     @first_line_tested.<=>(test_method.first_line_tested)  
   end  
   
-  
   def name
     regex = /void\s*\S*\(\) /
     str = @text[regex]
-    str.sub(/void/, '')
+    str.sub(/void\s*/, '')
   end
   
   def init_lines_tested
@@ -69,7 +87,6 @@ class TestCase
   end  
   
   def create_test_methods
-    #regex = /\/\*\*.*?$\W*?Line.*?\{/m
     regex = /\/\*\*\W*?$\W*?Line.*?\{/m
     test_method_text_array = text.scan(regex)
     test_method_text_array.each do |t| 
@@ -95,12 +112,13 @@ def process_file(fn)
   File.open(fn) { |f|  text = f.read } 
   $testcases << TestCase.new(text)
 end
- 
+
+####
+
 $num_files_processed = $num_test_methods = 0
 $testcases = Array.new
 
-puts "Scanning files with .java extension"
-
+puts "Scanning test files for " + Dir.pwd
 Dir["**/*TestCase.java"].each do |filename|
   process_file(filename)
    $num_files_processed += 1
