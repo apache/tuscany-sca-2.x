@@ -35,7 +35,7 @@ import org.apache.tuscany.sca.databinding.xml.XMLStreamReader2String;
  * @version $Rev$ $Date$
  */
 public class XMLDocumentStreamReaderTestCase {
-    private final static String xml = "<e1><e2 a2=\"a2\"><e4>E4</e4></e2><e3 a3=\"a3\"/></e1>";
+    private static final String xml = "<e1><e2 a2=\"a2\"><e4>E4</e4></e2><e3 a3=\"a3\"/></e1>";
 
     @org.junit.Test
     public void testReader() throws Exception {
