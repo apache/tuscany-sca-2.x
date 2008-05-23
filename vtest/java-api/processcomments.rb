@@ -64,16 +64,38 @@ class TestMethod
     lts[1..lts.length]
   end
   
+  def ignore_line
+    @text[/^\s*@Ignore.*/]
+  end
+  
+  def jira
+    result = ignore_line
+    result = result[/\d{4,5}/] 
+    result ?  "T-" + result : "x"
+  end
+  
+  def ignore_string
+    ignore_line ?  jira : ""
+  end
+  
   def package_name
     @parent.package_name
   end
   
+  def testcase_name
+    @parent.testcase_name
+  end
+  
   def long_name
-    self.package_name + "." + self.name
+    self.package_name + "." + testcase_name + "." + self.name
   end
   
   def to_s
     long_name  + "\n" + "Lines tested: " + lines_tested_string + "\n\n"
+  end
+  
+  def to_wiki_s
+    lines_tested_string + "|" + long_name + "|" + ignore_string + "\n"
   end
 end
 
@@ -118,22 +140,38 @@ end
 $num_files_processed = $num_test_methods = 0
 $testcases = Array.new
 
-puts "Scanning test files for " + Dir.pwd
+
 Dir["**/*TestCase.java"].each do |filename|
   process_file(filename)
    $num_files_processed += 1
 end
 
-puts "Total files processed = #{$num_files_processed}"
-puts "Number of test cases = #{$testcases.length}"
-puts "Number of test methods = #{$num_test_methods}"
-
 all_test_methods = Array.new
 $testcases.each do |tc| 
   tc.test_methods.each {|m| all_test_methods<<m}
 end
-  
-all_test_methods.sort.each {|tm| puts tm}
+
+#Regular screen dump
+#puts "Scanned test files for " + Dir.pwd
+#puts "Total files processed = #{$num_files_processed}"
+#puts "Number of test cases = #{$testcases.length}"
+#puts "Number of test methods = #{$num_test_methods}"
+#all_test_methods.sort.each {|tm| puts tm}
+
+
+#wiki output
+puts "1 Comment Processor Output"
+puts "1.1 " + Dir.pwd + " Specification"
+puts "1.1 Test case files scanned " + Date.today.to_s
+puts "* Total files processed = #{$num_files_processed}"
+puts "* Number of test cases = #{$testcases.length}"
+puts "* Number of test methods = #{$num_test_methods}"
+
+puts "{table}"
+puts "Lines Tested| package/testcase/method |ignored"
+all_test_methods.sort.each {|tm| puts tm.to_wiki_s}
+puts "{table}"
+
 
 
 
