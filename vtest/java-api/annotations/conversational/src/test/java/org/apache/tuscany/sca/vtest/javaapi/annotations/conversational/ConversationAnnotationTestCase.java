@@ -74,6 +74,14 @@ public class ConversationAnnotationTestCase {
         Assert.assertNotSame(thisState, aService.setThenGetB1State(thisState));
     }
 
+    /**
+     * Line 325-327:<br>
+     * <p>
+     * Java service interfaces may be annotated to specify whether their
+     * contract is conversational as described in the Assembly Specification
+     * by using the "@Conversational" annotation. A conversational service
+     * indicates that requests to the service are correlated in some way
+     */
     @Test
     public void atConversation2() throws Exception {
         String thisState = "This State";
