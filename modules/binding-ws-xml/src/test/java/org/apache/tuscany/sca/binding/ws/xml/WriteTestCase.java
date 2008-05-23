@@ -54,7 +54,7 @@ public class WriteTestCase extends TestCase {
         StAXArtifactProcessorExtensionPoint staxProcessors = new DefaultStAXArtifactProcessorExtensionPoint(extensionPoints);
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, outputFactory, null);
     }
-
+/*
     public void testReadWriteComponentType() throws Exception {
         InputStream is = getClass().getResourceAsStream("CalculatorImpl.componentType");
         ComponentType componentType = (ComponentType)staxProcessor.read(inputFactory.createXMLStreamReader(is));
@@ -62,6 +62,7 @@ public class WriteTestCase extends TestCase {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(componentType, outputFactory.createXMLStreamWriter(bos));
     }
+*/    
 
     public void testReadWriteComposite() throws Exception {
         InputStream is = getClass().getResourceAsStream("Calculator.composite");
@@ -69,6 +70,7 @@ public class WriteTestCase extends TestCase {
         assertNotNull(composite);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         staxProcessor.write(composite, outputFactory.createXMLStreamWriter(bos));
+        System.out.println(bos.toString());
     }
 
 }

@@ -26,6 +26,7 @@ import java.io.StringWriter;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -40,6 +41,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Helper methods to read and write a wsa:endpointReference
@@ -71,12 +73,9 @@ public class EndPointReferenceHelper {
     public static void writeEndPointReference(Element element, XMLStreamWriter writer)  {
         try {
 
-            Source domSource = new DOMSource(element);
-            StreamResult result = new StreamResult(new StringWriter());
-            javax.xml.transform.Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.transform(domSource , result);
+            saveElement(element, writer);
 
-        } catch (TransformerException e) {
+        } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         }
     }
@@ -179,6 +178,53 @@ public class EndPointReferenceHelper {
             org.w3c.dom.Attr attr = element.getOwnerDocument().createAttributeNS(XMLNS_ATTRIBUTE_NS_URI, qname);
             attr.setValue(ns);
             element.setAttributeNodeNS(attr);
+        }
+    }
+    
+    private static void saveElement(Element element, XMLStreamWriter writer) throws XMLStreamException{
+
+        XMLStreamReader reader =
+            XMLInputFactory.newInstance().createXMLStreamReader(new DOMSource(element));
+
+        while (reader.hasNext()) {
+            switch (reader.next()) {
+                case XMLStreamConstants.START_ELEMENT:
+                    QName name = reader.getName();
+                    writer.writeStartElement(name.getPrefix(), name.getLocalPart(), name.getNamespaceURI());
+
+                    int namespaces = reader.getNamespaceCount();
+                    for (int i = 0; i < namespaces; i++) {
+                        String prefix = reader.getNamespacePrefix(i);
+                        String ns = reader.getNamespaceURI(i);
+                        writer.writeNamespace(prefix, ns);
+                    }
+
+                    if (!"".equals(name.getNamespaceURI())) {
+                        writer.writeNamespace(name.getPrefix(), name.getNamespaceURI());
+                    }
+
+                    // add the attributes for this element
+                    namespaces = reader.getAttributeCount();
+                    for (int i = 0; i < namespaces; i++) {
+                        String ns = reader.getAttributeNamespace(i);
+                        String prefix = reader.getAttributePrefix(i);
+                        String qname = reader.getAttributeLocalName(i);
+                        String value = reader.getAttributeValue(i);
+
+                        writer.writeAttribute(prefix, ns, qname, value);
+                    }
+
+                    break;
+                case XMLStreamConstants.CDATA:
+                    writer.writeCData(reader.getText());
+                    break;
+                case XMLStreamConstants.CHARACTERS:
+                    writer.writeCharacters(reader.getText());
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    writer.writeEndElement();
+                    break;
+            }
         }
     }
 }
