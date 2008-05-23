@@ -17,12 +17,14 @@ Assumes a test comment convention like this:
     @Test
     public void atEndsConversation1() throws Exception {
 
+Current output is formatted for a wiki page
 
 Example command line usage
 >ruby processcomments.rb 
 
-Some TODO's
-Add logic to process number ranges such as "Lines 523-556" or "Lines 523 to 556"
+Some TODO's:
+  Add logic to process number ranges such as "Lines 523-556" or "Lines 523 to 556"
+  Provide HTML output
 
 =end
 class TestMethod
@@ -127,7 +129,6 @@ class TestCase
     text[/\S*TestCase/]
   end
 end
-
   
 def process_file(fn)
   text = String.new
@@ -135,11 +136,8 @@ def process_file(fn)
   $testcases << TestCase.new(text)
 end
 
-####
-
 $num_files_processed = $num_test_methods = 0
 $testcases = Array.new
-
 
 Dir["**/*TestCase.java"].each do |filename|
   process_file(filename)
@@ -158,9 +156,8 @@ end
 #puts "Number of test methods = #{$num_test_methods}"
 #all_test_methods.sort.each {|tm| puts tm}
 
-
 #wiki output
-puts "1 Comment Processor Output"
+puts "1 SCA Specification Test mapping (Comment Processor Output)"
 puts "1.1 " + Dir.pwd + " Specification"
 puts "1.1 Test case files scanned " + Date.today.to_s
 puts "* Total files processed = #{$num_files_processed}"
