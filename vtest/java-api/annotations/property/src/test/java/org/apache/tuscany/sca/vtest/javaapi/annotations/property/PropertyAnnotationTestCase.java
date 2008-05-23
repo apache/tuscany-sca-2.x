@@ -266,8 +266,7 @@ public class PropertyAnnotationTestCase {
      * un-annotated protected which should not be injected via protected setter<br>
      */
     @Test
-    @Ignore
-    // JIRA-2289 - p23 failed
+    @Ignore("JIRA-2289 - p23 failed")
     public void atProperty7() throws Exception {
         Assert.assertNull(anotherAService.getP22());
         Assert.assertNull(anotherAService.getP23());
