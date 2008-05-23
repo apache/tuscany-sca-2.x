@@ -24,7 +24,8 @@ class TestMethod
   
   def name
     regex = /void\s*\S*\(\) /
-    @text[regex]
+    str = @text[regex]
+    str.sub(/void/, '')
   end
   
   def init_lines_tested
