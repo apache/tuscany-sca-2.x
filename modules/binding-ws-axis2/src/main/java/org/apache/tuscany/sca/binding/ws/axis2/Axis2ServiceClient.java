@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.sca.binding.ws.axis2;
 
+import static org.apache.tuscany.sca.binding.ws.axis2.AxisPolicyHelper.SOAP12_INTENT;
+import static org.apache.tuscany.sca.binding.ws.axis2.AxisPolicyHelper.isIntentRequired;
+
 import java.io.IOException;
 import java.net.URL;
 import java.security.AccessController;
@@ -76,8 +79,6 @@ import org.apache.tuscany.sca.interfacedef.wsdl.interface2wsdl.WSDLDefinitionGen
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.XMLDocumentHelper;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.policy.Intent;
-import org.apache.tuscany.sca.policy.IntentAttachPoint;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
@@ -86,14 +87,13 @@ import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.policy.util.PolicyHandlerUtils;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.ws.commons.schema.resolver.URIResolver;
+import org.osoa.sca.ServiceRuntimeException;
 
 public class Axis2ServiceClient {
 
     private WebServiceBinding wsBinding;
     private ServiceClient serviceClient;
     Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames = null;
-    private static final QName SOAP12_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0", "soap.1_2");
-    private static final QName MTOM_INTENT =  new QName("http://www.osoa.org/xmlns/sca/1.0", "MTOM");
     private List<PolicyHandler> policyHandlerList = new ArrayList<PolicyHandler>();
 
     public Axis2ServiceClient(RuntimeComponent component,
@@ -138,9 +138,25 @@ public class Axis2ServiceClient {
      */
     protected ServiceClient createServiceClient() {
         try {
-            TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
-            ConfigurationContext configContext = tuscanyAxisConfigurator.getConfigurationContext();
+            final boolean isRampartRequired = AxisPolicyHelper.isRampartRequired(wsBinding);
+            ConfigurationContext configContext;
             
+            try {
+                // TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
+                // Allow privileged access to read properties. Requires PropertyPermission read in
+                // security policy.
+                TuscanyAxisConfigurator tuscanyAxisConfigurator =
+                    AccessController.doPrivileged(new PrivilegedExceptionAction<TuscanyAxisConfigurator>() {
+                        public TuscanyAxisConfigurator run() throws AxisFault {
+                            return new TuscanyAxisConfigurator(isRampartRequired);
+                        }
+                    });
+                configContext = tuscanyAxisConfigurator.getConfigurationContext();
+                // deployRampartModule();
+                // configureSecurity();
+            } catch (PrivilegedActionException e) {
+                throw new ServiceRuntimeException(e.getException());
+            }
 
             createPolicyHandlers();
             setupPolicyHandlers(policyHandlerList, configContext);
@@ -390,26 +406,11 @@ public class Axis2ServiceClient {
     }
 
     private boolean requiresSOAP12() {
-        if (wsBinding instanceof IntentAttachPoint) {
-            List<Intent> intents = ((IntentAttachPoint)wsBinding).getRequiredIntents();
-            for (Intent intent : intents) {
-                if (SOAP12_INTENT.equals(intent.getName())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return isIntentRequired(wsBinding, SOAP12_INTENT);
     }
+
     private boolean requiresMTOM() {
-        if (wsBinding instanceof IntentAttachPoint) {
-            List<Intent> intents = ((IntentAttachPoint)wsBinding).getRequiredIntents();
-            for (Intent intent : intents) {
-                if (MTOM_INTENT.equals(intent.getName())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return isIntentRequired(wsBinding, AxisPolicyHelper.MTOM_INTENT);
     }
 
     protected EndpointReference getWSATOEPR(WebServiceBinding binding) {

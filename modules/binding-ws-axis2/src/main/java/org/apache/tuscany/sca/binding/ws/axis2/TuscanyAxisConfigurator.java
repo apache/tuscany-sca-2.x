@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
@@ -35,7 +36,6 @@ import org.apache.axis2.deployment.DeploymentErrorMsgs;
 import org.apache.axis2.deployment.DeploymentException;
 import org.apache.axis2.deployment.ModuleBuilder;
 import org.apache.axis2.deployment.URLBasedAxisConfigurator;
-import org.apache.axis2.deployment.util.Utils;
 import org.apache.axis2.description.AxisModule;
 import org.apache.axis2.description.Parameter;
 import org.apache.axis2.engine.AxisConfiguration;
@@ -58,17 +58,28 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
      */
     /************start of fix *********************************************************************/
     private URL axis2_xml = 
-        TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/axis2.xml");
+        getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/axis2.xml");
     private URL axis2_repository = null;
     private URL rampart_mar_url =
-        TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/modules/rampart-1.3.mar");
+        getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/modules/rampart-1.3.mar");
     /************** end of fix *************************************************************/
     
-    public TuscanyAxisConfigurator() throws AxisFault {
+    private boolean isRampartRequired;
+    
+    public TuscanyAxisConfigurator(boolean isRampartRequired) throws AxisFault {
         //super(TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/axis2.xml"), 
         //      TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/modules/rampart.mar"));
-        super(TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/axis2.xml"), 
+        super(getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/axis2.xml"), 
                     null);
+        this.isRampartRequired = isRampartRequired;
+    }
+    
+    private static URL getResource(final String name) {
+        return AccessController.doPrivileged(new PrivilegedAction<URL>() {
+            public URL run() {
+                return TuscanyAxisConfigurator.class.getResource(name);
+            }
+        });
     }
 
     public ConfigurationContext getConfigurationContext() throws AxisFault {
@@ -94,6 +105,9 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
                 axis2xmlStream = axis2_xml.openStream();
             }
             axisConfig = populateAxisConfiguration(axis2xmlStream);
+            if (isRampartRequired) {
+                axisConfig.addGlobalModuleRef("rampart");
+            }   
             if (axis2_repository == null) {
                 Parameter axis2repoPara = axisConfig.getParameter(DeploymentConstants.AXIS2_REPO);
                 if (axis2repoPara != null) {
@@ -112,7 +126,9 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
                     try {
                         loadFromClassPath(); 
                     } catch ( Exception e ) {
-                        loadRampartModule();
+                        if (isRampartRequired) {
+                            loadRampartModule();
+                        }
                     }
                 }
                 
@@ -130,7 +146,7 @@ public class TuscanyAxisConfigurator extends URLBasedAxisConfigurator implements
     public void loadRampartModule() throws DeploymentException {
         try {
             ClassLoader deploymentClassLoader =
-                    Utils.createClassLoader(
+                    org.apache.axis2.deployment.util.Utils.createClassLoader(
                             new URL[]{rampart_mar_url},
                             axisConfig.getModuleClassLoader(),
                             true,

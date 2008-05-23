@@ -19,15 +19,11 @@
 
 package org.apache.tuscany.sca.binding.ws.axis2;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -61,12 +57,8 @@ import org.apache.axis2.addressing.AddressingConstants;
 import org.apache.axis2.addressing.EndpointReferenceHelper;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.MessageContext;
-import org.apache.axis2.deployment.DeploymentErrorMsgs;
-import org.apache.axis2.deployment.DeploymentException;
-import org.apache.axis2.deployment.ModuleBuilder;
 import org.apache.axis2.deployment.util.Utils;
 import org.apache.axis2.description.AxisEndpoint;
-import org.apache.axis2.description.AxisModule;
 import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.Parameter;
@@ -75,10 +67,8 @@ import org.apache.axis2.description.TransportOutDescription;
 import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
 import org.apache.axis2.description.WSDL2Constants;
 import org.apache.axis2.description.WSDLToAxisServiceBuilder;
-import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.ListenerManager;
 import org.apache.axis2.engine.MessageReceiver;
-import org.apache.axis2.i18n.Messages;
 import org.apache.axis2.transport.jms.JMSConstants;
 import org.apache.axis2.transport.jms.JMSListener;
 import org.apache.axis2.transport.jms.JMSSender;
@@ -95,7 +85,6 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.invocation.Message;
 import org.apache.tuscany.sca.invocation.MessageFactory;
-import org.apache.tuscany.sca.policy.Intent;
 import org.apache.tuscany.sca.policy.PolicySet;
 import org.apache.tuscany.sca.policy.PolicySetAttachPoint;
 import org.apache.tuscany.sca.policy.security.ws.Axis2ConfigParamPolicy;
@@ -110,6 +99,7 @@ import org.apache.tuscany.sca.runtime.RuntimeWire;
 import org.apache.ws.security.WSSecurityEngineResult;
 import org.apache.ws.security.handler.WSHandlerConstants;
 import org.apache.ws.security.handler.WSHandlerResult;
+import org.osoa.sca.ServiceRuntimeException;
 
 public class Axis2ServiceProvider {
     
@@ -135,7 +125,6 @@ public class Axis2ServiceProvider {
     private static final String DEFAULT_QUEUE_CONNECTION_FACTORY = "TuscanyQueueConnectionFactory";
     
     private static final QName TRANSPORT_JMS_QUALIFIED_INTENT = new QName("http://www.osoa.org/xmlns/sca/1.0","transport.jms");
-    
     private PolicySet transportJmsPolicySet = null;
         
 
@@ -152,6 +141,7 @@ public class Axis2ServiceProvider {
         this.messageFactory = messageFactory;
         this.policyHandlerClassnames = policyHandlerClassnames;
 
+        final boolean isRampartRequired = AxisPolicyHelper.isRampartRequired(wsBinding);
         try {
             // TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
             // Allow privileged access to read properties. Requires PropertyPermission read in
@@ -159,24 +149,22 @@ public class Axis2ServiceProvider {
             TuscanyAxisConfigurator tuscanyAxisConfigurator =
                 AccessController.doPrivileged(new PrivilegedExceptionAction<TuscanyAxisConfigurator>() {
                     public TuscanyAxisConfigurator run() throws AxisFault {
-                        return new TuscanyAxisConfigurator();
+                        return new TuscanyAxisConfigurator(isRampartRequired);
                     }
                 });
             configContext = tuscanyAxisConfigurator.getConfigurationContext();
             // deployRampartModule();
             // configureSecurity();
         } catch (PrivilegedActionException e) {
-            throw new RuntimeException(e);
+            throw new ServiceRuntimeException(e.getException());
         } catch (AxisFault e) {
-            throw new RuntimeException(e); // TODO: better exception
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+            throw new ServiceRuntimeException(e); // TODO: better exception
+        } 
 
         configContext.setContextRoot(servletHost.getContextPath());
 
         // pull out the binding intents to see what sort of transport is required
-        transportJmsPolicySet = getPolicySet(TRANSPORT_JMS_QUALIFIED_INTENT);
+        transportJmsPolicySet = AxisPolicyHelper.getPolicySet(wsBinding, TRANSPORT_JMS_QUALIFIED_INTENT);
         
         String uri;
         
@@ -224,19 +212,6 @@ public class Axis2ServiceProvider {
         wsBinding.setURI(uri);
     }
     
-    private void engageModules() throws AxisFault {
-        if ( wsBinding instanceof PolicySetAttachPoint ) {
-            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding;
-            if ( policiedBinding.getPolicySets().size() > 0 ) {
-                //TODO: need to verify if one of the policies are concerned with security
-                AxisModule m = new AxisModule("rampart");
-                m.setFileName(wsBinding.getClass().getClassLoader().getResource("rampart-1.2.mar"));
-                configContext.getAxisConfiguration().addModule(m);
-                configContext.getAxisConfiguration().engageModule(m, configContext.getAxisConfiguration());
-            }
-        }
-    }
-
     public void start() {
 
         // TODO: if <binding.ws> specifies the WSDL service then should create a
@@ -678,24 +653,6 @@ public class Axis2ServiceProvider {
         return wsBinding;
     }
     
-    private PolicySet getPolicySet(QName intentName){
-        PolicySet returnPolicySet = null;
-        
-        if ( wsBinding instanceof PolicySetAttachPoint ) {
-            PolicySetAttachPoint policiedBinding = (PolicySetAttachPoint)wsBinding; 
-            for ( PolicySet policySet : policiedBinding.getPolicySets() ) {
-                for (Intent intent : policySet.getProvidedIntents()){
-                    if ( intent.getName().equals(intentName) ){
-                        returnPolicySet = policySet;
-                        break;
-                    }
-                }
-            }
-        }
-        
-        return returnPolicySet;
-    } 
-    
     private void setupPolicyHandlers(List<PolicyHandler> policyHandlers, ConfigurationContext configContext)  {
         for ( PolicyHandler aHandler : policyHandlers ) {
             aHandler.setUp(configContext);
@@ -719,52 +676,6 @@ public class Axis2ServiceProvider {
         }
     }
      
-    
-    private void deployRampartModule()  throws DeploymentException, AxisFault {
-    	ClassLoader tccl = (ClassLoader) org.apache.axis2.java.security.AccessController
-        .doPrivileged(new PrivilegedAction() {
-            public Object run() {
-                return Thread.currentThread().getContextClassLoader();
-            }
-        });
-
-
-        AxisModule module = new AxisModule();
-        module.setParent(configContext.getAxisConfiguration());
-		String moduleName = "rampart-1.2";
-		URL moduleurl = TuscanyAxisConfigurator.class.getResource("/org/apache/tuscany/sca/binding/ws/axis2/engine/config/rampart-1.2.mar");
-		module.setName(moduleName);
-		ClassLoader deploymentClassloader = Utils.createClassLoader(new URL[]{moduleurl},
-													tccl,
-													true,
-													(File)configContext.getAxisConfiguration().getParameterValue(Constants.Configuration.ARTIFACTS_TEMP_DIR));
-													
-		module.setModuleClassLoader(deploymentClassloader);
-		populateModule(module, moduleurl,configContext.getAxisConfiguration());
-		module.setFileName(moduleurl);
-		TuscanyAxisConfigurator.addNewModule(module, configContext.getAxisConfiguration());
-		org.apache.axis2.util.Utils.calculateDefaultModuleVersion(
-				configContext.getAxisConfiguration().getModules(), configContext.getAxisConfiguration());
-    }
-    
-    private void populateModule(AxisModule module, URL moduleUrl, AxisConfiguration axisConfig) throws DeploymentException {
-        try {
-            ClassLoader classLoadere = module.getModuleClassLoader();
-            InputStream moduleStream = classLoadere.getResourceAsStream("META-INF/module.xml");
-            if (moduleStream == null) {
-                moduleStream = classLoadere.getResourceAsStream("meta-inf/module.xml");
-            }
-            if (moduleStream == null) {
-                throw new DeploymentException(
-                        Messages.getMessage(
-                                DeploymentErrorMsgs.MODULE_XML_MISSING, moduleUrl.toString()));
-            }
-            ModuleBuilder moduleBuilder = new ModuleBuilder(moduleStream, module, axisConfig);
-            moduleBuilder.populateModule();
-        } catch (IOException e) {
-            throw new DeploymentException(e);
-        }
-    }
     
     private void fillQoSContext(Message message, MessageContext axis2MsgCtx) {
         if ( axis2MsgCtx.getProperty(WSHandlerConstants.RECV_RESULTS) != null &&
