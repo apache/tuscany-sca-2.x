@@ -230,7 +230,7 @@ public class SimpleTypeMapperImpl extends XSDDataTypeConverter implements Simple
     }
 
     public static Class getJavaType(QName xmlType) {
-        if (URI_2001_SCHEMA_XSD.equals(xmlType.getNamespaceURI())) {
+         if (xmlType != null && URI_2001_SCHEMA_XSD.equals(xmlType.getNamespaceURI())) {
             return XML2JAVA.get(xmlType.getLocalPart());
         } else {
             return null;
