@@ -118,13 +118,7 @@ public class Java2WSDLGeneratorImpl implements Java2WSDLGenerator, TuscanyJava2W
 
         Node node = xform.transform(stream, null);
 
-        Document doc = null;
-        try {
-            doc = (Document)node;
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("Didn't get back a Document DOM object");
-        }
+        Document doc = node.getOwnerDocument();
 
         // pretty-print WSDL document
         OutputFormat format = new OutputFormat(doc);
