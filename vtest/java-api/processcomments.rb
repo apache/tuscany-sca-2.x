@@ -7,22 +7,29 @@
 # >ruby processcomments.rb 
 
 class TestMethod
-  attr_accessor :text, :parent
+  
+  attr_accessor :lines_tested, :first_line_tested
   
   def initialize(text, parent)
-    puts "Test method text => " + text
     @text = text
     @parent = parent
+    @lines_tested = init_lines_tested
+    @first_line_tested = @lines_tested.first
   end  
+  
+  def <=>(test_method)  
+    @first_line_tested.<=>(test_method.first_line_tested)  
+  end  
+  
   
   def name
     regex = /void\s*\S*\(\) /
     @text[regex]
   end
   
-  def lines_tested
+  def init_lines_tested
     lines_regex = /Line.*?$/
-    lines_array = text.scan(lines_regex)
+    lines_array = @text.scan(lines_regex)
     nums_regex = /\d{1,4}/
     line_numbers = Array.new
     lines_array.each do |line_text|
@@ -35,7 +42,7 @@ class TestMethod
   def lines_tested_string
     lts = String.new
     lines_tested.each {|n| lts = lts +"," + n.to_s }
-    lts
+    lts[1..lts.length]
   end
   
   def package_name
@@ -44,6 +51,10 @@ class TestMethod
   
   def long_name
     self.package_name + "." + self.name
+  end
+  
+  def to_s
+    long_name  + "\n" + "Lines tested: " + lines_tested_string + "\n\n"
   end
 end
 
@@ -98,23 +109,12 @@ puts "Total files processed = #{$num_files_processed}"
 puts "Number of test cases = #{$testcases.length}"
 puts "Number of test methods = #{$num_test_methods}"
 
+all_test_methods = Array.new
 $testcases.each do |tc| 
-  puts "Next Test Class =>" + tc.package_name + "." + tc.testcase_name
-  tc.test_methods.each {|m| puts "  " + m.long_name + "lines => " + m.lines_tested_string }
-end
-
-puts "************* Here we go *******************"
-$testcases.each do |tc| 
-  all_test_methods = Array.new
   tc.test_methods.each {|m| all_test_methods<<m}
-  
-  
-  all_test_methods.sort!{|a, b| a.lines_tested.first <=> b.lines_tested.first}
-  all_test_methods.each {|tm| puts tm.lines_tested.first.to_s}
-  
-  #sorted = all_test_methods.sort_by { |m| m.lines_tested.first }
-  #sorted.each {|tm| puts tm.lines_tested.to_s}
 end
+  
+all_test_methods.sort.each {|tm| puts tm}
 
 
 
