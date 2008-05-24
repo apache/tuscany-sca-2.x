@@ -54,6 +54,14 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>indiana</id>
+            <url>http://ftp.ussg.iu.edu/eclipse/modeling/emf/emf/maven2/</url>
+        </repository>
+        <repository>
+            <id>osuosl.org</id>
+            <url>http://ftp.osuosl.org/pub/eclipse/tools/emf/maven2</url>
+        </repository>        
     </repositories>
 
     <profiles>
