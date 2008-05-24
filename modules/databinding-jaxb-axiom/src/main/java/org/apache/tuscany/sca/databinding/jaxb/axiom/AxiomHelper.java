@@ -129,14 +129,12 @@ public class AxiomHelper {
         String prefix = name.getPrefix();
 
         OMNamespace ns = null;
-        if (namespaceURI.length() != 0) {
-            // Qualified Element: we need an OMNamespace         
-            if (prefix.length() == 0) {
-                // The prefix does not appear to be specified, let's create one
-                prefix = DEFAULT_PREFIX;
-            }
-            ns = factory.createOMNamespace(namespaceURI, prefix);
+        // Qualified Element: we need an OMNamespace         
+        if (prefix.length() == 0) {
+            // The prefix does not appear to be specified, let's create one
+            prefix = DEFAULT_PREFIX;
         }
+        ns = factory.createOMNamespace(namespaceURI, prefix);
         return ns;
     }
 }

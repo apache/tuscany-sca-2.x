@@ -34,15 +34,16 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.axiom.om.OMDataSourceExt;
 import org.apache.axiom.om.OMException;
-import org.apache.axiom.om.ds.OMDataSourceExtBase;
 import org.apache.axiom.om.util.StAXUtils;
 
 /**
  * OMDataSource backed by a source
  */
-public class SourceDataSource extends OMDataSourceExtBase {
+public class SourceDataSource
+// FIXME: [rfeng] Re-enable it after we move to AXIOM 1.2.7
+// extends OMDataSourceExtBase 
+{
     private Source data;
 
     public SourceDataSource(Source data) {
@@ -53,9 +54,10 @@ public class SourceDataSource extends OMDataSourceExtBase {
     public void close() {
     }
 
-    public OMDataSourceExt copy() {
-        return null;
-    }
+    // FIXME: [rfeng] Re-enable it after we move to AXIOM 1.2.7
+    //    public OMDataSourceExt copy() {
+    //        return new SourceDataSource(data);
+    //    }
 
     public Object getObject() {
         return data;

@@ -19,23 +19,15 @@
 
 package org.apache.tuscany.sca.databinding.jaxb.axiom.ext;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.apache.axiom.om.OMContainer;
-import org.apache.axiom.om.OMDataSource;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMException;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
-import org.apache.axiom.om.OMSourcedElement;
-import org.apache.axiom.om.impl.builder.CustomBuilder;
 
 /**
  * JAXBCustomBuilder creates an OMSourcedElement backed by a JAXBDataSource
  * for the specified namespace and localPart.
  */
-public class JAXBCustomBuilder implements CustomBuilder {
+public class JAXBCustomBuilder 
+//FIXME: [rfeng] Re-enable it after we move to AXIOM 1.2.7
+// implements CustomBuilder 
+{
 
     private JAXBDSContext jdsContext;
 
@@ -48,6 +40,8 @@ public class JAXBCustomBuilder implements CustomBuilder {
         this.jdsContext = context;
     }
 
+ // FIXME: [rfeng] Re-enable it after we move to AXIOM 1.2.7
+    /*
     public OMElement create(String namespace,
                             String localPart,
                             OMContainer parent,
@@ -67,7 +61,7 @@ public class JAXBCustomBuilder implements CustomBuilder {
             Object jaxb = jdsContext.unmarshal(reader);
 
             OMDataSource ds = new JAXBDataSourceExt(jaxb, jdsContext);
-            OMSourcedElement omse = factory.createOMElement(ds, localPart, ns);
+            OMElement omse = factory.createOMElement(ds, localPart, ns);
 
             parent.addChild(omse);
             // JAXBCustomBuilderMonitor.updateTotalCreates();
@@ -77,6 +71,7 @@ public class JAXBCustomBuilder implements CustomBuilder {
             throw new OMException(e);
         }
     }
+    */
 
     /**
      * The namespace identifier for the SOAP 1.1 envelope.

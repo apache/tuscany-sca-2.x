@@ -27,16 +27,18 @@ import java.io.Writer;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.axiom.om.OMDataSourceExt;
 import org.apache.axiom.om.OMOutputFormat;
-import org.apache.axiom.om.ds.OMDataSourceExtBase;
 import org.apache.axiom.om.util.StAXUtils;
 
 /**
  * OMDataSource backed by a string containing xml data
  */
 // FIXME: To be refectored into databinding-axiom
-public class XMLStringDataSource extends OMDataSourceExtBase {
+public class XMLStringDataSource
+
+//FIXME: [rfeng] Re-enable it after we move to AXIOM 1.2.7
+// extends OMDataSourceExtBase 
+{
     private String data;
 
     public XMLStringDataSource(String data) {
@@ -47,9 +49,10 @@ public class XMLStringDataSource extends OMDataSourceExtBase {
     public void close() {
     }
 
-    public OMDataSourceExt copy() {
-        return new XMLStringDataSource(data);
-    }
+    // FIXME: [rfeng] Re-enable it after we move to AXIOM 1.2.7
+    //    public OMDataSourceExt copy() {
+    //        return new XMLStringDataSource(data);
+    //    }
 
     public Object getObject() {
         return data;
@@ -69,7 +72,6 @@ public class XMLStringDataSource extends OMDataSourceExtBase {
             throw new XMLStreamException(e);
         }
     }
-
 
     public byte[] getXMLBytes(String encoding) throws UnsupportedEncodingException {
         return data.getBytes(encoding);

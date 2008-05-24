@@ -73,19 +73,18 @@ public class JAXB2OMElement extends BaseTransformer<Object, OMElement> implement
         JAXBIntrospector introspector = jaxbContext.createJAXBIntrospector();
         Object element = null;
         Class<?> type = null;
-        if (introspector.isElement(source)) {
+        if (source != null && introspector.isElement(source)) {
             if (name == JAXBDataBinding.ROOT_ELEMENT) {
                 element = source;
             } else {
                 source = JAXBIntrospector.getValue(source);
             }
-        } else {
-            type = source.getClass();
+        } 
+        if (element == null) {
+            type = source == null ? Object.class : source.getClass();
             if (context != null) {
                 type = context.getSourceDataType().getPhysical();
             }
-        }
-        if (element == null) {
             element = new JAXBElement(name, type, source);
         }
         JAXBDataSource dataSource = new JAXBDataSource(element, jaxbContext);

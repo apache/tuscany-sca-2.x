@@ -33,17 +33,19 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.axiom.om.OMDataSourceExt;
 import org.apache.axiom.om.OMException;
 import org.apache.axiom.om.OMOutputFormat;
-import org.apache.axiom.om.ds.OMDataSourceExtBase;
 import org.apache.axiom.om.impl.MTOMXMLStreamWriter;
 import org.apache.axiom.om.util.StAXUtils;
 
 /**
  * OMDataSource backed by a jaxb object
  */
-public class JAXBDataSourceExt extends OMDataSourceExtBase {
+public class JAXBDataSourceExt
+
+//FIXME: [rfeng] Re-enable it after we move to AXIOM 1.2.7
+// extends OMDataSourceExtBase  
+{
 
     private static final Logger log = Logger.getLogger(JAXBDataSourceExt.class.getName());
 
@@ -59,9 +61,10 @@ public class JAXBDataSourceExt extends OMDataSourceExtBase {
     public void close() {
     }
 
-    public OMDataSourceExt copy() {
-        return new JAXBDataSourceExt(jaxb, context);
-    }
+    // FIXME: [rfeng] Re-enable it after we move to AXIOM 1.2.7
+    //    public OMDataSourceExt copy() {
+    //        return new JAXBDataSourceExt(jaxb, context);
+    //    }
 
     public Object getObject() {
         return jaxb;
