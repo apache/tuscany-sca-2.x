@@ -54,7 +54,7 @@ public class OMElement2JAXB extends BaseTransformer<OMElement, Object> implement
                     // Marshalling directly to the output stream is faster than marshalling through the
                     // XMLStreamWriter. 
                     // Take advantage of this optimization if there is an output stream.
-                    JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, true);
+                    JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
                     Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
                     XMLStreamReader reader = source.getXMLStreamReaderWithoutCaching();
                     Object result =
