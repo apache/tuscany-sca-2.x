@@ -95,7 +95,9 @@ public class BPELImplementationProvider implements ImplementationProvider {
                 try {
                     txMgr.begin();
                     odeServer.registerTuscanyRuntimeComponent(implementation.getProcess(), component);
-                    odeServer.deploy(new ODEDeployment(deploymentDir));
+                    // Replaced by Mike Edwards 23/05/2008
+                    //odeServer.deploy(new ODEDeployment(deploymentDir));
+                    odeServer.deploy(new ODEDeployment(deploymentDir), implementation );
                     txMgr.commit();
                 } catch (Exception e) {
                     e.printStackTrace();
