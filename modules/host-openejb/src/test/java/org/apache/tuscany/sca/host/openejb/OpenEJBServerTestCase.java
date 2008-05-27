@@ -25,7 +25,6 @@ import javax.naming.InitialContext;
 
 import junit.framework.TestCase;
 
-import org.apache.openejb.core.ivm.naming.InitContextFactory;
 import org.apache.tuscany.sca.host.ejb.EJBSessionBean;
 
 /**
@@ -72,9 +71,9 @@ public class OpenEJBServerTestCase extends TestCase {
         server.addSessionBean("TestBean", new EJBSessionBean(TestImpl.class, TestRemote.class));
 
         Properties properties = new Properties(System.getProperties());
-        properties.setProperty(Context.INITIAL_CONTEXT_FACTORY, InitContextFactory.class.getName());
-        //properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.RemoteInitialContextFactory");
-        //properties.put(Context.PROVIDER_URL, "ejbd://localhost:2888");
+        //properties.setProperty(Context.INITIAL_CONTEXT_FACTORY, InitContextFactory.class.getName());
+        properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.RemoteInitialContextFactory");
+        properties.put(Context.PROVIDER_URL, "ejbd://localhost:2888");
         InitialContext ctx = new InitialContext(properties);
         Object object = ctx.lookup("TestBeanRemote");
         assertTrue(object instanceof TestRemote);

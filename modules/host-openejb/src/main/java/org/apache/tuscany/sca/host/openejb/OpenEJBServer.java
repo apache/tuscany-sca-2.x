@@ -3,15 +3,13 @@ package org.apache.tuscany.sca.host.openejb;
 import java.io.IOException;
 import java.util.Properties;
 
+import javax.naming.Context;
 import javax.naming.NamingException;
 
 import org.apache.openejb.OpenEJB;
 import org.apache.openejb.OpenEJBException;
 import org.apache.openejb.assembler.classic.Assembler;
-import org.apache.openejb.assembler.classic.ProxyFactoryInfo;
-import org.apache.openejb.assembler.classic.SecurityServiceInfo;
 import org.apache.openejb.assembler.classic.StatelessSessionContainerInfo;
-import org.apache.openejb.assembler.classic.TransactionServiceInfo;
 import org.apache.openejb.config.ConfigurationFactory;
 import org.apache.openejb.core.ServerFederation;
 import org.apache.openejb.jee.EjbJar;
@@ -80,21 +78,20 @@ public class OpenEJBServer implements EJBHost {
     private void start() throws EJBRegistrationException {
         try {
             Properties properties = new Properties();
+            properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.RemoteInitialContextFactory");
+            properties.put(Context.PROVIDER_URL, "ejbd://localhost:2888");
             SystemInstance.init(properties);
             
             ejbServer = new EjbServer();
             SystemInstance.get().setComponent(EjbServer.class, ejbServer);
             OpenEJB.init(properties, new ServerFederation());
             ejbServer.init(properties);
-
+            
             serviceDaemon = new ServiceDaemon(ejbServer, 2888, "localhost");
             serviceDaemon.start();
             
             config = new ConfigurationFactory();
-            assembler = new Assembler();
-            assembler.createProxyFactory(config.configureService(ProxyFactoryInfo.class));
-            assembler.createTransactionManager(config.configureService(TransactionServiceInfo.class));
-            assembler.createSecurityService(config.configureService(SecurityServiceInfo.class));
+            assembler = (Assembler)SystemInstance.get().getComponent(org.apache.openejb.spi.Assembler.class);
 
             // containers
             StatelessSessionContainerInfo statelessContainerInfo = config.configureService(StatelessSessionContainerInfo.class);
