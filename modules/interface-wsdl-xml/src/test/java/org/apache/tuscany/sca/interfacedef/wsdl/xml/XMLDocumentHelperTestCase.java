@@ -23,6 +23,8 @@ import java.net.URL;
 
 import junit.framework.Assert;
 
+import org.apache.tuscany.sca.xsd.xml.XMLDocumentHelper;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,15 +41,12 @@ public class XMLDocumentHelperTestCase {
     @Before
     public void setUp() throws Exception {
         wsdl = getClass().getResource("/wsdl/helloworld-interface.wsdl");
-        xsd = getClass().getResource("/xsd/greeting.xsd");
     }
 
     @Test
     public void testReadTNS() throws Exception {
         String tns = XMLDocumentHelper.readTargetNamespace(wsdl, XMLDocumentHelper.WSDL11, true, "targetNamespace");
         Assert.assertEquals("http://helloworld", tns);
-        String tns2 = XMLDocumentHelper.readTargetNamespace(xsd, XMLDocumentHelper.XSD, true, null);
-        Assert.assertEquals("http://greeting", tns2);
     }
 
 }

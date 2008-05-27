@@ -46,9 +46,9 @@ import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
-import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
+import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
@@ -79,7 +79,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
 
         Class<?> clazz = contract.getJavaClass();
         WebService webService = clazz.getAnnotation(WebService.class);
-        String tns = JavaInterfaceUtil.getNamespace(clazz);
+        String tns = JavaXMLMapper.getNamespace(clazz);
         String localName = clazz.getSimpleName();
         if (webService != null) {
             tns = getValue(webService.targetNamespace(), tns);

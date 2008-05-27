@@ -183,6 +183,10 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
             return getDataBinding().getSimpleTypeMapper();
         }
 
+        public Class getXMLTypeHelperClass() {
+            return getDataBinding().getXMLTypeHelperClass();
+        }
+
         public WrapperHandler getWrapperHandler() {
             return getDataBinding().getWrapperHandler();
         }

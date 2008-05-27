@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.interfacedef.wsdl.xml;
+package org.apache.tuscany.sca.xsd.xml;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class XMLDocumentHelper {
     protected static final int BUFFER_SIZE = 256;
 
     /**
-     * Detect the XML encoding of the WSDL document
+     * Detect the XML encoding of the document
      * 
      * @param is The input stream
      * @return The encoding
@@ -150,7 +150,7 @@ public class XMLDocumentHelper {
         return inputSource;
     }
 
-    private static final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+    private final static XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
     public static String readTargetNamespace(URL doc, QName element, boolean rootOnly, String attribute)
         throws IOException, XMLStreamException {

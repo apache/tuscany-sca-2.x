@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public class QuestionMarkWSDLTestCase extends TestCase {
 
+    private static boolean newGenerator = true;
     private SCADomain domain;
 
     /**
@@ -54,10 +55,12 @@ public class QuestionMarkWSDLTestCase extends TestCase {
 
         Definition definition = wsdlReader.readWSDL("http://localhost:8085/ep1?wsdl");
         assertNotNull(definition);
-        Service service = definition.getService(new QName("http://itests.axis2.ws.binding.sca.tuscany.apache.org", "HelloWorld"));
-        Port port = service.getPort("HelloWorldSOAP11port_http");
+        Service service = definition.getService(new QName(
+                              "http://itests.axis2.ws.binding.sca.tuscany.apache.org" + (newGenerator ? "/" : ""),
+                              newGenerator ? "HelloWorldService" : "HelloWorld"));
+        Port port = service.getPort(newGenerator ? "HelloWorldPort" : "HelloWorldSOAP11port_http");
 
-        String endpoint = getEndpoint(port);
+        String endpoint = getSOAP11Endpoint(port);
         String ip = HttpUtils.getIpAddress();
         assertEquals("http://" + ip + ":8085/ep1", endpoint);
     }
@@ -72,10 +75,12 @@ public class QuestionMarkWSDLTestCase extends TestCase {
 
         Definition definition = wsdlReader.readWSDL("http://localhost:8085/ep2?wsdl");
         assertNotNull(definition);
-        Service service = definition.getService(new QName("http://itests.axis2.ws.binding.sca.tuscany.apache.org", "HelloWorld"));
-        Port port = service.getPort("HelloWorldSOAP11port_http");
+        Service service = definition.getService(new QName(
+                              "http://itests.axis2.ws.binding.sca.tuscany.apache.org" + (newGenerator ? "/" : ""),
+                              newGenerator ? "HelloWorldService" : "HelloWorld"));
+        Port port = service.getPort(newGenerator ? "HelloWorldPort" : "HelloWorldSOAP11port_http");
 
-        String endpoint = getEndpoint(port);
+        String endpoint = getSOAP11Endpoint(port);
         String ip = HttpUtils.getIpAddress();
         assertEquals("http://" + ip + ":8085/ep2", endpoint);
     }
@@ -90,20 +95,30 @@ public class QuestionMarkWSDLTestCase extends TestCase {
 
         Definition definition = wsdlReader.readWSDL("http://localhost:8085/ep3?wsdl");
         assertNotNull(definition);
-        Service service = definition.getService(new QName("http://itests.axis2.ws.binding.sca.tuscany.apache.org", "HelloWorld"));
-        Port port = service.getPort("HelloWorldSOAP12port_http");
+        Service service = definition.getService(new QName(
+                              "http://itests.axis2.ws.binding.sca.tuscany.apache.org" + (newGenerator ? "/" : ""),
+                              newGenerator ? "HelloWorldService" : "HelloWorld"));
+        Port port = service.getPort(newGenerator ? "HelloWorldPort" : "HelloWorldSOAP12port_http");
 
-        String endpoint = getEndpoint(port);
+        String endpoint = getSOAP12Endpoint(port);
         String ip = HttpUtils.getIpAddress();
         assertEquals("http://" + ip + ":8085/ep3", endpoint);
     }
 
-    protected String getEndpoint(Port port) {
+    protected String getSOAP11Endpoint(Port port) {
         List wsdlPortExtensions = port.getExtensibilityElements();
         for (final Object extension : wsdlPortExtensions) {
             if (extension instanceof SOAPAddress) {
                 return ((SOAPAddress) extension).getLocationURI();
-            } else if (extension instanceof SOAP12Address) {
+            }
+        }
+        throw new RuntimeException("no SOAPAddress");
+    }
+
+    protected String getSOAP12Endpoint(Port port) {
+        List wsdlPortExtensions = port.getExtensibilityElements();
+        for (final Object extension : wsdlPortExtensions) {
+            if (extension instanceof SOAP12Address) {
                 return ((SOAP12Address) extension).getLocationURI();
             }
         }

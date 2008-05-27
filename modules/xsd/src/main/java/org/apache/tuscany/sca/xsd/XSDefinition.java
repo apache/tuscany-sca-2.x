@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.interfacedef.wsdl;
+package org.apache.tuscany.sca.xsd;
 
 import java.net.URI;
 
@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
 /**
  * Represents an XML Schema definition.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 633545 $ $Date: 2008-03-04 16:52:24 +0000 (Tue, 04 Mar 2008) $
  */
 public interface XSDefinition extends Base {
     XmlSchemaCollection getSchemaCollection();

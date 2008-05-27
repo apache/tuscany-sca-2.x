@@ -42,5 +42,5 @@
     </sequence>
   </complexType>
 
-  <element name="SimpleTypeWithUnion" type="SimpleTypeWithUnionComplexType">
+  <element name="SimpleTypeWithUnion" type="SimpleTypeWithUnionComplexType"/>
 </schema>

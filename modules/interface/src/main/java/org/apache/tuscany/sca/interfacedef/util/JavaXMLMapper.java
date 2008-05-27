@@ -116,5 +116,22 @@ public final class JavaXMLMapper {
     public static QName getXMLType(Class javaType) {
         return JAVA2XML.get(javaType);
     }
+    
+    public static String getNamespace(Class<?> cls) {
+        Package pkg = cls.getPackage();
+        if (pkg == null) {
+            return "";
+        }
+        StringBuffer ns = new StringBuffer("http://");
+        String[] names = pkg.getName().split("\\.");
+        for (int i = names.length - 1; i >= 0; i--) {
+            ns.append(names[i]);
+            if (i != 0) {
+                ns.append('.');
+            }
+        }
+        ns.append('/');
+        return ns.toString();
+    }
 
 }

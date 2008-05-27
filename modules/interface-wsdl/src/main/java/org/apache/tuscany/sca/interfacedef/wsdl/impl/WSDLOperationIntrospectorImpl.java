@@ -45,9 +45,10 @@ import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLOperation;
-import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
+import org.apache.tuscany.sca.xsd.XSDefinition;
+import org.apache.tuscany.sca.xsd.XSDFactory;
+
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaObject;
@@ -66,7 +67,7 @@ public class WSDLOperationIntrospectorImpl {
     private static final Logger logger = Logger.getLogger(WSDLOperationIntrospectorImpl.class.getName());
     private static final QName ANY = new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "any");
 
-    private WSDLFactory wsdlFactory;
+    private XSDFactory xsdFactory;
     private ModelResolver resolver;
     private WSDLDefinition wsdlDefinition;
     private javax.wsdl.Operation operation;
@@ -83,13 +84,13 @@ public class WSDLOperationIntrospectorImpl {
      * @param dataBinding The default databinding
      * @param resolver The ModelResolver to use
      */
-    public WSDLOperationIntrospectorImpl(WSDLFactory wsdlFactory,
+    public WSDLOperationIntrospectorImpl(XSDFactory xsdFactory,
                                          javax.wsdl.Operation operation,
                                          WSDLDefinition wsdlDefinition,
                                          String dataBinding,
                                          ModelResolver resolver) {
         super();
-        this.wsdlFactory = wsdlFactory;
+        this.xsdFactory = xsdFactory;
         this.operation = operation;
         this.wsdlDefinition = wsdlDefinition;
         this.resolver = resolver;
@@ -232,7 +233,7 @@ public class WSDLOperationIntrospectorImpl {
 
         XmlSchemaElement element = wsdlDefinition.getXmlSchemaElement(elementName);
         if (element == null) {
-            XSDefinition definition = wsdlFactory.createXSDefinition();
+            XSDefinition definition = xsdFactory.createXSDefinition();
             definition.setUnresolved(true);
             definition.setNamespace(elementName.getNamespaceURI());
             definition = resolver.resolveModel(XSDefinition.class, definition);
@@ -246,7 +247,7 @@ public class WSDLOperationIntrospectorImpl {
     private XmlSchemaType getType(QName typeName) {
         XmlSchemaType type = wsdlDefinition.getXmlSchemaType(typeName);
         if (type == null) {
-            XSDefinition definition = wsdlFactory.createXSDefinition();
+            XSDefinition definition = xsdFactory.createXSDefinition();
             definition.setUnresolved(true);
             definition.setNamespace(typeName.getNamespaceURI());
             definition = resolver.resolveModel(XSDefinition.class, definition);

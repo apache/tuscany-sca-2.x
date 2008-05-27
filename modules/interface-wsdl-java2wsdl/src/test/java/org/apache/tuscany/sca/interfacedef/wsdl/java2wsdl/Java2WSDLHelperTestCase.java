@@ -27,6 +27,7 @@ import javax.wsdl.PortType;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.sca.contribution.DefaultModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.databinding.processor.DataBindingJavaInterfaceProcessor;
 import org.apache.tuscany.sca.databinding.DefaultDataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InvalidInterfaceException;
@@ -36,8 +37,11 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSFaultExceptionMapper;
 import org.apache.tuscany.sca.interfacedef.java.jaxws.JAXWSJavaInterfaceProcessor;
 import org.apache.tuscany.sca.interfacedef.wsdl.TestJavaInterface;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
+import org.apache.tuscany.sca.xsd.XSDFactory;
+import org.apache.tuscany.sca.xsd.xml.XSDModelResolver;
 import org.osoa.sca.annotations.Remotable;
 
 /**
@@ -64,8 +68,10 @@ public class Java2WSDLHelperTestCase extends TestCase {
         assertEquals("sayHello", operation.getName());
     }
 
-
     public void testCreateWSDLInterfaceContract() throws InvalidInterfaceException {
+        DefaultModelFactoryExtensionPoint modelFactories = new DefaultModelFactoryExtensionPoint();
+        WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
+        XSDFactory xsdFactory = modelFactories.getFactory(XSDFactory.class);
         DefaultJavaInterfaceFactory factory = new DefaultJavaInterfaceFactory();
         JavaInterfaceContract javaIC = factory.createJavaInterfaceContract();
         JavaInterface iface = factory.createJavaInterface(HelloWorld.class);
@@ -74,7 +80,7 @@ public class Java2WSDLHelperTestCase extends TestCase {
         new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper).visitInterface(iface);
         new DataBindingJavaInterfaceProcessor(dataBindings).visitInterface(iface);
         javaIC.setInterface(iface);
-        WSDLInterfaceContract wsdlIC = Java2WSDLHelper.createWSDLInterfaceContract(javaIC);
+        WSDLInterfaceContract wsdlIC = Java2WSDLHelper.createWSDLInterfaceContract(javaIC, new XSDModelResolver(null, null), dataBindings, wsdlFactory, xsdFactory);
         assertNotNull(wsdlIC);
         WSDLInterface wsdlInterface = (WSDLInterface)wsdlIC.getInterface();
         assertNotNull(wsdlInterface);
@@ -87,7 +93,7 @@ public class Java2WSDLHelperTestCase extends TestCase {
         new JAXWSJavaInterfaceProcessor(dataBindings, faultExceptionMapper).visitInterface(iface2);
         new DataBindingJavaInterfaceProcessor(dataBindings).visitInterface(iface2);
         javaIC2.setInterface(iface2);
-        WSDLInterfaceContract wsdlIC2 = Java2WSDLHelper.createWSDLInterfaceContract(javaIC2);
+        WSDLInterfaceContract wsdlIC2 = Java2WSDLHelper.createWSDLInterfaceContract(javaIC2, new XSDModelResolver(null, null), dataBindings, wsdlFactory, xsdFactory);
         assertNotNull(wsdlIC2);
     }
 

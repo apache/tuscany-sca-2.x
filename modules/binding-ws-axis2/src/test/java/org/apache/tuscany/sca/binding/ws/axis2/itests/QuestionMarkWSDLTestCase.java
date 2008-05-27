@@ -41,6 +41,7 @@ import org.apache.tuscany.sca.host.embedded.SCADomain;
  */
 public class QuestionMarkWSDLTestCase extends TestCase {
 
+    private static boolean newGenerator = true;
     private SCADomain domain;
 
     /**
@@ -71,8 +72,10 @@ public class QuestionMarkWSDLTestCase extends TestCase {
 
         Definition definition = wsdlReader.readWSDL("http://localhost:8085/foo/bar?wsdl");
         assertNotNull(definition);
-        Service service = definition.getService(new QName("http://itests.axis2.ws.binding.sca.tuscany.apache.org", "HelloWorld"));
-        Port port = service.getPort("HelloWorldSOAP11port_http");
+        Service service = definition.getService(new QName(
+                              "http://itests.axis2.ws.binding.sca.tuscany.apache.org" + (newGenerator ? "/" : ""),
+                              newGenerator ? "HelloWorldService" : "HelloWorld"));
+        Port port = service.getPort(newGenerator ? "HelloWorldPort" : "HelloWorldSOAP11port_http");
 
         String endpoint = getEndpoint(port);
         String ip = HttpUtils.getIpAddress();

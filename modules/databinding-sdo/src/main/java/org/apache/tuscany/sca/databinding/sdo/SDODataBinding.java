@@ -109,6 +109,11 @@ public class SDODataBinding extends BaseDataBinding {
     }
 
     @Override
+    public Class getXMLTypeHelperClass() {
+        return SDOTypeHelper.class;
+    }
+
+    @Override
     public Object copy(Object arg) {
         HelperContext context = HelperProvider.getDefaultContext();
         CopyHelper copyHelper = context.getCopyHelper();

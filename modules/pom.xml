@@ -92,6 +92,8 @@
                 <module>databinding-fastinfoset</module>
                 <module>databinding-xstream</module>
                 <module>data-engine-helper</module>
+                <module>definitions</module>
+                <module>definitions-xml</module>
                 <module>domain</module>
                 <module>domain-api</module>
                 <module>domain-impl</module>
@@ -159,8 +161,8 @@
                 <module>workspace</module>
                 <module>workspace-impl</module>
                 <module>workspace-xml</module>
-                <module>definitions</module>
-                <module>definitions-xml</module>
+                <module>xsd</module>
+                <module>xsd-xml</module>
             </modules>
         </profile>
 

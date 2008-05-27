@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.interfacedef.wsdl.xml;
+package org.apache.tuscany.sca.xsd.xml;
 
 import java.net.URI;
 import java.net.URL;
@@ -30,11 +30,11 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.xsd.XSDFactory;
+import org.apache.tuscany.sca.xsd.XSDefinition;
 
 /**
  * An ArtifactProcessor for XSD documents.
@@ -43,11 +43,11 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> {
 
-    private WSDLFactory factory;
+    private XSDFactory factory;
     private Monitor monitor;
 
     public XSDDocumentProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
-        this.factory = modelFactories.getFactory(WSDLFactory.class);
+        this.factory = modelFactories.getFactory(XSDFactory.class);
         this.monitor = monitor;
     }
     
@@ -58,19 +58,19 @@ public class XSDDocumentProcessor implements URLArtifactProcessor<XSDefinition> 
      * @param message
      * @param model
      */
-     private void error(String message, Object model, Exception ex) {
-    	 if (monitor != null) {
-    		 Problem problem = new ProblemImpl(this.getClass().getName(), "interface-wsdlxml-validation-messages", Severity.ERROR, model, message, ex);
-    	     monitor.problem(problem);
-    	 }        
-     }
+    private void error(String message, Object model, Exception ex) {
+        if (monitor != null) {
+            Problem problem = new ProblemImpl(this.getClass().getName(), "interface-wsdlxml-validation-messages", Severity.ERROR, model, message, ex);
+            monitor.problem(problem);
+        }        
+    }
 
     public XSDefinition read(URL contributionURL, URI artifactURI, URL artifactURL) throws ContributionReadException {
         try {
             return indexRead(artifactURL);
         } catch (Exception e) {
-        	ContributionReadException ce = new ContributionReadException(e);
-        	error("ContributionReadException", artifactURL, ce);
+            ContributionReadException ce = new ContributionReadException(e);
+            error("ContributionReadException", artifactURL, ce);
             throw ce;
         }
     }

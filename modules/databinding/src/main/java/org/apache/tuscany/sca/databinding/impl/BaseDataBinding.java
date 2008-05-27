@@ -121,6 +121,10 @@ public abstract class BaseDataBinding implements DataBinding {
         return new SimpleTypeMapperImpl();
     }
 
+    public Class getXMLTypeHelperClass() {
+        return JAXBTypeHelper.class;
+    }
+
     public String[] getAliases() {
         return aliases;
     }

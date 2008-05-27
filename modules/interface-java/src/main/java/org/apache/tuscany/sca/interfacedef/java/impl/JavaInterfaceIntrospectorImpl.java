@@ -46,6 +46,7 @@ import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceFactory;
 import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
+import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.osoa.sca.annotations.Conversational;
 import org.osoa.sca.annotations.EndsConversation;
@@ -106,7 +107,7 @@ public class JavaInterfaceIntrospectorImpl {
         }
         javaInterface.setCallbackClass(callbackClass);
 
-        String ns = JavaInterfaceUtil.getNamespace(clazz);
+        String ns = JavaXMLMapper.getNamespace(clazz);
         javaInterface.getOperations().addAll(getOperations(clazz, remotable, conversational, ns));
 
         for (JavaInterfaceVisitor extension : visitors) {

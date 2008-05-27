@@ -33,5 +33,5 @@
     </sequence>
   </complexType>
 
-  <element name="SimpleTypeWithList" type="SimpleTypeWithListComplexType">
+  <element name="SimpleTypeWithList" type="SimpleTypeWithListComplexType"/>
 </schema>

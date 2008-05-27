@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.host.http.ServletHostExtensionPoint;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -45,9 +46,10 @@ import org.osoa.sca.ServiceRuntimeException;
 
 public class Axis2BindingProviderFactory implements BindingProviderFactory<WebServiceBinding> {
 
-    private MessageFactory messageFactory;
+    private ModelFactoryExtensionPoint modelFactories;
     private ServletHost servletHost;
     private Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames = null;
+    private DataBindingExtensionPoint dataBindings;
 
     public Axis2BindingProviderFactory(ExtensionPointRegistry extensionPoints) {
         ServletHostExtensionPoint servletHosts = extensionPoints.getExtensionPoint(ServletHostExtensionPoint.class);
@@ -57,17 +59,25 @@ public class Axis2BindingProviderFactory implements BindingProviderFactory<WebSe
         } else {
             this.servletHost = hosts.get(0);
         }
-        ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
-        this.messageFactory = modelFactories.getFactory(MessageFactory.class); 
+        modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         policyHandlerClassnames = PolicyHandlerDefinitionsLoader.loadPolicyHandlerClassnames();
+        dataBindings = extensionPoints.getExtensionPoint(DataBindingExtensionPoint.class);
     }
 
-    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component, RuntimeComponentReference reference, WebServiceBinding binding) {
-        return new Axis2ReferenceBindingProvider(component, reference, binding, servletHost, messageFactory, policyHandlerClassnames);
+    public ReferenceBindingProvider createReferenceBindingProvider(RuntimeComponent component,
+                                                                   RuntimeComponentReference reference,
+                                                                   WebServiceBinding binding) {
+        return new Axis2ReferenceBindingProvider(component, reference, binding,
+                                                 servletHost, modelFactories,
+                                                 policyHandlerClassnames, dataBindings);
     }
 
-    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component, RuntimeComponentService service, WebServiceBinding binding) {
-        return new Axis2ServiceBindingProvider(component, service, binding, servletHost, messageFactory, policyHandlerClassnames);
+    public ServiceBindingProvider createServiceBindingProvider(RuntimeComponent component,
+                                                               RuntimeComponentService service,
+                                                               WebServiceBinding binding) {
+        return new Axis2ServiceBindingProvider(component, service, binding,
+                                               servletHost, modelFactories,
+                                               policyHandlerClassnames, dataBindings);
     }
     
     public Class<WebServiceBinding> getModelType() {
