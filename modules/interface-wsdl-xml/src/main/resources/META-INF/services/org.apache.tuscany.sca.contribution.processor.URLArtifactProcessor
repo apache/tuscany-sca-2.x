@@ -17,4 +17,3 @@
 
 # Implementation class for the artifact processor extension
 org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLDocumentProcessor;type=.wsdl,model=org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition
-org.apache.tuscany.sca.interfacedef.wsdl.xml.XSDDocumentProcessor;type=.xsd,model=org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition

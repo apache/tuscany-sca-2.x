@@ -60,6 +60,7 @@ import org.apache.tuscany.sca.contribution.ContributionFactory;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.StAXArtifactProcessor;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ResolverExtension;
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
@@ -911,6 +912,20 @@ public class CompositeProcessor extends BaseAssemblyProcessor implements StAXArt
                                                            + component.getName() + "' due to " + e.getMessage(), e);
                 }
             
+            }
+
+            //add model resolver to component
+            if (component instanceof ResolverExtension) {
+                ((ResolverExtension)component).setModelResolver(resolver);
+            }
+        }
+
+        // Add model resolver to promoted components
+        for (Service service : composite.getServices()) {
+            CompositeService compositeService = (CompositeService)service;
+            Component promotedComponent = compositeService.getPromotedComponent();
+            if (promotedComponent instanceof ResolverExtension) {
+                ((ResolverExtension)promotedComponent).setModelResolver(resolver);
             }
         }
     }

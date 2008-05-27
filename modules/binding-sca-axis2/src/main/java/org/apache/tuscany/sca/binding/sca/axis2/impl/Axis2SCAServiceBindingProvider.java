@@ -26,12 +26,17 @@ import java.util.logging.Logger;
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.assembly.SCABinding;
 import org.apache.tuscany.sca.binding.sca.DistributedSCABinding;
-import org.apache.tuscany.sca.binding.ws.DefaultWebServiceBindingFactory;
+import org.apache.tuscany.sca.binding.ws.WebServiceBindingFactory;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
 import org.apache.tuscany.sca.binding.ws.axis2.Axis2ServiceProvider;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ResolverExtension;
+import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.host.http.ServletHost;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.java2wsdl.Java2WSDLHelper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.node.spi.NodeFactory;
@@ -39,6 +44,7 @@ import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.xsd.XSDFactory;
 
 /**
  * The service binding provider for the remote sca binding implementation. Relies on the 
@@ -58,22 +64,29 @@ public class Axis2SCAServiceBindingProvider implements ServiceBindingProvider {
     private boolean started = false;
 
 
-    public Axis2SCAServiceBindingProvider(NodeFactory nodeFactory,
-    		                          RuntimeComponent component,
+    public Axis2SCAServiceBindingProvider(RuntimeComponent component,
                                           RuntimeComponentService service,
                                           DistributedSCABinding binding,
                                           ServletHost servletHost,
-                                          MessageFactory messageFactory,
-                                          Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames) {
-     	this.nodeFactory = nodeFactory;
+                                          ModelFactoryExtensionPoint modelFactories,
+                                          Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames,
+                                          DataBindingExtensionPoint dataBindings) {
+
+        MessageFactory messageFactory = modelFactories.getFactory(MessageFactory.class); 
+        WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
+        XSDFactory xsdFactory = modelFactories.getFactory(XSDFactory.class);
+
+        this.nodeFactory = modelFactories.getFactory(NodeFactory.class);
         this.binding = binding.getSCABinding();
-        //FIXME fix that hack, shouldn't create a new instance of the binding factory here 
-        wsBinding = (new DefaultWebServiceBindingFactory()).createWebServiceBinding();
+        wsBinding = modelFactories.getFactory(WebServiceBindingFactory.class).createWebServiceBinding();
         
         // Turn the java interface contract into a WSDL interface contract
         InterfaceContract contract = service.getInterfaceContract();
         if ((contract instanceof JavaInterfaceContract)) {
-            contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract);
+            ModelResolver resolver = component instanceof ResolverExtension ?
+                                         ((ResolverExtension)component).getModelResolver() : null;
+            contract = Java2WSDLHelper.createWSDLInterfaceContract(
+                           (JavaInterfaceContract)contract, resolver, dataBindings, wsdlFactory, xsdFactory);
         }
         
         // Set to use the Axiom data binding

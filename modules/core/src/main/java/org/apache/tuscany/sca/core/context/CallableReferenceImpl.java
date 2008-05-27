@@ -359,7 +359,11 @@ public class CallableReferenceImpl<B> implements CallableReference<B>, Externali
                         javaInterface.setJavaClass(classLoader.loadClass(javaInterface.getName()));
                         currentActivator.getJavaInterfaceFactory().createJavaInterface(javaInterface,
                                                                                        javaInterface.getJavaClass());
-                    }
+                        //FIXME: If the interface needs XSDs to be loaded (e.g., for static SDO),
+                        // this needs to be done here.  We usually search for XSDs in the current
+                        // contribution at resolve time.  Is it possible to locate the current
+                        // contribution at runtime?
+                        }
                     this.businessInterface = (Class<B>)javaInterface.getJavaClass();
                 }
                 this.proxyFactory = currentActivator.getProxyFactory();

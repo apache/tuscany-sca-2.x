@@ -16,4 +16,3 @@
 # under the License. 
 
 org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLModelResolver;model=org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition
-org.apache.tuscany.sca.interfacedef.wsdl.xml.XSDModelResolver;model=org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition

@@ -27,8 +27,8 @@ import javax.wsdl.PortType;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
-import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
+import org.apache.tuscany.sca.xsd.XSDFactory;
 
 /**
  * Introspector for creating WSDLInterface definitions from WSDL PortTypes.
@@ -37,10 +37,10 @@ import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
  */
 public class WSDLInterfaceIntrospectorImpl {
     
-    private WSDLFactory wsdlFactory;
+    private XSDFactory xsdFactory;
     
-    public WSDLInterfaceIntrospectorImpl(WSDLFactory wsdlFactory) {
-        this.wsdlFactory = wsdlFactory;
+    public WSDLInterfaceIntrospectorImpl(XSDFactory xsdFactory) {
+        this.xsdFactory = xsdFactory;
     }
 
     // FIXME: Do we want to deal with document-literal wrapped style based on the JAX-WS Specification?
@@ -48,8 +48,7 @@ public class WSDLInterfaceIntrospectorImpl {
         List<Operation> operations = new ArrayList<Operation>();
         for (Object o : portType.getOperations()) {
             javax.wsdl.Operation wsdlOp = (javax.wsdl.Operation)o;
-            WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(wsdlFactory, wsdlOp, wsdlDefinition, null, resolver);
-            operations.add(op.getOperation());
+            operations.add(getOperation(wsdlOp, wsdlDefinition, resolver, xsdFactory));
         }
         return operations;
     }
@@ -61,4 +60,12 @@ public class WSDLInterfaceIntrospectorImpl {
         wsdlInterface.setConversational(false);
     }
 
+    public static Operation getOperation(javax.wsdl.Operation wsdlOp,
+                                         WSDLDefinition wsdlDefinition,
+                                         ModelResolver resolver,
+                                         XSDFactory xsdFactory) throws InvalidWSDLException {
+        WSDLOperationIntrospectorImpl op = new WSDLOperationIntrospectorImpl(xsdFactory, wsdlOp, wsdlDefinition, null, resolver);
+        return op.getOperation();
+    }
+    
 }

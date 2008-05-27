@@ -258,6 +258,11 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
                                 processorClass.getConstructor(ModelFactoryExtensionPoint.class, Monitor.class);
                             processor = constructor.newInstance(modelFactories, monitor);
                         } catch (NoSuchMethodException e) {
+                          try {
+                              Constructor<StAXArtifactProcessor> constructor =
+                                  processorClass.getConstructor(ExtensionPointRegistry.class, Monitor.class);
+                              processor = constructor.newInstance(extensionPoints, monitor);
+                          } catch (NoSuchMethodException e1) {
                             try {
                                 Constructor<StAXArtifactProcessor> constructor =
                                     processorClass.getConstructor(ModelFactoryExtensionPoint.class, StAXArtifactProcessor.class, Monitor.class);
@@ -273,6 +278,11 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
                                             processorClass.getConstructor(ModelFactoryExtensionPoint.class);
                                         processor = constructor.newInstance(modelFactories);
                                     } catch (NoSuchMethodException e4) {
+                                      try {
+                                          Constructor<StAXArtifactProcessor> constructor =
+                                              processorClass.getConstructor(ExtensionPointRegistry.class);
+                                          processor = constructor.newInstance(extensionPoints);
+                                      } catch (NoSuchMethodException e4a) {
                                         try {
                                             Constructor<StAXArtifactProcessor> constructor =
                                                 processorClass.getConstructor(ModelFactoryExtensionPoint.class, StAXArtifactProcessor.class);
@@ -282,9 +292,11 @@ public class DefaultStAXArtifactProcessorExtensionPoint extends
                                                 processorClass.getConstructor(ExtensionPointRegistry.class, StAXArtifactProcessor.class);
                                             processor = constructor.newInstance(extensionPoints, extensionProcessor);
                                         }
+                                      }
                                     }
                                 }
                             }
+                          }
                         }
                     } catch (Exception e) {
                         throw new IllegalStateException(e);

@@ -23,10 +23,15 @@ import java.util.Map;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ResolverExtension;
 import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.java2wsdl.Java2WSDLHelper;
 import org.apache.tuscany.sca.invocation.Invoker;
 import org.apache.tuscany.sca.invocation.MessageFactory;
@@ -34,6 +39,7 @@ import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ReferenceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentReference;
+import org.apache.tuscany.sca.xsd.XSDFactory;
 
 public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
 
@@ -44,16 +50,28 @@ public class Axis2ReferenceBindingProvider implements ReferenceBindingProvider {
                                          RuntimeComponentReference reference,
                                          WebServiceBinding wsBinding,
                                          ServletHost servletHost,
-                                         MessageFactory messageFactory,
-                                         Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames) {
+                                         ModelFactoryExtensionPoint modelFactories,
+                                         Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames,
+                                         DataBindingExtensionPoint dataBindings) {
 
+        MessageFactory messageFactory = modelFactories.getFactory(MessageFactory.class); 
+        WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
+        XSDFactory xsdFactory = modelFactories.getFactory(XSDFactory.class);
         this.wsBinding = wsBinding;
 
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         if (contract == null) {
             contract = reference.getInterfaceContract().makeUnidirectional(false);
-            if ((contract instanceof JavaInterfaceContract)) {
-                contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract, Axis2ServiceBindingProvider.requiresSOAP12(wsBinding));
+            if (contract instanceof JavaInterfaceContract) {
+                ModelResolver resolver = component instanceof ResolverExtension ?
+                                             ((ResolverExtension)component).getModelResolver() : null;
+                contract = Java2WSDLHelper.createWSDLInterfaceContract(
+                                   (JavaInterfaceContract)contract,
+                                   Axis2ServiceBindingProvider.requiresSOAP12(wsBinding),
+                                   resolver,
+                                   dataBindings,
+                                   wsdlFactory,
+                                   xsdFactory);
             }
             wsBinding.setBindingInterfaceContract(contract);
         }

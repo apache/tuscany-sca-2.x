@@ -55,22 +55,24 @@ import javax.wsdl.xml.WSDLWriter;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterface;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
-import org.apache.tuscany.sca.interfacedef.wsdl.DefaultWSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterfaceContract;
-import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.impl.InvalidWSDLException;
-import org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLOperationIntrospectorImpl;
+import org.apache.tuscany.sca.interfacedef.wsdl.impl.WSDLInterfaceIntrospectorImpl;
 import org.apache.tuscany.sca.interfacedef.wsdl.interface2wsdl.Interface2WSDLGenerator;
 import org.apache.tuscany.sca.interfacedef.wsdl.xml.WSDLModelResolver;
-import org.apache.tuscany.sca.interfacedef.wsdl.xml.XMLDocumentHelper;
+import org.apache.tuscany.sca.xsd.XSDefinition;
+import org.apache.tuscany.sca.xsd.XSDFactory;
+import org.apache.tuscany.sca.xsd.xml.XMLDocumentHelper;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.java2wsdl.Java2WSDLBuilder;
@@ -89,7 +91,7 @@ import org.xml.sax.InputSource;
  */
 public class Java2WSDLHelper {
     // the following 3 switches are temporary for debugging
-    public static boolean newGenerator;  // external code sets this to force new generator
+    public static boolean newGenerator = true;  // external code sets this to force new generator
     public static boolean oldGenerator;  // external code sets this to force old generator
     public static boolean printWSDL;     // external code sets this to print generated WSDL
 
@@ -151,16 +153,23 @@ public class Java2WSDLHelper {
     /**
      * Create a WSDLInterfaceContract from a JavaInterfaceContract
      */
-    public static WSDLInterfaceContract createWSDLInterfaceContract(JavaInterfaceContract contract) {
-        return createWSDLInterfaceContract(contract, false);
+    public static WSDLInterfaceContract createWSDLInterfaceContract(JavaInterfaceContract contract,
+                                                                    ModelResolver resolver,
+                                                                    DataBindingExtensionPoint dataBindings,
+                                                                    WSDLFactory wsdlFactory,
+                                                                    XSDFactory xsdFactory) {
+        return createWSDLInterfaceContract(contract, false, resolver, dataBindings, wsdlFactory, xsdFactory);
     }
     
     /**
      * Create a WSDLInterfaceContract from a JavaInterfaceContract
      */
     public static WSDLInterfaceContract createWSDLInterfaceContract(JavaInterfaceContract contract,
-                                                                    boolean requiresSOAP12) {
-        final DefaultWSDLFactory wsdlFactory = new DefaultWSDLFactory();
+                                                                    boolean requiresSOAP12,
+                                                                    ModelResolver resolver,
+                                                                    DataBindingExtensionPoint dataBindings,
+                                                                    WSDLFactory wsdlFactory,
+                                                                    XSDFactory xsdFactory) {
 
         WSDLInterfaceContract wsdlContract = wsdlFactory.createWSDLInterfaceContract();
         WSDLInterface wsdlInterface = wsdlFactory.createWSDLInterface();
@@ -172,12 +181,15 @@ public class Java2WSDLHelper {
         //FIXME: When Interface2WSDLGenerator supports all databindings, change this
         // code to use it in all cases instead of calling createDefinition()
         Definition def = null;
+        boolean usedNewGenerator = false;
         if (newGenerator || (!oldGenerator && useNewGenerator(iface))) {
+            usedNewGenerator = true;
             /*
             System.out.println("$$ new gen: " + iface.getName());
             */
             try {
-                Interface2WSDLGenerator wsdlGenerator = new Interface2WSDLGenerator(requiresSOAP12);
+                Interface2WSDLGenerator wsdlGenerator =
+                    new Interface2WSDLGenerator(requiresSOAP12, resolver, dataBindings, xsdFactory);
                 def = wsdlGenerator.generate(iface, wsdlDefinition);
             } catch (WSDLException e) {
                 throw new RuntimeException(e);
@@ -203,6 +215,7 @@ public class Java2WSDLHelper {
         // for debugging
         if (printWSDL) {
             try {
+                System.out.println("Generated WSDL for Java interface " + iface.getName() + " class " + iface.getJavaClass().getName());
                 WSDLWriter writer =  javax.wsdl.factory.WSDLFactory.newInstance().newWSDLWriter();
                 writer.writeWSDL(def, System.out);
             } catch (WSDLException e) {
@@ -219,26 +232,24 @@ public class Java2WSDLHelper {
         PortType portType = (PortType)def.getAllPortTypes().values().iterator().next();
         wsdlInterface.setPortType(portType);
 
-        //FIXME: Should Interface2WSDLGenerator create an XmlSchemaCollection so that
-        // there's no need to call readInlineSchemas here?
-        //
-        // Allow privileged access to read properties. Requires PropertiesPermission read in
-        // security policy.
-        final Definition fdef = def;
-        AccessController.doPrivileged(new PrivilegedAction<Object>() {
-            public Object run() {
-                readInlineSchemas(wsdlFactory, wsdlDefinition, fdef, new XmlSchemaCollection());
-                return null;
-            }
-        });
+        if (!usedNewGenerator) {
+            // Allow privileged access to read properties. Requires PropertiesPermission read in
+            // security policy.
+            final XSDFactory finalFactory = xsdFactory;
+            final Definition fdef = def;
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                public Object run() {
+                    readInlineSchemas(finalFactory, wsdlDefinition, fdef, new XmlSchemaCollection());
+                    return null;
+                }
+            });
+        }
 
         try {
             for (Operation op : iface.getOperations()) {
                 javax.wsdl.Operation wsdlOp = portType.getOperation(op.getName(), null, null);
-                WSDLOperationIntrospectorImpl opx =
-                    new WSDLOperationIntrospectorImpl(wsdlFactory, wsdlOp, wsdlDefinition, null, null);
-                
-                wsdlInterface.getOperations().add(opx.getOperation());
+                wsdlInterface.getOperations().add(WSDLInterfaceIntrospectorImpl.getOperation(
+                                                      wsdlOp, wsdlDefinition, resolver, xsdFactory));
 
                 /*
                 Operation clonedOp = (Operation)op.clone();
@@ -302,7 +313,7 @@ public class Java2WSDLHelper {
      * @param definition
      * @param schemaCollection
      */
-    private static void readInlineSchemas(WSDLFactory wsdlFactory,
+    private static void readInlineSchemas(XSDFactory xsdFactory,
                                           WSDLDefinition wsdlDefinition,
                                           Definition definition,
                                           XmlSchemaCollection schemaCollection) {
@@ -321,7 +332,7 @@ public class Java2WSDLHelper {
                 }
                 if (element != null) {
                     Document doc = promote(element);
-                    XSDefinition xsDefinition = wsdlFactory.createXSDefinition();
+                    XSDefinition xsDefinition = xsdFactory.createXSDefinition();
                     xsDefinition.setUnresolved(true);
                     xsDefinition.setNamespace(element.getAttribute("targetNamespace"));
                     xsDefinition.setDocument(doc);
@@ -338,7 +349,7 @@ public class Java2WSDLHelper {
                 javax.wsdl.Import anImport = (javax.wsdl.Import)i;
                 // Read inline schemas 
                 if (anImport.getDefinition() != null) {
-                    readInlineSchemas(wsdlFactory, wsdlDefinition, anImport.getDefinition(), schemaCollection);
+                    readInlineSchemas(xsdFactory, wsdlDefinition, anImport.getDefinition(), schemaCollection);
                 }
             }
         }

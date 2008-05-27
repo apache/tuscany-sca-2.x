@@ -32,6 +32,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.contribution.resolver.ModelResolverExtensionPoint;
 import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
+import org.apache.tuscany.sca.xsd.XSDFactory;
 
 /**
  * Test case for WSDLOperation.
@@ -42,6 +43,7 @@ public abstract class AbstractWSDLTestCase extends TestCase {
     protected URLArtifactProcessor<Object> documentProcessor;
     protected ModelResolver resolver;
     protected WSDLFactory wsdlFactory;
+    protected XSDFactory xsdFactory;
 
     /**
      * @see junit.framework.TestCase#setUp()
@@ -51,6 +53,7 @@ public abstract class AbstractWSDLTestCase extends TestCase {
         ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
+        xsdFactory = modelFactories.getFactory(XSDFactory.class);
         
         ContributionFactory contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         Contribution contribution = contributionFactory.createContribution();

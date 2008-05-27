@@ -41,10 +41,11 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.Problem.Severity;
+import org.apache.tuscany.sca.xsd.XSDefinition;
+import org.apache.tuscany.sca.xsd.XSDFactory;
 
 /**
  * An ArtifactProcessor for WSDL documents.
@@ -60,10 +61,12 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
     private static final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
     private WSDLFactory factory;
+    private XSDFactory xsdFactory;
     private Monitor monitor;
 
     public WSDLDocumentProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.factory = modelFactories.getFactory(WSDLFactory.class);
+        this.xsdFactory = modelFactories.getFactory(XSDFactory.class);
         this.monitor = monitor;
     }
     
@@ -187,7 +190,7 @@ public class WSDLDocumentProcessor implements URLArtifactProcessor<WSDLDefinitio
                     }
                     if (XSD.equals(reader.getName())) {
                         String tns = reader.getAttributeValue(null, "targetNamespace");
-                        XSDefinition xsd = factory.createXSDefinition();
+                        XSDefinition xsd = xsdFactory.createXSDefinition();
                         xsd.setUnresolved(true);
                         xsd.setNamespace(tns);
                         xsd.setLocation(URI.create(doc.toURI() + "#" + index));

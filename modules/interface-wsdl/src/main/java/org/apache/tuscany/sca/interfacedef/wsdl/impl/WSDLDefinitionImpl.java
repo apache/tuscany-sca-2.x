@@ -19,7 +19,7 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.impl;
 
-import static org.apache.tuscany.sca.interfacedef.wsdl.impl.XSDefinitionImpl.getXmlSchemaObject;
+import static org.apache.tuscany.sca.xsd.impl.XSDefinitionImpl.getXmlSchemaObject;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLObject;
-import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
+import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaElement;

@@ -17,16 +17,14 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.interfacedef.wsdl.impl;
+package org.apache.tuscany.sca.xsd.impl;
 
 import java.net.URI;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Iterator;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
+import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaElement;
@@ -39,26 +37,17 @@ import org.w3c.dom.Document;
 /**
  * Represents a XML schema definition.
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 582399 $ $Date: 2007-10-05 22:28:30 +0100 (Fri, 05 Oct 2007) $
  */
 public class XSDefinitionImpl implements XSDefinition {
-    // private XmlSchemaCollection schemaCollection = new XmlSchemaCollection();
-    // Allow privileged access to read system property. Requires PropertyPermission in security
-    // policy.
-    private XmlSchemaCollection schemaCollection =
-        AccessController.doPrivileged(new PrivilegedAction<XmlSchemaCollection>() {
-            public XmlSchemaCollection run() {
-                return new XmlSchemaCollection();
-            }
-        });
-
+    private XmlSchemaCollection schemaCollection = new XmlSchemaCollection();
     private XmlSchema schema;
     private String namespace;
     private URI location;
     private Document document;
     private boolean unresolved;
 
-    protected XSDefinitionImpl() {
+    public XSDefinitionImpl() {
     }
 
     public XmlSchema getSchema() {

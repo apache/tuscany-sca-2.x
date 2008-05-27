@@ -91,4 +91,11 @@ public interface DataBinding {
      * @return The databinding-specific simple type mapper
      */
     SimpleTypeMapper getSimpleTypeMapper();
+    
+    /**
+     * Get the XML type helper for Java types
+     * @return The databinding-specific XML type helper class
+     */
+    Class getXMLTypeHelperClass();
+
 }

@@ -25,10 +25,15 @@ import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.sca.binding.ws.WebServiceBinding;
+import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.contribution.resolver.ResolverExtension;
 import org.apache.tuscany.sca.host.http.ServletHost;
+import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.interfacedef.InterfaceContract;
 import org.apache.tuscany.sca.interfacedef.Operation;
 import org.apache.tuscany.sca.interfacedef.java.JavaInterfaceContract;
+import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
 import org.apache.tuscany.sca.interfacedef.wsdl.java2wsdl.Java2WSDLHelper;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.policy.Intent;
@@ -37,6 +42,7 @@ import org.apache.tuscany.sca.policy.util.PolicyHandlerTuple;
 import org.apache.tuscany.sca.provider.ServiceBindingProvider;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 import org.apache.tuscany.sca.runtime.RuntimeComponentService;
+import org.apache.tuscany.sca.xsd.XSDFactory;
 
 public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
 
@@ -47,16 +53,28 @@ public class Axis2ServiceBindingProvider implements ServiceBindingProvider {
                                        RuntimeComponentService service,
                                        WebServiceBinding wsBinding,
                                        ServletHost servletHost,
-                                       MessageFactory messageFactory,
-                                       Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames) {
+                                       ModelFactoryExtensionPoint modelFactories,
+                                       Map<ClassLoader, List<PolicyHandlerTuple>> policyHandlerClassnames,
+                                       DataBindingExtensionPoint dataBindings) {
 
+        MessageFactory messageFactory = modelFactories.getFactory(MessageFactory.class); 
+        WSDLFactory wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
+        XSDFactory xsdFactory = modelFactories.getFactory(XSDFactory.class);
         this.wsBinding = wsBinding;
 
         InterfaceContract contract = wsBinding.getBindingInterfaceContract();
         if (contract == null) {
             contract = service.getInterfaceContract().makeUnidirectional(false);
-            if ((contract instanceof JavaInterfaceContract)) {
-                contract = Java2WSDLHelper.createWSDLInterfaceContract((JavaInterfaceContract)contract, requiresSOAP12(wsBinding));
+            if (contract instanceof JavaInterfaceContract) {
+                ModelResolver resolver = component instanceof ResolverExtension ?
+                                             ((ResolverExtension)component).getModelResolver() : null;
+                contract = Java2WSDLHelper.createWSDLInterfaceContract(
+                                   (JavaInterfaceContract)contract,
+                                   requiresSOAP12(wsBinding),
+                                   resolver,
+                                   dataBindings,
+                                   wsdlFactory,
+                                   xsdFactory);
             } else {
                 try {
                     //TUSCANY-2316 Cloning the Interface Contract to avoid overriding data biding information 

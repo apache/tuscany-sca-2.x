@@ -28,6 +28,7 @@ import javax.wsdl.WSDLElement;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.assembly.Base;
+import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaType;
 

@@ -18,11 +18,13 @@
  */
 package bigbank.account.services.accountdata;
 
+import javax.jws.WebService;
 import org.osoa.sca.annotations.AllowsPassByReference;
 import org.osoa.sca.annotations.Remotable;
 
 @Remotable
 @AllowsPassByReference
+@WebService(targetNamespace="http://www.bigbank.com/account")
 public interface AccountDataService {
 
     /**

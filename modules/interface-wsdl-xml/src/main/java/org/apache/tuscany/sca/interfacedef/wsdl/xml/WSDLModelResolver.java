@@ -55,7 +55,10 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionRuntimeException;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLFactory;
-import org.apache.tuscany.sca.interfacedef.wsdl.XSDefinition;
+import org.apache.tuscany.sca.xsd.XSDefinition;
+import org.apache.tuscany.sca.xsd.XSDFactory;
+import org.apache.tuscany.sca.xsd.xml.XMLDocumentHelper;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -98,6 +101,7 @@ public class WSDLModelResolver implements ModelResolver {
     private WSDLFactory wsdlFactory;
     private javax.wsdl.factory.WSDLFactory wsdl4jFactory;
     private ContributionFactory contributionFactory;
+    private XSDFactory xsdFactory;
 
     public WSDLModelResolver(Contribution contribution, ModelFactoryExtensionPoint modelFactories) {
         this.contribution = contribution;
@@ -105,6 +109,7 @@ public class WSDLModelResolver implements ModelResolver {
         this.wsdlFactory = modelFactories.getFactory(WSDLFactory.class);
         this.wsdl4jFactory = modelFactories.getFactory(javax.wsdl.factory.WSDLFactory.class);
         this.contributionFactory = modelFactories.getFactory(ContributionFactory.class);
+        this.xsdFactory = modelFactories.getFactory(XSDFactory.class);
 
         wsdlExtensionRegistry = this.wsdl4jFactory.newPopulatedExtensionRegistry();
         // REVIEW: [rfeng] Disable the schema extension for WSDL4J to avoid aggressive loading 
@@ -391,7 +396,7 @@ public class WSDLModelResolver implements ModelResolver {
                 }
                 if (element != null) {
                     Document doc = promote(element);
-                    XSDefinition xsDefinition = wsdlFactory.createXSDefinition();
+                    XSDefinition xsDefinition = xsdFactory.createXSDefinition();
                     xsDefinition.setUnresolved(true);
                     xsDefinition.setNamespace(element.getAttribute("targetNamespace"));
                     xsDefinition.setDocument(doc);

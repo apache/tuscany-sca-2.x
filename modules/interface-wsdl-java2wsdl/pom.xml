@@ -52,6 +52,16 @@
         </dependency>        
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-xsd</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-xsd-xml</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-databinding</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
         </dependency>
