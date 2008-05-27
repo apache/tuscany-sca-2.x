@@ -49,6 +49,11 @@ import org.apache.ode.store.ProcessStoreImpl;
 import org.apache.ode.utils.GUID;
 import org.apache.tuscany.sca.runtime.RuntimeComponent;
 
+//-------------- Added by Mike Edwards 16/05/2008
+import org.apache.ode.bpel.iapi.Endpoint;
+import org.apache.tuscany.sca.implementation.bpel.BPELImplementation;
+//-------------- End of Mike Edwards additions
+
 /**
  * Embedded ODE process server
  * 
@@ -170,26 +175,14 @@ public class EmbeddedODEServer {
                     ProcessConf conf = (ProcessConf) store.getProcessConfiguration(event.pid);
                     // Test processes always run with in-mem DAOs
                     // conf.setTransient(true);  //FIXME: what should we use for ProcessConfImpl
-                    _bpelServer.register(conf);
+                    //_bpelServer.register(conf);
                     
-                    //--------------- Added by Mike Edwards for test purposes 16/05/2008
-                    // Get the lists of endpoints...
-                    //System.out.println( "Process: " + conf.getProcessId().toString() );
-                    //Map<String, Endpoint> provideEndpoints = conf.getProvideEndpoints();
-                    //for( Endpoint endpoint : provideEndpoints.values() ) {
-                    //	System.out.println("Provide endpoints: " + endpoint.toString() );
-                    //} // end for
-                    //Map<String, Endpoint> invokeEndpoints = conf.getInvokeEndpoints();
-                    //for( Endpoint endpoint : invokeEndpoints.values() ) {
-                    //	System.out.println("Invoke endpoints: " + endpoint.toString() );
-                    //} // end for
-                    //--------------- End of additions by Mike Edwards
-                }
-            }
+                } // end if
+            } // end onProcessStoreEvent
         });
 
         _bpelServer.init();
-    }
+    } // end InitBpelServer
 
     public void stop() throws ODEShutdownException {
         if(_bpelServer != null) {
@@ -275,19 +268,23 @@ public class EmbeddedODEServer {
     	return _executorService;
     }
 
-    public void deploy(ODEDeployment d) {
-        /*Collection<QName> procs;*/
-
+    // Updated by Mike Edwards, 23/05/2008
+    public void deploy(ODEDeployment d, BPELImplementation implementation) {
+    	
         try {
-            /*procs =*/ store.deploy(d.deployDir);
-
-            // _deployed.add(d);
+        	// old code
+        	store.deploy(d.deployDir);
+        	//System.out.println("Completed calling old Process deployment code...");
+        	
+        	TuscanyProcessConfImpl processConf = new TuscanyProcessConfImpl( implementation );
+        	_bpelServer.register(processConf);
+        	//System.out.println("Completed calling new Process deployment code...");
         } catch (Exception ex) {
             String errMsg = ">>> DEPLOY: Unexpected exception: " + ex.getMessage();
             __log.debug(errMsg, ex);
             throw new ODEDeploymentException(errMsg,ex);
-        }
-    }
+        } // end try
+    } // end deploy
 
     public void undeploy(ODEDeployment d) {
         //TODO
