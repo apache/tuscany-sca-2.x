@@ -51,6 +51,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class WidgetImplementationProcessor implements StAXArtifactProcessor<WidgetImplementation> {
     private static final QName IMPLEMENTATION_WIDGET = new QName(Constants.SCA10_TUSCANY_NS, "implementation.widget");
+    //private static final String MSG_LOCATION_MISSING = "Reading implementation.widget - location attribute missing";
     
     private AssemblyFactory assemblyFactory;
     private ContributionFactory contributionFactory;
@@ -77,6 +78,20 @@ public class WidgetImplementationProcessor implements StAXArtifactProcessor<Widg
 	        monitor.problem(problem);
     	 }
     }
+            
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem = new ProblemImpl(this.getClass().getName(), "impl-widget-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
+        }
+    }    
 
     public QName getArtifactType() {
         // Returns the QName of the XML element processed by this processor
@@ -89,24 +104,31 @@ public class WidgetImplementationProcessor implements StAXArtifactProcessor<Widg
     }
 
     public WidgetImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        
+
         // Read an <implementation.widget> element
+
+        // Create and initialize the resource implementation model
+        WidgetImplementation implementation = null;
 
         // Read the location attribute specifying the location of the resources
         String location = reader.getAttributeValue(null, "location");
 
-        // Create an initialize the resource implementation model
-        WidgetImplementation implementation = implementationFactory.createWidgetImplementation();
-        implementation.setLocation(location);
-        implementation.setUnresolved(true);
-        
+        if (location != null) {                
+            implementation = implementationFactory.createWidgetImplementation();
+            implementation.setLocation(location);
+            implementation.setUnresolved(true);
+        } else {
+            error("LocationAttributeMissing", reader);
+            //throw new ContributionReadException(MSG_LOCATION_MISSING);
+        }
+
         // Skip to end element
         while (reader.hasNext()) {
             if (reader.next() == END_ELEMENT && IMPLEMENTATION_WIDGET.equals(reader.getName())) {
                 break;
             }
         }
-        
+
         return implementation;
     }
 
@@ -128,7 +150,7 @@ public class WidgetImplementationProcessor implements StAXArtifactProcessor<Widg
             } catch (IOException e) {
             	ContributionResolveException ce = new ContributionResolveException(e);
             	error("ContributionResolveException", resolver, ce);
-                throw ce;
+                //throw ce;
             }
         }
     }
