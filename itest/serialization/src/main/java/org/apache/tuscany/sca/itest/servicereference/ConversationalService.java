@@ -19,6 +19,7 @@
 package org.apache.tuscany.sca.itest.servicereference;
 
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Conversational;
 
 /**
@@ -27,6 +28,7 @@ import org.osoa.sca.annotations.Conversational;
  * @version $Date$ $Revision$
  */
 @Conversational
+@Callback(ConversationalServiceCallback.class)
 public interface ConversationalService {
 
     /**
@@ -68,4 +70,12 @@ public interface ConversationalService {
      * @See {@link #setUserData(String)}
      */
     String getUserData();
+
+    /**
+     * Method that triggers the callback.
+     * 
+     * @param msg A message to pass with the callback
+     * @throws Exception Test failed
+     */
+    void triggerCallback(String msg) throws Exception;
 }

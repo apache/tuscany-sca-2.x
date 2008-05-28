@@ -30,6 +30,10 @@
     <component name="SCAManagedClientComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.servicereference.SCAManagedClientImpl" />
         <reference name="statelessService" target="StatelessComponent"/>
+    </component>
+
+    <component name="SCAManagedConversationalClientComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.servicereference.SCAManagedConversationalClientImpl" />
         <reference name="conversationalService" target="ConversationalComponent"/>
     </component>
 </composite>

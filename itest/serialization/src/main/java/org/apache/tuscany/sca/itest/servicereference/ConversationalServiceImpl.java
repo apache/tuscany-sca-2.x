@@ -18,8 +18,12 @@
  */
 package org.apache.tuscany.sca.itest.servicereference;
 
+import org.apache.tuscany.sca.itest.servicereference.utils.ServiceReferenceUtils;
+import org.junit.Assert;
+import org.osoa.sca.CallableReference;
 import org.osoa.sca.ComponentContext;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Context;
 import org.osoa.sca.annotations.ConversationID;
 import org.osoa.sca.annotations.Scope;
@@ -38,6 +42,12 @@ public class ConversationalServiceImpl implements ConversationalService {
      * The Conversation ID
      */
     private Object m_ConversationID;
+
+    /**
+     * Injected reference to the call back.
+     */
+    @Callback
+    protected CallableReference<ConversationalServiceCallback> theCallbackRef;
 
     /**
      * Injected reference to the ComponentContext.
@@ -104,5 +114,28 @@ public class ConversationalServiceImpl implements ConversationalService {
      */
     public String getUserData() {
         return m_UserData;
+    }
+
+    /**
+     * Method that triggers the callback.
+     * 
+     * @param msg A message to pass with the callback
+     * @throws Exception Test failed
+     */
+    public void triggerCallback(String msg) throws Exception {
+        Assert.assertNotNull(theCallbackRef);
+
+        // Serialize the CallableReference
+        byte[] serializedCR = ServiceReferenceUtils.serialize(theCallbackRef);
+        Assert.assertNotNull(serializedCR);
+
+        // Deserlaize the CallableReference
+        CallableReference<?> cr = ServiceReferenceUtils.deserializeCallableReference(serializedCR);
+        Assert.assertNotNull(cr);
+        CallableReference<ConversationalServiceCallback> regotCallbackRef 
+            = (CallableReference<ConversationalServiceCallback>) cr;
+
+        // Use the deseralized CallbackReference
+        regotCallbackRef.getService().callback(msg);
     }
 }

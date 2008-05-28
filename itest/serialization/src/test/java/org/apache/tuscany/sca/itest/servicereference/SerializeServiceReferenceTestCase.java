@@ -23,7 +23,6 @@ import junit.framework.Assert;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -82,8 +81,8 @@ public class SerializeServiceReferenceTestCase {
      */
     @Test
     public void testSerializeConversationalServiceReferenceInsideSCA() throws Exception {
-        SCAManagedClient client = domain.getService(
-                SCAManagedClient.class, "SCAManagedClientComponent");
+        SCAManagedConversationalClient client = domain.getService(
+                SCAManagedConversationalClient.class, "SCAManagedConversationalClientComponent");
 
         client.testSerializeConversationalServiceReference();
     }
@@ -100,5 +99,19 @@ public class SerializeServiceReferenceTestCase {
                 SCAManagedClient.class, "SCAManagedClientComponent");
 
         client.testSerializeCallbackToStatelessServiceInsideSCA();
+    }
+
+    /**
+     * Tests Serializing a Callback to a Conversational Service as managed
+     * SCA code.
+     * 
+     * @throws Exception Test failed
+     */
+    @Test
+    public void testSerializeCallbackToConversationalServiceInsideSCA() throws Exception {
+        SCAManagedConversationalClient client = domain.getService(
+                SCAManagedConversationalClient.class, "SCAManagedConversationalClientComponent");
+
+        client.testSerializeCallbackToConversationalServiceInsideSCA();
     }
 }

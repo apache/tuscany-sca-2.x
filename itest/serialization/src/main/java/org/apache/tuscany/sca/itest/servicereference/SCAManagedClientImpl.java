@@ -40,12 +40,6 @@ public class SCAManagedClientImpl implements SCAManagedClient, StatelessServiceC
     protected ServiceReference<StatelessService> statelessServiceRef;
 
     /**
-     * Injected reference to the ConversationalService
-     */
-    @Reference(name = "conversationalService")
-    protected ServiceReference<ConversationalService> conversationalServiceRef;
-    
-    /**
      * Tests Serializing a Stateless ServiceReference
      * 
      * @throws Exception Test failed
@@ -69,38 +63,6 @@ public class SCAManagedClientImpl implements SCAManagedClient, StatelessServiceC
         // Use the ServiceReference to access the Service.
         StatelessService regotService = regotServiceRef.getService();
         Assert.assertNotNull(regotService);
-    }
-
-    /**
-     * Tests Serializing a Conversational ServiceReference
-     * 
-     * @throws Exception Test failed
-     */
-    public void testSerializeConversationalServiceReference() throws Exception {
-        Assert.assertNotNull(conversationalServiceRef);
-
-        ConversationalService service = conversationalServiceRef.getService();
-        Object origConvID = service.getConversationID();
-        Assert.assertNotNull(origConvID);
-
-        // Serialize the ServiceReference
-        byte[] serializedSR = ServiceReferenceUtils.serialize(conversationalServiceRef);
-        Assert.assertNotNull(serializedSR);
-
-        // Deserialize the ServiceReference
-        ServiceReference<?> deserializedSR = ServiceReferenceUtils.deserializeServiceReference(serializedSR);
-        Assert.assertNotNull(deserializedSR);
-        ServiceReference<ConversationalService> regotServiceRef = (ServiceReference<ConversationalService>) deserializedSR;
-        Assert.assertNotNull(regotServiceRef);
-
-        // Use the ServiceReference to access the Service.
-        ConversationalService regotService = regotServiceRef.getService();
-        Assert.assertNotNull(regotService);
-        Object regotConvID = regotService.getConversationID();
-        Assert.assertNotNull(regotConvID);
-
-        // Make sure we have the same Conversation ID
-        Assert.assertEquals(origConvID, regotConvID);
     }
 
     /**

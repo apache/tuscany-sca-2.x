@@ -18,27 +18,31 @@
  */
 package org.apache.tuscany.sca.itest.servicereference;
 
+import org.osoa.sca.annotations.Conversational;
+
 
 /**
  * This is a test client that is used to test Serializing and Deserializing
- * ServiceReferences within a SCA Application
+ * ServiceReferences within a SCA Application where the client that the Callback
+ * is referring is actually Conversational.
  * 
- * @version $Date$ $Revision$
+ * @version $Rev$ $Date$
  */
-public interface SCAManagedClient {
+@Conversational
+public interface SCAManagedConversationalClient {
 
     /**
-     * Tests Serializing a Stateless ServiceReference
+     * Tests Serializing a Conversational ServiceReference.
      * 
      * @throws Exception Test failed
      */
-    void testSerializeStatelessServiceReference() throws Exception;
+    void testSerializeConversationalServiceReference() throws Exception;
 
     /**
-     * Tests Serializing a Callback to a Stateless Service as managed
-     * SCA code
+     * Tests Serializing a Callback to a Conversational Service as managed
+     * SCA code.
      * 
      * @throws Exception Test failed
      */
-    void testSerializeCallbackToStatelessServiceInsideSCA() throws Exception;
+    void testSerializeCallbackToConversationalServiceInsideSCA() throws Exception;
 }
