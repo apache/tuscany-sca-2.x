@@ -20,7 +20,7 @@
 package org.apache.tuscany.sca.host.ejb;
 
 /**
- * EJBSessionBean
+ * Represents an EJB session bean.
  *
  * @version $Rev: $ $Date: $
  */
