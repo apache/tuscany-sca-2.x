@@ -32,21 +32,21 @@ import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 public interface WrapperHandler<T> {
     /**
      * Create a wrapper element
-     * 
      * @param element The XSD element
+     * @param wrapperClass The Wrapper class
      * @param context The transformation context
      * @return An object representing the wrapper element
      */
-    T create(ElementInfo element, TransformationContext context);
+    T create(ElementInfo element, Class<? extends T> wrapperClass, TransformationContext context);
 
     /**
      * Get the data type for the wrapper
      * @param element The wrapper element
-     * @param childElements A list of child elements
+     * @param wrapperClass Wrapper class
      * @param context The transformation context
      * @return The data type of the wrapper, null if it's not a wrapper type
      */
-    DataType getWrapperType(ElementInfo element, List<ElementInfo> childElements, TransformationContext context);
+    DataType getWrapperType(ElementInfo element, Class<? extends T> wrapperClass, TransformationContext context);
 
     /**
      * Check if the given data is an instance of the wrapper

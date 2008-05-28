@@ -21,14 +21,15 @@ package org.apache.tuscany.databinding.jaxb;
 
 import java.util.List;
 
-import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.sca.databinding.jaxb.JAXBWrapperHandler;
+import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 
-import com.example.ipo.jaxb.ObjectFactory;
-import com.example.ipo.jaxb.PurchaseOrderType;
+import com.example.stock.StockQuoteOffer;
 
 /**
  * Test case for JAXBExceptionHandler
@@ -36,7 +37,7 @@ import com.example.ipo.jaxb.PurchaseOrderType;
  * @version $Rev$ $Date$
  */
 public class JAXBWrapperHandlerTestCase extends TestCase {
-    // private static final QName ELEMENT = new QName("http://www.example.com/IPO", "purchaseOrder");
+    private static final QName ELEMENT = new QName("http://www.example.com/stock", "stockQuoteOffer");
     private JAXBWrapperHandler handler;
 
     /**
@@ -49,26 +50,23 @@ public class JAXBWrapperHandlerTestCase extends TestCase {
     }
 
     public void testCreate() {
-        // ElementInfo element = new ElementInfo(ELEMENT, null);
-        // JAXBElement<?> jaxbElement = handler.create(element, null);
+        ElementInfo element = new ElementInfo(ELEMENT, null);
+        Object offer = handler.create(element, StockQuoteOffer.class, null);
+        Assert.assertTrue(offer instanceof StockQuoteOffer);
     }
 
     public void testSetChild() {
-        ObjectFactory factory = new ObjectFactory();
-        PurchaseOrderType po = factory.createPurchaseOrderType();
-        JAXBElement<PurchaseOrderType> wrapper = factory.createPurchaseOrder(po);
-        handler.setChild(wrapper, 2, null, "Comment");
+        StockQuoteOffer wrapper = new StockQuoteOffer();
+        handler.setChild(wrapper, 0, null, "IBM");
+        Assert.assertEquals("IBM", wrapper.getInput());
     }
 
     public void testGetChildren() {
-        ObjectFactory factory = new ObjectFactory();
-        PurchaseOrderType po = factory.createPurchaseOrderType();
-        po.setComment("Comment");
-        JAXBElement<PurchaseOrderType> wrapper = factory.createPurchaseOrder(po);
+        StockQuoteOffer wrapper = new StockQuoteOffer();
+        wrapper.setInput("IBM");
         List children = handler.getChildren(wrapper, null, null);
         assertNotNull(children);
-        assertEquals(4, children.size());
-        assertEquals("Comment", children.get(2));
-        assertNull(children.get(0));
+        assertEquals(1, children.size());
+        assertEquals("IBM", children.get(0));
     }
 }

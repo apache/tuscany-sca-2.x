@@ -20,14 +20,13 @@
 package org.apache.tuscany.sca.databinding.jaxb;
 
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.annotation.XmlElementDecl;
-import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
@@ -42,45 +41,25 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  *
  * @version $Rev$ $Date$
  */
-public class JAXBWrapperHandler implements WrapperHandler<JAXBElement<?>> {
+public class JAXBWrapperHandler implements WrapperHandler<Object> {
 
-    public JAXBElement<?> create(ElementInfo element, TransformationContext context) {
+    public Object create(ElementInfo element, final Class<? extends Object> wrapperClass, TransformationContext context) {
         try {
-            // FIXME: How do we map the global element to a factory?
-            String packageName = null;
-            String factoryClassName = packageName + ".ObjectFactory";
-            ClassLoader classLoader = context != null ? context.getClassLoader() : null;
-            if (classLoader == null) {
-                //FIXME Understand why we need this, the ClassLoader should be passed in
-                classLoader = Thread.currentThread().getContextClassLoader();
+            if (wrapperClass == null) {
+                return null;
             }
-            Class<?> factoryClass = Class.forName(factoryClassName, true, classLoader);
-            assert factoryClass.isAnnotationPresent(XmlRegistry.class);
-            Object factory = factoryClass.newInstance();
-            QName elementName = element.getQName();
-            Method method = null;
-            for (Method m : factoryClass.getMethods()) {
-                XmlElementDecl xmlElement = m.getAnnotation(XmlElementDecl.class);
-                QName name = new QName(xmlElement.namespace(), xmlElement.name());
-                if (xmlElement != null && name.equals(elementName)) {
-                    method = m;
-                    break;
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                public Object run() throws Exception {
+                    return wrapperClass.newInstance();
                 }
-            }
-            if (method != null) {
-                Class typeClass = method.getParameterTypes()[0];
-                Object value = typeClass.newInstance();
-                return (JAXBElement<?>)method.invoke(factory, new Object[] {value});
-            } else {
-                throw new TransformationException("ObjectFactory cannot be resolved.");
-            }
-        } catch (Exception e) {
+            });
+        } catch (PrivilegedActionException e) {
             throw new TransformationException(e);
         }
     }
 
-    public void setChild(JAXBElement<?> wrapper, int i, ElementInfo childElement, Object value) {
-        Object wrapperValue = wrapper.getValue();
+    public void setChild(Object wrapper, int i, ElementInfo childElement, Object value) {
+        Object wrapperValue = wrapper;
         Class<?> wrapperClass = wrapperValue.getClass();
 
         XmlType xmlType = wrapperClass.getAnnotation(XmlType.class);
@@ -107,8 +86,8 @@ public class JAXBWrapperHandler implements WrapperHandler<JAXBElement<?>> {
     /**
      * @see org.apache.tuscany.sca.databinding.WrapperHandler#getChildren(java.lang.Object, List, TransformationContext)
      */
-    public List getChildren(JAXBElement<?> wrapper, List<ElementInfo> childElements, TransformationContext context) {
-        Object wrapperValue = wrapper.getValue();
+    public List getChildren(Object wrapper, List<ElementInfo> childElements, TransformationContext context) {
+        Object wrapperValue = wrapper;
         Class<?> wrapperClass = wrapperValue.getClass();
 
         XmlType xmlType = wrapperClass.getAnnotation(XmlType.class);
@@ -127,40 +106,15 @@ public class JAXBWrapperHandler implements WrapperHandler<JAXBElement<?>> {
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(org.apache.tuscany.sca.interfacedef.util.ElementInfo, List, org.apache.tuscany.sca.databinding.TransformationContext)
+     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(org.apache.tuscany.sca.interfacedef.util.ElementInfo, Class, org.apache.tuscany.sca.databinding.TransformationContext)
      */
-    public DataType getWrapperType(ElementInfo element, List<ElementInfo> childElements, TransformationContext context) {
-        try {
-            // FIXME: How do we map the global element to a factory?
-            String packageName = null;
-            String factoryClassName = packageName + ".ObjectFactory";
-            ClassLoader classLoader = context != null ? context.getClassLoader() : null;
-            if (classLoader == null) {
-                //FIXME Understand why we need this, the ClassLoader should be passed in
-                classLoader = Thread.currentThread().getContextClassLoader();
-            }
-            Class<?> factoryClass = Class.forName(factoryClassName, true, classLoader);
-            assert factoryClass.isAnnotationPresent(XmlRegistry.class);
-            QName elementName = element.getQName();
-            Method method = null;
-            for (Method m : factoryClass.getMethods()) {
-                XmlElementDecl xmlElement = m.getAnnotation(XmlElementDecl.class);
-                QName name = new QName(xmlElement.namespace(), xmlElement.name());
-                if (xmlElement != null && name.equals(elementName)) {
-                    method = m;
-                    break;
-                }
-            }
-            if (method != null) {
-                Class typeClass = method.getParameterTypes()[0];
-                DataType<XMLType> wrapperType =
-                    new DataTypeImpl<XMLType>(JAXBDataBinding.NAME, typeClass, new XMLType(element));
-                return wrapperType;
-            }
-
+    public DataType getWrapperType(ElementInfo element,
+                                   Class<? extends Object> wrapperClass,
+                                   TransformationContext context) {
+        if (wrapperClass == null) {
             return null;
-        } catch (Throwable e) {
-            return null;
+        } else {
+            return new DataTypeImpl<XMLType>(JAXBDataBinding.NAME, wrapperClass, new XMLType(element));
         }
     }
 

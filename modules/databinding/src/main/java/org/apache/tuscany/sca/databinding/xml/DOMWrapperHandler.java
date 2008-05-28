@@ -45,7 +45,7 @@ public class DOMWrapperHandler implements WrapperHandler<Node> {
         super();
     }
 
-    public Node create(ElementInfo element, TransformationContext context) {
+    public Node create(ElementInfo element, Class<? extends Node> wrapperClass, TransformationContext context) {
         try {
             Document document = DOMHelper.newDocument();
             QName name = element.getQName();
@@ -80,9 +80,9 @@ public class DOMWrapperHandler implements WrapperHandler<Node> {
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(org.apache.tuscany.sca.interfacedef.util.ElementInfo, List, org.apache.tuscany.sca.databinding.TransformationContext)
+     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(org.apache.tuscany.sca.interfacedef.util.ElementInfo, Class, org.apache.tuscany.sca.databinding.TransformationContext)
      */
-    public DataType getWrapperType(ElementInfo element, List<ElementInfo> childElements, TransformationContext context) {
+    public DataType getWrapperType(ElementInfo element, Class<? extends Node> wrapperClass, TransformationContext context) {
         DataType<XMLType> wrapperType =
             new DataTypeImpl<XMLType>(DOMDataBinding.NAME, Node.class, new XMLType(element));
         return wrapperType;

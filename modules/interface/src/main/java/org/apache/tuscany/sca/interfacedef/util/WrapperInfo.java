@@ -61,7 +61,10 @@ public class WrapperInfo {
     private DataType<XMLType> unwrappedOutputType;
 
     private String dataBinding;
-
+    
+    private Class<?> inputWrapperClass;
+    private Class<?> outputWrapperClass;
+    
     public WrapperInfo(String dataBinding,
                        ElementInfo inputWrapperElement,
                        ElementInfo outputWrapperElement,
@@ -146,5 +149,21 @@ public class WrapperInfo {
             }
         }
         return unwrappedOutputType;
+    }
+
+    public Class<?> getInputWrapperClass() {
+        return inputWrapperClass;
+    }
+
+    public void setInputWrapperClass(Class<?> inputWrapperClass) {
+        this.inputWrapperClass = inputWrapperClass;
+    }
+
+    public Class<?> getOutputWrapperClass() {
+        return outputWrapperClass;
+    }
+
+    public void setOutputWrapperClass(Class<?> outputWrapperClass) {
+        this.outputWrapperClass = outputWrapperClass;
     }
 }

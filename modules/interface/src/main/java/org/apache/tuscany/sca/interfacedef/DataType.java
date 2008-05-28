@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.interfacedef;
 
+import java.lang.reflect.Type;
 
 /**
  * Representation of the type of data associated with an operation. Data is
@@ -41,14 +42,26 @@ public interface DataType<L> extends Cloneable {
      * Set the java type for the data
      * @param cls
      */
-    void setPhysical(Class cls);
+    void setPhysical(Class<?> cls);
 
     /**
      * Returns the physical type used by the runtime.
      * 
      * @return the physical type used by the runtime
      */
-    Class getPhysical();
+    Class<?> getPhysical();
+
+    /**
+     * Get the java generic type
+     * @return The java generic type
+     */
+    Type getGenericType();
+
+    /**
+     * Set the java generic type
+     * @param genericType
+     */
+    void setGenericType(Type genericType);
 
     /**
      * Returns the logical identifier used by the assembly. The type of this
@@ -66,22 +79,26 @@ public interface DataType<L> extends Cloneable {
     L getLogical();
 
     /**
-     * @return
+     * Get the databinding for the given data type
+     * @return the databinding
      */
     String getDataBinding();
 
     /**
+     * Set the databinding for the given data type
      * @param dataBinding the dataBinding to set
      */
     void setDataBinding(String dataBinding);
 
     /**
-     * @return
+     * Clone a data type
+     * @return The cloned data type
      * @throws CloneNotSupportedException
      */
     Object clone() throws CloneNotSupportedException;
 
     /**
+     * Set the logical type of the data type
      * @param logical the logical to set
      */
     void setLogical(L logical);

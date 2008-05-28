@@ -28,7 +28,7 @@ import javax.xml.namespace.QName;
  */
 public class FaultException extends Exception {
     private static final long serialVersionUID = -8002583655240625792L;
-    private Object faultInfo;
+    private transient Object faultInfo; // FIXME: How to serialize it?
     private QName faultName;
 
     /**

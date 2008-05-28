@@ -55,7 +55,7 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
         this.factory = OMAbstractFactory.getOMFactory();
     }
 
-    public OMElement create(ElementInfo element, TransformationContext context) {
+    public OMElement create(ElementInfo element, Class<? extends OMElement> wrapperClass, TransformationContext context) {
         OMElement wrapper = AxiomHelper.createOMElement(factory, element.getQName());
         return wrapper;
     }
@@ -101,9 +101,9 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(org.apache.tuscany.sca.interfacedef.util.ElementInfo, List, org.apache.tuscany.sca.databinding.TransformationContext)
+     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(org.apache.tuscany.sca.interfacedef.util.ElementInfo, Class, org.apache.tuscany.sca.databinding.TransformationContext)
      */
-    public DataType getWrapperType(ElementInfo element, List<ElementInfo> childElements, TransformationContext context) {
+    public DataType getWrapperType(ElementInfo element, Class<? extends OMElement> wrapperClass, TransformationContext context) {
         DataType<XMLType> wrapperType =
             new DataTypeImpl<XMLType>(AxiomDataBinding.NAME, OMElement.class, new XMLType(element));
         return wrapperType;
