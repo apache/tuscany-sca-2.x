@@ -192,6 +192,10 @@ public class ComponentContextHelper {
     }
 
     public void write(Component component, ComponentReference reference, Writer writer) throws IOException {
+        write(component, reference, null, writer);
+    }
+
+    public void write(Component component, ComponentReference reference, ComponentService service, Writer writer) throws IOException {
         try {
             StAXArtifactProcessor<Composite> processor = staxProcessors.getProcessor(Composite.class);
             Composite composite = assemblyFactory.createComposite();
@@ -200,7 +204,12 @@ public class ComponentContextHelper {
             comp.setName("default");
             comp.setURI(component.getURI());
             composite.getComponents().add(comp);
-            comp.getReferences().add(reference);
+            if (reference != null) {
+                comp.getReferences().add(reference);
+            }
+            if (service != null) {
+                comp.getServices().add(service);
+            }
 
             XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
             XMLStreamWriter streamWriter = outputFactory.createXMLStreamWriter(writer);
@@ -213,6 +222,12 @@ public class ComponentContextHelper {
     public String toXML(Component component, ComponentReference reference) throws IOException {
         StringWriter writer = new StringWriter();
         write(component, reference, writer);
+        return writer.toString();
+    }
+
+    public String toXML(Component component, ComponentService service) throws IOException {
+        StringWriter writer = new StringWriter();
+        write(component, null, service, writer);
         return writer.toString();
     }
 
