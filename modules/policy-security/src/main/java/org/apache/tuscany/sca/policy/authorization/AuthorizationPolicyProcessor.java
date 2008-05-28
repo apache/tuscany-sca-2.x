@@ -65,7 +65,7 @@ public class AuthorizationPolicyProcessor implements StAXArtifactProcessor<Autho
     private void error(String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem = new ProblemImpl(this.getClass().getName(), "policy-security-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-                                              monitor.problem(problem);
+            monitor.problem(problem);
         }        
     }    
 
@@ -81,7 +81,7 @@ public class AuthorizationPolicyProcessor implements StAXArtifactProcessor<Autho
                         policy.setAccessControl(AuthorizationPolicy.AcessControl.allow);
                         String roleNames = reader.getAttributeValue(null, ROLES);
                         if (roleNames == null) {
-                        	error("RequiredAttributeRolesMissing", reader);
+                            error("RequiredAttributeRolesMissing", reader);
                             throw new IllegalArgumentException("Required attribute 'roles' is missing.");
                         }
                         StringTokenizer st = new StringTokenizer(roleNames);
