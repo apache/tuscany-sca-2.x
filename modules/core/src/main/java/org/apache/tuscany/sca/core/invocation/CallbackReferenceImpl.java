@@ -219,6 +219,7 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
         this.callbackID = in.readObject();
+        this.convID = in.readObject();
 
         this.compositeActivator = ComponentContextHelper.getCurrentCompositeActivator();
 
@@ -264,6 +265,7 @@ public class CallbackReferenceImpl<B> extends CallableReferenceImpl<B> {
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
         out.writeObject(this.callbackID);
+        out.writeObject(this.convID);
         out.writeUTF(this.resolvedEndpoint.getURI());
     }
 }
