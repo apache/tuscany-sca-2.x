@@ -52,6 +52,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class ResourceImplementationProcessor implements StAXArtifactProcessor<ResourceImplementation> {
     private static final QName IMPLEMENTATION_RESOURCE = new QName(Constants.SCA10_TUSCANY_NS, "implementation.resource");
+    //private static final String MSG_LOCATION_MISSING = "Reading implementation.resource - location attribute missing";
     
     private ContributionFactory contributionFactory;
     private ResourceImplementationFactory implementationFactory;
@@ -77,6 +78,20 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
     	 }
     }
 
+    /**
+     * Report a error.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem = new ProblemImpl(this.getClass().getName(), "impl-resource-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
+            monitor.problem(problem);
+        }
+    }    
+
     public QName getArtifactType() {
         // Returns the QName of the XML element processed by this processor
         return IMPLEMENTATION_RESOURCE;
@@ -90,16 +105,22 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
     public ResourceImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
         
         // Read an <implementation.resource> element
+        
+        // Create and initialize the resource implementation model
+        ResourceImplementation implementation = null;        
 
-        // Read the location attribute specifying the location of the
-        // resources
+        // Read the location attribute specifying the location of the resources
         String location = reader.getAttributeValue(null, "location");
 
-        // Create an initialize the resource implementation model
-        ResourceImplementation implementation = implementationFactory.createResourceImplementation();
-        implementation.setLocation(location);
-        implementation.setUnresolved(true);
-        
+        if (location != null) {
+            implementation = implementationFactory.createResourceImplementation();
+            implementation.setLocation(location);
+            implementation.setUnresolved(true);
+        } else {
+            error("LocationAttributeMissing", reader);
+            //throw new ContributionReadException(MSG_LOCATION_MISSING);
+        }
+
         // Skip to end element
         while (reader.hasNext()) {
             if (reader.next() == END_ELEMENT && IMPLEMENTATION_RESOURCE.equals(reader.getName())) {
@@ -123,7 +144,7 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
             } catch (IOException e) {
             	ContributionResolveException ce = new ContributionResolveException(e);
             	error("ContributionResolveException", resolver, ce);
-                throw ce;
+                //throw ce;
             }
         }
     }
