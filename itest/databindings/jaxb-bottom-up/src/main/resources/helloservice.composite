@@ -27,7 +27,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.HelloServiceSimpleClientImpl" />
         <reference name="helloServiceSimple">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.HelloServiceSimple"/>
-            <binding.ws uri="http://localhost:8080/hs-ep0"/>
+            <binding.ws uri="http://localhost:8085/hs-ep0"/>
         </reference>
     </component>
 
@@ -46,7 +46,7 @@
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.HelloServiceSimpleImpl"/>
         <service name="HelloServiceSimple">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.HelloServiceSimple"/>
-            <binding.ws uri="http://localhost:8080/hs-ep0"/>
+            <binding.ws uri="http://localhost:8085/hs-ep0"/>
             <binding.sca/>
         </service>
     </component>
