@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.sca.interfacedef.impl;
 
+import java.lang.reflect.Type;
+
 import org.apache.tuscany.sca.interfacedef.DataType;
 
 /**
@@ -38,9 +40,9 @@ import org.apache.tuscany.sca.interfacedef.DataType;
  * @version $Rev$ $Date$
  */
 public class DataTypeImpl<L> implements DataType<L> {
-    private boolean unresolved = true;
     private String dataBinding;
-    private Class physical;
+    private Class<?> physical;
+    private Type genericType;
     private L logical;
 
     /**
@@ -50,14 +52,30 @@ public class DataTypeImpl<L> implements DataType<L> {
      * @param logical the logical type
      * @see #getLogical()
      */
-    public DataTypeImpl(Class physical, L logical) {
-        this.physical = physical;
-        this.logical = logical;
+    public DataTypeImpl(Class<?> physical, L logical) {
+        this(null, physical, physical, logical);
     }
 
-    public DataTypeImpl(String dataBinding, Class physical, L logical) {
+    /**
+     * @param dataBinding
+     * @param physical
+     * @param logical
+     */
+    public DataTypeImpl(String dataBinding, Class<?> physical, L logical) {
+        this(dataBinding, physical, physical, logical);
+    }
+
+    /**
+     * @param dataBinding
+     * @param physical
+     * @param genericType
+     * @param logical
+     */
+    public DataTypeImpl(String dataBinding, Class<?> physical, Type genericType, L logical) {
+        super();
         this.dataBinding = dataBinding;
         this.physical = physical;
+        this.genericType = genericType;
         this.logical = logical;
     }
 
@@ -66,8 +84,31 @@ public class DataTypeImpl<L> implements DataType<L> {
      * 
      * @return the physical type used by the runtime
      */
-    public Class getPhysical() {
+    public Class<?> getPhysical() {
         return physical;
+    }
+
+    /**
+     * @param physical the physical to set
+     */
+    public void setPhysical(Class<?> physical) {
+        this.physical = physical;
+    }
+
+    /**
+     * Get the java generic type
+     * @return The java generic type
+     */
+    public Type getGenericType() {
+        return genericType;
+    }
+
+    /**
+     * Set the java generic type
+     * @param genericType
+     */
+    public void setGenericType(Type genericType) {
+        this.genericType = genericType;
     }
 
     /**
@@ -85,6 +126,13 @@ public class DataTypeImpl<L> implements DataType<L> {
      */
     public L getLogical() {
         return logical;
+    }
+
+    /**
+     * @param logical the logical to set
+     */
+    public void setLogical(L logical) {
+        this.logical = logical;
     }
 
     public String getDataBinding() {
@@ -112,78 +160,46 @@ public class DataTypeImpl<L> implements DataType<L> {
         return copy;
     }
 
-    /**
-     * @param logical the logical to set
-     */
-    public void setLogical(L logical) {
-        this.logical = logical;
-    }
-
     @Override
     public int hashCode() {
-        final int PRIME = 31;
+        final int prime = 31;
         int result = 1;
-        result = PRIME * result + ((dataBinding == null) ? 0 : dataBinding.hashCode());
-        result = PRIME * result + ((logical == null) ? 0 : logical.hashCode());
-        result = PRIME * result + ((physical == null) ? 0 : physical.hashCode());
+        result = prime * result + ((dataBinding == null) ? 0 : dataBinding.hashCode());
+        result = prime * result + ((genericType == null) ? 0 : genericType.hashCode());
+        result = prime * result + ((logical == null) ? 0 : logical.hashCode());
+        result = prime * result + ((physical == null) ? 0 : physical.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (obj == null) {
+        if (obj == null)
             return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != obj.getClass())
             return false;
-        }
         final DataTypeImpl other = (DataTypeImpl)obj;
         if (dataBinding == null) {
-            if (other.dataBinding != null) {
+            if (other.dataBinding != null)
                 return false;
-            }
-        } else if (!dataBinding.equals(other.dataBinding)) {
+        } else if (!dataBinding.equals(other.dataBinding))
             return false;
-        }
+        if (genericType == null) {
+            if (other.genericType != null)
+                return false;
+        } else if (!genericType.equals(other.genericType))
+            return false;
         if (logical == null) {
-            if (other.logical != null) {
+            if (other.logical != null)
                 return false;
-            }
-        } else if (!logical.equals(other.logical)) {
+        } else if (!logical.equals(other.logical))
             return false;
-        }
         if (physical == null) {
-            if (other.physical != null) {
+            if (other.physical != null)
                 return false;
-            }
-        } else if (!physical.equals(other.physical)) {
+        } else if (!physical.equals(other.physical))
             return false;
-        }
         return true;
     }
-
-    /**
-     * @return the unresolved
-     */
-    public boolean isUnresolved() {
-        return unresolved;
-    }
-
-    /**
-     * @param unresolved the unresolved to set
-     */
-    public void setUnresolved(boolean unresolved) {
-        this.unresolved = unresolved;
-    }
-
-    /**
-     * @param physical the physical to set
-     */
-    public void setPhysical(Class physical) {
-        this.physical = physical;
-    }
-
 }

@@ -136,10 +136,11 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
 
                 // If the source can be wrapped, wrapped it first
                 if (sourceWrapperHandler != null) {
-                    DataType sourceWrapperType =
-                        sourceWrapperHandler.getWrapperType(wrapperElement, childElements, context);
+                    Class<?> sourceWrapperClass =
+                        sourceOp.getWrapper() != null ? sourceOp.getWrapper().getOutputWrapperClass() : null;
+                    DataType sourceWrapperType = sourceWrapperHandler.getWrapperType(wrapperElement, null, context);
                     if (sourceWrapperType != null) {
-                        Object sourceWrapper = sourceWrapperHandler.create(wrapperElement, context);
+                        Object sourceWrapper = sourceWrapperHandler.create(wrapperElement, null, context);
                         if (sourceWrapper != null) {
                             if (!childElements.isEmpty()) {
                                 // Set the return value
@@ -153,7 +154,7 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
                         }
                     }
                 }
-                Object targetWrapper = targetWrapperHandler.create(wrapper.getOutputWrapperElement(), context);
+                Object targetWrapper = targetWrapperHandler.create(wrapper.getOutputWrapperElement(), null, context);
 
                 if (childElements.isEmpty()) {
                     // void output
@@ -179,8 +180,11 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
                     // FIXME: This is a workaround for the wsdless support as it passes in child elements
                     // under the wrapper that only matches by position
                     if (sourceWrapperHandler.isInstance(sourceWrapper, wrapperElement, childElements, context)) {
+                        Class<?> targetWrapperClass =
+                            targetOp.getWrapper() != null ? targetOp.getWrapper().getOutputWrapperClass() : null;
+
                         DataType targetWrapperType =
-                            targetWrapperHandler.getWrapperType(wrapperElement, childElements, context);
+                            targetWrapperHandler.getWrapperType(wrapperElement, targetWrapperClass, context);
                         if (targetWrapperType != null) {
                             Object targetWrapper =
                                 mediator.mediate(sourceWrapper, sourceType.getLogical(), targetWrapperType, context

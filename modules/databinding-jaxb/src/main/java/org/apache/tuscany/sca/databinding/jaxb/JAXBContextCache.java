@@ -43,6 +43,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
@@ -163,7 +164,7 @@ public class JAXBContextCache {
         try {
             Class<?> cls = forName(p + ".package-info", false, cl);
             if (cls != null) {
-                return true;
+                return cls.isAnnotationPresent(XmlSchema.class);
             }
             //Catch Throwable as ClassLoader can throw an NoClassDefFoundError that
             //does not extend Exception. So we will absorb any Throwable exception here.

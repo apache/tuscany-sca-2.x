@@ -117,16 +117,18 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
             ElementInfo wrapperElement = wrapper.getInputWrapperElement();
 
             if (source == null) {
-                Object targetWrapper = targetWrapperHandler.create(wrapperElement, context);
+                Object targetWrapper = targetWrapperHandler.create(wrapperElement, null, context);
                 return new Object[] {targetWrapper};
             }
 
             // If the source can be wrapped, wrapped it first
             if (sourceWrapperHandler != null) {
+                Class<?> sourceWrapperClass =
+                    sourceOp.getWrapper() != null ? sourceOp.getWrapper().getInputWrapperClass() : null;
                 DataType sourceWrapperType =
-                    sourceWrapperHandler.getWrapperType(wrapperElement, wrapper.getInputChildElements(), context);
+                    sourceWrapperHandler.getWrapperType(wrapperElement, sourceWrapperClass, context);
                 if (sourceWrapperType != null) {
-                    Object sourceWrapper = sourceWrapperHandler.create(wrapperElement, context);
+                    Object sourceWrapper = sourceWrapperHandler.create(wrapperElement, null, context);
                     if (sourceWrapper != null) {
                         for (int i = 0; i < source.length; i++) {
                             ElementInfo argElement = wrapper.getInputChildElements().get(i);
@@ -140,7 +142,7 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
                 }
             }
             // Fall back to child by child transformation
-            Object targetWrapper = targetWrapperHandler.create(wrapperElement, context);
+            Object targetWrapper = targetWrapperHandler.create(wrapperElement, null, context);
             List<DataType> argTypes = wrapper.getUnwrappedInputType().getLogical();
 
             for (int i = 0; i < source.length; i++) {
@@ -163,8 +165,11 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
                 // FIXME: This is a workaround for the wsdless support as it passes in child elements
                 // under the wrapper that only matches by position
                 if (sourceWrapperHandler.isInstance(sourceWrapper, wrapperElement, childElements, context)) {
+                    Class<?> targetWrapperClass =
+                        targetOp.getWrapper() != null ? targetOp.getWrapper().getInputWrapperClass() : null;
+
                     DataType targetWrapperType =
-                        targetWrapperHandler.getWrapperType(wrapperElement, childElements, context);
+                        targetWrapperHandler.getWrapperType(wrapperElement, targetWrapperClass, context);
                     if (targetWrapperType != null) {
                         Object targetWrapper =
                             mediator.mediate(sourceWrapper, sourceType.getLogical().get(0), targetWrapperType, context

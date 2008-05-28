@@ -50,9 +50,9 @@ import commonj.sdo.helper.XSDHelper;
 public class SDOWrapperHandler implements WrapperHandler<Object> {
 
     /**
-     * @see org.apache.tuscany.sca.databinding.WrapperHandler#create(ElementInfo, TransformationContext)
+     * @see org.apache.tuscany.sca.databinding.WrapperHandler#create(ElementInfo, Class, TransformationContext)
      */
-    public Object create(ElementInfo element, TransformationContext context) {
+    public Object create(ElementInfo element, Class<? extends Object> wrapperClass, TransformationContext context) {
         DataObject wrapper = null;
         HelperContext helperContext = SDOContextHelper.getHelperContext(context);
         Type sdoType = getSDOType(helperContext, element);
@@ -105,23 +105,13 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
     }
 
     /**
-     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(org.apache.tuscany.sca.interfacedef.util.ElementInfo, List, org.apache.tuscany.sca.databinding.TransformationContext)
+     * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(org.apache.tuscany.sca.interfacedef.util.ElementInfo, Class, org.apache.tuscany.sca.databinding.TransformationContext)
      */
-    public DataType getWrapperType(ElementInfo element, List<ElementInfo> childElements, TransformationContext context) {
-        // FIXME: [rfeng] Temporarily disable the wrapping support for SDO to work around a few issues
-        // in the WSDL-less story: https://issues.apache.org/jira/browse/TUSCANY-1713
-//        if (true) {
-//            return null;
-//        }
+    public DataType getWrapperType(ElementInfo element, Class<? extends Object> wrapperClass, TransformationContext context) {
         HelperContext helperContext = SDOContextHelper.getHelperContext(context);
         Type sdoType = getSDOType(helperContext, element);
         if (sdoType != null) {
             // Check if child elements matches
-            for (ElementInfo child : childElements) {
-                if (sdoType.getProperty(child.getQName().getLocalPart()) == null) {
-                    return null;
-                }
-            }
             Class physical = sdoType.getInstanceClass();
             DataType<XMLType> wrapperType =
                 new DataTypeImpl<XMLType>(SDODataBinding.NAME, physical, new XMLType(element));

@@ -22,6 +22,9 @@ package org.apache.tuscany.sca.interfacedef.java.jaxws;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -74,10 +77,18 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
     public JAXWSJavaInterfaceProcessor() {
         super();
     }
+    
+    private static String capitalize(String name) {
+        if (name == null || name.length() == 0) {
+            return name;
+        } else {
+            return Character.toUpperCase(name.charAt(0)) + name.substring(1);
+        }
+    }
 
     public void visitInterface(JavaInterface contract) throws InvalidInterfaceException {
 
-        Class<?> clazz = contract.getJavaClass();
+        final Class<?> clazz = contract.getJavaClass();
         WebService webService = clazz.getAnnotation(WebService.class);
         String tns = JavaXMLMapper.getNamespace(clazz);
         String localName = clazz.getSimpleName();
@@ -171,6 +182,21 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 String ns = requestWrapper == null ? tns : getValue(requestWrapper.targetNamespace(), tns);
                 String name =
                     requestWrapper == null ? operationName : getValue(requestWrapper.localName(), operationName);
+                String wrapperBeanName = requestWrapper == null ? "" : requestWrapper.className();
+                if ("".equals(wrapperBeanName)) {
+                    wrapperBeanName = clazz.getPackage().getName() + ".jaxws." + capitalize(method.getName());
+                }
+                Class<?> inputWrapperClass = null;
+                try {
+                    final String className = wrapperBeanName;
+                    inputWrapperClass = AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
+                        public Class<?> run() throws ClassNotFoundException {
+                            return Class.forName(className, false, clazz.getClassLoader());
+                        }
+                    });
+                } catch (PrivilegedActionException e) {
+                    // Ignore
+                }
                 QName inputWrapper = new QName(ns, name);
 
                 ResponseWrapper responseWrapper = method.getAnnotation(ResponseWrapper.class);
@@ -178,6 +204,22 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 name =
                     responseWrapper == null ? operationName + "Response" : getValue(responseWrapper.localName(),
                                                                                     operationName + "Response");
+                wrapperBeanName = responseWrapper == null ? "" : responseWrapper.className();
+                if ("".equals(wrapperBeanName)) {
+                    wrapperBeanName =
+                        clazz.getPackage().getName() + ".jaxws." + capitalize(method.getName()) + "Response";
+                }
+                Class<?> outputWrapperClass = null;
+                try {
+                    final String className = wrapperBeanName;
+                    outputWrapperClass = AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
+                        public Class<?> run() throws ClassNotFoundException {
+                            return Class.forName(className, false, clazz.getClassLoader());
+                        }
+                    });
+                } catch (PrivilegedActionException e) {
+                    // Ignore
+                }
                 QName outputWrapper = new QName(ns, name);
 
                 List<ElementInfo> inputElements = new ArrayList<ElementInfo>();
@@ -216,6 +258,8 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 WrapperInfo wrapperInfo =
                     new WrapperInfo(JAXB_DATABINDING, new ElementInfo(inputWrapper, null),
                                     new ElementInfo(outputWrapper, null), inputElements, outputElements);
+                wrapperInfo.setInputWrapperClass(inputWrapperClass);
+                wrapperInfo.setOutputWrapperClass(outputWrapperClass);
                 operation.setWrapper(wrapperInfo);
             }
         }
