@@ -94,8 +94,6 @@ public class SerializeServiceReferenceTestCase {
      * 
      * @throws Exception Test failed
      */
-    // TODO: TUSCANY-2213 - This test fails so disabled for now
-    @Ignore
     @Test
     public void testSerializeCallbackToStatelessServiceInsideSCA() throws Exception {
         SCAManagedClient client = domain.getService(
