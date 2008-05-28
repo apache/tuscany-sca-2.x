@@ -82,7 +82,19 @@
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>tuscany-binding-ejb</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
-        </dependency>  
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-widget</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+        </dependency> 
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-resource</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+        </dependency>         
         
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
