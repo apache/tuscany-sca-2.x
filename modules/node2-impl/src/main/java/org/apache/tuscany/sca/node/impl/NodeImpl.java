@@ -20,8 +20,10 @@
 package org.apache.tuscany.sca.node.impl;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -277,7 +279,11 @@ public class NodeImpl implements SCANode2, SCAClient {
         ContributionService contributionService = runtime.getContributionService();
         List<Contribution> contributions = new ArrayList<Contribution>();
         for (Contribution contribution: configuration.getContributions()) {
-            URL contributionURL = new URL(contribution.getLocation());
+            URI uri = URI.create(contribution.getLocation());
+            if (uri.getScheme() == null) {
+                uri = new File(contribution.getLocation()).toURI();
+            }
+            URL contributionURL = uri.toURL();
 
             // Extract contribution file name
             String file =contributionURL.getPath();
@@ -301,7 +307,11 @@ public class NodeImpl implements SCANode2, SCAClient {
         // Load the specified composite
         StAXArtifactProcessor<Composite> compositeProcessor = artifactProcessors.getProcessor(Composite.class);
         if (configuration.getComposite().getName() == null) {
-            URL compositeURL = new URL(configuration.getComposite().getURI());
+            URI uri = URI.create(configuration.getComposite().getURI());
+            if (uri.getScheme() == null) {
+                uri = new File(configuration.getComposite().getURI()).toURI();
+            }
+            URL compositeURL = uri.toURL();
             logger.log(Level.INFO, "Loading composite: " + compositeURL);
             InputStream is = compositeURL.openStream();
             XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
