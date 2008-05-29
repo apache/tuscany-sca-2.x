@@ -125,7 +125,7 @@ public class InstallerBundleActivator implements BundleActivator {
                 
                 createAndInstallBundle(bundleContext, bundleLocation, bundleManifestStream, jarSet);
                 bundleManifestStream.close();
-                
+               
             }
             
             Bundle osgiRuntimeBundle = null;
@@ -324,7 +324,7 @@ public class InstallerBundleActivator implements BundleActivator {
         if (isImmutableJar)
             attributes.putValue("Bundle-ClassPath", bundleName);
         
-        String packages = getPackagesInJar(bundleName, jar);
+        HashSet<String> packages = getPackagesInJar(bundleName, jar);
         String version = getJarVersion(bundleName);
 
         attributes.remove(new Attributes.Name("Require-Bundle"));
@@ -337,8 +337,8 @@ public class InstallerBundleActivator implements BundleActivator {
         // Existing export statements in bundles may contain versions, so they should be used as is
         // SDO exports are not sufficient, and should be changed
         if (attributes.getValue("Export-Package") == null || bundleName.startsWith("tuscany-sdo-impl")) {
-            attributes.putValue("Export-Package", packages);
-            attributes.putValue("Import-Package", packages);
+            attributes.putValue("Export-Package", packagesToString(packages, version));
+            attributes.putValue("Import-Package", packagesToString(packages, null));
         }
         
         attributes.putValue("DynamicImport-Package", "*");       
@@ -352,7 +352,7 @@ public class InstallerBundleActivator implements BundleActivator {
         
     }
     
-    private String getPackagesInJar(String bundleName, JarInputStream jar) throws Exception {
+    private HashSet<String> getPackagesInJar(String bundleName, JarInputStream jar) throws Exception {
         HashSet<String> packages = new HashSet<String>();
         ZipEntry entry;
         while ((entry = jar.getNextEntry()) != null) {
@@ -375,10 +375,20 @@ public class InstallerBundleActivator implements BundleActivator {
         else if (bundleName.startsWith("bsf-all"))
             packages.remove("org.mozilla.javascript");
         
+        return packages;
+    }
+    
+    private String packagesToString(HashSet<String> packages, String version) {
+        
         StringBuilder pkgBuf = new StringBuilder();
         for (String pkg : packages) {
             if (pkgBuf.length() >0) pkgBuf.append(',');
             pkgBuf.append(pkg);
+            if (version != null) {
+                pkgBuf.append(";version=\"");
+                pkgBuf.append(version);
+                pkgBuf.append('\"');
+            }
         }
         return pkgBuf.toString();
     }
