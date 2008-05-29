@@ -96,6 +96,7 @@
                 <module>osgi-implementation</module>
                 <module>osgi-contribution</module>
 		<module>policy</module>
+		<module>policy-security</module>
                 <module>properties</module>
                 <module>recursive</module>
                 <module>recursive-ws</module>
