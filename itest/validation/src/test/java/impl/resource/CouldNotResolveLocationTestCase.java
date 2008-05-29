@@ -18,21 +18,23 @@
  */
 package impl.resource;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.Problem;
 import org.apache.tuscany.sca.monitor.impl.DefaultLoggingMonitorImpl;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import domain.CustomCompositeBuilder;
 
 /**
  * This shows how to test the Calculator service component.
  */
-public class CouldNotResolveLocationTestCase extends TestCase {
+public class CouldNotResolveLocationTestCase {
 
     private CustomCompositeBuilder customDomain;
 	
-    @Override
     protected void setUp() throws Exception 
     {
         customDomain = CustomCompositeBuilder.getInstance();
@@ -44,16 +46,17 @@ public class CouldNotResolveLocationTestCase extends TestCase {
         }
     }
 
-    @Override
     protected void tearDown() throws Exception {
     	//nothing to do
     }
 
+    @Ignore
+    @Test
     public void testCalculator() {
         Monitor monitor = customDomain.getMonitorInstance();
         Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
         
-        assertNotNull(problem);
-        assertEquals("CouldNotResolveLocation", problem.getMessageId());
+        Assert.assertNotNull(problem);
+        Assert.assertEquals("CouldNotResolveLocation", problem.getMessageId());
     }
 }
