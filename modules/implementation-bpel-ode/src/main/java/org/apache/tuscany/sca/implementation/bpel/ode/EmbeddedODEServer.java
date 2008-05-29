@@ -175,7 +175,7 @@ public class EmbeddedODEServer {
                     ProcessConf conf = (ProcessConf) store.getProcessConfiguration(event.pid);
                     // Test processes always run with in-mem DAOs
                     // conf.setTransient(true);  //FIXME: what should we use for ProcessConfImpl
-                    //_bpelServer.register(conf);
+                    _bpelServer.register(conf);
                     
                 } // end if
             } // end onProcessStoreEvent
@@ -272,12 +272,19 @@ public class EmbeddedODEServer {
     public void deploy(ODEDeployment d, BPELImplementation implementation) {
     	
         try {
-        	// old code
+        	// old code - using the ODE store
+        	// Generate the required ODE deploy.xml file "on the fly" - it is required by the ODE
+        	// store - this code avoids the need for the programmer to create this file manually.
+        	BPELODEDeployFile deployFile = new BPELODEDeployFile( implementation );
+        	deployFile.writeDeployfile();
         	store.deploy(d.deployDir);
         	//System.out.println("Completed calling old Process deployment code...");
         	
-        	TuscanyProcessConfImpl processConf = new TuscanyProcessConfImpl( implementation );
-        	_bpelServer.register(processConf);
+        	// Code for doing deployment directly from Tuscany without using the ODE store
+        	// - disabled for the present due to issues with the ODE engine when used in this
+        	// mode - Mike Edwards 29/05/2008
+        	//TuscanyProcessConfImpl processConf = new TuscanyProcessConfImpl( implementation );
+        	//_bpelServer.register(processConf);
         	//System.out.println("Completed calling new Process deployment code...");
         } catch (Exception ex) {
             String errMsg = ">>> DEPLOY: Unexpected exception: " + ex.getMessage();

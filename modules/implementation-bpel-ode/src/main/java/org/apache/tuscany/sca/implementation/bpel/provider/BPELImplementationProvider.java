@@ -93,15 +93,15 @@ public class BPELImplementationProvider implements ImplementationProvider {
             // deploy the process
             if (odeServer.isInitialized()) {
                 try {
-                    txMgr.begin();
+                    //txMgr.begin();
                     odeServer.registerTuscanyRuntimeComponent(implementation.getProcess(), component);
                     // Replaced by Mike Edwards 23/05/2008
                     //odeServer.deploy(new ODEDeployment(deploymentDir));
                     odeServer.deploy(new ODEDeployment(deploymentDir), implementation );
-                    txMgr.commit();
+                    //txMgr.commit();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    txMgr.rollback();
+                    //txMgr.rollback();
                 }
             }
             
