@@ -49,7 +49,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Process Conf
+ * A Tuscany implementation of the ODE Process Conf
  * 
  * @version $Rev$ $Date$
  */
@@ -112,7 +112,18 @@ public class TuscanyProcessConfImpl implements ProcessConf {
         //System.out.println("getCBPInputStream called");
         // Find the CBP file - it has the same name as the BPEL process and lives in the same
         // directory as the process file
-        String cbpFileName = implementation.getProcessDefinition().getName().getLocalPart() + ".cbp";
+        String cbpFileName = null;
+        try {
+            String fileName = getRelativePath( getDirectory(), getBPELFile() );
+            cbpFileName = fileName.substring(0, fileName.lastIndexOf(".")) + ".cbp";
+        } catch (Exception e ) {
+        	// IOException trying to fetch the BPEL file name
+            if(__log.isDebugEnabled()) {
+                __log.debug("Unable to calculate the file name for BPEL process: " +
+                                   implementation.getProcessDefinition().getName(), e);
+                return null;
+            } // end if
+        } // end try
         File cbpFile = new File( getDirectory(), cbpFileName );
         if( cbpFile.exists() ) {
             // Create an InputStream from the cbp file...
@@ -166,6 +177,7 @@ public class TuscanyProcessConfImpl implements ProcessConf {
      * at the PartnerLinkType which in turn points at an (WSDL) interface definition.
      */
     public Definition getDefinitionForService(QName serviceQName ) {
+    	//System.out.println("getDefinitionForService called for Service: " + serviceQName );
         if(__log.isDebugEnabled()){
             __log.debug("getDefinitionforService called for service: " + serviceQName );
         }
@@ -326,7 +338,7 @@ public class TuscanyProcessConfImpl implements ProcessConf {
      */
     public boolean isTransient() {
         //System.out.println("isTransient called");
-        return false;
+        return true;
     } // end isTransient
 
     /**
