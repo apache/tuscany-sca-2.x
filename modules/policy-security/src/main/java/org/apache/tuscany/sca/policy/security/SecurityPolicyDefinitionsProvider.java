@@ -41,7 +41,7 @@ public class SecurityPolicyDefinitionsProvider implements SCADefinitionsProvider
     private static final String tuscanyDefinitionsFile = "org/apache/tuscany/sca/policy/security/tuscany_definitions.xml";
     private String definitionsFile = "org/apache/tuscany/sca/policy/security/definitions.xml";
     URLArtifactProcessor urlArtifactProcessor = null;
-    
+
     public SecurityPolicyDefinitionsProvider(ExtensionPointRegistry registry) {
         URLArtifactProcessorExtensionPoint documentProcessors = registry.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         urlArtifactProcessor = (URLArtifactProcessor)documentProcessors.getProcessor(SCADefinitions.class);
@@ -57,27 +57,27 @@ public class SecurityPolicyDefinitionsProvider implements SCADefinitionsProvider
                     return getClass().getClassLoader().getResource(definitionsFile);
                 }
             });           
-        
+
             URI uri = new URI(definitionsFile);
 
             scaDefns = (SCADefinitions)urlArtifactProcessor.read(null, 
-                                                             uri, 
-                                                             definitionsFileUrl);
-            
+                                                                 uri, 
+                                                                 definitionsFileUrl);
+
             definitionsFileUrl = AccessController.doPrivileged(new PrivilegedAction<URL>() {
                 public URL run() {
                     return getClass().getClassLoader().getResource(tuscanyDefinitionsFile);
                 }
             }); 
-            
+
             uri = new URI(definitionsFile);
             tuscanyDefns = (SCADefinitions)urlArtifactProcessor.read(null, 
-                                                             uri, 
-                                                             definitionsFileUrl);
-            
+                                                                     uri, 
+                                                                     definitionsFileUrl);
+
             SCADefinitionsUtil.aggregateSCADefinitions(tuscanyDefns, scaDefns);
             return scaDefns;
-            
+
         } catch ( Exception e ) {
             throw new SCADefinitionsProviderException(e);
         }
