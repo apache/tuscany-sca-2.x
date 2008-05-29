@@ -52,7 +52,7 @@ public class SecurityIdentityPolicyProcessor implements StAXArtifactProcessor<Se
     public SecurityIdentityPolicyProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         this.monitor = monitor;
     }
-    
+
     /**
      * Report a error.
      * 
@@ -63,7 +63,7 @@ public class SecurityIdentityPolicyProcessor implements StAXArtifactProcessor<Se
     private void error(String message, Object model, Object... messageParameters) {
         if (monitor != null) {
             Problem problem = new ProblemImpl(this.getClass().getName(), "policy-security-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
-                                              monitor.problem(problem);
+            monitor.problem(problem);
         }        
     }    
 
@@ -78,7 +78,7 @@ public class SecurityIdentityPolicyProcessor implements StAXArtifactProcessor<Se
                     if ("runAs".equals(ac)) {
                         String roleName = reader.getAttributeValue(null, ROLE);
                         if (roleName == null) {
-                        	error("RequiredAttributeRolesMissing", reader);
+                            error("RequiredAttributeRolesMissing", reader);
                             throw new IllegalArgumentException("Required attribute 'roles' is missing.");
                         }
                         policy.setRunAsRole(roleName);
@@ -104,7 +104,7 @@ public class SecurityIdentityPolicyProcessor implements StAXArtifactProcessor<Se
     }
 
     public void write(SecurityIdentityPolicy policy, XMLStreamWriter writer) throws ContributionWriteException,
-        XMLStreamException {
+    XMLStreamException {
         writer.writeStartElement(SecurityIdentityPolicy.NAME.getLocalPart());
 
         String child = policy.isUseCallerIdentity() ? "useCallerIdentity" : "runAs";
