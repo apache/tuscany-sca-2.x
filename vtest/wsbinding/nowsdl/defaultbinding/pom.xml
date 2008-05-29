@@ -21,13 +21,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-vtest</artifactId>
+        <artifactId>vtest-wsbinding-nowsdl</artifactId>
         <version>2.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>vtest-wsbinding</artifactId>
-    <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Web Service Binding Verification Tests</name>
+    <artifactId>vtest-wsbinding-nowsdl-defaultbinding</artifactId>
+    <name>Apache Tuscany SCA Web Service Binding Verification Tests - No WSDL Default Binding</name>
 
     <dependencies>
         <dependency>
@@ -41,27 +40,19 @@
             <artifactId>tuscany-binding-ws-axis2</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-tomcat</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>         
 
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>vtest-utilities</artifactId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
             <version>2.0-incubating-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
-
-
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>service</module>
-                <module>nowsdl</module>
-           </modules>
-        </profile>
-    </profiles>
 </project>
