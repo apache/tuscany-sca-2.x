@@ -49,7 +49,7 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
     protected Mediator mediator;
 
     public Input2InputTransformer() {
-        super();
+        super(); 
     }
 
     @Override
@@ -116,8 +116,10 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
             WrapperInfo wrapper = targetOp.getWrapper();
             ElementInfo wrapperElement = wrapper.getInputWrapperElement();
 
+            Class<?> targetWrapperClass = wrapper != null ? wrapper.getInputWrapperClass() : null;
+
             if (source == null) {
-                Object targetWrapper = targetWrapperHandler.create(wrapperElement, null, context);
+                Object targetWrapper = targetWrapperHandler.create(wrapperElement, targetWrapperClass, context);
                 return new Object[] {targetWrapper};
             }
 
@@ -128,12 +130,12 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
                 DataType sourceWrapperType =
                     sourceWrapperHandler.getWrapperType(wrapperElement, sourceWrapperClass, context);
                 if (sourceWrapperType != null) {
-                    Object sourceWrapper = sourceWrapperHandler.create(wrapperElement, null, context);
+                    Object sourceWrapper = sourceWrapperHandler.create(wrapperElement, sourceWrapperClass, context);
                     if (sourceWrapper != null) {
-                        for (int i = 0; i < source.length; i++) {
-                            ElementInfo argElement = wrapper.getInputChildElements().get(i);
-                            sourceWrapperHandler.setChild(sourceWrapper, i, argElement, source[i]);
-                        }
+                        sourceWrapperHandler.setChildren(sourceWrapper,
+                                                         wrapper.getInputChildElements(),
+                                                         source,
+                                                         context);
                         Object targetWrapper =
                             mediator.mediate(sourceWrapper, sourceWrapperType, targetType.getLogical().get(0), context
                                 .getMetadata());
@@ -142,16 +144,17 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
                 }
             }
             // Fall back to child by child transformation
-            Object targetWrapper = targetWrapperHandler.create(wrapperElement, null, context);
+            Object targetWrapper = targetWrapperHandler.create(wrapperElement, targetWrapperClass, context);
             List<DataType> argTypes = wrapper.getUnwrappedInputType().getLogical();
 
+            Object[] targetChildren = new Object[source.length];
             for (int i = 0; i < source.length; i++) {
                 ElementInfo argElement = wrapper.getInputChildElements().get(i);
                 DataType<XMLType> argType = argTypes.get(i);
-                Object child = source[i];
-                child = mediator.mediate(source[i], sourceType.getLogical().get(i), argType, context.getMetadata());
-                targetWrapperHandler.setChild(targetWrapper, i, argElement, child);
+                targetChildren[i] =
+                    mediator.mediate(source[i], sourceType.getLogical().get(i), argType, context.getMetadata());
             }
+            targetWrapperHandler.setChildren(targetWrapper, wrapper.getInputChildElements(), targetChildren, context);
             return new Object[] {targetWrapper};
 
         } else if (sourceWrapped && (!targetWrapped)) {
@@ -214,7 +217,12 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
     }
 
     private String getDataBinding(Operation operation) {
-        return operation.getDataBinding();
+        WrapperInfo wrapper = operation.getWrapper();
+        if (wrapper != null) {
+            return wrapper.getDataBinding();
+        } else {
+            return null;
+        }
     }
 
 }

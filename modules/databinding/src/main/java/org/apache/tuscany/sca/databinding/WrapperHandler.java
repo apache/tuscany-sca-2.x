@@ -62,14 +62,13 @@ public interface WrapperHandler<T> {
                        TransformationContext context);
 
     /**
-     * Set child element for the wrapper
-     * 
-     * @param wrapper The wrapper
-     * @param i The index
-     * @param childElement The XSD element
-     * @param value The value of the child
+     * Populate the wrapper element with the child objects
+     * @param wrapper
+     * @param childElements
+     * @param childObjects
+     * @param context
      */
-    void setChild(T wrapper, int i, ElementInfo childElement, Object value);
+    public void setChildren(T wrapper, List<ElementInfo> childElements, Object[] childObjects, TransformationContext context);
 
     /**
      * Get a list of child elements from the wrapper

@@ -56,11 +56,19 @@ public class WrapperInfo {
 
     private List<ElementInfo> outputChildElements;
 
+    // The data type of the unwrapped input child elements 
     private DataType<List<DataType>> unwrappedInputType;
 
+    // The data type of the unwrapped output child element (we only supports one child)
     private DataType<XMLType> unwrappedOutputType;
 
+    // The data for the input/output wrappers
     private String dataBinding;
+    
+    // The data type for the input (request) wrapper bean
+    private DataType<XMLType> inputWrapperType;
+    // The data type for the output (response) wrapper bean
+    private DataType<XMLType> outputWrapperType;
     
     private Class<?> inputWrapperClass;
     private Class<?> outputWrapperClass;
@@ -165,5 +173,29 @@ public class WrapperInfo {
 
     public void setOutputWrapperClass(Class<?> outputWrapperClass) {
         this.outputWrapperClass = outputWrapperClass;
+    }
+
+    public String getDataBinding() {
+        return dataBinding;
+    }
+
+    public void setDataBinding(String dataBinding) {
+        this.dataBinding = dataBinding;
+    }
+
+    public DataType<XMLType> getInputWrapperType() {
+        return inputWrapperType;
+    }
+
+    public void setInputWrapperType(DataType<XMLType> inputWrapperType) {
+        this.inputWrapperType = inputWrapperType;
+    }
+
+    public DataType<XMLType> getOutputWrapperType() {
+        return outputWrapperType;
+    }
+
+    public void setOutputWrapperType(DataType<XMLType> outputWrapperType) {
+        this.outputWrapperType = outputWrapperType;
     }
 }

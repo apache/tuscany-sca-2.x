@@ -50,7 +50,7 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
      */
     public Output2OutputTransformer() {
         super();
-    }
+    } 
 
     /**
      * @param mediator the mediator to set
@@ -95,7 +95,12 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
     }
 
     private String getDataBinding(Operation operation) {
-        return operation.getDataBinding();
+        WrapperInfo wrapper = operation.getWrapper();
+        if (wrapper != null) {
+            return wrapper.getDataBinding();
+        } else {
+            return null;
+        }
     }
 
     private WrapperHandler getWrapperHandler(String dataBindingId, boolean required) {
@@ -133,19 +138,23 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
                 WrapperInfo wrapper = targetOp.getWrapper();
                 ElementInfo wrapperElement = wrapper.getOutputWrapperElement();
                 List<ElementInfo> childElements = wrapper.getOutputChildElements();
+                Class<?> targetWrapperClass = wrapper != null ? wrapper.getOutputWrapperClass() : null;
 
                 // If the source can be wrapped, wrapped it first
                 if (sourceWrapperHandler != null) {
                     Class<?> sourceWrapperClass =
                         sourceOp.getWrapper() != null ? sourceOp.getWrapper().getOutputWrapperClass() : null;
-                    DataType sourceWrapperType = sourceWrapperHandler.getWrapperType(wrapperElement, null, context);
+                    DataType sourceWrapperType =
+                        sourceWrapperHandler.getWrapperType(wrapperElement, sourceWrapperClass, context);
                     if (sourceWrapperType != null) {
-                        Object sourceWrapper = sourceWrapperHandler.create(wrapperElement, null, context);
+                        Object sourceWrapper = sourceWrapperHandler.create(wrapperElement, sourceWrapperClass, context);
                         if (sourceWrapper != null) {
                             if (!childElements.isEmpty()) {
                                 // Set the return value
-                                ElementInfo returnElement = wrapper.getOutputChildElements().get(0);
-                                sourceWrapperHandler.setChild(sourceWrapper, 0, returnElement, response);
+                                sourceWrapperHandler.setChildren(sourceWrapper,
+                                                                 wrapper.getOutputChildElements(),
+                                                                 new Object[] {response},
+                                                                 context);
                             }
                             Object targetWrapper =
                                 mediator.mediate(sourceWrapper, sourceWrapperType, targetType.getLogical(), context
@@ -154,17 +163,18 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
                         }
                     }
                 }
-                Object targetWrapper = targetWrapperHandler.create(wrapper.getOutputWrapperElement(), null, context);
+                Object targetWrapper =
+                    targetWrapperHandler.create(wrapper.getOutputWrapperElement(), targetWrapperClass, context);
 
                 if (childElements.isEmpty()) {
                     // void output
                     return targetWrapper;
                 }
-                ElementInfo argElement = childElements.get(0);
+
                 DataType<XMLType> argType = wrapper.getUnwrappedOutputType();
                 Object child = response;
                 child = mediator.mediate(response, sourceType.getLogical(), argType, context.getMetadata());
-                targetWrapperHandler.setChild(targetWrapper, 0, argElement, child);
+                targetWrapperHandler.setChildren(targetWrapper, childElements, new Object[] {child}, context);
                 return targetWrapper;
             } else if (sourceWrapped && (!targetWrapped)) {
                 // Wrapped to Unwrapped

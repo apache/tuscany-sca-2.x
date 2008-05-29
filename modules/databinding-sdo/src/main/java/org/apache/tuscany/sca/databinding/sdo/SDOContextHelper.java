@@ -30,6 +30,7 @@ import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Operation;
+import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sdo.api.SDOUtil;
 
@@ -63,6 +64,11 @@ public final class SDOContextHelper {
         if (op != null) {
             found = register(helperContext, op.getInputType()) || found;
             found = register(helperContext, op.getOutputType()) || found;
+            WrapperInfo wrapper = op.getWrapper();
+            if (wrapper != null) {
+                found = register(helperContext, wrapper.getInputWrapperClass()) || found;
+                found = register(helperContext, wrapper.getOutputWrapperClass()) || found;
+            }
         } else {
             found = register(helperContext, context.getSourceDataType()) || found;
         }
@@ -71,6 +77,11 @@ public final class SDOContextHelper {
         if (op != null) {
             found = register(helperContext, op.getInputType()) || found;
             found = register(helperContext, op.getOutputType()) || found;
+            WrapperInfo wrapper = op.getWrapper();
+            if (wrapper != null) {
+                found = register(helperContext, wrapper.getInputWrapperClass()) || found;
+                found = register(helperContext, wrapper.getOutputWrapperClass()) || found;
+            }
         } else {
             found = register(helperContext, context.getTargetDataType()) || found;
         }
@@ -123,6 +134,9 @@ public final class SDOContextHelper {
      */
 
     private static boolean register(HelperContext helperContext, Class javaType) {
+        if (javaType == null) {
+            return false;
+        }
         try {
             Type type = helperContext.getTypeHelper().getType(javaType);
             if (type != null && (!type.isDataType())) {

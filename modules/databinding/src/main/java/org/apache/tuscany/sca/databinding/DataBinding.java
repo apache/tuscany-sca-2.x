@@ -96,6 +96,6 @@ public interface DataBinding {
      * Get the XML type helper for Java types
      * @return The databinding-specific XML type helper class
      */
-    Class getXMLTypeHelperClass();
+    XMLTypeHelper getXMLTypeHelper();
 
 }

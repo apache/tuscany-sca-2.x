@@ -43,7 +43,8 @@ import org.apache.tuscany.sca.interfacedef.java.introspect.JavaInterfaceVisitor;
  * @version $Rev$ $Date$
  */
 public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
-    private DataBindingExtensionPoint dataBindingRegistry;
+    private static final String JAXB_DATABINDING = "javax.xml.bind.JAXBElement";
+    private DataBindingExtensionPoint dataBindingRegistry; 
 
     public DataBindingJavaInterfaceProcessor(DataBindingExtensionPoint dataBindingRegistry) {
         super();
@@ -85,7 +86,7 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 continue;
             }
             Operation operation = opMap.get(method.getName());
-            if (operation == null) {  // @WebMethod exclude=true
+            if (operation == null) { // @WebMethod exclude=true
                 continue;
             }
             DataBinding methodDataBinding = clazz.getAnnotation(DataBinding.class);
@@ -137,7 +138,8 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
             }
 
             // JIRA: TUSCANY-842
-            if (operation.getDataBinding() == null) {
+            String db = operation.getDataBinding();
+            if (db == null || JAXB_DATABINDING.equals(db)) {
                 assignOperationDataBinding(operation);
             }
 
@@ -162,7 +164,9 @@ public class DataBindingJavaInterfaceProcessor implements JavaInterfaceVisitor {
 
         opDataTypes.addAll(operation.getInputType().getLogical());
         opDataTypes.add(operation.getOutputType());
-        opDataTypes.addAll(operation.getFaultTypes());
+        for (DataType<DataType> ft : operation.getFaultTypes()) {
+            opDataTypes.add(ft.getLogical());
+        }
 
         for (DataType<?> d : opDataTypes) {
             if (d != null) {

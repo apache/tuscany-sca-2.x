@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.databinding.jaxb;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -38,6 +39,7 @@ import com.example.stock.StockQuoteOffer;
  */
 public class JAXBWrapperHandlerTestCase extends TestCase {
     private static final QName ELEMENT = new QName("http://www.example.com/stock", "stockQuoteOffer");
+    private static final QName INPUT = new QName("", "input");
     private JAXBWrapperHandler handler;
 
     /**
@@ -57,14 +59,16 @@ public class JAXBWrapperHandlerTestCase extends TestCase {
 
     public void testSetChild() {
         StockQuoteOffer wrapper = new StockQuoteOffer();
-        handler.setChild(wrapper, 0, null, "IBM");
+        handler.setChild(wrapper, 0, new ElementInfo(INPUT, null), "IBM");
         Assert.assertEquals("IBM", wrapper.getInput());
     }
 
     public void testGetChildren() {
         StockQuoteOffer wrapper = new StockQuoteOffer();
         wrapper.setInput("IBM");
-        List children = handler.getChildren(wrapper, null, null);
+        List<ElementInfo> elements = new ArrayList<ElementInfo>();
+        elements.add(new ElementInfo(INPUT, null));
+        List children = handler.getChildren(wrapper, elements, null);
         assertNotNull(children);
         assertEquals(1, children.size());
         assertEquals("IBM", children.get(0));

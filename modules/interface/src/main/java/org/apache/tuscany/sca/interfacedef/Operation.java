@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.interfacedef;
 
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
@@ -153,15 +154,19 @@ public interface Operation extends Cloneable, PolicySetAttachPoint {
     void setWrapperStyle(boolean wrapperStyle);
     
     /**
+     * @deprecated This should be the WrapperInfo.getDataBinding()
      * Get the databinding for the operation
      * @return
      */
+    @Deprecated
     String getDataBinding();
     
     /**
+     * @deprecated This should be the WrapperInfo.setDataBinding()
      * Set the databinding for the operation
      * @param dataBinding
      */
+    @Deprecated
     void setDataBinding(String dataBinding);
     
     /**
