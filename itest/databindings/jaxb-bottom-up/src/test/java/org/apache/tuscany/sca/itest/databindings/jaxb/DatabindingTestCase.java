@@ -144,7 +144,6 @@ public class DatabindingTestCase {
      * Service method invoked is getGreetingsList.
      */
     @Test
-    @Ignore
     public void testWSList() throws Exception {
         HelloServiceSimpleClient helloServiceSimpleClient = domain.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
         performTestList(helloServiceSimpleClient);

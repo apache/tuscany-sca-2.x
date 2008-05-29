@@ -19,9 +19,12 @@
 package org.apache.tuscany.sca.itest.databindings.jaxb;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.xml.ws.RequestWrapper;
+import javax.xml.ws.ResponseWrapper;
 
 import org.osoa.sca.annotations.Remotable;
 
@@ -32,8 +35,18 @@ import org.osoa.sca.annotations.Remotable;
 public interface HelloServiceSimple {
     String getGreetings(String name);
     String[] getGreetingsArray(String[] names);
+    /**
+     * Add the RequestWrapper/ResponseWrapper annotations to support Collections
+     * @param names
+     * @return
+     */
+    @RequestWrapper(className="org.apache.tuscany.sca.itest.databindings.jaxb.impl.jaxws.GetGreetingsList")
+    @ResponseWrapper(className="org.apache.tuscany.sca.itest.databindings.jaxb.impl.jaxws.GetGreetingsListResponse")
     List<String> getGreetingsList(List<String> names);
+    
     ArrayList<String> getGreetingsArrayList(ArrayList<String> names);
+    
     Map<String, String> getGreetingsMap(Map<String, String> namesMap);
+    
     HashMap<String, String> getGreetingsHashMap(HashMap<String, String> namesMap);
 }
