@@ -63,6 +63,16 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
         return null;
     }
 
+    public void setChildren(Object wrapper,
+                            List<ElementInfo> childElements,
+                            Object[] childObjects,
+                            TransformationContext context) {
+        for (int i = 0; i < childElements.size(); i++) {
+            setChild(wrapper, i, childElements.get(i), childObjects[i]);
+        }
+
+    }
+
     /**
      * @see org.apache.tuscany.sca.databinding.WrapperHandler#setChild(java.lang.Object, int, ElementInfo,
      *      java.lang.Object)
@@ -70,7 +80,13 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
     public void setChild(Object wrapper, int i, ElementInfo childElement, Object value) {
         DataObject wrapperDO =
             (wrapper instanceof XMLDocument) ? ((XMLDocument)wrapper).getRootObject() : (DataObject)wrapper;
-        wrapperDO.set(i, value);
+        String name = childElement.getQName().getLocalPart();
+        if (childElement.isMany()) {
+            // FIXME: If we look up by name, we need to make sure the WrapperInfo has the correct element names
+            wrapperDO.getList(i).addAll((Collection)value);
+        } else {
+            wrapperDO.set(i, value);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -107,7 +123,9 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
     /**
      * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(org.apache.tuscany.sca.interfacedef.util.ElementInfo, Class, org.apache.tuscany.sca.databinding.TransformationContext)
      */
-    public DataType getWrapperType(ElementInfo element, Class<? extends Object> wrapperClass, TransformationContext context) {
+    public DataType getWrapperType(ElementInfo element,
+                                   Class<? extends Object> wrapperClass,
+                                   TransformationContext context) {
         HelperContext helperContext = SDOContextHelper.getHelperContext(context);
         Type sdoType = getSDOType(helperContext, element);
         if (sdoType != null) {

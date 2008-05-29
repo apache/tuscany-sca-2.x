@@ -27,6 +27,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.sca.databinding.WrapperHandler;
+import org.apache.tuscany.sca.databinding.XMLTypeHelper;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.databinding.impl.DOMHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
@@ -44,9 +46,14 @@ public class JAXBDataBinding extends BaseDataBinding {
 
     public static final String ROOT_NAMESPACE = "http://tuscany.apache.org/xmlns/sca/databinding/jaxb/1.0";
     public static final QName ROOT_ELEMENT = new QName(ROOT_NAMESPACE, "root");
-
+    
+    private JAXBWrapperHandler wrapperHandler;
+    private JAXBTypeHelper xmlTypeHelper;
+    
     public JAXBDataBinding() {
         super(NAME, ALIASES, JAXBElement.class);
+        this.wrapperHandler = new JAXBWrapperHandler();
+        this.xmlTypeHelper = new JAXBTypeHelper();
     }
 
     @Override
@@ -103,6 +110,16 @@ public class JAXBDataBinding extends BaseDataBinding {
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    @Override
+    public WrapperHandler getWrapperHandler() {
+        return wrapperHandler;
+    }
+
+    @Override
+    public XMLTypeHelper getXMLTypeHelper() {
+        return xmlTypeHelper;
     }
 
 }

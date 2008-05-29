@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.sca.databinding.impl;
+package org.apache.tuscany.sca.databinding.jaxb;
 
 import java.beans.Introspector;
 import java.io.IOException;

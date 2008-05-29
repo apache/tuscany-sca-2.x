@@ -24,9 +24,11 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlType;
+import java.util.Map;
 
 import org.apache.tuscany.sca.databinding.TransformationContext;
 import org.apache.tuscany.sca.databinding.TransformationException;
@@ -42,6 +44,7 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  * @version $Rev$ $Date$
  */
 public class JAXBWrapperHandler implements WrapperHandler<Object> {
+    private JAXBWrapperHelper helper = new JAXBWrapperHelper();
 
     public Object create(ElementInfo element, final Class<? extends Object> wrapperClass, TransformationContext context) {
         try {
@@ -58,21 +61,51 @@ public class JAXBWrapperHandler implements WrapperHandler<Object> {
         }
     }
 
+    public void setChildren(Object wrapper,
+                            List<ElementInfo> childElements,
+                            Object[] childObjects,
+                            TransformationContext context) {
+        List<String> childNames = new ArrayList<String>();
+        Map<String, Object> values = new HashMap<String, Object>();
+        for (int i = 0; i < childElements.size(); i++) {
+            ElementInfo e = childElements.get(i);
+            String name = e.getQName().getLocalPart();
+            childNames.add(name);
+            values.put(name, childObjects[i]);
+        }
+        // Get the property descriptor map
+        Map<String, JAXBPropertyDescriptor> pdMap = null;
+        try {
+            pdMap = XMLRootElementUtil.createPropertyDescriptorMap(wrapper.getClass());
+        } catch (Throwable t) {
+            throw new JAXBWrapperException(t);
+        }
+        helper.wrap(wrapper, childNames, values, pdMap);
+    }
+
     public void setChild(Object wrapper, int i, ElementInfo childElement, Object value) {
         Object wrapperValue = wrapper;
         Class<?> wrapperClass = wrapperValue.getClass();
 
-        XmlType xmlType = wrapperClass.getAnnotation(XmlType.class);
-        String[] properties = xmlType.propOrder();
-        String property = properties[i];
-
+        // FIXME: We probably should use the jaxb-reflection to handle the properties
         try {
+            String prop = childElement.getQName().getLocalPart();
+            boolean collection = (value instanceof Collection);
+            Method getter = null;
             for (Method m : wrapperClass.getMethods()) {
-                if (m.getName().equals("set" + capitalize(property))) {
+                Class<?>[] paramTypes = m.getParameterTypes();
+                if (paramTypes.length == 1 && m.getName().equals("set" + capitalize(prop))) {
                     m.invoke(wrapperValue, new Object[] {value});
                     return;
                 }
+                if (collection && paramTypes.length == 0 && m.getName().equals("get" + capitalize(prop))) {
+                    getter = m;
+                }
             }
+            if (getter != null && Collection.class.isAssignableFrom(getter.getReturnType())) {
+                ((Collection)getter.invoke(wrapperValue)).addAll((Collection)value);
+            }
+
         } catch (Throwable e) {
             throw new TransformationException(e);
         }
@@ -87,22 +120,11 @@ public class JAXBWrapperHandler implements WrapperHandler<Object> {
      * @see org.apache.tuscany.sca.databinding.WrapperHandler#getChildren(java.lang.Object, List, TransformationContext)
      */
     public List getChildren(Object wrapper, List<ElementInfo> childElements, TransformationContext context) {
-        Object wrapperValue = wrapper;
-        Class<?> wrapperClass = wrapperValue.getClass();
-
-        XmlType xmlType = wrapperClass.getAnnotation(XmlType.class);
-        String[] properties = xmlType.propOrder();
-        List<Object> elements = new ArrayList<Object>();
-        for (String p : properties) {
-            try {
-                Method method = wrapperClass.getMethod("get" + capitalize(p), (Class[])null);
-                Object value = method.invoke(wrapperValue, (Object[])null);
-                elements.add(value);
-            } catch (Throwable e) {
-                throw new TransformationException(e);
-            }
+        List<String> childNames = new ArrayList<String>();
+        for (ElementInfo e : childElements) {
+            childNames.add(e.getQName().getLocalPart());
         }
-        return elements;
+        return Arrays.asList(helper.unwrap(wrapper, childNames));
     }
 
     /**

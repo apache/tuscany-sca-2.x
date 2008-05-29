@@ -34,14 +34,16 @@ import org.jvnet.jaxb.reflection.model.annotation.RuntimeInlineAnnotationReader;
 import org.jvnet.jaxb.reflection.model.core.Ref;
 import org.jvnet.jaxb.reflection.model.impl.RuntimeModelBuilder;
 import org.jvnet.jaxb.reflection.model.runtime.RuntimeClassInfo;
+import org.jvnet.jaxb.reflection.model.runtime.RuntimePropertyInfo;
 import org.jvnet.jaxb.reflection.model.runtime.RuntimeTypeInfoSet;
 import org.jvnet.jaxb.reflection.runtime.IllegalAnnotationsException;
 import org.jvnet.jaxb.reflection.runtime.JAXBContextImpl;
 import org.w3c.dom.Node;
 
+import com.example.ipo.jaxb.ObjectFactory;
 import com.example.ipo.jaxb.PurchaseOrderType;
 import com.example.ipo.jaxb.USAddress;
-
+import com.example.ipo.jaxb.USState;
 
 /**
  * @version $Rev$ $Date$
@@ -53,7 +55,7 @@ public class JAXBReflectionTestCase extends TestCase {
         Node schema = JAXBContextHelper.generateSchema(context);
         System.out.println(new Node2String().transform(schema, null));
     }
-  
+
     /**
      * This is a workaround for the NPE bug in jaxb-reflection
      * @param classes
@@ -79,9 +81,14 @@ public class JAXBReflectionTestCase extends TestCase {
 
     public void testReflection() throws Exception {
         org.jvnet.jaxb.reflection.model.runtime.RuntimeTypeInfoSet model = create(PurchaseOrderType.class);
-        RuntimeClassInfo type = (RuntimeClassInfo) model.getTypeInfo(PurchaseOrderType.class);
+        RuntimeClassInfo type = (RuntimeClassInfo)model.getTypeInfo(PurchaseOrderType.class);
         Assert.assertEquals(new QName("http://www.example.com/IPO", "PurchaseOrderType"), type.getTypeName());
-        type = (RuntimeClassInfo) model.getTypeInfo(USAddress.class);
+        type = (RuntimeClassInfo)model.getTypeInfo(USAddress.class);
         Assert.assertEquals(new QName("http://www.example.com/IPO", "USAddress"), type.getTypeName());
+        RuntimePropertyInfo prop = type.getProperty("state");
+        Assert.assertNotNull(prop);
+        USAddress address = new ObjectFactory().createUSAddress();
+        prop.getAccessor().set(address, USState.CA);
+        Assert.assertEquals(USState.CA, address.getState());
     }
 }

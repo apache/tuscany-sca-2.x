@@ -23,6 +23,7 @@ import java.lang.annotation.Annotation;
 import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
+import org.apache.tuscany.sca.databinding.XMLTypeHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
@@ -121,8 +122,8 @@ public abstract class BaseDataBinding implements DataBinding {
         return new SimpleTypeMapperImpl();
     }
 
-    public Class getXMLTypeHelperClass() {
-        return JAXBTypeHelper.class;
+    public XMLTypeHelper getXMLTypeHelper() {
+        return null;
     }
 
     public String[] getAliases() {

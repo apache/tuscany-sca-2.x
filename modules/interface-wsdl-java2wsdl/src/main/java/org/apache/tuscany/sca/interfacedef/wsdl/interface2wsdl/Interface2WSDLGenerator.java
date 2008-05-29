@@ -19,20 +19,18 @@
 
 package org.apache.tuscany.sca.interfacedef.wsdl.interface2wsdl;
 
-import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.wsdl.Binding;
 import javax.wsdl.BindingOperation;
 import javax.wsdl.Definition;
-import javax.wsdl.Input;
 import javax.wsdl.Fault;
+import javax.wsdl.Input;
 import javax.wsdl.Message;
 import javax.wsdl.OperationType;
 import javax.wsdl.Output;
@@ -41,9 +39,7 @@ import javax.wsdl.PortType;
 import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.schema.Schema;
-import javax.wsdl.extensions.schema.SchemaImport;
 import javax.wsdl.factory.WSDLFactory;
-import javax.xml.bind.JAXBContext;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -52,7 +48,7 @@ import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.databinding.DataBinding;
 import org.apache.tuscany.sca.databinding.DataBindingExtensionPoint;
 import org.apache.tuscany.sca.databinding.XMLTypeHelper;
-import org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper;
+import org.apache.tuscany.sca.databinding.jaxb.JAXBTypeHelper;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.Interface;
 import org.apache.tuscany.sca.interfacedef.Operation;
@@ -61,31 +57,18 @@ import org.apache.tuscany.sca.interfacedef.java.JavaOperation;
 import org.apache.tuscany.sca.interfacedef.util.ElementInfo;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
-import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.interfacedef.util.WrapperInfo;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLDefinition;
 import org.apache.tuscany.sca.interfacedef.wsdl.WSDLInterface;
-import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.tuscany.sca.xsd.XSDFactory;
-
+import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
-import org.apache.ws.commons.schema.XmlSchemaComplexType;
-import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaException;
-import org.apache.ws.commons.schema.XmlSchemaForm;
-import org.apache.ws.commons.schema.XmlSchemaSequence;
-import org.apache.ws.commons.schema.XmlSchemaSerializer;
-import org.apache.ws.commons.schema.XmlSchemaType;
 import org.apache.ws.commons.schema.utils.NamespaceMap;
 import org.w3c.dom.Document;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSOutput;
-import org.w3c.dom.ls.LSSerializer;
 
 /**
  * @version $Rev$ $Date$
@@ -510,23 +493,9 @@ public class Interface2WSDLGenerator {
         if (dataBinding == null) {
             throw new RuntimeException("no data binding for " + db);
         }
-        XMLTypeHelper helper = helpers.get(db);
+        XMLTypeHelper helper = dataBinding.getXMLTypeHelper();
         if (helper == null) {
-            Class helperClass = dataBinding.getXMLTypeHelperClass();
-            for (XMLTypeHelper xth : helpers.values()) { 
-                if (xth.getClass() == helperClass) {
-                    helper = xth;
-                    break;
-                }
-            }
-            if (helper == null) {
-                try {
-                    helper = (XMLTypeHelper)helperClass.newInstance();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            helpers.put(db, helper);
+            helper = new JAXBTypeHelper();
         }
         TypeInfo typeInfo = helper.getTypeInfo(javaType.isArray() ? javaType.getComponentType() : javaType,
                                                dataType.getLogical());

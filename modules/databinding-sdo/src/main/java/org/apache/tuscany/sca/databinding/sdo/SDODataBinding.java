@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.databinding.SimpleTypeMapper;
 import org.apache.tuscany.sca.databinding.WrapperHandler;
+import org.apache.tuscany.sca.databinding.XMLTypeHelper;
 import org.apache.tuscany.sca.databinding.impl.BaseDataBinding;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
@@ -51,10 +52,12 @@ public class SDODataBinding extends BaseDataBinding {
     public static final QName ROOT_ELEMENT = new QName(ROOT_NAMESPACE, "dataObject");
 
     private WrapperHandler<Object> wrapperHandler;
+    private XMLTypeHelper xmlTypeHelper;
 
     public SDODataBinding() {
         super(NAME, ALIASES, DataObject.class);
         wrapperHandler = new SDOWrapperHandler();
+        xmlTypeHelper = new SDOTypeHelper();
     }
 
     @Override
@@ -109,8 +112,8 @@ public class SDODataBinding extends BaseDataBinding {
     }
 
     @Override
-    public Class getXMLTypeHelperClass() {
-        return SDOTypeHelper.class;
+    public XMLTypeHelper getXMLTypeHelper() {
+        return xmlTypeHelper;
     }
 
     @Override

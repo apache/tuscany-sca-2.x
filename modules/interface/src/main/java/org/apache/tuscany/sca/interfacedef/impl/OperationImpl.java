@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sca.interfacedef.ConversationSequence;
@@ -51,7 +52,6 @@ public class OperationImpl implements Operation {
     private boolean nonBlocking;
     private boolean wrapperStyle;
     private WrapperInfo wrapper;
-    private String dataBinding;
     private boolean dynamic;
     private Map<QName, List<DataType<XMLType>>> faultBeans;
     
@@ -264,11 +264,13 @@ public class OperationImpl implements Operation {
     }
 
     public String getDataBinding() {
-        return dataBinding;
+        return wrapper != null ? wrapper.getDataBinding() : null;
     }
 
     public void setDataBinding(String dataBinding) {
-        this.dataBinding = dataBinding;
+        if (wrapper != null) {
+            wrapper.setDataBinding(dataBinding);
+        }
     }
 
     public boolean isDynamic() {

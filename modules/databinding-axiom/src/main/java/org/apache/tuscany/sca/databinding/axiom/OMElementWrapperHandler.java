@@ -20,10 +20,8 @@
 package org.apache.tuscany.sca.databinding.axiom;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -58,6 +56,16 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
     public OMElement create(ElementInfo element, Class<? extends OMElement> wrapperClass, TransformationContext context) {
         OMElement wrapper = AxiomHelper.createOMElement(factory, element.getQName());
         return wrapper;
+    }
+
+    public void setChildren(OMElement wrapper,
+                            List<ElementInfo> childElements,
+                            Object[] childObjects,
+                            TransformationContext context) {
+        for (int i = 0; i < childElements.size(); i++) {
+            setChild(wrapper, i, childElements.get(i), childObjects[i]);
+        }
+
     }
 
     public void setChild(OMElement wrapper, int i, ElementInfo childElement, Object value) {
@@ -103,7 +111,9 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
     /**
      * @see org.apache.tuscany.sca.databinding.WrapperHandler#getWrapperType(org.apache.tuscany.sca.interfacedef.util.ElementInfo, Class, org.apache.tuscany.sca.databinding.TransformationContext)
      */
-    public DataType getWrapperType(ElementInfo element, Class<? extends OMElement> wrapperClass, TransformationContext context) {
+    public DataType getWrapperType(ElementInfo element,
+                                   Class<? extends OMElement> wrapperClass,
+                                   TransformationContext context) {
         DataType<XMLType> wrapperType =
             new DataTypeImpl<XMLType>(AxiomDataBinding.NAME, OMElement.class, new XMLType(element));
         return wrapperType;
@@ -117,6 +127,8 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
         if (!element.getQName().equals(wrapper.getQName())) {
             return false;
         }
+        return true;
+        /*
         Set<QName> names = new HashSet<QName>();
         for (ElementInfo e : childElements) {
             names.add(e.getQName());
@@ -128,6 +140,7 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
             }
         }
         return true;
+        */
     }
 
     private static final QName XSI_TYPE_QNAME = new QName("http://www.w3.org/2001/XMLSchema-instance", "type", "xsi");

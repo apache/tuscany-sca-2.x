@@ -55,6 +55,15 @@ public class DOMWrapperHandler implements WrapperHandler<Node> {
         }
     }
 
+    public void setChildren(Node wrapper,
+                            List<ElementInfo> childElements,
+                            Object[] childObjects,
+                            TransformationContext context) {
+        for (int i = 0; i < childElements.size(); i++) {
+            setChild(wrapper, i, childElements.get(i), childObjects[i]);
+        }
+
+    }
     public void setChild(Node wrapper, int i, ElementInfo childElement, Object value) {
         Node node = (Node)value;
         if (node.getNodeType() == Node.DOCUMENT_NODE) {
