@@ -38,6 +38,7 @@ class TestMethod
     @first_line_tested = @lines_tested.first
   end  
   
+  #Define sort criteria
   def <=>(test_method)  
     @first_line_tested.<=>(test_method.first_line_tested)  
   end  
