@@ -166,8 +166,12 @@ public class InstallerBundleActivator implements BundleActivator {
         for (String classPathEntry : classPathEntries) {
             classPathEntry = classPathEntry.trim();
             File jar = new File(classPathEntry);
-            if (!jar.isAbsolute()&&!jar.exists()) {
+            if (!jar.exists()) {
                 jar = new File(tuscanyInstallDir, jar.getName());
+                if (!jar.exists())
+                    jar = new File(tuscanyInstallDir, "modules" + File.separator + jar.getName());
+                if (!jar.exists())
+                    jar = new File(tuscanyInstallDir, "lib" + File.separator + jar.getName());
             }
 
             String jarName = jar.getName();
