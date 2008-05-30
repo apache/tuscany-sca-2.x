@@ -49,6 +49,9 @@ import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.impl.DefaultMonitorFactoryImpl;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 
 /**
@@ -63,6 +66,7 @@ public class WriteAllTestCase extends TestCase {
     private ModelResolver resolver; 
     private CompositeBuilder compositeBuilder;
     private URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
+    private Monitor monitor;
 
     @Override
     public void setUp() throws Exception {
@@ -78,7 +82,11 @@ public class WriteAllTestCase extends TestCase {
         SCABindingFactory scaBindingFactory = new TestSCABindingFactoryImpl();
         IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
         InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
-        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper, null);
+        
+        MonitorFactory monitorFactory = new DefaultMonitorFactoryImpl();
+        monitor = monitorFactory.createMonitor();
+        
+        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper, monitor);
 
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);

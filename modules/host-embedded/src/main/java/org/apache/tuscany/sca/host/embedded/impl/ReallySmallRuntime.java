@@ -63,6 +63,7 @@ import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
 import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.impl.DefaultMonitorFactoryImpl;
 import org.apache.tuscany.sca.policy.DefaultIntentAttachPointTypeFactory;
 import org.apache.tuscany.sca.policy.DefaultPolicyFactory;
 import org.apache.tuscany.sca.policy.Intent;
@@ -150,9 +151,11 @@ public class ReallySmallRuntime {
         if (monitorFactory != null){
             monitor = monitorFactory.createMonitor();
         } else {
-            logger.fine("No MonitorFactory is found on the classpath.");
+            monitorFactory = new DefaultMonitorFactoryImpl();
+            monitor = monitorFactory.createMonitor();
+            utilities.addUtility(monitorFactory);
+            //logger.fine("No MonitorFactory is found on the classpath.");
         }
-
         
         // Create a contribution service
         policyDefinitions = new ArrayList<SCADefinitions>();
