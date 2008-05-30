@@ -43,7 +43,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.ws.WebServiceException;
 
 import org.osoa.sca.ServiceRuntimeException;
 
@@ -170,7 +169,7 @@ public class DataConverter {
      * @param destClass the actual class we want
      * @return object of destClass if conversion possible, otherwise returns arg
      */
-    public static Object convert(Object arg, Class destClass) throws WebServiceException {
+    public static Object convert(Object arg, Class<?> destClass) {
         if (destClass == null) {
             return arg;
         }
