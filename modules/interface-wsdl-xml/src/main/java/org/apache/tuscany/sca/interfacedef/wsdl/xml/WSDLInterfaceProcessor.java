@@ -60,6 +60,20 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
     }
     
     /**
+     * Report a warning.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void warning(String message, Object model, Object... messageParameters) {
+        if (monitor != null) {
+            Problem problem = new ProblemImpl(this.getClass().getName(), "interface-wsdlxml-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+                                              monitor.problem(problem);
+        }
+     }
+    
+    /**
      * Report a error.
      * 
      * @param problems
@@ -188,8 +202,7 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                     wsdlDefinition.getXmlSchemas().addAll(resolved.getXmlSchemas());
                     wsdlDefinition.setUnresolved(false);
                     WSDLObject<PortType> portType = wsdlDefinition.getWSDLObject(PortType.class, wsdlInterface.getName());
-                    if (portType != null) {
-                        
+                    if (portType != null) {                        
                         // Introspect the WSDL portType and add the resulting
                         // WSDLInterface to the resolver
                         try {
@@ -202,6 +215,9 @@ public class WSDLInterfaceProcessor implements StAXArtifactProcessor<WSDLInterfa
                             throw ce;
                         }
                         resolver.addModel(wsdlInterface);
+                    }
+                    else {
+                    	warning("WsdlInterfaceDoesNotMatch", wsdlDefinition, wsdlInterface.getName());
                     }
                 }
             }
