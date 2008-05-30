@@ -42,6 +42,7 @@ import org.apache.tuscany.sca.interfacedef.util.XMLType;
  * @version $Rev$ $Date$
  */
 public class JAXB2OMElement extends BaseTransformer<Object, OMElement> implements PullTransformer<Object, OMElement> {
+    private OMFactory factory = OMAbstractFactory.getOMFactory();
 
     @Override
     public String getSourceDataBinding() {
@@ -56,8 +57,6 @@ public class JAXB2OMElement extends BaseTransformer<Object, OMElement> implement
         } catch (JAXBException e) {
             throw new TransformationException(e);
         }
-        OMFactory factory = OMAbstractFactory.getOMFactory();
-
         QName name = JAXBDataBinding.ROOT_ELEMENT;
         if (context != null) {
             DataType dataType = context.getTargetDataType();
@@ -76,6 +75,7 @@ public class JAXB2OMElement extends BaseTransformer<Object, OMElement> implement
         if (source != null && introspector.isElement(source)) {
             if (name == JAXBDataBinding.ROOT_ELEMENT) {
                 element = source;
+                name = introspector.getElementName(element);
             } else {
                 source = JAXBIntrospector.getValue(source);
             }
