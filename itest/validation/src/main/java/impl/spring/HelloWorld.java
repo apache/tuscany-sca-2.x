@@ -19,6 +19,7 @@
 
 package impl.spring;
 
+import org.osoa.sca.annotations.OneWay;
 import org.osoa.sca.annotations.Remotable;
 
 /**
@@ -29,6 +30,7 @@ import org.osoa.sca.annotations.Remotable;
 @Remotable
 public interface HelloWorld {
 
+	@OneWay
     String sayHello(String s);
 
 }

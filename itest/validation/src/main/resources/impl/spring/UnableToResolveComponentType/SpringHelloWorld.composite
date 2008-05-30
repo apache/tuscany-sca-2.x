@@ -28,7 +28,7 @@
     </component>
 
     <component name="HelloWorldComponent">
-        <implementation.spring location="impl/spring/UnableToResolveComponentType/SpringHelloWorld-context.xml"/>
+        <implementation.spring location="META-INF/sca/SpringHelloWorld-context.xml"/>
     </component>
 
 </composite>

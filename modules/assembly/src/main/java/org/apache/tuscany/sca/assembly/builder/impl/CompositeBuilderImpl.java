@@ -91,7 +91,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
             endpointFactory = new DefaultEndpointFactory();
         }
         
-        if (monitor == null){
+        /*if (monitor == null) {
             monitor = new Monitor () {
                 public void problem(Problem problem) {
                     
@@ -114,7 +114,7 @@ public class CompositeBuilderImpl implements CompositeBuilder {
                     }
                 }                
             };
-        }
+        }*/
         
         
         compositeIncludeBuilder = new CompositeIncludeBuilderImpl(monitor); 

@@ -16,6 +16,8 @@ import org.apache.tuscany.sca.assembly.AssemblyFactory;
 import org.apache.tuscany.sca.assembly.SCABindingFactory;
 import org.apache.tuscany.sca.assembly.builder.CompositeBuilder;
 import org.apache.tuscany.sca.assembly.builder.impl.CompositeBuilderImpl;
+import org.apache.tuscany.sca.context.ContextFactoryExtensionPoint;
+import org.apache.tuscany.sca.context.DefaultContextFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.Contribution;
 import org.apache.tuscany.sca.contribution.ModelFactoryExtensionPoint;
 import org.apache.tuscany.sca.contribution.processor.DefaultValidatingXMLInputFactory;
@@ -32,8 +34,14 @@ import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.ModuleActivator;
 import org.apache.tuscany.sca.core.ModuleActivatorExtensionPoint;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.core.invocation.DefaultProxyFactoryExtensionPoint;
+import org.apache.tuscany.sca.core.invocation.MessageFactoryImpl;
+import org.apache.tuscany.sca.core.invocation.ProxyFactory;
 import org.apache.tuscany.sca.implementation.node.NodeImplementationFactory;
+import org.apache.tuscany.sca.implementation.node.builder.impl.NodeCompositeBuilderImpl;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
+import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
+import org.apache.tuscany.sca.invocation.MessageFactory;
 import org.apache.tuscany.sca.monitor.Monitor;
 import org.apache.tuscany.sca.monitor.MonitorFactory;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
@@ -73,31 +81,43 @@ public class CustomCompositeBuilder {
 
     private static CustomCompositeBuilder ref;
     
-    private void init() {       
-        // Create extension point registry 
-        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
+    private void init() {
         
-        // Initialize the Tuscany module activators
-        ModuleActivatorExtensionPoint moduleActivators = extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
-        for (ModuleActivator activator: moduleActivators.getModuleActivators()) {
-            //activator.start(extensionPoints);
-        }
+    	// Create extension point registry 
+        ExtensionPointRegistry extensionPoints = new DefaultExtensionPointRegistry();
         
         // Create a monitor
         UtilityExtensionPoint utilities = extensionPoints.getExtensionPoint(UtilityExtensionPoint.class);
         MonitorFactory monitorFactory = utilities.getUtility(MonitorFactory.class);
         monitor = monitorFactory.createMonitor();
-
+        
+        // Create an interface contract mapper
+        InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
+        extensionPoints.addExtensionPoint(mapper);
+        
+        // Create Message factory
+        MessageFactory messageFactory = new MessageFactoryImpl();
+        
+        // Create Proxy factory
+        ProxyFactory proxyFactory = new DefaultProxyFactoryExtensionPoint(messageFactory, mapper);
+        extensionPoints.addExtensionPoint(proxyFactory);
+        
+        // Create context factory extension point
+        ContextFactoryExtensionPoint contextFactories = new DefaultContextFactoryExtensionPoint(extensionPoints);
+        extensionPoints.addExtensionPoint(contextFactories);
+        
+        // Initialize the Tuscany module activators
+        ModuleActivatorExtensionPoint moduleActivators = extensionPoints.getExtensionPoint(ModuleActivatorExtensionPoint.class);
+        for (ModuleActivator activator: moduleActivators.getModuleActivators()) {
+            activator.start(extensionPoints);
+        }
+        
         // Get XML input/output factories
         modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
-        outputFactory = modelFactories.getFactory(XMLOutputFactory.class);
+        outputFactory = modelFactories.getFactory(XMLOutputFactory.class);       
         
-        // Create a validation XML schema extension point
-        ValidationSchemaExtensionPoint schemas = extensionPoints.getExtensionPoint(ValidationSchemaExtensionPoint.class);
-        // Create a validating XML input factory
-        XMLInputFactory validatingInputFactory = new DefaultValidatingXMLInputFactory(inputFactory, schemas, monitor);
-        //modelFactories.addFactory(validatingInputFactory);
+        modelFactories.addFactory(messageFactory);        
         
         // Get contribution workspace and assembly model factories
         workspaceFactory = modelFactories.getFactory(WorkspaceFactory.class); 
@@ -112,8 +132,6 @@ public class CustomCompositeBuilder {
         // Create contribution content processor
         URLArtifactProcessorExtensionPoint docProcessorExtensions = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         contributionProcessor = docProcessorExtensions.getProcessor(Contribution.class);
-        //policyDefinitions = new ArrayList<SCADefinitions>();
-        //docProcessorExtensions.addArtifactProcessor(new CompositeDocumentProcessor(xmlProcessor, validatingInputFactory, policyDefinitions, monitor));
         
         // Get the model resolvers
         modelResolvers = extensionPoints.getExtensionPoint(ModelResolverExtensionPoint.class);
@@ -126,6 +144,9 @@ public class CustomCompositeBuilder {
         IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
         InterfaceContractMapper contractMapper = utilities.getUtility(InterfaceContractMapper.class);
         domainCompositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, contractMapper, monitor);
+        
+        // Create a node composite builder
+        nodeCompositeBuilder = new NodeCompositeBuilderImpl(assemblyFactory, scaBindingFactory, contractMapper, null, monitor);
     }
     
     public void loadContribution(String compositeURL, String sourceURI, String sourceURL) throws Exception {

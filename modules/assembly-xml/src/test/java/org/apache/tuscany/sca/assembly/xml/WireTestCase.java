@@ -46,6 +46,9 @@ import org.apache.tuscany.sca.core.DefaultExtensionPointRegistry;
 import org.apache.tuscany.sca.definitions.SCADefinitions;
 import org.apache.tuscany.sca.interfacedef.InterfaceContractMapper;
 import org.apache.tuscany.sca.interfacedef.impl.InterfaceContractMapperImpl;
+import org.apache.tuscany.sca.monitor.Monitor;
+import org.apache.tuscany.sca.monitor.MonitorFactory;
+import org.apache.tuscany.sca.monitor.impl.DefaultMonitorFactoryImpl;
 import org.apache.tuscany.sca.policy.IntentAttachPointTypeFactory;
 
 /**
@@ -60,6 +63,7 @@ public class WireTestCase extends TestCase {
     private ModelResolver resolver; 
     private URLArtifactProcessor<SCADefinitions> policyDefinitionsProcessor;
     private CompositeBuilder compositeBuilder;
+    private Monitor monitor;
 
     @Override
     public void setUp() throws Exception {
@@ -69,12 +73,15 @@ public class WireTestCase extends TestCase {
         staxProcessor = new ExtensibleStAXArtifactProcessor(staxProcessors, inputFactory, null, null);
         resolver = new DefaultModelResolver();
         
+        MonitorFactory monitorFactory = new DefaultMonitorFactoryImpl();
+        monitor = monitorFactory.createMonitor();
+        
         ModelFactoryExtensionPoint modelFactories = extensionPoints.getExtensionPoint(ModelFactoryExtensionPoint.class);
         AssemblyFactory assemblyFactory = modelFactories.getFactory(AssemblyFactory.class);
         SCABindingFactory scaBindingFactory = new TestSCABindingFactoryImpl();
         IntentAttachPointTypeFactory attachPointTypeFactory = modelFactories.getFactory(IntentAttachPointTypeFactory.class);
         InterfaceContractMapper mapper = new InterfaceContractMapperImpl();
-        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper, null);
+        compositeBuilder = new CompositeBuilderImpl(assemblyFactory, scaBindingFactory, attachPointTypeFactory, mapper, monitor);
 
         URLArtifactProcessorExtensionPoint documentProcessors = extensionPoints.getExtensionPoint(URLArtifactProcessorExtensionPoint.class);
         policyDefinitionsProcessor = documentProcessors.getProcessor(SCADefinitions.class);

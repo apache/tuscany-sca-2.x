@@ -54,7 +54,7 @@ public class ContributionResolveExceptionTestCase extends TestCase {
     	Problem problem = ((DefaultLoggingMonitorImpl)monitor).getLastLoggedProblem();
         
     	
-    	//assertNotNull(problem);
-        //assertEquals("ContributionResolveException", problem.getMessageId());
+    	assertNotNull(problem);
+        assertEquals("ContributionResolveException", problem.getMessageId());
     }
 }

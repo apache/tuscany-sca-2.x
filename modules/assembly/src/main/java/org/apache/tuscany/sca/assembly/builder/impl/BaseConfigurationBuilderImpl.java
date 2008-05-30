@@ -298,8 +298,10 @@ public abstract class BaseConfigurationBuilderImpl {
      * @param model
      */
     private void warning(String message, Object model, String... messageParameters) {
-        Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
-        monitor.problem(problem);
+    	if (monitor != null) {
+          Problem problem = new ProblemImpl(this.getClass().getName(), "assembly-validation-messages", Severity.WARNING, model, message, (Object[])messageParameters);
+          monitor.problem(problem);
+    	}
     }
 
     /**

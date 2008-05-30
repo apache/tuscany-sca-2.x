@@ -57,6 +57,34 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
         this.monitor = monitor;
     }
     
+    /**
+     * Report a exception.
+     * 
+     * @param problems
+     * @param message
+     * @param model
+     */
+    private void error(String message, Object model, Exception ex) {
+    	 if (monitor != null) {
+    		 Problem problem = new ProblemImpl(this.getClass().getName(), "interface-javaxml-validation-messages", Severity.ERROR, model, message, ex);
+    	     monitor.problem(problem);
+    	 }        
+     }
+     
+     /**
+      * Report a error.
+      * 
+      * @param problems
+      * @param message
+      * @param model
+      */
+     private void error(String message, Object model, Object... messageParameters) {
+     	 if (monitor != null) {
+     		 Problem problem = new ProblemImpl(this.getClass().getName(), "interface-javaxml-validation-messages", Severity.ERROR, model, message,(Object[])messageParameters);
+     	     monitor.problem(problem);
+     	 }        
+     }
+    
     private JavaInterface createJavaInterface(String interfaceName) {
         JavaInterface javaInterface = javaFactory.createJavaInterface();
         javaInterface.setUnresolved(true);
@@ -120,8 +148,7 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
                 classReference = resolver.resolveModel(ClassReference.class, classReference);
                 Class javaClass = classReference.getJavaClass();
                 if (javaClass == null) {
-                    Problem problem = new ProblemImpl(this.getClass().getName(), "interface-javaxml-validation-messages", Severity.ERROR, javaInterface, "ClassNotFoundException", javaInterface.getName());
-                    monitor.problem(problem);
+                    error("ClassNotFoundException", resolver, javaInterface.getName());
                     throw new ContributionResolveException(new ClassNotFoundException(javaInterface.getName()));
                 }
                 try {
@@ -131,7 +158,9 @@ public class JavaInterfaceProcessor implements StAXArtifactProcessor<JavaInterfa
                     javaFactory.createJavaInterface(javaInterface, javaClass);
                 
                 } catch (InvalidInterfaceException e) {
-                    throw new ContributionResolveException(e);
+                	ContributionResolveException ce = new ContributionResolveException(e);
+                	error("ContributionResolveException", javaFactory, ce);
+                    throw ce;
                 }
 
                 // Cache the resolved interface
