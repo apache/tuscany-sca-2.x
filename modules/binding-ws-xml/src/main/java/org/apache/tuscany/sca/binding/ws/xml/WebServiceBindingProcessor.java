@@ -324,6 +324,8 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
                 if (binding != null) {
                     wsdlDefinition.setDefinition(binding.getDefinition());
                     model.setBinding(binding.getElement());
+                } else {
+                	warning("WsdlBindingDoesNotMatch", wsdlDefinition, model.getBindingName());
                 }
             }
             if (model.getServiceName() != null) {
@@ -336,6 +338,8 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
                         model.setPort(port);
                         model.setBinding(port.getBinding());
                     }
+                } else {
+                	warning("WsdlServiceDoesNotMatch", wsdlDefinition, model.getServiceName());
                 }
             }
 
@@ -346,8 +350,7 @@ public class WebServiceBindingProcessor implements StAXArtifactProcessor<WebServ
                 try {
                     wsdlInterface = wsdlFactory.createWSDLInterface(portType, wsdlDefinition, resolver);
                 } catch (InvalidInterfaceException e) {
-                	warning("InvalidInterfaceException", wsdlFactory, model.getName());
-                    logger.log(Level.WARNING, "Exception creating interface from WSDL for binding: " + model.getName(), e); 
+                	warning("InvalidInterfaceException", wsdlFactory, model.getName()); 
                 }
                 interfaceContract.setInterface(wsdlInterface);
                 model.setBindingInterfaceContract(interfaceContract);
