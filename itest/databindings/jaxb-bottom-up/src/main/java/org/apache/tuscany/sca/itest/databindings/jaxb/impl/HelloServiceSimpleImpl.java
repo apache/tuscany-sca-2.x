@@ -29,13 +29,15 @@ import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 
+import org.apache.tuscany.sca.itest.databindings.jaxb.HelloLocalServiceSimple;
 import org.apache.tuscany.sca.itest.databindings.jaxb.HelloServiceSimple;
 import org.osoa.sca.annotations.Service;
 
 /**
  * An implementation of HelloServiceSimple.
+ * The implementation provides both a local and a remotable service.
  */
-@Service(HelloServiceSimple.class)
+@Service(interfaces = {HelloServiceSimple.class, HelloLocalServiceSimple.class})
 @WebService(targetNamespace = "http://jaxb.databindings.itest.sca.tuscany.apache.org/")
 public class HelloServiceSimpleImpl implements HelloServiceSimple {
 
@@ -50,30 +52,33 @@ public class HelloServiceSimpleImpl implements HelloServiceSimple {
     @WebResult(name = "return", targetNamespace = "")
     public String[] getGreetingsArray(@WebParam(name = "arg0", targetNamespace = "")
     String[] names) {
+        String[] resps = new String[names.length];
         for (int i = 0; i < names.length; ++i) {
-            names[i] = "Hello " + names[i];
+            resps[i] = "Hello " + names[i];
         }
-        return names;
+        return resps;
     }
 
     @WebMethod
     @WebResult(name = "return", targetNamespace = "")
     public List<String> getGreetingsList(@WebParam(name = "arg0", targetNamespace = "")
     List<String> names) {
+        List<String> resps = new ArrayList<String>();
         for (int i = 0; i < names.size(); ++i) {
-            names.set(i, "Hello " + names.get(i));
+            resps.add("Hello " + names.get(i));
         }
-        return names;
+        return resps;
     }
 
     @WebMethod
     @WebResult(name = "return", targetNamespace = "")
     public ArrayList<String> getGreetingsArrayList(@WebParam(name = "arg0", targetNamespace = "")
     ArrayList<String> names) {
+        ArrayList<String> resps = new ArrayList<String>();
         for (int i = 0; i < names.size(); ++i) {
-            names.set(i, "Hello " + names.get(i));
+            resps.add("Hello " + names.get(i));
         }
-        return names;
+        return resps;
     }
 
     //    @WebMethod

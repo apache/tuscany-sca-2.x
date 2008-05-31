@@ -19,7 +19,12 @@
 
 package org.apache.tuscany.sca.itest.databindings.jaxb.impl;
 
-import org.apache.tuscany.sca.itest.databindings.jaxb.HelloServiceSimple;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.tuscany.sca.itest.databindings.jaxb.HelloLocalServiceSimple;
 import org.apache.tuscany.sca.itest.databindings.jaxb.HelloServiceSimpleClient;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
@@ -29,10 +34,36 @@ import org.osoa.sca.annotations.Service;
  * The client forwards the request to the service component and returns the response from the service component.
  */
 @Service(HelloServiceSimpleClient.class)
-public class HelloServiceSimpleClientImpl extends HelloLocalServiceSimpleClientImpl {
+public class HelloLocalServiceSimpleClientImpl implements HelloServiceSimpleClient {
 
-    @Reference
-    public void setHelloServiceSimple(HelloServiceSimple service) {
-        super.setHelloLocalServiceSimple(service);
+    private HelloLocalServiceSimple service;
+
+    @Reference(required=false)
+    protected void setHelloLocalServiceSimple(HelloLocalServiceSimple service) {
+        this.service = service;
+    }
+
+    public String getGreetingsForward(String name) {
+        return service.getGreetings(name);
+    }
+
+    public String[] getGreetingsArrayForward(String[] names) {
+        return service.getGreetingsArray(names);
+    }
+
+    public List<String> getGreetingsListForward(List<String> names) {
+        return service.getGreetingsList(names);
+    }
+
+    public Map<String, String> getGreetingsMapForward(Map<String, String> namesMap) {
+        return service.getGreetingsMap(namesMap);
+    }
+
+    public ArrayList<String> getGreetingsArrayListForward(ArrayList<String> names) {
+        return service.getGreetingsArrayList(names);
+    }
+
+    public HashMap<String, String> getGreetingsHashMapForward(HashMap<String, String> namesMap) {
+        return service.getGreetingsHashMap(namesMap);
     }
 }

@@ -21,9 +21,22 @@ package org.apache.tuscany.sca.itest.databindings.jaxb;
 import org.osoa.sca.annotations.Remotable;
 
 /**
- * The interface for HelloServiceSimple.
+ * The interface for PrimitivesService.
  */
 @Remotable
-public interface HelloServiceSimple extends HelloLocalServiceSimple {
-    // Add any methods to the local interface.
+public interface PrimitivesService {
+    boolean negateBoolean(boolean flag);
+    boolean[] negateBooleanArray(boolean[] flags);
+    byte negateByte(byte b);
+    byte[] negateByteArray(byte[] ba);
+    short negateShort(short s);
+    short[] negateShortArray(short[] s);
+    int negateInt(int s);
+    int[] negateIntArray(int[] s);
+    long negateLong(long l);
+    long[] negateLongArray(long[] la);
+    float negateFloat(float f);
+    float[] negateFloatArray(float[] fa);
+    double negateDouble(double d);
+    double[] negateDoubleArray(double[] da);
 }
