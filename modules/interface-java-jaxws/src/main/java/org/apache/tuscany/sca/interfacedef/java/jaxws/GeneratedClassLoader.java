@@ -19,44 +19,31 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
-/**
- *
- * @version $Rev$ $Date$
- */
-public class MyException extends Exception {
-    private String error;
-    private int code;
+import java.security.SecureClassLoader;
 
-    public MyException() {
-        super();
+public class GeneratedClassLoader extends SecureClassLoader {
+    private String className;
+    private byte[] content;
+    private Class<?> cls;
+
+    public GeneratedClassLoader(ClassLoader parentLoader, String className, byte[] content) {
+        super(parentLoader);
+        this.className = className;
+        this.content = content;
     }
 
-    public MyException(String message, Throwable cause) {
-        super(message, cause);
+    @Override
+    protected Class<?> findClass(String className) throws ClassNotFoundException {
+        if (this.className.equals(className)) {
+            return getGeneratedClass();
+        }
+        return super.findClass(className);
     }
 
-    public MyException(String message) {
-        super(message);
+    public synchronized Class<?> getGeneratedClass() {
+        if (cls == null) {
+            cls = defineClass(className, content, 0, content.length);
+        }
+        return cls;
     }
-
-    public MyException(Throwable cause) {
-        super(cause);
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
 }

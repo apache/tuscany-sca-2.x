@@ -19,44 +19,22 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
 /**
- *
  * @version $Rev$ $Date$
  */
-public class MyException extends Exception {
-    private String error;
-    private int code;
-
-    public MyException() {
-        super();
-    }
-
-    public MyException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public MyException(String message) {
-        super(message);
-    }
-
-    public MyException(Throwable cause) {
-        super(cause);
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
+public class TestGenericClass <T extends Serializable & List<String>, S> {
+    public TestGenericClass<?, S> i;
+    public T f1;
+    public T[] f2;
+    public S f3;
+    public List<? extends T> list1;
+    public List<?> list2;
+    public List<? extends Serializable> list3;
+    public int f4;
+    public int[] f5;
+    public Map<? super T, S> map;
 }

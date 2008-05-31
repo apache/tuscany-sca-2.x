@@ -19,44 +19,30 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
+import java.lang.reflect.Field;
+
+import junit.framework.Assert;
+
+import org.junit.Test;
+
 /**
- *
  * @version $Rev$ $Date$
  */
-public class MyException extends Exception {
-    private String error;
-    private int code;
-
-    public MyException() {
-        super();
+public class JavaReflectionHelperTestCase {
+    @Test
+    public void testErasure() throws Exception {
+        for (Field f : TestGenericClass.class.getDeclaredFields()) {
+            Class<?> cls = CodeGenerationHelper.getErasure(f.getGenericType());
+            System.out.println(cls.getName());
+            Assert.assertSame(f.getType(), cls);
+        }
     }
 
-    public MyException(String message, Throwable cause) {
-        super(message, cause);
+    @Test
+    public void testSignature() throws Exception {
+        for (Field f : TestGenericClass.class.getDeclaredFields()) {
+            String sig = CodeGenerationHelper.getSignature(f.getGenericType());
+            System.out.println(sig);
+        }
     }
-
-    public MyException(String message) {
-        super(message);
-    }
-
-    public MyException(Throwable cause) {
-        super(cause);
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
 }
