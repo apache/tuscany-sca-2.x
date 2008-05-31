@@ -19,9 +19,7 @@
 package org.apache.tuscany.sca.databinding.jaxb.axiom;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.JAXBIntrospector;
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMAbstractFactory;
@@ -33,8 +31,6 @@ import org.apache.tuscany.sca.databinding.TransformationException;
 import org.apache.tuscany.sca.databinding.impl.BaseTransformer;
 import org.apache.tuscany.sca.databinding.jaxb.JAXBContextHelper;
 import org.apache.tuscany.sca.databinding.jaxb.JAXBDataBinding;
-import org.apache.tuscany.sca.interfacedef.DataType;
-import org.apache.tuscany.sca.interfacedef.util.XMLType;
 
 /**
  * JAXB Object --> AXIOM OMElement transformer
@@ -57,36 +53,8 @@ public class JAXB2OMElement extends BaseTransformer<Object, OMElement> implement
         } catch (JAXBException e) {
             throw new TransformationException(e);
         }
-        QName name = JAXBDataBinding.ROOT_ELEMENT;
-        if (context != null) {
-            DataType dataType = context.getTargetDataType();
-            Object logical = dataType == null ? null : dataType.getLogical();
-            if (logical instanceof XMLType) {
-                XMLType xmlType = (XMLType)logical;
-                if (xmlType.isElement()) {
-                    name = xmlType.getElementName();
-                }
-            }
-        }
-
-        JAXBIntrospector introspector = jaxbContext.createJAXBIntrospector();
-        Object element = null;
-        Class<?> type = null;
-        if (source != null && introspector.isElement(source)) {
-            if (name == JAXBDataBinding.ROOT_ELEMENT) {
-                element = source;
-                name = introspector.getElementName(element);
-            } else {
-                source = JAXBIntrospector.getValue(source);
-            }
-        } 
-        if (element == null) {
-            type = source == null ? Object.class : source.getClass();
-            if (context != null) {
-                type = context.getSourceDataType().getPhysical();
-            }
-            element = new JAXBElement(name, type, source);
-        }
+        Object element = JAXBContextHelper.createJAXBElement(jaxbContext, context.getTargetDataType(), source);
+        QName name = jaxbContext.createJAXBIntrospector().getElementName(element);
         JAXBDataSource dataSource = new JAXBDataSource(element, jaxbContext);
         OMElement omElement = AxiomHelper.createOMElement(factory, name, dataSource);
         return omElement;

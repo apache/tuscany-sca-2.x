@@ -21,7 +21,6 @@ package org.apache.tuscany.sca.databinding.jaxb;
 import java.io.StringWriter;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.transform.stream.StreamResult;
 
@@ -43,7 +42,7 @@ public class JAXB2String extends BaseTransformer<Object, String> implements Pull
             Marshaller marshaller = context.createMarshaller();
             StringWriter writer = new StringWriter();
             StreamResult result = new StreamResult(writer);
-            JAXBElement<?> jaxbElement = JAXBContextHelper.createJAXBElement(tContext.getSourceDataType(), source);
+            Object jaxbElement = JAXBContextHelper.createJAXBElement(context, tContext.getSourceDataType(), source);
             marshaller.marshal(jaxbElement, result);
             return writer.toString();
         } catch (Exception e) {

@@ -88,7 +88,8 @@ public class POJOTestCase extends TestCase {
         service.setId("ID001");
         bean.setService(service);
         bean.setOtherService(service);
-        JAXBElement<Object> element = new JAXBElement<Object>(new QName("http://ns1", "bean"), Object.class, bean);
+        QName name = new QName("http://ns1", "bean");
+        JAXBElement<Object> element = new JAXBElement<Object>(name, Object.class, bean);
         TransformationContext tContext = new TransformationContextImpl();
         XMLStreamReader reader = new JAXB2XMLStreamReader().transform(element, tContext);
 

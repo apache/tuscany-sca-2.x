@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.sca.databinding.jaxb;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
@@ -44,10 +45,16 @@ public class JAXB2XMLStreamReader extends BaseTransformer<Object, XMLStreamReade
         }
         try {
             QName name = null;
-            Object bean = source;
-            JAXBElement<?> element = JAXBContextHelper.createJAXBElement(context.getSourceDataType(), source);
-            name = element.getName();
-            bean = element.getValue();
+            Object bean = null;
+            if (source instanceof JAXBElement) {
+                bean = ((JAXBElement)source).getValue();
+                name = ((JAXBElement)source).getName();
+            } else {
+                JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, true);
+                Object element = JAXBContextHelper.createJAXBElement(jaxbContext, context.getSourceDataType(), source);
+                name = jaxbContext.createJAXBIntrospector().getElementName(element);
+                bean = source;
+            }
             BeanXMLStreamReaderImpl reader = new BeanXMLStreamReaderImpl(name, bean);
             return reader;
         } catch (Exception e) {

@@ -24,6 +24,7 @@ import java.io.IOException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.JAXBIntrospector;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.bind.Unmarshaller;
@@ -52,7 +53,7 @@ public class JAXBContextHelper {
     public static final String JAXB_CLASSES = "jaxb.classes";
 
     public static final String JAXB_CONTEXT_PATH = "jaxb.contextPath";
-    
+
     private static final JAXBContextCache cache = new JAXBContextCache();
 
     private JAXBContextHelper() {
@@ -61,7 +62,7 @@ public class JAXBContextHelper {
     public static JAXBContext createJAXBContext(Class<?> cls) throws JAXBException {
         return cache.getJAXBContext(cls);
     }
-    
+
     public static JAXBContext createJAXBContext(TransformationContext tContext, boolean source) throws JAXBException {
         if (tContext == null)
             throw new TransformationException("JAXB context is not set for the transformation.");
@@ -81,28 +82,25 @@ public class JAXBContextHelper {
         }
         return context;
     }
-    
+
     public static Unmarshaller getUnmarshaller(JAXBContext context) throws JAXBException {
         return cache.getUnmarshaller(context);
     }
-    
+
     public static Marshaller getMarshaller(JAXBContext context) throws JAXBException {
         return cache.getMarshaller(context);
     }
 
     @SuppressWarnings("unchecked")
-    public static JAXBElement createJAXBElement(DataType dataType, Object value) {
-        if (value instanceof JAXBElement) {
-            return (JAXBElement)value;
-        } else {
-            Class type = dataType.getPhysical();
-            Object logical = dataType.getLogical();
-            QName elementName = JAXBDataBinding.ROOT_ELEMENT;
+    public static Object createJAXBElement(JAXBContext context, DataType dataType, Object value) {
+        Class<?> type = dataType.getPhysical();
+        QName name = JAXBDataBinding.ROOT_ELEMENT;
+        if (context != null) {
+            Object logical = dataType == null ? null : dataType.getLogical();
             if (logical instanceof XMLType) {
                 XMLType xmlType = (XMLType)logical;
-                QName element = xmlType.getElementName();
-                if (element != null) {
-                    elementName = element;
+                if (xmlType.isElement()) {
+                    name = xmlType.getElementName();
                 } else {
                     /**
                      * Set the declared type to Object.class so that xsi:type
@@ -113,15 +111,29 @@ public class JAXBContextHelper {
             } else {
                 type = Object.class;
             }
-            return new JAXBElement(elementName, type, value);
         }
+
+        JAXBIntrospector introspector = context.createJAXBIntrospector();
+        Object element = null;
+        if (value != null && introspector.isElement(value)) {
+            if (name == JAXBDataBinding.ROOT_ELEMENT) {
+                element = value;
+                name = introspector.getElementName(element);
+            } else {
+                value = JAXBIntrospector.getValue(value);
+            }
+        }
+        if (element == null) {
+            element = new JAXBElement(name, type, value);
+        }
+        return element;
     }
 
     @SuppressWarnings("unchecked")
-    public static Object createReturnValue(DataType dataType, Object value) {
+    public static Object createReturnValue(JAXBContext context, DataType dataType, Object value) {
         Class<?> cls = getJavaType(dataType);
         if (cls == JAXBElement.class) {
-            return createJAXBElement(dataType, value);
+            return createJAXBElement(context, dataType, value);
         } else {
             if (value instanceof JAXBElement) {
                 return ((JAXBElement)value).getValue();
@@ -204,7 +216,7 @@ public class JAXBContextHelper {
         }
         return new XMLType(elementQName, typeQName);
     }
-    
+
     public static Node generateSchema(JAXBContext context) throws Exception {
         SchemaOutputResolverImpl resolver = new SchemaOutputResolverImpl();
         context.generateSchema(resolver);
@@ -225,6 +237,5 @@ public class JAXBContextHelper {
         }
 
     }
-    
 
 }
