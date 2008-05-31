@@ -32,17 +32,14 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.dom.DOMResult;
 
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.databinding.XMLTypeHelper;
 import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
 import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
 import org.apache.tuscany.sca.interfacedef.util.XMLType;
-import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.apache.tuscany.sca.xsd.XSDFactory;
-
+import org.apache.tuscany.sca.xsd.XSDefinition;
 import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Node;
 
 public class JAXBTypeHelper implements XMLTypeHelper {
     private static final String SCHEMA_NS = "http://www.w3.org/2001/XMLSchema";
@@ -78,6 +75,12 @@ public class JAXBTypeHelper implements XMLTypeHelper {
         List<XSDefinition> definitions = new ArrayList<XSDefinition>();
         generateJAXBSchemas(definitions, factory);
         return definitions;
+    }
+    
+    public static Map<String, DOMResult> generateSchema(JAXBContext context) throws IOException {
+        SchemaOutputResolverImpl resolver = new SchemaOutputResolverImpl();
+        context.generateSchema(resolver);
+        return resolver.getResults();
     }
 
     private void generateJAXBSchemas(List<XSDefinition> definitions, XSDFactory factory) {

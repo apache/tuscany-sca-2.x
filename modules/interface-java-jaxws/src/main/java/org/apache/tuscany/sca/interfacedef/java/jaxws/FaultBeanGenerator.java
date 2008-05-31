@@ -41,17 +41,14 @@ import javax.xml.ws.WebFault;
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 public class FaultBeanGenerator implements Opcodes {
-    private final ClassWriter writer;
+    private final ClassWriter cw;
     private final Class<?> exceptionClass;
-    private final String className;
     private final String classDescriptor;
+    private final String classSignature;
     private byte[] content;
     private Class<?> faultBeanClass;
 
@@ -60,10 +57,10 @@ public class FaultBeanGenerator implements Opcodes {
 
     public FaultBeanGenerator(Class<? extends Throwable> exceptionClass) {
         super();
-        this.writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        this.cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         this.exceptionClass = exceptionClass;
-        this.className = getFaultBeanName(exceptionClass);
-        this.classDescriptor = "L" + className + ";";
+        this.classDescriptor = getFaultBeanName(exceptionClass);
+        this.classSignature = "L" + classDescriptor + ";";
     }
 
     protected List<PropertyDescriptor> getProperties() {
@@ -102,7 +99,7 @@ public class FaultBeanGenerator implements Opcodes {
             for (int i = 0; i < size; i++) {
                 propOrder[i] = props.get(i).getName();
             }
-            addJAXBAnnotations(propOrder);
+            annotateClass(propOrder);
             for (PropertyDescriptor pd : props) {
                 visitProperty(pd);
             }
@@ -111,7 +108,7 @@ public class FaultBeanGenerator implements Opcodes {
     }
 
     protected void visit() {
-        writer.visit(V1_5, ACC_PUBLIC + ACC_FINAL + ACC_SUPER, className, null, "java/lang/Object", null);
+        WrapperBeanGenerator.declareClass(cw, classDescriptor);
     }
 
     private static String getFaultBeanName(Class<?> exceptionClass) {
@@ -133,17 +130,6 @@ public class FaultBeanGenerator implements Opcodes {
         return faultBeanName;
     }
 
-    private String getSetterName(PropertyDescriptor pd) {
-        String name = pd.getName();
-        return "set" + Character.toUpperCase(name.charAt(0)) + name.substring(1);
-    }
-
-    private String getGetterName(PropertyDescriptor pd) {
-        String name = pd.getName();
-        String prefix = pd.getPropertyType() == boolean.class ? "is" : "get";
-        return prefix + Character.toUpperCase(name.charAt(0)) + name.substring(1);
-    }
-
     protected void visitProperty(PropertyDescriptor pd) {
         Method getter = pd.getReadMethod();
         if (getter == null) {
@@ -160,73 +146,18 @@ public class FaultBeanGenerator implements Opcodes {
         // Add the field
         String field = pd.getName();
         String desc = Type.getDescriptor(pd.getPropertyType());
-        FieldVisitor fv = writer.visitField(ACC_PRIVATE, field, desc, null, null);
-        fv.visitEnd();
-
-        String getterName = getGetterName(pd);
-        String getterDesc = Type.getMethodDescriptor(Type.getType(pd.getPropertyType()), new Type[0]);
-
-        // Add the getter
-        MethodVisitor mv = writer.visitMethod(ACC_PUBLIC, getterName, getterDesc, null, null);
-        mv.visitCode();
-        Label l0 = new Label();
-        mv.visitLabel(l0);
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, className, field, desc);
-        mv.visitInsn(CodeGenerationHelper.getReturnOPCode(desc));
-        Label l1 = new Label();
-        mv.visitLabel(l1);
-        mv.visitLocalVariable("this", classDescriptor, null, l0, l1, 0);
-        mv.visitMaxs(1, 1);
-        mv.visitEnd();
-
-        String setterName = getSetterName(pd);
-        String setterDesc =
-            Type.getMethodDescriptor(Type.getType(void.class), new Type[] {Type.getType(pd.getPropertyType())});
-        mv = writer.visitMethod(ACC_PUBLIC, setterName, setterDesc, null, null);
-
-        mv.visitCode();
-        l0 = new Label();
-        mv.visitLabel(l0);
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitVarInsn(CodeGenerationHelper.getLoadOPCode(desc), 1);
-        mv.visitFieldInsn(PUTFIELD, className, field, desc);
-        l1 = new Label();
-        mv.visitLabel(l1);
-        mv.visitInsn(RETURN);
-        Label l2 = new Label();
-        mv.visitLabel(l2);
-        mv.visitLocalVariable("this", classDescriptor, null, l0, l2, 0);
-        mv.visitLocalVariable(field, desc, null, l0, l2, 1);
-        mv.visitMaxs(2, 2);
-        mv.visitEnd();
-
+        String genericDesc = CodeGenerationHelper.getSignature(pd.getReadMethod().getGenericReturnType());
+        
+        WrapperBeanGenerator.declareProperty(cw, classDescriptor, classSignature, field, desc, genericDesc);
     }
 
     protected void visitEnd() {
-        addDefaultConstructor();
-        writer.visitEnd();
-        content = writer.toByteArray();
+        WrapperBeanGenerator.declareConstructor(cw, classSignature);
+        cw.visitEnd();
+        content = cw.toByteArray();
     }
 
-    protected void addDefaultConstructor() {
-        MethodVisitor mv = writer.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
-        mv.visitCode();
-        Label label0 = new Label();
-        mv.visitLabel(label0);
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
-        Label label1 = new Label();
-        mv.visitLabel(label1);
-        mv.visitInsn(RETURN);
-        Label lable2 = new Label();
-        mv.visitLabel(lable2);
-        mv.visitLocalVariable("this", classDescriptor, null, label0, lable2, 0);
-        mv.visitMaxs(1, 1);
-        mv.visitEnd();
-    }
-
-    protected void addJAXBAnnotations(String[] propOrder) {
+    protected void annotateClass(String[] propOrder) {
         WebFault webFault = exceptionClass.getAnnotation(WebFault.class);
         String ns = null, name = null;
         if (webFault != null) {
@@ -240,13 +171,13 @@ public class FaultBeanGenerator implements Opcodes {
             name = exceptionClass.getSimpleName();
         }
         String desc = Type.getDescriptor(XmlRootElement.class);
-        AnnotationVisitor av = writer.visitAnnotation(desc, true);
+        AnnotationVisitor av = cw.visitAnnotation(desc, true);
         av.visit("namespace", ns);
         av.visit("name", name);
         av.visitEnd();
 
         desc = Type.getDescriptor(XmlType.class);
-        av = writer.visitAnnotation(desc, true);
+        av = cw.visitAnnotation(desc, true);
         av.visit("namespace", ns);
         av.visit("name", name);
         AnnotationVisitor pv = av.visitArray("propOrder");
@@ -257,7 +188,7 @@ public class FaultBeanGenerator implements Opcodes {
         av.visitEnd();
 
         desc = Type.getDescriptor(XmlAccessorType.class);
-        av = writer.visitAnnotation(desc, true);
+        av = cw.visitAnnotation(desc, true);
         av.visitEnum("value", Type.getDescriptor(XmlAccessType.class), "FIELD");
         av.visitEnd();
 
@@ -266,14 +197,14 @@ public class FaultBeanGenerator implements Opcodes {
     public Class<?> getFaultBeanClass() {
         if (faultBeanClass == null && content != null) {
             faultBeanClass =
-                new GeneratedClassLoader(exceptionClass.getClassLoader(), className.replace('/', '.'), content)
+                new GeneratedClassLoader(exceptionClass.getClassLoader(), classDescriptor.replace('/', '.'), content)
                     .getGeneratedClass();
         }
         return faultBeanClass;
     }
 
     public String getClassName() {
-        return className.replace('/', '.');
+        return classDescriptor.replace('/', '.');
     }
 
     public byte[] getContent() {

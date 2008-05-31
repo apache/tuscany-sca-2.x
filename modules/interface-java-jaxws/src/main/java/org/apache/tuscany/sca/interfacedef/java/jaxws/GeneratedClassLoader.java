@@ -20,11 +20,21 @@
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
 import java.security.SecureClassLoader;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GeneratedClassLoader extends SecureClassLoader {
     private String className;
     private byte[] content;
     private Class<?> cls;
+    
+    private static class GeneratedClass {
+        private String className;
+        private byte[] content;
+        private Class<?> cls;
+    }
+    
+    private Map<String, GeneratedClass> generatedClasses = new HashMap<String, GeneratedClass>();
 
     public GeneratedClassLoader(ClassLoader parentLoader, String className, byte[] content) {
         super(parentLoader);
