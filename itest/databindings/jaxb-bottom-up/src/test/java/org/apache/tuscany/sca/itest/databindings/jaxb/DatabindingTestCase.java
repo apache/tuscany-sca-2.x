@@ -154,7 +154,6 @@ public class DatabindingTestCase {
      * Service method invoked is getGreetingsArrayList.
      */
     @Test
-    @Ignore
     public void testWSArrayList() throws Exception {
         HelloServiceSimpleClient helloServiceSimpleClient = domain.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
         performTestArrayList(helloServiceSimpleClient);
@@ -179,6 +178,66 @@ public class DatabindingTestCase {
     @Ignore
     public void testWSHashMap() throws Exception {
         HelloServiceSimpleClient helloServiceSimpleClient = domain.getService(HelloServiceSimpleClient.class, "HelloServiceSimpleClientWSComponent");
+        performTestHashMap(helloServiceSimpleClient);
+    }
+
+    /**
+     * Invokes the HelloLocalServiceSimple service using SCA binding.
+     * Service method invoked is getGreetings.
+     */
+    @Test
+    public void testSCALocal() throws Exception {
+        HelloServiceSimpleClient helloServiceSimpleClient = domain.getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
+        performTest(helloServiceSimpleClient);
+    }
+
+    /**
+     * Invokes the HelloLocalServiceSimple service using SCA binding.
+     * Service method invoked is getGreetingsArray.
+     */
+    @Test
+    public void testSCALocalArray() throws Exception {
+        HelloServiceSimpleClient helloServiceSimpleClient = domain.getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
+        performTestArray(helloServiceSimpleClient);
+    }
+
+    /**
+     * Invokes the HelloLocalServiceSimple service using SCA binding.
+     * Service method invoked is getGreetingsList.
+     */
+    @Test
+    public void testSCALocalList() throws Exception {
+        HelloServiceSimpleClient helloServiceSimpleClient = domain.getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
+        performTestList(helloServiceSimpleClient);
+    }
+
+    /**
+     * Invokes the HelloLocalServiceSimple service using SCA binding.
+     * Service method invoked is getGreetingsArrayList.
+     */
+    @Test
+    public void testSCALocalArrayList() throws Exception {
+        HelloServiceSimpleClient helloServiceSimpleClient = domain.getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
+        performTestArrayList(helloServiceSimpleClient);
+    }
+
+    /**
+     * Invokes the HelloLocalServiceSimple service using SCA binding.
+     * Service method invoked is getGreetingsMap.
+     */
+    @Test
+    public void testSCALocalMap() throws Exception {
+        HelloServiceSimpleClient helloServiceSimpleClient = domain.getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
+        performTestMap(helloServiceSimpleClient);
+    }
+
+    /**
+     * Invokes the HelloLocalServiceSimple service using SCA binding.
+     * Service method invoked is getGreetingsHashMap.
+     */
+    @Test
+    public void testSCALocalHashMap() throws Exception {
+        HelloServiceSimpleClient helloServiceSimpleClient = domain.getService(HelloServiceSimpleClient.class, "HelloLocalServiceSimpleClientSCAComponent");
         performTestHashMap(helloServiceSimpleClient);
     }
 

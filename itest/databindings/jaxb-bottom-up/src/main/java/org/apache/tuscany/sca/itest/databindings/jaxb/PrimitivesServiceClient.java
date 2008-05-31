@@ -16,14 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.sca.itest.databindings.jaxb;
 
-import org.osoa.sca.annotations.Remotable;
 
 /**
- * The interface for HelloServiceSimple.
+ * The interface for PrimitivesServiceClient.
  */
-@Remotable
-public interface HelloServiceSimple extends HelloLocalServiceSimple {
-    // Add any methods to the local interface.
+public interface PrimitivesServiceClient {
+    boolean negateBooleanForward(boolean flag);
+    boolean[] negateBooleanArrayForward(boolean[] flags);
+    byte negateByteForward(byte b);
+    byte[] negateByteArrayForward(byte[] ba);
+    short negateShortForward(short s);
+    short[] negateShortArrayForward(short[] sa);
+    int negateIntForward(int i);
+    int[] negateIntArrayForward(int[] ia);
+    long negateLongForward(long l);
+    long[] negateLongArrayForward(long[] la);
+    float negateFloatForward(float f);
+    float[] negateFloatArrayForward(float[] fa);
+    double negateDoubleForward(double d);
+    double[] negateDoubleArrayForward(double[] da);
 }

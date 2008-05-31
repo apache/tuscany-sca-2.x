@@ -34,12 +34,21 @@
     <!-- A HelloServiceSimpleClient component that uses SCA binding to invoke HelloServiceSimple service -->
     <component name="HelloServiceSimpleClientSCAComponent">
         <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.HelloServiceSimpleClientImpl" />
-        <reference name="helloServiceSimple" target="HelloServiceSimpleComponent">
+        <reference name="helloServiceSimple" target="HelloServiceSimpleComponent/HelloServiceSimple">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.HelloServiceSimple"/>
             <binding.sca/>
         </reference>
     </component>
     
+    <!-- A HelloLocalServiceSimpleClient component that uses SCA binding to invoke HelloLocalServiceSimple service -->
+    <component name="HelloLocalServiceSimpleClientSCAComponent">
+        <implementation.java class="org.apache.tuscany.sca.itest.databindings.jaxb.impl.HelloLocalServiceSimpleClientImpl" />
+        <reference name="helloLocalServiceSimple" target="HelloServiceSimpleComponent/HelloLocalServiceSimple">
+            <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.HelloLocalServiceSimple"/>
+            <binding.sca/>
+        </reference>
+    </component>
+
     <!-- Components used to implement the services -->
     <!-- A HelloServiceSimple component. -->
     <component name="HelloServiceSimpleComponent">
@@ -47,6 +56,9 @@
         <service name="HelloServiceSimple">
             <interface.java interface="org.apache.tuscany.sca.itest.databindings.jaxb.HelloServiceSimple"/>
             <binding.ws uri="http://localhost:8085/hs-ep0"/>
+            <binding.sca/>
+        </service>
+        <service name="HelloLocalServiceSimple">
             <binding.sca/>
         </service>
     </component>
