@@ -263,6 +263,8 @@ public class DeployableCompositeCollectionImpl implements ItemCollection, LocalI
             throw new ContributionReadException(e);
         } catch (ContributionResolveException e) {
             throw new ContributionReadException(e);
+        } catch (Throwable e) {
+            throw new ContributionReadException(e);
         }
     }
     
