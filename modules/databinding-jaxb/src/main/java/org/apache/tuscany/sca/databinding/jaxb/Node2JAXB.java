@@ -44,7 +44,7 @@ public class Node2JAXB extends BaseTransformer<Node, Object> implements PullTran
             JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             Object result = unmarshaller.unmarshal(source, JAXBContextHelper.getJavaType(context.getTargetDataType()));
-            return JAXBContextHelper.createReturnValue(context.getTargetDataType(), result);
+            return JAXBContextHelper.createReturnValue(jaxbContext, context.getTargetDataType(), result);
         } catch (Exception e) {
             throw new TransformationException(e);
         }

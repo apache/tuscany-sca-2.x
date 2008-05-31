@@ -60,7 +60,7 @@ public class OMElement2JAXB extends BaseTransformer<OMElement, Object> implement
                     Object result =
                         unmarshaller.unmarshal(reader, JAXBContextHelper.getJavaType(context.getTargetDataType()));
                     reader.close();
-                    return JAXBContextHelper.createReturnValue(context.getTargetDataType(), result);
+                    return JAXBContextHelper.createReturnValue(jaxbContext, context.getTargetDataType(), result);
                 }
             });
         } catch (PrivilegedActionException e) {

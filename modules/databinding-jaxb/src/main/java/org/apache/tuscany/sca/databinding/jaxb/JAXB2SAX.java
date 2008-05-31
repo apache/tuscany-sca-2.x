@@ -20,7 +20,6 @@
 package org.apache.tuscany.sca.databinding.jaxb;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 
 import org.apache.tuscany.sca.databinding.PushTransformer;
@@ -52,7 +51,7 @@ public class JAXB2SAX extends BaseTransformer<Object, ContentHandler> implements
         try {
             JAXBContext context = JAXBContextHelper.createJAXBContext(tContext, true);
             Marshaller marshaller = context.createMarshaller();
-            JAXBElement<?> jaxbElement = JAXBContextHelper.createJAXBElement(tContext.getSourceDataType(), source);
+            Object jaxbElement = JAXBContextHelper.createJAXBElement(context, tContext.getSourceDataType(), source);
             marshaller.marshal(jaxbElement, target);
         } catch (Exception e) {
             throw new TransformationException(e);

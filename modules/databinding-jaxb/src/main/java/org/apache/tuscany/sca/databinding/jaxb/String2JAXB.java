@@ -46,7 +46,7 @@ public class String2JAXB extends BaseTransformer<String, Object> implements
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             StreamSource streamSource = new StreamSource(new StringReader(source));
             Object result = unmarshaller.unmarshal(streamSource, JAXBContextHelper.getJavaType(context.getTargetDataType()));
-            return JAXBContextHelper.createReturnValue(context.getTargetDataType(), result);
+            return JAXBContextHelper.createReturnValue(jaxbContext, context.getTargetDataType(), result);
         } catch (Exception e) {
             throw new TransformationException(e);
         }

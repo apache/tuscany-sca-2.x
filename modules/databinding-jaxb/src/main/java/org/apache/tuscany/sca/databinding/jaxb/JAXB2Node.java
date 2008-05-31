@@ -19,7 +19,6 @@
 package org.apache.tuscany.sca.databinding.jaxb;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 
 import org.apache.tuscany.sca.databinding.PullTransformer;
@@ -46,7 +45,7 @@ public class JAXB2Node extends BaseTransformer<Object, Node> implements PullTran
             // FIXME: The default Marshaller doesn't support
             // marshaller.getNode()
             Document document = DOMHelper.newDocument();
-            JAXBElement<?> jaxbElement = JAXBContextHelper.createJAXBElement(tContext.getSourceDataType(), source);
+            Object jaxbElement = JAXBContextHelper.createJAXBElement(context, tContext.getSourceDataType(), source);
             marshaller.marshal(jaxbElement, document);
             return DOMHelper.adjustElementName(tContext, document.getDocumentElement());
         } catch (Exception e) {

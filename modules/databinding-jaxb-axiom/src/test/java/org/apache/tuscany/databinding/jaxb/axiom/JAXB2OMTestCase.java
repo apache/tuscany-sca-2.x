@@ -34,6 +34,7 @@ import org.apache.tuscany.sca.databinding.jaxb.axiom.JAXB2OMElement;
 import org.apache.tuscany.sca.databinding.xml.Node2XMLStreamReader;
 import org.apache.tuscany.sca.interfacedef.DataType;
 import org.apache.tuscany.sca.interfacedef.impl.DataTypeImpl;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
 import org.junit.Test;
 import org.w3c.dom.Node;
 
@@ -47,18 +48,20 @@ import com.example.ipo.jaxb.USState;
  */
 public class JAXB2OMTestCase {
     @Test
-    public void testTransformType() throws Exception {
+    public void testTransformElement() throws Exception {
         JAXBElement<PurchaseOrderType> po = createPO();
-        DataType sourceDataType = new DataTypeImpl<Class>(PurchaseOrderType.class, null);
+        DataType<?> sourceDataType = new DataTypeImpl<XMLType>(PurchaseOrderType.class, XMLType.UNKNOWN);
+        DataType<?> targetDataType = new DataTypeImpl<XMLType>(PurchaseOrderType.class, new XMLType(po.getName(), null));
         TransformationContext tContext = new TransformationContextImpl();
         tContext.setSourceDataType(sourceDataType);
+        tContext.setTargetDataType(targetDataType);
 
         // Force the JAXBContext to be cached
         JAXBContextHelper.createJAXBContext(tContext, true);
-        
+
         long start = System.currentTimeMillis();
         JAXB2OMElement t1 = new JAXB2OMElement();
-        OMElement om = t1.transform(po.getValue(), tContext);
+        OMElement om = t1.transform(po, tContext);
         long duration1 = System.currentTimeMillis() - start;
         StringWriter sw = new StringWriter();
         // serializeAndConsume() will trigger the JAXBDataSource.serialize(Writer, OMOutputFormat)
@@ -66,7 +69,7 @@ public class JAXB2OMTestCase {
         System.out.println(sw.toString());
 
         start = System.currentTimeMillis();
-        Node node = new JAXB2Node().transform(po.getValue(), tContext);
+        Node node = new JAXB2Node().transform(po, tContext);
         XMLStreamReader reader = new Node2XMLStreamReader().transform(node, null);
         om = new StAXOMBuilder(reader).getDocumentElement();
         sw = new StringWriter();
@@ -77,12 +80,14 @@ public class JAXB2OMTestCase {
     }
 
     @Test
-    public void testTransformElement() throws Exception {
+    public void testTransformType() throws Exception {
         JAXBElement<PurchaseOrderType> po = createPO();
-        DataType sourceDataType = new DataTypeImpl<Class>(PurchaseOrderType.class, null);
+        DataType<?> sourceDataType = new DataTypeImpl<XMLType>(PurchaseOrderType.class, XMLType.UNKNOWN);
+        DataType<?> targetDataType = new DataTypeImpl<XMLType>(PurchaseOrderType.class, new XMLType(po.getName(), null));
         TransformationContext tContext = new TransformationContextImpl();
         tContext.setSourceDataType(sourceDataType);
-        OMElement om = new JAXB2OMElement().transform(po, tContext);
+        tContext.setTargetDataType(targetDataType);
+        OMElement om = new JAXB2OMElement().transform(po.getValue(), tContext);
         StringWriter sw = new StringWriter();
         om.serializeAndConsume(sw);
         System.out.println(sw.toString());
