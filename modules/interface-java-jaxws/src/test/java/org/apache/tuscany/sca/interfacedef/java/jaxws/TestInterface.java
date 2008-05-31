@@ -28,4 +28,6 @@ public interface TestInterface {
     int convert(String currency1, String currency2);
     List<Double> getRates(String currency);
     void check(boolean flag);
+    String[] list(int[] list);
+    int[][] map(String[][] strs);
 }

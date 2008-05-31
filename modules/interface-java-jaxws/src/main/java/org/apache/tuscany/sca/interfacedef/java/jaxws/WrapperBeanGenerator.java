@@ -42,8 +42,8 @@ public class WrapperBeanGenerator implements Opcodes {
                                      String wrapperClassSignature,
                                      String wrapperNamespace,
                                      String wrapperName) {
-        declareWrapperClass(cw, wrapperClassDescriptor);
-        annotateWrapperClass(cw, wrapperName, wrapperNamespace);
+        declareClass(cw, wrapperClassDescriptor);
+        annotateClass(cw, wrapperName, wrapperNamespace);
         declareConstructor(cw, wrapperClassSignature);
     }
 
@@ -78,7 +78,7 @@ public class WrapperBeanGenerator implements Opcodes {
             //            if (paramTypes[i].isPrimitive()) {
             //                propTypeSignature = null;
             //            }
-            processProperty(cw,
+            declareProperty(cw,
                             wrapperClassDescriptor,
                             wrapperClassSignature,
                             propName,
@@ -110,7 +110,7 @@ public class WrapperBeanGenerator implements Opcodes {
             //        if (returnType.isPrimitive()) {
             //            propTypeSignature = null;
             //        }
-            processProperty(cw,
+            declareProperty(cw,
                             wrapperClassDescriptor,
                             wrapperClassSignature,
                             propName,
@@ -124,15 +124,15 @@ public class WrapperBeanGenerator implements Opcodes {
         return generated;
     }
 
-    private static void processProperty(ClassWriter cw,
-                                        String classDescriptor,
-                                        String wrapperClassSignature,
-                                        String propName,
-                                        String propClassSignature,
-                                        String propTypeSignature) {
-        //        if (propClassSignature.equals(propTypeSignature)) {
-        //            propTypeSignature = null;
-        //        }
+    public static void declareProperty(ClassWriter cw,
+                                       String classDescriptor,
+                                       String wrapperClassSignature,
+                                       String propName,
+                                       String propClassSignature,
+                                       String propTypeSignature) {
+        if (propClassSignature.equals(propTypeSignature)) {
+            propTypeSignature = null;
+        }
         declareField(cw, propName, propClassSignature, propTypeSignature);
         decalreGetter(cw, classDescriptor, wrapperClassSignature, propName, propClassSignature, propTypeSignature);
         declareSetter(cw, classDescriptor, wrapperClassSignature, propName, propClassSignature, propTypeSignature);
@@ -230,7 +230,7 @@ public class WrapperBeanGenerator implements Opcodes {
         }
     }
 
-    private static void declareConstructor(ClassWriter cw, String wrapperClassSignature) {
+    public static void declareConstructor(ClassWriter cw, String wrapperClassSignature) {
         MethodVisitor mv;
         mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
         mv.visitCode();
@@ -247,11 +247,11 @@ public class WrapperBeanGenerator implements Opcodes {
         mv.visitEnd();
     }
 
-    private static void declareWrapperClass(ClassWriter cw, String classDescriptor) {
+    public static void declareClass(ClassWriter cw, String classDescriptor) {
         cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER, classDescriptor, null, "java/lang/Object", null);
     }
 
-    private static void annotateWrapperClass(ClassWriter cw, String wrapperName, String wrapperNamespace) {
+    private static void annotateClass(ClassWriter cw, String wrapperName, String wrapperNamespace) {
         AnnotationVisitor av0;
         // @XmlRootElement
         av0 = cw.visitAnnotation("Ljavax/xml/bind/annotation/XmlRootElement;", true);
