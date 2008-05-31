@@ -29,20 +29,21 @@
                         <element name="symbol" minOccurs="1" type="xsd:string" />
                         <element name="price" minOccurs="1" type="xsd:float" nillable="true" /> <!-- max price reqested, actual response -->
                         <element name="name" minOccurs="0" type="xsd:string" />
+                        <element name="list" minOccurs="0" maxOccurs="unbounded" type="xsd:string" />
                     </sequence>
             </complexType>
             
             <element name="stockQuoteOffer">
                 <complexType>
                     <sequence>
-                        <element name="input" minOccurs="0" type="tns:StockOffer" />
+                        <element name="input" minOccurs="0" maxOccurs="unbounded" type="tns:StockOffer" />
                     </sequence>
                 </complexType>
             </element>
             <element name="stockQuoteOfferResponse">
                 <complexType>
                     <sequence>
-                        <element name="stockQuoteOfferReturn" minOccurs="0" type="tns:StockOffer" />
+                        <element name="stockQuoteOfferReturn" minOccurs="0" type="tns:StockOffer"/>
                     </sequence>
                 </complexType>
             </element>
