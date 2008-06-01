@@ -32,7 +32,9 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -83,6 +85,7 @@ final class NodeLauncherUtil {
     private static ClassLoader runtimeClassLoader(ClassLoader parentClassLoader, FilenameFilter filter) throws FileNotFoundException, URISyntaxException, MalformedURLException {
         
         // Build list of runtime JARs
+        Set<URL> jarDirectoryURLs = new HashSet<URL>();
         List<URL> jarURLs = new ArrayList<URL>();
         
         // First determine the path to the launcher class
@@ -112,6 +115,8 @@ final class NodeLauncherUtil {
 
                     // Collect JAR files from the directory containing the input JAR
                     // (e.g. the Tuscany modules directory)
+                    URL jarDirectoryURL = jarDirectory.toURI().toURL(); 
+                    jarDirectoryURLs.add(jarDirectoryURL);
                     collectJARFiles(jarDirectory, jarURLs, filter);
                     
                     File homeDirectory = jarDirectory.getParentFile();
@@ -119,16 +124,19 @@ final class NodeLauncherUtil {
                         
                         // Collect JARs from the ../modules directory
                         File modulesDirectory = new File(homeDirectory, "modules");
-                        if (modulesDirectory.exists() && !modulesDirectory.getAbsolutePath().equals(jarDirectory.getAbsolutePath())) {
+                        URL modulesDirectoryURL = modulesDirectory.toURI().toURL(); 
+                        if (!jarDirectoryURLs.contains(modulesDirectoryURL) && modulesDirectory.exists()) {
+                            jarDirectoryURLs.add(modulesDirectoryURL);
                             collectJARFiles(modulesDirectory, jarURLs, filter);
                         }
 
                         // Collect JARs from the ../lib directory
                         File libDirectory = new File(homeDirectory, "lib");
-                        if (libDirectory.exists() && !libDirectory.getAbsolutePath().equals(jarDirectory.getAbsolutePath())) {
+                        URL libDirectoryURL = libDirectory.toURI().toURL(); 
+                        if (!jarDirectoryURLs.contains(libDirectoryURL) && libDirectory.exists()) {
+                            jarDirectoryURLs.add(libDirectoryURL);
                             collectJARFiles(libDirectory, jarURLs, filter);
                         }
-
                     }
                 }
             }
@@ -144,20 +152,26 @@ final class NodeLauncherUtil {
         if (home != null && home.length() != 0) {
             logger.fine(TUSCANY_HOME + ": " + home);
             File homeDirectory = new File(home);
-            if (homeDirectory.exists()) {
+            URL homeDirectoryURL = homeDirectory.toURI().toURL(); 
+            if (!jarDirectoryURLs.contains(homeDirectoryURL) && homeDirectory.exists()) {
                 
                 // Collect files under $TUSCANY_HOME
+                jarDirectoryURLs.add(homeDirectoryURL);
                 collectJARFiles(homeDirectory, jarURLs, filter);
                 
                 // Collect files under $TUSCANY_HOME/modules
                 File modulesDirectory = new File(homeDirectory, "modules");
-                if (modulesDirectory.exists()) {
+                URL modulesDirectoryURL = modulesDirectory.toURI().toURL(); 
+                if (!jarDirectoryURLs.contains(modulesDirectoryURL) && modulesDirectory.exists()) {
+                    jarDirectoryURLs.add(modulesDirectoryURL);
                     collectJARFiles(modulesDirectory, jarURLs, filter);
                 }
     
                 // Collect files under $TUSCANY_HOME/lib
                 File libDirectory = new File(homeDirectory, "lib");
-                if (libDirectory.exists()) {
+                URL libDirectoryURL = libDirectory.toURI().toURL(); 
+                if (!jarDirectoryURLs.contains(libDirectoryURL) && libDirectory.exists()) {
+                    jarDirectoryURLs.add(libDirectoryURL);
                     collectJARFiles(libDirectory, jarURLs, filter);
                 }
             }
@@ -167,7 +181,7 @@ final class NodeLauncherUtil {
         if (!jarURLs.isEmpty()) {
             
             // Return a ClassLoader configured with the runtime JARs
-            ClassLoader classLoader = new RuntimeClassLoader(jarURLs.toArray(new URL[0]), parentClassLoader);
+            ClassLoader classLoader = new RuntimeClassLoader(jarURLs.toArray(new URL[jarURLs.size()]), parentClassLoader);
             return classLoader;
             
         } else {
@@ -183,18 +197,14 @@ final class NodeLauncherUtil {
      * @throws MalformedURLException
      */
     private static void collectJARFiles(File directory, List<URL> urls, FilenameFilter filter) throws MalformedURLException {
-        File[] files = directory.listFiles(filter);
+        String[] files = directory.list(filter);
         if (files != null) {
+            URL directoryURL = new URL(directory.toURI().toString() + "/");
             int count = 0;
-            for (File file: files) {
-                URL url = file.toURI().toURL();
-                
-                // Collect URL of the JAR file, make sure that there are no
-                // duplicates in the list
-                if (!urls.contains(url)) {
-                    urls.add(url);
-                    count++;
-                }
+            for (String file: files) {
+                URL url = new URL(directoryURL, file);
+                urls.add(url);
+                count++;
             }
             if (count != 0) {
                 logger.fine("Runtime classpath: "+ count + " JAR" + (count > 1? "s":"")+ " from " + directory.toString());
@@ -274,6 +284,7 @@ final class NodeLauncherUtil {
     static Object node(String configurationURI, String compositeURI, String compositeContent, NodeLauncher.Contribution[] contributions) throws LauncherException {
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         try {
+            
             // Set up runtime ClassLoader
             ClassLoader runtimeClassLoader = runtimeClassLoader(Thread.currentThread().getContextClassLoader(),
                                                                 new StandAloneJARFileNameFilter());
@@ -290,6 +301,7 @@ final class NodeLauncherUtil {
             } else {
                 bootstrapClass = Class.forName(className);
             }
+            
             Object bootstrap;
             if (configurationURI != null) {
                 
