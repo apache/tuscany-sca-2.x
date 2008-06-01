@@ -21,6 +21,7 @@ package org.apache.tuscany.sca.domain.manager.impl;
 
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeQName;
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.contributionURI;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.lastModified;
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.locationURL;
 
 import java.io.IOException;
@@ -28,6 +29,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
@@ -58,6 +61,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.contribution.service.ContributionWriteException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.domain.manager.impl.CompositeGeneratorServiceImpl.Cache.ContributionCache;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.LocalItemCollection;
 import org.apache.tuscany.sca.implementation.data.collection.NotFoundException;
@@ -92,6 +96,19 @@ public class CompositeGeneratorServiceImpl extends HttpServlet implements Servle
     private URLArtifactProcessor<Contribution> contributionProcessor;
     private StAXArtifactProcessor<Composite> compositeProcessor;
     private XMLOutputFactory outputFactory;
+    
+    /**
+     * Cache contribution models. 
+     */
+    static class Cache {
+        static class ContributionCache {
+            private Contribution contribution;
+            private long contributionLastModified;
+        }
+        private Map<URL, ContributionCache> contributions = new HashMap<URL, ContributionCache>();
+    }
+    
+    private Cache cache = new Cache();
     
     /**
      * Initialize the component.
@@ -199,14 +216,36 @@ public class CompositeGeneratorServiceImpl extends HttpServlet implements Servle
         try {
             URI uri = URI.create(contributionURI);
             URL location = locationURL(contributionLocation);
+
+            // Get contribution from cache
+            ContributionCache contributionCache = cache.contributions.get(location);
+            long lastModified = lastModified(location);
+            if (contributionCache != null) {
+                if (contributionCache.contributionLastModified == lastModified) {
+                    return contributionCache.contribution;
+                }
+                
+                // Reset contribution cache
+                cache.contributions.remove(location);
+            }
+            
             Contribution contribution = (Contribution)contributionProcessor.read(null, uri, location);
             
             contributionProcessor.resolve(contribution, new DefaultModelResolver());
+
+            // Cache contribution
+            contributionCache = new ContributionCache();
+            contributionCache.contribution = contribution;
+            contributionCache.contributionLastModified = lastModified;
+            cache.contributions.put(location, contributionCache);
+            
             return contribution;
 
         } catch (ContributionReadException e) {
             throw e;
         } catch (MalformedURLException e) {
+            throw new ContributionReadException(e);
+        } catch (IOException e) {
             throw new ContributionReadException(e);
         } catch (ContributionResolveException e) {
             throw new ContributionReadException(e);

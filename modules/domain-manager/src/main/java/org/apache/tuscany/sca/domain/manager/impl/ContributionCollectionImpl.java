@@ -22,6 +22,7 @@ package org.apache.tuscany.sca.domain.manager.impl;
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.DEPLOYMENT_CONTRIBUTION_URI;
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeSimpleTitle;
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeSourceLink;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.lastModified;
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.locationURL;
 
 import java.io.ByteArrayInputStream;
@@ -33,7 +34,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -57,6 +60,7 @@ import org.apache.tuscany.sca.contribution.processor.URLArtifactProcessorExtensi
 import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.domain.manager.impl.ContributionCollectionImpl.Cache.ContributionCache;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
@@ -107,6 +111,22 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
     private XMLInputFactory inputFactory;
     private XMLOutputFactory outputFactory;
     private DocumentBuilder documentBuilder;
+    
+    /**
+     * Cache workspace and contribution models. 
+     */
+    static class Cache {
+        private Workspace workspace;
+        private long workspaceLastModified;
+        
+        static class ContributionCache {
+            private Contribution contribution;
+            private long contributionLastModified;
+        }
+        private Map<URL, ContributionCache> contributions = new HashMap<URL, ContributionCache>();
+    }
+    
+    private Cache cache = new Cache();
     
     /**
      * Initialize the component.
@@ -392,16 +412,35 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
         Workspace workspace;
         File file = new File(rootDirectory + "/" + workspaceFile);
         if (file.exists()) {
-            try {
-                FileInputStream is = new FileInputStream(file);
-                XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-                reader.nextTag();
-                workspace = (Workspace)staxProcessor.read(reader);
-            } catch (Exception e) {
-                throw new ServiceRuntimeException(e);
+            
+            // Get workspace from cache
+            if (cache.workspace != null && file.lastModified() == cache.workspaceLastModified) {
+                workspace = cache.workspace;
+                
+            } else {
+                
+                try {
+                    FileInputStream is = new FileInputStream(file);
+                    XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+                    reader.nextTag();
+                    workspace = (Workspace)staxProcessor.read(reader);
+                } catch (Exception e) {
+                    throw new ServiceRuntimeException(e);
+                }
+
+                // Cache workspace
+                cache.workspaceLastModified = file.lastModified();
+                cache.workspace = workspace;
             }
+            
         } else {
+            
+            // Create new workspace
             workspace = workspaceFactory.createWorkspace();
+
+            // Cache workspace
+            cache.workspaceLastModified = 0;
+            cache.workspace = workspace;
         }
         
         // Make sure that the workspace contains the cloud contribution
@@ -420,6 +459,7 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
             contribution.setLocation(cloudDirectory.toURI().toString());
             workspace.getContributions().add(contribution);
         }
+        
         return workspace;
     }
     
@@ -444,10 +484,16 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
             format.setIndent(2);
             
             // Write to workspace.xml
-            FileOutputStream os = new FileOutputStream(new File(rootDirectory + "/" + workspaceFile));
+            File file = new File(rootDirectory + "/" + workspaceFile);
+            FileOutputStream os = new FileOutputStream(file);
             XMLSerializer serializer = new XMLSerializer(os, format);
             serializer.serialize(document);
             os.close();
+            
+            // Cache workspace
+            cache.workspace = workspace;
+            cache.workspaceLastModified = file.lastModified();
+            
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
@@ -461,27 +507,51 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
      * @return
      */
     private Workspace readContributions(Workspace workspace) {
-        Workspace dependencyWorkspace = workspaceFactory.createWorkspace();
+        
+        Workspace contributions = workspaceFactory.createWorkspace();
         try {
             for (Contribution c: workspace.getContributions()) {
                 URI uri = URI.create(c.getURI());
-                URL url = locationURL(c.getLocation());
+                URL location = locationURL(c.getLocation());
+                
+                // Get contribution from cache
+                ContributionCache contributionCache = cache.contributions.get(location);
+                long lastModified = lastModified(location);
+                if (contributionCache != null) {
+                    if (contributionCache.contributionLastModified == lastModified) {
+                        Contribution contribution = contributionCache.contribution;
+                        contribution.setUnresolved(false);
+                        contributions.getContributions().add(contribution);
+                        continue;
+                    }
+                    
+                    // Reset contribution cache
+                    cache.contributions.remove(location);
+                }
+                
                 try {
-                    Contribution contribution = (Contribution)contributionProcessor.read(null, uri, url);
+                    Contribution contribution = (Contribution)contributionProcessor.read(null, uri, location);
                     contribution.setUnresolved(false);
-                    dependencyWorkspace.getContributions().add(contribution);
+                    contributions.getContributions().add(contribution);
+                    
+                    // Cache contribution
+                    contributionCache = new ContributionCache();
+                    contributionCache.contribution = contribution;
+                    contributionCache.contributionLastModified = lastModified;
+                    cache.contributions.put(location, contributionCache);
+                    
                 } catch (ContributionReadException e) {
                     Contribution contribution = contributionFactory.createContribution();
                     contribution.setURI(c.getURI());
                     contribution.setLocation(c.getLocation());
                     contribution.setUnresolved(true);
-                    dependencyWorkspace.getContributions().add(contribution);
+                    contributions.getContributions().add(contribution);
                 }
             }
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }
-        return dependencyWorkspace;
+        return contributions;
     }
     
 }
