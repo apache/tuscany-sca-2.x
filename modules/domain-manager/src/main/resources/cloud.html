@@ -215,6 +215,7 @@
 	function startNodeResponse() {
 		processCollection.get("", getProcessesResponse);
 		
+		var composites  = array(document.cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			  composites[i].checked = false;
@@ -235,6 +236,7 @@
 	function stopNodeResponse() {
 		processCollection.get("", getProcessesResponse);
 		
+		var composites  = array(document.cloudCompositeForm.composites);
 		for (var i = 0; i < composites.length; i++) {
 			if (composites[i].checked) {
 			  composites[i].checked = false;
