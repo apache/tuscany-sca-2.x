@@ -24,7 +24,6 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,24 +31,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.ws.WebFault;
 
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
-import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-public class FaultBeanGenerator implements Opcodes {
+public class FaultBeanGenerator extends BaseBeanGenerator {
     private final ClassWriter cw;
     private final Class<?> exceptionClass;
     private final String classDescriptor;
     private final String classSignature;
-    private byte[] content;
+    private String namespace;
+    private String name;
+    private byte[] byteCode;
     private Class<?> faultBeanClass;
 
     private static final Map<Class<?>, Class<?>> generatedClasses =
@@ -61,16 +56,17 @@ public class FaultBeanGenerator implements Opcodes {
         this.exceptionClass = exceptionClass;
         this.classDescriptor = getFaultBeanName(exceptionClass);
         this.classSignature = "L" + classDescriptor + ";";
+        getElementName();
     }
 
-    protected List<PropertyDescriptor> getProperties() {
+    protected BeanProperty[] getProperties() {
         BeanInfo beanInfo;
         try {
             beanInfo = Introspector.getBeanInfo(exceptionClass);
         } catch (IntrospectionException e) {
             throw new IllegalArgumentException(e);
         }
-        List<PropertyDescriptor> props = new ArrayList<PropertyDescriptor>();
+        List<BeanProperty> props = new ArrayList<BeanProperty>();
         for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
             if (pd.getReadMethod() != null) {
                 String name = pd.getReadMethod().getName();
@@ -79,36 +75,25 @@ public class FaultBeanGenerator implements Opcodes {
                     || "getLocalizedMessage".equals(name)) {
                     continue;
                 }
-                props.add(pd);
+                // Add the field
+                String field = pd.getName();
+                String desc = Type.getDescriptor(pd.getPropertyType());
+                String genericDesc = CodeGenerationHelper.getSignature(pd.getReadMethod().getGenericReturnType());
+                props.add(new BeanProperty(field, desc, genericDesc));
             }
         }
-        Collections.sort(props, new Comparator<PropertyDescriptor>() {
-            public int compare(PropertyDescriptor o1, PropertyDescriptor o2) {
+        Collections.sort(props, new Comparator<BeanProperty>() {
+            public int compare(BeanProperty o1, BeanProperty o2) {
                 return o1.getName().compareTo(o2.getName());
             }
         });
-        return props;
+        return props.toArray(new BeanProperty[0]);
     }
 
     public void generate() {
-        if (content == null) {
-            visit();
-            List<PropertyDescriptor> props = getProperties();
-            int size = props.size();
-            String[] propOrder = new String[size];
-            for (int i = 0; i < size; i++) {
-                propOrder[i] = props.get(i).getName();
-            }
-            annotateClass(propOrder);
-            for (PropertyDescriptor pd : props) {
-                visitProperty(pd);
-            }
-            visitEnd();
+        if (byteCode == null) {
+            byteCode = defineClass(cw, classDescriptor, classSignature, namespace, name, getProperties());
         }
-    }
-
-    protected void visit() {
-        WrapperBeanGenerator.declareClass(cw, classDescriptor);
     }
 
     private static String getFaultBeanName(Class<?> exceptionClass) {
@@ -130,75 +115,25 @@ public class FaultBeanGenerator implements Opcodes {
         return faultBeanName;
     }
 
-    protected void visitProperty(PropertyDescriptor pd) {
-        Method getter = pd.getReadMethod();
-        if (getter == null) {
-            return;
-        }
-        String name = getter.getName();
-
-        if ("getClass".equals(name) || "getStackTrace".equals(name)
-            || "getCause".equals(name)
-            || "getLocalizedMessage".equals(name)) {
-            return;
-        }
-
-        // Add the field
-        String field = pd.getName();
-        String desc = Type.getDescriptor(pd.getPropertyType());
-        String genericDesc = CodeGenerationHelper.getSignature(pd.getReadMethod().getGenericReturnType());
-        
-        WrapperBeanGenerator.declareProperty(cw, classDescriptor, classSignature, field, desc, genericDesc);
-    }
-
-    protected void visitEnd() {
-        WrapperBeanGenerator.declareConstructor(cw, classSignature);
-        cw.visitEnd();
-        content = cw.toByteArray();
-    }
-
-    protected void annotateClass(String[] propOrder) {
+    private void getElementName() {
         WebFault webFault = exceptionClass.getAnnotation(WebFault.class);
-        String ns = null, name = null;
         if (webFault != null) {
-            ns = webFault.targetNamespace();
+            namespace = webFault.targetNamespace();
             name = webFault.name();
         }
-        if (ns == null) {
-            ns = JavaInterfaceUtil.getNamespace(exceptionClass);
+        if (namespace == null) {
+            namespace = JavaInterfaceUtil.getNamespace(exceptionClass);
         }
         if (name == null) {
             name = exceptionClass.getSimpleName();
         }
-        String desc = Type.getDescriptor(XmlRootElement.class);
-        AnnotationVisitor av = cw.visitAnnotation(desc, true);
-        av.visit("namespace", ns);
-        av.visit("name", name);
-        av.visitEnd();
-
-        desc = Type.getDescriptor(XmlType.class);
-        av = cw.visitAnnotation(desc, true);
-        av.visit("namespace", ns);
-        av.visit("name", name);
-        AnnotationVisitor pv = av.visitArray("propOrder");
-        for (String p : propOrder) {
-            pv.visit(null, p);
-        }
-        pv.visitEnd();
-        av.visitEnd();
-
-        desc = Type.getDescriptor(XmlAccessorType.class);
-        av = cw.visitAnnotation(desc, true);
-        av.visitEnum("value", Type.getDescriptor(XmlAccessType.class), "FIELD");
-        av.visitEnd();
-
     }
 
     public Class<?> getFaultBeanClass() {
-        if (faultBeanClass == null && content != null) {
+        if (faultBeanClass == null && byteCode != null) {
             faultBeanClass =
-                new GeneratedClassLoader(exceptionClass.getClassLoader(), classDescriptor.replace('/', '.'), content)
-                    .getGeneratedClass();
+                new GeneratedClassLoader(exceptionClass.getClassLoader()).getGeneratedClass(classDescriptor
+                    .replace('/', '.'), byteCode);
         }
         return faultBeanClass;
     }
@@ -207,8 +142,8 @@ public class FaultBeanGenerator implements Opcodes {
         return classDescriptor.replace('/', '.');
     }
 
-    public byte[] getContent() {
-        return content;
+    public byte[] getByteCode() {
+        return byteCode;
     }
 
     public static Class<?> generateFaultBeanClass(Class<? extends Throwable> exceptionClass) throws IOException {
@@ -228,7 +163,7 @@ public class FaultBeanGenerator implements Opcodes {
         synchronized (exceptionClass) {
             FaultBeanGenerator generator = new FaultBeanGenerator(exceptionClass);
             generator.generate();
-            return generator.getContent();
+            return generator.getByteCode();
         }
     }
 }

@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
+import java.lang.reflect.Type;
+
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
@@ -26,16 +28,41 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-public class BaseBeanGenerator implements Opcodes {
+public abstract class BaseBeanGenerator implements Opcodes {
 
-    protected void defineClass(ClassWriter cw,
-                               String classDescriptor,
-                               String classSignature,
-                               String namespace,
-                               String name) {
+    public byte[] defineClass(ClassWriter cw,
+                              String classDescriptor,
+                              String classSignature,
+                              String namespace,
+                              String name,
+                              BeanProperty[] properties) {
+        // Declare the class
         declareClass(cw, classDescriptor);
-        annotateClass(cw, name, namespace);
+
+        // Compute the propOrder
+        String[] propOrder = null;
+        if (properties != null && properties.length > 0) {
+            int size = properties.length;
+            propOrder = new String[size];
+            for (int i = 0; i < size; i++) {
+                propOrder[i] = getFieldName(properties[i].getName());
+            }
+        }
+        // Annotate the class
+        annotateClass(cw, name, namespace, propOrder);
+
+        // Decalre the default constructor
         declareConstructor(cw, classSignature);
+        if (properties != null) {
+            for (BeanProperty p : properties) {
+                declareProperty(cw, classDescriptor, classSignature, p.getName(), p.getSignature(), p
+                    .getGenericSignature());
+            }
+        }
+
+        // Close the generation
+        cw.visitEnd();
+        return cw.toByteArray();
     }
 
     protected void declareProperty(ClassWriter cw,
@@ -129,7 +156,7 @@ public class BaseBeanGenerator implements Opcodes {
         mv.visitEnd();
     }
 
-    private static String capitalize(String name) {
+    protected static String capitalize(String name) {
         if (name == null || name.length() == 0) {
             return name;
         } else {
@@ -158,7 +185,7 @@ public class BaseBeanGenerator implements Opcodes {
         cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER, classDescriptor, null, "java/lang/Object", null);
     }
 
-    protected void annotateClass(ClassWriter cw, String name, String namespace) {
+    protected void annotateClass(ClassWriter cw, String name, String namespace, String[] propOrder) {
         AnnotationVisitor av0;
         // @XmlRootElement
         av0 = cw.visitAnnotation("Ljavax/xml/bind/annotation/XmlRootElement;", true);
@@ -173,6 +200,13 @@ public class BaseBeanGenerator implements Opcodes {
         av0 = cw.visitAnnotation("Ljavax/xml/bind/annotation/XmlType;", true);
         av0.visit("name", name);
         av0.visit("namespace", namespace);
+        if (propOrder != null) {
+            AnnotationVisitor pv = av0.visitArray("propOrder");
+            for (String p : propOrder) {
+                pv.visit(null, p);
+            }
+            pv.visitEnd();
+        }
         av0.visitEnd();
     }
 
@@ -180,14 +214,45 @@ public class BaseBeanGenerator implements Opcodes {
                              String classSignature,
                              String namespace,
                              String name,
+                             BeanProperty[] properties,
                              ClassLoader parent) {
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        defineClass(cw, classDescriptor, classSignature, namespace, name);
-        cw.visitEnd();
+        byte[] byteCode = defineClass(cw, classDescriptor, classSignature, namespace, name, properties);
         String className = classDescriptor.replace('/', '.');
-        GeneratedClassLoader cl = new GeneratedClassLoader(parent, className, cw.toByteArray());
-        Class<?> generated = cl.getGeneratedClass();
+        GeneratedClassLoader cl = new GeneratedClassLoader(parent);
+        Class<?> generated = cl.getGeneratedClass(className, byteCode);
         return generated;
     }
 
+    public static class BeanProperty {
+        private String name;
+        private String signature;
+        private String genericSignature;
+
+        public BeanProperty(String name, Class<?> javaClass, Type type) {
+            super();
+            this.name = name;
+            this.signature = CodeGenerationHelper.getJAXWSSignature(javaClass);
+            this.genericSignature = CodeGenerationHelper.getJAXWSSignature(type);
+        }
+
+        public BeanProperty(String name, String signature, String genericSignature) {
+            super();
+            this.name = name;
+            this.signature = signature;
+            this.genericSignature = genericSignature;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getSignature() {
+            return signature;
+        }
+
+        public String getGenericSignature() {
+            return genericSignature;
+        }
+    }
 }
