@@ -4,9 +4,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -94,6 +96,7 @@ public class InstallerBundleActivator implements BundleActivator {
             HashSet<File> thirdPartyJars = new HashSet<File>();
             
             findJars(bundleContext, tuscanyJars, thirdPartyJars, thirdPartyJarsWithManifests);
+            File tuscanyInstallDir = findTuscanyInstallDir(bundleContext.getBundle());
             
             for (File bundleFile : thirdPartyJarsWithManifests.keySet()) {
                                 
@@ -102,7 +105,11 @@ public class InstallerBundleActivator implements BundleActivator {
                 HashSet<File> jarSet = new HashSet<File>();
                 jarSet.add(bundleFile);
                 
-                createAndInstallBundle(bundleContext, bundleLocation, bundleManifestStream, jarSet);
+                File realBundleFile = new File(tuscanyInstallDir, "org.apache.tuscany.sca."+bundleFile.getName());
+                if (realBundleFile.exists()) 
+                    bundleContext.installBundle(realBundleFile.toURI().toURL().toString());
+                else                
+                    createAndInstallBundle(bundleContext, bundleLocation, realBundleFile, bundleManifestStream, jarSet);
                 bundleManifestStream.close();
                 
             }
@@ -122,8 +129,12 @@ public class InstallerBundleActivator implements BundleActivator {
                 InputStream bundleManifestStream = createBundleManifest(bundleFile, bundleSymbolicName);
                 HashSet<File> jarSet = new HashSet<File>();
                 jarSet.add(bundleFile);
-                
-                createAndInstallBundle(bundleContext, bundleLocation, bundleManifestStream, jarSet);
+
+                File realBundleFile = new File(tuscanyInstallDir, "org.apache.tuscany.sca."+bundleFile.getName());
+                if (realBundleFile.exists()) 
+                    bundleContext.installBundle(realBundleFile.toURI().toURL().toString());
+                else 
+                    createAndInstallBundle(bundleContext, bundleLocation, realBundleFile, bundleManifestStream, jarSet);
                 bundleManifestStream.close();
                
             }
@@ -203,33 +214,44 @@ public class InstallerBundleActivator implements BundleActivator {
     private File findTuscanyInstallDir(Bundle installerBundle) 
     throws IOException
     {
-        
-        File tuscanyInstallDir = null;
-        String location = installerBundle.getLocation();
-        
         String tuscanyDirName;
         if ((tuscanyDirName = System.getenv("TUSCANY_HOME")) != null) {
-            tuscanyInstallDir = new File(tuscanyDirName);
-            if (!tuscanyInstallDir.exists() || !tuscanyInstallDir.isDirectory())
-                tuscanyInstallDir = null;
+            File tuscanyInstallDir = new File(tuscanyDirName);
+            if (tuscanyInstallDir.exists() && tuscanyInstallDir.isDirectory())
+                return tuscanyInstallDir;
         }
-        if (tuscanyInstallDir == null && System.getProperty("TUSCANY_HOME") != null) {
-            tuscanyInstallDir = new File(tuscanyDirName);
-            if (!tuscanyInstallDir.exists() || !tuscanyInstallDir.isDirectory())
-                tuscanyInstallDir = null;
+        if ((tuscanyDirName = System.getProperty("TUSCANY_HOME")) != null) {
+            File tuscanyInstallDir = new File(tuscanyDirName);
+            if (tuscanyInstallDir.exists() && tuscanyInstallDir.isDirectory())
+                return tuscanyInstallDir;
         }
-            
-        if (tuscanyInstallDir == null && location != null && location.startsWith("file:") && location.endsWith(TUSCANY_INSTALLER_JAR)) {
+         
+        String location = installerBundle.getLocation();
+        
+        if (location != null && location.startsWith("file:") && location.endsWith(TUSCANY_INSTALLER_JAR)) {
             tuscanyDirName = location.substring(5, location.length()-TUSCANY_INSTALLER_JAR.length()); // strip "file:" and installer jar name
-            tuscanyInstallDir = new File(tuscanyDirName);
-            if (!tuscanyInstallDir.exists() || !tuscanyInstallDir.isDirectory())
-                tuscanyInstallDir = null;
+            File tuscanyInstallDir = new File(tuscanyDirName);
+            if (tuscanyInstallDir.exists() && tuscanyInstallDir.isDirectory())
+                return tuscanyInstallDir;
         }
-        return tuscanyInstallDir;
+        if (this.getClass().getProtectionDomain() != null) {
+            CodeSource codeSource = this.getClass().getProtectionDomain().getCodeSource();
+            if (codeSource != null) {
+                try {
+                    File tuscanyInstallDir = new File(codeSource.getLocation().toURI());
+                    if (tuscanyInstallDir.exists() && tuscanyInstallDir.isDirectory())
+                        return tuscanyInstallDir;
+                } catch (Exception e) {
+                    // ignore
+                }                     
+            }
+        }
+        return null;
     }
     
     public Bundle createAndInstallBundle(BundleContext bundleContext, 
             String bundleLocation, 
+            File bundleFile,
             InputStream manifestStream,
             final HashSet<File> thirdPartyJars) throws Exception {
 
@@ -261,9 +283,19 @@ public class InstallerBundleActivator implements BundleActivator {
 
         jarOut.close();
         out.close();
-        
-        ByteArrayInputStream inStream = new ByteArrayInputStream(out.toByteArray());
-        return bundleContext.installBundle(bundleLocation, inStream);
+
+        Bundle bundle;
+        if (System.getenv("TUSCANY_OSGI_DEBUG") != null) {
+            FileOutputStream fileOut = new FileOutputStream(bundleFile);
+            fileOut.write(out.toByteArray());
+            bundle = bundleContext.installBundle(bundleFile.toURL().toString());
+            
+        } else {
+            ByteArrayInputStream inStream = new ByteArrayInputStream(out.toByteArray());
+            bundle = bundleContext.installBundle(bundleLocation, inStream);
+            inStream.close();
+        }
+        return bundle;
 
     }
     
