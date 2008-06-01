@@ -41,6 +41,8 @@ import org.eclipse.jdt.launching.VMRunnerConfiguration;
 public class TuscanyLaunchConfigurationDelegate extends AbstractJavaLaunchConfigurationDelegate implements
     ILaunchConfigurationDelegate {
 
+    public static final String TUSCANY_LAUNCH_CONFIGURATIONTYPE = "org.apache.tuscany.sca.core.launch.configurationtype";
+
     public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
         throws CoreException {
 

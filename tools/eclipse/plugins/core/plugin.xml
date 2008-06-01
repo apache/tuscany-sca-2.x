@@ -51,6 +51,23 @@
 		</classpathContainerPage>
 	</extension>
 
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Tuscany"
+            visible="true"
+            id="org.apache.tuscany.sca.core.launch.actionSet">
+         <action
+               label="&amp;Start SCA Domain Manager"
+               icon="icons/t.gif"
+               class="org.apache.tuscany.sca.core.launch.TuscanyLaunchDomainManagerAction"
+               tooltip="Start SCA Domain Manager"
+               toolbarPath="tuscanyGroup"
+               id="org.apache.tuscany.sca.core.launch.TuscanyLaunchDomainManagerAction">
+         </action>
+      </actionSet>
+   </extension>
+
 	<extension point="org.eclipse.debug.core.launchConfigurationTypes">
 		<launchConfigurationType
        		name="Tuscany"
@@ -81,7 +98,7 @@
 	<extension point="org.eclipse.debug.ui.launchShortcuts">
 		<shortcut
 			id="org.apache.tuscany.sca.core.launchshortcut"
-			class="org.apache.tuscany.sca.core.launch.TuscanyLaunchShortcut"
+			class="org.apache.tuscany.sca.core.launch.TuscanyLaunchNodeShortcut"
 			label="Tuscany"
 			icon="icons/t.gif"
 			modes="run, debug">

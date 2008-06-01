@@ -39,6 +39,8 @@ import org.eclipse.jdt.core.JavaCore;
  */
 public class TuscanyClasspathContainer implements IClasspathContainer {
     
+    public static final IPath TUSCANY_LIBRARY_CONTAINER = new Path("org.apache.tuscany.sca.runtime.library");  
+    
     private static final String TUSCANY_HOME = "TUSCANY_HOME";
     private static final String TUSCANY_SRC = "TUSCANY_SRC";
     
@@ -68,7 +70,9 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
                 runtimePath = new Path(file.getPath());
             }
         } catch (Exception e) {
+        }
 
+        if (runtimePath == null) {
             // Try to get the location of the Tuscany binary distribution from
             // the TUSCANY_HOME property or environment variable
             String home = System.getProperty(TUSCANY_HOME);
@@ -93,7 +97,10 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
                 sourcePath = new Path(file.getPath());
             }
         } catch (Exception e) {
+        }
 
+        if (sourcePath == null) {
+            
             // Try to get the location of the Tuscany source distribution from
             // the TUSCANY_SRC property or environment variable
             String source = System.getProperty(TUSCANY_SRC);
@@ -146,7 +153,7 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
     }
 
     public IPath getPath() {
-        return new Path("org.apache.tuscany.sca.runtime.library");
+        return TUSCANY_LIBRARY_CONTAINER;
     }
 
 }
