@@ -24,36 +24,46 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GeneratedClassLoader extends SecureClassLoader {
-    private String className;
-    private byte[] content;
-    private Class<?> cls;
-    
-    private static class GeneratedClass {
+    private class GeneratedClass {
         private String className;
-        private byte[] content;
+        private byte[] byteCode;
         private Class<?> cls;
+
+        public GeneratedClass(String className, byte[] byteCode) {
+            super();
+            this.className = className;
+            this.byteCode = byteCode;
+        }
+
+        public synchronized Class<?> getGeneratedClass() {
+            if (cls == null) {
+                cls = defineClass(className, byteCode, 0, byteCode.length);
+            }
+            return cls;
+        }
     }
-    
+
     private Map<String, GeneratedClass> generatedClasses = new HashMap<String, GeneratedClass>();
 
-    public GeneratedClassLoader(ClassLoader parentLoader, String className, byte[] content) {
+    public GeneratedClassLoader(ClassLoader parentLoader) {
         super(parentLoader);
-        this.className = className;
-        this.content = content;
     }
 
     @Override
     protected Class<?> findClass(String className) throws ClassNotFoundException {
-        if (this.className.equals(className)) {
-            return getGeneratedClass();
+        GeneratedClass cls = generatedClasses.get(className);
+        if (cls != null) {
+            return cls.getGeneratedClass();
         }
         return super.findClass(className);
     }
 
-    public synchronized Class<?> getGeneratedClass() {
+    public synchronized Class<?> getGeneratedClass(String className, byte[] byteCode) {
+        GeneratedClass cls = generatedClasses.get(className);
         if (cls == null) {
-            cls = defineClass(className, content, 0, content.length);
+            cls = new GeneratedClass(className, byteCode);
+            generatedClasses.put(className, cls);
         }
-        return cls;
+        return cls.getGeneratedClass();
     }
 }

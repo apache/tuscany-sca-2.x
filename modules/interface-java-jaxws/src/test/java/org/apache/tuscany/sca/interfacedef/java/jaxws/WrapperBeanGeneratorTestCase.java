@@ -40,7 +40,7 @@ import org.junit.Test;
 public class WrapperBeanGeneratorTestCase {
     @Test
     public void testGenerate() throws Exception {
-        List<Class<?>> classes = WrapperBeanGenerator.generateWrapperBeans(TestInterface.class);
+        List<Class<?>> classes = new WrapperBeanGenerator().generateWrapperBeans(TestInterface.class);
         for (Class<?> cls : classes) {
             for (Field f : cls.getDeclaredFields()) {
                 // System.out.println(f.getName());
@@ -64,7 +64,7 @@ public class WrapperBeanGeneratorTestCase {
 
     @Test
     public void testGenerateSchema() throws Exception {
-        List<Class<?>> classes = WrapperBeanGenerator.generateWrapperBeans(TestInterface.class);
+        List<Class<?>> classes = new WrapperBeanGenerator().generateWrapperBeans(TestInterface.class);
         JAXBContext context = JAXBContext.newInstance(classes.toArray(new Class[0]));
         Map<String, DOMResult> results = JAXBTypeHelper.generateSchema(context);
         Node2String t = new Node2String();
