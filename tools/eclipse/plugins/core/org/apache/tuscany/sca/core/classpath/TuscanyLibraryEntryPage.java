@@ -19,7 +19,6 @@
 
 package org.apache.tuscany.sca.core.classpath;
 
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.ui.wizards.IClasspathContainerPage;
@@ -52,7 +51,7 @@ public class TuscanyLibraryEntryPage extends WizardPage implements IClasspathCon
     }
 
     public boolean finish() {
-        classpathEntry = JavaCore.newContainerEntry(new Path("org.apache.tuscany.sca.runtime.library"));
+        classpathEntry = JavaCore.newContainerEntry(TuscanyClasspathContainer.TUSCANY_LIBRARY_CONTAINER);
         return true;
     }
 
