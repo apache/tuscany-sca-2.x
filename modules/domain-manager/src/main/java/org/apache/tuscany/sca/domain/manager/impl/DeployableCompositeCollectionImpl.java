@@ -25,13 +25,16 @@ import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compo
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeSourceLink;
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeTitle;
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.contributionURI;
+import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.lastModified;
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.locationURL;
 
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -57,6 +60,7 @@ import org.apache.tuscany.sca.contribution.service.ContributionReadException;
 import org.apache.tuscany.sca.contribution.service.ContributionResolveException;
 import org.apache.tuscany.sca.core.ExtensionPointRegistry;
 import org.apache.tuscany.sca.core.UtilityExtensionPoint;
+import org.apache.tuscany.sca.domain.manager.impl.DeployableCompositeCollectionImpl.Cache.ContributionCache;
 import org.apache.tuscany.sca.implementation.data.collection.Entry;
 import org.apache.tuscany.sca.implementation.data.collection.Item;
 import org.apache.tuscany.sca.implementation.data.collection.ItemCollection;
@@ -96,6 +100,19 @@ public class DeployableCompositeCollectionImpl implements ItemCollection, LocalI
     private XMLOutputFactory outputFactory;
     private ContributionDependencyBuilder contributionDependencyBuilder;
     private Monitor monitor;
+    
+    /**
+     * Cache contribution models. 
+     */
+    static class Cache {
+        static class ContributionCache {
+            private Contribution contribution;
+            private long contributionLastModified;
+        }
+        private Map<URL, ContributionCache> contributions = new HashMap<URL, ContributionCache>();
+    }
+    
+    private Cache cache = new Cache();
     
     /**
      * Initialize the component.
@@ -252,9 +269,29 @@ public class DeployableCompositeCollectionImpl implements ItemCollection, LocalI
         try {
             URI uri = URI.create(contributionURI);
             URL location = locationURL(contributionLocation);
+            
+            // Get contribution from cache
+            ContributionCache contributionCache = cache.contributions.get(location);
+            long lastModified = lastModified(location);
+            if (contributionCache != null) {
+                if (contributionCache.contributionLastModified == lastModified) {
+                    return contributionCache.contribution;
+                }
+                
+                // Reset contribution cache
+                cache.contributions.remove(location);
+            }
+            
             Contribution contribution = (Contribution)contributionProcessor.read(null, uri, location);
             
             contributionProcessor.resolve(contribution, new DefaultModelResolver());
+            
+            // Cache contribution
+            contributionCache = new ContributionCache();
+            contributionCache.contribution = contribution;
+            contributionCache.contributionLastModified = lastModified;
+            cache.contributions.put(location, contributionCache);
+            
             return contribution;
 
         } catch (ContributionReadException e) {

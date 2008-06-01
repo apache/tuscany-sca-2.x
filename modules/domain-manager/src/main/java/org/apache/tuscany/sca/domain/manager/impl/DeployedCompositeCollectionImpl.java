@@ -114,6 +114,16 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
     private DocumentBuilder documentBuilder;
     
     /**
+     * Cache domain composite model. 
+     */
+    static class Cache {
+        private Composite compositeCollection;
+        private long compositeCollectionLastModified;
+    }
+    
+    private Cache cache = new Cache();
+    
+    /**
      * Initialize the component.
      */
     @Init
@@ -352,14 +362,27 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
         Composite compositeCollection;
         File file = new File(rootDirectory + "/" + compositeFile);
         if (file.exists()) {
-            XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
-            try {
-                FileInputStream is = new FileInputStream(file);
-                XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
-                compositeCollection = compositeProcessor.read(reader);
-            } catch (Exception e) {
-                throw new ServiceRuntimeException(e);
+
+            // Get composite collection from cache
+            if (cache.compositeCollection != null && file.lastModified() == cache.compositeCollectionLastModified) {
+                compositeCollection = cache.compositeCollection;
+                
+            } else {
+                    
+                XMLInputFactory inputFactory = modelFactories.getFactory(XMLInputFactory.class);
+                try {
+                    FileInputStream is = new FileInputStream(file);
+                    XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
+                    compositeCollection = compositeProcessor.read(reader);
+                } catch (Exception e) {
+                    throw new ServiceRuntimeException(e);
+                }
+                
+                // Cache composite collection
+                cache.compositeCollectionLastModified = file.lastModified();
+                cache.compositeCollection = compositeCollection;
             }
+            
         } else {
             compositeCollection = assemblyFactory.createComposite();
             String name;
@@ -370,6 +393,10 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
                 name = compositeFile;
             }
             compositeCollection.setName(new QName(Constants.SCA10_TUSCANY_NS, name));
+
+            // Cache composite collection
+            cache.compositeCollectionLastModified = 0;
+            cache.compositeCollection = compositeCollection;
         }
         return compositeCollection;
     }
@@ -395,9 +422,15 @@ public class DeployedCompositeCollectionImpl extends HttpServlet implements Item
             format.setIndent(2);
             
             // Write to domain.composite
-            FileOutputStream os = new FileOutputStream(new File(rootDirectory + "/" + compositeFile));
+            File file = new File(rootDirectory + "/" + compositeFile);
+            FileOutputStream os = new FileOutputStream(file);
             XMLSerializer serializer = new XMLSerializer(os, format);
             serializer.serialize(document);
+
+            // Cache composite collection
+            cache.compositeCollection = compositeCollection;
+            cache.compositeCollectionLastModified = file.lastModified();
+            
         } catch (Exception e) {
             throw new ServiceRuntimeException(e);
         }

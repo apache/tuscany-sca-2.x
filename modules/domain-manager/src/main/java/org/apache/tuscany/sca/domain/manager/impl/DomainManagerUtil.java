@@ -20,9 +20,11 @@
 package org.apache.tuscany.sca.domain.manager.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 
 import javax.xml.namespace.QName;
 
@@ -239,4 +241,44 @@ public final class DomainManagerUtil {
         }
     }
 
+    /**
+     * Returns the last modified time of the content at the given URL.
+     * 
+     * @param url
+     * @return
+     * @throws IOException
+     */
+    static long lastModified(URL url) throws IOException {
+        
+        if (url.getProtocol() == null || "file".equals(url.getProtocol())) {
+            return lastModified(new File(url.getPath()));
+        } else {
+            URLConnection connection = url.openConnection();
+            long lastModified = connection.getLastModified();
+            return lastModified;
+        }
+    }
+
+    /**
+     * Returns the last modified time of the given file or directory.
+     *  
+     * @param file
+     * @return
+     */
+    static long lastModified(File file) {
+        if (file.isDirectory()) {
+            long lastModified = file.lastModified();
+            
+            for (File child: file.listFiles()) {
+                long m = lastModified(child);
+                if (m > lastModified) {
+                    lastModified = m;
+                }
+            }
+            return lastModified;
+            
+        } else {
+            return file.lastModified();
+        }
+    }
 }
