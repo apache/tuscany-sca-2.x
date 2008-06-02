@@ -72,33 +72,19 @@ public class ContributionMultipleTestCaseFIXME extends TestCase {
 
         for (Composite deployable : helloContribution.getDeployables()) {
             domain.getDomainComposite().getIncludes().add(deployable);
-            domain.buildComposite(deployable);
         }
                 
         for (Composite deployable : helloWorldContribution_one.getDeployables()) {
             domain.getDomainComposite().getIncludes().add(deployable);
-            domain.buildComposite(deployable);
         }
 
         for (Composite deployable : helloWorldContribution_two.getDeployables()) {
             domain.getDomainComposite().getIncludes().add(deployable);
-            domain.buildComposite(deployable);
         }
-        
-        for (Composite deployable : helloContribution.getDeployables()) {
-            domain.getCompositeActivator().activate(deployable);
-            domain.getCompositeActivator().start(deployable);
-        }
-        
-        for (Composite deployable : helloWorldContribution_one.getDeployables()) {
-            domain.getCompositeActivator().activate(deployable);
-            domain.getCompositeActivator().start(deployable);
-        }
-        
-        for (Composite deployable : helloWorldContribution_two.getDeployables()) {
-            domain.getCompositeActivator().activate(deployable);
-            domain.getCompositeActivator().start(deployable);
-        }        
+
+        domain.buildComposite(domain.getDomainComposite());
+        domain.getCompositeActivator().activate(domain.getDomainComposite());
+        domain.getCompositeActivator().start(domain.getDomainComposite());
 
     }
 
