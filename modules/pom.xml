@@ -153,6 +153,7 @@
                 <module>policy-xml-ws</module>
                 <module>policy-logging</module>
                 <module>policy-security</module>
+                <module>policy-security-jsr250</module>
                 <module>policy-security-ws</module>
                 <module>policy-transaction</module>
                 <module>runtime</module>
