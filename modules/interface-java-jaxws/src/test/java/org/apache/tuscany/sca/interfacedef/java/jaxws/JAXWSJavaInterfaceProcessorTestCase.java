@@ -77,7 +77,7 @@ public class JAXWSJavaInterfaceProcessorTestCase extends TestCase {
         } else {
             op = op1;
         }
-        assertTrue(!op2.isWrapperStyle() && op2.getWrapper() != null);
+        assertTrue(!op.isWrapperStyle() && op.getWrapper() != null);
 
     }
 
