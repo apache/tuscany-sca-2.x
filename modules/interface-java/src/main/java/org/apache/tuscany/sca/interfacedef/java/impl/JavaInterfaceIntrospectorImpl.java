@@ -102,9 +102,16 @@ public class JavaInterfaceIntrospectorImpl {
         org.osoa.sca.annotations.Callback callback = clazz.getAnnotation(org.osoa.sca.annotations.Callback.class);
         if (callback != null && !Void.class.equals(callback.value())) {
             callbackClass = callback.value();
+            if (remotable && !callbackClass.isAnnotationPresent(Remotable.class)) {
+            	throw new InvalidCallbackException("Callback must be remotable on a remotable interface");
+            }
+            if (!remotable && callbackClass.isAnnotationPresent(Remotable.class)) {
+            	throw new InvalidCallbackException("Callback must not be remotable on a local interface");
+            }
         } else if (callback != null && Void.class.equals(callback.value())) {
             throw new InvalidCallbackException("No callback interface specified on annotation");
         }
+
         javaInterface.setCallbackClass(callbackClass);
 
         String ns = JavaXMLMapper.getNamespace(clazz);
