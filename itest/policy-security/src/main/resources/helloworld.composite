@@ -26,6 +26,7 @@
 
     <component name="HelloWorldServiceComponent">
         <implementation.java class="helloworld.HelloWorldImpl" policySets="ip:allowed_users"/>
+        
         <service name="HelloWorldService">
         	<interface.java interface="helloworld.HelloWorldService"/>
         </service>
