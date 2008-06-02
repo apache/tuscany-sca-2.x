@@ -26,4 +26,8 @@
     <policySet name="allowed_users" appliesTo="sca:implementation.java">
     	<permitAll/>
     </policySet>
+    
+    <policySet name="runAsAdmin" appliesTo="sca:implementation.java">
+    	<runAs role="Administrator"/>
+    </policySet>
 </definitions>
