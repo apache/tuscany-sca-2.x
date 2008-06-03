@@ -274,7 +274,7 @@ public class DefaultDataBindingExtensionPoint implements DataBindingExtensionPoi
     public DataType introspectType(Object value) {
         loadDataBindings();
         DataType dataType = null;
-        for (DataBinding binding : bindings.values()) {
+        for (DataBinding binding : databindings) {
             // don't introspect for JavaBeansDatabinding as all javatypes will
             // anyways match to its basetype
             // which is java.lang.Object. Default to this only if no databinding
