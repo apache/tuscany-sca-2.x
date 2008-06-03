@@ -354,10 +354,15 @@ public class ReallySmallRuntime {
                 logger.fine(module.getClass().getName() + " is starting.");
                 start = System.currentTimeMillis();
             }
-            module.start(registry);
-            if (debug) {
-                long end = System.currentTimeMillis();
-                logger.fine(module.getClass().getName() + " is started in " + (end - start) + " ms.");
+            try {
+                module.start(registry);
+                if (debug) {
+                    long end = System.currentTimeMillis();
+                    logger.fine(module.getClass().getName() + " is started in " + (end - start) + " ms.");
+                }
+            } catch (Throwable e) {
+            	logger.log(Level.WARNING, "Exception starting module " + module.getClass().getName() + " :" + e.getMessage());
+            	logger.log(Level.FINE, "Exception starting module " + module.getClass().getName(), e);
             }
         }
     }
