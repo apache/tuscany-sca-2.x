@@ -19,12 +19,14 @@
 
 package org.apache.tuscany.sca.core.classpath;
 
+import static org.apache.tuscany.sca.core.log.LogUtil.error;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -44,11 +46,8 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
     private static final String TUSCANY_HOME = "TUSCANY_HOME";
     private static final String TUSCANY_SRC = "TUSCANY_SRC";
     
-    private static final String TUSCANY_FEATURE = "features/org.apache.tuscany.sca.feature_1.2.0";
+    private static final String TUSCANY_FEATURE = "org.apache.tuscany.sca.feature";
     
-    private static final String TUSCANY_FEATURE_RUNTIME = TUSCANY_FEATURE + "/runtime"; 
-    private static final String TUSCANY_FEATURE_SRC = TUSCANY_FEATURE + "/src"; 
-
     public TuscanyClasspathContainer() {
     }
 
@@ -61,9 +60,8 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
             
             // Find the Tuscany distribution under the feature's runtime directory
             // Typically runtime/distro-archive-name/un-archived-distro-dir
-            URL url = FileLocator.toFileURL(Platform.getInstallLocation().getURL());
-            File file = new File(url.toURI());
-            file = new File(file, TUSCANY_FEATURE_RUNTIME);
+            URL url = Platform.getBundle(TUSCANY_FEATURE).getResource("runtime");
+            File file = new File(url.getPath());
             if (file.exists()) {
                 File distro = null;
                 for (File f: file.listFiles()) {
@@ -79,9 +77,17 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
                             break;
                         }
                     }
+                    if (runtimePath == null) {
+                        error("Tuscany runtime distribution directory not found", new FileNotFoundException(distro.getAbsolutePath()));
+                    }
+                } else {
+                    error("Tuscany runtime distribution archive not found", new FileNotFoundException(file.getAbsolutePath()));
                 }
+            } else {
+                error("Tuscany runtime feature not found", new FileNotFoundException(file.getAbsolutePath()));
             }
         } catch (Exception e) {
+            error("Tuscany runtime feature not found", e);
         }
 
         if (runtimePath == null) {
@@ -105,9 +111,8 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
 
             // Find the Tuscany source distribution under the feature's src directory
             // Typically src/distro-archive-src.zip
-            URL url = FileLocator.toFileURL(Platform.getInstallLocation().getURL());
-            File file = new File(url.toURI());
-            file = new File(file, TUSCANY_FEATURE_SRC);
+            URL url = Platform.getBundle(TUSCANY_FEATURE).getResource("src");
+            File file = new File(url.getPath());
             if (file.exists()) {
                 File distro = null;
                 for (File f: file.listFiles()) {

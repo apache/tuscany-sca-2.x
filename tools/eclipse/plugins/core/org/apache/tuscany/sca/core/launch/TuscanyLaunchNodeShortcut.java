@@ -20,14 +20,12 @@
 package org.apache.tuscany.sca.core.launch;
 
 import static org.apache.tuscany.sca.core.launch.NodeLauncherUtil.launchNode;
+import static org.apache.tuscany.sca.core.log.LogUtil.error;
 
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
@@ -79,9 +77,7 @@ public class TuscanyLaunchNodeShortcut implements ILaunchShortcut {
             });
 
         } catch (Exception e) {
-            Platform.getLog(
-                Platform.getBundle("org.apache.tuscany.sca.core")).log(
-                new Status(IStatus.ERROR, "org.apache.tuscany.sca.core", IStatus.OK, "Could not launch SCA composite", e));
+            error("Could not launch SCA composite", e);
         }
     }
 
