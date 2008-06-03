@@ -20,6 +20,10 @@
 -->
 <plugin>
 
+	<extension-point id="runtimeLibraries"
+		name="Tuscany Runtime Libraries"
+		schema="exsd/runtimeLibraries.exsd"/>
+
 	<extension point = "org.eclipse.wst.xml.core.catalogContributions">
 		<catalogContribution id="default">
 			<uri name="http://www.osoa.org/xmlns/sca/1.0" uri="xsd/sca-all.xsd"/>
@@ -37,6 +41,13 @@
       <file-association content-type="org.eclipse.core.runtime.xml" file-extensions="componentType"/>       
 	</extension>
 	
+	<extension
+       point="org.apache.tuscany.sca.core.runtimeLibraries">
+    	<classpathContainer 
+    			id="org.apache.tuscany.sca.runtime.library"
+				class="org.apache.tuscany.sca.core.classpath.TuscanyRuntimeClasspathContainer"/>                       
+	</extension>	
+
 	<extension point="org.eclipse.jdt.core.classpathContainerInitializer">
     	<classpathContainerInitializer 
     			id="org.apache.tuscany.sca.runtime.library"
@@ -133,6 +144,6 @@
 				id="org.apache.tuscany.sca.core.newwizards.newcompositewizard">
 			<description>Create a new SCA ComponentType</description> 
 		</wizard>		
-	</extension>	
-
+	</extension>
+	
 </plugin>

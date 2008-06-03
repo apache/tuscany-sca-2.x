@@ -35,6 +35,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,6 +49,7 @@ final class NodeLauncherUtil {
     private static final Logger logger = Logger.getLogger(NodeLauncherUtil.class.getName());
     
     private static final String TUSCANY_HOME = "TUSCANY_HOME";
+    private static final String TUSCANY_PATH = "TUSCANY_PATH";
 
 
     /**
@@ -151,29 +153,21 @@ final class NodeLauncherUtil {
         }
         if (home != null && home.length() != 0) {
             logger.fine(TUSCANY_HOME + ": " + home);
-            File homeDirectory = new File(home);
-            URL homeDirectoryURL = homeDirectory.toURI().toURL(); 
-            if (!jarDirectoryURLs.contains(homeDirectoryURL) && homeDirectory.exists()) {
-                
-                // Collect files under $TUSCANY_HOME
-                jarDirectoryURLs.add(homeDirectoryURL);
-                collectJARFiles(homeDirectory, jarURLs, filter);
-                
-                // Collect files under $TUSCANY_HOME/modules
-                File modulesDirectory = new File(homeDirectory, "modules");
-                URL modulesDirectoryURL = modulesDirectory.toURI().toURL(); 
-                if (!jarDirectoryURLs.contains(modulesDirectoryURL) && modulesDirectory.exists()) {
-                    jarDirectoryURLs.add(modulesDirectoryURL);
-                    collectJARFiles(modulesDirectory, jarURLs, filter);
-                }
+            collectJARFiles(home, jarDirectoryURLs, jarURLs, filter);
+        }
     
-                // Collect files under $TUSCANY_HOME/lib
-                File libDirectory = new File(homeDirectory, "lib");
-                URL libDirectoryURL = libDirectory.toURI().toURL(); 
-                if (!jarDirectoryURLs.contains(libDirectoryURL) && libDirectory.exists()) {
-                    jarDirectoryURLs.add(libDirectoryURL);
-                    collectJARFiles(libDirectory, jarURLs, filter);
-                }
+        // Look for a TUSCANY_PATH system property or environment variable
+        // Add all the JARs found under $TUSCANY_PATH, $TUSCANY_PATH/modules
+        // and $TUSCANY_PATH/lib
+        String ext = System.getProperty(TUSCANY_PATH);
+        if (ext == null || ext.length() == 0) {
+            ext = System.getenv(TUSCANY_PATH);
+        }
+        if (ext != null && ext.length() != 0) {
+            logger.fine(TUSCANY_PATH + ": " + ext);
+            String separator = System.getProperty("path.separator");
+            for (StringTokenizer tokens = new StringTokenizer(ext, separator); tokens.hasMoreTokens(); ) {
+                collectJARFiles(tokens.nextToken(), jarDirectoryURLs, jarURLs, filter);
             }
         }
     
@@ -186,6 +180,43 @@ final class NodeLauncherUtil {
             
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Collect JAR files under the given directory.
+     * 
+     * @param directory
+     * @param jarDirectoryURLs
+     * @param jarURLs
+     * @param filter
+     * @throws MalformedURLException
+     */
+    private static void collectJARFiles(String directory, Set<URL> jarDirectoryURLs, List<URL> jarURLs, FilenameFilter filter)
+        throws MalformedURLException {
+        File directoryFile = new File(directory);
+        URL directoryURL = directoryFile.toURI().toURL(); 
+        if (!jarDirectoryURLs.contains(directoryURL) && directoryFile.exists()) {
+            
+            // Collect files under $TUSCANY_HOME
+            jarDirectoryURLs.add(directoryURL);
+            collectJARFiles(directoryFile, jarURLs, filter);
+            
+            // Collect files under $TUSCANY_HOME/modules
+            File modulesDirectory = new File(directoryFile, "modules");
+            URL modulesDirectoryURL = modulesDirectory.toURI().toURL(); 
+            if (!jarDirectoryURLs.contains(modulesDirectoryURL) && modulesDirectory.exists()) {
+                jarDirectoryURLs.add(modulesDirectoryURL);
+                collectJARFiles(modulesDirectory, jarURLs, filter);
+            }
+
+            // Collect files under $TUSCANY_HOME/lib
+            File libDirectory = new File(directoryFile, "lib");
+            URL libDirectoryURL = libDirectory.toURI().toURL(); 
+            if (!jarDirectoryURLs.contains(libDirectoryURL) && libDirectory.exists()) {
+                jarDirectoryURLs.add(libDirectoryURL);
+                collectJARFiles(libDirectory, jarURLs, filter);
+            }
         }
     }
 
