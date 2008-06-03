@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.sca.domain.manager.impl;
 
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.DEPLOYMENT_CONTRIBUTION_URI;
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeSimpleTitle;
 import static org.apache.tuscany.sca.domain.manager.impl.DomainManagerUtil.compositeSourceLink;
@@ -29,6 +30,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -45,6 +47,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -290,6 +293,61 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
                 }
             }
 
+            return entries.toArray(new Entry[entries.size()]);
+            
+        } if (queryString.startsWith("suggestions=true")) {
+            
+            // Returns a list of contribution suggestions, by scanning the parent of the workspace
+            // directory for potential contribution directories, for example project directories
+            Workspace suggestionWorkspace = workspaceFactory.createWorkspace();
+            List<Entry> entries = new ArrayList<Entry>();
+            String rootDirectory = domainManagerConfiguration.getRootDirectory();
+            File rootLocation = new File(new File(rootDirectory).toURI().normalize());
+            for (File project: rootLocation.getParentFile().listFiles()) {
+                File dotProject = new File(project, ".project");
+                if (!dotProject.exists()) {
+                    continue;
+                }
+                
+                // We have a potential contribution
+                String uri = project.getName();
+                File location = project;
+                
+                // If this is a Java project, find it's output location
+                File dotClasspath = new File(project, ".classpath");
+                if (dotClasspath.exists()) {
+                    try {
+                        XMLStreamReader reader = inputFactory.createXMLStreamReader(new FileInputStream(dotClasspath));
+                        reader.nextTag();
+                        while (reader.hasNext()) {
+                            int event = reader.getEventType();
+                            if (event == START_ELEMENT) {
+                                if ("classpathentry".equals(reader.getName().getLocalPart())) {
+                                    if ("output".equals(reader.getAttributeValue("", "kind"))) {
+                                        location = new File(project, reader.getAttributeValue("", "path"));
+                                        break;
+                                    }
+                                }
+                            }
+                            if (reader.hasNext()) {
+                                reader.next();
+                            }
+                        }
+                    } catch (FileNotFoundException e) {
+                    } catch (XMLStreamException e) {
+                    }
+                    
+                }
+                
+                // Create a contribution entry
+                if (!location.getPath().startsWith(rootLocation.getPath())) {
+                    Contribution contribution = contributionFactory.createContribution();
+                    contribution.setURI(uri);
+                    contribution.setLocation(location.getPath());
+                    entries.add(entry(suggestionWorkspace, contribution));
+                }
+            }
+            
             return entries.toArray(new Entry[entries.size()]);
             
         } else {
