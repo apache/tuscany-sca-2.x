@@ -52,7 +52,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class ResourceImplementationProcessor implements StAXArtifactProcessor<ResourceImplementation> {
     private static final QName IMPLEMENTATION_RESOURCE = new QName(Constants.SCA10_TUSCANY_NS, "implementation.resource");
-    //private static final String MSG_LOCATION_MISSING = "Reading implementation.resource - location attribute missing";
+    private static final String MSG_LOCATION_MISSING = "Reading implementation.resource - location attribute missing";
     
     private ContributionFactory contributionFactory;
     private ResourceImplementationFactory implementationFactory;
@@ -118,7 +118,7 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
             implementation.setUnresolved(true);
         } else {
             error("LocationAttributeMissing", reader);
-            //throw new ContributionReadException(MSG_LOCATION_MISSING);
+            throw new ContributionReadException(MSG_LOCATION_MISSING);
         }
 
         // Skip to end element
@@ -144,7 +144,7 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
             } catch (IOException e) {
             	ContributionResolveException ce = new ContributionResolveException(e);
             	error("ContributionResolveException", resolver, ce);
-                //throw ce;
+                throw ce;
             }
         }
     }
