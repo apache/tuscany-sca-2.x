@@ -27,7 +27,6 @@ import org.apache.tuscany.sca.vtest.javaapi.annotations.service.impl.FServiceImp
 import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -226,9 +225,6 @@ public class ServiceAnnotationTestCase {
      * as not having the annotation there at all.<br>
      */
     @Test
-    @Ignore
-    // Tuscany-2191. To run this test you must also un-comment the empty
-    // @Service Annotation in EServiceImpl
     public void atService7() throws Exception {
         EService eService = ServiceFinder.getService(EService.class, "EComponent");
         Assert.assertEquals("EService", eService.getName());
