@@ -51,7 +51,7 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
  */
 public class WidgetImplementationProcessor implements StAXArtifactProcessor<WidgetImplementation> {
     private static final QName IMPLEMENTATION_WIDGET = new QName(Constants.SCA10_TUSCANY_NS, "implementation.widget");
-    //private static final String MSG_LOCATION_MISSING = "Reading implementation.widget - location attribute missing";
+    private static final String MSG_LOCATION_MISSING = "Reading implementation.widget - location attribute missing";
     
     private AssemblyFactory assemblyFactory;
     private ContributionFactory contributionFactory;
@@ -119,7 +119,7 @@ public class WidgetImplementationProcessor implements StAXArtifactProcessor<Widg
             implementation.setUnresolved(true);
         } else {
             error("LocationAttributeMissing", reader);
-            //throw new ContributionReadException(MSG_LOCATION_MISSING);
+            throw new ContributionReadException(MSG_LOCATION_MISSING);
         }
 
         // Skip to end element
@@ -152,6 +152,9 @@ public class WidgetImplementationProcessor implements StAXArtifactProcessor<Widg
             	error("ContributionResolveException", resolver, ce);
                 //throw ce;
             }
+        } else {
+            error("CouldNotResolveLocation", resolver, implementation.getLocation());
+            throw new ContributionResolveException("Could not resolve implementation.widget location: " + implementation.getLocation());            
         }
     }
 
