@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.Socket;
 
+import org.apache.tuscany.sca.core.classpath.ClasspathUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -128,7 +129,10 @@ public class NodeLauncherUtil {
             
             // Save the composite path in the launch configuration
             newConfiguration.setAttribute("COMPOSITE_PATH", file.getFullPath().toString());
-            
+
+            // Pass the runtime classpath as a system property
+            newConfiguration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "-DTUSCANY_PATH=" + ClasspathUtil.installedRuntimeClasspath());
+
             // Save the configuration
             newConfiguration.doSave();
 

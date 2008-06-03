@@ -21,8 +21,6 @@ package org.apache.tuscany.sca.core.classpath;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -37,23 +35,20 @@ import org.eclipse.jdt.core.JavaCore;
  * 
  * @version $Rev$ $Date$
  */
-public class TuscanyClasspathContainer implements IClasspathContainer {
+public class TuscanyRuntimeClasspathContainer implements IClasspathContainer {
     
     public static final IPath TUSCANY_LIBRARY_CONTAINER = new Path("org.apache.tuscany.sca.runtime.library");  
     
     private static final String TUSCANY_HOME = "TUSCANY_HOME";
-    private static final String TUSCANY_SRC = "TUSCANY_SRC";
     
     private static final String TUSCANY_FEATURE = "features/org.apache.tuscany.sca.feature_1.2.0";
     
     private static final String TUSCANY_FEATURE_RUNTIME = TUSCANY_FEATURE + "/runtime"; 
-    private static final String TUSCANY_FEATURE_SRC = TUSCANY_FEATURE + "/src"; 
 
-    public TuscanyClasspathContainer() {
+    public TuscanyRuntimeClasspathContainer() {
     }
 
     public IClasspathEntry[] getClasspathEntries() {
-        List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
         
         // Get the runtime location from the installed Tuscany feature
         IPath runtimePath = null;
@@ -99,73 +94,11 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
             }
         }
         
-        // Get the source location from the installed Tuscany feature
-        IPath sourcePath = null;
-        try {
-
-            // Find the Tuscany source distribution under the feature's src directory
-            // Typically src/distro-archive-src.zip
-            URL url = FileLocator.toFileURL(Platform.getInstallLocation().getURL());
-            File file = new File(url.toURI());
-            file = new File(file, TUSCANY_FEATURE_SRC);
-            if (file.exists()) {
-                File distro = null;
-                for (File f: file.listFiles()) {
-                    if (f.getName().contains("tuscany-sca") && f.getName().endsWith("-src.zip")) {
-                        distro = f;
-                        break;
-                    }
-                }
-                if (distro != null) {
-                    sourcePath = new Path(distro.getPath());
-                }
-            }
-        } catch (Exception e) {
-        }
-
-        if (sourcePath == null) {
-            
-            // Try to get the location of the Tuscany source distribution from
-            // the TUSCANY_SRC property or environment variable
-            String source = System.getProperty(TUSCANY_SRC);
-            if (source == null || source.length() == 0) {
-                source = System.getenv(TUSCANY_SRC);
-            }
-            if (source != null && source.length() != 0) {
-                if (new File(source).exists()) {
-                    sourcePath = new Path(source);
-                }
-            }
-        }
-        
-        // Add the JARs from runtime/lib and runtime/modules as classpath entries
         if (runtimePath != null) {
-            
-            // Add a selection of the jars from runtime/modules
-            File modulesDirectory = runtimePath.append("modules").toFile();
-            if (modulesDirectory != null && modulesDirectory.exists()) {
-                for (File file : modulesDirectory.listFiles()) {
-                    IPath path = new Path(file.getPath());
-                    String name = path.lastSegment();
-                    String extension = path.getFileExtension();
-                    
-                    // Only include API and launcher JARs
-                    if (!"jar".equals(extension)) {
-                        continue;
-                    }
-                    if (name.indexOf("-api-") == -1 && name.indexOf("-launcher-") == -1) {
-                        continue;
-                    }
-                    if (name.startsWith("tuscany-node-api-") || name.startsWith("tuscany-domain-api-")) {
-                        continue;
-                    }
-
-                    list.add(JavaCore.newLibraryEntry(path, sourcePath, null));
-                }
-            }
+            return new IClasspathEntry[] {JavaCore.newLibraryEntry(runtimePath, null, null)};
+        } else {
+            return new IClasspathEntry[0];
         }
-        
-        return (IClasspathEntry[])list.toArray(new IClasspathEntry[list.size()]);
     }
 
     public String getDescription() {

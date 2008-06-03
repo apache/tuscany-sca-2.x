@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import org.apache.tuscany.sca.core.classpath.ClasspathUtil;
 import org.apache.tuscany.sca.core.classpath.TuscanyClasspathContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -55,7 +56,7 @@ import org.eclipse.jdt.launching.JavaRuntime;
  * @version $Rev: $ $Date: $
  */
 public class DomainManagerLauncherUtil {
-
+    
     private static final String TUSCANY_DOMAIN_LAUNCH_CONFIGURATION = "SCA Domain Manager";
     private static final String TUSCANY_SCA_DOMAIN_PROJECT = "tuscany-sca-domain";
 
@@ -201,6 +202,9 @@ public class DomainManagerLauncherUtil {
                 newConfiguration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, domainProject.getProject().getName());
                 newConfiguration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, "org.apache.tuscany.sca.node.launcher.DomainManagerLauncher");
                 newConfiguration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY, domainProject.getLocation().toString());
+                
+                // Pass the runtime classpath as a system property
+                newConfiguration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "-DTUSCANY_PATH=" + ClasspathUtil.installedRuntimeClasspath());
 
                 // Save the configuration
                 newConfiguration.doSave();
