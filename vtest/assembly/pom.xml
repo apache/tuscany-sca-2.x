@@ -21,22 +21,37 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.tuscany.sca</groupId>
-        <artifactId>tuscany-sca</artifactId>
+        <artifactId>tuscany-vtest</artifactId>
         <version>2.0-incubating-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>tuscany-vtest</artifactId>
+    <artifactId>vtest-assembly</artifactId>
     <packaging>pom</packaging>
-    <name>Apache Tuscany SCA Specification Verification Tests</name>
-    
+    <name>Apache Tuscany SCA Assembly Verification Tests</name>
+
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.2</version>
-            <scope>compile</scope>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-host-embedded</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>tuscany-implementation-java-runtime</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>vtest-utilities</artifactId>
+            <version>2.0-incubating-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
     </dependencies>
+
 
     <profiles>
         <profile>
@@ -45,10 +60,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>java-api</module>
-                <module>wsbinding</module>
-                <module>utilities</module>
-                <module>assembly</module>
+                <module>ctypefile</module>
            </modules>
         </profile>
     </profiles>
