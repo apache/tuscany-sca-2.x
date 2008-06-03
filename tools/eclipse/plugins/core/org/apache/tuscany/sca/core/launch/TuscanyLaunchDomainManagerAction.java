@@ -1,13 +1,11 @@
 package org.apache.tuscany.sca.core.launch;
 
 import static org.apache.tuscany.sca.core.launch.DomainManagerLauncherUtil.launchDomainManager;
+import static org.apache.tuscany.sca.core.log.LogUtil.error;
 
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
@@ -47,9 +45,7 @@ public class TuscanyLaunchDomainManagerAction implements IWorkbenchWindowActionD
             });
 
         } catch (Exception e) {
-            Platform.getLog(
-                Platform.getBundle("org.apache.tuscany.sca.core")).log(
-                new Status(IStatus.ERROR, "org.apache.tuscany.sca.core", IStatus.OK, "Could not launch SCA Domain Manager", e));
+            error("Could not launch SCA Domain Manager", e);
         }
     }
 
