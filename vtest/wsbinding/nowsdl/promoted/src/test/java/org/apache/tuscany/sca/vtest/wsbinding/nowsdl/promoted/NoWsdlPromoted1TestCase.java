@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion;
+package org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted;
 
 import junit.framework.Assert;
 import org.apache.tuscany.sca.vtest.utilities.ServiceFinder;
-import org.apache.tuscany.sca.vtest.wsbinding.nowsdl.soapversion.AService;
+import org.apache.tuscany.sca.vtest.wsbinding.nowsdl.promoted.AService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,10 +30,10 @@ import org.junit.Test;
  * described in section section 2.3.1 and 2.3.3.1 of SCA Web Services Binding
  * V1.00
  */
-public class NoWsdlNoSoapVersionTestCase {
+public class NoWsdlPromoted1TestCase {
 
 	protected static ServiceFinder serviceFinder;
-    protected static String compositeName = "nowsdlsoapversion.composite";
+    protected static String compositeName = "nowsdlpromoted.composite";
     
     @BeforeClass
     public static void init() throws Exception {
@@ -58,6 +58,7 @@ public class NoWsdlNoSoapVersionTestCase {
      * WSDL ports with associated SOAP bindings may be generated, depending on
      * the level(s) supported in the target runtime.<br>
      * <p>
+     * Tests promoted services and references<br>
      */
     @Test
     public void testSoapVersion1() throws Exception {

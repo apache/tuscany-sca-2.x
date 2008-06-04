@@ -28,7 +28,8 @@ import org.junit.Test;
 
 /**
  * Tests the simplest form of the binding element without WSDL document
- * described in section section 2.2.2 of SCA Web Services Binding V1.00
+ * described in section section 2.2.2 and 2.3.2 of SCA Web Services
+ * Binding V1.00
  */
 public class NoWsdlMultiSoapBindingsTestCase {
 
@@ -40,6 +41,7 @@ public class NoWsdlMultiSoapBindingsTestCase {
     protected static AService a4;
     protected static DService d1;
     protected static DService d2;
+    protected static DService d3;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -52,6 +54,7 @@ public class NoWsdlMultiSoapBindingsTestCase {
             a4 = ServiceFinder.getService(AService.class, "AComponent4");
             d1 = ServiceFinder.getService(DService.class, "DComponent1");
             d2 = ServiceFinder.getService(DService.class, "DComponent2");
+            d3 = ServiceFinder.getService(DService.class, "DComponent3");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -125,7 +128,12 @@ public class NoWsdlMultiSoapBindingsTestCase {
     }
 
     /**
-     * Lines 201-225:<br>
+     * Lines 201-225, 262-264:<br>
+     * The WSDL service has one or more ports for each web service binding on
+     * the SCA service that has a SOAP requirement, or that refers to an
+     * existing WSDL binding, depending on the requirements of the web service
+     * binding. Each of those ports has a single binding.<br>
+     * <p>
      * Test multiple SOAP bindings with two references which use different versions.<br>
      */
     @Test
@@ -170,6 +178,33 @@ public class NoWsdlMultiSoapBindingsTestCase {
         Assert.assertEquals(new Integer(9002), c1Integer);
     }
 
+    /**
+     * Lines 201-225, 262-264:<br>
+     * Test multiple SOAP bindings with promoted services and references.<br>
+     */
+    @Test
+    public void testMultiSoapBindings3() throws Exception {
+    	
+    	String dName = d3.getName();
+    	String b1Str1 = d3.getB1String("string1");
+    	String b1Str2 = d3.getB1String2("string2", "string3");
+    	String c1Str1 = d3.getC1String("string5");
+    	String c1Str2 = d3.getC1String2("string6", "string7");
+    	int b1Int = d3.getB1Int(4000);
+    	float c1Float = d3.getC1Float((float) 8.8);
+    	Integer c1Integer = d3.getC1Integer(new Integer(9003));
+
+        System.out.println(dName + ": " + b1Str1 + ", " + b1Str2 + ", " + b1Int + ", " + c1Str1 + ", " + c1Str2 + ", " + c1Float + ", " + c1Integer);
+        Assert.assertEquals("DService", dName);
+        Assert.assertEquals("string1", b1Str1);
+        Assert.assertEquals("string2string3", b1Str2);
+        Assert.assertEquals(4000, b1Int);
+        Assert.assertEquals("string5", c1Str1);
+        Assert.assertEquals("string6string7", c1Str2);
+        Assert.assertEquals((float) 8.8, c1Float);
+        Assert.assertEquals(new Integer(9003), c1Integer);
+        
+    }
     @AfterClass
     public static void destroy() throws Exception {
         System.out.println("Cleaning up");

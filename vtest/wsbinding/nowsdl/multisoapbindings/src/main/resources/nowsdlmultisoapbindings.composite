@@ -95,5 +95,41 @@
 			<binding.ws requires="soap.1_1"/>
         </reference>
     </component>
+
+	<service name="BServicePromoted" promote="BComponentPromoted">
+       	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.multisoapbindings.BService"/>
+		<binding.ws name="BServicePromotedSOAP11" requires="soap.1_1" uri="http://localhost:8080/BServicePromoted/soap11"/>
+		<binding.ws requires="soap.1_2" uri="http://localhost:8080/BServicePromoted/soap12"/>
+	</service>
+
+	<service name="CServicePromoted" promote="CComponentPromoted">
+   		<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.multisoapbindings.CService"/>
+		<binding.ws name="CServicePromotedSOAP12" requires="soap.1_2" uri="http://localhost:8080/CServicePromoted/soap12"/>
+		<binding.ws requires="soap.1_1" uri="http://localhost:8080/CServicePromoted/soap11"/>
+	</service>
+
+	<component name="BComponentPromoted">
+        <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.multisoapbindings.impl.BServiceImpl"/>
+    </component>
+
+	<component name="CComponentPromoted">
+        <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.multisoapbindings.impl.CServiceImpl"/>
+    </component>
+
+    <reference name="DComponent3B1" promote="DComponent3/b1">
+       	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.multisoapbindings.BService"/>
+		<binding.ws requires="soap.1_2" uri="http://localhost:8080/BServicePromoted/soap12"/>
+    </reference>
+    
+    <reference name="DComponent3C1" promote="DComponent3/c1">
+       	<interface.java interface="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.multisoapbindings.CService"/>
+		<binding.ws requires="soap.1_1" uri="http://localhost:8080/CServicePromoted/soap11"/>
+    </reference>
+    
+    <component name="DComponent3">
+        <implementation.java class="org.apache.tuscany.sca.vtest.wsbinding.nowsdl.multisoapbindings.impl.DServiceImpl"/>
+        <reference name="b1"/>
+        <reference name="c1"/>
+    </component>
     
 </composite>
