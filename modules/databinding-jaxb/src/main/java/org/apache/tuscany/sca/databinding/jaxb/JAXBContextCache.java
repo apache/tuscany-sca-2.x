@@ -53,6 +53,8 @@ import javax.xml.transform.Source;
  * @version $Rev$ $Date$
  */
 public class JAXBContextCache {
+    private static final int CACHE_SIZE = 128;
+
     private static HashMap<String, Class<?>> loadClassMap = new HashMap<String, Class<?>>();
 
     static {
@@ -89,7 +91,7 @@ public class JAXBContextCache {
     protected JAXBContext commonContext;
 
     public JAXBContextCache() {
-        this(64, 64, 64);
+        this(CACHE_SIZE, CACHE_SIZE, CACHE_SIZE);
     }
 
     public JAXBContextCache(int contextSize, int marshallerSize, int unmarshallerSize) {
@@ -197,6 +199,10 @@ public class JAXBContextCache {
         }
     }
 
+    public Map<Object, JAXBContext> getCache() {
+        return cache.getCache();
+    }
+
     public JAXBContext getJAXBContext(Class<?> cls) throws JAXBException {
         if (COMMON_CLASSES_SET.contains(cls)) {
             return commonContext;
@@ -223,6 +229,29 @@ public class JAXBContextCache {
             }
             return context;
 
+        }
+    }
+
+    public JAXBContext getJAXBContext(Class<?>[] classes) throws JAXBException {
+        Set<Class<?>> classSet = new HashSet<Class<?>>(Arrays.asList(classes));
+        return getJAXBContext(classSet);
+    }
+
+    public JAXBContext getJAXBContext(Set<Class<?>> classes) throws JAXBException {
+        if (COMMON_CLASSES_SET.containsAll(classes)) {
+            return commonContext;
+        }
+        if (classes.size() == 1) {
+            return getJAXBContext(classes.iterator().next());
+        }
+        synchronized (cache) {
+            JAXBContext context = cache.get(classes);
+            if (context != null) {
+                return context;
+            }
+            context = JAXBContext.newInstance(classes.toArray(new Class<?>[classes.size()]));
+            cache.put(classes, context);
+            return context;
         }
     }
 
