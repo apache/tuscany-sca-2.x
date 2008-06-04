@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.sca.implementation.resource.impl;
 
@@ -53,20 +53,20 @@ import org.apache.tuscany.sca.monitor.Problem.Severity;
 public class ResourceImplementationProcessor implements StAXArtifactProcessor<ResourceImplementation> {
     private static final QName IMPLEMENTATION_RESOURCE = new QName(Constants.SCA10_TUSCANY_NS, "implementation.resource");
     private static final String MSG_LOCATION_MISSING = "Reading implementation.resource - location attribute missing";
-    
+
     private ContributionFactory contributionFactory;
     private ResourceImplementationFactory implementationFactory;
     private Monitor monitor;
-    
+
     public ResourceImplementationProcessor(ModelFactoryExtensionPoint modelFactories, Monitor monitor) {
         contributionFactory = modelFactories.getFactory(ContributionFactory.class);
         implementationFactory = modelFactories.getFactory(ResourceImplementationFactory.class);
         this.monitor = monitor;
     }
-    
+
     /**
      * Report a exception.
-     * 
+     *
      * @param problems
      * @param message
      * @param model
@@ -80,7 +80,7 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
 
     /**
      * Report a error.
-     * 
+     *
      * @param problems
      * @param message
      * @param model
@@ -90,7 +90,7 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
             Problem problem = new ProblemImpl(this.getClass().getName(), "impl-resource-validation-messages", Severity.ERROR, model, message, (Object[])messageParameters);
             monitor.problem(problem);
         }
-    }    
+    }
 
     public QName getArtifactType() {
         // Returns the QName of the XML element processed by this processor
@@ -103,11 +103,11 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
     }
 
     public ResourceImplementation read(XMLStreamReader reader) throws ContributionReadException, XMLStreamException {
-        
+
         // Read an <implementation.resource> element
-        
+
         // Create and initialize the resource implementation model
-        ResourceImplementation implementation = null;        
+        ResourceImplementation implementation = null;
 
         // Read the location attribute specifying the location of the resources
         String location = reader.getAttributeValue(null, "location");
@@ -127,12 +127,12 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
                 break;
             }
         }
-        
+
         return implementation;
     }
 
     public void resolve(ResourceImplementation implementation, ModelResolver resolver) throws ContributionResolveException {
-        
+
         // Resolve the resource directory location
         Artifact artifact = contributionFactory.createArtifact();
         artifact.setURI(implementation.getLocation());
@@ -146,18 +146,21 @@ public class ResourceImplementationProcessor implements StAXArtifactProcessor<Re
             	error("ContributionResolveException", resolver, ce);
                 throw ce;
             }
+        } else {
+            error("CouldNotResolveLocation", resolver, implementation.getLocation());
+            throw new ContributionResolveException("Could not resolve implementation.resource location: " + implementation.getLocation());
         }
     }
 
     public void write(ResourceImplementation implementation, XMLStreamWriter writer) throws ContributionWriteException, XMLStreamException {
-        
+
         // Write <implementation.resource>
         writer.writeStartElement(IMPLEMENTATION_RESOURCE.getNamespaceURI(), IMPLEMENTATION_RESOURCE.getLocalPart());
-        
+
         if (implementation.getLocation() != null) {
             writer.writeAttribute("location", implementation.getLocation());
         }
-        
+
         writer.writeEndElement();
     }
 }
