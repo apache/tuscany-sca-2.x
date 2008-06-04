@@ -113,7 +113,8 @@ public class SDODataBinding extends BaseDataBinding {
 
     @Override
     public XMLTypeHelper getXMLTypeHelper() {
-        return xmlTypeHelper;
+        return new SDOTypeHelper();
+        // return xmlTypeHelper;
     }
 
     @Override
