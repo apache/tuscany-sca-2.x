@@ -19,17 +19,16 @@
 
 package org.apache.tuscany.sca.core.classpath;
 
-import static org.apache.tuscany.sca.core.log.LogUtil.error;
+import static org.apache.tuscany.sca.core.classpath.ClasspathUtil.feature;
+import static org.apache.tuscany.sca.core.classpath.ClasspathUtil.runtime;
+import static org.apache.tuscany.sca.core.classpath.ClasspathUtil.src;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
@@ -46,49 +45,17 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
     private static final String TUSCANY_HOME = "TUSCANY_HOME";
     private static final String TUSCANY_SRC = "TUSCANY_SRC";
     
-    private static final String TUSCANY_FEATURE = "org.apache.tuscany.sca.feature";
-    
     public TuscanyClasspathContainer() {
     }
 
     public IClasspathEntry[] getClasspathEntries() {
         List<IClasspathEntry> list = new ArrayList<IClasspathEntry>();
         
+        // Find the Tuscany feature
+        IPath feature = feature();
+        
         // Get the runtime location from the installed Tuscany feature
-        IPath runtimePath = null;
-        try {
-            
-            // Find the Tuscany distribution under the feature's runtime directory
-            // Typically runtime/distro-archive-name/un-archived-distro-dir
-            URL url = Platform.getBundle(TUSCANY_FEATURE).getResource("runtime");
-            File file = new File(url.getPath());
-            if (file.exists()) {
-                File distro = null;
-                for (File f: file.listFiles()) {
-                    if (f.getName().contains("tuscany-sca")) {
-                        distro = f;
-                        break;
-                    }
-                }
-                if (distro != null) {
-                    for (File f: distro.listFiles()) {
-                        if (f.getName().contains("tuscany-sca")) {
-                            runtimePath = new Path(f.getPath());
-                            break;
-                        }
-                    }
-                    if (runtimePath == null) {
-                        error("Tuscany runtime distribution directory not found", new FileNotFoundException(distro.getAbsolutePath()));
-                    }
-                } else {
-                    error("Tuscany runtime distribution archive not found", new FileNotFoundException(file.getAbsolutePath()));
-                }
-            } else {
-                error("Tuscany runtime feature not found", new FileNotFoundException(file.getAbsolutePath()));
-            }
-        } catch (Exception e) {
-            error("Tuscany runtime feature not found", e);
-        }
+        IPath runtimePath = runtime(feature);
 
         if (runtimePath == null) {
 
@@ -106,27 +73,7 @@ public class TuscanyClasspathContainer implements IClasspathContainer {
         }
         
         // Get the source location from the installed Tuscany feature
-        IPath sourcePath = null;
-        try {
-
-            // Find the Tuscany source distribution under the feature's src directory
-            // Typically src/distro-archive-src.zip
-            URL url = Platform.getBundle(TUSCANY_FEATURE).getResource("src");
-            File file = new File(url.getPath());
-            if (file.exists()) {
-                File distro = null;
-                for (File f: file.listFiles()) {
-                    if (f.getName().contains("tuscany-sca") && f.getName().endsWith("-src.zip")) {
-                        distro = f;
-                        break;
-                    }
-                }
-                if (distro != null) {
-                    sourcePath = new Path(distro.getPath());
-                }
-            }
-        } catch (Exception e) {
-        }
+        IPath sourcePath = src(feature);
 
         if (sourcePath == null) {
             

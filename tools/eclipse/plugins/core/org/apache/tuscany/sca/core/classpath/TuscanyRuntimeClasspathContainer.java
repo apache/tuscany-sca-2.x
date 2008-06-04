@@ -19,13 +19,13 @@
 
 package org.apache.tuscany.sca.core.classpath;
 
-import java.io.File;
-import java.net.URL;
+import static org.apache.tuscany.sca.core.classpath.ClasspathUtil.feature;
+import static org.apache.tuscany.sca.core.classpath.ClasspathUtil.runtime;
 
-import org.eclipse.core.runtime.FileLocator;
+import java.io.File;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
@@ -41,43 +41,16 @@ public class TuscanyRuntimeClasspathContainer implements IClasspathContainer {
     
     private static final String TUSCANY_HOME = "TUSCANY_HOME";
     
-    private static final String TUSCANY_FEATURE = "features/org.apache.tuscany.sca.feature_1.2.0";
-    
-    private static final String TUSCANY_FEATURE_RUNTIME = TUSCANY_FEATURE + "/runtime"; 
-
     public TuscanyRuntimeClasspathContainer() {
     }
 
     public IClasspathEntry[] getClasspathEntries() {
         
+        // Find the Tuscany feature
+        IPath feature = feature();
+        
         // Get the runtime location from the installed Tuscany feature
-        IPath runtimePath = null;
-        try {
-            
-            // Find the Tuscany distribution under the feature's runtime directory
-            // Typically runtime/distro-archive-name/un-archived-distro-dir
-            URL url = FileLocator.toFileURL(Platform.getInstallLocation().getURL());
-            File file = new File(url.toURI());
-            file = new File(file, TUSCANY_FEATURE_RUNTIME);
-            if (file.exists()) {
-                File distro = null;
-                for (File f: file.listFiles()) {
-                    if (f.getName().contains("tuscany-sca")) {
-                        distro = f;
-                        break;
-                    }
-                }
-                if (distro != null) {
-                    for (File f: distro.listFiles()) {
-                        if (f.getName().contains("tuscany-sca")) {
-                            runtimePath = new Path(f.getPath());
-                            break;
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-        }
+        IPath runtimePath = runtime(feature);
 
         if (runtimePath == null) {
 

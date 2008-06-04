@@ -204,7 +204,7 @@ public class DomainManagerLauncherUtil {
                 newConfiguration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY, domainProject.getLocation().toString());
                 
                 // Pass the runtime classpath as a system property
-                newConfiguration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "-DTUSCANY_PATH=" + ClasspathUtil.installedRuntimeClasspath());
+                newConfiguration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "\"-DTUSCANY_PATH=" + ClasspathUtil.installedRuntimeClasspath() + "\"");
 
                 // Save the configuration
                 newConfiguration.doSave();
