@@ -41,7 +41,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.internal.core.LaunchManager;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -131,7 +130,7 @@ public class NodeLauncherUtil {
             newConfiguration.setAttribute("COMPOSITE_PATH", file.getFullPath().toString());
 
             // Pass the runtime classpath as a system property
-            newConfiguration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "-DTUSCANY_PATH=" + ClasspathUtil.installedRuntimeClasspath());
+            newConfiguration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "\"-DTUSCANY_PATH=" + ClasspathUtil.installedRuntimeClasspath() + "\"");
 
             // Save the configuration
             newConfiguration.doSave();
