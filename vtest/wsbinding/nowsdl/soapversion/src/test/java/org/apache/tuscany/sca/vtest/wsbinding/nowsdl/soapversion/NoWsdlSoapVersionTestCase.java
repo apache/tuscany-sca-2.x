@@ -28,7 +28,8 @@ import org.junit.Test;
 
 /**
  * Tests the simplest form of the binding element without WSDL document
- * described in section section 2.3.1 of SCA Web Services Binding V1.00
+ * described in section section 2.3.1, 2.3.2 and 2.3.3.1 of SCA Web Services
+ * Binding V1.00
  */
 public class NoWsdlSoapVersionTestCase {
 
@@ -54,6 +55,13 @@ public class NoWsdlSoapVersionTestCase {
      * <li>soap.1_2</li><br>
      * A SOAP 1.2 binding only is required.<br>
      * <br>
+     * 2.3.3.1 SOAP versions<br>
+     * Where a web service binding requires a specific SOAP version, then a
+     * single WSDL port and SOAP binding of the appropriate version is
+     * generated. Where no specific SOAP version is required, then one or more
+     * WSDL ports with associated SOAP bindings may be generated, depending on
+     * the level(s) supported in the target runtime.<br>
+     * <p>
      */
     @Test
     public void testSoapVersion2() throws Exception {
@@ -73,7 +81,11 @@ public class NoWsdlSoapVersionTestCase {
     }
 
     /**
-     * Lines 254-257:<br>
+     * Lines 254-257, 287-291, 260-262:<br>
+     * A separate WSDL document is generated for each SCA service. Each has
+     * its own unique target namespace. This is to ensure that bindings on
+     * different services of the same component do not clash.<br>
+     * <p>
      * Test two references using binding.ws with 2 different SOAP versions
      * and without WSDL document.<br> 
      */
