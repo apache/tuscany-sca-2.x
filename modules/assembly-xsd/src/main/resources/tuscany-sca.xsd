@@ -21,7 +21,8 @@
     targetNamespace="http://tuscany.apache.org/xmlns/sca/1.0">
     
     <import namespace="http://www.osoa.org/xmlns/sca/1.0" schemaLocation="sca-all.xsd"/>
-
+    <import namespace="http://data.tuscany.apache.org/xmlns/sca/1.0" schemaLocation="tuscany-sca-data-helper.xsd"/>
+    
     <include schemaLocation="tuscany-sca-binding-atom.xsd"/>
     <include schemaLocation="tuscany-sca-binding-dwr.xsd"/>
     <include schemaLocation="tuscany-sca-binding-http.xsd"/>
@@ -30,10 +31,8 @@
     <include schemaLocation="tuscany-sca-binding-rmi.xsd"/>
     <include schemaLocation="tuscany-sca-binding-rss.xsd"/>
     
-    <!--
     <include schemaLocation="tuscany-sca-implementation-das.xsd"/>
-    <include schemaLocation="tuscany-sca-implementation-data.xsd"/>
-    -->
+    <include schemaLocation="tuscany-sca-implementation-data-xml.xsd"/>
     <include schemaLocation="tuscany-sca-implementation-node.xsd"/>
     <include schemaLocation="tuscany-sca-implementation-notification.xsd"/>
     <include schemaLocation="tuscany-sca-implementation-osgi.xsd"/>
