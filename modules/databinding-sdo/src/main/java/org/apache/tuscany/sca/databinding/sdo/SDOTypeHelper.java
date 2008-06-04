@@ -23,30 +23,28 @@ import java.beans.Introspector;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 import javax.xml.namespace.QName;
+
+import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
+import org.apache.tuscany.sca.databinding.XMLTypeHelper;
+import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
+import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
+import org.apache.tuscany.sca.interfacedef.util.XMLType;
+import org.apache.tuscany.sca.xsd.XSDFactory;
+import org.apache.tuscany.sca.xsd.XSDefinition;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSParser;
 
 import commonj.sdo.Type;
 import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.helper.XSDHelper;
-
-import org.apache.tuscany.sca.databinding.XMLTypeHelper;
-import org.apache.tuscany.sca.interfacedef.util.JavaXMLMapper;
-import org.apache.tuscany.sca.contribution.resolver.ModelResolver;
-import org.apache.tuscany.sca.interfacedef.util.TypeInfo;
-import org.apache.tuscany.sca.interfacedef.util.XMLType;
-import org.apache.tuscany.sca.xsd.XSDefinition;
-import org.apache.tuscany.sca.xsd.XSDFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.bootstrap.DOMImplementationRegistry;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSInput;
-import org.w3c.dom.ls.LSParser;
 
 public class SDOTypeHelper implements XMLTypeHelper {
     private static final String SCHEMA_NS = "http://www.w3.org/2001/XMLSchema";
