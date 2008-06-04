@@ -31,8 +31,10 @@
     <include schemaLocation="tuscany-sca-binding-rmi.xsd"/>
     <include schemaLocation="tuscany-sca-binding-rss.xsd"/>
     
+    <!--
     <include schemaLocation="tuscany-sca-implementation-das.xsd"/>
     <include schemaLocation="tuscany-sca-implementation-data-xml.xsd"/>
+    -->
     <include schemaLocation="tuscany-sca-implementation-node.xsd"/>
     <include schemaLocation="tuscany-sca-implementation-notification.xsd"/>
     <include schemaLocation="tuscany-sca-implementation-osgi.xsd"/>
