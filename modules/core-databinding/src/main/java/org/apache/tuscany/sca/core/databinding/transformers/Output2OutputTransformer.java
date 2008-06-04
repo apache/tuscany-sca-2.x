@@ -50,7 +50,7 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
      */
     public Output2OutputTransformer() {
         super();
-    } 
+    }
 
     /**
      * @param mediator the mediator to set
@@ -115,6 +115,40 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
         return wrapperHandler;
     }
 
+    /**
+     * Match the structure of the wrapper element. If it matches, then we can do
+     * wrapper to wrapper transformation. Otherwise, we do child to child.
+     * @param w1
+     * @param w2
+     * @return
+     */
+    private boolean matches(WrapperInfo w1, WrapperInfo w2) {
+        if (w1 == null || w2 == null) {
+            return false;
+        }
+        if (!w1.getOutputWrapperElement().equals(w2.getOutputWrapperElement())) {
+            return false;
+        }
+
+        // Compare the child elements
+        List<ElementInfo> list1 = w1.getOutputChildElements();
+        List<ElementInfo> list2 = w2.getOutputChildElements();
+        if (list1.size() != list2.size()) {
+            return false;
+        }
+        // FXIME: [rfeng] At this point, the J2W generates local elments under the namespace
+        // of the interface instead of "". We only compare the local parts only to work around
+        // the namespace mismatch
+        for (int i = 0; i < list1.size(); i++) {
+            String n1 = list1.get(i).getQName().getLocalPart();
+            String n2 = list2.get(i).getQName().getLocalPart();
+            if (!n1.equals(n2)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @SuppressWarnings("unchecked")
     public Object transform(Object response, TransformationContext context) {
         try {
@@ -146,7 +180,7 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
                         sourceOp.getWrapper() != null ? sourceOp.getWrapper().getOutputWrapperClass() : null;
                     DataType sourceWrapperType =
                         sourceWrapperHandler.getWrapperType(wrapperElement, sourceWrapperClass, context);
-                    if (sourceWrapperType != null) {
+                    if (sourceWrapperType != null && matches(sourceOp.getWrapper(), targetOp.getWrapper())) {
                         Object sourceWrapper = sourceWrapperHandler.create(wrapperElement, sourceWrapperClass, context);
                         if (sourceWrapper != null) {
                             if (!childElements.isEmpty()) {
@@ -195,7 +229,7 @@ public class Output2OutputTransformer extends BaseTransformer<Object, Object> im
 
                         DataType targetWrapperType =
                             targetWrapperHandler.getWrapperType(wrapperElement, targetWrapperClass, context);
-                        if (targetWrapperType != null) {
+                        if (targetWrapperType != null && matches(sourceOp.getWrapper(), targetOp.getWrapper())) {
                             Object targetWrapper =
                                 mediator.mediate(sourceWrapper, sourceType.getLogical(), targetWrapperType, context
                                     .getMetadata());

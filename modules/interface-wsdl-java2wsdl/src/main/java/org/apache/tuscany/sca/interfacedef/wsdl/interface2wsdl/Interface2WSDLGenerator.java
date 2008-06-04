@@ -278,7 +278,7 @@ public class Interface2WSDLGenerator {
 
         return definition;
     }
-
+    
     private static void loadXSD(XmlSchemaCollection schemaCollection, XSDefinition definition) {
         if (definition.getSchema() != null) {
             return;
@@ -462,6 +462,17 @@ public class Interface2WSDLGenerator {
             part.setElementName(wrapperName);
             wrappers.put(wrapperName, elements);
 
+            // FIXME: [rfeng] Ideally, we should try to register the wrappers only. But we are
+            // expriencing the problem that we cannot handle XSD imports 
+            /*
+            Class<?> wrapperClass = input ? opWrapper.getInputWrapperClass() : opWrapper.getOutputWrapperClass();
+            DataType wrapperDT = input ? opWrapper.getInputWrapperType() : opWrapper.getOutputWrapperType();
+            if (wrapperClass != null) {
+                getElementInfo(wrapperClass, wrapperDT, wrapperName, helpers);
+                return part;
+            }
+            */
+
             Method method = ((JavaOperation)operation).getJavaMethod();
             if (input) {
                 Class<?>[] paramTypes = method.getParameterTypes();
@@ -489,13 +500,18 @@ public class Interface2WSDLGenerator {
             dataType = (DataType)dataType.getLogical();
             db = dataType.getDataBinding();
         }
-        DataBinding dataBinding = dataBindings.getDataBinding(db);
-        if (dataBinding == null) {
-            throw new RuntimeException("no data binding for " + db);
-        }
-        XMLTypeHelper helper = dataBinding.getXMLTypeHelper();
+        XMLTypeHelper helper = helpers.get(db);
         if (helper == null) {
-            helper = new JAXBTypeHelper();
+            DataBinding dataBinding = dataBindings.getDataBinding(db);
+            if (dataBinding == null) {
+                throw new RuntimeException("no data binding for " + db);
+            }
+
+            helper = dataBinding.getXMLTypeHelper();
+            if (helper == null) {
+                helper = new JAXBTypeHelper();
+            }
+            helpers.put(db, helper);
         }
         TypeInfo typeInfo = helper.getTypeInfo(javaType.isArray() ? javaType.getComponentType() : javaType,
                                                dataType.getLogical());

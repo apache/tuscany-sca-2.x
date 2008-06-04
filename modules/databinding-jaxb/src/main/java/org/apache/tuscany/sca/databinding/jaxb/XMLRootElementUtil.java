@@ -181,6 +181,7 @@ public class XMLRootElementUtil {
             // For the current property, find a matching field...so that we can get the xml name
             boolean found = false;
 
+            int index = 0;
             for (Field field : fields) {
                 String fieldName = field.getName();
 
@@ -189,7 +190,8 @@ public class XMLRootElementUtil {
                     // Get the xmlElement name for this field
                     QName xmlName = getXmlElementRefOrElementQName(field.getDeclaringClass(), field);
                     found = true;
-                    map.put(xmlName.getLocalPart(), new JAXBPropertyDescriptor(pd, xmlName));
+                    map.put(xmlName.getLocalPart(), new JAXBPropertyDescriptor(pd, xmlName, index));
+                    index++;
                     break;
                 }
 
@@ -201,7 +203,8 @@ public class XMLRootElementUtil {
                         QName xmlName = getXmlElementRefOrElementQName(field.getDeclaringClass(), field);
                         found = true;
 
-                        map.put(xmlName.getLocalPart(), new JAXBPropertyDescriptor(pd, xmlName));
+                        map.put(xmlName.getLocalPart(), new JAXBPropertyDescriptor(pd, xmlName, index));
+                        index++;
                         break;
                     }
                 }
@@ -211,7 +214,8 @@ public class XMLRootElementUtil {
             if (!found) {
                 String xmlName = pd.getName();
 
-                map.put(xmlName, new JAXBPropertyDescriptor(pd, xmlName));
+                map.put(xmlName, new JAXBPropertyDescriptor(pd, xmlName, index));
+                index++;
             }
 
         }

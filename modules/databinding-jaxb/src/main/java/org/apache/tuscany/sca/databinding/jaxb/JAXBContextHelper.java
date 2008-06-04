@@ -116,12 +116,16 @@ public class JAXBContextHelper {
         JAXBIntrospector introspector = context.createJAXBIntrospector();
         Object element = null;
         if (value != null && introspector.isElement(value)) {
+            // NOTE: [rfeng] We cannot wrap an element in a JAXBElement
+            element = value;
+            /*
             if (name == JAXBDataBinding.ROOT_ELEMENT) {
                 element = value;
                 name = introspector.getElementName(element);
             } else {
                 value = JAXBIntrospector.getValue(value);
             }
+            */
         }
         if (element == null) {
             element = new JAXBElement(name, type, value);

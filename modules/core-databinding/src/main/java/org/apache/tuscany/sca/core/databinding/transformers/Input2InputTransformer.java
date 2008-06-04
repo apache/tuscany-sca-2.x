@@ -49,7 +49,7 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
     protected Mediator mediator;
 
     public Input2InputTransformer() {
-        super(); 
+        super();
     }
 
     @Override
@@ -94,19 +94,58 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
         return 10000;
     }
 
+    /**
+     * Match the structure of the wrapper element. If it matches, then we can do
+     * wrapper to wrapper transformation. Otherwise, we do child to child.
+     * @param w1
+     * @param w2
+     * @return
+     */
+    private boolean matches(WrapperInfo w1, WrapperInfo w2) {
+        if (w1 == null || w2 == null) {
+            return false;
+        }
+        if (!w1.getInputWrapperElement().equals(w2.getInputWrapperElement())) {
+            return false;
+        }
+
+        // Compare the child elements
+        List<ElementInfo> list1 = w1.getInputChildElements();
+        List<ElementInfo> list2 = w2.getInputChildElements();
+        if (list1.size() != list2.size()) {
+            return false;
+        }
+        // FXIME: [rfeng] At this point, the J2W generates local elments under the namespace
+        // of the interface instead of "". We only compare the local parts only to work around
+        // the namespace mismatch
+        for (int i = 0; i < list1.size(); i++) {
+            String n1 = list1.get(i).getQName().getLocalPart();
+            String n2 = list2.get(i).getQName().getLocalPart();
+            if (!n1.equals(n2)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @SuppressWarnings("unchecked")
     public Object[] transform(Object[] source, TransformationContext context) {
+        // Check if the source operation is wrapped
         DataType<List<DataType>> sourceType = context.getSourceDataType();
         Operation sourceOp = context.getSourceOperation();
         boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle();
 
+        // Find the wrapper handler for source data
         WrapperHandler sourceWrapperHandler = null;
         String sourceDataBinding = getDataBinding(sourceOp);
         sourceWrapperHandler = getWrapperHandler(sourceDataBinding, sourceWrapped);
 
+        // Check if the target operation is wrapped
         DataType<List<DataType>> targetType = context.getTargetDataType();
         Operation targetOp = (Operation)context.getTargetOperation();
         boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle();
+
+        // Find the wrapper handler for target data
         WrapperHandler targetWrapperHandler = null;
         String targetDataBinding = getDataBinding(targetOp);
         targetWrapperHandler = getWrapperHandler(targetDataBinding, targetWrapped);
@@ -119,6 +158,7 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
             Class<?> targetWrapperClass = wrapper != null ? wrapper.getInputWrapperClass() : null;
 
             if (source == null) {
+                // Empty child elements
                 Object targetWrapper = targetWrapperHandler.create(wrapperElement, targetWrapperClass, context);
                 return new Object[] {targetWrapper};
             }
@@ -129,13 +169,21 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
                     sourceOp.getWrapper() != null ? sourceOp.getWrapper().getInputWrapperClass() : null;
                 DataType sourceWrapperType =
                     sourceWrapperHandler.getWrapperType(wrapperElement, sourceWrapperClass, context);
-                if (sourceWrapperType != null) {
+
+                // We only do wrapper to wrapper transformation if the source has a wrapper and both sides
+                // match by XML structure
+                if (sourceWrapperType != null && matches(sourceOp.getWrapper(), targetOp.getWrapper())) {
+                    // Create the source wrapper
                     Object sourceWrapper = sourceWrapperHandler.create(wrapperElement, sourceWrapperClass, context);
+
+                    // Populate the source wrapper
                     if (sourceWrapper != null) {
                         sourceWrapperHandler.setChildren(sourceWrapper,
                                                          wrapper.getInputChildElements(),
                                                          source,
                                                          context);
+
+                        // Transform the data from source wrapper to target wrapper
                         Object targetWrapper =
                             mediator.mediate(sourceWrapper, sourceWrapperType, targetType.getLogical().get(0), context
                                 .getMetadata());
@@ -146,10 +194,9 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
             // Fall back to child by child transformation
             Object targetWrapper = targetWrapperHandler.create(wrapperElement, targetWrapperClass, context);
             List<DataType> argTypes = wrapper.getUnwrappedInputType().getLogical();
-
             Object[] targetChildren = new Object[source.length];
             for (int i = 0; i < source.length; i++) {
-                ElementInfo argElement = wrapper.getInputChildElements().get(i);
+                // ElementInfo argElement = wrapper.getInputChildElements().get(i);
                 DataType<XMLType> argType = argTypes.get(i);
                 targetChildren[i] =
                     mediator.mediate(source[i], sourceType.getLogical().get(i), argType, context.getMetadata());
@@ -173,7 +220,7 @@ public class Input2InputTransformer extends BaseTransformer<Object[], Object[]> 
 
                     DataType targetWrapperType =
                         targetWrapperHandler.getWrapperType(wrapperElement, targetWrapperClass, context);
-                    if (targetWrapperType != null) {
+                    if (targetWrapperType != null && matches(sourceOp.getWrapper(), targetOp.getWrapper())) {
                         Object targetWrapper =
                             mediator.mediate(sourceWrapper, sourceType.getLogical().get(0), targetWrapperType, context
                                 .getMetadata());

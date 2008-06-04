@@ -23,8 +23,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -77,7 +76,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
     public JAXWSJavaInterfaceProcessor() {
         super();
     }
-    
+
     private static String capitalize(String name) {
         if (name == null || name.length() == 0) {
             return name;
@@ -108,7 +107,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
 
         for (Iterator<Operation> it = contract.getOperations().iterator(); it.hasNext();) {
             JavaOperation operation = (JavaOperation)it.next();
-            Method method = operation.getJavaMethod();
+            final Method method = operation.getJavaMethod();
             introspectFaultTypes(operation);
 
             // SOAP binding (doc/lit/wrapped|bare or rpc/lit)
@@ -186,18 +185,29 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 if ("".equals(wrapperBeanName)) {
                     wrapperBeanName = clazz.getPackage().getName() + ".jaxws." + capitalize(method.getName());
                 }
-                Class<?> inputWrapperClass = null;
-                try {
-                    final String className = wrapperBeanName;
-                    inputWrapperClass = AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
-                        public Class<?> run() throws ClassNotFoundException {
-                            return Class.forName(className, false, clazz.getClassLoader());
+
+                DataType<XMLType> inputWrapperDT = null;
+
+                final String inputWrapperClassName = wrapperBeanName;
+                final String inputNS = ns;
+                final String inputName = name;
+                inputWrapperDT = AccessController.doPrivileged(new PrivilegedAction<DataType<XMLType>>() {
+                    public DataType<XMLType> run() {
+                        try {
+                            Class<?> wrapperClass = Class.forName(inputWrapperClassName, false, clazz.getClassLoader());
+                            QName qname = new QName(inputNS, inputName);
+                            DataType dt = new DataTypeImpl<XMLType>(wrapperClass, new XMLType(qname, qname));
+                            dataBindingExtensionPoint.introspectType(dt, null);
+                            return dt;
+                        } catch (ClassNotFoundException e) {
+                            GeneratedClassLoader cl = new GeneratedClassLoader(clazz.getClassLoader());
+                            return new GeneratedDataTypeImpl(method, inputWrapperClassName, inputNS, inputName, true,
+                                                             cl);
                         }
-                    });
-                } catch (PrivilegedActionException e) {
-                    // Ignore
-                }
-                QName inputWrapper = new QName(ns, name);
+                    }
+                });
+
+                QName inputWrapper = inputWrapperDT.getLogical().getElementName();
 
                 ResponseWrapper responseWrapper = method.getAnnotation(ResponseWrapper.class);
                 ns = responseWrapper == null ? tns : getValue(responseWrapper.targetNamespace(), tns);
@@ -209,18 +219,29 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                     wrapperBeanName =
                         clazz.getPackage().getName() + ".jaxws." + capitalize(method.getName()) + "Response";
                 }
-                Class<?> outputWrapperClass = null;
-                try {
-                    final String className = wrapperBeanName;
-                    outputWrapperClass = AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
-                        public Class<?> run() throws ClassNotFoundException {
-                            return Class.forName(className, false, clazz.getClassLoader());
+
+                DataType<XMLType> outputWrapperDT = null;
+                final String outputWrapperClassName = wrapperBeanName;
+                final String outputNS = ns;
+                final String outputName = name;
+
+                outputWrapperDT = AccessController.doPrivileged(new PrivilegedAction<DataType<XMLType>>() {
+                    public DataType<XMLType> run() {
+                        try {
+                            Class<?> wrapperClass =
+                                Class.forName(outputWrapperClassName, false, clazz.getClassLoader());
+                            QName qname = new QName(inputNS, inputName);
+                            DataType dt = new DataTypeImpl<XMLType>(wrapperClass, new XMLType(qname, qname));
+                            dataBindingExtensionPoint.introspectType(dt, null);
+                            return dt;
+                        } catch (ClassNotFoundException e) {
+                            GeneratedClassLoader cl = new GeneratedClassLoader(clazz.getClassLoader());
+                            return new GeneratedDataTypeImpl(method, outputWrapperClassName, outputNS, outputName,
+                                                             false, cl);
                         }
-                    });
-                } catch (PrivilegedActionException e) {
-                    // Ignore
-                }
-                QName outputWrapper = new QName(ns, name);
+                    }
+                });
+                QName outputWrapper = outputWrapperDT.getLogical().getElementName();
 
                 List<ElementInfo> inputElements = new ArrayList<ElementInfo>();
                 for (int i = 0; i < method.getParameterTypes().length; i++) {
@@ -255,11 +276,14 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                     outputElements.add(new ElementInfo(element, null));
                 }
 
+                String db = inputWrapperDT != null ? inputWrapperDT.getDataBinding() : JAXB_DATABINDING;
                 WrapperInfo wrapperInfo =
-                    new WrapperInfo(JAXB_DATABINDING, new ElementInfo(inputWrapper, null),
-                                    new ElementInfo(outputWrapper, null), inputElements, outputElements);
-                wrapperInfo.setInputWrapperClass(inputWrapperClass);
-                wrapperInfo.setOutputWrapperClass(outputWrapperClass);
+                    new WrapperInfo(db, new ElementInfo(inputWrapper, null), new ElementInfo(outputWrapper, null),
+                                    inputElements, outputElements);
+
+                wrapperInfo.setInputWrapperType(inputWrapperDT);
+                wrapperInfo.setOutputWrapperType(outputWrapperDT);
+
                 operation.setWrapper(wrapperInfo);
             }
         }
@@ -267,9 +291,9 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
 
     @SuppressWarnings("unchecked")
     private void introspectFaultTypes(Operation operation) {
-        if (operation!= null && operation.getFaultTypes() != null) {
+        if (operation != null && operation.getFaultTypes() != null) {
             for (DataType exceptionType : operation.getFaultTypes()) {
-                faultExceptionMapper.introspectFaultDataType(exceptionType);
+                faultExceptionMapper.introspectFaultDataType(exceptionType, true);
                 DataType faultType = (DataType)exceptionType.getLogical();
                 if (faultType.getDataBinding() == JavaExceptionDataBinding.NAME) {
                     // The exception class doesn't have an associated bean class, so
@@ -285,8 +309,7 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
         QName faultBeanName = ((XMLType)faultType.getLogical()).getElementName();
         List<DataType<XMLType>> beanDataTypes = new ArrayList<DataType<XMLType>>();
         for (Method aMethod : exceptionType.getPhysical().getMethods()) {
-            if (Modifier.isPublic(aMethod.getModifiers())
-                && aMethod.getName().startsWith(GET)
+            if (Modifier.isPublic(aMethod.getModifiers()) && aMethod.getName().startsWith(GET)
                 && aMethod.getParameterTypes().length == 0
                 && JAXWSFaultExceptionMapper.isMappedGetter(aMethod.getName())) {
                 String propName = resolvePropertyFromMethod(aMethod.getName());
@@ -304,11 +327,10 @@ public class JAXWSJavaInterfaceProcessor implements JavaInterfaceVisitor {
                 // sort the list lexicographically as specified in JAX-WS spec section 3.7
                 int i = 0;
                 for (; i < beanDataTypes.size(); i++) {
-                    if (beanDataTypes.get(i).getLogical().getElementName()
-                            .getLocalPart().compareTo(propName) > 0) {
+                    if (beanDataTypes.get(i).getLogical().getElementName().getLocalPart().compareTo(propName) > 0) {
                         break;
                     }
-                } 
+                }
                 beanDataTypes.add(i, propDT);
             }
         }

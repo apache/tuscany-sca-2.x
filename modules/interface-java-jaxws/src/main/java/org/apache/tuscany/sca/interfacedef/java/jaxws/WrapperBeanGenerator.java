@@ -25,69 +25,146 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
-import org.objectweb.asm.ClassWriter;
 
 public class WrapperBeanGenerator extends BaseBeanGenerator {
 
-
     public List<Class<?>> generateWrapperBeans(Class<?> sei) {
+        GeneratedClassLoader cl = new GeneratedClassLoader(sei.getClassLoader());
         List<Class<?>> classes = new ArrayList<Class<?>>();
         for (Method m : sei.getMethods()) {
             if (m.getDeclaringClass() == Object.class) {
                 continue;
             }
-            classes.add(generateRequestWrapper(sei, m));
-            classes.add(generateResponseWrapper(sei, m));
+            classes.add(generateRequestWrapper(sei, m, cl));
+            classes.add(generateResponseWrapper(sei, m, cl));
         }
         return classes;
 
     }
 
-    private Class<?> generateRequestWrapper(Class<?> sei, Method m) {
+    public Class<?> generateRequestWrapper(Class<?> sei, Method m, GeneratedClassLoader cl) {
         String wrapperNamespace = JavaInterfaceUtil.getNamespace(sei);
+        String wrapperName = m.getName();
+        String wrapperBeanName = capitalize(wrapperName);
+        String wrapperClassName = sei.getPackage().getName() + ".jaxws." + wrapperBeanName;
 
-        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        String wrapperName = capitalize(m.getName());
-        String wrapperClassName = sei.getPackage().getName() + ".jaxws." + wrapperName;
-        String wrapperClassDescriptor = wrapperClassName.replace('.', '/');
-        String wrapperClassSignature = "L" + wrapperClassDescriptor + ";";
-
-        Class<?>[] paramTypes = m.getParameterTypes();
-        Type[] genericParamTypes = m.getGenericParameterTypes();
-        BeanProperty[] properties = new BeanProperty[paramTypes.length];
-        for (int i = 0; i < paramTypes.length; i++) {
-            String propName = "arg" + i;
-            properties[i] = new BeanProperty(propName, paramTypes[i], genericParamTypes[i]);
-        }
-
-        defineClass(cw, wrapperClassDescriptor, wrapperClassSignature, wrapperNamespace, m.getName(), properties);
-        GeneratedClassLoader cl =
-            new GeneratedClassLoader(sei.getClassLoader());
-        Class<?> generated = cl.getGeneratedClass(wrapperClassName, cw.toByteArray());
-        return generated;
+        return generateRequestWrapper(m, wrapperClassName, wrapperNamespace, wrapperName, cl);
     }
 
-    private Class<?> generateResponseWrapper(Class<?> sei, Method m) {
+    public Class<?> generateRequestWrapper(Method m,
+                                           String wrapperClassName,
+                                           String wrapperNamespace,
+                                           String wrapperName,
+                                           GeneratedClassLoader cl) {
+        synchronized (m.getDeclaringClass()) {
+            MethodKey key = new MethodKey(m, true);
+            Class<?> wrapperClass = generatedClasses.get(key);
+            if (wrapperClass == null) {
+                String wrapperClassDescriptor = wrapperClassName.replace('.', '/');
+                String wrapperClassSignature = "L" + wrapperClassDescriptor + ";";
+
+                Class<?>[] paramTypes = m.getParameterTypes();
+                Type[] genericParamTypes = m.getGenericParameterTypes();
+                BeanProperty[] properties = new BeanProperty[paramTypes.length];
+                for (int i = 0; i < paramTypes.length; i++) {
+                    String propName = "arg" + i;
+                    properties[i] = new BeanProperty(propName, paramTypes[i], genericParamTypes[i]);
+                }
+
+                wrapperClass =
+                    generate(wrapperClassDescriptor,
+                             wrapperClassSignature,
+                             wrapperNamespace,
+                             wrapperName,
+                             properties,
+                             cl);
+                generatedClasses.put(key, wrapperClass);
+            }
+            return wrapperClass;
+
+        }
+    }
+
+    public Class<?> generateResponseWrapper(Class<?> sei, Method m, GeneratedClassLoader cl) {
         String wrapperNamespace = JavaInterfaceUtil.getNamespace(sei);
 
-        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        String wrapperName = capitalize(m.getName()) + "Response";
-        String wrapperClassName = sei.getPackage().getName() + ".jaxws." + wrapperName;
-        String wrapperClassDescriptor = wrapperClassName.replace('.', '/');
-        String wrapperClassSignature = "L" + wrapperClassDescriptor + ";";
-        
-        Class<?> returnType = m.getReturnType();
-        BeanProperty[] properties = null;
-        if (returnType != void.class) {
-            Type genericReturnType = m.getGenericReturnType();
-            String propName = "return";
-            properties = new BeanProperty[] {new BeanProperty(propName, returnType, genericReturnType)};
+        String wrapperName = m.getName() + "Response";
+        String wrapperBeanName = capitalize(wrapperName);
+        String wrapperClassName = sei.getPackage().getName() + ".jaxws." + wrapperBeanName;
+        return generateResponseWrapper(m, wrapperClassName, wrapperNamespace, wrapperName, cl);
+
+    }
+
+    public Class<?> generateResponseWrapper(Method m,
+                                            String wrapperClassName,
+                                            String wrapperNamespace,
+                                            String wrapperName,
+                                            GeneratedClassLoader cl) {
+        synchronized (m.getDeclaringClass()) {
+            MethodKey key = new MethodKey(m, false);
+            Class<?> wrapperClass = generatedClasses.get(key);
+            if (wrapperClass == null) {
+                String wrapperClassDescriptor = wrapperClassName.replace('.', '/');
+                String wrapperClassSignature = "L" + wrapperClassDescriptor + ";";
+
+                Class<?> returnType = m.getReturnType();
+                BeanProperty[] properties = null;
+                if (returnType != void.class) {
+                    Type genericReturnType = m.getGenericReturnType();
+                    String propName = "return";
+                    properties = new BeanProperty[] {new BeanProperty(propName, returnType, genericReturnType)};
+                }
+                wrapperClass =
+                    generate(wrapperClassDescriptor,
+                             wrapperClassSignature,
+                             wrapperNamespace,
+                             wrapperName,
+                             properties,
+                             cl);
+                generatedClasses.put(key, wrapperClass);
+            }
+            return wrapperClass;
+
         }
-        byte[] byteCode = defineClass(cw, wrapperClassDescriptor, wrapperClassSignature, wrapperNamespace, m.getName() + "Response", properties);
-        GeneratedClassLoader cl =
-            new GeneratedClassLoader(sei.getClassLoader());
-        Class<?> generated = cl.getGeneratedClass(wrapperClassName, byteCode);
-        return generated;
+    }
+
+    private static class MethodKey {
+        private Method m;
+        private boolean request;
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((m == null) ? 0 : m.hashCode());
+            result = prime * result + (request ? 1231 : 1237);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            final MethodKey other = (MethodKey)obj;
+            if (m == null) {
+                if (other.m != null)
+                    return false;
+            } else if (!m.equals(other.m))
+                return false;
+            if (request != other.request)
+                return false;
+            return true;
+        }
+
+        public MethodKey(Method m, boolean request) {
+            super();
+            this.m = m;
+            this.request = request;
+        }
     }
 
 }

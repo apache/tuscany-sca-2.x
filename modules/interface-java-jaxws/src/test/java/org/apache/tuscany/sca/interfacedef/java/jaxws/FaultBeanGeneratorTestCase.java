@@ -38,7 +38,7 @@ import org.objectweb.asm.util.CheckClassAdapter;
  */
 public class FaultBeanGeneratorTestCase extends TestCase {
     public void testGenerate() throws IOException {
-        byte[] content = FaultBeanGenerator.generateFaultBeanClassRep(MyException.class);
+        byte[] content = new FaultBeanGenerator().generate(MyException.class);
         ClassReader cr = new ClassReader(content);
         PrintWriter pw = new PrintWriter(System.out);
         CheckClassAdapter.verify(cr, false, pw);
@@ -47,11 +47,11 @@ public class FaultBeanGeneratorTestCase extends TestCase {
     public void testGenerateClass() throws Exception {
         Class<?> cls = FaultBeanGenerator.generateFaultBeanClass(MyException.class);
         Assert.assertEquals("org.apache.tuscany.sca.interfacedef.java.jaxws.jaxws.MyExceptionBean", cls.getName());
-        for(Annotation a: cls.getAnnotations()) {
+        for (Annotation a : cls.getAnnotations()) {
             System.out.println(a);
         }
-//        XmlType xmlType = cls.getAnnotation(XmlType.class);
-//        System.out.println(xmlType);
+        //        XmlType xmlType = cls.getAnnotation(XmlType.class);
+        //        System.out.println(xmlType);
         Object bean = cls.newInstance();
         JAXBContext context = JAXBContextHelper.createJAXBContext(cls);
         StringWriter sw = new StringWriter();

@@ -25,16 +25,16 @@
     <component name="ExampleClientComponent">
         <implementation.java class="com.example.ExampleClientImpl" />
         <reference name="myService">
-            <interface.wsdl interface="http://example.com#wsdl.interface(ExampleServicePortType)" />
-            <binding.ws wsdlElement="http://example.com#wsdl.port(ExampleService/ExampleServiceSOAP11port_http)" />
+            <interface.wsdl interface="http://example.com/#wsdl.interface(ExampleServicePortType)" />
+            <binding.ws wsdlElement="http://example.com/#wsdl.port(ExampleService/ExampleServiceSOAP11port_http)" />
         </reference>
     </component>
 
     <component name="ExampleComponent">
         <implementation.java class="com.example.ExampleServiceImpl"/>
         <service name="ExampleService">
-            <interface.wsdl interface="http://example.com#wsdl.interface(ExampleServicePortType)" />
-            <binding.ws wsdlElement="http://example.com#wsdl.port(ExampleService/ExampleServiceSOAP11port_http)" />
+            <interface.wsdl interface="http://example.com/#wsdl.interface(ExampleServicePortType)" />
+            <binding.ws wsdlElement="http://example.com/#wsdl.port(ExampleService/ExampleServiceSOAP11port_http)" />
         </service>  
     </component>
 </composite>

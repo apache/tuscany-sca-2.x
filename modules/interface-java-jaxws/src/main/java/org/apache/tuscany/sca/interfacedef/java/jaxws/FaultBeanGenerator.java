@@ -23,14 +23,12 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 
+import javax.xml.namespace.QName;
 import javax.xml.ws.WebFault;
 
 import org.apache.tuscany.sca.interfacedef.java.impl.JavaInterfaceUtil;
@@ -38,28 +36,11 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Type;
 
 public class FaultBeanGenerator extends BaseBeanGenerator {
-    private final ClassWriter cw;
-    private final Class<?> exceptionClass;
-    private final String classDescriptor;
-    private final String classSignature;
-    private String namespace;
-    private String name;
-    private byte[] byteCode;
-    private Class<?> faultBeanClass;
-
-    private static final Map<Class<?>, Class<?>> generatedClasses =
-        Collections.synchronizedMap(new WeakHashMap<Class<?>, Class<?>>());
-
-    public FaultBeanGenerator(Class<? extends Throwable> exceptionClass) {
+    public FaultBeanGenerator() {
         super();
-        this.cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        this.exceptionClass = exceptionClass;
-        this.classDescriptor = getFaultBeanName(exceptionClass);
-        this.classSignature = "L" + classDescriptor + ";";
-        getElementName();
     }
 
-    protected BeanProperty[] getProperties() {
+    protected BeanProperty[] getProperties(Class<? extends Throwable> exceptionClass) {
         BeanInfo beanInfo;
         try {
             beanInfo = Introspector.getBeanInfo(exceptionClass);
@@ -90,9 +71,32 @@ public class FaultBeanGenerator extends BaseBeanGenerator {
         return props.toArray(new BeanProperty[0]);
     }
 
-    public void generate() {
-        if (byteCode == null) {
-            byteCode = defineClass(cw, classDescriptor, classSignature, namespace, name, getProperties());
+    public byte[] generate(Class<? extends Throwable> exceptionClass) {
+        String className = getFaultBeanName(exceptionClass);
+        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        String classDescriptor = className.replace('.', '/');
+        String classSignature = "L" + classDescriptor + ";";
+        QName element = getElementName(exceptionClass);
+        String namespace = element.getNamespaceURI();
+        String name = element.getLocalPart();
+        return defineClass(cw, classDescriptor, classSignature, namespace, name, getProperties(exceptionClass));
+    }
+
+    public Class<?> generate(Class<? extends Throwable> exceptionClass, GeneratedClassLoader cl) {
+        synchronized (exceptionClass) {
+            Class<?> faultBeanClass = generatedClasses.get(exceptionClass);
+            if (faultBeanClass == null) {
+                String className = getFaultBeanName(exceptionClass);
+                String classDescriptor = className.replace('.', '/');
+                String classSignature = "L" + classDescriptor + ";";
+                QName element = getElementName(exceptionClass);
+                String namespace = element.getNamespaceURI();
+                String name = element.getLocalPart();
+                faultBeanClass =
+                    generate(classDescriptor, classSignature, namespace, name, getProperties(exceptionClass), cl);
+                generatedClasses.put(exceptionClass, faultBeanClass);
+            }
+            return faultBeanClass;
         }
     }
 
@@ -111,12 +115,18 @@ public class FaultBeanGenerator extends BaseBeanGenerator {
         String pkg = name.substring(0, index);
         String clsName = name.substring(index + 1);
 
-        faultBeanName = (pkg + ".jaxws." + clsName + "Bean").replace('.', '/');
+        // FIXME: [rfeng] This is a workaround to avoid "Prohibited package name: java.lang.jaxws"
+        if (pkg.startsWith("java.") || pkg.startsWith("javax.")) {
+            pkg = "tuscany";
+        }
+        faultBeanName = (pkg + ".jaxws." + clsName + "Bean");
         return faultBeanName;
     }
 
-    private void getElementName() {
+    public static QName getElementName(Class<? extends Throwable> exceptionClass) {
         WebFault webFault = exceptionClass.getAnnotation(WebFault.class);
+        String namespace = null;
+        String name = null;
         if (webFault != null) {
             namespace = webFault.targetNamespace();
             name = webFault.name();
@@ -127,43 +137,12 @@ public class FaultBeanGenerator extends BaseBeanGenerator {
         if (name == null) {
             name = exceptionClass.getSimpleName();
         }
+        return new QName(namespace, name);
     }
 
-    public Class<?> getFaultBeanClass() {
-        if (faultBeanClass == null && byteCode != null) {
-            faultBeanClass =
-                new GeneratedClassLoader(exceptionClass.getClassLoader()).getGeneratedClass(classDescriptor
-                    .replace('/', '.'), byteCode);
-        }
-        return faultBeanClass;
-    }
-
-    public String getClassName() {
-        return classDescriptor.replace('/', '.');
-    }
-
-    public byte[] getByteCode() {
-        return byteCode;
-    }
-
-    public static Class<?> generateFaultBeanClass(Class<? extends Throwable> exceptionClass) throws IOException {
-        synchronized (exceptionClass) {
-            Class<?> faultBeanClass = generatedClasses.get(exceptionClass);
-            if (faultBeanClass == null) {
-                FaultBeanGenerator generator = new FaultBeanGenerator(exceptionClass);
-                generator.generate();
-                faultBeanClass = generator.getFaultBeanClass();
-                generatedClasses.put(exceptionClass, faultBeanClass);
-            }
-            return faultBeanClass;
-        }
-    }
-
-    public static byte[] generateFaultBeanClassRep(Class<? extends Throwable> exceptionClass) throws IOException {
-        synchronized (exceptionClass) {
-            FaultBeanGenerator generator = new FaultBeanGenerator(exceptionClass);
-            generator.generate();
-            return generator.getByteCode();
-        }
+    public static Class<?> generateFaultBeanClass(Class<? extends Throwable> exceptionClass) {
+        FaultBeanGenerator generator = new FaultBeanGenerator();
+        GeneratedClassLoader cl = new GeneratedClassLoader(exceptionClass.getClassLoader());
+        return generator.generate(exceptionClass, cl);
     }
 }

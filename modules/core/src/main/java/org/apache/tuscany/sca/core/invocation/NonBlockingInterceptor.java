@@ -75,7 +75,14 @@ public class NonBlockingInterceptor implements Interceptor {
                 public void run() {
                     Message context = ThreadMessageContext.setMessageContext(msg);
                     try {
-                        Message response = next.invoke(msg);
+                        Message response = null;
+
+                        Throwable ex = null;
+                        try {
+                            response = next.invoke(msg);
+                        } catch (Throwable t) {
+                            ex = t;
+                        }
 
                         // Tuscany-2225 - Did the @OneWay method complete successfully?
                         // (i.e. no exceptions)
@@ -83,9 +90,11 @@ public class NonBlockingInterceptor implements Interceptor {
                             // The @OneWay method threw an Exception. Lets log it and
                             // then pass it on to the WorkScheduler so it can notify any
                             // listeners
-                            Throwable t = (Throwable) response.getBody();
-                            LOGGER.log(Level.SEVERE, "Exception from @OneWay invocation", t);
-                            throw new ServiceRuntimeException("Exception from @OneWay invocation", t);
+                            ex = (Throwable)response.getBody();
+                        }
+                        if (ex != null) {
+                            LOGGER.log(Level.SEVERE, "Exception from @OneWay invocation", ex);
+                            throw new ServiceRuntimeException("Exception from @OneWay invocation", ex);
                         }
                     } finally {
                         ThreadMessageContext.setMessageContext(context);

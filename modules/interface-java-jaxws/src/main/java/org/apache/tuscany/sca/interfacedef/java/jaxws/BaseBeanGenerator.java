@@ -20,6 +20,9 @@
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -29,6 +32,8 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public abstract class BaseBeanGenerator implements Opcodes {
+    protected static final Map<Object, Class<?>> generatedClasses =
+        Collections.synchronizedMap(new WeakHashMap<Object, Class<?>>());
 
     public byte[] defineClass(ClassWriter cw,
                               String classDescriptor,
@@ -138,7 +143,7 @@ public abstract class BaseBeanGenerator implements Opcodes {
                                  String propName,
                                  String propClassSignature,
                                  String propTypeSignature) {
-        String getterName = ("B".equals(propClassSignature) ? "is" : "get") + capitalize(propName);
+        String getterName = ("Z".equals(propClassSignature) ? "is" : "get") + capitalize(propName);
         MethodVisitor mv =
             cw.visitMethod(ACC_PUBLIC, getterName, "()" + propClassSignature, propTypeSignature == null ? null
                 : "()" + propTypeSignature, null);
@@ -215,12 +220,11 @@ public abstract class BaseBeanGenerator implements Opcodes {
                              String namespace,
                              String name,
                              BeanProperty[] properties,
-                             ClassLoader parent) {
+                             GeneratedClassLoader classLoader) {
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         byte[] byteCode = defineClass(cw, classDescriptor, classSignature, namespace, name, properties);
         String className = classDescriptor.replace('/', '.');
-        GeneratedClassLoader cl = new GeneratedClassLoader(parent);
-        Class<?> generated = cl.getGeneratedClass(className, byteCode);
+        Class<?> generated = classLoader.getGeneratedClass(className, byteCode);
         return generated;
     }
 

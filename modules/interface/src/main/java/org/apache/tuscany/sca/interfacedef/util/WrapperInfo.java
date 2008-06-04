@@ -64,15 +64,12 @@ public class WrapperInfo {
 
     // The data for the input/output wrappers
     private String dataBinding;
-    
+
     // The data type for the input (request) wrapper bean
     private DataType<XMLType> inputWrapperType;
     // The data type for the output (response) wrapper bean
     private DataType<XMLType> outputWrapperType;
-    
-    private Class<?> inputWrapperClass;
-    private Class<?> outputWrapperClass;
-    
+
     public WrapperInfo(String dataBinding,
                        ElementInfo inputWrapperElement,
                        ElementInfo outputWrapperElement,
@@ -160,19 +157,11 @@ public class WrapperInfo {
     }
 
     public Class<?> getInputWrapperClass() {
-        return inputWrapperClass;
-    }
-
-    public void setInputWrapperClass(Class<?> inputWrapperClass) {
-        this.inputWrapperClass = inputWrapperClass;
+        return inputWrapperType == null ? null : inputWrapperType.getPhysical();
     }
 
     public Class<?> getOutputWrapperClass() {
-        return outputWrapperClass;
-    }
-
-    public void setOutputWrapperClass(Class<?> outputWrapperClass) {
-        this.outputWrapperClass = outputWrapperClass;
+        return outputWrapperType == null ? null : outputWrapperType.getPhysical();
     }
 
     public String getDataBinding() {

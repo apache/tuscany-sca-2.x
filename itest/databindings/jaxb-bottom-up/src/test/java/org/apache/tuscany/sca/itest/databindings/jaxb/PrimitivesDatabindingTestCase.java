@@ -230,7 +230,7 @@ public class PrimitivesDatabindingTestCase {
      * Service method invoked is negateByteArray.
      */
     @Test
-    @Ignore("TUSCANY-2349")
+    // @Ignore("TUSCANY-2349")
     public void testWSNegateByteArray() throws Exception {
         PrimitivesServiceClient primitivesServiceClient = domain.getService(PrimitivesServiceClient.class, "PrimitivesServiceClientWSComponent");
         performTestNegateByteArray(primitivesServiceClient);

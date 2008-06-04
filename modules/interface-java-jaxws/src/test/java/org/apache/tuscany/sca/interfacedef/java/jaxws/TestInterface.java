@@ -19,15 +19,36 @@
 
 package org.apache.tuscany.sca.interfacedef.java.jaxws;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import org.osoa.sca.annotations.Remotable;
 
 /**
  * @version $Rev$ $Date$
  */
+@Remotable
 public interface TestInterface {
     int convert(String currency1, String currency2);
+
     List<Double> getRates(String currency);
+
     void check(boolean flag);
+
     String[] list(int[] list);
+
     int[][] map(String[][] strs);
+
+    String getGreetings(String name);
+
+    String[] getGreetingsArray(String[] names);
+
+    List<String> getGreetingsList(List<String> names);
+
+    ArrayList<String> getGreetingsArrayList(ArrayList<String> names);
+
+    // Map<String, String> getGreetingsMap(Map<String, String> namesMap);
+
+    HashMap<String, String> getGreetingsHashMap(HashMap<String, String> namesMap);
 }
