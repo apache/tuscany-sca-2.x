@@ -19,6 +19,7 @@
 package bigbank.account.services.accountdata;
 
 import javax.jws.WebService;
+import javax.xml.ws.ResponseWrapper;
 import org.osoa.sca.annotations.AllowsPassByReference;
 import org.osoa.sca.annotations.Remotable;
 
@@ -66,6 +67,7 @@ public interface AccountDataService {
      * @param param13*
      * @param param14
      */
+    @ResponseWrapper(localName="purchaseStockResponse")
     public com.bigbank.account.StockSummary sellStock(int param13, int param14);
 
     /**
