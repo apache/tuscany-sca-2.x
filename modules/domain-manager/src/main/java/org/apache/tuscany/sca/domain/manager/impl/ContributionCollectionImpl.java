@@ -297,8 +297,12 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
             
         } if (queryString.startsWith("suggestions=true")) {
             
-            // Returns a list of contribution suggestions, by scanning the parent of the workspace
-            // directory for potential contribution directories, for example project directories
+            // Returns a list of contribution suggestions, scan the parent of the workspace
+            // directory for potential contribution directories
+            
+            // For now, recognize project directories that contain .project files
+            // Directories containing .classpath files are likely to be Java projects, we parse
+            // the .classpath file to determine the Java project output location 
             Workspace suggestionWorkspace = workspaceFactory.createWorkspace();
             List<Entry> entries = new ArrayList<Entry>();
             String rootDirectory = domainManagerConfiguration.getRootDirectory();
@@ -313,7 +317,7 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
                 String uri = project.getName();
                 File location = project;
                 
-                // If this is a Java project, find it's output location
+                // If this is a Java project, parse its .classpath file to determine it's output location
                 File dotClasspath = new File(project, ".classpath");
                 if (dotClasspath.exists()) {
                     try {
@@ -339,8 +343,11 @@ public class ContributionCollectionImpl implements ItemCollection, LocalItemColl
                     
                 }
                 
-                // Create a contribution entry
-                if (!location.getPath().startsWith(rootLocation.getPath())) {
+                // Create a contribution entry, skip the domain root directory and childrens of the
+                // domain root directory
+                String rootLocationPath = rootLocation.getPath();
+                String locationPath = location.getPath(); 
+                if (!locationPath.startsWith(rootLocationPath + "/") && !locationPath.equals(rootLocationPath)) {
                     Contribution contribution = contributionFactory.createContribution();
                     contribution.setURI(uri);
                     contribution.setLocation(location.getPath());
